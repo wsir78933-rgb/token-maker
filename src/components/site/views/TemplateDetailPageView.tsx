@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
-import { getGuidePages } from '@/lib/site-content';
+import { getPublishedBlogPosts } from '@/lib/blog-content';
 import { formatPageDate } from '@/lib/site-formatting';
 import {
   buildBreadcrumbStructuredData,
@@ -75,7 +75,9 @@ export function TemplateDetailPageView({ locale, slug }: { locale: SiteLocale; s
   }
 
   const copy = copyByLocale[locale];
-  const relatedGuides = getGuidePages(locale).filter((guide) => guide.relatedTemplateSlugs.includes(page.slug));
+  const relatedGuides = getPublishedBlogPosts(locale).filter((post) =>
+    post.relatedTemplateSlugs.includes(page.slug),
+  );
   const breadcrumbs = [
     { label: copy.editor, href: getLocalizedPath(locale, '/') },
     { label: copy.templates, href: getLocalizedPath(locale, '/templates') },
@@ -302,9 +304,9 @@ export function TemplateDetailPageView({ locale, slug }: { locale: SiteLocale; s
                     href={getLocalizedPath(locale, `/blog/${guide.slug}`)}
                     className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(127,167,214,0.12),rgba(255,255,255,0.02))] p-6 transition hover:border-white/20 hover:bg-[linear-gradient(180deg,rgba(127,167,214,0.16),rgba(255,255,255,0.03))]"
                   >
-                    <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{guide.outcome}</p>
+                    <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{guide.category}</p>
                     <h3 className="mt-3 text-2xl font-medium text-stone-50">{guide.title}</h3>
-                    <p className="mt-4 text-sm leading-7 text-stone-300">{guide.description}</p>
+                    <p className="mt-4 text-sm leading-7 text-stone-300">{guide.excerpt}</p>
                     <span className="mt-6 inline-flex items-center gap-2 text-sm text-[#f1d492]">
                       {copy.readGuide}
                       <ArrowRight className="h-4 w-4" />

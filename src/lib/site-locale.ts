@@ -36,8 +36,11 @@ export function switchLocalePath(pathname: string, locale: SiteLocale) {
 }
 
 export function getLanguageAlternates(path = '/') {
+  const englishPath = getLocalizedPath('en', path);
+
   return {
-    'en-US': getLocalizedPath('en', path),
+    'x-default': englishPath,
+    'en-US': englishPath,
     'zh-CN': getLocalizedPath('zh', path),
   };
 }

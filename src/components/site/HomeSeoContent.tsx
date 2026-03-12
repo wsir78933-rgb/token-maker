@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight, Shield, Sparkles, Swords, Workflow } from 'lucide-react';
+import { getPublishedBlogPosts } from '@/lib/blog-content';
 import {
   getFaqItems,
-  getGuidePages,
   getHomeCopy,
   getHomeFeatures,
   getHomeSignals,
@@ -118,7 +118,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
   const copy = getHomeCopy(locale);
   const homeFeatures = getHomeFeatures(locale);
   const templatePages = getTemplatePages(locale);
-  const guidePages = getGuidePages(locale);
+  const blogPosts = getPublishedBlogPosts(locale).slice(0, 4);
   const workflowSteps = getWorkflowSteps(locale);
   const faqItems = getFaqItems(locale);
 
@@ -191,21 +191,21 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
             <Workflow className="h-5 w-5 text-[#d7b46a]" />
             <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.guidesTitle}</h2>
           </div>
-          <div className="grid gap-4 lg:grid-cols-2">
-            {guidePages.map((page) => (
+          <div className="grid items-start gap-4 lg:grid-cols-2">
+            {blogPosts.map((post) => (
               <article
-                key={page.slug}
+                key={post.slug}
                 className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6"
               >
-                <p className="text-xs uppercase tracking-[0.26em] text-stone-500">{page.outcome}</p>
-                <h3 className="mt-4 text-2xl font-medium text-stone-50">{page.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-stone-300">{page.description}</p>
+                <p className="text-xs uppercase tracking-[0.26em] text-stone-500">{post.category}</p>
+                <h3 className="mt-4 text-2xl font-medium text-stone-50">{post.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-stone-300">{post.excerpt}</p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <Link href={getLocalizedPath(locale, `/blog/${page.slug}`)} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
+                  <Link href={getLocalizedPath(locale, `/blog/${post.slug}`)} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
                     {locale === 'zh' ? '阅读全文' : 'Read article'}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <Link href={page.ctaQuery} className="text-sm text-stone-400 transition hover:text-stone-100">
+                  <Link href={post.ctaQuery} className="text-sm text-stone-400 transition hover:text-stone-100">
                     {locale === 'zh' ? '在编辑器里试用' : 'Try in editor'}
                   </Link>
                 </div>
@@ -241,7 +241,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
             <Shield className="h-5 w-5 text-[#d7b46a]" />
             <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.faqTitle}</h2>
           </div>
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid items-start gap-4 lg:grid-cols-2">
             {faqItems.map((item) => (
               <details
                 key={item.question}

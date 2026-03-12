@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -12,10 +14,52 @@ const copyByLocale = {
   en: {
     editor: 'Editor',
     faq: 'FAQ',
+    nextEyebrow: 'Keep moving',
+    nextTitle: 'Where to go next',
+    nextDescription: 'Once the basics are clear, jump back into making tokens or move into format-specific reading.',
+    openLink: 'Open page',
+    nextLinks: [
+      {
+        href: '/',
+        label: 'Open the editor',
+        description: 'Go straight back to the browser editor and test the workflow on a real token.',
+      },
+      {
+        href: '/templates',
+        label: 'Browse templates',
+        description: 'Pick a circle, square, hex, monster, or transparent setup before your next export.',
+      },
+      {
+        href: '/blog',
+        label: 'Read the blog',
+        description: 'Compare Roll20, Foundry VTT, and export-size guides when the quick answer is not enough.',
+      },
+    ],
   },
   zh: {
     editor: '编辑器',
     faq: '常见问题',
+    nextEyebrow: '继续浏览',
+    nextTitle: '下一步去哪里',
+    nextDescription: '问题先回答清楚，再把你带回编辑器、模板页和更具体的博客文章里。',
+    openLink: '打开页面',
+    nextLinks: [
+      {
+        href: '/',
+        label: '回到编辑器',
+        description: '直接回到浏览器编辑器，用真实角色图继续试一轮工作流。',
+      },
+      {
+        href: '/templates',
+        label: '浏览模板页',
+        description: '从圆形、方形、六边形、怪物或透明背景方案里选一个更贴近当前用途的入口。',
+      },
+      {
+        href: '/blog',
+        label: '继续看博客',
+        description: '当 FAQ 不够时，再去看 Roll20、Foundry VTT 和导出尺寸的实战文章。',
+      },
+    ],
   },
 } as const;
 
@@ -26,6 +70,10 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
     { label: copy.editor, href: getLocalizedPath(locale, '/') },
     { label: copy.faq },
   ];
+  const nextLinks = copy.nextLinks.map((link) => ({
+    ...link,
+    href: getLocalizedPath(locale, link.href),
+  }));
   const faqStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -115,6 +163,29 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
                 </div>
               </section>
             ))}
+
+            <section className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-7">
+              <div className="max-w-3xl space-y-4">
+                <p className="text-xs uppercase tracking-[0.34em] text-stone-500">{copy.nextEyebrow}</p>
+                <h2 className="font-display text-3xl text-stone-50">{copy.nextTitle}</h2>
+                <p className="text-sm leading-8 text-stone-300">{copy.nextDescription}</p>
+              </div>
+              <div className="mt-8 grid gap-4 md:grid-cols-3">
+                {nextLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="group rounded-[28px] border border-white/10 bg-black/25 p-5 transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.05]"
+                  >
+                    <h3 className="text-lg font-medium text-stone-50 transition group-hover:text-white">{link.label}</h3>
+                    <p className="mt-3 text-sm leading-7 text-stone-300">{link.description}</p>
+                    <span className="mt-6 inline-flex text-xs uppercase tracking-[0.28em] text-stone-400 transition group-hover:text-stone-200">
+                      {copy.openLink}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
           </div>
         </div>
       </InnerPageChrome>

@@ -55,7 +55,7 @@ export const siteConfig = {
   shortName: 'Token Maker',
   title: 'Token Maker for DnD, Roll20, and Foundry VTT',
   description:
-    'Build polished tabletop tokens in your browser. Upload character art, crop it, add borders, masks, text, and export transparent PNGs for DnD, Roll20, and Foundry VTT.',
+    'Token Maker helps you build polished tabletop tokens in your browser. Upload character art, crop it, add borders, masks, text, and export transparent PNGs for DnD, Roll20, and Foundry VTT.',
   keywords: [
     'token maker',
     'vtt token maker',
@@ -69,7 +69,7 @@ export const siteConfig = {
 } as const;
 
 export function getSiteUrl() {
-  const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tokenmaker.one';
   return rawUrl.endsWith('/') ? rawUrl.slice(0, -1) : rawUrl;
 }
 
@@ -81,7 +81,7 @@ export const homeSignals: HomeSignal[] = [
   {
     label: 'Processing',
     value: 'Local-first',
-    description: 'Portrait images can stay in the browser while you crop, frame, and export tokens.',
+    description: 'Portrait images can stay in the browser while you crop, frame, and export tokens in Token Maker.',
   },
   {
     label: 'Export',
@@ -96,30 +96,30 @@ export const homeSignals: HomeSignal[] = [
   {
     label: 'Workflow',
     value: 'One screen',
-    description: 'Upload, position, style, and download from a single tabletop-focused workspace.',
+    description: 'Upload, position, style, and download from a single Token Maker workspace built for tabletop prep.',
   },
 ];
 
 export const homeFeatures: HomeFeature[] = [
   {
-    title: 'Build tokens without leaving the browser',
+    title: 'Build tokens in Token Maker without leaving the browser',
     description:
-      'The workspace is designed for quick portrait framing, not a long image-editing session. Drop art in, recenter it, and export fast.',
+      'Token Maker is designed for quick portrait framing, not a long image-editing session. Drop art in, recenter it, and export fast.',
   },
   {
     title: 'Mix borders and masks independently',
     description:
-      'Use a circular portrait inside a heavy frame, move to a square crop for handouts, or build hex counters for strategy overlays.',
+      'Token Maker lets you use a circular portrait inside a heavy frame, move to a square crop for handouts, or build hex counters for strategy overlays.',
   },
   {
     title: 'Make output ready for real VTT tables',
     description:
-      'The editor is aimed at DnD, Roll20, Foundry VTT, and similar tabletops where clean transparent PNGs matter more than filters.',
+      'The Token Maker editor is aimed at DnD, Roll20, Foundry VTT, and similar tabletops where clean transparent PNGs matter more than filters.',
   },
   {
     title: 'Keep repeatable style presets nearby',
     description:
-      'Preset groups make it easier to keep monster sets, NPC portraits, and faction markers visually consistent across a campaign.',
+      'Token Maker preset groups make it easier to keep monster sets, NPC portraits, and faction markers visually consistent across a campaign.',
   },
 ];
 
@@ -127,7 +127,7 @@ export const workflowSteps: WorkflowStep[] = [
   {
     title: '1. Drop portrait art into the workspace',
     description:
-      'Use local files, then frame the subject with wheel zoom and drag positioning until the face reads clearly at token scale.',
+      'Use local files in Token Maker, then frame the subject with wheel zoom and drag positioning until the face reads clearly at token scale.',
   },
   {
     title: '2. Pick the mask, frame, and accent colors',
@@ -137,7 +137,7 @@ export const workflowSteps: WorkflowStep[] = [
   {
     title: '3. Export PNGs for your table',
     description:
-      'Download a clean PNG and move straight into Roll20, Foundry VTT, Owlbear, or any other map workflow that accepts image tokens.',
+      'Download a clean PNG from Token Maker and move straight into Roll20, Foundry VTT, Owlbear, or any other map workflow that accepts image tokens.',
   },
 ];
 
@@ -145,7 +145,7 @@ export const faqItems: FaqItem[] = [
   {
     question: 'What is this token maker used for?',
     answer:
-      'It is a browser tool for turning character art, monster portraits, and NPC avatars into tabletop tokens with masks, borders, text, and PNG export.',
+      'Token Maker is a browser tool for turning character art, monster portraits, and NPC avatars into tabletop tokens with masks, borders, text, and PNG export.',
   },
   {
     question: 'Does Token Maker upload my images to a server?',
@@ -155,22 +155,22 @@ export const faqItems: FaqItem[] = [
   {
     question: 'Which virtual tabletops does it fit?',
     answer:
-      'The export format is aimed at popular VTT setups such as Roll20, Foundry VTT, Owlbear Rodeo, and similar tools that accept PNG tokens.',
+      'Token Maker export is aimed at popular VTT setups such as Roll20, Foundry VTT, Owlbear Rodeo, and similar tools that accept PNG tokens.',
   },
   {
     question: 'Can I make square and hex tokens, not only circular ones?',
     answer:
-      'Yes. The editor already supports circle, square, hexagon, octagon, decagon, and dodecagon style masks so you can match the board you are building for.',
+      'Yes. Token Maker already supports circle, square, hexagon, octagon, decagon, and dodecagon style masks so you can match the board you are building for.',
   },
   {
     question: 'Can I add my own border or mask artwork?',
     answer:
-      'Yes. Custom border and mask uploads are supported so you can align the token look with a homebrew setting, paid art pack, or campaign identity.',
+      'Yes. Token Maker supports custom border and mask uploads so you can align the token look with a homebrew setting, paid art pack, or campaign identity.',
   },
   {
     question: 'What export size should I use for VTT tokens?',
     answer:
-      '512 is a practical default for most tables. Move to 1024 or 2048 when you need sharper marketplace assets, premium handouts, or future-proof library files.',
+      'Token Maker works well at 512 for most tables. Move to 1024 or 2048 when you need sharper marketplace assets, premium handouts, or future-proof library files.',
   },
 ];
 
@@ -507,7 +507,7 @@ export const siteConfigZh = {
   shortName: 'Token Maker',
   title: 'Token Maker 在线制章工具',
   description:
-    '在浏览器里制作 TRPG 与 VTT 角色 token。上传立绘、裁切头像、添加边框与文字，并导出透明 PNG。',
+    '用 Token Maker 在浏览器里制作 TRPG 与 VTT 角色 token。上传立绘、裁切头像、添加边框与文字，并导出透明 PNG。',
   keywords: [
     'token maker',
     'TRPG token 制作',
@@ -522,7 +522,7 @@ export const homeSignalsZh: HomeSignal[] = [
   {
     label: '处理方式',
     value: '本地优先',
-    description: '角色立绘可以直接留在浏览器里裁切、加框和导出，不必先走远程上传。',
+    description: '角色立绘可以直接留在 Token Maker 的浏览器工作区里裁切、加框和导出，不必先走远程上传。',
   },
   {
     label: '导出',
@@ -537,33 +537,33 @@ export const homeSignalsZh: HomeSignal[] = [
   {
     label: '工作流',
     value: '单屏完成',
-    description: '上传、定位、配色、导出都在同一个工作区完成，适合 GM 快速备战。',
+    description: '上传、定位、配色、导出都在同一个 Token Maker 工作区完成，适合 GM 快速备战。',
   },
 ];
 
 export const homeFeaturesZh: HomeFeature[] = [
   {
-    title: '直接在浏览器里做 token',
-    description: '这个工作区是为头像裁切设计的，不是一个笨重的修图台。丢进立绘，调整构图，然后直接导出。',
+    title: '直接在 Token Maker 里做 token',
+    description: 'Token Maker 工作区是为头像裁切设计的，不是一个笨重的修图台。丢进立绘，调整构图，然后直接导出。',
   },
   {
     title: '边框和遮罩可以独立组合',
-    description: '你可以给同一张头像切成圆形、方形或六边形，并换不同风格边框来适配不同战役。',
+    description: 'Token Maker 允许你把同一张头像切成圆形、方形或六边形，并换不同风格边框来适配不同战役。',
   },
   {
     title: '输出面向真实桌面流程',
-    description: '目标不是花哨滤镜，而是让 DnD、Roll20、Foundry VTT 等实际桌面环境里更清晰、更好识别。',
+    description: 'Token Maker 的目标不是花哨滤镜，而是让 DnD、Roll20、Foundry VTT 等实际桌面环境里更清晰、更好识别。',
   },
   {
     title: '保留可重复使用的风格预设',
-    description: '怪物、NPC、阵营单位可以共用一套视觉语言，避免一场战役里的 token 风格完全散掉。',
+    description: 'Token Maker 的预设组让怪物、NPC、阵营单位共用一套视觉语言，避免一场战役里的 token 风格完全散掉。',
   },
 ];
 
 export const workflowStepsZh: WorkflowStep[] = [
   {
     title: '1. 把立绘拖进工作区',
-    description: '直接拖本地图片进来，用滚轮缩放和拖拽定位，把脸部或轮廓调整到适合 token 的视觉中心。',
+    description: '直接把本地图片拖进 Token Maker，用滚轮缩放和拖拽定位，把脸部或轮廓调整到适合 token 的视觉中心。',
   },
   {
     title: '2. 选择遮罩、边框和强调色',
@@ -571,34 +571,34 @@ export const workflowStepsZh: WorkflowStep[] = [
   },
   {
     title: '3. 导出 PNG 到你的桌面工具',
-    description: '导出后可以直接进入 Roll20、Foundry VTT、Owlbear Rodeo 或你自己的地图工作流。',
+    description: '从 Token Maker 导出后，可以直接进入 Roll20、Foundry VTT、Owlbear Rodeo 或你自己的地图工作流。',
   },
 ];
 
 export const faqItemsZh: FaqItem[] = [
   {
     question: '这个 token maker 主要用来做什么？',
-    answer: '它是一个浏览器工具，用来把角色立绘、怪物头像和 NPC 头像快速做成带边框、遮罩、文字和 PNG 导出的桌面 token。',
+    answer: 'Token Maker 是一个浏览器工具，用来把角色立绘、怪物头像和 NPC 头像快速做成带边框、遮罩、文字和 PNG 导出的桌面 token。',
   },
   {
     question: '图片会上传到服务器吗？',
-    answer: '默认流程是本地优先。你在裁切和导出时，图片可以一直停留在浏览器里，这对私有战役素材和商业委托稿都更合适。',
+    answer: 'Token Maker 默认流程是本地优先。你在裁切和导出时，图片可以一直停留在浏览器里，这对私有战役素材和商业委托稿都更合适。',
   },
   {
     question: '适合哪些虚拟桌面？',
-    answer: '导出结果主要面向 Roll20、Foundry VTT、Owlbear Rodeo 等接受 PNG token 的桌面环境。',
+    answer: 'Token Maker 导出结果主要面向 Roll20、Foundry VTT、Owlbear Rodeo 等接受 PNG token 的桌面环境。',
   },
   {
     question: '除了圆形，还能做方形和六边形吗？',
-    answer: '可以。当前已经支持圆形、方形、六边形、八边形、十边形和十二边形等裁切形状。',
+    answer: '可以。Token Maker 当前已经支持圆形、方形、六边形、八边形、十边形和十二边形等裁切形状。',
   },
   {
     question: '能上传自定义边框和遮罩吗？',
-    answer: '可以。你可以上传自己的边框和遮罩素材，让 token 更贴合自制战役、美术包或世界观设定。',
+    answer: '可以。Token Maker 支持上传自己的边框和遮罩素材，让 token 更贴合自制战役、美术包或世界观设定。',
   },
   {
     question: 'VTT token 一般导出多大合适？',
-    answer: '大多数桌面场景下 512 就够用；如果你想保留更清晰边缘、做长期素材库或商品化资源，可以升到 1024 或 2048。',
+    answer: 'Token Maker 在大多数桌面场景下用 512 就够用；如果你想保留更清晰边缘、做长期素材库或商品化资源，可以升到 1024 或 2048。',
   },
 ];
 
@@ -835,48 +835,48 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
     heroEyebrow: 'Browser token workshop',
     heroTitle: siteConfig.title,
     heroDescription:
-      'Upload character art, crop it in the browser, add masks, borders, text, and export clean PNG tokens without opening a heavy graphics suite. The editor stays front and center, with format guides, FAQs, and practical references close by when you need them.',
+      'Token Maker lets you upload character art, crop it in the browser, add masks, borders, text, and export clean PNG tokens without opening a heavy graphics suite. The Token Maker editor stays front and center, with format guides, FAQs, and practical references close by when you need them.',
     heroPrimaryCta: 'Jump into the editor',
     heroSecondaryCta: 'Browse template pages',
-    featuresTitle: 'What this tool helps you do',
+    featuresTitle: 'What Token Maker helps you do',
     templatesEyebrow: 'Template directory',
-    templatesTitle: 'Template pages for distinct token formats',
+    templatesTitle: 'Token Maker template pages for distinct token formats',
     seeAllTemplatePages: 'See all template pages',
-    guidesTitle: 'Blog posts for real table prep',
-    workflowTitle: 'How the workflow stays lightweight',
+    guidesTitle: 'Token Maker blog posts for real table prep',
+    workflowTitle: 'How Token Maker stays lightweight',
     faqTitle: 'Token Maker FAQ',
-    localFirstEyebrow: 'Local-first by default',
-    localFirstTitle: 'Keep the editor fast without hiding the context',
+    localFirstEyebrow: 'Local processing first',
+    localFirstTitle: 'Work on your token in Token Maker first',
     localFirstDescription:
-      'The homepage still starts with the editor, but it also explains the workflow, answers the common questions, and points you toward deeper format or platform guides when the quick path is not enough.',
+      'Drop in character art, crop it, add masks and borders, and export a clean PNG in Token Maker without sending the image elsewhere first. When you need more direction, move into Token Maker template pages, blog posts, or the FAQ.',
     quickLinks: [
-      { href: '/templates', label: 'Template pages', description: 'Circle, square, hex, monster, and transparent token setups.' },
-      { href: '/blog', label: 'Blog', description: 'Practical articles for VTT prep, Foundry VTT, Roll20, and export sizing.' },
-      { href: '/faq', label: 'FAQ', description: 'Answers about exports, privacy, formats, and tabletop compatibility.' },
+      { href: '/templates', label: 'Token Maker templates', description: 'Jump into the right Token Maker setup for circle, square, hex, monster, or transparent tokens.' },
+      { href: '/blog', label: 'Token Maker blog', description: 'Read practical Token Maker guides for VTT prep, Foundry VTT, Roll20, and export decisions.' },
+      { href: '/faq', label: 'Token Maker FAQ', description: 'Find Token Maker answers about exports, privacy, formats, and tabletop compatibility.' },
     ],
   },
   zh: {
     heroEyebrow: '浏览器制章工作台',
     heroTitle: 'Token Maker 在线制章工具',
     heroDescription:
-      '把角色立绘直接拖进浏览器，裁切头像、添加边框、遮罩和文字，然后导出透明 PNG。首页继续把编辑器放在最前面，同时把模板页、FAQ 和实用参考信息放在随手可达的位置。',
+      'Token Maker 让你把角色立绘直接拖进浏览器，裁切头像、添加边框、遮罩和文字，然后导出透明 PNG。Token Maker 首页继续把编辑器放在最前面，同时把模板页、FAQ 和实用参考信息放在随手可达的位置。',
     heroPrimaryCta: '直接进入编辑器',
     heroSecondaryCta: '浏览模板页',
-    featuresTitle: '这个工具能帮你完成什么',
+    featuresTitle: '这个 Token Maker 能帮你完成什么',
     templatesEyebrow: '模板目录',
-    templatesTitle: '针对不同 token 格式的模板页',
+    templatesTitle: '针对不同 token 格式的 Token Maker 模板页',
     seeAllTemplatePages: '查看全部模板页',
-    guidesTitle: '面向真实备战流程的博客文章',
-    workflowTitle: '为什么这个工作流够轻',
+    guidesTitle: '围绕 Token Maker 真实备战流程的博客文章',
+    workflowTitle: '为什么 Token Maker 工作流够轻',
     faqTitle: 'Token Maker 常见问题',
-    localFirstEyebrow: '默认本地优先',
-    localFirstTitle: '让编辑器保持轻快，也把上下文说明清楚',
+    localFirstEyebrow: '默认本地处理',
+    localFirstTitle: '先在 Token Maker 里把 Token 做出来',
     localFirstDescription:
-      '首页依然先给出编辑器，同时也把工作流、常见问题，以及更深入的格式页和平台指南入口放在合适的位置，方便你在需要时继续往下看。',
+      '把角色图拖进 Token Maker 后，你可以直接裁切、加边框、套遮罩并导出透明 PNG，不必先把图片传到别处。需要更多方向时，再继续查看 Token Maker 模板页、博客或常见问题。',
     quickLinks: [
-      { href: '/templates', label: '模板页', description: '圆形、方形、六边形、怪物和透明背景等不同 token 入口。' },
-      { href: '/blog', label: '博客', description: '覆盖 VTT 流程、Foundry、Roll20 和导出尺寸选择。' },
-      { href: '/faq', label: '常见问题', description: '回答导出、隐私、格式和桌面兼容性相关问题。' },
+      { href: '/templates', label: 'Token Maker 模板页', description: '按圆形、方形、六边形、怪物或透明背景快速找到合适的 Token Maker 入口。' },
+      { href: '/blog', label: 'Token Maker 博客', description: '查看 Token Maker 在 VTT 流程、Foundry、Roll20 和导出尺寸上的选择建议。' },
+      { href: '/faq', label: 'Token Maker 常见问题', description: '集中回答 Token Maker 的导出、隐私、格式兼容和使用方式。' },
     ],
   },
 };

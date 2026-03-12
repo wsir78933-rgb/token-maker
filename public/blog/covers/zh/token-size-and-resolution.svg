@@ -1,0 +1,29 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="98" y1="58" x2="1082" y2="592" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111521"/>
+      <stop offset="1" stop-color="#04070C"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <circle cx="1036" cy="122" r="126" fill="#D7B46A" fill-opacity="0.15"/>
+  <circle cx="1082" cy="478" r="188" fill="#8FBCFF" fill-opacity="0.11"/>
+  <rect x="774" y="128" width="300" height="238" rx="42" fill="#0A0F18" stroke="#8FBCFF" stroke-opacity="0.45" stroke-width="2"/>
+  <rect x="826" y="176" width="68" height="142" rx="22" fill="#111A26" stroke="#D7B46A" stroke-opacity="0.55" stroke-width="8"/>
+  <rect x="916" y="140" width="68" height="178" rx="22" fill="#152131" stroke="#8FBCFF" stroke-opacity="0.5" stroke-width="8"/>
+  <rect x="1006" y="104" width="68" height="214" rx="22" fill="#1A2A40" stroke="#F3D38F" stroke-opacity="0.6" stroke-width="8"/>
+  <rect x="80" y="74" width="148" height="44" rx="22" fill="#101824" stroke="#D7B46A" stroke-opacity="0.45"/>
+  <text x="104" y="102" fill="#F3D38F" font-size="18" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="3">导出与分辨率</text>
+  <text x="80" y="184" fill="#F8F5EE" font-size="62" font-family="Georgia, PingFang SC, Noto Serif SC, serif">Token 尺寸与分辨率：</text>
+  <text x="80" y="258" fill="#F8F5EE" font-size="70" font-family="Georgia, PingFang SC, Noto Serif SC, serif">什么时候用 512、</text>
+  <text x="80" y="332" fill="#F8F5EE" font-size="70" font-family="Georgia, PingFang SC, Noto Serif SC, serif">1024 或 2048</text>
+  <text x="80" y="390" fill="#D1D5DB" font-size="28" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">尺寸要跟着用途走，而不是默认导到最大。</text>
+  <rect x="80" y="446" width="94" height="42" rx="21" fill="#0E1520" stroke="#FFFFFF" stroke-opacity="0.12"/>
+  <text x="111" y="473" fill="#D7DCE2" font-size="17" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="2.3">512</text>
+  <rect x="188" y="446" width="108" height="42" rx="21" fill="#0E1520" stroke="#FFFFFF" stroke-opacity="0.12"/>
+  <text x="214" y="473" fill="#D7DCE2" font-size="17" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="2.3">1024</text>
+  <rect x="310" y="446" width="108" height="42" rx="21" fill="#0E1520" stroke="#FFFFFF" stroke-opacity="0.12"/>
+  <text x="336" y="473" fill="#D7DCE2" font-size="17" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="2.3">2048</text>
+  <text x="80" y="560" fill="#F2E6C8" font-size="24" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">Token Maker Blog</text>
+  <text x="1018" y="560" fill="#C4CBD4" font-size="20" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">中文</text>
+</svg>

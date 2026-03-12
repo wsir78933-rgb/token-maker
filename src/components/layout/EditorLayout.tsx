@@ -19,13 +19,16 @@ export function EditorLayout() {
       <Suspense fallback={null}>
         <Header />
       </Suspense>
-      <main className="relative flex flex-1 flex-col overflow-auto xl:flex-row xl:overflow-hidden">
+      <section
+        aria-label="Token editor workspace"
+        className="relative flex flex-1 flex-col overflow-auto xl:flex-row xl:overflow-hidden"
+      >
         <ControlPanel />
         <div className="min-h-[36rem] flex-1 bg-dot-pattern bg-[length:16px_16px]">
           <Canvas />
         </div>
         <TemplatePanel />
-      </main>
+      </section>
     </div>
   );
 }

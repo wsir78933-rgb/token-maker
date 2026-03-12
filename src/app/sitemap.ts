@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next';
+import { getPaginatedBlogPosts, getPublishedBlogPosts } from '@/lib/blog-content';
+import { buildBlogIndexPath } from '@/lib/blog-seo';
 import { getSiteUrl } from '@/lib/site-content';
 import {
-  getAllGuideDetailModels,
   getAllTemplateDetailModels,
   getStaticPageLastModified,
 } from '@/lib/site-page-models';
@@ -14,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     staticPaths.map((path) => {
+      const latestBlogUpdate = getPublishedBlogPosts(locale)[0]?.updatedAt ?? '2026-03-12';
       const pageKey =
         path === '/templates'
           ? 'templates'
@@ -27,7 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
       return {
         url: `${siteUrl}${getLocalizedPath(locale, path)}`,
-        lastModified: pageKey ? new Date(getStaticPageLastModified(locale, pageKey)) : homepageUpdatedAt,
+        lastModified:
+          path === '/blog'
+            ? new Date(latestBlogUpdate)
+            : pageKey
+              ? new Date(getStaticPageLastModified(locale, pageKey))
+              : homepageUpdatedAt,
         changeFrequency: path === '/' ? 'weekly' : path === '/privacy' ? 'monthly' : 'weekly',
         priority: path === '/' ? 1 : path === '/privacy' ? 0.4 : path === '/faq' ? 0.6 : 0.8,
       };
@@ -43,14 +50,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   );
 
-  const guideRoutes = LOCALES.flatMap((locale) =>
-    getAllGuideDetailModels(locale).map((page) => ({
-      url: `${siteUrl}${getLocalizedPath(locale, `/blog/${page.slug}`)}`,
-      lastModified: new Date(page.updatedAt),
+  const blogRoutes = LOCALES.flatMap((locale) =>
+    getPublishedBlogPosts(locale).map((post) => ({
+      url: `${siteUrl}${getLocalizedPath(locale, `/blog/${post.slug}`)}`,
+      lastModified: new Date(post.updatedAt),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
   );
 
-  return [...staticRoutes, ...templateRoutes, ...guideRoutes];
+  const paginatedBlogRoutes = LOCALES.flatMap((locale) => {
+    const { totalPages } = getPaginatedBlogPosts(locale);
+
+    return Array.from({ length: Math.max(totalPages - 1, 0) }, (_, index) => {
+      const currentPage = index + 2;
+      const pageItems = getPaginatedBlogPosts(locale, currentPage).items;
+      const latestPageUpdate =
+        pageItems.reduce(
+          (latest, post) => (latest > post.updatedAt ? latest : post.updatedAt),
+          pageItems[0]?.updatedAt ?? getPublishedBlogPosts(locale)[0]?.updatedAt ?? '2026-03-12',
+        );
+
+      return {
+        url: `${siteUrl}${buildBlogIndexPath(locale, currentPage)}`,
+        lastModified: new Date(latestPageUpdate),
+        changeFrequency: 'weekly' as const,
+        priority: 0.6,
+      };
+    });
+  });
+
+  return [...staticRoutes, ...templateRoutes, ...blogRoutes, ...paginatedBlogRoutes];
 }

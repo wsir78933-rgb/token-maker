@@ -1,4 +1,5 @@
-import { getGuidesHubModel } from '@/lib/site-page-models';
+import { getPublishedBlogPosts } from '@/lib/blog-content';
+import { getBlogIndexCopy } from '@/lib/blog-seo';
 import { createSeoImage, seoImageContentType, seoImageSize } from '@/lib/site-og-image';
 
 export const size = seoImageSize;
@@ -6,14 +7,15 @@ export const contentType = seoImageContentType;
 
 export default function Image() {
   const locale = 'zh';
-  const model = getGuidesHubModel(locale);
+  const copy = getBlogIndexCopy(locale);
+  const posts = getPublishedBlogPosts(locale);
 
   return createSeoImage({
     locale,
     tone: 'guides',
-    eyebrow: '博客',
-    title: model.title,
-    description: model.description,
-    chips: model.stats.map((item) => item.value),
+    eyebrow: copy.eyebrow,
+    title: copy.title,
+    description: copy.description,
+    chips: posts.slice(0, 3).map((post) => post.category),
   });
 }

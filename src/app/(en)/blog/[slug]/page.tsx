@@ -1,6 +1,6 @@
-import { GuideDetailPageView } from '@/components/site/views/GuideDetailPageView';
-import { getGuidePages } from '@/lib/site-content';
-import { createGuideDetailMetadata } from '@/lib/site-page-models';
+import { BlogDetailPageView } from '@/components/site/views/BlogDetailPageView';
+import { getPublishedBlogPosts } from '@/lib/blog-content';
+import { createBlogDetailMetadata } from '@/lib/blog-seo';
 
 const locale = 'en';
 
@@ -9,15 +9,15 @@ interface BlogPageProps {
 }
 
 export function generateStaticParams() {
-  return getGuidePages(locale).map((page) => ({ slug: page.slug }));
+  return getPublishedBlogPosts(locale).map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: BlogPageProps) {
   const { slug } = await params;
-  return createGuideDetailMetadata(locale, slug);
+  return createBlogDetailMetadata(locale, slug);
 }
 
 export default async function BlogPage({ params }: BlogPageProps) {
   const { slug } = await params;
-  return <GuideDetailPageView locale={locale} slug={slug} />;
+  return <BlogDetailPageView locale={locale} slug={slug} />;
 }
