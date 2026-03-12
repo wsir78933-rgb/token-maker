@@ -3,6 +3,8 @@ const zh = {
   // 头部
   appName: 'Token Maker',
   appSubtitle: 'TRPG Token 制作工具',
+  workspaceLabel: '编辑工作区',
+  localMode: '本地优先',
 
   // 控制面板
   controlPanel: '控制面板',

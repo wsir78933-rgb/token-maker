@@ -2,6 +2,8 @@
 const en = {
   appName: 'Token Maker',
   appSubtitle: 'TRPG Token Creation Tool',
+  workspaceLabel: 'Editor Workspace',
+  localMode: 'Local-first',
 
   controlPanel: 'Controls',
   imageSettings: 'Image',

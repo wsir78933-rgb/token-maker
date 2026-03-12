@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
@@ -220,7 +221,7 @@ function BorderThumbnail({ id, active, label }: { id: string; active: boolean; l
 
   if ((template.type === 'image' && template.imageUrl) || (template.isCustom && template.customImageUrl)) {
      const src = template.customImageUrl || template.imageUrl;
-     return <img src={src} alt={label} className="w-10 h-10 object-contain drop-shadow-md" />;
+     return <Image src={src || ''} alt={label} width={40} height={40} unoptimized className="w-10 h-10 object-contain drop-shadow-md" />;
   }
 
   return <canvas ref={canvasRef} width={64} height={64} className="w-10 h-10 object-contain" />;
@@ -252,7 +253,7 @@ function MaskThumbnail({ id, active, label }: { id: string; active: boolean; lab
   if (!template) return null;
 
   if (template.isCustom && template.customImageUrl) {
-     return <img src={template.customImageUrl} alt={label} className="w-10 h-10 object-contain drop-shadow-md" />;
+     return <Image src={template.customImageUrl} alt={label} width={40} height={40} unoptimized className="w-10 h-10 object-contain drop-shadow-md" />;
   }
 
   return <canvas ref={canvasRef} width={64} height={64} className="w-10 h-10 object-contain" />;

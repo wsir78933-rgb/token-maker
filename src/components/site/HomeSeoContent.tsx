@@ -25,7 +25,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
   const navLinks = [
     { href: `${homeHref}#editor-workspace`, label: navLabels.editor },
     { href: getLocalizedPath(locale, '/templates'), label: navLabels.templates },
-    { href: getLocalizedPath(locale, '/guides'), label: navLabels.guides },
+    { href: getLocalizedPath(locale, '/blog'), label: navLabels.guides },
     { href: getLocalizedPath(locale, '/faq'), label: navLabels.faq },
     { href: getLocalizedPath(locale, '/privacy'), label: navLabels.privacy },
   ];
@@ -185,7 +185,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
         </div>
       </section>
 
-      <section id="guides" className="border-b border-white/8">
+      <section id="blog" className="border-b border-white/8">
         <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
           <div className="mb-8 flex items-center gap-3">
             <Workflow className="h-5 w-5 text-[#d7b46a]" />
@@ -201,8 +201,8 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                 <h3 className="mt-4 text-2xl font-medium text-stone-50">{page.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-stone-300">{page.description}</p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <Link href={getLocalizedPath(locale, `/guides/${page.slug}`)} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
-                    {locale === 'zh' ? '查看指南' : 'Read guide'}
+                  <Link href={getLocalizedPath(locale, `/blog/${page.slug}`)} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
+                    {locale === 'zh' ? '阅读全文' : 'Read article'}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                   <Link href={page.ctaQuery} className="text-sm text-stone-400 transition hover:text-stone-100">
@@ -269,7 +269,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
             {copy.quickLinks.map((link) => (
               <Link
                 key={link.href}
-                href={getLocalizedPath(locale, link.href as '/' | '/templates' | '/guides' | '/faq')}
+                href={getLocalizedPath(locale, link.href as '/' | '/templates' | '/blog' | '/faq')}
                 className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/15 hover:bg-white/[0.045]"
               >
                 <p className="text-lg font-medium text-stone-50">{link.label}</p>

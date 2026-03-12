@@ -3,23 +3,22 @@ import { useEditorStore } from './editor-store';
 import type { EditorState } from '@/types/editor';
 
 // 我们只需跟踪配置参数，忽略临时状态和庞大的图像数据
-const TRACKED_KEYS = [
-  'imageOffsetX',
-  'imageOffsetY',
-  'imageScale',
-  'selectedBorderId',
-  'selectedMaskId',
-  'borderTint',
-  'backgroundColor',
-  'textColor',
-  'overlayTint',
-  'borderOpacity',
-  'overlayOpacity',
-  'textBoxes',
-  'activePresetId',
-] as const;
+type TrackedKey =
+  | 'imageOffsetX'
+  | 'imageOffsetY'
+  | 'imageScale'
+  | 'selectedBorderId'
+  | 'selectedMaskId'
+  | 'borderTint'
+  | 'backgroundColor'
+  | 'textColor'
+  | 'overlayTint'
+  | 'borderOpacity'
+  | 'overlayOpacity'
+  | 'textBoxes'
+  | 'activePresetId';
 
-type PartialTrackedState = Pick<EditorState, typeof TRACKED_KEYS[number]>;
+type PartialTrackedState = Pick<EditorState, TrackedKey>;
 
 function extractState(state: EditorState): PartialTrackedState {
   return {

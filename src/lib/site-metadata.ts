@@ -1,5 +1,6 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { getSiteConfig, getSiteUrl } from '@/lib/site-content';
+import { getSeoImageUrl } from '@/lib/site-seo';
 import type { SiteLocale } from '@/lib/site-locale';
 
 export function getHtmlLang(locale: SiteLocale) {
@@ -27,11 +28,20 @@ export function createLocaleLayoutMetadata(locale: SiteLocale): Metadata {
       siteName: siteConfig.name,
       type: 'website',
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
+      images: [
+        {
+          url: getSeoImageUrl(locale, 'home'),
+          width: 1200,
+          height: 630,
+          alt: siteConfig.title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: siteConfig.title,
       description: siteConfig.description,
+      images: [getSeoImageUrl(locale, 'home')],
     },
     icons: {
       icon: [{ url: iconUrl, type: 'image/svg+xml', sizes: 'any' }],
@@ -41,5 +51,14 @@ export function createLocaleLayoutMetadata(locale: SiteLocale): Metadata {
       index: true,
       follow: true,
     },
+  };
+}
+
+export function createSiteViewport(): Viewport {
+  return {
+    width: 'device-width',
+    initialScale: 1,
+    viewportFit: 'cover',
+    interactiveWidget: 'resizes-content',
   };
 }

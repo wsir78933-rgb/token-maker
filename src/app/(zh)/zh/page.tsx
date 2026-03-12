@@ -2,13 +2,15 @@ import type { Metadata } from 'next';
 import { EditorLayout } from '@/components/layout/EditorLayout';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
-import { absoluteUrl, getFaqItems, getSiteConfig } from '@/lib/site-content';
+import { absoluteUrl, getFaqItems, getSiteConfig, getSiteUrl } from '@/lib/site-content';
+import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates } from '@/lib/site-locale';
 
 const locale = 'zh';
 const siteConfig = getSiteConfig(locale);
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
     absolute: siteConfig.title,
   },
@@ -16,6 +18,26 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/zh',
     languages: getLanguageAlternates('/'),
+  },
+  openGraph: {
+    title: siteConfig.title,
+    description: siteConfig.description,
+    url: absoluteUrl('/zh'),
+    type: 'website',
+    images: [
+      {
+        url: getSeoImageUrl(locale, 'home'),
+        width: 1200,
+        height: 630,
+        alt: siteConfig.title,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [getSeoImageUrl(locale, 'home')],
   },
 };
 

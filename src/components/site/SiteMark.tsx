@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface SiteMarkProps {
@@ -6,9 +7,11 @@ interface SiteMarkProps {
 
 export function SiteMark({ className }: SiteMarkProps) {
   return (
-    <img
+    <Image
       src="/icon.svg?v=20260312b"
       alt=""
+      width={36}
+      height={36}
       aria-hidden="true"
       className={cn('h-9 w-9 shrink-0 rounded-xl', className)}
     />

@@ -1,9 +1,10 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '../globals.css';
 import { I18nProvider } from '@/lib/i18n';
-import { createLocaleLayoutMetadata, getHtmlLang } from '@/lib/site-metadata';
+import { createLocaleLayoutMetadata, createSiteViewport, getHtmlLang } from '@/lib/site-metadata';
 
 export const metadata: Metadata = createLocaleLayoutMetadata('zh');
+export const viewport: Viewport = createSiteViewport();
 
 export default function ChineseRootLayout({
   children,

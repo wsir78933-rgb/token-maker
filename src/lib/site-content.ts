@@ -792,7 +792,7 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
   en: {
     editor: 'Editor',
     templates: 'Templates',
-    guides: 'Guides',
+    guides: 'Blog',
     faq: 'FAQ',
     privacy: 'Privacy',
     switchLocale: '中文',
@@ -800,7 +800,7 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
   zh: {
     editor: '编辑器',
     templates: '模板页',
-    guides: '指南',
+    guides: '博客',
     faq: '常见问题',
     privacy: '隐私',
     switchLocale: 'English',
@@ -813,9 +813,9 @@ export const shellCopyByLocale: Record<SiteLocale, ShellCopy> = {
     browseTemplates: 'Browse templates',
     whyThisPageExists: 'Why this page exists',
     whyPageBullets: [
-      'Tool pages can rank on intent when they explain the workflow as clearly as they execute it.',
-      'Each inner page below exists to target a distinct tabletop use case instead of repeating the homepage.',
-      'The editor remains the primary surface. The supporting content only gives search engines and users more context.',
+      'These inner pages explain when a specific format, workflow, or policy detail matters.',
+      'Each page should answer a different tabletop decision instead of repeating the editor.',
+      'The editor remains the primary surface, while the supporting content helps users choose faster.',
     ],
   },
   zh: {
@@ -823,9 +823,9 @@ export const shellCopyByLocale: Record<SiteLocale, ShellCopy> = {
     browseTemplates: '浏览模板页',
     whyThisPageExists: '为什么要有这类页面',
     whyPageBullets: [
-      '工具页想获得搜索流量，不能只有操作区，也要把适用场景讲清楚。',
-      '这些内页的目标是覆盖不同桌面需求，而不是把首页内容再重复一遍。',
-      '编辑器仍然是核心入口，补充内容只是让搜索引擎和用户更容易理解这个工具。',
+      '这些内页用来解释某种格式、流程或策略什么时候真正有用。',
+      '每个页面都应该回答不同的桌面决策，而不是把编辑器再讲一遍。',
+      '编辑器仍然是核心入口，补充内容只是帮助用户更快做判断。',
     ],
   },
 };
@@ -835,23 +835,23 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
     heroEyebrow: 'Browser token workshop',
     heroTitle: siteConfig.title,
     heroDescription:
-      'Upload character art, crop it in the browser, add masks, borders, text, and export clean PNG tokens without opening a heavy graphics suite. The editor stays on the homepage, and the sections below add the search context, FAQs, and internal links the tool page needs.',
+      'Upload character art, crop it in the browser, add masks, borders, text, and export clean PNG tokens without opening a heavy graphics suite. The editor stays front and center, with format guides, FAQs, and practical references close by when you need them.',
     heroPrimaryCta: 'Jump into the editor',
     heroSecondaryCta: 'Browse template pages',
-    featuresTitle: 'What this tool page needs to explain',
+    featuresTitle: 'What this tool helps you do',
     templatesEyebrow: 'Template directory',
-    templatesTitle: 'Inner pages for high-intent token formats',
+    templatesTitle: 'Template pages for distinct token formats',
     seeAllTemplatePages: 'See all template pages',
-    guidesTitle: 'Guides that support the homepage tool',
+    guidesTitle: 'Blog posts for real table prep',
     workflowTitle: 'How the workflow stays lightweight',
     faqTitle: 'Token Maker FAQ',
     localFirstEyebrow: 'Local-first by default',
-    localFirstTitle: 'Keep the homepage useful for players and indexable for search',
+    localFirstTitle: 'Keep the editor fast without hiding the context',
     localFirstDescription:
-      'The homepage still starts with the editor, but it now carries enough static context to explain what the tool does, who it serves, and where the deeper topic pages live. That is the balance you want for a tool-first SEO strategy.',
+      'The homepage still starts with the editor, but it also explains the workflow, answers the common questions, and points you toward deeper format or platform guides when the quick path is not enough.',
     quickLinks: [
       { href: '/templates', label: 'Template pages', description: 'Circle, square, hex, monster, and transparent token setups.' },
-      { href: '/guides', label: 'Workflow guides', description: 'Practical guides for VTT prep, Foundry VTT, Roll20, and sizing.' },
+      { href: '/blog', label: 'Blog', description: 'Practical articles for VTT prep, Foundry VTT, Roll20, and export sizing.' },
       { href: '/faq', label: 'FAQ', description: 'Answers about exports, privacy, formats, and tabletop compatibility.' },
     ],
   },
@@ -859,23 +859,23 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
     heroEyebrow: '浏览器制章工作台',
     heroTitle: 'Token Maker 在线制章工具',
     heroDescription:
-      '把角色立绘直接拖进浏览器，裁切头像、添加边框、遮罩和文字，然后导出透明 PNG。首页继续保持编辑器主导，同时补足搜索引擎需要理解的场景说明、FAQ 和内链。',
+      '把角色立绘直接拖进浏览器，裁切头像、添加边框、遮罩和文字，然后导出透明 PNG。首页继续把编辑器放在最前面，同时把模板页、FAQ 和实用参考信息放在随手可达的位置。',
     heroPrimaryCta: '直接进入编辑器',
     heroSecondaryCta: '浏览模板页',
-    featuresTitle: '这个工具页需要说明什么',
+    featuresTitle: '这个工具能帮你完成什么',
     templatesEyebrow: '模板目录',
-    templatesTitle: '面向高意图搜索的模板内页',
+    templatesTitle: '针对不同 token 格式的模板页',
     seeAllTemplatePages: '查看全部模板页',
-    guidesTitle: '支撑首页工具页的操作指南',
+    guidesTitle: '面向真实备战流程的博客文章',
     workflowTitle: '为什么这个工作流够轻',
     faqTitle: 'Token Maker 常见问题',
     localFirstEyebrow: '默认本地优先',
-    localFirstTitle: '让首页既好用，也足够适合被索引',
+    localFirstTitle: '让编辑器保持轻快，也把上下文说明清楚',
     localFirstDescription:
-      '首页依然先给出编辑器，但现在也承载了足够的静态语义，让搜索引擎和第一次来的用户都能更快理解这个工具是干什么的。',
+      '首页依然先给出编辑器，同时也把工作流、常见问题，以及更深入的格式页和平台指南入口放在合适的位置，方便你在需要时继续往下看。',
     quickLinks: [
       { href: '/templates', label: '模板页', description: '圆形、方形、六边形、怪物和透明背景等不同 token 入口。' },
-      { href: '/guides', label: '操作指南', description: '覆盖 VTT 流程、Foundry、Roll20 和导出尺寸选择。' },
+      { href: '/blog', label: '博客', description: '覆盖 VTT 流程、Foundry、Roll20 和导出尺寸选择。' },
       { href: '/faq', label: '常见问题', description: '回答导出、隐私、格式和桌面兼容性相关问题。' },
     ],
   },
@@ -894,36 +894,36 @@ export const collectionPageCopyByLocale: Record<
     templates: {
       eyebrow: 'Template collection',
       title: 'Token maker templates for specific play styles',
-      description: 'Use these inner pages to target format-specific search intent while still routing every visitor back to the homepage editor.',
-      ctaLabel: 'Open the homepage editor',
+      description: 'Explore template pages for circle, square, hex, monster, and transparent token workflows, then open the matching editor setup.',
+      ctaLabel: 'Open the editor',
     },
     guides: {
-      eyebrow: 'Guide collection',
-      title: 'Guides that support the homepage editor',
-      description: 'These pages answer workflow questions that are too specific for the main tool page while still feeding qualified traffic back to the editor.',
+      eyebrow: 'Blog',
+      title: 'Token Maker blog for token creation',
+      description: 'Read blog posts about crop decisions, platform-specific tuning, and export sizing before you jump back into the editor.',
     },
     faq: {
       eyebrow: 'FAQ',
       title: 'Common questions about Token Maker',
-      description: 'Use this page to answer format, export, privacy, and tabletop workflow questions without bloating the homepage tool copy.',
+      description: 'Find quick answers about formats, export sizes, privacy expectations, and tabletop compatibility.',
     },
     privacy: {
       eyebrow: 'Privacy',
       title: 'A local-first privacy posture for token creation',
-      description: 'This page exists so the homepage can stay focused on the editor while privacy expectations are still clear and indexable.',
+      description: 'Understand how the local-first workflow handles images, exports, and any future remote storage features.',
     },
   },
   zh: {
     templates: {
       eyebrow: '模板集合',
       title: '针对不同桌面场景的 Token 模板页',
-      description: '这些模板页用于承接更细分的搜索意图，同时把用户自然引导回首页编辑器。',
-      ctaLabel: '打开首页编辑器',
+      description: '这里整理了圆形、方形、六边形、怪物和透明背景等不同 token 工作流，并能直接打开对应预设。',
+      ctaLabel: '打开编辑器',
     },
     guides: {
-      eyebrow: '指南集合',
-      title: '支撑首页编辑器的操作指南',
-      description: '这些页面回答首页工具页不适合展开太细的问题，并把高意图访问者导回编辑器。',
+      eyebrow: '博客',
+      title: 'Token Maker 博客文章',
+      description: '这里集中解释裁切判断、平台适配和导出尺寸，适合先读懂流程再回到编辑器动手。',
     },
     faq: {
       eyebrow: '常见问题',
@@ -933,7 +933,7 @@ export const collectionPageCopyByLocale: Record<
     privacy: {
       eyebrow: '隐私',
       title: '面向本地优先工作流的隐私说明',
-      description: '让首页继续聚焦编辑器，同时也把隐私预期说明清楚并单独索引出去。',
+      description: '说明本地优先流程如何处理图片、导出，以及未来如果接入远程能力时会怎样披露。',
     },
   },
 };
@@ -958,7 +958,7 @@ export const privacySectionsByLocale: Record<SiteLocale, StaticPageSection[]> = 
     {
       title: 'Analytics and operations',
       body:
-        'If you add analytics, error tracking, or rate limiting in production, keep those disclosures in this page. The homepage tool can stay concise while this page carries the operational detail users may need.',
+        'If you add analytics, error tracking, or rate limiting in production, keep those disclosures in this page so the operational detail stays easy to find when users need it.',
     },
   ],
   zh: [
@@ -980,7 +980,7 @@ export const privacySectionsByLocale: Record<SiteLocale, StaticPageSection[]> = 
     {
       title: '分析与运维',
       body:
-        '如果后面会上线统计、错误追踪或限流，这些内容应该放在这个页面持续更新，让首页保持简洁，而把运维细节留给真正需要查看的人。',
+        '如果后面会上线统计、错误追踪或限流，这些内容应该持续更新在这里，让真正需要查看的人能快速找到运维细节。',
     },
   ],
 };
