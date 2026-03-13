@@ -16,6 +16,13 @@ bun dev
 
 Open the local development URL shown in your terminal after starting the dev server.
 
+## Google Analytics
+
+Google Analytics has been wired into the shared app layouts.
+
+- Default measurement ID: `G-6FMX5JSNNX`
+- Override in local or production env: `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX`
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
