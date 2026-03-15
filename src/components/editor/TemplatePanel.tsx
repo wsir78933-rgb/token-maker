@@ -194,6 +194,23 @@ export function TemplatePanel() {
   );
 }
 
+function getBorderAlt(id: string, defaultLabel: string): string {
+  const altMap: Record<string, string> = {
+    'metalbarbarian': 'Spiked barbarian metal token frame for RPG virtual tabletops, ideal for Barbarian or Fighter characters.',
+    'wood': 'Wooden texture circular token border for D&D and Roll20 character avatars, perfect for Druid or Ranger portraits.',
+    'rocks': 'Rugged stone and rocks token frame, ideal for Dwarf, Earth Genasi or Fighter tokens.',
+    'blueenergy': 'Glowing blue energy token border, perfect for Sorcerer, Wizard or magic-user character portraits.',
+    'silverspikes': 'Sharp silver spikes token ring, great for Rogue, Assassin or dark warrior avatars.',
+    'revgold': 'Classic glowing gold token border, perfect for Paladin, Cleric or noble character tokens.',
+    'fire': 'Blazing fire and flames token frame, ideal for Fire Genasi, Evocation Wizard or combat-ready characters.',
+    'ice': 'Freezing ice crystal token border, perfect for Frost Maiden, Warlock or winter-themed RPG concepts.',
+    'steampunk': 'Brass steampunk gear and cog token frame, ideal for Artificer, Gunslinger or sci-fi tabletop avatars.',
+    'bones': 'Creepy skull and bones token border, perfect for Necromancer, Undead or Halloween themed characters.',
+    'thin-ring': 'Minimalist thin ring token border for clean and modern virtual tabletop character presentation.',
+  };
+  return altMap[id] || `${defaultLabel} custom token border frame for D&D and Roll20`;
+}
+
 function BorderThumbnail({ id, active, label }: { id: string; active: boolean; label: string }) {
   const store = useEditorStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -221,7 +238,8 @@ function BorderThumbnail({ id, active, label }: { id: string; active: boolean; l
 
   if ((template.type === 'image' && template.imageUrl) || (template.isCustom && template.customImageUrl)) {
      const src = template.customImageUrl || template.imageUrl;
-     return <Image src={src || ''} alt={label} width={40} height={40} unoptimized className="w-10 h-10 object-contain drop-shadow-md" />;
+     const altText = template.isCustom ? `${label} custom token border frame` : getBorderAlt(id, label);
+     return <Image src={src || ''} alt={altText} width={40} height={40} unoptimized className="w-10 h-10 object-contain drop-shadow-md" />;
   }
 
   return <canvas ref={canvasRef} width={64} height={64} className="w-10 h-10 object-contain" />;
@@ -253,7 +271,7 @@ function MaskThumbnail({ id, active, label }: { id: string; active: boolean; lab
   if (!template) return null;
 
   if (template.isCustom && template.customImageUrl) {
-     return <Image src={template.customImageUrl} alt={label} width={40} height={40} unoptimized className="w-10 h-10 object-contain drop-shadow-md" />;
+     return <Image src={template.customImageUrl} alt={`${label} token mask shape`} width={40} height={40} unoptimized className="w-10 h-10 object-contain drop-shadow-md" />;
   }
 
   return <canvas ref={canvasRef} width={64} height={64} className="w-10 h-10 object-contain" />;
