@@ -58,7 +58,6 @@ export function createBlogIndexMetadata(locale: SiteLocale, currentPage = 1): Me
     metadataBase: new URL(getSiteUrl()),
     title,
     description,
-    keywords: [...siteConfig.keywords, 'blog', 'token workflow', 'vtt guides'],
     alternates: {
       canonical: path,
       languages: getLanguageAlternates(alternatePath),
@@ -108,7 +107,6 @@ export function createBlogDetailMetadata(locale: SiteLocale, slug: string): Meta
     metadataBase: new URL(getSiteUrl()),
     title,
     description,
-    keywords: [...siteConfig.keywords, post.category, ...post.tags],
     authors: [{ name: post.author }],
     alternates: {
       canonical: post.canonical ?? path,
@@ -188,7 +186,6 @@ export function buildBlogPostStructuredData(locale: SiteLocale, post: BlogPost) 
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
     articleSection: post.category,
-    keywords: post.tags.join(', '),
     author: {
       '@type': 'Organization',
       name: post.author,

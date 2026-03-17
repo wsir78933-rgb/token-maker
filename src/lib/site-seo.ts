@@ -13,15 +13,13 @@ export type SeoImageKind =
 export function getSeoImagePath(locale: SiteLocale, kind: SeoImageKind, slug?: string) {
   switch (kind) {
     case 'home':
-      return getLocalizedPath(locale, '/opengraph-image');
+    case 'faq':
+    case 'privacy':
+      return '/opengraph-image.png';
     case 'templates':
       return getLocalizedPath(locale, '/templates/opengraph-image');
     case 'guides':
       return getLocalizedPath(locale, '/blog/opengraph-image');
-    case 'faq':
-      return getLocalizedPath(locale, '/opengraph-image');
-    case 'privacy':
-      return getLocalizedPath(locale, '/opengraph-image');
     case 'template-detail':
       if (!slug) {
         throw new Error('slug is required for template-detail SEO image path');

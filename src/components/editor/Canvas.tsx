@@ -3,13 +3,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { renderToken, drawCheckerboard } from '@/lib/renderer/pipeline';
+import { useThemeMode } from '@/components/theme/useThemeMode';
 import { ImageUploader } from './ImageUploader';
 import { TextCanvasOverlay } from './TextCanvasOverlay';
+
+function getNextImageScale(currentScale: number, deltaY: number) {
+  const scaleFactor = 0.05;
+  const direction = deltaY < 0 ? 1 : -1;
+
+  return Math.max(0.1, Math.min(currentScale + direction * scaleFactor, 5));
+}
 
 export function Canvas() {
   const store = useEditorStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgCanvasRef = useRef<HTMLCanvasElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const { theme } = useThemeMode();
   
   // 用于拖拽交互的状态
   const [isDragging, setIsDragging] = useState(false);
@@ -25,8 +35,15 @@ export function Canvas() {
     // 假设固定 512x512 预览
     bgCanvas.width = 512;
     bgCanvas.height = 512;
-    drawCheckerboard(ctx, 512, 512, 16, '#09090b', '#121217'); // 极简暗紫风格棋盘格
-  }, []);
+    drawCheckerboard(
+      ctx,
+      512,
+      512,
+      16,
+      theme === 'dark' ? '#09090b' : '#efe4d5',
+      theme === 'dark' ? '#121217' : '#f8f3eb',
+    );
+  }, [theme]);
 
   // 2. 渲染主画布内容
   useEffect(() => {
@@ -34,22 +51,35 @@ export function Canvas() {
     if (!canvas || !store.imageElement) return;
     
     // 重新渲染 Canvas
-    renderToken(canvas, store, 512);
+    renderToken(canvas, store, 512, { clipFinalOutputToMask: true });
   }, [store]);
 
-  // ======== 交互事件 ========
-  const handleWheel = (e: React.WheelEvent) => {
-    if (!store.imageElement) return;
-    e.preventDefault();
-    const isZoomIn = e.deltaY < 0;
-    const scaleFactor = 0.05;
-    const currentScale = store.imageScale;
-    let newScale = isZoomIn ? currentScale + scaleFactor : currentScale - scaleFactor;
-    // 限制缩放范围 0.1 ~ 5
-    newScale = Math.max(0.1, Math.min(newScale, 5));
-    store.setImageScale(newScale);
-  };
+  useEffect(() => {
+    const previewElement = previewRef.current;
+    if (!previewElement) return;
 
+    // 使用原生非被动 wheel 监听，避免缩放时触发外层滚动容器滚动。
+    const handleWheel = (event: WheelEvent) => {
+      const { imageElement, imageScale, setImageScale } = useEditorStore.getState();
+      if (!imageElement) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const nextScale = getNextImageScale(imageScale, event.deltaY);
+      if (nextScale !== imageScale) {
+        setImageScale(nextScale);
+      }
+    };
+
+    previewElement.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      previewElement.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
+  // ======== 交互事件 ========
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!store.imageElement) return;
     store.setSelectedText(null);
@@ -73,44 +103,47 @@ export function Canvas() {
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
   };
 
-  if (!store.imageElement) {
-    return <ImageUploader />;
-  }
-
   return (
-    <div className="flex items-center justify-center p-8 h-full bg-background relative">
+    <div className="relative flex h-full items-center justify-center bg-background/10 p-8">
       <div 
-        className={`relative bg-background overflow-hidden rounded-md shadow-2xl transition-colors ${
+        ref={previewRef}
+        className={`relative overflow-hidden rounded-2xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors ${
           store.isImageSelected ? 'border border-primary ring-2 ring-primary/30' : 'border border-border/50'
         }`}
         style={{ width: 512, height: 512 }}
       >
-        {/* 背景层：棋盘格 */}
-        <canvas 
-          ref={bgCanvasRef}
-          className="absolute inset-0 pointer-events-none opacity-50" 
-        />
-        
-        {/* 主渲染层（带交互） */}
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 cursor-move touch-none"
-          onWheel={handleWheel}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
-        />
-        
-        {/* 文字交互层 */}
-        <TextCanvasOverlay />
+        {store.imageElement ? (
+          <>
+            {/* 背景层：棋盘格 */}
+            <canvas 
+              ref={bgCanvasRef}
+              className="absolute inset-0 pointer-events-none opacity-50" 
+            />
+            
+            {/* 主渲染层（带交互） */}
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 cursor-move touch-none"
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+            />
+            
+            {/* 文字交互层 */}
+            <TextCanvasOverlay />
+          </>
+        ) : (
+          <ImageUploader />
+        )}
       </div>
       
-      {/* 缩放指示器悬浮窗 */}
-      <div className="absolute bottom-6 bg-background/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-border text-xs font-medium tabular-nums text-foreground/80 flex items-center gap-2 pointer-events-none shadow-sm">
-        <span className="opacity-50">Scale</span>
-        {Math.round(store.imageScale * 100)}%
-      </div>
+      {store.imageElement ? (
+        <div className="absolute bottom-6 bg-background/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-border text-xs font-medium tabular-nums text-foreground/80 flex items-center gap-2 pointer-events-none shadow-sm">
+          <span className="opacity-50">Scale</span>
+          {Math.round(store.imageScale * 100)}%
+        </div>
+      ) : null}
     </div>
   );
 }

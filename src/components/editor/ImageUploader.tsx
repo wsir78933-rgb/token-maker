@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { UploadCloud, Image as ImageIcon } from 'lucide-react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n } from '@/lib/i18n';
+import { ImageUploaderShowcaseStrip } from '@/components/site/HomeShowcase';
 
 const SUPPORTED_IMAGE_NAME = /\.(png|jpe?g|webp)$/i;
 
@@ -221,6 +222,7 @@ export function ImageUploader() {
           <ImageIcon className="w-4 h-4" />
           {t('supportedFormats')}
         </div>
+        <ImageUploaderShowcaseStrip />
       </div>
     </div>
   );

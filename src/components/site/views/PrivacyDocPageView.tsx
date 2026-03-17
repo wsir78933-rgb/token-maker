@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
@@ -14,56 +15,22 @@ const copyByLocale = {
   en: {
     editor: 'Editor',
     privacy: 'Privacy',
-    principles: 'Operating principles',
-    commitments: 'What this page commits to',
-    nextEyebrow: 'Keep moving',
-    nextTitle: 'Do something useful after reading',
-    nextDescription: 'Privacy pages should clarify trust, then get out of the way. These are the three best paths back into the product.',
-    openLink: 'Open page',
-    nextLinks: [
-      {
-        href: '/',
-        label: 'Open the editor',
-        description: 'Return to the local-first editor and keep working without leaving the browser flow.',
-      },
-      {
-        href: '/templates',
-        label: 'Browse templates',
-        description: 'Choose the token format that matches your table before you export another batch.',
-      },
-      {
-        href: '/blog',
-        label: 'Read practical guides',
-        description: 'Go deeper on Roll20, Foundry VTT, and export decisions once the privacy basics are clear.',
-      },
-    ],
+    defaultRule: 'At a glance',
+    openEditor: 'Return to the editor',
+    promises: 'Key points',
+    commitments: 'We will update this page if',
+    sectionEyebrow: 'How image handling works',
+    heroBadges: ['Local-first workflow', 'PNG export', 'Future changes explained'],
   },
   zh: {
     editor: '编辑器',
     privacy: '隐私',
-    principles: '运行原则',
-    commitments: '这页明确承诺什么',
-    nextEyebrow: '继续浏览',
-    nextTitle: '看完之后，继续做点有用的事',
-    nextDescription: '隐私页应该先把信任边界讲清楚，然后尽快把你带回产品本身。这三个入口最直接。',
-    openLink: '打开页面',
-    nextLinks: [
-      {
-        href: '/',
-        label: '回到编辑器',
-        description: '继续使用本地优先的浏览器编辑器，不用离开当前工作流。',
-      },
-      {
-        href: '/templates',
-        label: '浏览模板页',
-        description: '按桌面场景选择更合适的 token 格式，再决定下一批素材怎么做。',
-      },
-      {
-        href: '/blog',
-        label: '继续看实战文章',
-        description: '在隐私边界清楚以后，再去看 Roll20、Foundry VTT 和导出策略的具体建议。',
-      },
-    ],
+    defaultRule: '一眼看懂',
+    openEditor: '回到编辑器',
+    promises: '核心说明',
+    commitments: '以下变化会同步更新这页',
+    sectionEyebrow: '图片处理方式',
+    heroBadges: ['本地优先工作流', 'PNG 导出', '新增远程能力会说明'],
   },
 } as const;
 
@@ -74,10 +41,6 @@ export function PrivacyDocPageView({ locale }: { locale: SiteLocale }) {
     { label: copy.editor, href: getLocalizedPath(locale, '/') },
     { label: copy.privacy },
   ];
-  const nextLinks = copy.nextLinks.map((link) => ({
-    ...link,
-    href: getLocalizedPath(locale, link.href),
-  }));
 
   return (
     <>
@@ -97,70 +60,92 @@ export function PrivacyDocPageView({ locale }: { locale: SiteLocale }) {
         <section className="border-b border-white/10">
           <div className="mx-auto max-w-6xl px-6 py-16 lg:px-8 lg:py-18">
             <PageBreadcrumbs items={breadcrumbs} />
-            <div className="mt-8 space-y-5">
-              <p className="text-xs uppercase tracking-[0.34em] text-stone-500">{model.eyebrow}</p>
-              <h1 className="font-display max-w-4xl text-4xl leading-none text-stone-50 sm:text-5xl">{model.title}</h1>
-              <p className="max-w-3xl text-base leading-8 text-stone-300">{model.description}</p>
-              <p className="max-w-3xl text-sm leading-8 text-stone-400">{model.intro}</p>
+            <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_340px]">
+              <div className="space-y-6">
+                <p className="text-xs uppercase tracking-[0.34em] text-stone-500">{model.eyebrow}</p>
+                <h1 className="font-display max-w-4xl text-4xl leading-none text-stone-50 sm:text-5xl">
+                  {model.title}
+                </h1>
+                <p className="max-w-3xl text-base leading-8 text-stone-300">{model.description}</p>
+                <p className="max-w-3xl text-sm leading-8 text-stone-400">{model.intro}</p>
+                <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.24em] text-stone-300">
+                  {copy.heroBadges.map((badge) => (
+                    <span
+                      key={badge}
+                      className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5"
+                    >
+                      {badge}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <aside className="rounded-[34px] border border-[#d7b46a]/18 bg-[linear-gradient(180deg,rgba(215,180,106,0.12),rgba(255,255,255,0.03))] p-6">
+                <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.defaultRule}</p>
+                <p className="mt-4 text-lg leading-8 text-stone-100">{model.intro}</p>
+                <Link
+                  href={`${getLocalizedPath(locale, '/')}#editor-workspace`}
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#f1d492] transition hover:text-[#f7dfab]"
+                >
+                  {copy.openEditor}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </aside>
             </div>
           </div>
         </section>
 
-        <div className="mx-auto max-w-6xl space-y-12 px-6 py-14 lg:px-8 lg:py-16">
-          <section className="space-y-6">
-            <h2 className="font-display text-3xl text-stone-50">{copy.principles}</h2>
-            <div className="grid gap-4 lg:grid-cols-3">
-              {model.principles.map((item) => (
-                <article key={item.title} className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6">
-                  <h3 className="text-xl font-medium text-stone-50">{item.title}</h3>
-                  <p className="mt-4 text-sm leading-7 text-stone-300">{item.description}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
-            <div className="space-y-5">
-              {model.sections.map((section) => (
-                <article key={section.title} className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
-                  <h2 className="text-2xl font-medium text-stone-50">{section.title}</h2>
-                  <p className="mt-4 text-sm leading-8 text-stone-300">{section.body}</p>
-                </article>
-              ))}
+        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-8 lg:py-16">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <p className="text-xs uppercase tracking-[0.34em] text-stone-500">{copy.sectionEyebrow}</p>
             </div>
 
-            <aside className="rounded-[32px] border border-white/10 bg-black/25 p-6 lg:sticky lg:top-30 lg:self-start">
+            {model.sections.map((section, index) => (
+              <article
+                key={section.title}
+                className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6"
+              >
+                <div className="grid gap-5 md:grid-cols-[84px_minmax(0,1fr)] md:items-start">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#d7b46a]/30 bg-[#d7b46a]/10 font-display text-2xl text-[#f1d492]">
+                    {String(index + 1).padStart(2, '0')}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-medium text-stone-50">{section.title}</h2>
+                    <p className="mt-4 text-sm leading-8 text-stone-300">{section.body}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <aside className="space-y-5 lg:sticky lg:top-30 lg:self-start">
+            <article className="rounded-[30px] border border-white/10 bg-black/25 p-5">
+              <p className="text-xs uppercase tracking-[0.28em] text-stone-500">{copy.promises}</p>
+              <div className="mt-5 space-y-3">
+                {model.principles.map((item) => (
+                  <div
+                    key={item.title}
+                    className="rounded-[24px] border border-white/8 bg-white/[0.03] px-4 py-4"
+                  >
+                    <h2 className="text-base font-medium text-stone-50">{item.title}</h2>
+                    <p className="mt-2 text-sm leading-7 text-stone-300">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-5">
               <h2 className="text-lg font-medium text-stone-50">{copy.commitments}</h2>
               <ul className="mt-5 space-y-3 text-sm leading-7 text-stone-300">
                 {model.commitments.map((item) => (
-                  <li key={item}>{item}</li>
+                  <li key={item} className="rounded-[22px] border border-white/8 bg-black/20 px-4 py-3">
+                    {item}
+                  </li>
                 ))}
               </ul>
-            </aside>
-          </section>
-
-          <section className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-7">
-            <div className="max-w-3xl space-y-4">
-              <p className="text-xs uppercase tracking-[0.34em] text-stone-500">{copy.nextEyebrow}</p>
-              <h2 className="font-display text-3xl text-stone-50">{copy.nextTitle}</h2>
-              <p className="text-sm leading-8 text-stone-300">{copy.nextDescription}</p>
-            </div>
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-              {nextLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="group rounded-[28px] border border-white/10 bg-black/25 p-5 transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.05]"
-                >
-                  <h3 className="text-lg font-medium text-stone-50 transition group-hover:text-white">{link.label}</h3>
-                  <p className="mt-3 text-sm leading-7 text-stone-300">{link.description}</p>
-                  <span className="mt-6 inline-flex text-xs uppercase tracking-[0.28em] text-stone-400 transition group-hover:text-stone-200">
-                    {copy.openLink}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </section>
+            </article>
+          </aside>
         </div>
       </InnerPageChrome>
     </>

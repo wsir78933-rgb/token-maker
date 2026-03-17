@@ -5,6 +5,7 @@
 // ============================================================
 
 const IMAGES_CACHE = new Map<string, HTMLImageElement>();
+const PENDING_IMAGE_LOADS = new Map<string, Set<() => void>>();
 
 /**
  * 获取或加载缓存图像
@@ -18,17 +19,32 @@ export function getCachedImage(url: string, onChange?: () => void): HTMLImageEle
     return IMAGES_CACHE.get(url) || null;
   }
 
-  // 防止重复发起同一个 url 的加载（可以先塞一个 dummy 对象进去站位，或者用临时状态，这里简化处理）
+  const pendingCallbacks = PENDING_IMAGE_LOADS.get(url);
+  if (pendingCallbacks) {
+    if (onChange) {
+      pendingCallbacks.add(onChange);
+    }
+    return null;
+  }
+
+  const callbacks = new Set<() => void>();
+  if (onChange) {
+    callbacks.add(onChange);
+  }
+  PENDING_IMAGE_LOADS.set(url, callbacks);
+
   const img = new Image();
-  // 先设置跨域
   img.crossOrigin = 'anonymous';
   img.onload = () => {
     IMAGES_CACHE.set(url, img);
-    if (onChange) {
-      onChange();
+    const resolvedCallbacks = PENDING_IMAGE_LOADS.get(url);
+    PENDING_IMAGE_LOADS.delete(url);
+    if (resolvedCallbacks) {
+      resolvedCallbacks.forEach((callback) => callback());
     }
   };
   img.onerror = () => {
+    PENDING_IMAGE_LOADS.delete(url);
     console.warn(`Failed to cache image: ${url}`);
   };
   img.src = url;

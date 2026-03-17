@@ -139,29 +139,15 @@ export function drawBorder(
       useEditorStore.setState({ activePresetId: useEditorStore.getState().activePresetId });
     });
     if (img) {
-      // 应用颜色混合（如果设置了非白色的 tint）
-      if (tint && tint.toLowerCase() !== '#ffffff' && tint.toLowerCase() !== '#fff') {
-        const offCanvas = document.createElement('canvas');
-        offCanvas.width = size;
-        offCanvas.height = size;
-        const oCtx = offCanvas.getContext('2d');
-        if (oCtx) {
-          // 1. 绘制原图
-          oCtx.drawImage(img, 0, 0, size, size);
-          // 2. 使用正片叠底加深材质颜色，使高阶材质纹理被保留
-          oCtx.globalCompositeOperation = 'multiply';
-          oCtx.fillStyle = tint;
-          oCtx.fillRect(0, 0, size, size);
-          // 3. 去掉透明区域被填充出来的多余色块 (仅保留图片内部不透明的轮廓)
-          oCtx.globalCompositeOperation = 'destination-in';
-          oCtx.drawImage(img, 0, 0, size, size);
-          
-          ctx.drawImage(offCanvas, 0, 0);
-        } else {
-          ctx.drawImage(img, 0, 0, size, size);
-        }
-      } else {
+      // 图片边框素材通常自带发光、烟雾或能量内沿，直接染色会把这些半透明区域压到角色图上。
+      // 对位图边框保持原色，只使用双通道叠绘增强可见度。
+      const baseAlpha = ctx.globalAlpha;
+      ctx.drawImage(img, 0, 0, size, size);
+
+      if (border.type === 'image') {
+        ctx.globalAlpha = Math.min(1, baseAlpha * 0.6);
         ctx.drawImage(img, 0, 0, size, size);
+        ctx.globalAlpha = baseAlpha;
       }
     }
     ctx.restore();

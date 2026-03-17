@@ -15,8 +15,6 @@ const copyByLocale = {
   en: {
     editor: 'Editor',
     templates: 'Templates',
-    openPage: 'Open page',
-    launchPreset: 'Launch preset',
     matrixUse: 'Primary use',
     matrixStrength: 'Best at',
     matrixAvoid: 'Avoid when',
@@ -24,8 +22,6 @@ const copyByLocale = {
   zh: {
     editor: '编辑器',
     templates: '模板页',
-    openPage: '打开页面',
-    launchPreset: '直接打开预设',
     matrixUse: '主要用途',
     matrixStrength: '最擅长',
     matrixAvoid: '不适合',
@@ -36,6 +32,10 @@ export function TemplatesHubPageView({ locale }: { locale: SiteLocale }) {
   const copy = copyByLocale[locale];
   const model = getTemplatesHubModel(locale);
   const templates = getAllTemplateDetailModels(locale);
+  const getTemplateDetailLabel = (title: string) =>
+    locale === 'zh' ? `查看${title}` : `Explore ${title}`;
+  const getTemplatePresetLabel = (title: string) =>
+    locale === 'zh' ? `打开${title}预设` : `Open ${title} preset`;
   const breadcrumbs = [
     { label: copy.editor, href: getLocalizedPath(locale, '/') },
     { label: copy.templates },
@@ -105,7 +105,14 @@ export function TemplatesHubPageView({ locale }: { locale: SiteLocale }) {
                       className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_90px_-50px_rgba(0,0,0,0.85)]"
                     >
                       <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{template.intent}</p>
-                      <h2 className="mt-3 text-2xl font-medium text-stone-50">{template.title}</h2>
+                      <h2 className="mt-3 text-2xl font-medium text-stone-50">
+                        <Link
+                          href={getLocalizedPath(locale, `/templates/${template.slug}`)}
+                          className="transition hover:text-[#f1d492]"
+                        >
+                          {template.title}
+                        </Link>
+                      </h2>
                       <p className="mt-4 text-sm leading-7 text-stone-300">{template.decisionLens}</p>
                       <div className="mt-6 grid gap-4 sm:grid-cols-2">
                         <div>
@@ -130,14 +137,14 @@ export function TemplatesHubPageView({ locale }: { locale: SiteLocale }) {
                           href={getLocalizedPath(locale, `/templates/${template.slug}`)}
                           className="inline-flex items-center gap-2 text-sm text-[#f1d492]"
                         >
-                          {copy.openPage}
+                          {getTemplateDetailLabel(template.title)}
                           <ArrowRight className="h-4 w-4" />
                         </Link>
                         <Link
                           href={template.query}
                           className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100"
                         >
-                          {copy.launchPreset}
+                          {getTemplatePresetLabel(template.title)}
                           <MoveRight className="h-4 w-4" />
                         </Link>
                       </div>

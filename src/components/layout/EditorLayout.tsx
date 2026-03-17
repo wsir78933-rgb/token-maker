@@ -11,7 +11,8 @@ export function EditorLayout() {
   return (
     <div
       id="editor-workspace"
-      className="scroll-mt-28 flex min-h-screen w-full flex-col overflow-hidden bg-background text-foreground selection:bg-primary/30"
+      tabIndex={-1}
+      className="editor-shell scroll-mt-28 flex min-h-screen w-full flex-col overflow-hidden bg-background text-foreground selection:bg-primary/30"
     >
       <Suspense fallback={null}>
         <EditorSearchParamsSync />
@@ -24,7 +25,7 @@ export function EditorLayout() {
         className="relative flex flex-1 flex-col overflow-auto xl:flex-row xl:overflow-hidden"
       >
         <ControlPanel />
-        <div className="min-h-[36rem] flex-1 bg-dot-pattern bg-[length:16px_16px]">
+        <div className="editor-stage bg-dot-pattern min-h-[36rem] flex-1 bg-[length:16px_16px]">
           <Canvas />
         </div>
         <TemplatePanel />

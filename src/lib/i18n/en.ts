@@ -64,6 +64,18 @@ const en = {
   dropHint: 'Drop image here to start',
   orClickToUpload: 'or click to select',
   supportedFormats: 'JPG, PNG, WEBP supported',
+  showcaseQuickStartEyebrow: 'Choose a direction',
+  showcaseQuickStartTitle: 'Set the mood before you upload',
+  showcaseQuickStartHint: 'Style only',
+  showcaseEyebrow: 'Selected Work',
+  showcaseTitle: 'See the finish quality before you decide to keep going',
+  showcaseDescription:
+    'This is not a template directory. It is a compact reference set of finished looks, and every case can pull the editor back to a nearby style starting point.',
+  showcaseFeaturedLabel: 'Featured look',
+  showcasePresetLabel: 'Starting preset',
+  showcaseApplyShort: 'Apply',
+  showcaseApplyPreset: 'Start from this look',
+  showcaseApplied: 'Applied',
 
   exportSection: 'Export',
   exportSize: 'Export Size',

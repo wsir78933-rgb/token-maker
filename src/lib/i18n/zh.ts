@@ -73,6 +73,18 @@ const zh = {
   dropHint: '拖拽图片到这里开始',
   orClickToUpload: '或点击选择图片',
   supportedFormats: '支持 JPG、PNG、WEBP',
+  showcaseQuickStartEyebrow: '先选一个方向',
+  showcaseQuickStartTitle: '上传前先定下你想要的气质',
+  showcaseQuickStartHint: '只套用风格',
+  showcaseEyebrow: '精选案例',
+  showcaseTitle: '看一眼完成度，再决定要不要继续做',
+  showcaseDescription:
+    '这组作品不是模板目录，而是成品质感参考。每个案例都能把编辑器拉回一个相近的风格起点，方便你立刻开始。',
+  showcaseFeaturedLabel: '主推效果',
+  showcasePresetLabel: '风格起点',
+  showcaseApplyShort: '套用',
+  showcaseApplyPreset: '以这个风格开始',
+  showcaseApplied: '已套用',
 
   // 导出
   exportSection: '导出',

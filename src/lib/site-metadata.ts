@@ -19,7 +19,6 @@ export function createLocaleLayoutMetadata(locale: SiteLocale): Metadata {
       template: `%s | ${siteConfig.name}`,
     },
     description: siteConfig.description,
-    keywords: [...siteConfig.keywords],
     applicationName: siteConfig.name,
     openGraph: {
       title: siteConfig.title,

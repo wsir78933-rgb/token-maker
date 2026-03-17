@@ -14,6 +14,7 @@ import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
 import { saveAs } from 'file-saver';
 import { DownloadCloud, Plus } from 'lucide-react';
 import { fileToBase64, preloadImageToCache } from '@/lib/utils/imageCache';
+import { useThemeMode } from '@/components/theme/useThemeMode';
 
 const SIZES: ExportSize[] = [256, 512, 1024, 2048];
 
@@ -44,7 +45,7 @@ export function TemplatePanel() {
     store.addCustomBorder({
       id: newId,
       name: 'Custom',
-      type: 'abstract',
+      type: 'image',
       isCustom: true,
       customImageUrl: base64
     });
@@ -70,9 +71,9 @@ export function TemplatePanel() {
   };
 
   return (
-    <div className="w-full border-l border-border bg-card/50 flex flex-col overflow-hidden xl:h-full xl:w-80">
+    <div className="flex w-full flex-col overflow-hidden border-l border-border bg-card/65 backdrop-blur xl:h-full xl:w-80">
       
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-8">
+      <div className="flex-1 space-y-8 overflow-y-auto px-4 py-6">
         
         {/* 边框模板 */}
         <div className="space-y-4">
@@ -128,7 +129,7 @@ export function TemplatePanel() {
                   onClick={() => store.setSelectedMask(mask.id)}
                   title={label}
                   aria-label={label}
-                  className={`relative flex items-center justify-center p-1 aspect-square rounded-md border transition-all overflow-hidden bg-[#09090b] ${
+                  className={`relative flex aspect-square items-center justify-center overflow-hidden rounded-md border bg-muted/60 p-1 transition-all ${
                     isActive 
                       ? 'border-primary ring-1 ring-primary/50' 
                       : 'border-border/50 hover:border-primary/50'
@@ -159,7 +160,7 @@ export function TemplatePanel() {
       </div>
 
       {/* 底部导出区域 */}
-      <div className="p-4 border-t border-border bg-card shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.5)] space-y-4">
+      <div className="space-y-4 border-t border-border bg-card/92 p-4 shadow-[0_-10px_40px_-15px_var(--workspace-shadow-color)]">
         <div className="flex items-center justify-between">
           <label className="text-xs text-muted-foreground mr-2">{t('exportSize')}</label>
           <div className="flex bg-muted/50 rounded-md p-1">
@@ -214,6 +215,7 @@ function getBorderAlt(id: string, defaultLabel: string): string {
 function BorderThumbnail({ id, active, label }: { id: string; active: boolean; label: string }) {
   const store = useEditorStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme } = useThemeMode();
   
   let template = BORDER_TEMPLATES.find(t => t.id === id);
   if (!template) {
@@ -230,9 +232,9 @@ function BorderThumbnail({ id, active, label }: { id: string; active: boolean; l
     if (!ctx) return;
     
     ctx.clearRect(0, 0, 64, 64);
-    const color = active ? '#a855f7' : '#52525b';
+    const color = active ? '#d7b46a' : theme === 'dark' ? '#68657a' : '#8c7452';
     drawBorderThumbnail(ctx, template, 64, color);
-  }, [id, active, store.customBorders, template]);
+  }, [id, active, store.customBorders, template, theme]);
 
   if (!template) return null;
 
@@ -248,6 +250,7 @@ function BorderThumbnail({ id, active, label }: { id: string; active: boolean; l
 function MaskThumbnail({ id, active, label }: { id: string; active: boolean; label: string }) {
   const store = useEditorStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme } = useThemeMode();
   
   let template = MASK_TEMPLATES.find(t => t.id === id);
   if (!template) {
@@ -264,9 +267,9 @@ function MaskThumbnail({ id, active, label }: { id: string; active: boolean; lab
     if (!ctx) return;
     
     ctx.clearRect(0, 0, 64, 64);
-    const color = active ? '#a855f7' : '#52525b';
+    const color = active ? '#d7b46a' : theme === 'dark' ? '#68657a' : '#8c7452';
     drawMaskThumbnail(ctx, template, 64, color);
-  }, [id, active, store.customMasks, template]);
+  }, [id, active, store.customMasks, template, theme]);
 
   if (!template) return null;
 

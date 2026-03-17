@@ -1173,78 +1173,86 @@ const guidesHubModels: Record<SiteLocale, GuidesHubModel> = {
 
 const faqDocModels: Record<SiteLocale, FaqDocModel> = {
   en: {
-    updatedAt: '2026-03-12',
-    eyebrow: 'Reference',
-    title: 'Questions people ask before they trust a token tool',
-    description: 'A documentation-style FAQ covering format support, export logic, privacy expectations, and what the editor is actually designed to do.',
+    updatedAt: '2026-03-17',
+    eyebrow: 'FAQ',
+    title: 'Five common questions about Token Maker',
+    description: 'Find quick answers about workflow fit, image handling, styles, and export size.',
     intro:
-      'This page is intentionally leaner than a landing page. It exists as a support reference: concise answers, grouped topics, and enough clarity that visitors do not need to infer how the tool behaves.',
+      'Use this page when you want the short version first. Each section answers a practical question, then points you to the editor, templates, or a guide if you need more detail.',
     groups: [
       {
-        id: 'workflow',
-        title: 'Workflow fit',
-        description: 'What the editor is for and which tabletops it is actually meant to support.',
+        id: 'fit',
+        title: 'Start here',
+        description: 'Confirm what the editor is for and whether the tabletop workflow matches your use case.',
         itemIndexes: [0, 2],
       },
       {
-        id: 'privacy',
-        title: 'Privacy and control',
-        description: 'How the default local-first workflow handles source images.',
-        itemIndexes: [1, 4],
+        id: 'control',
+        title: 'Control and style',
+        description: 'Know what stays local and how far you can push masks, borders, and campaign-specific styling.',
+        itemIndexes: [1, 3],
       },
       {
-        id: 'formats',
-        title: 'Formats and export',
-        description: 'Shape support and practical output sizing guidance.',
-        itemIndexes: [3, 5],
+        id: 'export',
+        title: 'Export call',
+        description: 'Pick a first-pass resolution without overbuilding every token.',
+        itemIndexes: [4],
       },
     ],
     signals: [
       {
-        title: 'Short answers on purpose',
-        description: 'FAQ pages should remove doubt quickly, not repeat the homepage pitch.',
+        title: 'What the tool is good at',
+        description: 'Understand whether Token Maker matches the tabletop workflow you already use.',
       },
       {
-        title: 'Grouped by decision type',
-        description: 'Questions are organized by workflow, privacy, and export choices so scanning is fast.',
+        title: 'How local editing works',
+        description: 'See what stays in the browser during the default crop-and-export flow.',
+      },
+      {
+        title: 'What to export first',
+        description: 'Pick a sensible PNG size without overbuilding every token from the start.',
       },
     ],
   },
   zh: {
-    updatedAt: '2026-03-12',
-    eyebrow: '参考页',
-    title: '用户在信任一个 token 工具前最常问的几类问题',
-    description: '这是文档式 FAQ，不是落地页。重点回答格式支持、导出逻辑、隐私预期，以及这个编辑器到底解决什么问题。',
+    updatedAt: '2026-03-17',
+    eyebrow: '常见问题',
+    title: '关于 Token Maker 的五个常见问题',
+    description: '集中回答工作流适配、图片处理、样式选择和导出尺寸这些高频问题。',
     intro:
-      '这页故意做得比 landing page 更克制。目标是当支持参考页用：问题分组明确，回答短但够用，用户不需要靠猜来理解工具行为。',
+      '想先看简洁版答案，就从这里开始。每一组问题都只回答实际使用中最常见的判断点，需要更深入时再继续去编辑器、模板页或博客。',
     groups: [
       {
-        id: 'workflow',
-        title: '工作流适配',
-        description: '编辑器主要解决什么问题，以及它更适合哪些桌面环境。',
+        id: 'fit',
+        title: '先确认适不适合',
+        description: '先判断这个编辑器主要解决什么问题，以及你的桌面工作流是否匹配。',
         itemIndexes: [0, 2],
       },
       {
-        id: 'privacy',
-        title: '隐私与控制',
-        description: '默认本地优先流程怎样处理原图，以及你能控制什么。',
-        itemIndexes: [1, 4],
+        id: 'control',
+        title: '控制边界与样式空间',
+        description: '弄清默认本地处理边界，以及形状、边框和遮罩能扩展到什么程度。',
+        itemIndexes: [1, 3],
       },
       {
-        id: 'formats',
-        title: '格式与导出',
-        description: '支持哪些形状，以及不同输出尺寸该怎么选。',
-        itemIndexes: [3, 5],
+        id: 'export',
+        title: '导出怎么拍板',
+        description: '先选出一个够用的分辨率，不要一开始就把每张 token 都做得过重。',
+        itemIndexes: [4],
       },
     ],
     signals: [
       {
-        title: '答案故意保持短',
-        description: 'FAQ 的目标是快速消除疑问，不是把首页文案再讲一遍。',
+        title: '这个工具适合做什么',
+        description: '先判断 Token Maker 是否匹配你现在的桌面工作流。',
       },
       {
-        title: '按决策类型分组',
-        description: '把问题拆成工作流、隐私和导出三类，扫描效率更高。',
+        title: '默认图片怎么处理',
+        description: '了解正常裁切和导出流程里，图片会不会离开浏览器。',
+      },
+      {
+        title: '先导出多大合适',
+        description: '先选一个够用的 PNG 尺寸，不必一开始就把每张 token 都做得很重。',
       },
     ],
   },
@@ -1252,57 +1260,57 @@ const faqDocModels: Record<SiteLocale, FaqDocModel> = {
 
 const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
   en: {
-    updatedAt: '2026-03-12',
-    eyebrow: 'Policy note',
-    title: 'Local-first privacy explained as operating rules',
-    description: 'A narrower documentation page that explains how image handling, export behavior, and future remote features should be communicated.',
+    updatedAt: '2026-03-17',
+    eyebrow: 'Privacy',
+    title: 'How Token Maker handles images by default',
+    description: 'Learn how the default local-first workflow handles image editing, PNG export, and any future remote features.',
     intro:
-      'The homepage should not carry operational disclosure copy. This page does that job instead, with a document layout focused on what users need to know about image handling, export generation, and any future storage layer.',
+      'In the normal browser workflow, portrait images do not need to be uploaded just to crop or export a token.',
     principles: [
       {
-        title: 'Default to browser-side work',
-        description: 'If the image can stay client-side for the normal workflow, say so plainly and keep the implementation consistent with that promise.',
+        title: 'Default editing stays local',
+        description: 'If a portrait can stay in the browser for the normal workflow, the product should say so clearly and behave that way.',
       },
       {
-        title: 'Document optional remote paths separately',
-        description: 'If uploads or sharing links are introduced later, explain provider, retention, and deletion behavior before shipping them.',
+        title: 'Remote features need upfront disclosure',
+        description: 'If uploads, share links, or hosted storage are added later, the provider, retention window, and deletion behavior should be explained before launch.',
       },
       {
-        title: 'Keep operational disclosures here',
-        description: 'Analytics, error tracking, and abuse controls belong on the privacy page so the tool surface can stay focused.',
+        title: 'Operational details belong here',
+        description: 'Analytics, error tracking, and abuse controls should stay on this page so the editor can stay focused on making tokens.',
       },
     ],
     commitments: [
-      'Do not bury image-handling expectations in marketing copy.',
-      'Make upload behavior explicit before enabling remote storage.',
-      'Update this page when analytics or operational tooling changes.',
+      'Image-handling expectations change.',
+      'Remote upload or hosted storage is introduced.',
+      'Analytics or other operational tooling changes.',
     ],
   },
   zh: {
-    updatedAt: '2026-03-12',
-    eyebrow: '策略说明',
-    title: '把本地优先隐私预期写成明确的运行规则',
-    description: '这是一张更窄、更文档化的页面，用来解释图片处理、导出行为，以及未来如果接入远程能力时该怎样说明。',
+    updatedAt: '2026-03-17',
+    eyebrow: '隐私',
+    title: 'Token Maker 默认如何处理图片',
+    description: '这里说明默认本地优先工作流如何处理图片、PNG 导出，以及未来如果加入远程能力会怎样披露。',
     intro:
-      '首页不该背负运维披露内容，所以这些说明集中放在这里。页面重点不是营销，而是让用户清楚知道原图怎样被处理、导出怎样生成、未来如果接对象存储该如何被告知。',
+      '在正常的浏览器工作流里，裁切和导出 token 不需要先把角色图上传到远程存储。',
     principles: [
       {
-        title: '默认走浏览器侧流程',
-        description: '如果日常流程可以让图片一直停留在本地浏览器，就应该直接写清楚，并让实现和承诺一致。',
+        title: '默认编辑流程留在本地浏览器',
+        description: '如果日常工作流可以让图片一直停留在浏览器里，就应该直接说清楚，并让实现和说明保持一致。',
       },
       {
-        title: '远程能力必须单独披露',
-        description: '如果以后要加上传或分享链接，应该在正式启用前先把服务商、保留策略和删除行为说清楚。',
+        title: '新增远程能力会先说明',
+        description: '如果以后加入上传、分享链接或托管存储，会在正式启用前说明服务商、保留时间和删除方式。',
       },
       {
-        title: '把运维披露都收在这里',
-        description: '统计、错误追踪、风控限流这类内容适合留在隐私页，不该挤进工具入口。',
+        title: '运维相关信息集中写在这里',
+        description: '统计、错误追踪和限流这类说明会留在这页，不会混进制作 token 的主界面里。',
       },
     ],
     commitments: [
-      '不要把图片处理预期藏在营销文案里。',
-      '远程上传功能启用前必须写明行为边界。',
-      '只要统计或运维方案变化，就同步更新这页。',
+      '图片处理方式发生变化时。',
+      '加入远程上传或托管存储时。',
+      '统计或其他运维方案调整时。',
     ],
   },
 };
@@ -1384,14 +1392,6 @@ export function getStaticPageLastModified(
   return staticPageLastModifiedByLocale[locale][page];
 }
 
-function baseKeywordsFromTitle(title: string) {
-  return title
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, ' ')
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
 export function createTemplateDetailMetadata(locale: SiteLocale, slug: string): Metadata {
   const page = getTemplateDetailModel(locale, slug);
 
@@ -1408,7 +1408,6 @@ export function createTemplateDetailMetadata(locale: SiteLocale, slug: string): 
     metadataBase: new URL(getSiteUrl()),
     title: page.title,
     description: page.description,
-    keywords: [...siteConfig.keywords, ...baseKeywordsFromTitle(page.title), ...page.bestFor],
     alternates: {
       canonical: path,
       languages: getLanguageAlternates(`/templates/${page.slug}`),
@@ -1452,7 +1451,6 @@ export function createGuideDetailMetadata(locale: SiteLocale, slug: string): Met
     metadataBase: new URL(getSiteUrl()),
     title: page.title,
     description: page.description,
-    keywords: [...siteConfig.keywords, ...baseKeywordsFromTitle(page.title), ...page.audience],
     alternates: {
       canonical: path,
       languages: getLanguageAlternates(`/blog/${page.slug}`),
@@ -1490,7 +1488,6 @@ export function createCollectionMetadata(locale: SiteLocale, page: 'templates' |
     metadataBase: new URL(getSiteUrl()),
     title: copy.title,
     description: copy.description,
-    keywords: [...siteConfig.keywords, ...baseKeywordsFromTitle(copy.title)],
     alternates: {
       canonical: path,
       languages: getLanguageAlternates(page === 'templates' ? '/templates' : page === 'guides' ? '/blog' : page === 'faq' ? '/faq' : '/privacy'),

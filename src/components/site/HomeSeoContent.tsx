@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Shield, Sparkles, Swords, Workflow } from 'lucide-react';
+import { ArrowRight, Shield, Sparkles, Workflow } from 'lucide-react';
 import { getPublishedBlogPosts } from '@/lib/blog-content';
 import {
   getFaqItems,
@@ -9,11 +9,12 @@ import {
   getNavLabels,
   getSiteConfig,
   getTemplatePages,
-  getWorkflowSteps,
 } from '@/lib/site-content';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
 import { SiteMark } from '@/components/site/SiteMark';
+import { SiteSupportStrip } from '@/components/site/SiteSupportStrip';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 export function HomeHero({ locale }: { locale: SiteLocale }) {
   const copy = getHomeCopy(locale);
@@ -26,31 +27,29 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
     { href: `${homeHref}#editor-workspace`, label: navLabels.editor },
     { href: getLocalizedPath(locale, '/templates'), label: navLabels.templates },
     { href: getLocalizedPath(locale, '/blog'), label: navLabels.guides },
-    { href: getLocalizedPath(locale, '/faq'), label: navLabels.faq },
-    { href: getLocalizedPath(locale, '/privacy'), label: navLabels.privacy },
   ];
 
   return (
     <>
-      <div className="sticky top-0 z-50 border-b border-[#d7b46a]/15 bg-black/70 backdrop-blur-xl">
+      <div className="site-topbar sticky top-0 z-50">
         <div className="mx-auto max-w-6xl px-6 py-4 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
               href={homeHref}
-              className="inline-flex items-center gap-3 text-sm text-stone-200 transition-colors hover:text-[#f3d38f]"
+              className="site-brand-link inline-flex items-center gap-3 text-sm transition-colors"
             >
               <SiteMark />
               <span className="flex flex-col">
-                <span className="font-semibold text-base text-stone-50">{siteConfig.name}</span>
-                <span className="text-xs text-stone-400">{copy.heroEyebrow}</span>
+                <span className="site-brand-title text-base font-semibold">{siteConfig.name}</span>
+                <span className="site-brand-subtitle text-xs">{copy.heroEyebrow}</span>
               </span>
             </Link>
-            <Link
-              href={getLocalizedPath(nextLocale, '/')}
-              className="rounded-full border border-white/12 px-3 py-1.5 text-xs uppercase tracking-[0.22em] text-stone-400 transition hover:border-white/20 hover:text-stone-100"
-            >
-              {navLabels.switchLocale}
-            </Link>
+            <div className="flex items-center gap-2">
+              <ThemeToggle locale={locale} />
+              <Link href={getLocalizedPath(nextLocale, '/')} className="site-switch-chip">
+                {navLabels.switchLocale}
+              </Link>
+            </div>
           </div>
 
           <nav className="mt-4 flex flex-wrap items-center gap-2">
@@ -58,12 +57,8 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
               <Link
                 key={link.href}
                 href={link.href}
-                className={cn(
-                  'inline-flex shrink-0 items-center rounded-full border px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors',
-                  index === 0
-                    ? 'border-[#d7b46a]/35 bg-[#d7b46a]/12 text-[#f1d492]'
-                    : 'border-white/12 text-stone-400 hover:border-white/20 hover:text-stone-100',
-                )}
+                data-active={index === 0}
+                className="site-nav-pill inline-flex shrink-0 items-center"
               >
                 {link.label}
               </Link>
@@ -71,44 +66,45 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
           </nav>
         </div>
       </div>
-      <section className="border-b border-[#d7b46a]/15 bg-[radial-gradient(circle_at_top,rgba(215,180,106,0.14),transparent_42%),linear-gradient(180deg,#090b10_0%,#07090d_100%)]">
-      <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.9fr)] lg:px-8 lg:py-20">
-        <div className="space-y-6">
-          <p className="text-xs uppercase tracking-[0.34em] text-[#d7b46a]">{copy.heroEyebrow}</p>
-          <h1 className="font-display max-w-4xl text-4xl leading-none text-stone-50 sm:text-5xl lg:text-6xl">
-            {copy.heroTitle}
-          </h1>
-          <p className="max-w-3xl text-base leading-7 text-stone-300 sm:text-lg">{copy.heroDescription}</p>
-          <div className="flex flex-wrap gap-3">
-            <a
-              href="#editor-workspace"
-              className="inline-flex items-center gap-2 rounded-full border border-[#d7b46a]/40 bg-[#d7b46a]/12 px-5 py-2.5 text-sm font-medium text-[#f5ddb0] transition hover:border-[#f2cb7a] hover:bg-[#d7b46a]/18"
-            >
-              {copy.heroPrimaryCta}
-              <ArrowRight className="h-4 w-4" />
-            </a>
-            <Link
-              href={getLocalizedPath(locale, '/templates')}
-              className="inline-flex items-center gap-2 rounded-full border border-white/12 px-5 py-2.5 text-sm text-stone-300 transition hover:border-white/20 hover:text-stone-100"
-            >
-              {copy.heroSecondaryCta}
-            </Link>
-          </div>
-        </div>
-
-        <aside className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-          {homeSignals.map((signal) => (
-            <div
-              key={signal.label}
-              className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 shadow-[0_24px_80px_-40px_rgba(0,0,0,0.85)] backdrop-blur"
-            >
-              <p className="text-xs uppercase tracking-[0.28em] text-stone-500">{signal.label}</p>
-              <p className="mt-3 font-display text-3xl text-stone-50">{signal.value}</p>
-              <p className="mt-2 text-sm leading-6 text-stone-300">{signal.description}</p>
+      <section className="site-hero-section">
+        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.9fr)] lg:px-8 lg:py-20">
+          <div className="space-y-6">
+            <p className="text-xs uppercase tracking-[0.34em] text-[#d7b46a]">{copy.heroEyebrow}</p>
+            <h1 className="font-display max-w-4xl text-4xl leading-none text-stone-50 sm:text-5xl lg:text-6xl">
+              {copy.heroTitle}
+            </h1>
+            <p className="max-w-3xl text-base leading-7 text-stone-300 sm:text-lg">{copy.heroDescription}</p>
+            <div className="flex flex-wrap gap-2">
+              {copy.heroHighlights.map((highlight) => (
+                <span
+                  key={highlight}
+                  className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-xs text-stone-300"
+                >
+                  {highlight}
+                </span>
+              ))}
             </div>
-          ))}
-        </aside>
-      </div>
+            <div className="flex flex-wrap gap-3">
+              <a href="#editor-workspace" className="site-cta-primary">
+                {copy.heroPrimaryCta}
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <Link href={getLocalizedPath(locale, '/templates')} className="site-cta-secondary">
+                {copy.heroSecondaryCta}
+              </Link>
+            </div>
+          </div>
+
+          <aside className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
+            {homeSignals.map((signal) => (
+              <div key={signal.label} className="site-stat-card rounded-[28px] p-5 backdrop-blur">
+                <p className="text-xs uppercase tracking-[0.28em] text-stone-500">{signal.label}</p>
+                <p className="mt-3 font-display text-3xl text-stone-50">{signal.value}</p>
+                <p className="mt-2 text-sm leading-6 text-stone-300">{signal.description}</p>
+              </div>
+            ))}
+          </aside>
+        </div>
       </section>
     </>
   );
@@ -118,23 +114,56 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
   const copy = getHomeCopy(locale);
   const homeFeatures = getHomeFeatures(locale);
   const templatePages = getTemplatePages(locale);
-  const blogPosts = getPublishedBlogPosts(locale).slice(0, 4);
-  const workflowSteps = getWorkflowSteps(locale);
-  const faqItems = getFaqItems(locale);
+  const blogPosts = getPublishedBlogPosts(locale).slice(0, 2);
+  const faqItems = getFaqItems(locale).slice(0, 3);
+  const faqCtaLabel = locale === 'zh' ? '查看全部解答' : 'Read all answers';
+  const readArticleLabel = locale === 'zh' ? '阅读全文' : 'Read article';
+  const blogCtaLabel = locale === 'zh' ? '查看博客' : 'Browse blog';
+  const getTemplateDetailLabel = (title: string) =>
+    locale === 'zh' ? `查看${title}` : `Explore ${title}`;
+  const getTemplatePresetLabel = (title: string) =>
+    locale === 'zh' ? `打开${title}预设` : `Open ${title} preset`;
 
   return (
-    <div className="relative overflow-hidden bg-[#07090d] text-stone-100">
-      <section className="border-b border-white/8">
+    <div className="site-shell__content relative overflow-hidden text-stone-100">
+      <section className="site-content-section">
         <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="mb-8 flex items-center gap-3">
-            <Sparkles className="h-5 w-5 text-[#d7b46a]" />
-            <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.featuresTitle}</h2>
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
+            <div>
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-5 w-5 text-[#d7b46a]" />
+                <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.featuresTitle}</h2>
+              </div>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-300 sm:text-base">
+                {copy.featuresDescription}
+              </p>
+            </div>
+
+            <aside className="site-surface-card site-surface-card--warm rounded-[32px] p-6">
+              <h3 className="font-display text-2xl leading-tight text-stone-50">{copy.comparisonTitle}</h3>
+              <ul className="mt-5 space-y-3 text-sm leading-7 text-stone-300">
+                {copy.comparisonPoints.map((point) => (
+                  <li key={point} className="flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d7b46a]" />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </aside>
           </div>
-          <div className="grid gap-4 lg:grid-cols-2">
-            {homeFeatures.map((feature) => (
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-2">
+            {homeFeatures.map((feature, index) => (
               <article
                 key={feature.title}
-                className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6"
+                className={cn(
+                  'site-surface-card rounded-[30px] p-6',
+                  index === 0 && 'site-surface-card--warm lg:col-span-2',
+                  index > 0 && 'site-surface-card--plain',
+                  index === homeFeatures.length - 1 &&
+                    (homeFeatures.length - 1) % 2 === 1 &&
+                    'lg:col-span-2',
+                )}
               >
                 <h3 className="text-xl font-medium text-stone-50">{feature.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-stone-300">{feature.description}</p>
@@ -144,26 +173,76 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
         </div>
       </section>
 
-      <section id="templates" className="border-b border-white/8">
+      <section id="templates" className="site-content-section">
         <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-            <div>
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.92fr)] lg:items-start">
+            <div className="grid gap-4">
               <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.templatesEyebrow}</p>
-              <h2 className="font-display mt-3 text-3xl text-stone-50 sm:text-4xl">{copy.templatesTitle}</h2>
+              <h2 className="font-display max-w-4xl text-3xl text-stone-50 sm:text-4xl">{copy.templatesTitle}</h2>
+              <Link
+                href={getLocalizedPath(locale, '/templates')}
+                className="inline-flex items-center gap-2 text-sm text-[#f1d492] transition hover:text-[#f7dfab]"
+              >
+                {copy.seeAllTemplatePages}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+
+              <div className="site-surface-card site-surface-card--cool rounded-[30px] p-6">
+                <div className="flex items-center gap-3">
+                  <Workflow className="h-5 w-5 text-[#8fb7ff]" />
+                  <p className="text-xs uppercase tracking-[0.28em] text-[#8fb7ff]">{copy.resourcesEyebrow}</p>
+                </div>
+                <h3 className="mt-4 font-display text-2xl text-stone-50">{copy.resourcesTitle}</h3>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-300">{copy.resourcesDescription}</p>
+                <Link
+                  href={getLocalizedPath(locale, '/blog')}
+                  className="mt-5 inline-flex items-center gap-2 text-sm text-[#c9dcff] transition hover:text-white"
+                >
+                  {blogCtaLabel}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
-            <Link href={getLocalizedPath(locale, '/templates')} className="text-sm text-stone-300 transition hover:text-stone-100">
-              {copy.seeAllTemplatePages}
-            </Link>
+
+            <div>
+              <div className="site-surface-card site-surface-card--plain rounded-[30px] p-6">
+                <p className="text-xs uppercase tracking-[0.28em] text-[#8fb7ff]">{copy.audienceEyebrow}</p>
+                <h3 className="mt-3 font-display text-2xl text-stone-50">{copy.audienceTitle}</h3>
+                <p className="mt-3 text-sm leading-7 text-stone-300">{copy.audienceDescription}</p>
+                <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                  {copy.audiences.map((audience, index) => (
+                    <article
+                      key={audience.title}
+                      className={cn(
+                        'site-surface-subcard rounded-[24px] p-4',
+                        index === 0 && 'site-surface-subcard--warm',
+                        index > 0 && 'site-surface-subcard--deep',
+                      )}
+                    >
+                      <h4 className="text-sm font-medium text-stone-50">{audience.title}</h4>
+                      <p className="mt-2 text-sm leading-6 text-stone-400">{audience.description}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {templatePages.slice(0, 3).map((page) => (
               <article
                 key={page.slug}
-                className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_80px_-40px_rgba(0,0,0,0.85)]"
+                className="site-surface-card site-surface-card--plain rounded-[30px] p-6"
               >
                 <p className="text-xs uppercase tracking-[0.26em] text-stone-500">{page.intent}</p>
-                <h3 className="mt-4 text-2xl font-medium text-stone-50">{page.title}</h3>
+                <h3 className="mt-4 text-2xl font-medium text-stone-50">
+                  <Link
+                    href={getLocalizedPath(locale, `/templates/${page.slug}`)}
+                    className="transition hover:text-[#f1d492]"
+                  >
+                    {page.title}
+                  </Link>
+                </h3>
                 <p className="mt-3 text-sm leading-7 text-stone-300">{page.description}</p>
                 <ul className="mt-5 space-y-2 text-sm text-stone-400">
                   {page.bestFor.map((item) => (
@@ -171,12 +250,18 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                   ))}
                 </ul>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <Link href={getLocalizedPath(locale, `/templates/${page.slug}`)} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
-                    {locale === 'zh' ? '查看页面' : 'Read page'}
+                  <Link
+                    href={getLocalizedPath(locale, `/templates/${page.slug}`)}
+                    className="inline-flex items-center gap-2 text-sm text-[#f1d492]"
+                  >
+                    {getTemplateDetailLabel(page.title)}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <Link href={page.query} className="text-sm text-stone-400 transition hover:text-stone-100">
-                    {locale === 'zh' ? '打开预设' : 'Open setup'}
+                  <Link
+                    href={page.query}
+                    className="text-sm text-stone-400 transition hover:text-stone-100"
+                  >
+                    {getTemplatePresetLabel(page.title)}
                   </Link>
                 </div>
               </article>
@@ -185,24 +270,20 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
         </div>
       </section>
 
-      <section id="blog" className="border-b border-white/8">
+      <section id="blog" className="site-content-section">
         <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="mb-8 flex items-center gap-3">
-            <Workflow className="h-5 w-5 text-[#d7b46a]" />
-            <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.guidesTitle}</h2>
-          </div>
           <div className="grid items-start gap-4 lg:grid-cols-2">
             {blogPosts.map((post) => (
               <article
                 key={post.slug}
-                className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6"
+                className="site-surface-card site-surface-card--plain rounded-[30px] p-6"
               >
                 <p className="text-xs uppercase tracking-[0.26em] text-stone-500">{post.category}</p>
                 <h3 className="mt-4 text-2xl font-medium text-stone-50">{post.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-stone-300">{post.excerpt}</p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link href={getLocalizedPath(locale, `/blog/${post.slug}`)} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
-                    {locale === 'zh' ? '阅读全文' : 'Read article'}
+                    {readArticleLabel}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                   <Link href={post.ctaQuery} className="text-sm text-stone-400 transition hover:text-stone-100">
@@ -215,37 +296,20 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
         </div>
       </section>
 
-      <section className="border-b border-white/8">
+      <section id="faq" className="site-content-section">
         <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="mb-8 flex items-center gap-3">
-            <Swords className="h-5 w-5 text-[#d7b46a]" />
-            <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.workflowTitle}</h2>
-          </div>
-          <div className="grid gap-4 lg:grid-cols-3">
-            {workflowSteps.map((step) => (
-              <article
-                key={step.title}
-                className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-6"
-              >
-                <h3 className="text-xl font-medium text-stone-50">{step.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-stone-300">{step.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="faq" className="border-b border-white/8">
-        <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="mb-8 flex items-center gap-3">
-            <Shield className="h-5 w-5 text-[#d7b46a]" />
-            <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.faqTitle}</h2>
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Shield className="h-5 w-5 text-[#d7b46a]" />
+              <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.faqTitle}</h2>
+            </div>
+            <div className="max-w-sm text-sm leading-7 text-stone-400">{copy.faqDescription}</div>
           </div>
           <div className="grid items-start gap-4 lg:grid-cols-2">
             {faqItems.map((item) => (
               <details
                 key={item.question}
-                className="group rounded-[28px] border border-white/10 bg-white/[0.03] p-5"
+                className="site-surface-card site-surface-card--plain group rounded-[28px] p-5"
               >
                 <summary className="cursor-pointer list-none text-lg font-medium text-stone-50">
                   {item.question}
@@ -254,31 +318,19 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
               </details>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-          <div className="rounded-[30px] border border-[#d7b46a]/20 bg-[radial-gradient(circle_at_top_left,rgba(215,180,106,0.13),transparent_44%),rgba(255,255,255,0.03)] p-6">
-            <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.localFirstEyebrow}</p>
-            <h2 className="font-display mt-4 text-3xl text-stone-50">{copy.localFirstTitle}</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-stone-300">{copy.localFirstDescription}</p>
-          </div>
-
-          <div className="grid gap-3">
-            {copy.quickLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={getLocalizedPath(locale, link.href as '/' | '/templates' | '/blog' | '/faq')}
-                className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/15 hover:bg-white/[0.045]"
-              >
-                <p className="text-lg font-medium text-stone-50">{link.label}</p>
-                <p className="mt-2 text-sm leading-6 text-stone-300">{link.description}</p>
-              </Link>
-            ))}
+          <div className="mt-8">
+            <Link
+              href={getLocalizedPath(locale, '/faq')}
+              className="inline-flex items-center gap-2 text-sm text-[#f1d492] transition hover:text-[#f7dfab]"
+            >
+              {faqCtaLabel}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
+
+      <SiteSupportStrip locale={locale} currentPath="/" className="pt-0" />
     </div>
   );
 }

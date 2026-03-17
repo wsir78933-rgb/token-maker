@@ -7,6 +7,7 @@ import { useHistoryStore } from '@/lib/store/history';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { Button } from '@/components/ui/button';
 import { SiteMark } from '@/components/site/SiteMark';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 function isEditableTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
@@ -21,7 +22,7 @@ function isEditableTarget(target: EventTarget | null) {
 }
 
 export function Header() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const history = useHistoryStore();
 
   useEffect(() => {
@@ -68,7 +69,7 @@ export function Header() {
   }, [history]);
 
   return (
-    <header className="border-b border-[#d7b46a]/12 bg-background/92 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:px-6">
+    <header className="border-b border-[#d7b46a]/12 bg-background/92 px-4 py-3 shadow-[0_18px_50px_-36px_var(--workspace-shadow-color)] backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <SiteMark className="h-10 w-10 rounded-2xl ring-1 ring-[#d7b46a]/15" />
@@ -77,7 +78,7 @@ export function Header() {
               <span className="rounded-full border border-[#d7b46a]/20 bg-[#d7b46a]/8 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.24em] text-[#e8cb8f]">
                 {t('workspaceLabel')}
               </span>
-              <span className="hidden rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground sm:inline-flex">
+              <span className="hidden rounded-full border border-border/70 bg-card/70 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground sm:inline-flex">
                 {t('localMode')}
               </span>
             </div>
@@ -92,11 +93,12 @@ export function Header() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 rounded-full border border-border/50 bg-white/[0.02] p-1">
+        <div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/70 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
+          <ThemeToggle locale={locale} className="h-10" />
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 rounded-full text-muted-foreground hover:bg-white/[0.04] hover:text-foreground"
+            className="h-9 w-9 rounded-full text-muted-foreground hover:bg-accent hover:text-foreground"
             disabled={history.past.length === 0}
             onClick={history.undo}
             title={`${t('undo')} (Cmd+Z)`}
@@ -106,7 +108,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 rounded-full text-muted-foreground hover:bg-white/[0.04] hover:text-foreground"
+            className="h-9 w-9 rounded-full text-muted-foreground hover:bg-accent hover:text-foreground"
             disabled={history.future.length === 0}
             onClick={history.redo}
             title={`${t('redo')} (Cmd+Shift+Z)`}

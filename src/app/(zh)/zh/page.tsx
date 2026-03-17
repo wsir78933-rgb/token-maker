@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { EditorLayout } from '@/components/layout/EditorLayout';
+import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
 import { absoluteUrl, getFaqItems, getSiteConfig, getSiteUrl } from '@/lib/site-content';
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
 };
 
 export default function ChineseHomePage() {
-  const faqItems = getFaqItems(locale);
+  const faqItems = getFaqItems(locale).slice(0, 3);
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -58,7 +59,7 @@ export default function ChineseHomePage() {
         },
         url: absoluteUrl('/zh'),
         description: siteConfig.description,
-        featureList: ['浏览器制章编辑器', '圆形、方形和多边形遮罩', '边框与配色控制', '文字叠加与 PNG 导出', '本地优先图片流程'],
+        featureList: ['浏览器 VTT Token 制作器', '圆形、方形和多边形遮罩', '边框与配色控制', '文字叠加与透明 PNG Token 导出', '本地优先图片流程'],
       },
       {
         '@type': 'FAQPage',
@@ -77,9 +78,10 @@ export default function ChineseHomePage() {
   return (
     <>
       <StructuredData id="homepage-zh-jsonld" data={structuredData} />
-      <main lang="zh-CN" className="min-h-screen bg-[#07090d]">
+      <main lang="zh-CN" className="site-shell site-shell--home min-h-screen">
         <HomeHero locale="zh" />
         <EditorLayout />
+        <EditorShowcaseSection locale="zh" />
         <HomeSeoContent locale="zh" />
       </main>
     </>

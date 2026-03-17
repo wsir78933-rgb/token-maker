@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { EditorLayout } from '@/components/layout/EditorLayout';
+import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
 import { absoluteUrl, getFaqItems, getSiteConfig, getSiteUrl } from '@/lib/site-content';
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const faqItems = getFaqItems(locale);
+  const faqItems = getFaqItems(locale).slice(0, 3);
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -59,11 +60,11 @@ export default function Home() {
         url: absoluteUrl('/'),
         description: siteConfig.description,
         featureList: [
-          'Browser-based token editor',
+          'Browser-based VTT token maker',
           'Circle, square, and polygon masks',
           'Border and tint controls',
-          'Text overlays and PNG export',
-          'Local-first image workflow',
+          'Text overlays and transparent PNG export',
+          'Local-first tabletop image workflow',
         ],
       },
       {
@@ -83,9 +84,10 @@ export default function Home() {
   return (
     <>
       <StructuredData id="homepage-jsonld" data={structuredData} />
-      <main lang="en" className="min-h-screen bg-[#07090d]">
+      <main lang="en" className="site-shell site-shell--home min-h-screen">
         <HomeHero locale="en" />
         <EditorLayout />
+        <EditorShowcaseSection locale="en" />
         <HomeSeoContent locale="en" />
       </main>
     </>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
@@ -14,52 +15,120 @@ const copyByLocale = {
   en: {
     editor: 'Editor',
     faq: 'FAQ',
-    nextEyebrow: 'Keep moving',
-    nextTitle: 'Where to go next',
-    nextDescription: 'Once the basics are clear, jump back into making tokens or move into format-specific reading.',
-    openLink: 'Open page',
-    nextLinks: [
+    quickActionsEyebrow: 'Quick access',
+    quickActionsTitle: 'Go straight to the right place',
+    quickActions: [
       {
         href: '/',
         label: 'Open the editor',
-        description: 'Go straight back to the browser editor and test the workflow on a real token.',
+        description: 'Drop in a portrait and test the workflow on something real.',
       },
       {
         href: '/templates',
         label: 'Browse templates',
-        description: 'Pick a circle, square, hex, monster, or transparent setup before your next export.',
+        description: 'Start from the right mask and border family instead of improvising later.',
       },
       {
         href: '/blog',
-        label: 'Read the blog',
-        description: 'Compare Roll20, Foundry VTT, and export-size guides when the quick answer is not enough.',
+        label: 'Read practical guides',
+        description: 'Use the blog when your question is about a specific platform or export decision.',
+      },
+      {
+        href: '/privacy',
+        label: 'Read the privacy note',
+        description: 'Open the short policy page if your main concern is image handling.',
       },
     ],
+    questionActions: [
+      {
+        href: '/',
+        label: 'Test it in the editor',
+        description: 'The fastest way to understand fit is to try one real portrait.',
+      },
+      {
+        href: '/privacy',
+        label: 'Open the privacy note',
+        description: 'See the short policy version of the local-first promise.',
+      },
+      {
+        href: '/blog/how-to-make-vtt-tokens',
+        label: 'Read the VTT workflow guide',
+        description: 'Compare practical prep choices before committing to a table setup.',
+      },
+      {
+        href: '/templates',
+        label: 'Browse shape-first templates',
+        description: 'Choose the right format before spending time on border styling.',
+      },
+      {
+        href: '/blog/token-size-and-resolution',
+        label: 'Read the export size guide',
+        description: 'Use 512, 1024, and 2048 on purpose instead of guessing.',
+      },
+    ],
+    supportCardEyebrow: 'What you will find here',
+    answerCardEyebrow: 'Direct answer',
+    nextMove: 'Next move',
+    heroBadges: ['5 common questions', 'Workflow and exports', 'Local image handling'],
   },
   zh: {
     editor: '编辑器',
     faq: '常见问题',
-    nextEyebrow: '继续浏览',
-    nextTitle: '下一步去哪里',
-    nextDescription: '问题先回答清楚，再把你带回编辑器、模板页和更具体的博客文章里。',
-    openLink: '打开页面',
-    nextLinks: [
+    quickActionsEyebrow: '快速入口',
+    quickActionsTitle: '直接去你需要的位置',
+    quickActions: [
       {
         href: '/',
         label: '回到编辑器',
-        description: '直接回到浏览器编辑器，用真实角色图继续试一轮工作流。',
+        description: '拿一张真实角色图试一遍，判断工具适不适合最快。',
       },
       {
         href: '/templates',
         label: '浏览模板页',
-        description: '从圆形、方形、六边形、怪物或透明背景方案里选一个更贴近当前用途的入口。',
+        description: '先选对形状和边框方向，再决定细节，不要反过来。',
       },
       {
         href: '/blog',
-        label: '继续看博客',
-        description: '当 FAQ 不够时，再去看 Roll20、Foundry VTT 和导出尺寸的实战文章。',
+        label: '继续看实战文章',
+        description: '当问题已经变成平台适配或导出策略时，直接转去博客更高效。',
+      },
+      {
+        href: '/privacy',
+        label: '查看隐私说明',
+        description: '如果你最关心原图如何处理，就直接读隐私说明。',
       },
     ],
+    questionActions: [
+      {
+        href: '/',
+        label: '直接进编辑器试一张',
+        description: '判断适不适合，最快的方法不是继续看文案，而是试一张真实头像。',
+      },
+      {
+        href: '/privacy',
+        label: '打开隐私页',
+        description: '需要确认本地优先边界时，隐私页会更直接。',
+      },
+      {
+        href: '/blog/how-to-make-vtt-tokens',
+        label: '读 VTT 工作流指南',
+        description: '在选定桌面方案前，先看一遍真实准备流程。',
+      },
+      {
+        href: '/templates',
+        label: '去模板页选格式',
+        description: '先把形状和边框路线确定下来，再去做细节调整。',
+      },
+      {
+        href: '/blog/token-size-and-resolution',
+        label: '看导出尺寸指南',
+        description: '把 512、1024、2048 的使用边界一次性定清楚。',
+      },
+    ],
+    supportCardEyebrow: '这页包含什么',
+    answerCardEyebrow: '直接回答',
+    nextMove: '下一步',
+    heroBadges: ['5 个常见问题', '工作流与导出', '本地图片处理'],
   },
 } as const;
 
@@ -70,7 +139,11 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
     { label: copy.editor, href: getLocalizedPath(locale, '/') },
     { label: copy.faq },
   ];
-  const nextLinks = copy.nextLinks.map((link) => ({
+  const quickActions = copy.quickActions.map((link) => ({
+    ...link,
+    href: getLocalizedPath(locale, link.href),
+  }));
+  const questionActions = copy.questionActions.map((link) => ({
     ...link,
     href: getLocalizedPath(locale, link.href),
   }));
@@ -106,86 +179,131 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
         <section className="border-b border-white/10">
           <div className="mx-auto max-w-6xl px-6 py-16 lg:px-8 lg:py-18">
             <PageBreadcrumbs items={breadcrumbs} />
-            <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
-              <div className="space-y-5">
+            <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.12fr)_320px]">
+              <div className="space-y-6">
                 <p className="text-xs uppercase tracking-[0.34em] text-stone-500">{model.eyebrow}</p>
-                <h1 className="font-display max-w-4xl text-4xl leading-none text-stone-50 sm:text-5xl">{model.title}</h1>
+                <h1 className="font-display max-w-4xl text-4xl leading-none text-stone-50 sm:text-5xl">
+                  {model.title}
+                </h1>
                 <p className="max-w-3xl text-base leading-8 text-stone-300">{model.description}</p>
                 <p className="max-w-3xl text-sm leading-8 text-stone-400">{model.intro}</p>
+                <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.24em] text-stone-300">
+                  {copy.heroBadges.map((badge) => (
+                    <span
+                      key={badge}
+                      className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5"
+                    >
+                      {badge}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="grid gap-4">
-                {model.signals.map((signal) => (
-                  <article key={signal.title} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
-                    <h2 className="text-lg font-medium text-stone-50">{signal.title}</h2>
-                    <p className="mt-3 text-sm leading-7 text-stone-300">{signal.description}</p>
-                  </article>
-                ))}
-              </div>
+
+              <aside className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6">
+                <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.supportCardEyebrow}</p>
+                <div className="mt-5 space-y-4">
+                  {model.signals.map((signal) => (
+                    <div
+                      key={signal.title}
+                      className="rounded-[24px] border border-white/8 bg-black/20 px-4 py-4"
+                    >
+                      <h2 className="text-base font-medium text-stone-50">{signal.title}</h2>
+                      <p className="mt-2 text-sm leading-7 text-stone-300">{signal.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </aside>
             </div>
           </div>
         </section>
 
-        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 lg:grid-cols-[250px_minmax(0,1fr)] lg:px-8 lg:py-16">
-          <aside className="space-y-3 lg:sticky lg:top-30 lg:self-start">
-            {model.groups.map((group) => (
-              <a
-                key={group.id}
-                href={`#${group.id}`}
-                className="block rounded-[24px] border border-white/10 bg-black/25 px-4 py-3 text-sm text-stone-300 transition hover:border-white/20 hover:text-stone-100"
-              >
-                {group.title}
-              </a>
-            ))}
+        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8 lg:py-16">
+          <aside className="space-y-5 lg:sticky lg:top-30 lg:self-start">
+            <article className="rounded-[30px] border border-white/10 bg-black/25 p-5">
+              <p className="text-xs uppercase tracking-[0.28em] text-stone-500">{copy.quickActionsEyebrow}</p>
+              <h2 className="mt-3 font-display text-2xl text-stone-50">{copy.quickActionsTitle}</h2>
+              <div className="mt-5 space-y-3">
+                {quickActions.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="block rounded-[22px] border border-white/8 bg-white/[0.03] px-4 py-4 transition hover:border-white/15 hover:bg-white/[0.05]"
+                  >
+                    <p className="text-sm font-medium text-stone-50">{link.label}</p>
+                    <p className="mt-2 text-sm leading-6 text-stone-400">{link.description}</p>
+                  </Link>
+                ))}
+              </div>
+            </article>
+
+            <article className="rounded-[30px] border border-white/10 bg-white/[0.03] p-4">
+              <div className="flex flex-wrap gap-2">
+                {model.groups.map((group) => (
+                  <a
+                    key={group.id}
+                    href={`#${group.id}`}
+                    className="inline-flex rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.24em] text-stone-400 transition hover:border-white/20 hover:text-stone-100"
+                  >
+                    {group.title}
+                  </a>
+                ))}
+              </div>
+            </article>
           </aside>
 
           <div className="space-y-10">
             {model.groups.map((group) => (
-              <section key={group.id} id={group.id} className="rounded-[34px] border border-white/10 bg-white/[0.03] p-7">
+              <section
+                key={group.id}
+                id={group.id}
+                className="rounded-[34px] border border-white/10 bg-white/[0.03] p-7"
+              >
                 <h2 className="font-display text-3xl text-stone-50">{group.title}</h2>
-                <p className="mt-3 text-sm leading-8 text-stone-400">{group.description}</p>
+                <p className="mt-3 max-w-3xl text-sm leading-8 text-stone-400">{group.description}</p>
+
                 <div className="mt-6 space-y-4">
                   {group.itemIndexes.map((index) => {
                     const item = model.items[index];
+                    const action = questionActions[index];
 
-                    if (!item) {
+                    if (!item || !action) {
                       return null;
                     }
 
                     return (
-                      <details key={item.question} className="rounded-[26px] border border-white/10 bg-black/20 p-5">
-                        <summary className="cursor-pointer list-none text-lg font-medium text-stone-50">
-                          {item.question}
-                        </summary>
-                        <p className="mt-4 text-sm leading-7 text-stone-300">{item.answer}</p>
-                      </details>
+                      <article
+                        key={item.question}
+                        className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6"
+                      >
+                        <div className="flex flex-wrap items-center gap-3">
+                          <span className="rounded-full border border-[#d7b46a]/30 bg-[#d7b46a]/10 px-3 py-1 text-xs uppercase tracking-[0.24em] text-[#f1d492]">
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
+                          <span className="text-xs uppercase tracking-[0.28em] text-stone-500">
+                            {copy.answerCardEyebrow}
+                          </span>
+                        </div>
+
+                        <h3 className="mt-5 text-2xl font-medium text-stone-50">{item.question}</h3>
+                        <p className="mt-4 max-w-3xl text-sm leading-8 text-stone-300">{item.answer}</p>
+
+                        <div className="mt-6 rounded-[24px] border border-white/8 bg-black/25 p-4">
+                          <p className="text-xs uppercase tracking-[0.26em] text-stone-500">{copy.nextMove}</p>
+                          <Link
+                            href={action.href}
+                            className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-[#f1d492] transition hover:text-[#f7dfab]"
+                          >
+                            {action.label}
+                            <ArrowRight className="h-4 w-4" />
+                          </Link>
+                          <p className="mt-2 text-sm leading-7 text-stone-400">{action.description}</p>
+                        </div>
+                      </article>
                     );
                   })}
                 </div>
               </section>
             ))}
-
-            <section className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-7">
-              <div className="max-w-3xl space-y-4">
-                <p className="text-xs uppercase tracking-[0.34em] text-stone-500">{copy.nextEyebrow}</p>
-                <h2 className="font-display text-3xl text-stone-50">{copy.nextTitle}</h2>
-                <p className="text-sm leading-8 text-stone-300">{copy.nextDescription}</p>
-              </div>
-              <div className="mt-8 grid gap-4 md:grid-cols-3">
-                {nextLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="group rounded-[28px] border border-white/10 bg-black/25 p-5 transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.05]"
-                  >
-                    <h3 className="text-lg font-medium text-stone-50 transition group-hover:text-white">{link.label}</h3>
-                    <p className="mt-3 text-sm leading-7 text-stone-300">{link.description}</p>
-                    <span className="mt-6 inline-flex text-xs uppercase tracking-[0.28em] text-stone-400 transition group-hover:text-stone-200">
-                      {copy.openLink}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </section>
           </div>
         </div>
       </InnerPageChrome>

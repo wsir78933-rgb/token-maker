@@ -18,7 +18,7 @@ export function ControlPanel() {
   const { t } = useI18n();
 
   return (
-    <div className="w-full border-r border-border bg-card/50 px-4 py-6 flex flex-col gap-8 overflow-y-auto xl:h-full xl:w-80">
+    <div className="flex w-full flex-col gap-8 overflow-y-auto border-r border-border bg-card/65 px-4 py-6 backdrop-blur xl:h-full xl:w-80">
       
       {/* 图片设置 */}
       <div className="space-y-4">
@@ -78,7 +78,7 @@ export function ControlPanel() {
                 onClick={() => store.applyPreset(preset)}
                 className={`flex flex-col items-center justify-center p-2 rounded-lg border transition-all ${
                   isActive
-                    ? 'border-primary bg-primary/10 text-primary shadow-[0_0_10px_rgba(139,92,246,0.2)]'
+                    ? 'border-primary bg-primary/10 text-primary shadow-[0_12px_28px_-18px_color-mix(in_oklab,var(--color-primary)_75%,transparent)]'
                     : 'border-border/50 hover:border-primary/50 hover:bg-accent text-muted-foreground hover:text-foreground'
                 }`}
                 title={t(preset.name as I18nKey)}
