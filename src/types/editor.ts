@@ -30,6 +30,8 @@ export interface BorderTemplate {
   customImageUrl?: string;
   /** 系统内置的高清图片边框路径（type='image' 时使用） */
   imageUrl?: string;
+  /** 系统内置的边框缩略图路径（边框选择面板使用） */
+  thumbSrc?: string;
 }
 
 /** 遮罩模板定义 */

@@ -4,9 +4,9 @@ import { useEffect, useRef } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 
-const DEFAULT_GA_MEASUREMENT_ID = 'G-6FMX5JSNNX';
-const GA_MEASUREMENT_ID =
-  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? DEFAULT_GA_MEASUREMENT_ID;
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const IS_ANALYTICS_ENABLED = IS_PRODUCTION && Boolean(GA_MEASUREMENT_ID);
 
 declare global {
   interface Window {
@@ -22,7 +22,7 @@ export function GoogleAnalytics() {
   const search = searchParams.toString();
 
   useEffect(() => {
-    if (!pathname) {
+    if (!IS_ANALYTICS_ENABLED || !GA_MEASUREMENT_ID || !pathname) {
       return;
     }
 
@@ -41,7 +41,7 @@ export function GoogleAnalytics() {
     });
   }, [pathname, search]);
 
-  if (!GA_MEASUREMENT_ID) {
+  if (!IS_ANALYTICS_ENABLED || !GA_MEASUREMENT_ID) {
     return null;
   }
 
@@ -49,9 +49,9 @@ export function GoogleAnalytics() {
     <>
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
-      <Script id="google-analytics" strategy="afterInteractive">
+      <Script id="google-analytics" strategy="lazyOnload">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){window.dataLayer.push(arguments);}

@@ -239,9 +239,23 @@ function BorderThumbnail({ id, active, label }: { id: string; active: boolean; l
   if (!template) return null;
 
   if ((template.type === 'image' && template.imageUrl) || (template.isCustom && template.customImageUrl)) {
-     const src = template.customImageUrl || template.imageUrl;
+     const src = template.isCustom ? template.customImageUrl : template.thumbSrc || template.imageUrl;
+     if (!src) return null;
+
      const altText = template.isCustom ? `${label} custom token border frame` : getBorderAlt(id, label);
-     return <Image src={src || ''} alt={altText} width={40} height={40} unoptimized className="w-10 h-10 object-contain drop-shadow-md" />;
+     const isDataUrl = src.startsWith('data:');
+
+     return (
+       <Image
+         src={src}
+         alt={altText}
+         width={40}
+         height={40}
+         sizes="40px"
+         unoptimized={isDataUrl}
+         className="w-10 h-10 object-contain drop-shadow-md"
+       />
+     );
   }
 
   return <canvas ref={canvasRef} width={64} height={64} className="w-10 h-10 object-contain" />;

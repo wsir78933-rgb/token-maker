@@ -40,7 +40,7 @@ export function buildBlogIndexPath(locale: SiteLocale, currentPage = 1) {
     return basePath;
   }
 
-  return `${basePath}?page=${currentPage}`;
+  return `${basePath}/page/${currentPage}`;
 }
 
 export function createBlogIndexMetadata(locale: SiteLocale, currentPage = 1): Metadata {
@@ -49,7 +49,7 @@ export function createBlogIndexMetadata(locale: SiteLocale, currentPage = 1): Me
   const pagination = getPaginatedBlogPosts(locale, currentPage);
   const page = pagination.currentPage;
   const path = buildBlogIndexPath(locale, page);
-  const alternatePath = page === 1 ? '/blog' : `/blog?page=${page}`;
+  const alternatePath = page === 1 ? '/blog' : `/blog/page/${page}`;
   const title = page === 1 ? copy.title : copy.pageTitle(page);
   const description =
     page === 1 ? copy.description : copy.pageDescription(page, pagination.totalPages);

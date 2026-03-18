@@ -153,6 +153,7 @@ export function BlogHubPageView({
     : pagination.items;
   const latestUpdate = getLatestBlogUpdate(locale);
   const categoryCount = getBlogCategories(locale).length;
+  const currentPath = buildBlogIndexPath(locale, pagination.currentPage);
   const breadcrumbs = [
     { label: copy.editor, href: getLocalizedPath(locale, '/') },
     { label: copy.blog },
@@ -172,7 +173,7 @@ export function BlogHubPageView({
         ])}
       />
 
-      <InnerPageChrome locale={locale} currentPath="/blog" tone="hub">
+      <InnerPageChrome locale={locale} currentPath={currentPath} tone="hub">
         <section className="border-b border-white/10">
           <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
             <PageBreadcrumbs items={breadcrumbs} />

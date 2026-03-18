@@ -4,29 +4,10 @@ import { createBlogIndexMetadata } from '@/lib/blog-seo';
 
 const locale = 'en';
 
-interface BlogIndexPageProps {
-  searchParams: Promise<{ page?: string }>;
+export function generateMetadata(): Metadata {
+  return createBlogIndexMetadata(locale, 1);
 }
 
-function parsePage(value?: string) {
-  const page = Number.parseInt(value ?? '1', 10);
-
-  if (Number.isNaN(page) || page < 1) {
-    return 1;
-  }
-
-  return page;
-}
-
-export async function generateMetadata({
-  searchParams,
-}: BlogIndexPageProps): Promise<Metadata> {
-  const { page } = await searchParams;
-  return createBlogIndexMetadata(locale, parsePage(page));
-}
-
-export default async function BlogIndexPage({ searchParams }: BlogIndexPageProps) {
-  const { page } = await searchParams;
-
-  return <BlogHubPageView locale={locale} currentPage={parsePage(page)} />;
+export default function BlogIndexPage() {
+  return <BlogHubPageView locale={locale} currentPage={1} />;
 }

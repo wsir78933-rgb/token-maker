@@ -5,6 +5,7 @@ import {
   DEFAULT_THEME,
   THEME_CHANGE_EVENT,
   THEME_COOKIE_NAME,
+  THEME_STORAGE_KEY,
   normalizeTheme,
   type ThemeMode,
 } from '@/lib/theme';
@@ -26,6 +27,10 @@ export function applyTheme(theme: ThemeMode) {
 
   root.dataset.theme = theme;
   root.classList.toggle('dark', theme === 'dark');
+
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch {}
 
   document.cookie = `${THEME_COOKIE_NAME}=${theme}; path=/; max-age=31536000; SameSite=Lax`;
   window.dispatchEvent(new CustomEvent<ThemeChangeDetail>(THEME_CHANGE_EVENT, { detail: { theme } }));

@@ -20,8 +20,8 @@ Open the local development URL shown in your terminal after starting the dev ser
 
 Google Analytics has been wired into the shared app layouts.
 
-- Default measurement ID: `G-6FMX5JSNNX`
-- Override in local or production env: `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX`
+- Analytics loads only in production builds.
+- Set `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX` in your production environment to enable it.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
