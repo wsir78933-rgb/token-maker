@@ -85,6 +85,7 @@ export function PrivacyDocPageView({ locale }: { locale: SiteLocale }) {
                 <p className="mt-4 text-lg leading-8 text-stone-100">{model.intro}</p>
                 <Link
                   href={`${getLocalizedPath(locale, '/')}#editor-workspace`}
+                  prefetch={false}
                   className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#f1d492] transition hover:text-[#f7dfab]"
                 >
                   {copy.openEditor}

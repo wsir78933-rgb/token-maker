@@ -127,6 +127,7 @@ export function TemplateDetailPageView({ locale, slug }: { locale: SiteLocale; s
                   <div className="mt-8 flex flex-wrap gap-3">
                     <Link
                       href={page.query}
+                      prefetch={false}
                       className="inline-flex items-center gap-2 rounded-full border border-[#d7b46a]/40 bg-[#d7b46a]/12 px-5 py-2.5 text-sm font-medium text-[#f5ddb0] transition hover:border-[#f2cb7a] hover:bg-[#d7b46a]/20"
                     >
                       {copy.openSetup}
@@ -134,6 +135,7 @@ export function TemplateDetailPageView({ locale, slug }: { locale: SiteLocale; s
                     </Link>
                     <Link
                       href={getLocalizedPath(locale, '/templates')}
+                      prefetch={false}
                       className="inline-flex items-center gap-2 rounded-full border border-white/12 px-5 py-2.5 text-sm text-stone-300 transition hover:border-white/25 hover:text-stone-100"
                     >
                       {copy.allTemplates}
@@ -262,6 +264,7 @@ export function TemplateDetailPageView({ locale, slug }: { locale: SiteLocale; s
               <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.compare}</h2>
               <Link
                 href={getLocalizedPath(locale, '/templates')}
+                prefetch={false}
                 className="text-sm text-stone-400 transition hover:text-stone-100"
               >
                 {copy.allTemplates}
@@ -279,6 +282,7 @@ export function TemplateDetailPageView({ locale, slug }: { locale: SiteLocale; s
                   <Link
                     key={target.slug}
                     href={getLocalizedPath(locale, `/templates/${target.slug}`)}
+                    prefetch={false}
                     className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 transition hover:border-white/20 hover:bg-white/[0.045]"
                   >
                     <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{target.intent}</p>
@@ -302,6 +306,7 @@ export function TemplateDetailPageView({ locale, slug }: { locale: SiteLocale; s
                   <Link
                     key={guide.slug}
                     href={getLocalizedPath(locale, `/blog/${guide.slug}`)}
+                    prefetch={false}
                     className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(127,167,214,0.12),rgba(255,255,255,0.02))] p-6 transition hover:border-white/20 hover:bg-[linear-gradient(180deg,rgba(127,167,214,0.16),rgba(255,255,255,0.03))]"
                   >
                     <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{guide.category}</p>

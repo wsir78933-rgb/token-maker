@@ -108,6 +108,7 @@ export function TemplatesHubPageView({ locale }: { locale: SiteLocale }) {
                       <h2 className="mt-3 text-2xl font-medium text-stone-50">
                         <Link
                           href={getLocalizedPath(locale, `/templates/${template.slug}`)}
+                          prefetch={false}
                           className="transition hover:text-[#f1d492]"
                         >
                           {template.title}
@@ -135,6 +136,7 @@ export function TemplatesHubPageView({ locale }: { locale: SiteLocale }) {
                       <div className="mt-6 flex flex-wrap gap-3">
                         <Link
                           href={getLocalizedPath(locale, `/templates/${template.slug}`)}
+                          prefetch={false}
                           className="inline-flex items-center gap-2 text-sm text-[#f1d492]"
                         >
                           {getTemplateDetailLabel(template.title)}
@@ -142,6 +144,7 @@ export function TemplatesHubPageView({ locale }: { locale: SiteLocale }) {
                         </Link>
                         <Link
                           href={template.query}
+                          prefetch={false}
                           className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100"
                         >
                           {getTemplatePresetLabel(template.title)}

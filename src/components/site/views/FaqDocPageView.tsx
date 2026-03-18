@@ -227,6 +227,7 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
                   <Link
                     key={link.href}
                     href={link.href}
+                    prefetch={false}
                     className="block rounded-[22px] border border-white/8 bg-white/[0.03] px-4 py-4 transition hover:border-white/15 hover:bg-white/[0.05]"
                   >
                     <p className="text-sm font-medium text-stone-50">{link.label}</p>
@@ -291,6 +292,7 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
                           <p className="text-xs uppercase tracking-[0.26em] text-stone-500">{copy.nextMove}</p>
                           <Link
                             href={action.href}
+                            prefetch={false}
                             className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-[#f1d492] transition hover:text-[#f7dfab]"
                           >
                             {action.label}

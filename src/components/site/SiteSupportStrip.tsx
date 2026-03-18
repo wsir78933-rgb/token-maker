@@ -63,6 +63,7 @@ export function SiteSupportStrip({ locale, currentPath, className }: SiteSupport
               <Link
                 key={href}
                 href={href}
+                prefetch={false}
                 className={cn(
                   'group min-w-0 rounded-[18px] border px-4 py-3 transition hover:border-white/20 hover:bg-white/[0.04]',
                   isActive

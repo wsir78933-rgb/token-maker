@@ -174,6 +174,7 @@ export function BlogDetailPageView({
                   <div className="flex flex-wrap gap-3 pt-2">
                     <Link
                       href={post.ctaQuery}
+                      prefetch={false}
                       className="inline-flex items-center gap-2 rounded-full border border-[#d7b46a]/40 bg-[#d7b46a]/12 px-5 py-2.5 text-sm font-medium text-[#f5ddb0] transition hover:border-[#f2cb7a] hover:bg-[#d7b46a]/20"
                     >
                       {copy.openEditor}
@@ -181,6 +182,7 @@ export function BlogDetailPageView({
                     </Link>
                     <Link
                       href={getLocalizedPath(locale, '/blog')}
+                      prefetch={false}
                       className="inline-flex items-center gap-2 rounded-full border border-white/12 px-5 py-2.5 text-sm text-stone-300 transition hover:border-white/25 hover:text-stone-100"
                     >
                       {copy.backToBlog}
@@ -236,6 +238,7 @@ export function BlogDetailPageView({
               <div className="mt-6 space-y-3">
                 <Link
                   href={post.ctaQuery}
+                  prefetch={false}
                   className="group block rounded-[24px] border border-[#d7b46a]/35 bg-[#140f05]/45 p-4 transition hover:border-[#f2cb7a] hover:bg-[#140f05]/65"
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -248,6 +251,7 @@ export function BlogDetailPageView({
                 </Link>
                 <Link
                   href={getLocalizedPath(locale, '/templates')}
+                  prefetch={false}
                   className="group block rounded-[24px] border border-white/10 bg-white/[0.03] p-4 transition hover:border-white/20 hover:bg-white/[0.05]"
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -262,6 +266,7 @@ export function BlogDetailPageView({
                   <Link
                     key={template.slug}
                     href={getLocalizedPath(locale, `/templates/${template.slug}`)}
+                    prefetch={false}
                     className="group block rounded-[24px] border border-white/10 bg-black/25 p-4 transition hover:border-white/20 hover:bg-black/35"
                   >
                     <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">{template.intent}</p>
@@ -312,6 +317,7 @@ export function BlogDetailPageView({
                   <div className="flex flex-wrap gap-3 pt-2">
                     <Link
                       href={post.ctaQuery}
+                      prefetch={false}
                       className="inline-flex items-center gap-2 rounded-full border border-[#f2cb7a]/45 bg-[#d7b46a]/14 px-5 py-2.5 text-sm font-medium text-[#f7ddb0] transition hover:border-[#f2cb7a] hover:bg-[#d7b46a]/24"
                     >
                       {copy.openEditor}
@@ -319,6 +325,7 @@ export function BlogDetailPageView({
                     </Link>
                     <Link
                       href={getLocalizedPath(locale, '/templates')}
+                      prefetch={false}
                       className="inline-flex items-center gap-2 rounded-full border border-white/12 px-5 py-2.5 text-sm text-stone-300 transition hover:border-white/25 hover:text-stone-100"
                     >
                       {copy.browseTemplates}
@@ -336,6 +343,7 @@ export function BlogDetailPageView({
                       <Link
                         key={template.slug}
                         href={getLocalizedPath(locale, `/templates/${template.slug}`)}
+                        prefetch={false}
                         className="group rounded-[28px] border border-white/10 bg-white/[0.04] p-5 transition hover:border-white/20 hover:bg-white/[0.06]"
                       >
                         <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">{template.intent}</p>
@@ -357,6 +365,7 @@ export function BlogDetailPageView({
                 {previousPost ? (
                   <Link
                     href={previousPost.path}
+                    prefetch={false}
                     className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 transition hover:border-white/20 hover:bg-white/[0.045]"
                   >
                     <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.previous}</p>
@@ -367,6 +376,7 @@ export function BlogDetailPageView({
                 {nextPost ? (
                   <Link
                     href={nextPost.path}
+                    prefetch={false}
                     className="rounded-[30px] border border-white/10 bg-white/[0.03] p-6 transition hover:border-white/20 hover:bg-white/[0.045]"
                   >
                     <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.next}</p>
@@ -388,6 +398,7 @@ export function BlogDetailPageView({
                     <Link
                       key={relatedPost.slug}
                       href={relatedPost.path}
+                      prefetch={false}
                       className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(127,167,214,0.12),rgba(255,255,255,0.02))] p-6 transition hover:border-white/20 hover:bg-[linear-gradient(180deg,rgba(127,167,214,0.18),rgba(255,255,255,0.03))]"
                     >
                       <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{relatedPost.category}</p>

@@ -113,6 +113,7 @@ export function GuideDetailPageView({ locale, slug }: { locale: SiteLocale; slug
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
                     href={page.ctaQuery}
+                    prefetch={false}
                     className="inline-flex items-center gap-2 rounded-full border border-[#d7b46a]/40 bg-[#d7b46a]/12 px-5 py-2.5 text-sm font-medium text-[#f5ddb0] transition hover:border-[#f2cb7a] hover:bg-[#d7b46a]/20"
                   >
                     {copy.launchEditor}
@@ -120,6 +121,7 @@ export function GuideDetailPageView({ locale, slug }: { locale: SiteLocale; slug
                   </Link>
                   <Link
                     href={getLocalizedPath(locale, '/templates')}
+                    prefetch={false}
                     className="inline-flex items-center gap-2 rounded-full border border-white/12 px-5 py-2.5 text-sm text-stone-300 transition hover:border-white/25 hover:text-stone-100"
                   >
                     {copy.browseTemplates}
@@ -246,6 +248,7 @@ export function GuideDetailPageView({ locale, slug }: { locale: SiteLocale; slug
                     <Link
                       key={template.slug}
                       href={getLocalizedPath(locale, `/templates/${template.slug}`)}
+                      prefetch={false}
                       className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(215,180,106,0.12),rgba(255,255,255,0.02))] p-6 transition hover:border-white/20 hover:bg-[linear-gradient(180deg,rgba(215,180,106,0.16),rgba(255,255,255,0.03))]"
                     >
                       <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{template.intent}</p>

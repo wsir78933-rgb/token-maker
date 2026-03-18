@@ -16,7 +16,7 @@ export function PageBreadcrumbs({ items }: { items: BreadcrumbItem[] }) {
           return (
             <li key={`${item.label}-${index}`} className="inline-flex items-center gap-2">
               {item.href && !isLast ? (
-                <Link href={item.href} className="transition-colors hover:text-stone-200">
+                <Link href={item.href} prefetch={false} className="transition-colors hover:text-stone-200">
                   {item.label}
                 </Link>
               ) : (

@@ -36,6 +36,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
               href={homeHref}
+              prefetch={false}
               className="site-brand-link inline-flex items-center gap-3 text-sm transition-colors"
             >
               <SiteMark />
@@ -46,7 +47,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
             </Link>
             <div className="flex items-center gap-2">
               <ThemeToggle locale={locale} />
-              <Link href={getLocalizedPath(nextLocale, '/')} className="site-switch-chip">
+              <Link href={getLocalizedPath(nextLocale, '/')} prefetch={false} className="site-switch-chip">
                 {navLabels.switchLocale}
               </Link>
             </div>
@@ -57,6 +58,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
               <Link
                 key={link.href}
                 href={link.href}
+                prefetch={false}
                 data-active={index === 0}
                 className="site-nav-pill inline-flex shrink-0 items-center"
               >
@@ -89,7 +91,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
                 {copy.heroPrimaryCta}
                 <ArrowRight className="h-4 w-4" />
               </a>
-              <Link href={getLocalizedPath(locale, '/templates')} className="site-cta-secondary">
+              <Link href={getLocalizedPath(locale, '/templates')} prefetch={false} className="site-cta-secondary">
                 {copy.heroSecondaryCta}
               </Link>
             </div>
@@ -181,6 +183,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
               <h2 className="font-display max-w-4xl text-3xl text-stone-50 sm:text-4xl">{copy.templatesTitle}</h2>
               <Link
                 href={getLocalizedPath(locale, '/templates')}
+                prefetch={false}
                 className="inline-flex items-center gap-2 text-sm text-[#f1d492] transition hover:text-[#f7dfab]"
               >
                 {copy.seeAllTemplatePages}
@@ -196,6 +199,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-300">{copy.resourcesDescription}</p>
                 <Link
                   href={getLocalizedPath(locale, '/blog')}
+                  prefetch={false}
                   className="mt-5 inline-flex items-center gap-2 text-sm text-[#c9dcff] transition hover:text-white"
                 >
                   {blogCtaLabel}
@@ -238,6 +242,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                 <h3 className="mt-4 text-2xl font-medium text-stone-50">
                   <Link
                     href={getLocalizedPath(locale, `/templates/${page.slug}`)}
+                    prefetch={false}
                     className="transition hover:text-[#f1d492]"
                   >
                     {page.title}
@@ -252,6 +257,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
                     href={getLocalizedPath(locale, `/templates/${page.slug}`)}
+                    prefetch={false}
                     className="inline-flex items-center gap-2 text-sm text-[#f1d492]"
                   >
                     {getTemplateDetailLabel(page.title)}
@@ -259,6 +265,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                   </Link>
                   <Link
                     href={page.query}
+                    prefetch={false}
                     className="text-sm text-stone-400 transition hover:text-stone-100"
                   >
                     {getTemplatePresetLabel(page.title)}
@@ -282,11 +289,11 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                 <h3 className="mt-4 text-2xl font-medium text-stone-50">{post.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-stone-300">{post.excerpt}</p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <Link href={getLocalizedPath(locale, `/blog/${post.slug}`)} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
+                  <Link href={getLocalizedPath(locale, `/blog/${post.slug}`)} prefetch={false} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
                     {readArticleLabel}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <Link href={post.ctaQuery} className="text-sm text-stone-400 transition hover:text-stone-100">
+                  <Link href={post.ctaQuery} prefetch={false} className="text-sm text-stone-400 transition hover:text-stone-100">
                     {locale === 'zh' ? '在编辑器里试用' : 'Try in editor'}
                   </Link>
                 </div>
@@ -321,6 +328,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
           <div className="mt-8">
             <Link
               href={getLocalizedPath(locale, '/faq')}
+              prefetch={false}
               className="inline-flex items-center gap-2 text-sm text-[#f1d492] transition hover:text-[#f7dfab]"
             >
               {faqCtaLabel}

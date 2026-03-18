@@ -47,6 +47,7 @@ export function InnerPageChrome({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
               href={`${getLocalizedPath(locale, '/')}#editor-workspace`}
+              prefetch={false}
               className="site-brand-link inline-flex items-center gap-3 text-sm transition-colors"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -61,7 +62,7 @@ export function InnerPageChrome({
 
             <div className="flex items-center gap-2">
               <ThemeToggle locale={locale} />
-              <Link href={switchedPath} className="site-switch-chip">
+              <Link href={switchedPath} prefetch={false} className="site-switch-chip">
                 {navLabels.switchLocale}
               </Link>
             </div>
@@ -79,6 +80,7 @@ export function InnerPageChrome({
                 <Link
                   key={link.href}
                   href={link.href}
+                  prefetch={false}
                   data-active={isActive}
                   className="site-nav-pill inline-flex shrink-0 items-center"
                 >

@@ -113,6 +113,7 @@ export function GuidesHubPageView({ locale }: { locale: SiteLocale }) {
                         <div className="mt-6 flex flex-wrap gap-3">
                           <Link
                             href={getLocalizedPath(locale, `/blog/${guide.slug}`)}
+                            prefetch={false}
                             className="inline-flex items-center gap-2 text-sm text-[#f1d492]"
                           >
                             {copy.readGuide}
@@ -120,6 +121,7 @@ export function GuidesHubPageView({ locale }: { locale: SiteLocale }) {
                           </Link>
                           <Link
                             href={guide.ctaQuery}
+                            prefetch={false}
                             className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100"
                           >
                             {copy.tryEditor}

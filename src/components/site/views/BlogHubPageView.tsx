@@ -73,7 +73,7 @@ function BlogCard({
 }) {
   return (
     <article className="group overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] shadow-[0_24px_90px_-50px_rgba(0,0,0,0.82)] transition hover:border-white/20 hover:bg-white/[0.045]">
-      <Link href={post.path} className="block">
+      <Link href={post.path} prefetch={false} className="block">
         <div className="relative h-52 overflow-hidden border-b border-white/8 bg-black/20">
           <Image
             src={post.cover}
@@ -102,7 +102,7 @@ function BlogCard({
         </div>
 
         <div className="space-y-3">
-          <Link href={post.path} className="block">
+          <Link href={post.path} prefetch={false} className="block">
             <h2 className="text-2xl font-medium text-stone-50 transition group-hover:text-[#e9d39f]">
               {post.title}
             </h2>
@@ -122,11 +122,11 @@ function BlogCard({
         </div>
 
         <div className="flex flex-wrap gap-4">
-          <Link href={post.path} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
+          <Link href={post.path} prefetch={false} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
             {readLabel}
             <ArrowRight className="h-4 w-4" />
           </Link>
-          <Link href={post.ctaQuery} className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100">
+          <Link href={post.ctaQuery} prefetch={false} className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100">
             {setupLabel}
             <ArrowRight className="h-4 w-4" />
           </Link>
@@ -255,7 +255,7 @@ export function BlogHubPageView({
                     <span>{featuredPost.readingTime}</span>
                   </div>
                   <div className="space-y-4">
-                    <Link href={featuredPost.path} className="block">
+                    <Link href={featuredPost.path} prefetch={false} className="block">
                       <h2 className="font-display text-4xl leading-none text-stone-50 sm:text-5xl">
                         {featuredPost.title}
                       </h2>
@@ -267,6 +267,7 @@ export function BlogHubPageView({
                   <div className="flex flex-wrap gap-4">
                     <Link
                       href={featuredPost.path}
+                      prefetch={false}
                       className="inline-flex items-center gap-2 rounded-full border border-[#d7b46a]/40 bg-[#d7b46a]/12 px-5 py-2.5 text-sm font-medium text-[#f5ddb0] transition hover:border-[#f2cb7a] hover:bg-[#d7b46a]/20"
                     >
                       {copy.readArticle}
@@ -274,6 +275,7 @@ export function BlogHubPageView({
                     </Link>
                     <Link
                       href={featuredPost.ctaQuery}
+                      prefetch={false}
                       className="inline-flex items-center gap-2 rounded-full border border-white/12 px-5 py-2.5 text-sm text-stone-300 transition hover:border-white/25 hover:text-stone-100"
                     >
                       {copy.trySetup}
@@ -324,6 +326,7 @@ export function BlogHubPageView({
             <div className="flex flex-wrap items-center gap-2">
               <Link
                 href={pagination.hasPreviousPage ? buildBlogIndexPath(locale, pagination.currentPage - 1) : '#'}
+                prefetch={false}
                 aria-disabled={!pagination.hasPreviousPage}
                 className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${
                   pagination.hasPreviousPage
@@ -339,6 +342,7 @@ export function BlogHubPageView({
                 <Link
                   key={page}
                   href={buildBlogIndexPath(locale, page)}
+                  prefetch={false}
                   className={`inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm transition ${
                     page === pagination.currentPage
                       ? 'border-[#d7b46a]/40 bg-[#d7b46a]/12 text-[#f1d492]'
@@ -351,6 +355,7 @@ export function BlogHubPageView({
 
               <Link
                 href={pagination.hasNextPage ? buildBlogIndexPath(locale, pagination.currentPage + 1) : '#'}
+                prefetch={false}
                 aria-disabled={!pagination.hasNextPage}
                 className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${
                   pagination.hasNextPage
