@@ -5,14 +5,25 @@ import { Slider as SliderPrimitive } from "@base-ui/react/slider"
 
 import { cn } from "@/lib/utils"
 
+type SliderProps = SliderPrimitive.Root.Props & {
+  getAriaLabel?: SliderPrimitive.Thumb.Props["getAriaLabel"]
+  getAriaValueText?: SliderPrimitive.Thumb.Props["getAriaValueText"]
+  "aria-labelledby"?: string
+  "aria-describedby"?: string
+}
+
 function Slider({
   className,
   defaultValue,
   value,
   min = 0,
   max = 100,
+  getAriaLabel,
+  getAriaValueText,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
   ...props
-}: SliderPrimitive.Root.Props) {
+}: SliderProps) {
   const _values = React.useMemo(
     () =>
       Array.isArray(value)
@@ -31,6 +42,8 @@ function Slider({
       value={value}
       min={min}
       max={max}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
       thumbAlignment="edge"
       {...props}
     >
@@ -48,6 +61,10 @@ function Slider({
           <SliderPrimitive.Thumb
             data-slot="slider-thumb"
             key={index}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            getAriaLabel={getAriaLabel}
+            getAriaValueText={getAriaValueText}
             className="relative block size-3 shrink-0 rounded-full border border-ring bg-white ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
           />
         ))}

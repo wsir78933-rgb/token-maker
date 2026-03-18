@@ -1,5 +1,6 @@
 'use client';
 
+import { useId } from 'react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
 import { STYLE_PRESETS } from '@/lib/templates/presets';
@@ -16,6 +17,13 @@ function getSliderValue(value: number | readonly number[]) {
 export function ControlPanel() {
   const store = useEditorStore();
   const { t } = useI18n();
+  const imageScaleLabelId = useId();
+  const fontSizeLabelId = useId();
+  const textColorInputId = useId();
+  const borderTintInputId = useId();
+  const backgroundColorInputId = useId();
+  const borderOpacityLabelId = useId();
+  const overlayOpacityLabelId = useId();
 
   return (
     <div className="flex w-full flex-col gap-8 overflow-y-auto border-r border-border bg-card/65 px-4 py-6 backdrop-blur xl:h-full xl:w-80">
@@ -48,12 +56,16 @@ export function ControlPanel() {
 
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground">{t('imageScale')}</Label>
+            <Label id={imageScaleLabelId} className="text-xs text-muted-foreground">
+              {t('imageScale')}
+            </Label>
             <span className="text-xs tabular-nums text-muted-foreground">
               {Math.round(store.imageScale * 100)}%
             </span>
           </div>
           <Slider
+            aria-labelledby={imageScaleLabelId}
+            getAriaLabel={() => t('imageScale')}
             value={[store.imageScale]}
             min={0.1}
             max={5}
@@ -117,10 +129,14 @@ export function ControlPanel() {
                 <>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-xs text-muted-foreground">{t('fontSize')}</Label>
+                      <Label id={fontSizeLabelId} className="text-xs text-muted-foreground">
+                        {t('fontSize')}
+                      </Label>
                       <span className="text-xs tabular-nums text-muted-foreground">{text.fontSize}px</span>
                     </div>
                     <Slider
+                      aria-labelledby={fontSizeLabelId}
+                      getAriaLabel={() => t('fontSize')}
                       value={[text.fontSize]}
                       min={12}
                       max={200}
@@ -130,9 +146,12 @@ export function ControlPanel() {
                     />
                   </div>
                   <div className="space-y-3">
-                    <Label className="text-xs text-muted-foreground">{t('textColor')}</Label>
+                    <Label htmlFor={textColorInputId} className="text-xs text-muted-foreground">
+                      {t('textColor')}
+                    </Label>
                     <div className="flex items-center gap-3">
                       <input
+                        id={textColorInputId}
                         type="color"
                         value={text.color}
                         onChange={(e) => store.updateTextBox(text.id, { color: e.target.value })}
@@ -168,9 +187,12 @@ export function ControlPanel() {
         
         {/* 边框色 */}
         <div className="space-y-3">
-          <Label className="text-xs text-muted-foreground">{t('borderTint')}</Label>
+          <Label htmlFor={borderTintInputId} className="text-xs text-muted-foreground">
+            {t('borderTint')}
+          </Label>
           <div className="flex items-center gap-3">
             <input
+              id={borderTintInputId}
               type="color"
               value={store.borderTint}
               onChange={(e) => store.setBorderTint(e.target.value)}
@@ -184,9 +206,12 @@ export function ControlPanel() {
 
         {/* 背景色 */}
         <div className="space-y-3">
-          <Label className="text-xs text-muted-foreground">{t('backgroundColor')}</Label>
+          <Label htmlFor={backgroundColorInputId} className="text-xs text-muted-foreground">
+            {t('backgroundColor')}
+          </Label>
           <div className="flex items-center gap-3">
             <input
+              id={backgroundColorInputId}
               type="color"
               value={store.backgroundColor}
               onChange={(e) => store.setBackgroundColor(e.target.value)}
@@ -201,12 +226,16 @@ export function ControlPanel() {
         {/* 边框不透明度 */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground">{t('borderOpacity')}</Label>
+            <Label id={borderOpacityLabelId} className="text-xs text-muted-foreground">
+              {t('borderOpacity')}
+            </Label>
             <span className="text-xs tabular-nums text-muted-foreground">
               {Math.round(store.borderOpacity * 100)}%
             </span>
           </div>
           <Slider
+            aria-labelledby={borderOpacityLabelId}
+            getAriaLabel={() => t('borderOpacity')}
             value={[store.borderOpacity]}
             min={0}
             max={1}
@@ -219,12 +248,16 @@ export function ControlPanel() {
         {/* 叠加层不透明度 */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground">{t('overlayOpacity')}</Label>
+            <Label id={overlayOpacityLabelId} className="text-xs text-muted-foreground">
+              {t('overlayOpacity')}
+            </Label>
             <span className="text-xs tabular-nums text-muted-foreground">
               {Math.round(store.overlayOpacity * 100)}%
             </span>
           </div>
           <Slider
+            aria-labelledby={overlayOpacityLabelId}
+            getAriaLabel={() => t('overlayOpacity')}
             value={[store.overlayOpacity]}
             min={0}
             max={1}

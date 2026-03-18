@@ -218,7 +218,7 @@ export function ImageUploader() {
             {t('orClickToUpload')}
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs opacity-70 mt-2">
+        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
           <ImageIcon className="w-4 h-4" />
           {t('supportedFormats')}
         </div>
