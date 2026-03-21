@@ -1,0 +1,78 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="60" x2="1490" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#09101B"/>
+      <stop offset="1" stop-color="#05070C"/>
+    </linearGradient>
+    <linearGradient id="warmCard" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#171109"/>
+      <stop offset="1" stop-color="#0C0E13"/>
+    </linearGradient>
+    <linearGradient id="coolCard" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#111B2B"/>
+      <stop offset="1" stop-color="#0C0F16"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" rx="40" fill="url(#bg)"/>
+  <circle cx="1340" cy="150" r="190" fill="#8FB7FF" fill-opacity="0.08"/>
+  <circle cx="250" cy="160" r="130" fill="#D7B46A" fill-opacity="0.08"/>
+  <circle cx="1450" cy="770" r="220" fill="#D7B46A" fill-opacity="0.07"/>
+
+  <rect x="110" y="86" width="178" height="40" rx="20" fill="#101824" stroke="#8FB7FF" stroke-opacity="0.32"/>
+  <text x="141" y="112" fill="#D8E7FF" font-size="17" font-family="Avenir Next, Arial, sans-serif" letter-spacing="3">DECISION POINT</text>
+
+  <text x="110" y="198" fill="#F8F4ED" font-size="64" font-family="Georgia, serif">Bake the Frame In,</text>
+  <text x="110" y="270" fill="#F8F4ED" font-size="64" font-family="Georgia, serif">or Let Foundry Handle It?</text>
+  <text x="110" y="328" fill="#C8D0DA" font-size="28" font-family="Avenir Next, Arial, sans-serif">Static Border vs Dynamic Token Ring</text>
+
+  <g transform="translate(90 390)">
+    <rect width="670" height="390" rx="34" fill="url(#warmCard)" stroke="#D7B46A" stroke-opacity="0.3" stroke-width="2"/>
+    <rect x="36" y="32" width="118" height="42" rx="21" fill="#1E150A" stroke="#D7B46A" stroke-opacity="0.25"/>
+    <text x="65" y="59" fill="#F3D38F" font-size="18" font-family="Avenir Next, Arial, sans-serif" letter-spacing="2.5">ROUTE A</text>
+
+    <text x="36" y="126" fill="#F8F4ED" font-size="46" font-family="Georgia, serif">Static Border</text>
+    <text x="36" y="172" fill="#CED3DA" font-size="24" font-family="Avenir Next, Arial, sans-serif">The frame lives inside the asset.</text>
+
+    <rect x="36" y="206" width="272" height="48" rx="18" fill="#23180B" stroke="#D7B46A" stroke-opacity="0.22"/>
+    <text x="62" y="237" fill="#F4E2BC" font-size="22" font-family="Avenir Next, Arial, sans-serif">Cross-platform / fixed style</text>
+
+    <text x="36" y="302" fill="#F3E7CC" font-size="21" font-family="Avenir Next, Arial, sans-serif">• Works across multiple tabletops</text>
+    <text x="36" y="338" fill="#F3E7CC" font-size="21" font-family="Avenir Next, Arial, sans-serif">• Keeps the visual system in the file</text>
+    <text x="36" y="374" fill="#F3E7CC" font-size="21" font-family="Avenir Next, Arial, sans-serif">• Best with an established frame family</text>
+
+    <rect x="36" y="406" width="344" height="56" rx="20" fill="#120E09" stroke="#6E5530" stroke-opacity="0.52"/>
+    <text x="58" y="440" fill="#F1D492" font-size="20" font-family="Avenir Next, Arial, sans-serif">Watch out: do not stack another heavy ring.</text>
+
+    <circle cx="540" cy="208" r="114" fill="#0C121D" stroke="#F1D492" stroke-opacity="0.82" stroke-width="16"/>
+    <circle cx="540" cy="208" r="84" fill="#1A2432"/>
+    <path d="M540 146C510 146 486 170 486 200V286H594V200C594 170 570 146 540 146Z" fill="#9FB6D0"/>
+    <circle cx="540" cy="118" r="48" fill="#DFC395"/>
+  </g>
+
+  <g transform="translate(840 390)">
+    <rect width="670" height="390" rx="34" fill="url(#coolCard)" stroke="#8FB7FF" stroke-opacity="0.34" stroke-width="2"/>
+    <rect x="36" y="32" width="118" height="42" rx="21" fill="#132034" stroke="#8FB7FF" stroke-opacity="0.24"/>
+    <text x="65" y="59" fill="#D7E7FF" font-size="18" font-family="Avenir Next, Arial, sans-serif" letter-spacing="2.5">ROUTE B</text>
+
+    <text x="36" y="126" fill="#F8F4ED" font-size="46" font-family="Georgia, serif">Dynamic Ring</text>
+    <text x="36" y="172" fill="#CED3DA" font-size="24" font-family="Avenir Next, Arial, sans-serif">Foundry handles the outer ring.</text>
+
+    <rect x="36" y="206" width="306" height="48" rx="18" fill="#142133" stroke="#8FB7FF" stroke-opacity="0.24"/>
+    <text x="62" y="237" fill="#DCEBFF" font-size="22" font-family="Avenir Next, Arial, sans-serif">Foundry-first / cleaner source art</text>
+
+    <text x="36" y="302" fill="#E0ECFF" font-size="21" font-family="Avenir Next, Arial, sans-serif">• Best when the assets live in Foundry v13</text>
+    <text x="36" y="338" fill="#E0ECFF" font-size="21" font-family="Avenir Next, Arial, sans-serif">• Easier to keep status language consistent</text>
+    <text x="36" y="374" fill="#E0ECFF" font-size="21" font-family="Avenir Next, Arial, sans-serif">• Keep the baked frame as light as possible</text>
+
+    <rect x="36" y="406" width="336" height="56" rx="20" fill="#0E1622" stroke="#3F5F8D" stroke-opacity="0.58"/>
+    <text x="58" y="440" fill="#BFD8FF" font-size="20" font-family="Avenir Next, Arial, sans-serif">Watch out: avoid a thick permanent border.</text>
+
+    <circle cx="542" cy="208" r="114" fill="#0C121D" stroke="#47688F" stroke-opacity="0.7" stroke-width="4"/>
+    <circle cx="542" cy="208" r="103" fill="none" stroke="#8FB7FF" stroke-opacity="0.95" stroke-width="12"/>
+    <circle cx="542" cy="208" r="84" fill="#1A2432"/>
+    <path d="M542 146C512 146 488 170 488 200V286H596V200C596 170 572 146 542 146Z" fill="#9FB6D0"/>
+    <circle cx="542" cy="118" r="48" fill="#DFC395"/>
+    <circle cx="642" cy="296" r="18" fill="#E2B95D"/>
+  </g>
+</svg>

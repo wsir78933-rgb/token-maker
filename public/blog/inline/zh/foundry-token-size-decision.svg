@@ -1,0 +1,62 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="80" x2="1460" y2="850" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0C1420"/>
+      <stop offset="1" stop-color="#05070C"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#101823"/>
+      <stop offset="1" stop-color="#0A0F18"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" rx="40" fill="url(#bg)"/>
+  <circle cx="1320" cy="170" r="180" fill="#8FB7FF" fill-opacity="0.1"/>
+  <circle cx="280" cy="760" r="180" fill="#D7B46A" fill-opacity="0.08"/>
+
+  <text x="120" y="150" fill="#F8F5EE" font-size="60" font-family="Georgia, PingFang SC, Noto Serif SC, serif">Foundry Token 尺寸怎么选</text>
+  <text x="120" y="214" fill="#C8D0DA" font-size="28" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">先问“复用价值”和“放大频率”，不要先问“我能不能导更大”。</text>
+
+  <g transform="translate(540 280)">
+    <rect width="520" height="116" rx="28" fill="#15100A" stroke="#D7B46A" stroke-opacity="0.35" stroke-width="2"/>
+    <text x="52" y="54" fill="#F3D38F" font-size="22" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="3">起点问题</text>
+    <text x="52" y="94" fill="#F8F5EE" font-size="34" font-family="Georgia, PingFang SC, Noto Serif SC, serif">这张 Token 以后会反复用吗？</text>
+  </g>
+
+  <path d="M800 396V458" stroke="#D7B46A" stroke-width="4" stroke-linecap="round"/>
+  <path d="M800 458L782 438" stroke="#D7B46A" stroke-width="4" stroke-linecap="round"/>
+  <path d="M800 458L818 438" stroke="#D7B46A" stroke-width="4" stroke-linecap="round"/>
+
+  <g transform="translate(180 500)">
+    <rect width="360" height="220" rx="30" fill="url(#card)" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="2"/>
+    <text x="40" y="58" fill="#CFE0FF" font-size="20" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="3">A 路线</text>
+    <text x="40" y="110" fill="#F8F5EE" font-size="40" font-family="Georgia, PingFang SC, Noto Serif SC, serif">512 x 512</text>
+    <text x="40" y="156" fill="#D0D6DD" font-size="24" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">日常默认值</text>
+    <text x="40" y="194" fill="#9DA9B7" font-size="22" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">玩家、NPC、遭遇小怪</text>
+    <text x="40" y="228" fill="#9DA9B7" font-size="22" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">地图里够清楚，文件更轻</text>
+  </g>
+
+  <g transform="translate(620 500)">
+    <rect width="360" height="220" rx="30" fill="url(#card)" stroke="#D7B46A" stroke-opacity="0.3" stroke-width="2"/>
+    <text x="40" y="58" fill="#F3D38F" font-size="20" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="3">B 路线</text>
+    <text x="40" y="110" fill="#F8F5EE" font-size="40" font-family="Georgia, PingFang SC, Noto Serif SC, serif">1024 x 1024</text>
+    <text x="40" y="156" fill="#D0D6DD" font-size="24" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">长期复用值</text>
+    <text x="40" y="194" fill="#9DA9B7" font-size="22" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">主角、Boss、核心 NPC</text>
+    <text x="40" y="228" fill="#9DA9B7" font-size="22" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">更适合经常放大或长期归档</text>
+  </g>
+
+  <g transform="translate(1060 500)">
+    <rect width="360" height="220" rx="30" fill="url(#card)" stroke="#8FB7FF" stroke-opacity="0.32" stroke-width="2"/>
+    <text x="40" y="58" fill="#DCEBFF" font-size="20" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif" letter-spacing="3">C 路线</text>
+    <text x="40" y="110" fill="#F8F5EE" font-size="40" font-family="Georgia, PingFang SC, Noto Serif SC, serif">大于 1024</text>
+    <text x="40" y="156" fill="#D0D6DD" font-size="24" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">只在必要时</text>
+    <text x="40" y="194" fill="#9DA9B7" font-size="22" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">商用包、封面级、高清归档</text>
+    <text x="40" y="228" fill="#9DA9B7" font-size="22" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">不是所有 Token 的默认选项</text>
+  </g>
+
+  <path d="M540 610H600" stroke="#8FB7FF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M980 610H1040" stroke="#D7B46A" stroke-width="4" stroke-linecap="round"/>
+
+  <text x="120" y="820" fill="#F2E6C8" font-size="24" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">记住：格子尺寸是 1x1、2x2；像素尺寸是 512、1024。</text>
+  <text x="1240" y="820" fill="#9EABB9" font-size="22" font-family="Avenir Next, PingFang SC, Noto Sans SC, sans-serif">Token Maker Blog</text>
+</svg>

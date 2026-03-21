@@ -173,16 +173,29 @@ function slugify(value: string) {
 }
 
 function renderInline(markdown: string) {
-  let html = escapeHtml(markdown);
-
-  html = html.replace(
+  const linkReplacements: string[] = [];
+  const withLinkPlaceholders = markdown.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
-    (_match, label: string, href: string) =>
-      `<a href="${escapeAttribute(href)}" class="blog-link"${href.startsWith('http') ? ' target="_blank" rel="noreferrer"' : ''}>${label}</a>`,
+    (_match, label: string, href: string) => {
+      const placeholder = `@@BLOG_LINK_${linkReplacements.length}@@`;
+
+      linkReplacements.push(
+        `<a href="${escapeAttribute(href)}" class="blog-link"${href.startsWith('http') ? ' target="_blank" rel="noreferrer"' : ''}>${escapeHtml(label)}</a>`,
+      );
+
+      return placeholder;
+    },
   );
+
+  let html = escapeHtml(withLinkPlaceholders);
+
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  html = linkReplacements.reduce(
+    (currentHtml, replacement, index) => currentHtml.replace(`@@BLOG_LINK_${index}@@`, replacement),
+    html,
+  );
 
   return html;
 }
@@ -264,14 +277,15 @@ function markdownToHtml(markdown: string): ParsedMarkdown {
       continue;
     }
 
-    if (trimmed.startsWith('<iframe') || trimmed.startsWith('<video')) {
+    if (trimmed.startsWith('<iframe') || trimmed.startsWith('<video') || trimmed.startsWith('<a')) {
       const rawBlock: string[] = [line];
       index += 1;
 
       while (
         index < lines.length &&
         !lines[index].includes('</iframe>') &&
-        !lines[index].includes('</video>')
+        !lines[index].includes('</video>') &&
+        !lines[index].includes('</a>')
       ) {
         rawBlock.push(lines[index]);
         index += 1;
@@ -335,6 +349,7 @@ function markdownToHtml(markdown: string): ParsedMarkdown {
         /^!\[[^\]]*]\([^)]+\)$/.test(current) ||
         current.startsWith('<iframe') ||
         current.startsWith('<video') ||
+        current.startsWith('<a') ||
         /^>\s?/.test(current) ||
         /^[-*]\s+/.test(current) ||
         /^\d+\.\s+/.test(current)

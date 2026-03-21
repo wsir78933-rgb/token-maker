@@ -3,6 +3,53 @@
 // ============================================================
 import type { BorderTemplate } from '@/types/editor';
 
+const TFF_BORDER_PACK: Array<{
+  id: string;
+  name: string;
+  linkedMaskId?: string;
+}> = [
+  { id: 'tff-thin-ring', name: 'border.tff-thin-ring', linkedMaskId: 'circle' },
+  { id: 'tff-weathered-copper-ring', name: 'border.tff-weathered-copper-ring', linkedMaskId: 'circle' },
+  { id: 'tff-gilded-ring', name: 'border.tff-gilded-ring', linkedMaskId: 'circle' },
+  { id: 'tff-arcane-lightning-ring', name: 'border.tff-arcane-lightning-ring', linkedMaskId: 'circle' },
+  { id: 'tff-gunmetal-ring', name: 'border.tff-gunmetal-ring', linkedMaskId: 'circle' },
+  { id: 'tff-hex-ring', name: 'border.tff-hex-ring', linkedMaskId: 'hexagon' },
+  { id: 'tff-solid-white-ring', name: 'border.tff-solid-white-ring', linkedMaskId: 'circle' },
+  { id: 'tff-crescent-ring', name: 'border.tff-crescent-ring', linkedMaskId: 'circle' },
+  { id: 'tff-orbit-ring', name: 'border.tff-orbit-ring', linkedMaskId: 'circle' },
+  { id: 'tff-filigree-ring', name: 'border.tff-filigree-ring', linkedMaskId: 'circle' },
+  { id: 'tff-braided-vine-ring', name: 'border.tff-braided-vine-ring', linkedMaskId: 'circle' },
+  { id: 'tff-clover-square', name: 'border.tff-clover-square', linkedMaskId: 'square' },
+  { id: 'tff-greek-key-ring', name: 'border.tff-greek-key-ring', linkedMaskId: 'circle' },
+  { id: 'tff-compass-ring', name: 'border.tff-compass-ring', linkedMaskId: 'circle' },
+  { id: 'tff-sun-spike-ring', name: 'border.tff-sun-spike-ring', linkedMaskId: 'circle' },
+  { id: 'tff-rope-ring', name: 'border.tff-rope-ring', linkedMaskId: 'circle' },
+  { id: 'tff-triangle-mosaic-ring', name: 'border.tff-triangle-mosaic-ring', linkedMaskId: 'circle' },
+  { id: 'tff-layered-star-ring', name: 'border.tff-layered-star-ring', linkedMaskId: 'circle' },
+  { id: 'tff-triangle-dash-ring', name: 'border.tff-triangle-dash-ring', linkedMaskId: 'circle' },
+  { id: 'tff-star-polygon-ring', name: 'border.tff-star-polygon-ring', linkedMaskId: 'circle' },
+  { id: 'tff-dotted-ring', name: 'border.tff-dotted-ring', linkedMaskId: 'circle' },
+  { id: 'tff-sunburst-shield-ring', name: 'border.tff-sunburst-shield-ring', linkedMaskId: 'square' },
+  { id: 'tff-laurel-ring', name: 'border.tff-laurel-ring', linkedMaskId: 'circle' },
+  { id: 'tff-square-link-ring', name: 'border.tff-square-link-ring', linkedMaskId: 'circle' },
+  { id: 'tff-diamond-square-ring', name: 'border.tff-diamond-square-ring', linkedMaskId: 'square' },
+  { id: 'tff-silver-ring', name: 'border.tff-silver-ring', linkedMaskId: 'circle' },
+  { id: 'tff-ouroboros-ring', name: 'border.tff-ouroboros-ring', linkedMaskId: 'circle' },
+  { id: 'tff-stone-ring', name: 'border.tff-stone-ring', linkedMaskId: 'circle' },
+  { id: 'tff-rough-ring', name: 'border.tff-rough-ring', linkedMaskId: 'circle' },
+  { id: 'tff-distressed-ring', name: 'border.tff-distressed-ring', linkedMaskId: 'circle' },
+];
+
+const TFF_BORDER_TEMPLATES: BorderTemplate[] = TFF_BORDER_PACK.map((border) => ({
+  id: border.id,
+  name: border.name,
+  type: 'image',
+  linkedMaskId: border.linkedMaskId,
+  imageUrl: `/borders/tff/${border.id}.png`,
+  thumbSrc: `/borders/tff/${border.id}.png`,
+  maskUrl: `/masks/tff/${border.id}.png`,
+}));
+
 export const BORDER_TEMPLATES: BorderTemplate[] = [
   {
     id: 'none',
@@ -88,8 +135,131 @@ export const BORDER_TEMPLATES: BorderTemplate[] = [
     outerRadius: 1.0,
     strokeWidth: 0.04,
   },
+  {
+    id: 'plain-thin-ring',
+    name: 'border.plain-thin-ring',
+    type: 'flat-ring',
+    linkedMaskId: 'circle',
+    innerRadius: 0.946,
+    outerRadius: 1.0,
+  },
+  {
+    id: 'plain-thick-ring',
+    name: 'border.plain-thick-ring',
+    type: 'flat-ring',
+    linkedMaskId: 'circle',
+    innerRadius: 0.89,
+    outerRadius: 1.0,
+  },
+  {
+    id: 'plain-super-thin-ring',
+    name: 'border.plain-super-thin-ring',
+    type: 'flat-ring',
+    linkedMaskId: 'circle',
+    innerRadius: 0.972,
+    outerRadius: 1.0,
+  },
+  {
+    id: 'plain-double-ring',
+    name: 'border.plain-double-ring',
+    type: 'flat-double-ring',
+    linkedMaskId: 'circle',
+    innerRadius: 0.89,
+    strokeWidth: 0.03,
+  },
+  {
+    id: 'plain-square-thin',
+    name: 'border.plain-square-thin',
+    type: 'flat-polygon',
+    linkedMaskId: 'square',
+    sides: 4,
+    strokeWidth: 0.05,
+  },
+  {
+    id: 'plain-square-thick',
+    name: 'border.plain-square-thick',
+    type: 'flat-polygon',
+    linkedMaskId: 'square',
+    sides: 4,
+    strokeWidth: 0.095,
+  },
+  {
+    id: 'plain-hexagon',
+    name: 'border.plain-hexagon',
+    type: 'flat-polygon',
+    linkedMaskId: 'hexagon',
+    sides: 6,
+    strokeWidth: 0.06,
+  },
+  {
+    id: 'plain-octagon',
+    name: 'border.plain-octagon',
+    type: 'flat-polygon',
+    linkedMaskId: 'octagon',
+    sides: 8,
+    strokeWidth: 0.06,
+  },
+  {
+    id: 'plain-decagon',
+    name: 'border.plain-decagon',
+    type: 'flat-polygon',
+    linkedMaskId: 'decagon',
+    sides: 10,
+    strokeWidth: 0.055,
+  },
+  {
+    id: 'plain-dodecagon',
+    name: 'border.plain-dodecagon',
+    type: 'flat-polygon',
+    linkedMaskId: 'dodecagon',
+    sides: 12,
+    strokeWidth: 0.055,
+  },
+  ...TFF_BORDER_TEMPLATES,
 ];
+
+const DEFAULT_BORDER_ID_SET = new Set([
+  'none',
+  'metalbarbarian',
+  'wood',
+  'rocks',
+  'blueenergy',
+  'silverspikes',
+  'revgold',
+  'fire',
+  'ice',
+  'steampunk',
+  'bones',
+  'thin-ring',
+]);
+
+const COMPETITOR_BORDER_ID_SET = new Set([
+  'none',
+  'plain-thin-ring',
+  'plain-thick-ring',
+  'plain-super-thin-ring',
+  'plain-double-ring',
+  'plain-square-thin',
+  'plain-square-thick',
+  'plain-hexagon',
+  'plain-octagon',
+  'plain-decagon',
+  'plain-dodecagon',
+  ...TFF_BORDER_PACK.map((border) => border.id),
+]);
+
+export const DEFAULT_BORDER_TEMPLATES = BORDER_TEMPLATES.filter((border) =>
+  DEFAULT_BORDER_ID_SET.has(border.id)
+);
+
+export const COMPETITOR_BORDER_TEMPLATES = BORDER_TEMPLATES.filter((border) =>
+  COMPETITOR_BORDER_ID_SET.has(border.id)
+);
 
 export function getBorderById(id: string): BorderTemplate | undefined {
   return BORDER_TEMPLATES.find((b) => b.id === id);
+}
+
+export function isCompetitorBorderId(id: string): boolean {
+  return COMPETITOR_BORDER_ID_SET.has(id);
 }

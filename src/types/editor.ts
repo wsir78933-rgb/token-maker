@@ -3,13 +3,27 @@
 // ============================================================
 
 /** 边框模板类型 */
-export type BorderType = 'none' | 'ring' | 'double-ring' | 'polygon' | 'spike' | 'abstract' | 'image';
+export type BorderType =
+  | 'none'
+  | 'ring'
+  | 'flat-ring'
+  | 'flat-double-ring'
+  | 'flat-polygon'
+  | 'double-ring'
+  | 'polygon'
+  | 'spike'
+  | 'abstract'
+  | 'image';
 
 /** 边框模板定义（数据驱动） */
 export interface BorderTemplate {
   id: string;
   name: string;
   type: BorderType;
+  /** 边框绑定的裁切形状；用于“边框即形状”的模式 */
+  linkedMaskId?: string;
+  /** 系统内置的边框专属遮罩图；用于竞品同款异形裁切 */
+  maskUrl?: string;
   /** 多边形边数（polygon 类型时使用） */
   sides?: number;
   /** 内径比例 0-1（ring 类型时使用） */
@@ -40,9 +54,6 @@ export interface MaskTemplate {
   name: string;
   /** 多边形边数，0 = 圆形，4 = 方形，6/8/10/12 = 多边形 */
   sides: number;
-  /** 是否为用户上传的自定义遮罩 */
-  isCustom?: boolean;
-  customImageUrl?: string;
 }
 
 /** 文本框 */
@@ -75,11 +86,12 @@ export interface StylePreset {
   borderId: string;
   maskId: string;
   borderTint: string;
-  backgroundColor: string;
   borderOpacity: number;
   overlayTint: string;
   overlayOpacity: number;
 }
+
+export type BorderLibraryMode = 'default' | 'competitor';
 
 /** 导出尺寸选项 */
 export type ExportSize = 256 | 512 | 1024 | 2048;
@@ -97,11 +109,11 @@ export interface EditorState {
   selectedBorderId: string;
   selectedMaskId: string;
   customBorders: BorderTemplate[];
-  customMasks: MaskTemplate[];
+  borderLibraryMode: BorderLibraryMode;
 
   // --- 样式 ---
   borderTint: string;
-  backgroundColor: string;
+  imageBorderTintEnabled: boolean;
   textColor: string;
   overlayTint: string;
   borderOpacity: number;
@@ -131,15 +143,12 @@ export interface EditorActions {
 
   // 模板
   setSelectedBorder: (id: string) => void;
-  setSelectedMask: (id: string) => void;
   addCustomBorder: (template: BorderTemplate) => void;
   removeCustomBorder: (id: string) => void;
-  addCustomMask: (template: MaskTemplate) => void;
-  removeCustomMask: (id: string) => void;
+  setBorderLibraryMode: (mode: BorderLibraryMode) => void;
 
   // 样式
   setBorderTint: (color: string) => void;
-  setBackgroundColor: (color: string) => void;
   setTextColor: (color: string) => void;
   setOverlayTint: (color: string) => void;
   setBorderOpacity: (opacity: number) => void;

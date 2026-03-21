@@ -33,7 +33,7 @@ function ShowcasePresetLink({
         'inline-flex items-center gap-2 rounded-[min(var(--radius-md),12px)] border text-sm font-medium transition',
         compact
           ? 'justify-center border-border/60 bg-background/80 px-2.5 py-2 text-foreground hover:bg-muted'
-          : 'justify-center border-white/12 bg-white/[0.06] px-3 py-2 text-white hover:border-white/20 hover:bg-white/[0.1]',
+          : 'justify-center border-white/12 bg-white/[0.04] px-3 py-2 text-stone-100 hover:border-white/20 hover:bg-white/[0.05]',
         className,
       )}
     >

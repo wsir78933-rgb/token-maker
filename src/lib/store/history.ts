@@ -9,8 +9,9 @@ type TrackedKey =
   | 'imageScale'
   | 'selectedBorderId'
   | 'selectedMaskId'
+  | 'borderLibraryMode'
   | 'borderTint'
-  | 'backgroundColor'
+  | 'imageBorderTintEnabled'
   | 'textColor'
   | 'overlayTint'
   | 'borderOpacity'
@@ -27,8 +28,9 @@ function extractState(state: EditorState): PartialTrackedState {
     imageScale: state.imageScale,
     selectedBorderId: state.selectedBorderId,
     selectedMaskId: state.selectedMaskId,
+    borderLibraryMode: state.borderLibraryMode,
     borderTint: state.borderTint,
-    backgroundColor: state.backgroundColor,
+    imageBorderTintEnabled: state.imageBorderTintEnabled,
     textColor: state.textColor,
     overlayTint: state.overlayTint,
     borderOpacity: state.borderOpacity,

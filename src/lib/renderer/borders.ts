@@ -7,6 +7,8 @@ import { generatePolygonPoints } from './masks';
 import { getCachedImage } from '@/lib/utils/imageCache';
 import { useEditorStore } from '@/lib/store/editor-store';
 
+const IMAGE_BORDER_TINT_CACHE = new Map<string, HTMLCanvasElement>();
+
 /**
  * 颜色变暗或变亮辅助函数
  */
@@ -35,6 +37,165 @@ function shadeColor(color: string, percent: number): string {
     return "#" + RR + GG + BB;
   }
   return color;
+}
+
+function clamp01(value: number): number {
+  return Math.min(1, Math.max(0, value));
+}
+
+function parseHexColor(color: string): { r: number; g: number; b: number } | null {
+  const normalized = color.trim().replace('#', '');
+  if (/^[0-9a-fA-F]{6}$/.test(normalized)) {
+    return {
+      r: parseInt(normalized.slice(0, 2), 16),
+      g: parseInt(normalized.slice(2, 4), 16),
+      b: parseInt(normalized.slice(4, 6), 16),
+    };
+  }
+
+  if (/^[0-9a-fA-F]{3}$/.test(normalized)) {
+    return {
+      r: parseInt(normalized[0] + normalized[0], 16),
+      g: parseInt(normalized[1] + normalized[1], 16),
+      b: parseInt(normalized[2] + normalized[2], 16),
+    };
+  }
+
+  return null;
+}
+
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  const nr = r / 255;
+  const ng = g / 255;
+  const nb = b / 255;
+  const max = Math.max(nr, ng, nb);
+  const min = Math.min(nr, ng, nb);
+  const lightness = (max + min) / 2;
+
+  if (max === min) {
+    return [0, 0, lightness];
+  }
+
+  const delta = max - min;
+  const saturation =
+    lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+
+  let hue = 0;
+  switch (max) {
+    case nr:
+      hue = (ng - nb) / delta + (ng < nb ? 6 : 0);
+      break;
+    case ng:
+      hue = (nb - nr) / delta + 2;
+      break;
+    default:
+      hue = (nr - ng) / delta + 4;
+      break;
+  }
+
+  return [hue / 6, saturation, lightness];
+}
+
+function hueToRgb(p: number, q: number, t: number): number {
+  let nextT = t;
+  if (nextT < 0) nextT += 1;
+  if (nextT > 1) nextT -= 1;
+  if (nextT < 1 / 6) return p + (q - p) * 6 * nextT;
+  if (nextT < 1 / 2) return q;
+  if (nextT < 2 / 3) return p + (q - p) * (2 / 3 - nextT) * 6;
+  return p;
+}
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  if (s === 0) {
+    const value = Math.round(l * 255);
+    return [value, value, value];
+  }
+
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+
+  return [
+    Math.round(hueToRgb(p, q, h + 1 / 3) * 255),
+    Math.round(hueToRgb(p, q, h) * 255),
+    Math.round(hueToRgb(p, q, h - 1 / 3) * 255),
+  ];
+}
+
+function getTintedImageBorder(
+  borderImage: HTMLImageElement,
+  cacheKey: string,
+  size: number,
+  tint: string
+): HTMLCanvasElement | null {
+  const cached = IMAGE_BORDER_TINT_CACHE.get(cacheKey);
+  if (cached) return cached;
+
+  const tintRgb = parseHexColor(tint);
+  if (!tintRgb) return null;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return null;
+
+  try {
+    ctx.clearRect(0, 0, size, size);
+    ctx.drawImage(borderImage, 0, 0, size, size);
+
+    const imageData = ctx.getImageData(0, 0, size, size);
+    const { data } = imageData;
+    const [tintHue, tintSaturation, tintLightness] = rgbToHsl(
+      tintRgb.r,
+      tintRgb.g,
+      tintRgb.b
+    );
+
+    for (let index = 0; index < data.length; index += 4) {
+      const alpha = data[index + 3];
+      if (alpha === 0) continue;
+
+      const red = data[index];
+      const green = data[index + 1];
+      const blue = data[index + 2];
+      const [, , sourceLightness] = rgbToHsl(red, green, blue);
+      const sourceLuminance =
+        (0.2126 * red + 0.7152 * green + 0.0722 * blue) / 255;
+
+      const detailLightness = clamp01(
+        sourceLightness * 0.72 + sourceLuminance * 0.28
+      );
+      const recoloredSaturation = clamp01(
+        tintSaturation * 0.9 + (1 - detailLightness) * 0.06
+      );
+      const recoloredLightness = clamp01(
+        detailLightness * 0.88 + tintLightness * 0.12
+      );
+
+      const [nextRed, nextGreen, nextBlue] = hslToRgb(
+        tintHue,
+        recoloredSaturation,
+        recoloredLightness
+      );
+
+      const highlightStrength = Math.max(0, sourceLuminance - 0.74) / 0.26;
+
+      data[index] = Math.round(nextRed + (255 - nextRed) * highlightStrength * 0.3);
+      data[index + 1] = Math.round(
+        nextGreen + (255 - nextGreen) * highlightStrength * 0.3
+      );
+      data[index + 2] = Math.round(nextBlue + (255 - nextBlue) * highlightStrength * 0.3);
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    IMAGE_BORDER_TINT_CACHE.set(cacheKey, canvas);
+    return canvas;
+  } catch (error) {
+    console.warn('Failed to tint border image, using original image instead.', error);
+    return null;
+  }
 }
 
 /**
@@ -120,7 +281,8 @@ export function drawBorder(
   border: BorderTemplate,
   size: number,
   tint: string,
-  opacity: number
+  opacity: number,
+  tintImageBorder: boolean = true
 ): void {
   if (border.type === 'none') return;
 
@@ -139,15 +301,17 @@ export function drawBorder(
       useEditorStore.setState({ activePresetId: useEditorStore.getState().activePresetId });
     });
     if (img) {
-      // 图片边框素材通常自带发光、烟雾或能量内沿，直接染色会把这些半透明区域压到角色图上。
-      // 对位图边框保持原色，只使用双通道叠绘增强可见度。
-      const baseAlpha = ctx.globalAlpha;
-      ctx.drawImage(img, 0, 0, size, size);
+      if (tintImageBorder) {
+        const tintedImage = getTintedImageBorder(
+          img,
+          `${url}::${size}::${tint.toLowerCase()}`,
+          size,
+          tint
+        );
 
-      if (border.type === 'image') {
-        ctx.globalAlpha = Math.min(1, baseAlpha * 0.6);
+        ctx.drawImage(tintedImage ?? img, 0, 0, size, size);
+      } else {
         ctx.drawImage(img, 0, 0, size, size);
-        ctx.globalAlpha = baseAlpha;
       }
     }
     ctx.restore();
@@ -161,6 +325,15 @@ export function drawBorder(
   switch (border.type) {
     case 'ring':
       drawRing(ctx, cx, cy, maxRadius, border, tint, size);
+      break;
+    case 'flat-ring':
+      drawFlatRing(ctx, cx, cy, maxRadius, border, tint);
+      break;
+    case 'flat-double-ring':
+      drawFlatDoubleRing(ctx, cx, cy, maxRadius, border, tint);
+      break;
+    case 'flat-polygon':
+      drawFlatPolygonBorder(ctx, cx, cy, maxRadius, border, tint);
       break;
     case 'double-ring':
       drawDoubleRing(ctx, cx, cy, maxRadius, border, tint, size);
@@ -195,6 +368,152 @@ function drawRing(
   };
 
   fillWithBevel(ctx, cx, cy, size, tint, createPath);
+}
+
+/** 绘制更接近 RollAdvantage 默认 plain_ring_1 的平面细环 */
+function drawFlatRing(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  maxRadius: number,
+  border: BorderTemplate,
+  tint: string
+): void {
+  const outer = maxRadius * (border.outerRadius ?? 1);
+  const inner = maxRadius * (border.innerRadius ?? 0.946);
+  const edgeWidth = Math.max(1, maxRadius * 0.018);
+
+  ctx.save();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, outer, 0, Math.PI * 2);
+  ctx.arc(cx, cy, inner, 0, Math.PI * 2, true);
+  ctx.closePath();
+  ctx.fillStyle = tint;
+  ctx.fill();
+
+  ctx.globalAlpha = 0.2;
+  ctx.strokeStyle = shadeColor(tint, 18);
+  ctx.lineWidth = edgeWidth;
+  ctx.beginPath();
+  ctx.arc(cx, cy, inner + edgeWidth * 0.45, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.globalAlpha = 0.22;
+  ctx.strokeStyle = shadeColor(tint, -22);
+  ctx.lineWidth = edgeWidth;
+  ctx.beginPath();
+  ctx.arc(cx, cy, outer - edgeWidth * 0.45, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function strokeFlatEdge(
+  ctx: CanvasRenderingContext2D,
+  createPath: () => void,
+  color: string,
+  lineWidth: number,
+  alpha: number
+) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  createPath();
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** 绘制平面双环 */
+function drawFlatDoubleRing(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  maxRadius: number,
+  border: BorderTemplate,
+  tint: string
+): void {
+  const sw = maxRadius * (border.strokeWidth ?? 0.03);
+  const innerOuter = maxRadius * (border.innerRadius ?? 0.89);
+  const innerInner = Math.max(0, innerOuter - sw);
+
+  const drawSingleRing = (outer: number, inner: number) => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, outer, 0, Math.PI * 2);
+    ctx.arc(cx, cy, inner, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.fillStyle = tint;
+    ctx.fill();
+
+    strokeFlatEdge(ctx, () => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, inner + sw * 0.45, 0, Math.PI * 2);
+    }, shadeColor(tint, 18), Math.max(1, sw * 0.32), 0.2);
+
+    strokeFlatEdge(ctx, () => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, outer - sw * 0.45, 0, Math.PI * 2);
+    }, shadeColor(tint, -22), Math.max(1, sw * 0.32), 0.22);
+  };
+
+  ctx.save();
+  drawSingleRing(maxRadius, maxRadius - sw);
+  drawSingleRing(innerOuter, innerInner);
+  ctx.restore();
+}
+
+/** 绘制平面多边形边框 */
+function drawFlatPolygonBorder(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  maxRadius: number,
+  border: BorderTemplate,
+  tint: string
+): void {
+  const sides = border.sides ?? 6;
+  const sw = (border.strokeWidth ?? 0.05) * maxRadius;
+  const rotation = sides === 4 ? -Math.PI / 4 : -Math.PI / 2;
+  const outerPoints = generatePolygonPoints(cx, cy, maxRadius, sides, rotation);
+  const innerPoints = generatePolygonPoints(cx, cy, Math.max(0, maxRadius - sw), sides, rotation);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(outerPoints[0][0], outerPoints[0][1]);
+  for (let i = 1; i < outerPoints.length; i++) {
+    ctx.lineTo(outerPoints[i][0], outerPoints[i][1]);
+  }
+  ctx.closePath();
+
+  ctx.moveTo(innerPoints[0][0], innerPoints[0][1]);
+  for (let i = innerPoints.length - 1; i >= 0; i--) {
+    ctx.lineTo(innerPoints[i][0], innerPoints[i][1]);
+  }
+  ctx.closePath();
+
+  ctx.fillStyle = tint;
+  ctx.fill();
+
+  strokeFlatEdge(ctx, () => {
+    ctx.beginPath();
+    ctx.moveTo(innerPoints[0][0], innerPoints[0][1]);
+    for (let i = 1; i < innerPoints.length; i++) {
+      ctx.lineTo(innerPoints[i][0], innerPoints[i][1]);
+    }
+    ctx.closePath();
+  }, shadeColor(tint, 18), Math.max(1, sw * 0.18), 0.2);
+
+  strokeFlatEdge(ctx, () => {
+    ctx.beginPath();
+    ctx.moveTo(outerPoints[0][0], outerPoints[0][1]);
+    for (let i = 1; i < outerPoints.length; i++) {
+      ctx.lineTo(outerPoints[i][0], outerPoints[i][1]);
+    }
+    ctx.closePath();
+  }, shadeColor(tint, -22), Math.max(1, sw * 0.18), 0.22);
+
+  ctx.restore();
 }
 
 /** 绘制双环 */

@@ -5,10 +5,13 @@ import { useEffect, useRef } from 'react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
 import { trackDownloadToken, trackSelectFrame } from '@/lib/analytics';
-import { BORDER_TEMPLATES } from '@/lib/templates/borders';
-import { MASK_TEMPLATES } from '@/lib/templates/masks';
+import {
+  BORDER_TEMPLATES,
+  COMPETITOR_BORDER_TEMPLATES,
+  DEFAULT_BORDER_TEMPLATES,
+} from '@/lib/templates/borders';
+import { STYLE_PRESETS } from '@/lib/templates/presets';
 import { drawBorderThumbnail } from '@/lib/renderer/borders';
-import { drawMaskThumbnail } from '@/lib/renderer/masks';
 import { Button } from '@/components/ui/button';
 import type { BorderTemplate, ExportSize } from '@/types/editor';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
@@ -43,6 +46,9 @@ export function TemplatePanel() {
   const store = useEditorStore();
   const { t } = useI18n();
   const selectedFrameName = getSelectedFrameName(store.selectedBorderId, store.customBorders, t);
+  const bordersGridRef = useRef<HTMLDivElement>(null);
+  const visibleBorderTemplates =
+    store.borderLibraryMode === 'competitor' ? COMPETITOR_BORDER_TEMPLATES : DEFAULT_BORDER_TEMPLATES;
 
   const handleExport = async () => {
     const blob = await exportTokenAsPNG(store, store.exportSize);
@@ -53,7 +59,21 @@ export function TemplatePanel() {
   };
 
   const borderInputRef = useRef<HTMLInputElement>(null);
-  const maskInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const grid = bordersGridRef.current;
+    if (!grid) return;
+
+    const activeBorderButton = grid.querySelector<HTMLElement>(
+      `[data-border-id="${CSS.escape(store.selectedBorderId)}"]`
+    );
+
+    activeBorderButton?.scrollIntoView({
+      block: 'nearest',
+      inline: 'nearest',
+      behavior: 'smooth',
+    });
+  }, [store.selectedBorderId]);
 
   const handleUploadBorder = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -73,38 +93,53 @@ export function TemplatePanel() {
     if (borderInputRef.current) borderInputRef.current.value = '';
   };
 
-  const handleUploadMask = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const base64 = await fileToBase64(file);
-    await preloadImageToCache(base64);
-    const newId = `custom-mask-${Date.now()}`;
-    store.addCustomMask({
-      id: newId,
-      name: 'Custom',
-      sides: 0,
-      isCustom: true,
-      customImageUrl: base64
-    });
-    store.setSelectedMask(newId);
-    if (maskInputRef.current) maskInputRef.current.value = '';
-  };
-
   return (
     <div className="flex w-full flex-col overflow-hidden border-l border-border bg-card/65 backdrop-blur xl:h-full xl:w-80">
-      
+
+      {/* ── 顶部固定标题栏 ── */}
+      <div className="shrink-0 border-b border-border/50 px-4 py-4">
+        <h3 className="text-sm font-semibold text-foreground/90">{t('templatePanel')}</h3>
+      </div>
+
       <div className="flex-1 space-y-8 overflow-y-auto px-4 py-6">
+        
+        {/* 风格预设 */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold text-foreground/90">{t('presets')}</h3>
+          <div className="grid grid-cols-3 gap-2">
+            {STYLE_PRESETS.map((preset) => {
+              const isActive = store.activePresetId === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  onClick={() => store.applyPreset(preset)}
+                  className={`flex aspect-square flex-col items-center justify-center rounded-lg border p-2 transition-all ${
+                    isActive
+                      ? 'border-primary bg-primary/10 text-primary shadow-[0_12px_28px_-18px_color-mix(in_oklab,var(--color-primary)_75%,transparent)]'
+                      : 'border-border/50 hover:border-primary/50 hover:bg-accent text-muted-foreground hover:text-foreground'
+                  }`}
+                  title={t(preset.name as I18nKey)}
+                >
+                  <span className="mb-1 text-xl">{preset.icon}</span>
+                  <span className="text-[10px] whitespace-nowrap">{t(preset.name as I18nKey)}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
         
         {/* 边框模板 */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-foreground/90">{t('borderTemplates')}</h3>
-          <div className="grid grid-cols-3 gap-2">
-            {[...BORDER_TEMPLATES, ...store.customBorders].map((border) => {
+          <div ref={bordersGridRef} className="max-h-[280px] overflow-y-auto rounded-lg border border-border/30 bg-muted/10 p-2">
+            <div className="grid grid-cols-3 gap-2">
+            {[...visibleBorderTemplates, ...store.customBorders].map((border) => {
               const isActive = store.selectedBorderId === border.id;
               const label = getLocalizedName(border.name, t);
               return (
                 <button
                   key={border.id}
+                  data-border-id={border.id}
                   onClick={() => {
                     store.setSelectedBorder(border.id);
                     trackSelectFrame(label);
@@ -137,64 +172,24 @@ export function TemplatePanel() {
               onChange={handleUploadBorder} 
             />
           </div>
-        </div>
-
-        {/* 遮罩模板 */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-foreground/90">{t('maskTemplates')}</h3>
-          <div className="grid grid-cols-3 gap-2">
-            {[...MASK_TEMPLATES, ...store.customMasks].map((mask) => {
-              const isActive = store.selectedMaskId === mask.id;
-              const label = getLocalizedName(mask.name, t);
-              return (
-                <button
-                  key={mask.id}
-                  onClick={() => store.setSelectedMask(mask.id)}
-                  title={label}
-                  aria-label={label}
-                  className={`relative flex aspect-square items-center justify-center overflow-hidden rounded-md border bg-muted/60 p-1 transition-all ${
-                    isActive 
-                      ? 'border-primary ring-1 ring-primary/50' 
-                      : 'border-border/50 hover:border-primary/50'
-                  }`}
-                >
-                  <MaskThumbnail id={mask.id} active={isActive} label={label} />
-                </button>
-              );
-            })}
-            
-            <button
-              onClick={() => maskInputRef.current?.click()}
-              className="relative flex flex-col items-center justify-center p-2 aspect-square rounded-md border border-dashed border-border hover:border-primary/50 hover:bg-accent/50 text-muted-foreground hover:text-foreground transition-all"
-              title={t('uploadCustomMask')}
-            >
-              <Plus className="w-5 h-5 mb-1" />
-            </button>
-            <input 
-              type="file" 
-              accept="image/png,image/webp" 
-              ref={maskInputRef} 
-              className="hidden" 
-              onChange={handleUploadMask} 
-            />
           </div>
         </div>
 
       </div>
 
-      {/* 底部导出区域 */}
-      <div className="space-y-4 border-t border-border bg-card/92 p-4 shadow-[0_-10px_40px_-15px_var(--workspace-shadow-color)]">
+      {/* ── 底部固定导出栏 ── */}
+      <div className="shrink-0 space-y-3 border-t border-border bg-card/92 p-4 shadow-[0_-10px_40px_-15px_var(--workspace-shadow-color)]">
         <div className="flex items-center justify-between">
-          <label className="text-xs text-muted-foreground mr-2">{t('exportSize')}</label>
-          <div className="flex bg-muted/50 rounded-md p-1">
+          <span className="text-xs font-medium text-foreground/80">{t('exportSection')}</span>
+          <div className="flex rounded-md bg-muted/50 p-1">
             {SIZES.map(size => (
               <button
                 key={size}
                 onClick={() => store.setExportSize(size)}
-                className={`text-[10px] px-2 py-1 rounded transition-colors ${
-                  store.exportSize === size 
-                    ? 'bg-background text-foreground shadow-sm' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+                className={`rounded px-2 py-1 text-[10px] transition-colors ${
+                  store.exportSize === size
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:bg-background/50 hover:text-foreground'
                 }`}
               >
                 {size}
@@ -202,14 +197,14 @@ export function TemplatePanel() {
             ))}
           </div>
         </div>
-        
-        <Button 
-          className="w-full font-medium" 
+
+        <Button
+          className="w-full font-medium"
           size="default"
           onClick={handleExport}
           disabled={!store.imageElement}
         >
-          <DownloadCloud className="w-4 h-4 mr-2" />
+          <DownloadCloud className="mr-2 h-4 w-4" />
           {t('download')}
         </Button>
       </div>
@@ -231,6 +226,16 @@ function getBorderAlt(id: string, defaultLabel: string): string {
     'steampunk': 'Brass steampunk gear and cog token frame, ideal for Artificer, Gunslinger or sci-fi tabletop avatars.',
     'bones': 'Creepy skull and bones token border, perfect for Necromancer, Undead or Halloween themed characters.',
     'thin-ring': 'Minimalist thin ring token border for clean and modern virtual tabletop character presentation.',
+    'plain-thin-ring': 'Minimal flat thin ring token border inspired by classic virtual tabletop portrait markers.',
+    'plain-thick-ring': 'Minimal flat thick ring token border inspired by classic virtual tabletop portrait markers.',
+    'plain-super-thin-ring': 'Minimal flat super thin ring token border inspired by classic virtual tabletop portrait markers.',
+    'plain-double-ring': 'Minimal flat double ring token border inspired by classic virtual tabletop portrait markers.',
+    'plain-square-thin': 'Minimal thin square token border inspired by classic virtual tabletop portrait markers.',
+    'plain-square-thick': 'Minimal thick square token border inspired by classic virtual tabletop portrait markers.',
+    'plain-hexagon': 'Minimal hexagon token border inspired by classic virtual tabletop portrait markers.',
+    'plain-octagon': 'Minimal octagon token border inspired by classic virtual tabletop portrait markers.',
+    'plain-decagon': 'Minimal decagon token border inspired by classic virtual tabletop portrait markers.',
+    'plain-dodecagon': 'Minimal dodecagon token border inspired by classic virtual tabletop portrait markers.',
   };
   return altMap[id] || `${defaultLabel} custom token border frame for D&D and Roll20`;
 }
@@ -279,39 +284,6 @@ function BorderThumbnail({ id, active, label }: { id: string; active: boolean; l
          className="w-10 h-10 object-contain drop-shadow-md"
        />
      );
-  }
-
-  return <canvas ref={canvasRef} width={64} height={64} className="w-10 h-10 object-contain" />;
-}
-
-function MaskThumbnail({ id, active, label }: { id: string; active: boolean; label: string }) {
-  const store = useEditorStore();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { theme } = useThemeMode();
-  
-  let template = MASK_TEMPLATES.find(t => t.id === id);
-  if (!template) {
-     template = store.customMasks.find(t => t.id === id);
-  }
-
-  useEffect(() => {
-    if (!template) return;
-    if (template.isCustom && template.customImageUrl) {
-      return;
-    }
-
-    const ctx = canvasRef.current?.getContext('2d');
-    if (!ctx) return;
-    
-    ctx.clearRect(0, 0, 64, 64);
-    const color = active ? '#d7b46a' : theme === 'dark' ? '#68657a' : '#8c7452';
-    drawMaskThumbnail(ctx, template, 64, color);
-  }, [id, active, store.customMasks, template, theme]);
-
-  if (!template) return null;
-
-  if (template.isCustom && template.customImageUrl) {
-     return <Image src={template.customImageUrl} alt={`${label} token mask shape`} width={40} height={40} unoptimized className="w-10 h-10 object-contain drop-shadow-md" />;
   }
 
   return <canvas ref={canvasRef} width={64} height={64} className="w-10 h-10 object-contain" />;

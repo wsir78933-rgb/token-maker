@@ -22,8 +22,41 @@ function forceRenderRefresh() {
   useEditorStore.setState({ activePresetId: useEditorStore.getState().activePresetId });
 }
 
-function getBorderMaskImageUrl(border?: BorderTemplate): string | null {
+function getExplicitMaskImageUrl(border?: BorderTemplate): string | null {
+  return border?.maskUrl || null;
+}
+
+function getDerivedBorderMaskImageUrl(border?: BorderTemplate): string | null {
   return border?.customImageUrl || border?.imageUrl || null;
+}
+
+function applyMaskToCanvas(
+  ctx: CanvasRenderingContext2D,
+  state: EditorState,
+  outputSize: number,
+  border?: BorderTemplate
+) {
+  const explicitMaskUrl = getExplicitMaskImageUrl(border);
+  if (explicitMaskUrl) {
+    const maskImage = getCachedImage(explicitMaskUrl, forceRenderRefresh);
+    if (maskImage) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(maskImage, 0, 0, outputSize, outputSize);
+      ctx.restore();
+      return;
+    }
+  }
+
+  const mask = getMaskById(state.selectedMaskId);
+  if (!mask) return;
+
+  ctx.save();
+  ctx.globalCompositeOperation = 'destination-in';
+  const path = createMaskPath(mask, outputSize);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill(path);
+  ctx.restore();
 }
 
 function buildImageBorderMask(
@@ -114,7 +147,19 @@ function applyFinalMask(
   outputSize: number,
   border?: BorderTemplate
 ) {
-  const borderMaskImageUrl = getBorderMaskImageUrl(border);
+  const explicitMaskUrl = getExplicitMaskImageUrl(border);
+  if (explicitMaskUrl) {
+    const explicitMaskImage = getCachedImage(explicitMaskUrl, forceRenderRefresh);
+    if (explicitMaskImage) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(explicitMaskImage, 0, 0, outputSize, outputSize);
+      ctx.restore();
+      return;
+    }
+  }
+
+  const borderMaskImageUrl = getDerivedBorderMaskImageUrl(border);
   if (borderMaskImageUrl) {
     const borderImage = getCachedImage(borderMaskImageUrl, forceRenderRefresh);
     if (borderImage) {
@@ -134,31 +179,15 @@ function applyFinalMask(
     }
   }
 
-  let mask = getMaskById(state.selectedMaskId);
-  if (!mask) mask = state.customMasks.find((item) => item.id === state.selectedMaskId);
+  const mask = getMaskById(state.selectedMaskId);
   if (!mask) return;
 
   ctx.save();
   ctx.globalCompositeOperation = 'destination-in';
 
-  if (!mask.isCustom) {
-    const path = createMaskPath(mask, outputSize);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill(path);
-    ctx.restore();
-    return;
-  }
-
-  if (!mask.customImageUrl) {
-    ctx.restore();
-    return;
-  }
-
-  const maskImage = getCachedImage(mask.customImageUrl, forceRenderRefresh);
-  if (maskImage) {
-    ctx.drawImage(maskImage, 0, 0, outputSize, outputSize);
-  }
-
+  const path = createMaskPath(mask, outputSize);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill(path);
   ctx.restore();
 }
 
@@ -166,13 +195,12 @@ function applyFinalMask(
  * 统一渲染函数 —— 整个项目的核心
  *
  * 渲染步骤：
- * 1. 填充背景色
- * 2. 根据 Mask 创建裁切路径
- * 3. 绘制主图（应用位移和缩放）
- * 4. 应用 Overlay（带 tint 和 opacity）
- * 5. 绘制边框（带 tint 和 opacity）
- * 6. （阶段二）绘制文字
- * 7. 输出最终 Canvas
+ * 1. 根据 Mask 创建裁切路径
+ * 2. 绘制主图（应用位移和缩放）
+ * 3. 应用 Overlay（带 tint 和 opacity）
+ * 4. 绘制边框（带 tint 和 opacity）
+ * 5. （阶段二）绘制文字
+ * 6. 输出最终 Canvas
  *
  * @param canvas 目标 Canvas 元素
  * @param state 编辑器状态
@@ -191,25 +219,18 @@ export function renderToken(
   canvas.height = outputSize;
   ctx.clearRect(0, 0, outputSize, outputSize);
 
-  let mask = getMaskById(state.selectedMaskId);
-  if (!mask) mask = state.customMasks.find((m) => m.id === state.selectedMaskId);
+  const mask = getMaskById(state.selectedMaskId);
 
   let border = getBorderById(state.selectedBorderId);
   if (!border) border = state.customBorders.find((b) => b.id === state.selectedBorderId);
 
-  ctx.save();
-  
-  // 如果是标准路径遮罩，首先设置 clip 以裁剪背景和图片
-  if (mask && !mask.isCustom) {
-    const bgPath = createMaskPath(mask, outputSize);
-    ctx.clip(bgPath);
-  }
+  const baseLayer = document.createElement('canvas');
+  baseLayer.width = outputSize;
+  baseLayer.height = outputSize;
+  const baseCtx = baseLayer.getContext('2d');
+  if (!baseCtx) return;
 
-  // ------- Step 1: 背景 -------
-  ctx.fillStyle = state.backgroundColor;
-  ctx.fillRect(0, 0, outputSize, outputSize);
-
-  // ------- Step 2 & 3: 裁切 + 主图 -------
+  // ------- Step 1 & 2: 裁切 + 主图 -------
   if (state.imageElement) {
     // 计算图片绘制参数
     const scaleFactor = outputSize / 512;
@@ -228,41 +249,37 @@ export function renderToken(
     const drawX = (outputSize - drawWidth) / 2 + state.imageOffsetX * scaleFactor;
     const drawY = (outputSize - drawHeight) / 2 + state.imageOffsetY * scaleFactor;
 
-    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+    baseCtx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
   }
 
-  // ------- Step 4: Overlay -------
+  // ------- Step 3: Overlay -------
   if (state.overlayOpacity > 0) {
-    ctx.globalAlpha = state.overlayOpacity;
-    ctx.fillStyle = state.overlayTint;
-    ctx.fillRect(0, 0, outputSize, outputSize);
-    ctx.globalAlpha = 1.0;
+    baseCtx.globalAlpha = state.overlayOpacity;
+    baseCtx.fillStyle = state.overlayTint;
+    baseCtx.fillRect(0, 0, outputSize, outputSize);
+    baseCtx.globalAlpha = 1.0;
   }
 
-  ctx.restore(); // 释放标准路径 clip
+  applyMaskToCanvas(baseCtx, state, outputSize, border);
+  ctx.drawImage(baseLayer, 0, 0);
 
-  // ------- Custom Mask 切除 -------
-  // 如果使用图片做 Mask，使用 destination-in (保留重叠的部分，即 Mask 非透明区)
-  if (mask && mask.isCustom && mask.customImageUrl) {
-    const maskImg = getCachedImage(mask.customImageUrl, forceRenderRefresh);
-    if (maskImg) {
-      ctx.save();
-      ctx.globalCompositeOperation = 'destination-in';
-      ctx.drawImage(maskImg, 0, 0, outputSize, outputSize);
-      ctx.restore();
-    }
-  }
-
-  // ------- Step 5: 边框 -------
+  // ------- Step 4: 边框 -------
   if (border && border.type !== 'none') {
-    drawBorder(ctx, border, outputSize, state.borderTint, state.borderOpacity);
+    drawBorder(
+      ctx,
+      border,
+      outputSize,
+      state.borderTint,
+      state.borderOpacity,
+      state.imageBorderTintEnabled
+    );
   }
 
   if (options.clipFinalOutputToMask) {
     applyFinalMask(ctx, state, outputSize, border);
   }
 
-  // ------- Step 6: 文字 -------
+  // ------- Step 5: 文字 -------
   drawTextBoxes(ctx, state.textBoxes, outputSize);
 }
 

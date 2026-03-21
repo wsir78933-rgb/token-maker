@@ -1,0 +1,62 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="80" x2="1460" y2="850" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0C1420"/>
+      <stop offset="1" stop-color="#05070C"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#101823"/>
+      <stop offset="1" stop-color="#0A0F18"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" rx="40" fill="url(#bg)"/>
+  <circle cx="1320" cy="170" r="180" fill="#8FB7FF" fill-opacity="0.1"/>
+  <circle cx="280" cy="760" r="180" fill="#D7B46A" fill-opacity="0.08"/>
+
+  <text x="120" y="150" fill="#F8F5EE" font-size="60" font-family="Georgia, serif">How to Choose Foundry Token Size</text>
+  <text x="120" y="214" fill="#C8D0DA" font-size="28" font-family="Avenir Next, Arial, sans-serif">Start with reuse value and zoom frequency, not with "how big can I export".</text>
+
+  <g transform="translate(540 280)">
+    <rect width="520" height="116" rx="28" fill="#15100A" stroke="#D7B46A" stroke-opacity="0.35" stroke-width="2"/>
+    <text x="52" y="54" fill="#F3D38F" font-size="22" font-family="Avenir Next, Arial, sans-serif" letter-spacing="3">START HERE</text>
+    <text x="52" y="94" fill="#F8F5EE" font-size="34" font-family="Georgia, serif">Will this token be reused often?</text>
+  </g>
+
+  <path d="M800 396V458" stroke="#D7B46A" stroke-width="4" stroke-linecap="round"/>
+  <path d="M800 458L782 438" stroke="#D7B46A" stroke-width="4" stroke-linecap="round"/>
+  <path d="M800 458L818 438" stroke="#D7B46A" stroke-width="4" stroke-linecap="round"/>
+
+  <g transform="translate(180 500)">
+    <rect width="360" height="220" rx="30" fill="url(#card)" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="2"/>
+    <text x="40" y="58" fill="#CFE0FF" font-size="20" font-family="Avenir Next, Arial, sans-serif" letter-spacing="3">ROUTE A</text>
+    <text x="40" y="110" fill="#F8F5EE" font-size="40" font-family="Georgia, serif">512 x 512</text>
+    <text x="40" y="156" fill="#D0D6DD" font-size="24" font-family="Avenir Next, Arial, sans-serif">Everyday default</text>
+    <text x="40" y="194" fill="#9DA9B7" font-size="22" font-family="Avenir Next, Arial, sans-serif">Players, NPCs, encounter monsters</text>
+    <text x="40" y="228" fill="#9DA9B7" font-size="22" font-family="Avenir Next, Arial, sans-serif">Clear enough, lighter library</text>
+  </g>
+
+  <g transform="translate(620 500)">
+    <rect width="360" height="220" rx="30" fill="url(#card)" stroke="#D7B46A" stroke-opacity="0.3" stroke-width="2"/>
+    <text x="40" y="58" fill="#F3D38F" font-size="20" font-family="Avenir Next, Arial, sans-serif" letter-spacing="3">ROUTE B</text>
+    <text x="40" y="110" fill="#F8F5EE" font-size="40" font-family="Georgia, serif">1024 x 1024</text>
+    <text x="40" y="156" fill="#D0D6DD" font-size="24" font-family="Avenir Next, Arial, sans-serif">Recurring asset size</text>
+    <text x="40" y="194" fill="#9DA9B7" font-size="22" font-family="Avenir Next, Arial, sans-serif">Heroes, bosses, core NPCs</text>
+    <text x="40" y="228" fill="#9DA9B7" font-size="22" font-family="Avenir Next, Arial, sans-serif">Better for reuse and zoom</text>
+  </g>
+
+  <g transform="translate(1060 500)">
+    <rect width="360" height="220" rx="30" fill="url(#card)" stroke="#8FB7FF" stroke-opacity="0.32" stroke-width="2"/>
+    <text x="40" y="58" fill="#DCEBFF" font-size="20" font-family="Avenir Next, Arial, sans-serif" letter-spacing="3">ROUTE C</text>
+    <text x="40" y="110" fill="#F8F5EE" font-size="40" font-family="Georgia, serif">Above 1024</text>
+    <text x="40" y="156" fill="#D0D6DD" font-size="24" font-family="Avenir Next, Arial, sans-serif">Only when needed</text>
+    <text x="40" y="194" fill="#9DA9B7" font-size="22" font-family="Avenir Next, Arial, sans-serif">Marketplace, premium, archive</text>
+    <text x="40" y="228" fill="#9DA9B7" font-size="22" font-family="Avenir Next, Arial, sans-serif">Not the default for every token</text>
+  </g>
+
+  <path d="M540 610H600" stroke="#8FB7FF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M980 610H1040" stroke="#D7B46A" stroke-width="4" stroke-linecap="round"/>
+
+  <text x="120" y="820" fill="#F2E6C8" font-size="24" font-family="Avenir Next, Arial, sans-serif">Remember: grid size is 1x1 or 2x2. Image size is 512 or 1024.</text>
+  <text x="1250" y="820" fill="#9EABB9" font-size="22" font-family="Avenir Next, Arial, sans-serif">Token Maker Blog</text>
+</svg>

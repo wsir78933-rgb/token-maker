@@ -1,6 +1,27 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { EditorStore, EditorState, StylePreset } from '@/types/editor';
+import { getBorderById } from '@/lib/templates/borders';
+import type { BorderLibraryMode, EditorStore, EditorState, StylePreset } from '@/types/editor';
+
+function isImageBorderSelection(
+  borderId: string,
+  customBorders: EditorState['customBorders']
+) {
+  const border = getBorderById(borderId) ?? customBorders.find((item) => item.id === borderId);
+  return border?.type === 'image';
+}
+
+function getLinkedMaskId(
+  borderId: string,
+  customBorders: EditorState['customBorders']
+) {
+  const border = getBorderById(borderId) ?? customBorders.find((item) => item.id === borderId);
+  return border?.linkedMaskId ?? null;
+}
+
+function getBorderLibraryModeForPreset(preset: StylePreset): BorderLibraryMode {
+  return preset.id === 'other' ? 'competitor' : 'default';
+}
 
 const INITIAL_STATE: Omit<EditorState, 'imageElement'> = {
   imageUrl: null,
@@ -11,10 +32,10 @@ const INITIAL_STATE: Omit<EditorState, 'imageElement'> = {
   selectedBorderId: 'thick-ring',
   selectedMaskId: 'circle',
   customBorders: [],
-  customMasks: [],
+  borderLibraryMode: 'default',
 
   borderTint: '#8b5cf6', // 默认偏紫色系
-  backgroundColor: '#09090b',
+  imageBorderTintEnabled: false,
   textColor: '#ffffff',
   overlayTint: '#000000',
   borderOpacity: 1,
@@ -51,26 +72,26 @@ export const useEditorStore = create<EditorStore>()(
       resetPosition: () => set({ imageOffsetX: 0, imageOffsetY: 0, imageScale: 1, isImageSelected: true }),
 
       // --- 模板 ---
-      setSelectedBorder: (id) => set({ selectedBorderId: id, activePresetId: null }),
-      setSelectedMask: (id) => set({ selectedMaskId: id, activePresetId: null }),
+      setSelectedBorder: (id) =>
+        set((state) => ({
+          selectedBorderId: id,
+          selectedMaskId: getLinkedMaskId(id, state.customBorders) ?? state.selectedMaskId,
+          imageBorderTintEnabled: !isImageBorderSelection(id, state.customBorders),
+          activePresetId: null,
+        })),
       addCustomBorder: (template) =>
         set((state) => ({ customBorders: [...state.customBorders, template] })),
       removeCustomBorder: (id) =>
         set((state) => ({
           customBorders: state.customBorders.filter((b) => b.id !== id),
           selectedBorderId: state.selectedBorderId === id ? 'none' : state.selectedBorderId,
+          imageBorderTintEnabled: state.selectedBorderId === id ? true : state.imageBorderTintEnabled,
         })),
-      addCustomMask: (template) =>
-        set((state) => ({ customMasks: [...state.customMasks, template] })),
-      removeCustomMask: (id) =>
-        set((state) => ({
-          customMasks: state.customMasks.filter((m) => m.id !== id),
-          selectedMaskId: state.selectedMaskId === id ? 'circle' : state.selectedMaskId,
-        })),
+      setBorderLibraryMode: (mode) => set({ borderLibraryMode: mode }),
 
       // --- 样式 ---
-      setBorderTint: (color) => set({ borderTint: color, activePresetId: null }),
-      setBackgroundColor: (color) => set({ backgroundColor: color, activePresetId: null }),
+      setBorderTint: (color) =>
+        set({ borderTint: color, imageBorderTintEnabled: true, activePresetId: null }),
       setTextColor: (color) => set({ textColor: color }),
       setOverlayTint: (color) => set({ overlayTint: color, activePresetId: null }),
       setBorderOpacity: (opacity) => set({ borderOpacity: opacity, activePresetId: null }),
@@ -115,16 +136,17 @@ export const useEditorStore = create<EditorStore>()(
 
       // --- 预设 ---
       applyPreset: (preset: StylePreset) =>
-        set({
+        set((state) => ({
           selectedBorderId: preset.borderId,
           selectedMaskId: preset.maskId,
           borderTint: preset.borderTint,
-          backgroundColor: preset.backgroundColor,
+          imageBorderTintEnabled: !isImageBorderSelection(preset.borderId, state.customBorders),
           overlayTint: preset.overlayTint,
           borderOpacity: preset.borderOpacity,
           overlayOpacity: preset.overlayOpacity,
+          borderLibraryMode: getBorderLibraryModeForPreset(preset),
           activePresetId: preset.id,
-        }),
+        })),
 
       // --- 全局 ---
       resetAll: () => set({ ...INITIAL_STATE, imageElement: null }),
@@ -141,9 +163,9 @@ export const useEditorStore = create<EditorStore>()(
           selectedBorderId: state.selectedBorderId,
           selectedMaskId: state.selectedMaskId,
           customBorders: state.customBorders,
-          customMasks: state.customMasks,
+          borderLibraryMode: state.borderLibraryMode,
           borderTint: state.borderTint,
-          backgroundColor: state.backgroundColor,
+          imageBorderTintEnabled: state.imageBorderTintEnabled,
           textColor: state.textColor,
           overlayTint: state.overlayTint,
           borderOpacity: state.borderOpacity,

@@ -3,8 +3,7 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useEditorStore } from '@/lib/store/editor-store';
-import { BORDER_TEMPLATES } from '@/lib/templates/borders';
-import { MASK_TEMPLATES } from '@/lib/templates/masks';
+import { BORDER_TEMPLATES, isCompetitorBorderId } from '@/lib/templates/borders';
 import { STYLE_PRESETS } from '@/lib/templates/presets';
 import type { ExportSize } from '@/types/editor';
 
@@ -16,10 +15,9 @@ export function EditorSearchParamsSync() {
   useEffect(() => {
     const preset = searchParams.get('preset');
     const border = searchParams.get('border');
-    const mask = searchParams.get('mask');
     const size = searchParams.get('size');
 
-    if (!preset && !border && !mask && !size) {
+    if (!preset && !border && !size) {
       return;
     }
 
@@ -35,14 +33,8 @@ export function EditorSearchParamsSync() {
     if (border) {
       const matchedBorder = BORDER_TEMPLATES.find((item) => item.id === border);
       if (matchedBorder) {
+        store.setBorderLibraryMode(isCompetitorBorderId(matchedBorder.id) ? 'competitor' : 'default');
         store.setSelectedBorder(matchedBorder.id);
-      }
-    }
-
-    if (mask) {
-      const matchedMask = MASK_TEMPLATES.find((item) => item.id === mask);
-      if (matchedMask) {
-        store.setSelectedMask(matchedMask.id);
       }
     }
 
