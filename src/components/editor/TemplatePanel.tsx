@@ -4,12 +4,13 @@ import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
+import { trackDownloadToken, trackSelectFrame } from '@/lib/analytics';
 import { BORDER_TEMPLATES } from '@/lib/templates/borders';
 import { MASK_TEMPLATES } from '@/lib/templates/masks';
 import { drawBorderThumbnail } from '@/lib/renderer/borders';
 import { drawMaskThumbnail } from '@/lib/renderer/masks';
 import { Button } from '@/components/ui/button';
-import { ExportSize } from '@/types/editor';
+import type { BorderTemplate, ExportSize } from '@/types/editor';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
 import { saveAs } from 'file-saver';
 import { DownloadCloud, Plus } from 'lucide-react';
@@ -22,14 +23,32 @@ function getLocalizedName(name: string, t: (key: I18nKey) => string) {
   return name.includes('.') ? t(name as I18nKey) : name;
 }
 
+function getSelectedFrameName(
+  borderId: string,
+  customBorders: BorderTemplate[],
+  t: (key: I18nKey) => string
+) {
+  const selectedBorder =
+    BORDER_TEMPLATES.find((border) => border.id === borderId) ??
+    customBorders.find((border) => border.id === borderId);
+
+  if (!selectedBorder) {
+    return borderId;
+  }
+
+  return getLocalizedName(selectedBorder.name, t);
+}
+
 export function TemplatePanel() {
   const store = useEditorStore();
   const { t } = useI18n();
+  const selectedFrameName = getSelectedFrameName(store.selectedBorderId, store.customBorders, t);
 
   const handleExport = async () => {
     const blob = await exportTokenAsPNG(store, store.exportSize);
     if (blob) {
       saveAs(blob, `token_${Date.now()}.png`);
+      trackDownloadToken(selectedFrameName);
     }
   };
 
@@ -50,6 +69,7 @@ export function TemplatePanel() {
       customImageUrl: base64
     });
     store.setSelectedBorder(newId);
+    trackSelectFrame('Custom');
     if (borderInputRef.current) borderInputRef.current.value = '';
   };
 
@@ -85,7 +105,10 @@ export function TemplatePanel() {
               return (
                 <button
                   key={border.id}
-                  onClick={() => store.setSelectedBorder(border.id)}
+                  onClick={() => {
+                    store.setSelectedBorder(border.id);
+                    trackSelectFrame(label);
+                  }}
                   title={label}
                   aria-label={label}
                   className={`relative flex items-center justify-center p-1 aspect-square rounded-md border transition-all overflow-hidden ${

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { UploadCloud, Image as ImageIcon } from 'lucide-react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n } from '@/lib/i18n';
+import { trackUploadImage } from '@/lib/analytics';
 import { ImageUploaderShowcaseStrip } from '@/components/site/ImageUploaderShowcaseStrip';
 
 const SUPPORTED_IMAGE_NAME = /\.(png|jpe?g|webp)$/i;
@@ -95,6 +96,7 @@ export function ImageUploader() {
     const img = new Image();
     img.onload = () => {
       setImage(url, img);
+      trackUploadImage();
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
