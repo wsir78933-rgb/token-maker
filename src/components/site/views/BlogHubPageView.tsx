@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, BookOpenText, Clock3, Layers3, Sparkles } from 'lucide-react';
+import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -126,10 +127,13 @@ function BlogCard({
             {readLabel}
             <ArrowRight className="h-4 w-4" />
           </Link>
-          <Link href={post.ctaQuery} prefetch={false} className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100">
+          <EditorLaunchButton
+            href={post.ctaQuery}
+            className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100"
+          >
             {setupLabel}
             <ArrowRight className="h-4 w-4" />
-          </Link>
+          </EditorLaunchButton>
         </div>
       </div>
     </article>
@@ -273,13 +277,12 @@ export function BlogHubPageView({
                       {copy.readArticle}
                       <ArrowRight className="h-4 w-4" />
                     </Link>
-                    <Link
+                    <EditorLaunchButton
                       href={featuredPost.ctaQuery}
-                      prefetch={false}
                       className="inline-flex items-center gap-2 rounded-full border border-white/12 px-5 py-2.5 text-sm text-stone-300 transition hover:border-white/25 hover:text-stone-100"
                     >
                       {copy.trySetup}
-                    </Link>
+                    </EditorLaunchButton>
                   </div>
                 </div>
               </article>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Shield, Sparkles, Workflow } from 'lucide-react';
 import { getPublishedBlogPosts } from '@/lib/blog-content';
+import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import {
   getFaqItems,
   getHomeCopy,
@@ -263,13 +264,12 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                     {getTemplateDetailLabel(page.title)}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <Link
+                  <EditorLaunchButton
                     href={page.query}
-                    prefetch={false}
                     className="text-sm text-stone-400 transition hover:text-stone-100"
                   >
                     {getTemplatePresetLabel(page.title)}
-                  </Link>
+                  </EditorLaunchButton>
                 </div>
               </article>
             ))}
@@ -293,9 +293,12 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                     {readArticleLabel}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <Link href={post.ctaQuery} prefetch={false} className="text-sm text-stone-400 transition hover:text-stone-100">
+                  <EditorLaunchButton
+                    href={post.ctaQuery}
+                    className="text-sm text-stone-400 transition hover:text-stone-100"
+                  >
                     {locale === 'zh' ? '在编辑器里试用' : 'Try in editor'}
-                  </Link>
+                  </EditorLaunchButton>
                 </div>
               </article>
             ))}

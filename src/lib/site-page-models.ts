@@ -71,6 +71,28 @@ export interface TemplateHubCategory {
   slugs: string[];
 }
 
+export interface TemplateHubDecisionGuide {
+  id: string;
+  title: string;
+  description: string;
+  slugs: string[];
+}
+
+export interface TemplateHubAlternativeRoute {
+  slug: string;
+  reason: string;
+}
+
+export interface TemplateHubEntryPoint {
+  id: string;
+  title: string;
+  description: string;
+  primarySlug: string;
+  primaryReason: string;
+  alternatives: TemplateHubAlternativeRoute[];
+  caution: string;
+}
+
 export interface GuideHubTrack {
   id: string;
   title: string;
@@ -86,6 +108,12 @@ export interface TemplatesHubModel {
   description: string;
   intro: string;
   stats: HubStat[];
+  decisionGuidesTitle: string;
+  decisionGuidesIntro: string;
+  decisionGuides: TemplateHubDecisionGuide[];
+  entryPointsTitle: string;
+  entryPointsIntro: string;
+  entryPoints: TemplateHubEntryPoint[];
   categories: TemplateHubCategory[];
   comparisonTitle: string;
   comparisonDescription: string;
@@ -964,6 +992,132 @@ const templatesHubModels: Record<SiteLocale, TemplatesHubModel> = {
         description: 'Visitors can contrast formats here, then jump into the editor with an appropriate preset.',
       },
     ],
+    decisionGuidesTitle: 'Three fast filters before you click anything',
+    decisionGuidesIntro:
+      'The fastest way to reduce junk pages is to stop treating every format like a separate essay. Start with the user problem: what must survive reduction, how should the token behave on the board, and how visible should the frame be.',
+    decisionGuides: [
+      {
+        id: 'survives-reduction',
+        title: 'What information cannot be lost when the token gets small?',
+        description:
+          'If face recognition is the whole job, begin with the circular route. If shoulders, gear, and straight edges carry meaning, the square route should take priority.',
+        slugs: ['circle-token-maker', 'square-token-maker'],
+      },
+      {
+        id: 'board-behavior',
+        title: 'Is this a portrait, or is it really a map object?',
+        description:
+          'Portrait-led tokens usually stay in circle or transparent workflows. If the object behaves more like a counter, region marker, or tactical unit, move to hex.',
+        slugs: ['transparent-token-maker', 'hex-token-maker'],
+      },
+      {
+        id: 'frame-presence',
+        title: 'Do you want stronger presence, or less visual noise?',
+        description:
+          'Use monster framing when threat and enemy separation matter. Use transparent output when clean edges and board blending matter more than border drama.',
+        slugs: ['monster-token-maker', 'transparent-token-maker'],
+      },
+    ],
+    entryPointsTitle: 'Start from the job, not from the jargon',
+    entryPointsIntro:
+      'These five pages should not behave like equal SEO clones. Each lane below names one primary starting point, then shows the nearby fallback routes instead of pretending every format deserves the same answer.',
+    entryPoints: [
+      {
+        id: 'portrait-cast',
+        title: 'I need player or NPC portraits',
+        description: 'Face recognition is the main job. The token should identify a person quickly, not explain the whole costume.',
+        primarySlug: 'circle-token-maker',
+        primaryReason:
+          'Circle stays the default entry because it is the most reliable shape for readable faces on crowded battle maps.',
+        alternatives: [
+          {
+            slug: 'transparent-token-maker',
+            reason: 'Switch when you want the portrait to sit more lightly on the map and decorative framing becomes noise.',
+          },
+          {
+            slug: 'square-token-maker',
+            reason: 'Switch when shoulder room, weapons, or UI alignment matter more than the classic portrait ring.',
+          },
+        ],
+        caution: 'Do not stay in the portrait lane if the image only works because of side detail, equipment, or map alignment.',
+      },
+      {
+        id: 'grid-markers',
+        title: 'I need grid-aligned map markers',
+        description: 'The token has to cooperate with square maps, labels, or structured UI blocks instead of floating like a portrait badge.',
+        primarySlug: 'square-token-maker',
+        primaryReason:
+          'Square is the cleanest starting point when edge detail and grid alignment both carry information value.',
+        alternatives: [
+          {
+            slug: 'hex-token-maker',
+            reason: 'Use this if the board is really about tactical counters or area logic rather than strict square-grid alignment.',
+          },
+          {
+            slug: 'circle-token-maker',
+            reason: 'Fallback here only when the supposed marker is still mostly a face-recognition token.',
+          },
+        ],
+        caution: 'Do not use square as a default just because it feels more “complete”. It usually adds noise when the real task is fast portrait recognition.',
+      },
+      {
+        id: 'tactical-counters',
+        title: 'I need tactical counters or region markers',
+        description: 'This is about unit language, ownership, and board scanning speed, not about making a portrait look premium.',
+        primarySlug: 'hex-token-maker',
+        primaryReason:
+          'Hex works best when the token behaves like a counter, a scouting marker, or a map object with tactical meaning.',
+        alternatives: [
+          {
+            slug: 'square-token-maker',
+            reason: 'Choose this when the board is still square-grid native and rectangular alignment matters more than counter language.',
+          },
+          {
+            slug: 'monster-token-maker',
+            reason: 'Choose this when the unit must feel hostile and dramatic rather than merely classified.',
+          },
+        ],
+        caution: 'Do not force tactical shapes onto art that only reads as a face. The format will fight the source image.',
+      },
+      {
+        id: 'encounter-pack',
+        title: 'I need monster encounter tokens',
+        description: 'The goal is threat separation, group readability, and hostile visual language across a whole encounter pack.',
+        primarySlug: 'monster-token-maker',
+        primaryReason:
+          'Monster is not another shape choice. It is the dedicated high-contrast route for hostile units that must jump off noisy maps.',
+        alternatives: [
+          {
+            slug: 'circle-token-maker',
+            reason: 'Fallback here if the “monster” is really just a named portrait token and not an encounter-pressure piece.',
+          },
+          {
+            slug: 'transparent-token-maker',
+            reason: 'Fallback here if clean map blending matters more than aggressive border language.',
+          },
+        ],
+        caution: 'Do not send friendly NPCs or player characters into the monster lane just to make them feel dramatic.',
+      },
+      {
+        id: 'clean-assets',
+        title: 'I need clean transparent PNG assets',
+        description: 'The export should stay reusable across many VTT scenes, lighting setups, and background colors.',
+        primarySlug: 'transparent-token-maker',
+        primaryReason:
+          'Transparent is the best first choice when edge quality, low border presence, and cross-map reuse matter more than decorative identity.',
+        alternatives: [
+          {
+            slug: 'circle-token-maker',
+            reason: 'Use this when you still need a classic portrait frame to help recognition.',
+          },
+          {
+            slug: 'square-token-maker',
+            reason: 'Use this when the asset has to align to grid-native layouts instead of blending softly into the map.',
+          },
+        ],
+        caution: 'Do not pick the transparent lane if your workflow depends on border language to encode allegiance, role, or threat level.',
+      },
+    ],
     categories: [
       {
         id: 'portrait-first',
@@ -1012,6 +1166,127 @@ const templatesHubModels: Record<SiteLocale, TemplatesHubModel> = {
         label: '路径',
         value: '对比 -> 选择 -> 打开',
         description: '用户先在这里比较，再带着正确预设进入编辑器。',
+      },
+    ],
+    decisionGuidesTitle: '先回答 3 个问题，再决定点哪页',
+    decisionGuidesIntro:
+      '想摆脱垃圾模板页，先别把每个格式都写成一篇差不多的散文。用户真正要判断的是三件事：缩小后什么信息不能丢、token 在地图上扮演什么角色、边框到底该强还是该弱。',
+    decisionGuides: [
+      {
+        id: 'survives-reduction',
+        title: '缩小后最不能丢掉的是什么？',
+        description:
+          '如果最不能丢的是脸部识别，先从圆形开始。如果最不能丢的是肩部、武器、装备和直边结构，就优先看方形。',
+        slugs: ['circle-token-maker', 'square-token-maker'],
+      },
+      {
+        id: 'board-behavior',
+        title: '它是头像，还是地图元素？',
+        description:
+          '如果本质上还是角色头像，就留在圆形或透明背景。如果它更像计数器、区域标记或战术单位，就转去六边形。',
+        slugs: ['transparent-token-maker', 'hex-token-maker'],
+      },
+      {
+        id: 'frame-presence',
+        title: '你需要更强存在感，还是更低噪声？',
+        description:
+          '如果重点是敌对威压和快速分组识别，就看怪物页。如果重点是干净边缘和地图融合，就看透明背景页。',
+        slugs: ['monster-token-maker', 'transparent-token-maker'],
+      },
+    ],
+    entryPointsTitle: '按任务进入，不按术语进入',
+    entryPointsIntro:
+      '下面不是五个平级名词，而是五条明确入口。每条入口只给一个首选模板，其他模板降级为替代方案，避免用户在一堆长得差不多的页面里反复横跳。',
+    entryPoints: [
+      {
+        id: 'portrait-cast',
+        title: '我要做角色 / NPC 头像',
+        description: '核心任务是缩小后仍能快速认脸，而不是解释完整服装或背景叙事。',
+        primarySlug: 'circle-token-maker',
+        primaryReason: '圆形依然是最稳的默认入口，因为它最稳定地服务“缩小后认出是谁”这件事。',
+        alternatives: [
+          {
+            slug: 'transparent-token-maker',
+            reason: '如果你已经不需要传统边框语言，而更在意透明边缘和地图融合，就切到透明背景。',
+          },
+          {
+            slug: 'square-token-maker',
+            reason: '如果人物价值主要在肩部、武器、装备或 UI 对齐，而不是纯脸部识别，就切到方形。',
+          },
+        ],
+        caution: '如果图的价值主要来自边缘细节、装备信息或网格对齐，就不要硬留在头像入口里。',
+      },
+      {
+        id: 'grid-markers',
+        title: '我要做方格地图标记',
+        description: 'token 需要和方格地图、房间标签或结构化 UI 一起工作，而不是像头像徽章那样浮在地图上。',
+        primarySlug: 'square-token-maker',
+        primaryReason: '方形是首选，因为它同时解决边缘信息保留和网格对齐两件事。',
+        alternatives: [
+          {
+            slug: 'hex-token-maker',
+            reason: '如果地图逻辑更偏战棋、区域控制或计数器语言，而不是标准方格对齐，就改看六边形。',
+          },
+          {
+            slug: 'circle-token-maker',
+            reason: '如果这个所谓标记本质上还是头像识别，只是偶尔落在网格里，就回到圆形。',
+          },
+        ],
+        caution: '不要因为方形看起来“更完整”就默认选它。只要核心任务还是快速认脸，方形往往是在加噪声。',
+      },
+      {
+        id: 'tactical-counters',
+        title: '我要做战棋 / 区域控制计数器',
+        description: '重点是单位语言、阵营归属和地图扫视效率，不是把头像做得更漂亮。',
+        primarySlug: 'hex-token-maker',
+        primaryReason: '六边形最适合扮演计数器、侦查标记和区域推进单位这类战术对象。',
+        alternatives: [
+          {
+            slug: 'square-token-maker',
+            reason: '如果底层地图仍然是标准方格，而且你更在意矩形对齐而不是战棋感，就改看方形。',
+          },
+          {
+            slug: 'monster-token-maker',
+            reason: '如果这个单位的重点不是被分类，而是必须看起来敌意强、压迫感高，就改看怪物。',
+          },
+        ],
+        caution: '不要把只能靠脸成立的素材强行塞进战术形状里，格式会直接和原图打架。',
+      },
+      {
+        id: 'encounter-pack',
+        title: '我要做怪物遭遇包',
+        description: '目标是敌对识别、成组可读性和统一威压语言，而不是单张头像的精致度。',
+        primarySlug: 'monster-token-maker',
+        primaryReason: '怪物页不是另一种形状，而是一条专门给敌对单位准备的高对比工作流。',
+        alternatives: [
+          {
+            slug: 'circle-token-maker',
+            reason: '如果所谓怪物其实更像一张命名头像，而不是遭遇战里的敌对单位，就回到圆形。',
+          },
+          {
+            slug: 'transparent-token-maker',
+            reason: '如果你的重点是地图融合而不是敌意边框语言，就改看透明背景。',
+          },
+        ],
+        caution: '不要为了“更有戏剧感”就把玩家角色或友方 NPC 送进怪物入口。',
+      },
+      {
+        id: 'clean-assets',
+        title: '我要做干净的透明 PNG 素材',
+        description: '导出结果要能跨多个 VTT、地图底色和灯光场景复用，不想被重边框绑死。',
+        primarySlug: 'transparent-token-maker',
+        primaryReason: '透明背景是首选，因为它优先解决边缘质量、低噪声和跨地图复用。',
+        alternatives: [
+          {
+            slug: 'circle-token-maker',
+            reason: '如果你仍然需要传统头像边框来增强识别，再回到圆形。',
+          },
+          {
+            slug: 'square-token-maker',
+            reason: '如果这个素材最终还是要对齐方格地图或结构化 UI，就改看方形。',
+          },
+        ],
+        caution: '如果你的工作流需要靠边框编码阵营、职业或威胁等级，透明入口会削弱信息表达。',
       },
     ],
     categories: [

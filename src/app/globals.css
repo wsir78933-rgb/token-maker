@@ -675,13 +675,23 @@
   border-color: var(--site-border-soft);
 }
 
-.site-rich-text a.blog-link {
+.site-rich-text .blog-link {
   color: var(--site-accent-strong);
   text-underline-offset: 4px;
 }
 
-.site-rich-text a.blog-link:hover {
+.site-rich-text a.blog-link:hover,
+.site-rich-text .blog-link--button:hover {
   text-decoration: underline;
+}
+
+.site-rich-text .blog-link--button {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
 }
 
 .site-rich-text strong {

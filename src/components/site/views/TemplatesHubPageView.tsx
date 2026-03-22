@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Layers3, MoveRight } from 'lucide-react';
+import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -15,6 +16,10 @@ const copyByLocale = {
   en: {
     editor: 'Editor',
     templates: 'Templates',
+    decisionLeadsTo: 'Look at',
+    recommended: 'Primary start',
+    alternatives: 'Fallback routes',
+    caution: 'Do not choose this lane when',
     matrixUse: 'Primary use',
     matrixStrength: 'Best at',
     matrixAvoid: 'Avoid when',
@@ -22,6 +27,10 @@ const copyByLocale = {
   zh: {
     editor: '编辑器',
     templates: '模板页',
+    decisionLeadsTo: '先看',
+    recommended: '首选入口',
+    alternatives: '替代方案',
+    caution: '不要选这条入口的情况',
     matrixUse: '主要用途',
     matrixStrength: '最擅长',
     matrixAvoid: '不适合',
@@ -32,6 +41,7 @@ export function TemplatesHubPageView({ locale }: { locale: SiteLocale }) {
   const copy = copyByLocale[locale];
   const model = getTemplatesHubModel(locale);
   const templates = getAllTemplateDetailModels(locale);
+  const templatesBySlug = new Map(templates.map((template) => [template.slug, template] as const));
   const getTemplateDetailLabel = (title: string) =>
     locale === 'zh' ? `查看${title}` : `Explore ${title}`;
   const getTemplatePresetLabel = (title: string) =>
@@ -87,76 +97,168 @@ export function TemplatesHubPageView({ locale }: { locale: SiteLocale }) {
         </section>
 
         <div className="mx-auto max-w-7xl space-y-16 px-6 py-14 lg:px-8 lg:py-18">
-          {model.categories.map((category) => {
-            const items = templates.filter((template) => category.slugs.includes(template.slug));
+          <section className="space-y-6">
+            <div className="max-w-4xl space-y-3">
+              <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{model.decisionGuidesTitle}</h2>
+              <p className="text-sm leading-8 text-stone-300">{model.decisionGuidesIntro}</p>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-3">
+              {model.decisionGuides.map((guide) => (
+                <article
+                  key={guide.id}
+                  className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6"
+                >
+                  <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{guide.title}</p>
+                  <p className="mt-4 text-sm leading-8 text-stone-300">{guide.description}</p>
+                  <div className="mt-5">
+                    <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.decisionLeadsTo}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {guide.slugs.map((slug) => {
+                        const target = templatesBySlug.get(slug);
 
-            return (
-              <section key={category.id} className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
-                <aside className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(215,180,106,0.14),rgba(255,255,255,0.02))] p-7">
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#d7b46a]">{category.title}</p>
-                  <p className="mt-5 text-sm leading-8 text-stone-300">{category.description}</p>
-                  <p className="mt-5 text-sm leading-8 text-stone-400">{category.narrative}</p>
-                </aside>
+                        if (!target) {
+                          return null;
+                        }
 
-                <div className="grid gap-4 lg:grid-cols-2">
-                  {items.map((template) => (
-                    <article
-                      key={template.slug}
-                      className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_90px_-50px_rgba(0,0,0,0.85)]"
-                    >
-                      <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{template.intent}</p>
-                      <h2 className="mt-3 text-2xl font-medium text-stone-50">
-                        <Link
-                          href={getLocalizedPath(locale, `/templates/${template.slug}`)}
-                          prefetch={false}
-                          className="transition hover:text-[#f1d492]"
-                        >
-                          {template.title}
-                        </Link>
-                      </h2>
-                      <p className="mt-4 text-sm leading-7 text-stone-300">{template.decisionLens}</p>
-                      <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.matrixStrength}</p>
-                          <ul className="mt-3 space-y-2 text-sm leading-7 text-stone-200">
-                            {template.bestFor.slice(0, 2).map((item) => (
-                              <li key={item}>{item}</li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.matrixAvoid}</p>
-                          <ul className="mt-3 space-y-2 text-sm leading-7 text-stone-200">
-                            {template.avoidWhen.slice(0, 2).map((item) => (
-                              <li key={item}>{item}</li>
-                            ))}
-                          </ul>
-                        </div>
+                        return (
+                          <Link
+                            key={target.slug}
+                            href={getLocalizedPath(locale, `/templates/${target.slug}`)}
+                            prefetch={false}
+                            className="rounded-full border border-white/12 px-3 py-1.5 text-sm text-stone-200 transition hover:border-[#d7b46a]/40 hover:text-stone-50"
+                          >
+                            {target.title}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="space-y-6">
+            <div className="max-w-4xl space-y-3">
+              <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{model.entryPointsTitle}</h2>
+              <p className="text-sm leading-8 text-stone-300">{model.entryPointsIntro}</p>
+            </div>
+
+            <div className="space-y-5">
+              {model.entryPoints.map((entry) => {
+                const primary = templatesBySlug.get(entry.primarySlug);
+                const alternatives = entry.alternatives
+                  .map((alternative) => ({
+                    ...alternative,
+                    template: templatesBySlug.get(alternative.slug),
+                  }))
+                  .filter((alternative): alternative is typeof alternative & { template: NonNullable<typeof alternative.template> } => Boolean(alternative.template));
+
+                if (!primary) {
+                  return null;
+                }
+
+                return (
+                  <section key={entry.id} className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)]">
+                    <aside className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(215,180,106,0.14),rgba(255,255,255,0.02))] p-7">
+                      <p className="text-xs uppercase tracking-[0.3em] text-[#d7b46a]">{entry.title}</p>
+                      <p className="mt-5 text-sm leading-8 text-stone-300">{entry.description}</p>
+                      <div className="mt-6 rounded-[24px] border border-white/10 bg-black/25 p-5">
+                        <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.caution}</p>
+                        <p className="mt-3 text-sm leading-7 text-stone-200">{entry.caution}</p>
                       </div>
-                      <div className="mt-6 flex flex-wrap gap-3">
-                        <Link
-                          href={getLocalizedPath(locale, `/templates/${template.slug}`)}
-                          prefetch={false}
-                          className="inline-flex items-center gap-2 text-sm text-[#f1d492]"
-                        >
-                          {getTemplateDetailLabel(template.title)}
-                          <ArrowRight className="h-4 w-4" />
-                        </Link>
-                        <Link
-                          href={template.query}
-                          prefetch={false}
-                          className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100"
-                        >
-                          {getTemplatePresetLabel(template.title)}
-                          <MoveRight className="h-4 w-4" />
-                        </Link>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            );
-          })}
+                    </aside>
+
+                    <div className="space-y-4">
+                      <article className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_90px_-50px_rgba(0,0,0,0.85)]">
+                        <p className="text-xs uppercase tracking-[0.24em] text-[#d7b46a]">{copy.recommended}</p>
+                        <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
+                          <div className="max-w-3xl">
+                            <h3 className="text-2xl font-medium text-stone-50">
+                              <Link
+                                href={getLocalizedPath(locale, `/templates/${primary.slug}`)}
+                                prefetch={false}
+                                className="transition hover:text-[#f1d492]"
+                              >
+                                {primary.title}
+                              </Link>
+                            </h3>
+                            <p className="mt-3 text-sm leading-8 text-stone-300">{entry.primaryReason}</p>
+                          </div>
+                          <div className="rounded-full border border-white/12 px-3 py-1.5 text-xs uppercase tracking-[0.22em] text-stone-400">
+                            {primary.intent}
+                          </div>
+                        </div>
+
+                        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                          <div>
+                            <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.matrixStrength}</p>
+                            <ul className="mt-3 space-y-2 text-sm leading-7 text-stone-200">
+                              {primary.bestFor.slice(0, 2).map((item) => (
+                                <li key={item}>{item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.matrixUse}</p>
+                            <ul className="mt-3 space-y-2 text-sm leading-7 text-stone-200">
+                              {primary.settings.slice(0, 2).map((item) => (
+                                <li key={item}>{item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div className="mt-6 flex flex-wrap gap-3">
+                          <Link
+                            href={getLocalizedPath(locale, `/templates/${primary.slug}`)}
+                            prefetch={false}
+                            className="inline-flex items-center gap-2 text-sm text-[#f1d492]"
+                          >
+                            {getTemplateDetailLabel(primary.title)}
+                            <ArrowRight className="h-4 w-4" />
+                          </Link>
+                          <EditorLaunchButton
+                            href={primary.query}
+                            className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100"
+                          >
+                            {getTemplatePresetLabel(primary.title)}
+                            <MoveRight className="h-4 w-4" />
+                          </EditorLaunchButton>
+                        </div>
+                      </article>
+
+                      {alternatives.length > 0 ? (
+                        <div className="space-y-3">
+                          <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.alternatives}</p>
+                          <div className="grid gap-4 lg:grid-cols-2">
+                            {alternatives.map((alternative) => (
+                              <article
+                                key={`${entry.id}-${alternative.template.slug}`}
+                                className="rounded-[28px] border border-white/10 bg-black/20 p-5"
+                              >
+                                <p className="text-xs uppercase tracking-[0.22em] text-stone-500">{alternative.template.intent}</p>
+                                <h3 className="mt-3 text-xl font-medium text-stone-50">
+                                  <Link
+                                    href={getLocalizedPath(locale, `/templates/${alternative.template.slug}`)}
+                                    prefetch={false}
+                                    className="transition hover:text-[#f1d492]"
+                                  >
+                                    {alternative.template.title}
+                                  </Link>
+                                </h3>
+                                <p className="mt-3 text-sm leading-7 text-stone-300">{alternative.reason}</p>
+                              </article>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          </section>
 
           <section className="rounded-[36px] border border-white/10 bg-[linear-gradient(180deg,rgba(127,167,214,0.12),rgba(255,255,255,0.02))] p-7">
             <div className="flex items-center gap-3">

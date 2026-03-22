@@ -1,21 +1,49 @@
 import type { MetadataRoute } from 'next';
-import { getPaginatedBlogPosts, getPublishedBlogPosts } from '@/lib/blog-content';
+import {
+  getLatestBlogUpdate,
+  getPaginatedBlogPosts,
+  getPublishedBlogPosts,
+} from '@/lib/blog-content';
 import { buildBlogIndexPath } from '@/lib/blog-seo';
 import { getSiteUrl } from '@/lib/site-content';
 import {
   getAllTemplateDetailModels,
   getStaticPageLastModified,
 } from '@/lib/site-page-models';
-import { LOCALES, getLocalizedPath } from '@/lib/site-locale';
+import { LOCALES, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
+
+const DEFAULT_LAST_MODIFIED = '2026-03-12';
+
+function pickLatestIsoDate(
+  values: Array<string | undefined>,
+  fallback = DEFAULT_LAST_MODIFIED,
+) {
+  const normalizedValues = values.filter(
+    (value): value is string => typeof value === 'string' && value.length > 0,
+  );
+
+  return normalizedValues.reduce((latest, value) => {
+    return new Date(value).getTime() > new Date(latest).getTime() ? value : latest;
+  }, fallback);
+}
+
+function getHomepageLastModified(locale: SiteLocale) {
+  return pickLatestIsoDate([
+    getLatestBlogUpdate(locale),
+    getStaticPageLastModified(locale, 'templates'),
+    getStaticPageLastModified(locale, 'guides'),
+    getStaticPageLastModified(locale, 'faq'),
+    ...getAllTemplateDetailModels(locale).map((page) => page.updatedAt),
+  ]);
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const homepageUpdatedAt = new Date('2026-03-12');
   const staticPaths = ['/', '/templates', '/blog', '/faq', '/privacy'] as const;
 
   const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     staticPaths.map((path) => {
-      const latestBlogUpdate = getPublishedBlogPosts(locale)[0]?.updatedAt ?? '2026-03-12';
+      const latestBlogUpdate = getLatestBlogUpdate(locale) ?? DEFAULT_LAST_MODIFIED;
       const pageKey =
         path === '/templates'
           ? 'templates'
@@ -34,7 +62,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(latestBlogUpdate)
             : pageKey
               ? new Date(getStaticPageLastModified(locale, pageKey))
-              : homepageUpdatedAt,
+              : new Date(getHomepageLastModified(locale)),
         changeFrequency: path === '/' ? 'weekly' : path === '/privacy' ? 'monthly' : 'weekly',
         priority: path === '/' ? 1 : path === '/privacy' ? 0.4 : path === '/faq' ? 0.6 : 0.8,
       };
@@ -65,11 +93,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return Array.from({ length: Math.max(totalPages - 1, 0) }, (_, index) => {
       const currentPage = index + 2;
       const pageItems = getPaginatedBlogPosts(locale, currentPage).items;
-      const latestPageUpdate =
-        pageItems.reduce(
-          (latest, post) => (latest > post.updatedAt ? latest : post.updatedAt),
-          pageItems[0]?.updatedAt ?? getPublishedBlogPosts(locale)[0]?.updatedAt ?? '2026-03-12',
-        );
+      const latestPageUpdate = pickLatestIsoDate(
+        pageItems.map((post) => post.updatedAt),
+        getLatestBlogUpdate(locale) ?? DEFAULT_LAST_MODIFIED,
+      );
 
       return {
         url: `${siteUrl}${buildBlogIndexPath(locale, currentPage)}`,

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight, Layers3, Share2 } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
+import { RichTextHtml } from '@/components/site/RichTextHtml';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -140,14 +142,13 @@ export function BlogDetailPageView({
                 </div>
 
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <Link
+                  <EditorLaunchButton
                     href={post.ctaQuery}
-                    prefetch={false}
                     className="inline-flex items-center gap-2 rounded-full border border-[#d7b46a]/40 bg-[#d7b46a]/12 px-5 py-2.5 text-sm font-medium text-[#f5ddb0] transition hover:border-[#f2cb7a] hover:bg-[#d7b46a]/20"
                   >
                     {copy.openEditor}
                     <ArrowRight className="h-4 w-4" />
-                  </Link>
+                  </EditorLaunchButton>
                   <Link
                     href={getLocalizedPath(locale, '/blog')}
                     prefetch={false}
@@ -187,9 +188,8 @@ export function BlogDetailPageView({
                   <h2 className="mt-4 font-display text-2xl leading-tight text-stone-50">{copy.workflowTitle}</h2>
                   <p className="mt-4 text-sm leading-7 text-stone-300">{copy.workflowDescription}</p>
                   <div className="mt-6 space-y-3">
-                    <Link
+                    <EditorLaunchButton
                       href={post.ctaQuery}
-                      prefetch={false}
                       className="group block rounded-[24px] border border-[#d7b46a]/35 bg-[#140f05]/45 p-4 transition hover:border-[#f2cb7a] hover:bg-[#140f05]/65"
                     >
                       <div className="flex items-center justify-between gap-3">
@@ -199,7 +199,7 @@ export function BlogDetailPageView({
                         </div>
                         <ArrowRight className="h-4 w-4 text-[#f1d492] transition group-hover:translate-x-0.5" />
                       </div>
-                    </Link>
+                    </EditorLaunchButton>
                     <Link
                       href={getLocalizedPath(locale, '/templates')}
                       prefetch={false}
@@ -223,9 +223,10 @@ export function BlogDetailPageView({
         <div className="mx-auto max-w-[1360px] px-6 py-14 lg:px-8 lg:py-18">
           <div className="grid items-start gap-10 xl:grid-cols-[minmax(0,880px)_320px] xl:justify-center">
             <div className="space-y-10">
-              <article
+              <RichTextHtml
+                as="article"
                 className="site-rich-text site-rich-text--detail relative overflow-hidden rounded-[36px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] px-6 py-8 sm:px-10 lg:px-12 lg:py-12"
-                dangerouslySetInnerHTML={{ __html: post.html }}
+                html={post.html}
               />
 
               {(previousPost || nextPost) ? (

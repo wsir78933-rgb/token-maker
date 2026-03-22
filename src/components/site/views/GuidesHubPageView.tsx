@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Route, Waypoints } from 'lucide-react';
+import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -119,14 +120,13 @@ export function GuidesHubPageView({ locale }: { locale: SiteLocale }) {
                             {copy.readGuide}
                             <ArrowRight className="h-4 w-4" />
                           </Link>
-                          <Link
+                          <EditorLaunchButton
                             href={guide.ctaQuery}
-                            prefetch={false}
                             className="inline-flex items-center gap-2 text-sm text-stone-400 transition hover:text-stone-100"
                           >
                             {copy.tryEditor}
                             <ArrowRight className="h-4 w-4" />
-                          </Link>
+                          </EditorLaunchButton>
                         </div>
                       </article>
                     ))}

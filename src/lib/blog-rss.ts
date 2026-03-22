@@ -1,4 +1,8 @@
-import { getPublishedBlogPosts, type BlogPost } from '@/lib/blog-content';
+import {
+  getLatestBlogUpdate,
+  getPublishedBlogPosts,
+  type BlogPost,
+} from '@/lib/blog-content';
 import { getBlogIndexCopy } from '@/lib/blog-seo';
 import { getSiteUrl } from '@/lib/site-content';
 import type { SiteLocale } from '@/lib/site-locale';
@@ -31,6 +35,7 @@ export function createBlogRssXml(locale: SiteLocale) {
   const feedPath = locale === 'zh' ? '/zh/rss.xml' : '/rss.xml';
   const blogPath = locale === 'zh' ? '/zh/blog' : '/blog';
   const posts = getPublishedBlogPosts(locale);
+  const latestUpdate = getLatestBlogUpdate(locale) ?? posts[0]?.publishedAt ?? new Date().toISOString();
 
   return `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -39,7 +44,7 @@ export function createBlogRssXml(locale: SiteLocale) {
     <link>${escapeXml(`${siteUrl}${blogPath}`)}</link>
     <description>${escapeXml(copy.description)}</description>
     <language>${locale === 'zh' ? 'zh-CN' : 'en-US'}</language>
-    <lastBuildDate>${new Date(posts[0]?.updatedAt ?? new Date().toISOString()).toUTCString()}</lastBuildDate>
+    <lastBuildDate>${new Date(latestUpdate).toUTCString()}</lastBuildDate>
     <atom:link href="${escapeXml(`${siteUrl}${feedPath}`)}" rel="self" type="application/rss+xml" />
     ${posts.map(buildItem).join('')}
   </channel>

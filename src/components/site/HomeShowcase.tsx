@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { getHomeShowcase, type HomeShowcaseItem } from '@/lib/home-showcase';
 import type { SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
@@ -25,9 +25,8 @@ function ShowcasePresetLink({
   const presetLabel = getShowcaseText(locale, presetId);
 
   return (
-    <Link
+    <EditorLaunchButton
       href={getPresetHref(locale, presetId)}
-      prefetch={false}
       aria-label={`${getShowcaseText(locale, 'showcaseApplyPreset')} ${presetLabel}`}
       className={cn(
         'inline-flex items-center gap-2 rounded-[min(var(--radius-md),12px)] border text-sm font-medium transition',
@@ -39,7 +38,7 @@ function ShowcasePresetLink({
     >
       {compact ? getShowcaseText(locale, 'showcaseApplyShort') : getShowcaseText(locale, 'showcaseApplyPreset')}
       {!compact ? <ArrowRight className="h-3.5 w-3.5" /> : null}
-    </Link>
+    </EditorLaunchButton>
   );
 }
 

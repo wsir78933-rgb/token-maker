@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCheck, CircleAlert, Clock3, NotebookText } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -111,14 +112,13 @@ export function GuideDetailPageView({ locale, slug }: { locale: SiteLocale; slug
                   ))}
                 </ul>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <Link
+                  <EditorLaunchButton
                     href={page.ctaQuery}
-                    prefetch={false}
                     className="inline-flex items-center gap-2 rounded-full border border-[#d7b46a]/40 bg-[#d7b46a]/12 px-5 py-2.5 text-sm font-medium text-[#f5ddb0] transition hover:border-[#f2cb7a] hover:bg-[#d7b46a]/20"
                   >
                     {copy.launchEditor}
                     <ArrowRight className="h-4 w-4" />
-                  </Link>
+                  </EditorLaunchButton>
                   <Link
                     href={getLocalizedPath(locale, '/templates')}
                     prefetch={false}

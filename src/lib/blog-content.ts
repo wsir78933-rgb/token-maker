@@ -159,6 +159,10 @@ function escapeAttribute(value: string) {
   return escapeHtml(value);
 }
 
+function isEditorLaunchHref(value: string) {
+  return /^\/(?:zh)?\?[^#]+#editor-workspace$/.test(value);
+}
+
 function slugify(value: string) {
   const normalized = value
     .normalize('NFKD')
@@ -178,10 +182,17 @@ function renderInline(markdown: string) {
     /\[([^\]]+)\]\(([^)]+)\)/g,
     (_match, label: string, href: string) => {
       const placeholder = `@@BLOG_LINK_${linkReplacements.length}@@`;
+      const normalizedHref = href.trim();
 
-      linkReplacements.push(
-        `<a href="${escapeAttribute(href)}" class="blog-link"${href.startsWith('http') ? ' target="_blank" rel="noreferrer"' : ''}>${escapeHtml(label)}</a>`,
-      );
+      if (isEditorLaunchHref(normalizedHref)) {
+        linkReplacements.push(
+          `<button type="button" class="blog-link blog-link--button" data-editor-launch="${escapeAttribute(normalizedHref)}">${escapeHtml(label)}</button>`,
+        );
+      } else {
+        linkReplacements.push(
+          `<a href="${escapeAttribute(normalizedHref)}" class="blog-link"${normalizedHref.startsWith('http') ? ' target="_blank" rel="noreferrer"' : ''}>${escapeHtml(label)}</a>`,
+        );
+      }
 
       return placeholder;
     },
@@ -579,5 +590,15 @@ export function getBlogCategories(locale: SiteLocale) {
 }
 
 export function getLatestBlogUpdate(locale: SiteLocale) {
-  return getPublishedBlogPosts(locale)[0]?.updatedAt;
+  const posts = getPublishedBlogPosts(locale);
+
+  return posts.reduce<string | undefined>((latest, post) => {
+    if (!latest) {
+      return post.updatedAt;
+    }
+
+    return new Date(post.updatedAt).getTime() > new Date(latest).getTime()
+      ? post.updatedAt
+      : latest;
+  }, undefined);
 }

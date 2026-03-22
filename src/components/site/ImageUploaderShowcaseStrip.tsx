@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { getHomeShowcase } from '@/lib/home-showcase';
 import type { SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
@@ -56,13 +56,12 @@ export function ImageUploaderShowcaseStrip({ locale }: { locale: SiteLocale }) {
                 </p>
               </div>
 
-              <Link
+              <EditorLaunchButton
                 href={getPresetHref(locale, item.presetId)}
-                prefetch={false}
                 className="mt-2 inline-flex w-full justify-center rounded-[min(var(--radius-md),12px)] border border-border/60 bg-background/80 px-2.5 py-2 text-xs font-medium text-foreground transition hover:bg-muted"
               >
                 {getShowcaseText(locale, 'showcaseApplyShort')}
-              </Link>
+              </EditorLaunchButton>
             </article>
           );
         })}
