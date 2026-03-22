@@ -8,7 +8,6 @@ const TFF_BORDER_PACK: Array<{
   name: string;
   linkedMaskId?: string;
 }> = [
-  { id: 'tff-thin-ring', name: 'border.tff-thin-ring', linkedMaskId: 'circle' },
   { id: 'tff-weathered-copper-ring', name: 'border.tff-weathered-copper-ring', linkedMaskId: 'circle' },
   { id: 'tff-gilded-ring', name: 'border.tff-gilded-ring', linkedMaskId: 'circle' },
   { id: 'tff-arcane-lightning-ring', name: 'border.tff-arcane-lightning-ring', linkedMaskId: 'circle' },
@@ -40,6 +39,16 @@ const TFF_BORDER_PACK: Array<{
   { id: 'tff-distressed-ring', name: 'border.tff-distressed-ring', linkedMaskId: 'circle' },
 ];
 
+const TFF_3D_RINGS = new Set([
+  'tff-weathered-copper-ring',
+  'tff-gilded-ring',
+  'tff-arcane-lightning-ring',
+  'tff-gunmetal-ring',
+  'tff-ouroboros-ring',
+  'tff-stone-ring',
+  'tff-distressed-ring',
+]);
+
 const TFF_BORDER_TEMPLATES: BorderTemplate[] = TFF_BORDER_PACK.map((border) => ({
   id: border.id,
   name: border.name,
@@ -48,6 +57,7 @@ const TFF_BORDER_TEMPLATES: BorderTemplate[] = TFF_BORDER_PACK.map((border) => (
   imageUrl: `/borders/tff/${border.id}.png`,
   thumbSrc: `/borders/tff/${border.id}.png`,
   maskUrl: `/masks/tff/${border.id}.png`,
+  tintMode: TFF_3D_RINGS.has(border.id) ? 'screen' : 'solid',
 }));
 
 export const BORDER_TEMPLATES: BorderTemplate[] = [

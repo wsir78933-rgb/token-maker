@@ -126,7 +126,8 @@ function getTintedImageBorder(
   borderImage: HTMLImageElement,
   cacheKey: string,
   size: number,
-  tint: string
+  tint: string,
+  tintMode: 'solid' | 'metallic' | 'screen' = 'metallic'
 ): HTMLCanvasElement | null {
   const cached = IMAGE_BORDER_TINT_CACHE.get(cacheKey);
   if (cached) return cached;
@@ -156,6 +157,38 @@ function getTintedImageBorder(
     for (let index = 0; index < data.length; index += 4) {
       const alpha = data[index + 3];
       if (alpha === 0) continue;
+
+      if (tintMode === 'screen') {
+        const originalL = (0.2126 * data[index] + 0.7152 * data[index + 1] + 0.0722 * data[index + 2]) / 255;
+        
+        // 核心底色：将 TFF 材质常见的 0.9 亮度直接映射为 1.0 (纯用户自选色)
+        // 保证哪怕选择了极高纯度/低亮度的颜色，在主体像素上也能100%还原饱和度
+        const baseMultiplier = Math.min(1.0, originalL / 0.9);
+        const baseR = tintRgb.r * baseMultiplier;
+        const baseG = tintRgb.g * baseMultiplier;
+        const baseB = tintRgb.b * baseMultiplier;
+        
+        // 剔除泛白污染：仅当亮度极高(>0.8)时，才增加高光。
+        // 用立方曲线使其过渡极度圆滑，保证它只在叶尖/鳞片反光点上闪烁，不冲淡主体颜色。
+        let H = 0;
+        if (originalL > 0.8) {
+          const normalized = (originalL - 0.8) / 0.2;
+          H = Math.pow(normalized, 3) * 0.45; // 最亮处保留 45% 的白光
+        }
+        
+        data[index] = Math.min(255, Math.round(baseR + H * (255 - baseR)));
+        data[index + 1] = Math.min(255, Math.round(baseG + H * (255 - baseG)));
+        data[index + 2] = Math.min(255, Math.round(baseB + H * (255 - baseB)));
+        continue;
+      }
+
+      if (tintMode === 'solid') {
+        const luminance = (0.2126 * data[index] + 0.7152 * data[index + 1] + 0.0722 * data[index + 2]) / 255;
+        data[index] = Math.round(luminance * tintRgb.r);
+        data[index + 1] = Math.round(luminance * tintRgb.g);
+        data[index + 2] = Math.round(luminance * tintRgb.b);
+        continue;
+      }
 
       const red = data[index];
       const green = data[index + 1];
@@ -304,9 +337,10 @@ export function drawBorder(
       if (tintImageBorder) {
         const tintedImage = getTintedImageBorder(
           img,
-          `${url}::${size}::${tint.toLowerCase()}`,
+          `${url}::${size}::${tint.toLowerCase()}::${border.tintMode || 'metallic'}`,
           size,
-          tint
+          tint,
+          border.tintMode
         );
 
         ctx.drawImage(tintedImage ?? img, 0, 0, size, size);

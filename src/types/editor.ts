@@ -46,6 +46,8 @@ export interface BorderTemplate {
   imageUrl?: string;
   /** 系统内置的边框缩略图路径（边框选择面板使用） */
   thumbSrc?: string;
+  /** 着色模式，solid (正片叠底)，metallic (基于HSL亮度提取)，screen (提亮高光) */
+  tintMode?: 'solid' | 'metallic' | 'screen';
 }
 
 /** 遮罩模板定义 */
