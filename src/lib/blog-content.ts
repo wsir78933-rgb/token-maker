@@ -5,8 +5,8 @@ import { LOCALES, getLanguageAlternates, getLocalizedPath, type SiteLocale } fro
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
-// Keep blog routes out of search until every locale is ready for indexing.
-export const BLOG_PLACEHOLDER_MODE = true;
+// Blog routes are ready for indexing and should be included in sitemap output.
+export const BLOG_PLACEHOLDER_MODE = false;
 
 export interface BlogPost {
   slug: string;
