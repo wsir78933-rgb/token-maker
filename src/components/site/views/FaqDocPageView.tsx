@@ -29,9 +29,9 @@ const copyByLocale = {
         description: 'Start from the right mask and border family instead of improvising later.',
       },
       {
-        href: '/blog',
-        label: 'Read practical guides',
-        description: 'Use the blog when your question is about a specific platform or export decision.',
+        href: '/templates',
+        label: 'Compare token formats',
+        description: 'Use the template hub when the real question is circle, square, hex, or transparent.',
       },
       {
         href: '/privacy',
@@ -51,9 +51,9 @@ const copyByLocale = {
         description: 'See the short policy version of the local-first promise.',
       },
       {
-        href: '/blog/how-to-make-vtt-tokens',
-        label: 'Read the VTT workflow guide',
-        description: 'Compare practical prep choices before committing to a table setup.',
+        href: '/templates',
+        label: 'Compare template directions',
+        description: 'Pick a starting format before you spend time tuning borders and export choices.',
       },
       {
         href: '/templates',
@@ -61,9 +61,9 @@ const copyByLocale = {
         description: 'Choose the right format before spending time on border styling.',
       },
       {
-        href: '/blog/token-size-and-resolution',
-        label: 'Read the export size guide',
-        description: 'Use 512, 1024, and 2048 on purpose instead of guessing.',
+        href: '/',
+        label: 'Start with one real export',
+        description: 'Export one token in the editor first, then decide whether the file actually needs to be larger.',
       },
     ],
     supportCardEyebrow: 'What you will find here',
@@ -88,9 +88,9 @@ const copyByLocale = {
         description: '先选对形状和边框方向，再决定细节，不要反过来。',
       },
       {
-        href: '/blog',
-        label: '继续看实战文章',
-        description: '当问题已经变成平台适配或导出策略时，直接转去博客更高效。',
+        href: '/templates',
+        label: '比较不同 Token 格式',
+        description: '如果你真正卡的是圆形、方形、六边形还是透明背景，就直接去模板页。',
       },
       {
         href: '/privacy',
@@ -110,9 +110,9 @@ const copyByLocale = {
         description: '需要确认本地优先边界时，隐私页会更直接。',
       },
       {
-        href: '/blog/how-to-make-vtt-tokens',
-        label: '读 VTT 工作流指南',
-        description: '在选定桌面方案前，先看一遍真实准备流程。',
+        href: '/templates',
+        label: '先去模板页定路线',
+        description: '在继续调边框和导出之前，先把格式方向选对。',
       },
       {
         href: '/templates',
@@ -120,9 +120,9 @@ const copyByLocale = {
         description: '先把形状和边框路线确定下来，再去做细节调整。',
       },
       {
-        href: '/blog/token-size-and-resolution',
-        label: '看导出尺寸指南',
-        description: '把 512、1024、2048 的使用边界一次性定清楚。',
+        href: '/',
+        label: '先导出一张真实样例',
+        description: '先试一张真实 token，再判断 512 是否已经够用。',
       },
     ],
     supportCardEyebrow: '这页包含什么',

@@ -1,13 +1,10 @@
-import type { Metadata } from 'next';
 import { BlogHubPageView } from '@/components/site/views/BlogHubPageView';
-import { createBlogIndexMetadata } from '@/lib/blog-seo';
+import { createBlogHubMetadata } from '@/lib/blog-content';
 
 const locale = 'en';
 
-export function generateMetadata(): Metadata {
-  return createBlogIndexMetadata(locale, 1);
-}
+export const metadata = createBlogHubMetadata(locale);
 
 export default function BlogIndexPage() {
-  return <BlogHubPageView locale={locale} currentPage={1} />;
+  return <BlogHubPageView locale={locale} />;
 }

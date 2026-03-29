@@ -3,15 +3,12 @@ import {
   absoluteUrl,
   getCollectionPageCopy,
   getFaqItems,
-  getGuidePage,
-  getGuidePages,
   getPrivacySections,
   getSiteConfig,
   getSiteUrl,
   getTemplatePage,
   getTemplatePages,
   type FaqItem,
-  type GuidePageData,
   type TemplatePageData,
 } from '@/lib/site-content';
 import { getSeoImageUrl } from '@/lib/site-seo';
@@ -39,22 +36,6 @@ export interface TemplateDetailModel extends TemplatePageData {
     label: string;
     items: string[];
   };
-}
-
-export interface GuideStep {
-  title: string;
-  description: string;
-  checklist?: string[];
-}
-
-export interface GuideDetailModel extends GuidePageData {
-  updatedAt: string;
-  readTime: string;
-  audience: string[];
-  checklist: string[];
-  pitfalls: string[];
-  faq: FaqItem[];
-  steps: GuideStep[];
 }
 
 export interface HubStat {
@@ -93,14 +74,6 @@ export interface TemplateHubEntryPoint {
   caution: string;
 }
 
-export interface GuideHubTrack {
-  id: string;
-  title: string;
-  description: string;
-  outcome: string;
-  slugs: string[];
-}
-
 export interface TemplatesHubModel {
   updatedAt: string;
   eyebrow: string;
@@ -117,18 +90,6 @@ export interface TemplatesHubModel {
   categories: TemplateHubCategory[];
   comparisonTitle: string;
   comparisonDescription: string;
-}
-
-export interface GuidesHubModel {
-  updatedAt: string;
-  eyebrow: string;
-  title: string;
-  description: string;
-  intro: string;
-  stats: HubStat[];
-  tracks: GuideHubTrack[];
-  timelineTitle: string;
-  timeline: Array<{ title: string; description: string }>;
 }
 
 export interface FaqDocGroup {
@@ -159,8 +120,6 @@ export interface PrivacyDocModel {
 }
 
 type TemplateEnhancement = Omit<TemplateDetailModel, keyof TemplatePageData>;
-type GuideEnhancement = Omit<GuideDetailModel, keyof GuidePageData>;
-
 const templateEnhancementsByLocale: Record<SiteLocale, Record<string, TemplateEnhancement>> = {
   en: {
     'circle-token-maker': {
@@ -638,335 +597,6 @@ const templateEnhancementsByLocale: Record<SiteLocale, Record<string, TemplateEn
   },
 };
 
-const guideEnhancementsByLocale: Record<SiteLocale, Record<string, GuideEnhancement>> = {
-  en: {
-    'how-to-make-vtt-tokens': {
-      updatedAt: '2026-03-11',
-      readTime: '6 min read',
-      audience: ['Players building recurring character tokens', 'GMs assembling encounter packs', 'Artists packaging VTT-ready portraits'],
-      checklist: [
-        'Start with art that survives reduction.',
-        'Pick the crop based on table readability, not full-size aesthetics.',
-        'Export a play-size version before you bother with archive size.',
-      ],
-      pitfalls: [
-        'Treating every portrait like a beauty shot instead of a game asset.',
-        'Decorating before confirming that the subject reads clearly at map scale.',
-        'Exporting oversized files before you know the token family works.',
-      ],
-      faq: [
-        {
-          question: 'Should every VTT token use the same border family?',
-          answer: 'Usually yes. One or two frame families per campaign is enough to keep the table readable without making the roster look random.',
-        },
-        {
-          question: 'When should I keep the background visible?',
-          answer: 'Only when the background is part of the token identity. Most of the time, map readability wins over scenic context.',
-        },
-      ],
-      steps: [
-        {
-          title: 'Choose art that survives reduction',
-          description: 'Look at the image as a small game asset, not as a full illustration. Strong face lighting and simple silhouette matter more than scenic ambition.',
-          checklist: ['Test the portrait at small size before styling it.', 'Remove background clutter if it competes with the subject.'],
-        },
-        {
-          title: 'Pick the shape after you know the table context',
-          description: 'Circle is not automatically correct. Square preserves gear, and hex works when the board itself feels tactical.',
-          checklist: ['Circle for face-first portraits.', 'Square for grid alignment.', 'Hex for counters and regional logic.'],
-        },
-        {
-          title: 'Export one fast version and one keeper version',
-          description: 'Start with 512 for table use. Once the design language works, keep a sharper 1024 archive export for reuse.',
-        },
-      ],
-    },
-    'how-to-make-foundry-vtt-tokens': {
-      updatedAt: '2026-03-12',
-      readTime: '7 min read',
-      audience: ['Foundry GMs curating long campaigns', 'Worldbuilders maintaining token consistency', 'Users leaning on lighting-heavy scenes'],
-      checklist: [
-        'Define one visual rule set before building actor portraits.',
-        'Check transparency on both bright and dark scenes.',
-        'Separate roles by frame language, not by random ornament.',
-      ],
-      pitfalls: [
-        'Using a different border family for every actor.',
-        'Ignoring scene lighting and only reviewing on a neutral background.',
-        'Treating Foundry tokens like social avatars instead of scene assets.',
-      ],
-      faq: [
-        {
-          question: 'Is 1024 overkill for Foundry?',
-          answer: 'Not always. If the campaign zooms in often or you plan to reuse the portraits across scenes, 1024 is a reasonable long-term default.',
-        },
-        {
-          question: 'Should allies and monsters share the same frame?',
-          answer: 'Usually no. Role separation is one of the fastest readability wins in Foundry combat scenes.',
-        },
-      ],
-      steps: [
-        {
-          title: 'Set the campaign language first',
-          description: 'Choose your mask family, frame density, and export baseline before making dozens of tokens. Foundry benefits from consistency more than novelty.',
-          checklist: ['Limit yourself to one or two border families.', 'Keep export size stable across actor groups.'],
-        },
-        {
-          title: 'Preview transparency against real scenes',
-          description: 'Lighting, fog, and map contrast change how token edges feel. Test on cave scenes, bright interiors, and mixed-color environments.',
-          checklist: ['Review dark scene edges.', 'Review bright tavern or parchment scenes.', 'Lower overlay opacity if the edge blooms.'],
-        },
-        {
-          title: 'Encode role with frame logic',
-          description: 'Players, allies, elites, and monsters should read as different classes of object before the user even checks the nameplate.',
-        },
-      ],
-    },
-    'how-to-make-roll20-tokens': {
-      updatedAt: '2026-03-10',
-      readTime: '5 min read',
-      audience: ['Roll20 tables with busy battlemaps', 'GMs managing large combat rosters', 'Users prioritizing speed over ornament'],
-      checklist: [
-        'Crop tighter than the artwork initially feels comfortable with.',
-        'Use border contrast to separate roles at a glance.',
-        'Keep file sizes disciplined so asset folders stay workable.',
-      ],
-      pitfalls: [
-        'Leaving too much empty background inside the token.',
-        'Relying on tiny decorative details that disappear during live combat.',
-        'Exporting oversized files for throwaway encounter tokens.',
-      ],
-      faq: [
-        {
-          question: 'Do Roll20 tokens need heavy frames to be readable?',
-          answer: 'No. They need good crop discipline and contrast more than heavy decoration.',
-        },
-        {
-          question: 'What should I optimize first for Roll20?',
-          answer: 'Optimize for live play readability. Once that works, you can worry about cleaner archives or marketplace-ready exports.',
-        },
-      ],
-      steps: [
-        {
-          title: 'Crop with combat density in mind',
-          description: 'Assume the token will appear beside many others. Favor face or creature-head readability over scenic completeness.',
-        },
-        {
-          title: 'Use restrained but distinct borders',
-          description: 'Border language should help identify role quickly, not become the main subject of the token.',
-          checklist: ['Heroes: brighter metal or gold.', 'Hostiles: darker metal or bone.', 'NPCs: lower-noise wood or thin ring.'],
-        },
-        {
-          title: 'Only archive what deserves archiving',
-          description: 'Most live Roll20 assets are fine at 512. Save 1024 or larger exports for portraits you will actually reuse.',
-        },
-      ],
-    },
-    'token-size-and-resolution': {
-      updatedAt: '2026-03-08',
-      readTime: '4 min read',
-      audience: ['Users deciding between speed and archive quality', 'Artists building reusable packs', 'GMs balancing sharpness against file weight'],
-      checklist: [
-        'Use 512 as the baseline until a real need appears.',
-        'Promote to 1024 when reuse, transparency, or zoom quality matter.',
-        'Reserve 2048 for premium or print-adjacent output.',
-      ],
-      pitfalls: [
-        'Assuming bigger export automatically means better token design.',
-        'Building every encounter asset at archive size.',
-        'Ignoring how the final table actually views the token.',
-      ],
-      faq: [
-        {
-          question: 'Should players and monsters share the same export size?',
-          answer: 'Usually yes within one campaign. Consistent resolution is easier to manage unless a token has a special use case.',
-        },
-        {
-          question: 'When is 2048 justified?',
-          answer: 'When the file has a long shelf life: premium packs, polished archives, or assets intended for multiple downstream uses.',
-        },
-      ],
-      steps: [
-        {
-          title: 'Start with the live table',
-          description: 'If the asset is primarily for active play, 512 is usually enough. Begin there before inventing future needs.',
-        },
-        {
-          title: 'Upgrade resolution for reuse, not ego',
-          description: '1024 pays off when you need cleaner transparency, reuse across many campaigns, or a more premium library.',
-        },
-        {
-          title: 'Treat 2048 like a special production tier',
-          description: 'Only keep giant exports for assets that truly need longevity, resale polish, or print-adjacent flexibility.',
-        },
-      ],
-    },
-  },
-  zh: {
-    'how-to-make-vtt-tokens': {
-      updatedAt: '2026-03-11',
-      readTime: '阅读约 6 分钟',
-      audience: ['需要长期复用角色 token 的玩家', '要批量准备遭遇包的 GM', '打算输出 VTT 资源包的画师'],
-      checklist: [
-        '先确认原图缩小后仍然能认出来。',
-        '根据桌面场景决定裁切形状，而不是只看大图效果。',
-        '先导出能直接上桌的版本，再考虑归档版。',
-      ],
-      pitfalls: [
-        '把每张图都当成插画展示图，而不是游戏资产。',
-        '还没确认可读性，就先堆边框和装饰。',
-        '一开始就导大图，结果整套风格还没跑顺。',
-      ],
-      faq: [
-        {
-          question: '整套 VTT token 要不要统一边框家族？',
-          answer: '通常要。一个战役里控制在一到两套边框家族，识别效率会明显高于每张都换风格。',
-        },
-        {
-          question: '什么时候应该保留背景？',
-          answer: '只有当背景本身就是身份信息的一部分时才值得保留。大多数情况下，地图可读性优先。',
-        },
-      ],
-      steps: [
-        {
-          title: '先挑“缩小后还成立”的图',
-          description: '把原图当成小尺寸游戏资产看，而不是完整插画。稳定光线和清晰轮廓比场景野心更重要。',
-          checklist: ['先看小图是否还认得出来。', '如果背景抢戏，就先减掉背景干扰。'],
-        },
-        {
-          title: '在知道桌面场景之后再选形状',
-          description: '圆形不是自动正确。方形更适合保留装备，六边形更适合战术和区域感。',
-          checklist: ['圆形适合脸部识别。', '方形适合网格与装备。', '六边形适合计数器与区域逻辑。'],
-        },
-        {
-          title: '导出一版实战稿，再留一版长期稿',
-          description: '先用 512 上桌。确认整套设计语言成立后，再留一份更干净的 1024 做长期复用。',
-        },
-      ],
-    },
-    'how-to-make-foundry-vtt-tokens': {
-      updatedAt: '2026-03-12',
-      readTime: '阅读约 7 分钟',
-      audience: ['长期经营 Foundry 战役的 GM', '需要保持视觉一致性的世界构建者', '依赖灯光与地形层次的用户'],
-      checklist: [
-        '先定一套视觉规则，再批量做 Actor 头像。',
-        '在亮图和暗图里都检查透明边缘。',
-        '用边框语言区分角色类型，而不是随意堆装饰。',
-      ],
-      pitfalls: [
-        '每个 Actor 都用完全不同的边框。',
-        '只在中性背景看 token，不进真实场景测试。',
-        '把 Foundry token 当社交头像做，而不是场景资产。',
-      ],
-      faq: [
-        {
-          question: 'Foundry 用 1024 会不会太大？',
-          answer: '不一定。如果战役常常放大场景，或者你打算长期复用这些头像，1024 是合理的长期默认值。',
-        },
-        {
-          question: '友军和怪物要不要共用同一套边框？',
-          answer: '通常不要。角色分类越清楚，Foundry 战斗场景越容易扫视。',
-        },
-      ],
-      steps: [
-        {
-          title: '先定战役的视觉规则',
-          description: '在做几十张 token 之前，先确定遮罩、边框密度和导出尺寸。Foundry 更吃一致性，不吃“每张都不同”。',
-          checklist: ['边框家族控制在一到两套内。', '导出尺寸在同一角色类别内保持一致。'],
-        },
-        {
-          title: '把透明边缘放进真实场景测试',
-          description: '灯光、雾效、地图明暗会直接改变边缘感受。一定要在地城、酒馆、低对比和高对比地图里都看一遍。',
-          checklist: ['检查暗场景边缘。', '检查亮场景边缘。', '如果边缘发灰，就继续压低叠加层透明度。'],
-        },
-        {
-          title: '用边框区分战斗角色',
-          description: '玩家、友军、精英怪和普通怪应该先从形象上被看成不同类别，再由名字补充识别。',
-        },
-      ],
-    },
-    'how-to-make-roll20-tokens': {
-      updatedAt: '2026-03-10',
-      readTime: '阅读约 5 分钟',
-      audience: ['Roll20 拥挤战斗地图用户', '需要管理大量敌人的 GM', '优先追求实战效率的玩家'],
-      checklist: [
-        '裁切距离要比直觉更近。',
-        '用边框对比区分角色类型。',
-        '控制文件尺寸，不要让素材库失控。',
-      ],
-      pitfalls: [
-        'token 内部空背景太多，主体太小。',
-        '迷信微小装饰细节，但战斗时根本看不见。',
-        '一堆一次性遭遇 token 也导超大尺寸。',
-      ],
-      faq: [
-        {
-          question: 'Roll20 token 一定要重边框才清楚吗？',
-          answer: '不一定。真正重要的是构图克制和对比度，而不是边框越重越好。',
-        },
-        {
-          question: 'Roll20 里最先该优化什么？',
-          answer: '先优化实战可读性。打得顺手之后，再考虑更高分辨率归档或商用资源级输出。',
-        },
-      ],
-      steps: [
-        {
-          title: '按拥挤战斗图来裁切',
-          description: '默认它会和很多其他 token 一起出现，所以优先保证脸或怪物头在缩小时依然清楚。',
-        },
-        {
-          title: '边框要克制，但角色要分得开',
-          description: '边框存在的意义是帮助角色分类，不是抢占视觉中心。',
-          checklist: ['英雄：亮金属或金色。', '敌对单位：深金属或骨质。', 'NPC：木质或细环。'],
-        },
-        {
-          title: '只给值得长期保留的素材留高分辨率',
-          description: '大多数 Roll20 实战素材 512 已经够用。只有会反复复用的角色，才需要再存更高规格。',
-        },
-      ],
-    },
-    'token-size-and-resolution': {
-      updatedAt: '2026-03-08',
-      readTime: '阅读约 4 分钟',
-      audience: ['在速度和归档质量之间做选择的用户', '想做长期资源包的画师', '需要平衡清晰度和体积的 GM'],
-      checklist: [
-        '没有明确需求前，先把 512 当默认值。',
-        '需要复用、透明边缘或高缩放时，再上 1024。',
-        '2048 只留给高质量和长期场景。',
-      ],
-      pitfalls: [
-        '以为分辨率越大，token 设计就一定越好。',
-        '把每个遭遇战素材都按归档规格导出。',
-        '只盯着参数，不看桌面里实际怎么看这些 token。',
-      ],
-      faq: [
-        {
-          question: '玩家和怪物要不要统一导出尺寸？',
-          answer: '通常要。在一个战役里保持一致更好管理，除非某些特殊素材有明确例外。',
-        },
-        {
-          question: '什么时候 2048 才真的有意义？',
-          answer: '当素材有长生命周期，例如商用资源包、精细归档或未来要给多个场景复用时，2048 才值得保留。',
-        },
-      ],
-      steps: [
-        {
-          title: '先从“当前桌面怎么用”出发',
-          description: '如果主要用途是日常上桌，512 通常就够。先满足当前工作流，再讨论未来可能性。',
-        },
-        {
-          title: '升级到 1024 的理由应该是“复用”',
-          description: '1024 的价值在于透明边缘更干净、跨战役复用更从容，而不是单纯的参数满足感。',
-        },
-        {
-          title: '把 2048 视为单独的制作层级',
-          description: '只有真正需要长期保存、商用打磨或接近打印用途的素材，才值得保留这么大的版本。',
-        },
-      ],
-    },
-  },
-};
-
 const templatesHubModels: Record<SiteLocale, TemplatesHubModel> = {
   en: {
     updatedAt: '2026-03-12',
@@ -1317,135 +947,6 @@ const templatesHubModels: Record<SiteLocale, TemplatesHubModel> = {
   },
 };
 
-const guidesHubModels: Record<SiteLocale, GuidesHubModel> = {
-  en: {
-    updatedAt: '2026-03-12',
-    eyebrow: 'Blog',
-    title: 'Token Maker blog for workflow, platform, and export decisions',
-    description: 'These posts are written as reading-first assets: workflow explanations, platform-specific rules, and resolution tradeoffs that deserve full article structure.',
-    intro:
-      'The editor handles execution. The blog handles judgment. Each post below exists to answer a different decision problem, so visitors can move from general workflow to platform specifics without landing on a stack of lookalike pages.',
-    stats: [
-      {
-        label: 'Tracks',
-        value: '3 learning lanes',
-        description: 'General VTT workflow, platform-specific tuning, and export strategy are separated instead of mixed together.',
-      },
-      {
-        label: 'Reading mode',
-        value: 'Checklist-led',
-        description: 'Every guide now exposes steps, pitfalls, and review questions rather than a generic summary block.',
-      },
-      {
-        label: 'Outcome',
-        value: 'Fewer wrong exports',
-        description: 'The pages are framed to reduce crop, border, and resolution mistakes before the user enters the editor.',
-      },
-    ],
-    tracks: [
-      {
-        id: 'foundation',
-        title: 'Workflow foundation',
-        description: 'Use these when you are still deciding how to build readable tokens at all.',
-        outcome: 'Understand crop, shape, and export logic before optimizing for a platform.',
-        slugs: ['how-to-make-vtt-tokens'],
-      },
-      {
-        id: 'platforms',
-        title: 'Platform tuning',
-        description: 'Specific advice for the two environments most likely to punish sloppy token preparation.',
-        outcome: 'Adjust border language and transparency based on how the target VTT actually renders scenes.',
-        slugs: ['how-to-make-foundry-vtt-tokens', 'how-to-make-roll20-tokens'],
-      },
-      {
-        id: 'export-strategy',
-        title: 'Export strategy',
-        description: 'File size and resolution rules for deciding what should stay lightweight and what deserves archive treatment.',
-        outcome: 'Avoid oversizing everything while still preserving high-value assets.',
-        slugs: ['token-size-and-resolution'],
-      },
-    ],
-    timelineTitle: 'Recommended reading order',
-    timeline: [
-      {
-        title: 'Start with the generic VTT workflow',
-        description: 'It sets the shared vocabulary: crop discipline, shape choice, and first-pass export habits.',
-      },
-      {
-        title: 'Branch to Foundry or Roll20 only if your table needs it',
-        description: 'Platform-specific advice is most useful once you already know how your token family should look.',
-      },
-      {
-        title: 'Finish with export sizing',
-        description: 'Resolution guidance matters more after you know which assets deserve long-term retention.',
-      },
-    ],
-  },
-  zh: {
-    updatedAt: '2026-03-12',
-    eyebrow: '博客',
-    title: '把编辑器不该隐藏的判断逻辑写进真正可持续发布的博客',
-    description: '这些页面不再是模板式说明块，而是阅读优先的文章页：讲流程、讲平台差异、讲分辨率取舍。',
-    intro:
-      '编辑器负责执行，博客负责判断。每篇文章都对应一类决策问题，让用户从通用工作流一路走到平台细节，而不是落进一堆长得一样的页面里。',
-    stats: [
-      {
-        label: '路径',
-        value: '3 条学习线',
-        description: '通用流程、平台适配、导出策略被明确拆开，不再混成一页里的几个卡片。',
-      },
-      {
-        label: '阅读方式',
-        value: '清单驱动',
-        description: '每篇指南都突出步骤、误区和复查点，而不是统一摘要块。',
-      },
-      {
-        label: '目标',
-        value: '减少错误导出',
-        description: '用户能在进入编辑器之前先避免裁切、边框和分辨率上的常见错误。',
-      },
-    ],
-    tracks: [
-      {
-        id: 'foundation',
-        title: '工作流基础',
-        description: '当你还没想清楚怎样才算“可读 token”时，先看这一组。',
-        outcome: '先建立裁切、形状和导出逻辑，再谈平台适配。',
-        slugs: ['how-to-make-vtt-tokens'],
-      },
-      {
-        id: 'platforms',
-        title: '平台适配',
-        description: '针对最容易暴露 token 问题的两个平台，给出具体调整建议。',
-        outcome: '根据目标 VTT 的场景渲染方式，调整边框语言和透明处理。',
-        slugs: ['how-to-make-foundry-vtt-tokens', 'how-to-make-roll20-tokens'],
-      },
-      {
-        id: 'export-strategy',
-        title: '导出策略',
-        description: '处理文件尺寸和分辨率，决定哪些素材该轻、哪些值得长期保留。',
-        outcome: '避免什么都导超大，同时保住真正高价值素材的寿命。',
-        slugs: ['token-size-and-resolution'],
-      },
-    ],
-    timelineTitle: '推荐阅读顺序',
-    timeline: [
-      {
-        title: '先看通用 VTT 工作流',
-        description: '先建立裁切纪律、形状判断和第一轮导出的共同语言。',
-      },
-      {
-        title: '如果目标平台明确，再分支看 Foundry 或 Roll20',
-        description: '平台建议要建立在你已经知道整套 token 应该长什么样的前提上。',
-      },
-      {
-        title: '最后再看导出尺寸',
-        description: '只有当你已经确认哪些素材值得长期保留时，分辨率策略才真正有意义。',
-      },
-    ],
-  },
-};
-
 const faqDocModels: Record<SiteLocale, FaqDocModel> = {
   en: {
     updatedAt: '2026-03-17',
@@ -1453,7 +954,7 @@ const faqDocModels: Record<SiteLocale, FaqDocModel> = {
     title: 'Five common questions about Token Maker',
     description: 'Find quick answers about workflow fit, image handling, styles, and export size.',
     intro:
-      'Use this page when you want the short version first. Each section answers a practical question, then points you to the editor, templates, or a guide if you need more detail.',
+      'Use this page when you want the short version first. Each section answers a practical question, then points you to the editor, templates, or privacy note when a deeper check is useful.',
     groups: [
       {
         id: 'fit',
@@ -1495,7 +996,7 @@ const faqDocModels: Record<SiteLocale, FaqDocModel> = {
     title: '关于 Token Maker 的五个常见问题',
     description: '集中回答工作流适配、图片处理、样式选择和导出尺寸这些高频问题。',
     intro:
-      '想先看简洁版答案，就从这里开始。每一组问题都只回答实际使用中最常见的判断点，需要更深入时再继续去编辑器、模板页或博客。',
+      '想先看简洁版答案，就从这里开始。每一组问题都只回答实际使用中最常见的判断点，需要更深入时再继续去编辑器、模板页或隐私说明。',
     groups: [
       {
         id: 'fit',
@@ -1592,17 +1093,15 @@ const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
 
 const staticPageLastModifiedByLocale: Record<
   SiteLocale,
-  Record<'templates' | 'guides' | 'faq' | 'privacy', string>
+  Record<'templates' | 'faq' | 'privacy', string>
 > = {
   en: {
     templates: templatesHubModels.en.updatedAt,
-    guides: guidesHubModels.en.updatedAt,
     faq: faqDocModels.en.updatedAt,
     privacy: privacyDocModels.en.updatedAt,
   },
   zh: {
     templates: templatesHubModels.zh.updatedAt,
-    guides: guidesHubModels.zh.updatedAt,
     faq: faqDocModels.zh.updatedAt,
     privacy: privacyDocModels.zh.updatedAt,
   },
@@ -1622,26 +1121,8 @@ export function getTemplateDetailModel(locale: SiteLocale, slug: string): Templa
   };
 }
 
-export function getGuideDetailModel(locale: SiteLocale, slug: string): GuideDetailModel | undefined {
-  const page = getGuidePage(locale, slug);
-  const enhancement = guideEnhancementsByLocale[locale][slug];
-
-  if (!page || !enhancement) {
-    return undefined;
-  }
-
-  return {
-    ...page,
-    ...enhancement,
-  };
-}
-
 export function getTemplatesHubModel(locale: SiteLocale) {
   return templatesHubModels[locale];
-}
-
-export function getGuidesHubModel(locale: SiteLocale) {
-  return guidesHubModels[locale];
 }
 
 export function getFaqDocModel(locale: SiteLocale): FaqDocModel & { items: FaqItem[] } {
@@ -1662,7 +1143,7 @@ export function getPrivacyDocModel(locale: SiteLocale): PrivacyDocModel & {
 
 export function getStaticPageLastModified(
   locale: SiteLocale,
-  page: 'templates' | 'guides' | 'faq' | 'privacy',
+  page: 'templates' | 'faq' | 'privacy',
 ) {
   return staticPageLastModifiedByLocale[locale][page];
 }
@@ -1710,53 +1191,9 @@ export function createTemplateDetailMetadata(locale: SiteLocale, slug: string): 
   };
 }
 
-export function createGuideDetailMetadata(locale: SiteLocale, slug: string): Metadata {
-  const page = getGuideDetailModel(locale, slug);
-
-  if (!page) {
-    return {
-      title: locale === 'zh' ? '指南不存在' : 'Guide not found',
-    };
-  }
-
-  const siteConfig = getSiteConfig(locale);
-  const path = getLocalizedPath(locale, `/blog/${page.slug}`);
-
-  return {
-    metadataBase: new URL(getSiteUrl()),
-    title: page.title,
-    description: page.description,
-    alternates: {
-      canonical: path,
-      languages: getLanguageAlternates(`/blog/${page.slug}`),
-    },
-    openGraph: {
-      title: `${page.title} | ${siteConfig.name}`,
-      description: page.description,
-      url: absoluteUrl(path),
-      type: 'article',
-      modifiedTime: page.updatedAt,
-      images: [
-        {
-          url: getSeoImageUrl(locale, 'guide-detail', page.slug),
-          width: 1200,
-          height: 630,
-          alt: page.title,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${page.title} | ${siteConfig.name}`,
-      description: page.description,
-      images: [getSeoImageUrl(locale, 'guide-detail', page.slug)],
-    },
-  };
-}
-
-export function createCollectionMetadata(locale: SiteLocale, page: 'templates' | 'guides' | 'faq' | 'privacy'): Metadata {
+export function createCollectionMetadata(locale: SiteLocale, page: 'templates' | 'faq' | 'privacy'): Metadata {
   const copy = getCollectionPageCopy(locale)[page];
-  const path = getLocalizedPath(locale, page === 'templates' ? '/templates' : page === 'guides' ? '/blog' : page === 'faq' ? '/faq' : '/privacy');
+  const path = getLocalizedPath(locale, page === 'templates' ? '/templates' : page === 'faq' ? '/faq' : '/privacy');
   const siteConfig = getSiteConfig(locale);
 
   return {
@@ -1765,7 +1202,7 @@ export function createCollectionMetadata(locale: SiteLocale, page: 'templates' |
     description: copy.description,
     alternates: {
       canonical: path,
-      languages: getLanguageAlternates(page === 'templates' ? '/templates' : page === 'guides' ? '/blog' : page === 'faq' ? '/faq' : '/privacy'),
+      languages: getLanguageAlternates(page === 'templates' ? '/templates' : page === 'faq' ? '/faq' : '/privacy'),
     },
     openGraph: {
       title: `${copy.title} | ${siteConfig.name}`,
@@ -1825,46 +1262,9 @@ export function buildTemplatePageStructuredData(locale: SiteLocale, page: Templa
   };
 }
 
-export function buildGuidePageStructuredData(locale: SiteLocale, page: GuideDetailModel) {
-  const siteConfig = getSiteConfig(locale);
-
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: page.title,
-    description: page.description,
-    url: absoluteUrl(getLocalizedPath(locale, `/blog/${page.slug}`)),
-    inLanguage: locale === 'zh' ? 'zh-CN' : 'en-US',
-    dateModified: page.updatedAt,
-    author: {
-      '@type': 'Organization',
-      name: siteConfig.name,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: siteConfig.name,
-    },
-  };
-}
-
-export function buildGuideFaqStructuredData(page: GuideDetailModel) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: page.faq.map((item) => ({
-      '@type': 'Question',
-      name: item.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: item.answer,
-      },
-    })),
-  };
-}
-
 export function buildCollectionStructuredData(
   locale: SiteLocale,
-  path: '/templates' | '/blog' | '/faq' | '/privacy',
+  path: '/templates' | '/faq' | '/privacy',
   name: string,
   description: string,
 ) {
@@ -1889,10 +1289,4 @@ export function getAllTemplateDetailModels(locale: SiteLocale) {
   return getTemplatePages(locale)
     .map((page) => getTemplateDetailModel(locale, page.slug))
     .filter((page): page is TemplateDetailModel => Boolean(page));
-}
-
-export function getAllGuideDetailModels(locale: SiteLocale) {
-  return getGuidePages(locale)
-    .map((page) => getGuideDetailModel(locale, page.slug))
-    .filter((page): page is GuideDetailModel => Boolean(page));
 }

@@ -1,48 +1,25 @@
 import type { NextConfig } from 'next';
 
+const legacyBlogSlugs = [
+  'how-to-make-foundry-vtt-tokens',
+  'how-to-make-roll20-tokens',
+  'how-to-make-vtt-tokens',
+  'token-size-and-resolution',
+];
+
 const nextConfig: NextConfig = {
   async redirects() {
     return [
-      {
-        source: '/guides/opengraph-image',
-        destination: '/blog/opengraph-image',
-        permanent: true,
-      },
-      {
-        source: '/guides/:slug/opengraph-image',
-        destination: '/blog/:slug/opengraph-image',
-        permanent: true,
-      },
-      {
-        source: '/guides/:slug',
-        destination: '/blog/:slug',
-        permanent: true,
-      },
-      {
-        source: '/guides',
+      ...legacyBlogSlugs.map((slug) => ({
+        source: `/blog/${slug}`,
         destination: '/blog',
         permanent: true,
-      },
-      {
-        source: '/zh/guides/opengraph-image',
-        destination: '/zh/blog/opengraph-image',
-        permanent: true,
-      },
-      {
-        source: '/zh/guides/:slug/opengraph-image',
-        destination: '/zh/blog/:slug/opengraph-image',
-        permanent: true,
-      },
-      {
-        source: '/zh/guides/:slug',
-        destination: '/zh/blog/:slug',
-        permanent: true,
-      },
-      {
-        source: '/zh/guides',
+      })),
+      ...legacyBlogSlugs.map((slug) => ({
+        source: `/zh/blog/${slug}`,
         destination: '/zh/blog',
         permanent: true,
-      },
+      })),
     ];
   },
 };

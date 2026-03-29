@@ -7,11 +7,10 @@ import { getNavLabels, getSiteConfig } from '@/lib/site-content';
 import { getLocalizedPath, stripLocalePrefix, switchLocalePath, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
 
-type InnerPageTone = 'template' | 'guide' | 'hub' | 'doc';
+type InnerPageTone = 'template' | 'hub' | 'doc';
 
 const toneClasses: Record<InnerPageTone, string> = {
   template: 'site-shell--template',
-  guide: 'site-shell--guide',
   hub: 'site-shell--hub',
   doc: 'site-shell--doc',
 };
@@ -22,6 +21,8 @@ interface InnerPageChromeProps {
   children: React.ReactNode;
   tone?: InnerPageTone;
   className?: string;
+  showSupportStrip?: boolean;
+  localeSwitchPath?: string;
 }
 
 export function InnerPageChrome({
@@ -30,18 +31,27 @@ export function InnerPageChrome({
   children,
   tone = 'hub',
   className,
+  showSupportStrip = true,
+  localeSwitchPath,
 }: InnerPageChromeProps) {
   const siteConfig = getSiteConfig(locale);
   const navLabels = getNavLabels(locale);
   const navLinks = [
     { href: getLocalizedPath(locale, '/'), label: navLabels.editor },
     { href: getLocalizedPath(locale, '/templates'), label: navLabels.templates },
-    { href: getLocalizedPath(locale, '/blog'), label: navLabels.guides },
+    { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog },
   ];
-  const switchedPath = switchLocalePath(currentPath, locale === 'en' ? 'zh' : 'en');
+  const switchedPath = localeSwitchPath ?? switchLocalePath(currentPath, locale === 'en' ? 'zh' : 'en');
 
   return (
-    <main className={cn('site-shell min-h-screen overflow-hidden text-stone-100', toneClasses[tone], className)}>
+    <main
+      className={cn(
+        'site-shell min-h-screen text-stone-100',
+        tone === 'doc' ? 'site-shell--allow-sticky' : 'overflow-hidden',
+        toneClasses[tone],
+        className,
+      )}
+    >
       <div className="site-topbar sticky top-0 z-50">
         <div className="mx-auto max-w-7xl px-6 py-4 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -96,7 +106,7 @@ export function InnerPageChrome({
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),transparent_28%,transparent_72%,rgba(255,255,255,0.03))]" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
         {children}
-        <SiteSupportStrip locale={locale} currentPath={currentPath} />
+        {showSupportStrip ? <SiteSupportStrip locale={locale} currentPath={currentPath} /> : null}
       </div>
     </main>
   );

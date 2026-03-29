@@ -1,23 +1,29 @@
+import { notFound } from 'next/navigation';
+
 import { BlogDetailPageView } from '@/components/site/views/BlogDetailPageView';
-import { getPublishedBlogPosts } from '@/lib/blog-content';
-import { createBlogDetailMetadata } from '@/lib/blog-seo';
+import { createBlogPostMetadata, getBlogPost, getBlogPosts } from '@/lib/blog-content';
 
 const locale = 'zh';
 
-interface BlogPageProps {
+interface ChineseBlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export function generateStaticParams() {
-  return getPublishedBlogPosts(locale).map((post) => ({ slug: post.slug }));
+  return getBlogPosts(locale).map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata({ params }: BlogPageProps) {
+export async function generateMetadata({ params }: ChineseBlogPostPageProps) {
   const { slug } = await params;
-  return createBlogDetailMetadata(locale, slug);
+  return createBlogPostMetadata(locale, slug);
 }
 
-export default async function ChineseBlogPage({ params }: BlogPageProps) {
+export default async function ChineseBlogPostPage({ params }: ChineseBlogPostPageProps) {
   const { slug } = await params;
+
+  if (!getBlogPost(locale, slug)) {
+    notFound();
+  }
+
   return <BlogDetailPageView locale={locale} slug={slug} />;
 }

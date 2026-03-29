@@ -5,7 +5,6 @@ import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
-import { getPublishedBlogPosts } from '@/lib/blog-content';
 import { formatPageDate } from '@/lib/site-formatting';
 import {
   buildBreadcrumbStructuredData,
@@ -28,10 +27,8 @@ const copyByLocale = {
     examples: 'Example outcomes',
     mistakes: 'Common mistakes',
     compare: 'Compare with nearby formats',
-    relatedGuides: 'Blog posts that support this format',
     allTemplates: 'Browse all template pages',
     openSetup: 'Open this setup in the editor',
-    readGuide: 'Read article',
     exploreFormat: 'Explore format',
     quickStart: 'Quick start',
     thisPageIsFor: 'This page is for',
@@ -51,10 +48,8 @@ const copyByLocale = {
     examples: '输出结果示例',
     mistakes: '常见错误',
     compare: '相邻格式对比',
-    relatedGuides: '和这个模板配套的博客文章',
     allTemplates: '查看全部模板页',
     openSetup: '带着这个配置进入编辑器',
-    readGuide: '读文章',
     exploreFormat: '查看格式',
     quickStart: '快速启动',
     thisPageIsFor: '这一页主要服务',
@@ -76,9 +71,6 @@ export function TemplateDetailPageView({ locale, slug }: { locale: SiteLocale; s
   }
 
   const copy = copyByLocale[locale];
-  const relatedGuides = getPublishedBlogPosts(locale).filter((post) =>
-    post.relatedTemplateSlugs.includes(page.slug),
-  );
   const breadcrumbs = [
     { label: copy.editor, href: getLocalizedPath(locale, '/') },
     { label: copy.templates, href: getLocalizedPath(locale, '/templates') },
@@ -297,30 +289,6 @@ export function TemplateDetailPageView({ locale, slug }: { locale: SiteLocale; s
               })}
             </div>
           </section>
-
-          {relatedGuides.length > 0 ? (
-            <section className="space-y-6">
-              <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.relatedGuides}</h2>
-              <div className="grid gap-4 lg:grid-cols-2">
-                {relatedGuides.map((guide) => (
-                  <Link
-                    key={guide.slug}
-                    href={getLocalizedPath(locale, `/blog/${guide.slug}`)}
-                    prefetch={false}
-                    className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(127,167,214,0.12),rgba(255,255,255,0.02))] p-6 transition hover:border-white/20 hover:bg-[linear-gradient(180deg,rgba(127,167,214,0.16),rgba(255,255,255,0.03))]"
-                  >
-                    <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{guide.category}</p>
-                    <h3 className="mt-3 text-2xl font-medium text-stone-50">{guide.title}</h3>
-                    <p className="mt-4 text-sm leading-7 text-stone-300">{guide.excerpt}</p>
-                    <span className="mt-6 inline-flex items-center gap-2 text-sm text-[#f1d492]">
-                      {copy.readGuide}
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          ) : null}
         </div>
       </InnerPageChrome>
     </>

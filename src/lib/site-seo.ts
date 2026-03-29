@@ -4,11 +4,9 @@ import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 export type SeoImageKind =
   | 'home'
   | 'templates'
-  | 'guides'
   | 'faq'
   | 'privacy'
-  | 'template-detail'
-  | 'guide-detail';
+  | 'template-detail';
 
 export function getSeoImagePath(locale: SiteLocale, kind: SeoImageKind, slug?: string) {
   switch (kind) {
@@ -18,18 +16,11 @@ export function getSeoImagePath(locale: SiteLocale, kind: SeoImageKind, slug?: s
       return '/opengraph-image.png';
     case 'templates':
       return getLocalizedPath(locale, '/templates/opengraph-image');
-    case 'guides':
-      return getLocalizedPath(locale, '/blog/opengraph-image');
     case 'template-detail':
       if (!slug) {
         throw new Error('slug is required for template-detail SEO image path');
       }
       return getLocalizedPath(locale, `/templates/${slug}/opengraph-image`);
-    case 'guide-detail':
-      if (!slug) {
-        throw new Error('slug is required for guide-detail SEO image path');
-      }
-      return getLocalizedPath(locale, `/blog/${slug}/opengraph-image`);
     default:
       return getLocalizedPath(locale, '/opengraph-image');
   }

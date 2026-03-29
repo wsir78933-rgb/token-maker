@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Shield, Sparkles, Workflow } from 'lucide-react';
-import { getPublishedBlogPosts } from '@/lib/blog-content';
+import { ArrowRight, Shield, Sparkles } from 'lucide-react';
 import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import {
   getFaqItems,
@@ -27,7 +26,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
   const navLinks = [
     { href: `${homeHref}#editor-workspace`, label: navLabels.editor },
     { href: getLocalizedPath(locale, '/templates'), label: navLabels.templates },
-    { href: getLocalizedPath(locale, '/blog'), label: navLabels.guides },
+    { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog },
   ];
 
   return (
@@ -117,11 +116,8 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
   const copy = getHomeCopy(locale);
   const homeFeatures = getHomeFeatures(locale);
   const templatePages = getTemplatePages(locale);
-  const blogPosts = getPublishedBlogPosts(locale).slice(0, 2);
   const faqItems = getFaqItems(locale).slice(0, 3);
   const faqCtaLabel = locale === 'zh' ? '查看全部解答' : 'Read all answers';
-  const readArticleLabel = locale === 'zh' ? '阅读全文' : 'Read article';
-  const blogCtaLabel = locale === 'zh' ? '查看博客' : 'Browse blog';
   const getTemplateDetailLabel = (title: string) =>
     locale === 'zh' ? `查看${title}` : `Explore ${title}`;
   const getTemplatePresetLabel = (title: string) =>
@@ -190,23 +186,6 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                 {copy.seeAllTemplatePages}
                 <ArrowRight className="h-4 w-4" />
               </Link>
-
-              <div className="site-surface-card site-surface-card--cool rounded-[30px] p-6">
-                <div className="flex items-center gap-3">
-                  <Workflow className="h-5 w-5 text-[#8fb7ff]" />
-                  <p className="text-xs uppercase tracking-[0.28em] text-[#8fb7ff]">{copy.resourcesEyebrow}</p>
-                </div>
-                <h3 className="mt-4 font-display text-2xl text-stone-50">{copy.resourcesTitle}</h3>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-300">{copy.resourcesDescription}</p>
-                <Link
-                  href={getLocalizedPath(locale, '/blog')}
-                  prefetch={false}
-                  className="mt-5 inline-flex items-center gap-2 text-sm text-[#c9dcff] transition hover:text-white"
-                >
-                  {blogCtaLabel}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
             </div>
 
             <div>
@@ -269,35 +248,6 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
                     className="text-sm text-stone-400 transition hover:text-stone-100"
                   >
                     {getTemplatePresetLabel(page.title)}
-                  </EditorLaunchButton>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="blog" className="site-content-section">
-        <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="grid items-start gap-4 lg:grid-cols-2">
-            {blogPosts.map((post) => (
-              <article
-                key={post.slug}
-                className="site-surface-card site-surface-card--plain rounded-[30px] p-6"
-              >
-                <p className="text-xs uppercase tracking-[0.26em] text-stone-500">{post.category}</p>
-                <h3 className="mt-4 text-2xl font-medium text-stone-50">{post.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-stone-300">{post.excerpt}</p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Link href={getLocalizedPath(locale, `/blog/${post.slug}`)} prefetch={false} className="inline-flex items-center gap-2 text-sm text-[#f1d492]">
-                    {readArticleLabel}
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <EditorLaunchButton
-                    href={post.ctaQuery}
-                    className="text-sm text-stone-400 transition hover:text-stone-100"
-                  >
-                    {locale === 'zh' ? '在编辑器里试用' : 'Try in editor'}
                   </EditorLaunchButton>
                 </div>
               </article>

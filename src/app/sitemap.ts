@@ -1,10 +1,9 @@
 import type { MetadataRoute } from 'next';
 import {
-  getLatestBlogUpdate,
-  getPaginatedBlogPosts,
-  getPublishedBlogPosts,
+  BLOG_PLACEHOLDER_MODE,
+  getBlogPageCount,
+  getBlogPosts,
 } from '@/lib/blog-content';
-import { buildBlogIndexPath } from '@/lib/blog-seo';
 import { getSiteUrl } from '@/lib/site-content';
 import {
   getAllTemplateDetailModels,
@@ -29,9 +28,7 @@ function pickLatestIsoDate(
 
 function getHomepageLastModified(locale: SiteLocale) {
   return pickLatestIsoDate([
-    getLatestBlogUpdate(locale),
     getStaticPageLastModified(locale, 'templates'),
-    getStaticPageLastModified(locale, 'guides'),
     getStaticPageLastModified(locale, 'faq'),
     ...getAllTemplateDetailModels(locale).map((page) => page.updatedAt),
   ]);
@@ -39,30 +36,25 @@ function getHomepageLastModified(locale: SiteLocale) {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const staticPaths = ['/', '/templates', '/blog', '/faq', '/privacy'] as const;
+  const staticPaths = ['/', '/templates', '/faq', '/privacy'] as const;
 
   const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     staticPaths.map((path) => {
-      const latestBlogUpdate = getLatestBlogUpdate(locale) ?? DEFAULT_LAST_MODIFIED;
       const pageKey =
         path === '/templates'
           ? 'templates'
-          : path === '/blog'
-            ? 'guides'
-            : path === '/faq'
-              ? 'faq'
-              : path === '/privacy'
-                ? 'privacy'
-                : null;
+          : path === '/faq'
+            ? 'faq'
+            : path === '/privacy'
+              ? 'privacy'
+              : null;
 
       return {
         url: `${siteUrl}${getLocalizedPath(locale, path)}`,
         lastModified:
-          path === '/blog'
-            ? new Date(latestBlogUpdate)
-            : pageKey
-              ? new Date(getStaticPageLastModified(locale, pageKey))
-              : new Date(getHomepageLastModified(locale)),
+          pageKey
+            ? new Date(getStaticPageLastModified(locale, pageKey))
+            : new Date(getHomepageLastModified(locale)),
         changeFrequency: path === '/' ? 'weekly' : path === '/privacy' ? 'monthly' : 'weekly',
         priority: path === '/' ? 1 : path === '/privacy' ? 0.4 : path === '/faq' ? 0.6 : 0.8,
       };
@@ -78,34 +70,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   );
 
-  const blogRoutes = LOCALES.flatMap((locale) =>
-    getPublishedBlogPosts(locale).map((post) => ({
-      url: `${siteUrl}${getLocalizedPath(locale, `/blog/${post.slug}`)}`,
-      lastModified: new Date(post.updatedAt),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })),
-  );
+  const blogHubRoutes: MetadataRoute.Sitemap = BLOG_PLACEHOLDER_MODE
+    ? []
+    : LOCALES.flatMap((locale) => {
+        const totalPages = getBlogPageCount(locale);
 
-  const paginatedBlogRoutes = LOCALES.flatMap((locale) => {
-    const { totalPages } = getPaginatedBlogPosts(locale);
+        return Array.from({ length: totalPages }, (_, index) => {
+          const pageNumber = index + 1;
+          const path = pageNumber === 1 ? '/blog' : `/blog/page/${pageNumber}`;
 
-    return Array.from({ length: Math.max(totalPages - 1, 0) }, (_, index) => {
-      const currentPage = index + 2;
-      const pageItems = getPaginatedBlogPosts(locale, currentPage).items;
-      const latestPageUpdate = pickLatestIsoDate(
-        pageItems.map((post) => post.updatedAt),
-        getLatestBlogUpdate(locale) ?? DEFAULT_LAST_MODIFIED,
+          return {
+            url: `${siteUrl}${getLocalizedPath(locale, path)}`,
+            lastModified: new Date(
+              pickLatestIsoDate(getBlogPosts(locale).map((post) => post.updatedAt)),
+            ),
+            changeFrequency: 'weekly' as const,
+            priority: pageNumber === 1 ? 0.75 : 0.55,
+          };
+        });
+      });
+
+  const blogPostRoutes: MetadataRoute.Sitemap = BLOG_PLACEHOLDER_MODE
+    ? []
+    : LOCALES.flatMap((locale) =>
+        getBlogPosts(locale).map((post) => ({
+          url: `${siteUrl}${getLocalizedPath(locale, `/blog/${post.slug}`)}`,
+          lastModified: new Date(post.updatedAt),
+          changeFrequency: 'monthly' as const,
+          priority: post.featured ? 0.72 : 0.6,
+        })),
       );
 
-      return {
-        url: `${siteUrl}${buildBlogIndexPath(locale, currentPage)}`,
-        lastModified: new Date(latestPageUpdate),
-        changeFrequency: 'weekly' as const,
-        priority: 0.6,
-      };
-    });
-  });
-
-  return [...staticRoutes, ...templateRoutes, ...blogRoutes, ...paginatedBlogRoutes];
+  return [...staticRoutes, ...templateRoutes, ...blogHubRoutes, ...blogPostRoutes];
 }

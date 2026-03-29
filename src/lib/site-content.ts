@@ -33,23 +33,6 @@ export interface TemplatePageData {
   query: string;
 }
 
-export interface GuideSection {
-  title: string;
-  paragraphs: string[];
-  bullets?: string[];
-}
-
-export interface GuidePageData {
-  slug: string;
-  title: string;
-  description: string;
-  summary: string;
-  outcome: string;
-  ctaQuery: string;
-  sections: GuideSection[];
-  relatedTemplateSlugs: string[];
-}
-
 export const siteConfig = {
   name: 'Token Maker',
   shortName: 'Token Maker',
@@ -287,163 +270,12 @@ export const templatePages: TemplatePageData[] = [
   },
 ];
 
-export const guidePages: GuidePageData[] = [
-  {
-    slug: 'how-to-make-vtt-tokens',
-    title: 'How to Make VTT Tokens',
-    description:
-      'A practical workflow for turning art into clean virtual tabletop tokens without opening a full graphics suite.',
-    summary:
-      'If you need a repeatable way to build player, monster, and NPC tokens, this guide walks through the essentials: choosing art, framing it for map scale, selecting the right mask, and exporting for table use.',
-    outcome: 'A repeatable browser workflow for fast VTT token production.',
-    ctaQuery: '/?preset=classic#editor-workspace',
-    relatedTemplateSlugs: ['circle-token-maker', 'monster-token-maker', 'transparent-token-maker'],
-    sections: [
-      {
-        title: 'Start from readable source art',
-        paragraphs: [
-          'A token only has a few hundred pixels to communicate identity. Pick source art with a clear silhouette, strong face lighting, and limited background clutter.',
-          'You do not need a perfect illustration. You need an image that still reads when the portrait is reduced and surrounded by map assets.',
-        ],
-        bullets: [
-          'Crop around the subject before adding decoration.',
-          'Prefer a centered face or silhouette over a wide scenic composition.',
-          'Use art that still works at a glance from table zoom.',
-        ],
-      },
-      {
-        title: 'Match the mask to the table',
-        paragraphs: [
-          'Circular masks are the default for portrait-first fantasy play, but they are not always the best option. Square tokens preserve props, while hex tokens align better with strategy overlays and regional maps.',
-          'The right choice depends on how the table reads the token, not on what looks fanciest at full size.',
-        ],
-      },
-      {
-        title: 'Export for speed first, then archive quality',
-        paragraphs: [
-          'Use 512 for active table prep and 1024 for anything you want to keep in a long-term token library. Larger exports help when you expect to reuse the same portrait in multiple campaigns or storefront bundles.',
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'how-to-make-foundry-vtt-tokens',
-    title: 'How to Make Foundry VTT Tokens',
-    description:
-      'Prepare tokens for Foundry VTT with sharp transparency, consistent border language, and practical export sizes.',
-    summary:
-      'Foundry VTT gives you enough presentation control that cleaner tokens stand out quickly. The goal is not just a good portrait, but a consistent token language across players, NPCs, and monster packs.',
-    outcome: 'A Foundry-friendly token set with consistent framing and transparent PNG output.',
-    ctaQuery: '/?preset=warrior#editor-workspace',
-    relatedTemplateSlugs: ['circle-token-maker', 'hex-token-maker', 'transparent-token-maker'],
-    sections: [
-      {
-        title: 'Build for consistency across actors',
-        paragraphs: [
-          'Foundry campaigns often accumulate dozens of tokens over time. Consistency in mask choice, frame density, and export size makes scene building faster and actor sheets feel more deliberate.',
-          'Use one or two border families for a campaign rather than picking a totally different frame for every token.',
-        ],
-      },
-      {
-        title: 'Keep transparency clean',
-        paragraphs: [
-          'Foundry scenes can include dynamic lighting, shadows, and detailed terrain. Transparent PNG edges help tokens sit naturally on those layers without carrying a visible background box.',
-        ],
-        bullets: [
-          'Use low overlay opacity.',
-          'Check borders on both dark caves and bright tavern maps.',
-          'Export at 1024 if you plan to zoom in often.',
-        ],
-      },
-      {
-        title: 'Separate role by frame language',
-        paragraphs: [
-          'Player characters, allies, and monsters are easier to parse when each group uses its own border family or accent color. That makes combat scenes easier to scan without relying on nameplates alone.',
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'how-to-make-roll20-tokens',
-    title: 'How to Make Roll20 Tokens',
-    description:
-      'Make Roll20-ready PNG tokens with clear faces, efficient file sizes, and reliable readability on busy battlemaps.',
-    summary:
-      'Roll20 tokens benefit from clarity more than from elaborate ornament. This guide focuses on center-weighted portraits, contrast, and export choices that stay readable in fast encounters.',
-    outcome: 'Readable Roll20 tokens that stay clear during live play.',
-    ctaQuery: '/?preset=rogue#editor-workspace',
-    relatedTemplateSlugs: ['circle-token-maker', 'square-token-maker', 'monster-token-maker'],
-    sections: [
-      {
-        title: 'Crop tighter than you expect',
-        paragraphs: [
-          'Roll20 maps can get visually crowded. A tighter crop keeps the face or creature head readable, especially when several tokens are packed into the same combat zone.',
-        ],
-      },
-      {
-        title: 'Use borders to separate roles',
-        paragraphs: [
-          'A restrained but distinct frame helps players identify allies, elites, or encounter roles without needing to zoom or hover constantly.',
-        ],
-        bullets: [
-          'Gold or light metal for heroes',
-          'Bone or dark metal for undead and hostile creatures',
-          'Wood or thin ring for low-noise NPC portraits',
-        ],
-      },
-      {
-        title: 'Keep file management simple',
-        paragraphs: [
-          'Use 512 for normal play and reserve larger exports for source libraries. A disciplined export routine keeps your asset folders manageable and reduces repeated token cleanup later.',
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'token-size-and-resolution',
-    title: 'Token Size and Resolution Guide',
-    description:
-      'Choose the right export size for tabletop tokens, from fast 512 PNGs to cleaner archive-ready 2048 exports.',
-    summary:
-      'A token does not need the largest possible resolution to work well. The right export size depends on whether you are building for live play, long-term storage, marketplace packs, or print support.',
-    outcome: 'A simple sizing rule set for live games, archives, and premium exports.',
-    ctaQuery: '/?preset=classic#editor-workspace',
-    relatedTemplateSlugs: ['transparent-token-maker', 'circle-token-maker', 'square-token-maker'],
-    sections: [
-      {
-        title: 'Use 512 for most live tables',
-        paragraphs: [
-          '512 is a strong default because it balances visual clarity with practical file sizes. For most player portraits and monster tokens, it is enough.',
-        ],
-      },
-      {
-        title: 'Move to 1024 for long-term libraries',
-        paragraphs: [
-          'If you want sharper edges, better transparency, or more freedom to reuse assets later, 1024 gives you useful headroom without becoming excessive.',
-        ],
-      },
-      {
-        title: 'Reserve 2048 for special cases',
-        paragraphs: [
-          '2048 makes sense when you are packaging tokens for resale, producing premium handouts, or building a future-proof archive. It is rarely necessary for every combat token.',
-        ],
-        bullets: [
-          '512 for active play',
-          '1024 for archives and polished campaign sets',
-          '2048 for premium or print-adjacent output',
-        ],
-      },
-    ],
-  },
-];
-
 export const templatePageMap = new Map(templatePages.map((page) => [page.slug, page]));
-export const guidePageMap = new Map(guidePages.map((page) => [page.slug, page]));
 
 export interface NavLabels {
   editor: string;
   templates: string;
-  guides: string;
+  blog: string;
   faq: string;
   privacy: string;
   switchLocale: string;
@@ -659,119 +491,11 @@ export const templatePagesZh: TemplatePageData[] = [
   },
 ];
 
-export const guidePagesZh: GuidePageData[] = [
-  {
-    slug: 'how-to-make-vtt-tokens',
-    title: '如何制作 VTT Token',
-    description: '一套适合虚拟桌面使用的 token 制作流程，从挑图、裁切到导出都尽量轻量。',
-    summary: '如果你想稳定地做出玩家、怪物和 NPC token，这篇指南会把关键步骤拆开：选图、构图、选遮罩、定导出尺寸。',
-    outcome: '建立一套适合 VTT 的浏览器 Token 制作工作流。',
-    ctaQuery: '/zh?preset=classic#editor-workspace',
-    relatedTemplateSlugs: ['circle-token-maker', 'monster-token-maker', 'transparent-token-maker'],
-    sections: [
-      {
-        title: '先选“缩小后仍然清晰”的原图',
-        paragraphs: [
-          'Token 的可用尺寸其实很小，所以最重要的不是大图本身，而是缩小后还能否一眼认出角色。',
-          '你不一定需要完美插画，但一定要有清晰轮廓、稳定光线和不要太乱的背景。',
-        ],
-        bullets: ['先围绕主体裁切，不要急着加装饰。', '头像和主体轮廓的优先级要高于场景背景。', '在地图缩放视角下也要能认出是谁。'],
-      },
-      {
-        title: '根据桌面场景决定遮罩',
-        paragraphs: [
-          '圆形适合传统头像类 token，方形更利于保留边缘细节，六边形更适合战棋和区域控制场景。',
-          '不要只看全尺寸好不好看，而是看在地图上是否更容易识别。',
-        ],
-      },
-      {
-        title: '先保证效率，再决定归档尺寸',
-        paragraphs: ['512 很适合日常战斗使用；如果你想做长期素材库、做商用资源或想保留更清晰边缘，再导出 1024。'],
-      },
-    ],
-  },
-  {
-    slug: 'how-to-make-foundry-vtt-tokens',
-    title: '如何制作 Foundry VTT Token',
-    description: '为 Foundry VTT 准备清晰透明、风格统一的 token，避免地图里出现一套一套完全不一致的头像。',
-    summary: 'Foundry VTT 的呈现能力更强，所以 token 风格是否统一会很明显。这篇指南更关注整套资产的一致性，而不是单个头像的花哨程度。',
-    outcome: '得到一套更适合 Foundry VTT 的统一 token 资产。',
-    ctaQuery: '/zh?preset=warrior#editor-workspace',
-    relatedTemplateSlugs: ['circle-token-maker', 'hex-token-maker', 'transparent-token-maker'],
-    sections: [
-      {
-        title: '先定规则，再批量制作',
-        paragraphs: [
-          'Foundry 的战役通常会累积大量 token。如果你一开始就统一遮罩、边框厚度和导出尺寸，后面整理 Actor 和 Scene 会轻松很多。',
-          '同一场战役里尽量只用一到两套边框家族，不要每个 token 都完全换一种视觉语言。',
-        ],
-      },
-      {
-        title: '透明边缘要比滤镜更重要',
-        paragraphs: ['Foundry 里常常会叠加灯光、阴影和复杂地形，所以透明 PNG 的边缘是否干净，比额外滤镜更影响最终观感。'],
-        bullets: ['叠加层透明度压低。', '在黑暗洞穴和明亮酒馆地图都试一下。', '如果常用高缩放，优先 1024 导出。'],
-      },
-      {
-        title: '用边框区分角色类型',
-        paragraphs: ['玩家、友军、精英怪和普通怪用不同边框家族或强调色，会让战斗场景更容易扫视，不必全靠名字识别。'],
-      },
-    ],
-  },
-  {
-    slug: 'how-to-make-roll20-tokens',
-    title: '如何制作 Roll20 Token',
-    description: '为 Roll20 准备更清晰、更轻量的 PNG token，重点是识别效率和战斗中的可读性。',
-    summary: 'Roll20 的地图经常很拥挤，所以最重要的是人脸或怪物头部在缩小状态下能否立刻识别，而不是装饰是否复杂。',
-    outcome: '做出在 Roll20 对战中依然清晰的 token。',
-    ctaQuery: '/zh?preset=rogue#editor-workspace',
-    relatedTemplateSlugs: ['circle-token-maker', 'square-token-maker', 'monster-token-maker'],
-    sections: [
-      {
-        title: '构图要比你想象中更近',
-        paragraphs: ['Roll20 地图里单位通常比较密，所以头像裁切要更贴近主体，否则一缩小就什么都看不清。'],
-      },
-      {
-        title: '边框用来区分角色，而不是堆装饰',
-        paragraphs: ['克制但明确的边框，比复杂装饰更有用，它能帮助玩家快速识别友军、精英怪和不同阵营。'],
-        bullets: ['金色或浅金属适合英雄角色', '骨质或深色金属适合亡灵与敌对单位', '木质和细环更适合低噪声 NPC 头像'],
-      },
-      {
-        title: '导出策略要简单',
-        paragraphs: ['大多数情况下 512 已经足够，只有当你打算长期积累素材库时，再额外留一套更高分辨率版本。'],
-      },
-    ],
-  },
-  {
-    slug: 'token-size-and-resolution',
-    title: 'Token 尺寸与分辨率指南',
-    description: '在 512、1024、2048 之间怎么选，取决于你是在现场战斗用、做长期素材库，还是做高质量资源包。',
-    summary: 'Token 不一定越大越好。真正合适的导出尺寸，取决于你的使用场景：即时游戏、长期归档、商用资源或打印需求。',
-    outcome: '明确不同场景下的 token 导出尺寸策略。',
-    ctaQuery: '/zh?preset=classic#editor-workspace',
-    relatedTemplateSlugs: ['transparent-token-maker', 'circle-token-maker', 'square-token-maker'],
-    sections: [
-      {
-        title: '大多数桌面场景先用 512',
-        paragraphs: ['512 是很稳妥的默认值，清晰度和文件体积之间比较平衡，绝大多数玩家角色和怪物头像都够用。'],
-      },
-      {
-        title: '长期素材库优先 1024',
-        paragraphs: ['如果你想保留更干净的透明边缘、以后继续复用，1024 会比 512 更从容，但又不至于太重。'],
-      },
-      {
-        title: '2048 只留给特殊场景',
-        paragraphs: ['2048 更适合商用资源包、精品手札或你想做未来长期归档时使用，不需要每一个怪物 token 都导这么大。'],
-        bullets: ['512 适合实战', '1024 适合归档和较精细战役素材', '2048 适合高质量展示与商用资源'],
-      },
-    ],
-  },
-];
-
 export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
   en: {
     editor: 'Editor',
     templates: 'Templates',
-    guides: 'Blog',
+    blog: 'Blog',
     faq: 'FAQ',
     privacy: 'Privacy',
     switchLocale: '中文',
@@ -779,7 +503,7 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
   zh: {
     editor: '编辑器',
     templates: '模板页',
-    guides: '博客',
+    blog: '博客',
     faq: '常见问题',
     privacy: '隐私',
     switchLocale: 'English',
@@ -853,9 +577,9 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
     templatesTitle: 'Start from the token format that matches the table',
     seeAllTemplatePages: 'See all template pages',
     resourcesEyebrow: 'Need more detail?',
-    resourcesTitle: 'Two short reads cover the decisions that slow people down',
+    resourcesTitle: 'Templates and FAQ cover the decisions that slow people down',
     resourcesDescription:
-      'Open the blog when you need help with export size, platform fit, or token workflow choices.',
+      'Use the template directory and FAQ when you need a second pass on export size, platform fit, or workflow choices.',
     faqTitle: 'Three questions people check before exporting',
     faqDescription: 'Open the full FAQ for privacy, export sizing, and tabletop compatibility.',
   },
@@ -902,8 +626,8 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
     templatesTitle: '从最接近你桌面场景的格式开始',
     seeAllTemplatePages: '查看全部模板',
     resourcesEyebrow: '需要更细的判断时',
-    resourcesTitle: '两篇短文章解决尺寸、平台和流程选择',
-    resourcesDescription: '只有在你要决定导出尺寸、平台适配或批量风格时，才需要打开这些参考。',
+    resourcesTitle: '模板页和 FAQ 解决尺寸、平台和流程选择',
+    resourcesDescription: '当你要决定导出尺寸、平台适配或批量风格时，优先回看模板页和 FAQ。',
     faqTitle: '上手前最常确认的 3 个问题',
     faqDescription: '隐私、尺寸和平台兼容还有更多说明，继续看完整 FAQ。',
   },
@@ -913,7 +637,6 @@ export const collectionPageCopyByLocale: Record<
   SiteLocale,
   {
     templates: CollectionPageCopy;
-    guides: CollectionPageCopy;
     faq: CollectionPageCopy;
     privacy: CollectionPageCopy;
   }
@@ -924,11 +647,6 @@ export const collectionPageCopyByLocale: Record<
       title: 'Token maker templates for specific play styles',
       description: 'Explore template pages for circle, square, hex, monster, and transparent token workflows, then open the matching editor setup.',
       ctaLabel: 'Open the editor',
-    },
-    guides: {
-      eyebrow: 'Blog',
-      title: 'Token Maker blog for token creation',
-      description: 'Read blog posts about crop decisions, platform-specific tuning, and export sizing before you jump back into the editor.',
     },
     faq: {
       eyebrow: 'FAQ',
@@ -947,11 +665,6 @@ export const collectionPageCopyByLocale: Record<
       title: '针对不同桌面场景的 Token 模板页',
       description: '这里整理了圆形、方形、六边形、怪物和透明背景等不同 token 工作流，并能直接打开对应预设。',
       ctaLabel: '打开编辑器',
-    },
-    guides: {
-      eyebrow: '博客',
-      title: 'Token Maker 博客文章',
-      description: '这里集中解释裁切判断、平台适配和导出尺寸，适合先读懂流程再回到编辑器动手。',
     },
     faq: {
       eyebrow: '常见问题',
@@ -1037,16 +750,8 @@ export function getTemplatePages(locale: SiteLocale) {
   return locale === 'zh' ? templatePagesZh : templatePages;
 }
 
-export function getGuidePages(locale: SiteLocale) {
-  return locale === 'zh' ? guidePagesZh : guidePages;
-}
-
 export function getTemplatePage(locale: SiteLocale, slug: string) {
   return getTemplatePages(locale).find((page) => page.slug === slug);
-}
-
-export function getGuidePage(locale: SiteLocale, slug: string) {
-  return getGuidePages(locale).find((page) => page.slug === slug);
 }
 
 export function getNavLabels(locale: SiteLocale) {

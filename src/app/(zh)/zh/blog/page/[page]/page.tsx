@@ -1,49 +1,40 @@
-import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+
 import { BlogHubPageView } from '@/components/site/views/BlogHubPageView';
-import {
-  getStaticBlogPageNumbers,
-  isStaticBlogPage,
-  parseStaticBlogPageParam,
-} from '@/lib/blog-pagination';
-import { createBlogIndexMetadata } from '@/lib/blog-seo';
+import { createBlogHubMetadata, getBlogPageCount } from '@/lib/blog-content';
 
 const locale = 'zh';
 
-interface ChineseBlogPaginatedPageProps {
+interface ChineseBlogPaginationPageProps {
   params: Promise<{ page: string }>;
 }
 
-export const dynamicParams = false;
-
 export function generateStaticParams() {
-  return getStaticBlogPageNumbers(locale).map((page) => ({
-    page: String(page),
+  const totalPages = getBlogPageCount(locale);
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => ({
+    page: String(index + 2),
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: ChineseBlogPaginatedPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ChineseBlogPaginationPageProps) {
   const { page } = await params;
-  const currentPage = parseStaticBlogPageParam(page);
+  const pageNumber = Number(page);
 
-  if (currentPage === null || !isStaticBlogPage(locale, currentPage)) {
-    notFound();
+  if (!Number.isInteger(pageNumber) || pageNumber <= 1 || pageNumber > getBlogPageCount(locale)) {
+    return createBlogHubMetadata(locale);
   }
 
-  return createBlogIndexMetadata(locale, currentPage);
+  return createBlogHubMetadata(locale, pageNumber);
 }
 
-export default async function ChineseBlogPaginatedPage({
-  params,
-}: ChineseBlogPaginatedPageProps) {
+export default async function ChineseBlogPaginationPage({ params }: ChineseBlogPaginationPageProps) {
   const { page } = await params;
-  const currentPage = parseStaticBlogPageParam(page);
+  const pageNumber = Number(page);
 
-  if (currentPage === null || !isStaticBlogPage(locale, currentPage)) {
+  if (!Number.isInteger(pageNumber) || pageNumber <= 1 || pageNumber > getBlogPageCount(locale)) {
     notFound();
   }
 
-  return <BlogHubPageView locale={locale} currentPage={currentPage} />;
+  return <BlogHubPageView locale={locale} page={pageNumber} />;
 }
