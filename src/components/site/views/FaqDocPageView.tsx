@@ -139,12 +139,14 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
     { label: copy.editor, href: getLocalizedPath(locale, '/') },
     { label: copy.faq },
   ];
-  const quickActions = copy.quickActions.map((link) => ({
+  const quickActions = copy.quickActions.map((link, index) => ({
     ...link,
+    id: `quick-action-${locale}-${index}`,
     href: getLocalizedPath(locale, link.href),
   }));
-  const questionActions = copy.questionActions.map((link) => ({
+  const questionActions = copy.questionActions.map((link, index) => ({
     ...link,
+    id: `question-action-${locale}-${index}`,
     href: getLocalizedPath(locale, link.href),
   }));
   const faqStructuredData = {
@@ -225,7 +227,7 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
               <div className="mt-5 space-y-3">
                 {quickActions.map((link) => (
                   <Link
-                    key={link.href}
+                    key={link.id}
                     href={link.href}
                     prefetch={false}
                     className="block rounded-[22px] border border-white/8 bg-white/[0.03] px-4 py-4 transition hover:border-white/15 hover:bg-white/[0.05]"
