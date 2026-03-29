@@ -5,7 +5,7 @@
 import type { BorderTemplate, EditorState } from '@/types/editor';
 import { getMaskById } from '@/lib/templates/masks';
 import { getBorderById } from '@/lib/templates/borders';
-import { createMaskPath } from './masks';
+import { createMaskPathWithInset } from './masks';
 import { drawBorder } from './borders';
 import { drawTextBoxes } from './text';
 import { getCachedImage } from '@/lib/utils/imageCache';
@@ -17,6 +17,31 @@ interface RenderTokenOptions {
 
 const IMAGE_BORDER_MASK_CACHE = new Map<string, HTMLCanvasElement>();
 const BORDER_ALPHA_THRESHOLD = 8;
+const BORDER_INSET_RATIO = 0.032;
+
+function getBorderRenderInset(outputSize: number, border?: BorderTemplate): number {
+  if (!border || border.type === 'none') return 1;
+  return Math.max(1, outputSize * BORDER_INSET_RATIO);
+}
+
+function drawImageAssetWithInset(
+  ctx: CanvasRenderingContext2D,
+  image: CanvasImageSource,
+  outputSize: number,
+  inset: number
+) {
+  const drawSize = outputSize - inset * 2;
+  ctx.drawImage(image, inset, inset, drawSize, drawSize);
+}
+
+function hasImageBasedBorder(border?: BorderTemplate): boolean {
+  if (!border) return false;
+
+  return Boolean(
+    border.customImageUrl ||
+    (border.type === 'image' && border.imageUrl)
+  );
+}
 
 function forceRenderRefresh() {
   useEditorStore.setState({ activePresetId: useEditorStore.getState().activePresetId });
@@ -36,13 +61,14 @@ function applyMaskToCanvas(
   outputSize: number,
   border?: BorderTemplate
 ) {
+  const inset = getBorderRenderInset(outputSize, border);
   const explicitMaskUrl = getExplicitMaskImageUrl(border);
   if (explicitMaskUrl) {
     const maskImage = getCachedImage(explicitMaskUrl, forceRenderRefresh);
     if (maskImage) {
       ctx.save();
       ctx.globalCompositeOperation = 'destination-in';
-      ctx.drawImage(maskImage, 0, 0, outputSize, outputSize);
+      drawImageAssetWithInset(ctx, maskImage, outputSize, inset);
       ctx.restore();
       return;
     }
@@ -53,7 +79,7 @@ function applyMaskToCanvas(
 
   ctx.save();
   ctx.globalCompositeOperation = 'destination-in';
-  const path = createMaskPath(mask, outputSize);
+  const path = createMaskPathWithInset(mask, outputSize, inset);
   ctx.fillStyle = '#ffffff';
   ctx.fill(path);
   ctx.restore();
@@ -74,7 +100,8 @@ function buildImageBorderMask(
   if (!sourceCtx) return null;
 
   sourceCtx.clearRect(0, 0, outputSize, outputSize);
-  sourceCtx.drawImage(borderImage, 0, 0, outputSize, outputSize);
+  const inset = getBorderRenderInset(outputSize, { id: 'image-border', name: '', type: 'image' });
+  drawImageAssetWithInset(sourceCtx, borderImage, outputSize, inset);
 
   const sourceImageData = sourceCtx.getImageData(0, 0, outputSize, outputSize);
   const { data } = sourceImageData;
@@ -147,20 +174,9 @@ function applyFinalMask(
   outputSize: number,
   border?: BorderTemplate
 ) {
-  const explicitMaskUrl = getExplicitMaskImageUrl(border);
-  if (explicitMaskUrl) {
-    const explicitMaskImage = getCachedImage(explicitMaskUrl, forceRenderRefresh);
-    if (explicitMaskImage) {
-      ctx.save();
-      ctx.globalCompositeOperation = 'destination-in';
-      ctx.drawImage(explicitMaskImage, 0, 0, outputSize, outputSize);
-      ctx.restore();
-      return;
-    }
-  }
-
+  const inset = getBorderRenderInset(outputSize, border);
   const borderMaskImageUrl = getDerivedBorderMaskImageUrl(border);
-  if (borderMaskImageUrl) {
+  if (hasImageBasedBorder(border) && borderMaskImageUrl) {
     const borderImage = getCachedImage(borderMaskImageUrl, forceRenderRefresh);
     if (borderImage) {
       const maskCanvas = buildImageBorderMask(
@@ -179,15 +195,70 @@ function applyFinalMask(
     }
   }
 
+  const explicitMaskUrl = getExplicitMaskImageUrl(border);
+  if (explicitMaskUrl) {
+    const explicitMaskImage = getCachedImage(explicitMaskUrl, forceRenderRefresh);
+    if (explicitMaskImage) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-in';
+      drawImageAssetWithInset(ctx, explicitMaskImage, outputSize, inset);
+      ctx.restore();
+      return;
+    }
+  }
+
   const mask = getMaskById(state.selectedMaskId);
   if (!mask) return;
 
   ctx.save();
   ctx.globalCompositeOperation = 'destination-in';
 
-  const path = createMaskPath(mask, outputSize);
+  const path = createMaskPathWithInset(mask, outputSize, inset);
   ctx.fillStyle = '#ffffff';
   ctx.fill(path);
+  ctx.restore();
+}
+
+function drawBorderContactShadow(
+  ctx: CanvasRenderingContext2D,
+  state: EditorState,
+  outputSize: number,
+  border?: BorderTemplate
+) {
+  if (!border || border.type === 'none') return;
+
+  const maskId = border?.linkedMaskId ?? state.selectedMaskId;
+  const mask = getMaskById(maskId);
+  if (!mask) return;
+
+  const inset = getBorderRenderInset(outputSize, border);
+  const path = createMaskPathWithInset(mask, outputSize, inset);
+  const shadowLineWidth = Math.max(12, outputSize * 0.05);
+  const highlightLineWidth = Math.max(2, outputSize * 0.008);
+
+  ctx.save();
+  ctx.clip(path);
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.28)';
+  ctx.lineWidth = shadowLineWidth;
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.28)';
+  ctx.shadowBlur = Math.max(6, outputSize * 0.02);
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = Math.max(2, outputSize * 0.01);
+  ctx.stroke(path);
+
+  const highlightGradient = ctx.createLinearGradient(0, 0, outputSize, outputSize);
+  highlightGradient.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
+  highlightGradient.addColorStop(0.28, 'rgba(255, 255, 255, 0.04)');
+  highlightGradient.addColorStop(0.58, 'rgba(255, 255, 255, 0)');
+  highlightGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+  ctx.shadowColor = 'transparent';
+  ctx.strokeStyle = highlightGradient;
+  ctx.lineWidth = highlightLineWidth;
+  ctx.stroke(path);
   ctx.restore();
 }
 
@@ -218,8 +289,6 @@ export function renderToken(
   canvas.width = outputSize;
   canvas.height = outputSize;
   ctx.clearRect(0, 0, outputSize, outputSize);
-
-  const mask = getMaskById(state.selectedMaskId);
 
   let border = getBorderById(state.selectedBorderId);
   if (!border) border = state.customBorders.find((b) => b.id === state.selectedBorderId);
@@ -262,6 +331,8 @@ export function renderToken(
 
   applyMaskToCanvas(baseCtx, state, outputSize, border);
   ctx.drawImage(baseLayer, 0, 0);
+
+  drawBorderContactShadow(ctx, state, outputSize, border);
 
   // ------- Step 4: 边框 -------
   if (border && border.type !== 'none') {

@@ -8,6 +8,184 @@ import { getCachedImage } from '@/lib/utils/imageCache';
 import { useEditorStore } from '@/lib/store/editor-store';
 
 const IMAGE_BORDER_TINT_CACHE = new Map<string, HTMLCanvasElement>();
+const BORDER_DEPTH_CACHE = new Map<string, HTMLCanvasElement>();
+const BORDER_EDGE_MASK_CACHE = new Map<string, HTMLCanvasElement>();
+const BORDER_INSET_RATIO = 0.032;
+
+function getBorderRenderInset(size: number, borderType: BorderTemplate['type']): number {
+  if (borderType === 'none') return 1;
+  return Math.max(1, size * BORDER_INSET_RATIO);
+}
+
+function createSquareCanvas(size: number): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  return canvas;
+}
+
+function buildDirectionalEdgeMask(
+  source: CanvasImageSource,
+  size: number,
+  cacheKey: string,
+  offsetX: number,
+  offsetY: number
+): HTMLCanvasElement {
+  const cached = BORDER_EDGE_MASK_CACHE.get(cacheKey);
+  if (cached) return cached;
+
+  const canvas = createSquareCanvas(size);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return canvas;
+
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(source, 0, 0, size, size);
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.drawImage(source, offsetX, offsetY, size, size);
+
+  BORDER_EDGE_MASK_CACHE.set(cacheKey, canvas);
+  return canvas;
+}
+
+function tintMaskCanvas(
+  maskCanvas: HTMLCanvasElement,
+  size: number,
+  painter: (ctx: CanvasRenderingContext2D) => void
+): HTMLCanvasElement {
+  const canvas = createSquareCanvas(size);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return canvas;
+
+  ctx.drawImage(maskCanvas, 0, 0);
+  ctx.globalCompositeOperation = 'source-in';
+  painter(ctx);
+  return canvas;
+}
+
+function buildDepthComposedBorder(
+  size: number,
+  cacheKey: string,
+  renderBase: (ctx: CanvasRenderingContext2D) => void
+): HTMLCanvasElement {
+  const cached = BORDER_DEPTH_CACHE.get(cacheKey);
+  if (cached) return cached;
+
+  const baseCanvas = createSquareCanvas(size);
+  const baseCtx = baseCanvas.getContext('2d');
+  if (!baseCtx) return baseCanvas;
+  renderBase(baseCtx);
+
+  const composedCanvas = createSquareCanvas(size);
+  const composedCtx = composedCanvas.getContext('2d');
+  if (!composedCtx) return baseCanvas;
+
+  composedCtx.drawImage(baseCanvas, 0, 0);
+
+  composedCtx.save();
+  composedCtx.globalCompositeOperation = 'source-atop';
+
+  const directionalLight = composedCtx.createLinearGradient(
+    size * 0.1,
+    size * 0.08,
+    size * 0.9,
+    size * 0.92
+  );
+  directionalLight.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+  directionalLight.addColorStop(0.18, 'rgba(255, 255, 255, 0.24)');
+  directionalLight.addColorStop(0.44, 'rgba(255, 255, 255, 0.04)');
+  directionalLight.addColorStop(0.68, 'rgba(0, 0, 0, 0.14)');
+  directionalLight.addColorStop(1, 'rgba(0, 0, 0, 0.34)');
+  composedCtx.fillStyle = directionalLight;
+  composedCtx.fillRect(0, 0, size, size);
+
+  const volumeGradient = composedCtx.createRadialGradient(
+    size * 0.34,
+    size * 0.28,
+    size * 0.08,
+    size * 0.64,
+    size * 0.7,
+    size * 0.82
+  );
+  volumeGradient.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
+  volumeGradient.addColorStop(0.18, 'rgba(255, 255, 255, 0.12)');
+  volumeGradient.addColorStop(0.58, 'rgba(0, 0, 0, 0.08)');
+  volumeGradient.addColorStop(1, 'rgba(0, 0, 0, 0.26)');
+  composedCtx.fillStyle = volumeGradient;
+  composedCtx.fillRect(0, 0, size, size);
+  composedCtx.restore();
+
+  const edgeShift = Math.max(2, Math.round(size * 0.016));
+  const highlightMask = buildDirectionalEdgeMask(
+    baseCanvas,
+    size,
+    `${cacheKey}::highlight::${edgeShift}`,
+    edgeShift,
+    edgeShift
+  );
+  const shadowMask = buildDirectionalEdgeMask(
+    baseCanvas,
+    size,
+    `${cacheKey}::shadow::${edgeShift}`,
+    -edgeShift,
+    -edgeShift
+  );
+
+  const highlightCanvas = tintMaskCanvas(highlightMask, size, (ctx) => {
+    const gradient = ctx.createLinearGradient(0, 0, size, size);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.82)');
+    gradient.addColorStop(0.28, 'rgba(255, 255, 255, 0.34)');
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+  });
+
+  const shadowCanvas = tintMaskCanvas(shadowMask, size, (ctx) => {
+    const gradient = ctx.createLinearGradient(0, 0, size, size);
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    gradient.addColorStop(0.42, 'rgba(0, 0, 0, 0.28)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.56)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+  });
+
+  composedCtx.drawImage(shadowCanvas, 0, 0);
+  composedCtx.drawImage(highlightCanvas, 0, 0);
+
+  BORDER_DEPTH_CACHE.set(cacheKey, composedCanvas);
+  return composedCanvas;
+}
+
+function drawDepthComposedBorder(
+  ctx: CanvasRenderingContext2D,
+  size: number,
+  cacheKey: string,
+  renderBase: (ctx: CanvasRenderingContext2D) => void
+) {
+  const depthCanvas = buildDepthComposedBorder(size, cacheKey, renderBase);
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.34)';
+  ctx.shadowBlur = Math.max(10, size * 0.03);
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = Math.max(3, size * 0.016);
+  ctx.drawImage(depthCanvas, 0, 0, size, size);
+  ctx.restore();
+
+  ctx.drawImage(depthCanvas, 0, 0, size, size);
+}
+
+function drawImageBorderWithDepth(
+  ctx: CanvasRenderingContext2D,
+  image: CanvasImageSource,
+  size: number,
+  cacheKey: string
+) {
+  drawDepthComposedBorder(ctx, size, cacheKey, (baseCtx) => {
+    const inset = getBorderRenderInset(size, 'image');
+    const drawSize = size - inset * 2;
+    baseCtx.drawImage(image, inset, inset, drawSize, drawSize);
+  });
+}
 
 /**
  * 颜色变暗或变亮辅助函数
@@ -334,19 +512,22 @@ export function drawBorder(
       useEditorStore.setState({ activePresetId: useEditorStore.getState().activePresetId });
     });
     if (img) {
-      if (tintImageBorder) {
-        const tintedImage = getTintedImageBorder(
-          img,
-          `${url}::${size}::${tint.toLowerCase()}::${border.tintMode || 'metallic'}`,
-          size,
-          tint,
-          border.tintMode
-        );
+      const borderImage = tintImageBorder
+        ? getTintedImageBorder(
+            img,
+            `${url}::${size}::${tint.toLowerCase()}::${border.tintMode || 'metallic'}`,
+            size,
+            tint,
+            border.tintMode
+          ) ?? img
+        : img;
 
-        ctx.drawImage(tintedImage ?? img, 0, 0, size, size);
-      } else {
-        ctx.drawImage(img, 0, 0, size, size);
-      }
+      drawImageBorderWithDepth(
+        ctx,
+        borderImage,
+        size,
+        `${url}::${size}::${tint.toLowerCase()}::${tintImageBorder ? border.tintMode || 'original' : 'untinted'}`
+      );
     }
     ctx.restore();
     return;
@@ -354,7 +535,7 @@ export function drawBorder(
 
   const cx = size / 2;
   const cy = size / 2;
-  const maxRadius = size / 2 - 1;
+  const maxRadius = size / 2 - getBorderRenderInset(size, border.type);
 
   switch (border.type) {
     case 'ring':
@@ -415,48 +596,19 @@ function drawFlatRing(
 ): void {
   const outer = maxRadius * (border.outerRadius ?? 1);
   const inner = maxRadius * (border.innerRadius ?? 0.946);
-  const edgeWidth = Math.max(1, maxRadius * 0.018);
-
-  ctx.save();
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, outer, 0, Math.PI * 2);
-  ctx.arc(cx, cy, inner, 0, Math.PI * 2, true);
-  ctx.closePath();
-  ctx.fillStyle = tint;
-  ctx.fill();
-
-  ctx.globalAlpha = 0.2;
-  ctx.strokeStyle = shadeColor(tint, 18);
-  ctx.lineWidth = edgeWidth;
-  ctx.beginPath();
-  ctx.arc(cx, cy, inner + edgeWidth * 0.45, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.globalAlpha = 0.22;
-  ctx.strokeStyle = shadeColor(tint, -22);
-  ctx.lineWidth = edgeWidth;
-  ctx.beginPath();
-  ctx.arc(cx, cy, outer - edgeWidth * 0.45, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.restore();
-}
-
-function strokeFlatEdge(
-  ctx: CanvasRenderingContext2D,
-  createPath: () => void,
-  color: string,
-  lineWidth: number,
-  alpha: number
-) {
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lineWidth;
-  createPath();
-  ctx.stroke();
-  ctx.restore();
+  drawDepthComposedBorder(
+    ctx,
+    Math.round(cx * 2),
+    `${border.id}::flat-ring::${Math.round(cx * 2)}::${tint.toLowerCase()}::${inner.toFixed(3)}::${outer.toFixed(3)}`,
+    (baseCtx) => {
+      baseCtx.beginPath();
+      baseCtx.arc(cx, cy, outer, 0, Math.PI * 2);
+      baseCtx.arc(cx, cy, inner, 0, Math.PI * 2, true);
+      baseCtx.closePath();
+      baseCtx.fillStyle = tint;
+      baseCtx.fill();
+    }
+  );
 }
 
 /** 绘制平面双环 */
@@ -471,30 +623,26 @@ function drawFlatDoubleRing(
   const sw = maxRadius * (border.strokeWidth ?? 0.03);
   const innerOuter = maxRadius * (border.innerRadius ?? 0.89);
   const innerInner = Math.max(0, innerOuter - sw);
+  drawDepthComposedBorder(
+    ctx,
+    Math.round(cx * 2),
+    `${border.id}::flat-double-ring::${Math.round(cx * 2)}::${tint.toLowerCase()}::${sw.toFixed(3)}::${innerOuter.toFixed(3)}`,
+    (baseCtx) => {
+      baseCtx.beginPath();
+      baseCtx.arc(cx, cy, maxRadius, 0, Math.PI * 2);
+      baseCtx.arc(cx, cy, maxRadius - sw, 0, Math.PI * 2, true);
+      baseCtx.closePath();
+      baseCtx.fillStyle = tint;
+      baseCtx.fill();
 
-  const drawSingleRing = (outer: number, inner: number) => {
-    ctx.beginPath();
-    ctx.arc(cx, cy, outer, 0, Math.PI * 2);
-    ctx.arc(cx, cy, inner, 0, Math.PI * 2, true);
-    ctx.closePath();
-    ctx.fillStyle = tint;
-    ctx.fill();
-
-    strokeFlatEdge(ctx, () => {
-      ctx.beginPath();
-      ctx.arc(cx, cy, inner + sw * 0.45, 0, Math.PI * 2);
-    }, shadeColor(tint, 18), Math.max(1, sw * 0.32), 0.2);
-
-    strokeFlatEdge(ctx, () => {
-      ctx.beginPath();
-      ctx.arc(cx, cy, outer - sw * 0.45, 0, Math.PI * 2);
-    }, shadeColor(tint, -22), Math.max(1, sw * 0.32), 0.22);
-  };
-
-  ctx.save();
-  drawSingleRing(maxRadius, maxRadius - sw);
-  drawSingleRing(innerOuter, innerInner);
-  ctx.restore();
+      baseCtx.beginPath();
+      baseCtx.arc(cx, cy, innerOuter, 0, Math.PI * 2);
+      baseCtx.arc(cx, cy, innerInner, 0, Math.PI * 2, true);
+      baseCtx.closePath();
+      baseCtx.fillStyle = tint;
+      baseCtx.fill();
+    }
+  );
 }
 
 /** 绘制平面多边形边框 */
@@ -511,43 +659,28 @@ function drawFlatPolygonBorder(
   const rotation = sides === 4 ? -Math.PI / 4 : -Math.PI / 2;
   const outerPoints = generatePolygonPoints(cx, cy, maxRadius, sides, rotation);
   const innerPoints = generatePolygonPoints(cx, cy, Math.max(0, maxRadius - sw), sides, rotation);
+  drawDepthComposedBorder(
+    ctx,
+    Math.round(cx * 2),
+    `${border.id}::flat-polygon::${Math.round(cx * 2)}::${tint.toLowerCase()}::${sides}::${sw.toFixed(3)}`,
+    (baseCtx) => {
+      baseCtx.beginPath();
+      baseCtx.moveTo(outerPoints[0][0], outerPoints[0][1]);
+      for (let i = 1; i < outerPoints.length; i++) {
+        baseCtx.lineTo(outerPoints[i][0], outerPoints[i][1]);
+      }
+      baseCtx.closePath();
 
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(outerPoints[0][0], outerPoints[0][1]);
-  for (let i = 1; i < outerPoints.length; i++) {
-    ctx.lineTo(outerPoints[i][0], outerPoints[i][1]);
-  }
-  ctx.closePath();
+      baseCtx.moveTo(innerPoints[0][0], innerPoints[0][1]);
+      for (let i = innerPoints.length - 1; i >= 0; i--) {
+        baseCtx.lineTo(innerPoints[i][0], innerPoints[i][1]);
+      }
+      baseCtx.closePath();
 
-  ctx.moveTo(innerPoints[0][0], innerPoints[0][1]);
-  for (let i = innerPoints.length - 1; i >= 0; i--) {
-    ctx.lineTo(innerPoints[i][0], innerPoints[i][1]);
-  }
-  ctx.closePath();
-
-  ctx.fillStyle = tint;
-  ctx.fill();
-
-  strokeFlatEdge(ctx, () => {
-    ctx.beginPath();
-    ctx.moveTo(innerPoints[0][0], innerPoints[0][1]);
-    for (let i = 1; i < innerPoints.length; i++) {
-      ctx.lineTo(innerPoints[i][0], innerPoints[i][1]);
+      baseCtx.fillStyle = tint;
+      baseCtx.fill();
     }
-    ctx.closePath();
-  }, shadeColor(tint, 18), Math.max(1, sw * 0.18), 0.2);
-
-  strokeFlatEdge(ctx, () => {
-    ctx.beginPath();
-    ctx.moveTo(outerPoints[0][0], outerPoints[0][1]);
-    for (let i = 1; i < outerPoints.length; i++) {
-      ctx.lineTo(outerPoints[i][0], outerPoints[i][1]);
-    }
-    ctx.closePath();
-  }, shadeColor(tint, -22), Math.max(1, sw * 0.18), 0.22);
-
-  ctx.restore();
+  );
 }
 
 /** 绘制双环 */

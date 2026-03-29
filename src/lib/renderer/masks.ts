@@ -33,10 +33,18 @@ export function generatePolygonPoints(
  * @param size 画布尺寸（正方形边长）
  */
 export function createMaskPath(mask: MaskTemplate, size: number): Path2D {
+  return createMaskPathWithInset(mask, size, 1);
+}
+
+export function createMaskPathWithInset(
+  mask: MaskTemplate,
+  size: number,
+  inset: number
+): Path2D {
   const path = new Path2D();
   const cx = size / 2;
   const cy = size / 2;
-  const radius = size / 2 - 1; // 留 1px 避免边缘锯齿
+  const radius = Math.max(1, size / 2 - inset);
 
   if (mask.sides === 0) {
     // 圆形

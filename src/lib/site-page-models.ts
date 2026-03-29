@@ -11,7 +11,6 @@ import {
   type FaqItem,
   type TemplatePageData,
 } from '@/lib/site-content';
-import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
 export interface TemplateExampleOutput {
@@ -1173,20 +1172,11 @@ export function createTemplateDetailMetadata(locale: SiteLocale, slug: string): 
       description: page.description,
       url: absoluteUrl(path),
       type: 'website',
-      images: [
-        {
-          url: getSeoImageUrl(locale, 'template-detail', page.slug),
-          width: 1200,
-          height: 630,
-          alt: page.title,
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: `${page.title} | ${siteConfig.name}`,
       description: page.description,
-      images: [getSeoImageUrl(locale, 'template-detail', page.slug)],
     },
   };
 }
@@ -1209,20 +1199,11 @@ export function createCollectionMetadata(locale: SiteLocale, page: 'templates' |
       description: copy.description,
       url: absoluteUrl(path),
       type: 'website',
-      images: [
-        {
-          url: getSeoImageUrl(locale, page),
-          width: 1200,
-          height: 630,
-          alt: copy.title,
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: `${copy.title} | ${siteConfig.name}`,
       description: copy.description,
-      images: [getSeoImageUrl(locale, page)],
     },
   };
 }
@@ -1272,7 +1253,7 @@ export function buildCollectionStructuredData(
 
   return {
     '@context': 'https://schema.org',
-    '@type': path === '/faq' ? 'FAQPage' : path === '/privacy' ? 'WebPage' : 'CollectionPage',
+    '@type': path === '/privacy' ? 'WebPage' : 'CollectionPage',
     name,
     url: absoluteUrl(getLocalizedPath(locale, path)),
     description,
