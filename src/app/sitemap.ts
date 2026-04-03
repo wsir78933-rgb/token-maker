@@ -5,13 +5,11 @@ import {
   getBlogPosts,
 } from '@/lib/blog-content';
 import { getSiteUrl } from '@/lib/site-content';
-import {
-  getAllTemplateDetailModels,
-  getStaticPageLastModified,
-} from '@/lib/site-page-models';
+import { getStaticPageLastModified } from '@/lib/site-page-models';
 import { LOCALES, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
 const DEFAULT_LAST_MODIFIED = '2026-03-12';
+const DICE_ROLLER_LAST_MODIFIED = '2026-03-30';
 
 function pickLatestIsoDate(
   values: Array<string | undefined>,
@@ -28,46 +26,35 @@ function pickLatestIsoDate(
 
 function getHomepageLastModified(locale: SiteLocale) {
   return pickLatestIsoDate([
-    getStaticPageLastModified(locale, 'templates'),
     getStaticPageLastModified(locale, 'faq'),
-    ...getAllTemplateDetailModels(locale).map((page) => page.updatedAt),
   ]);
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const staticPaths = ['/', '/templates', '/faq', '/privacy'] as const;
+  const staticPaths = ['/', '/faq', '/privacy', '/dice-roller-dnd'] as const;
 
   const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     staticPaths.map((path) => {
       const pageKey =
-        path === '/templates'
-          ? 'templates'
-          : path === '/faq'
-            ? 'faq'
-            : path === '/privacy'
-              ? 'privacy'
-              : null;
+        path === '/faq'
+          ? 'faq'
+          : path === '/privacy'
+            ? 'privacy'
+            : null;
 
       return {
         url: `${siteUrl}${getLocalizedPath(locale, path)}`,
         lastModified:
-          pageKey
+          path === '/dice-roller-dnd'
+            ? new Date(DICE_ROLLER_LAST_MODIFIED)
+            : pageKey
             ? new Date(getStaticPageLastModified(locale, pageKey))
             : new Date(getHomepageLastModified(locale)),
         changeFrequency: path === '/' ? 'weekly' : path === '/privacy' ? 'monthly' : 'weekly',
         priority: path === '/' ? 1 : path === '/privacy' ? 0.4 : path === '/faq' ? 0.6 : 0.8,
       };
     }),
-  );
-
-  const templateRoutes = LOCALES.flatMap((locale) =>
-    getAllTemplateDetailModels(locale).map((page) => ({
-      url: `${siteUrl}${getLocalizedPath(locale, `/templates/${page.slug}`)}`,
-      lastModified: new Date(page.updatedAt),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })),
   );
 
   const blogHubRoutes: MetadataRoute.Sitemap = BLOG_PLACEHOLDER_MODE
@@ -101,5 +88,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
         })),
       );
 
-  return [...staticRoutes, ...templateRoutes, ...blogHubRoutes, ...blogPostRoutes];
+  return [...staticRoutes, ...blogHubRoutes, ...blogPostRoutes];
 }

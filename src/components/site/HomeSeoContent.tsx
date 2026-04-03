@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { ArrowRight, Shield, Sparkles } from 'lucide-react';
-import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import {
   getFaqItems,
   getHomeCopy,
@@ -8,13 +7,11 @@ import {
   getHomeSignals,
   getNavLabels,
   getSiteConfig,
-  getTemplatePages,
 } from '@/lib/site-content';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
 import { SiteMark } from '@/components/site/SiteMark';
 import { SiteSupportStrip } from '@/components/site/SiteSupportStrip';
-import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 export function HomeHero({ locale }: { locale: SiteLocale }) {
   const copy = getHomeCopy(locale);
@@ -25,7 +22,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
   const homeHref = getLocalizedPath(locale, '/');
   const navLinks = [
     { href: `${homeHref}#editor-workspace`, label: navLabels.editor },
-    { href: getLocalizedPath(locale, '/templates'), label: navLabels.templates },
+    { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller },
     { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog },
   ];
 
@@ -45,8 +42,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
                 <span className="site-brand-subtitle text-xs">{copy.heroEyebrow}</span>
               </span>
             </Link>
-            <div className="flex items-center gap-2">
-              <ThemeToggle locale={locale} />
+            <div className="flex items-center">
               <Link href={getLocalizedPath(nextLocale, '/')} prefetch={false} className="site-switch-chip">
                 {navLabels.switchLocale}
               </Link>
@@ -91,9 +87,6 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
                 {copy.heroPrimaryCta}
                 <ArrowRight className="h-4 w-4" />
               </a>
-              <Link href={getLocalizedPath(locale, '/templates')} prefetch={false} className="site-cta-secondary">
-                {copy.heroSecondaryCta}
-              </Link>
             </div>
           </div>
 
@@ -115,13 +108,8 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
 export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
   const copy = getHomeCopy(locale);
   const homeFeatures = getHomeFeatures(locale);
-  const templatePages = getTemplatePages(locale);
   const faqItems = getFaqItems(locale).slice(0, 3);
   const faqCtaLabel = locale === 'zh' ? '查看全部解答' : 'Read all answers';
-  const getTemplateDetailLabel = (title: string) =>
-    locale === 'zh' ? `查看${title}` : `Explore ${title}`;
-  const getTemplatePresetLabel = (title: string) =>
-    locale === 'zh' ? `打开${title}预设` : `Open ${title} preset`;
 
   return (
     <div className="site-shell__content relative overflow-hidden text-stone-100">
@@ -166,90 +154,6 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
               >
                 <h3 className="text-xl font-medium text-stone-50">{feature.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-stone-300">{feature.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="templates" className="site-content-section">
-        <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.92fr)] lg:items-start">
-            <div className="grid gap-4">
-              <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.templatesEyebrow}</p>
-              <h2 className="font-display max-w-4xl text-3xl text-stone-50 sm:text-4xl">{copy.templatesTitle}</h2>
-              <Link
-                href={getLocalizedPath(locale, '/templates')}
-                prefetch={false}
-                className="inline-flex items-center gap-2 text-sm text-[#f1d492] transition hover:text-[#f7dfab]"
-              >
-                {copy.seeAllTemplatePages}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            <div>
-              <div className="site-surface-card site-surface-card--plain rounded-[30px] p-6">
-                <p className="text-xs uppercase tracking-[0.28em] text-[#8fb7ff]">{copy.audienceEyebrow}</p>
-                <h3 className="mt-3 font-display text-2xl text-stone-50">{copy.audienceTitle}</h3>
-                <p className="mt-3 text-sm leading-7 text-stone-300">{copy.audienceDescription}</p>
-                <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                  {copy.audiences.map((audience, index) => (
-                    <article
-                      key={audience.title}
-                      className={cn(
-                        'site-surface-subcard rounded-[24px] p-4',
-                        index === 0 && 'site-surface-subcard--warm',
-                        index > 0 && 'site-surface-subcard--deep',
-                      )}
-                    >
-                      <h4 className="text-sm font-medium text-stone-50">{audience.title}</h4>
-                      <p className="mt-2 text-sm leading-6 text-stone-400">{audience.description}</p>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            {templatePages.slice(0, 3).map((page) => (
-              <article
-                key={page.slug}
-                className="site-surface-card site-surface-card--plain rounded-[30px] p-6"
-              >
-                <p className="text-xs uppercase tracking-[0.26em] text-stone-500">{page.intent}</p>
-                <h3 className="mt-4 text-2xl font-medium text-stone-50">
-                  <Link
-                    href={getLocalizedPath(locale, `/templates/${page.slug}`)}
-                    prefetch={false}
-                    className="transition hover:text-[#f1d492]"
-                  >
-                    {page.title}
-                  </Link>
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-stone-300">{page.description}</p>
-                <ul className="mt-5 space-y-2 text-sm text-stone-400">
-                  {page.bestFor.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Link
-                    href={getLocalizedPath(locale, `/templates/${page.slug}`)}
-                    prefetch={false}
-                    className="inline-flex items-center gap-2 text-sm text-[#f1d492]"
-                  >
-                    {getTemplateDetailLabel(page.title)}
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <EditorLaunchButton
-                    href={page.query}
-                    className="text-sm text-stone-400 transition hover:text-stone-100"
-                  >
-                    {getTemplatePresetLabel(page.title)}
-                  </EditorLaunchButton>
-                </div>
               </article>
             ))}
           </div>

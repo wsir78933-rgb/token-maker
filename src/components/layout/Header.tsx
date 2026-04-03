@@ -7,7 +7,6 @@ import { useHistoryStore } from '@/lib/store/history';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { Button } from '@/components/ui/button';
 import { SiteMark } from '@/components/site/SiteMark';
-import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 function isEditableTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
@@ -22,7 +21,7 @@ function isEditableTarget(target: EventTarget | null) {
 }
 
 export function Header() {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const history = useHistoryStore();
 
   useEffect(() => {
@@ -94,7 +93,6 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/70 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
-          <ThemeToggle locale={locale} className="h-10" />
           <Button
             variant="ghost"
             size="icon"

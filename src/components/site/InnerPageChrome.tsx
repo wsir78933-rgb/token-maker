@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { SiteMark } from '@/components/site/SiteMark';
 import { SiteSupportStrip } from '@/components/site/SiteSupportStrip';
-import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { getNavLabels, getSiteConfig } from '@/lib/site-content';
 import { getLocalizedPath, stripLocalePrefix, switchLocalePath, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
@@ -38,7 +37,7 @@ export function InnerPageChrome({
   const navLabels = getNavLabels(locale);
   const navLinks = [
     { href: getLocalizedPath(locale, '/'), label: navLabels.editor },
-    { href: getLocalizedPath(locale, '/templates'), label: navLabels.templates },
+    { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller },
     { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog },
   ];
   const switchedPath = localeSwitchPath ?? switchLocalePath(currentPath, locale === 'en' ? 'zh' : 'en');
@@ -70,8 +69,7 @@ export function InnerPageChrome({
               </span>
             </Link>
 
-            <div className="flex items-center gap-2">
-              <ThemeToggle locale={locale} />
+            <div className="flex items-center">
               <Link href={switchedPath} prefetch={false} className="site-switch-chip">
                 {navLabels.switchLocale}
               </Link>

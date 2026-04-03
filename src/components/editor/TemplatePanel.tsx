@@ -18,7 +18,6 @@ import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
 import { saveAs } from 'file-saver';
 import { DownloadCloud, Plus } from 'lucide-react';
 import { fileToBase64, preloadImageToCache } from '@/lib/utils/imageCache';
-import { useThemeMode } from '@/components/theme/useThemeMode';
 
 const SIZES: ExportSize[] = [256, 512, 1024, 2048];
 
@@ -243,8 +242,7 @@ function getBorderAlt(id: string, defaultLabel: string): string {
 function BorderThumbnail({ id, active, label }: { id: string; active: boolean; label: string }) {
   const store = useEditorStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { theme } = useThemeMode();
-  
+
   let template = BORDER_TEMPLATES.find(t => t.id === id);
   if (!template) {
      template = store.customBorders.find(t => t.id === id);
@@ -260,9 +258,9 @@ function BorderThumbnail({ id, active, label }: { id: string; active: boolean; l
     if (!ctx) return;
     
     ctx.clearRect(0, 0, 64, 64);
-    const color = active ? '#d7b46a' : theme === 'dark' ? '#68657a' : '#8c7452';
+    const color = active ? '#d7b46a' : '#68657a';
     drawBorderThumbnail(ctx, template, 64, color);
-  }, [id, active, store.customBorders, template, theme]);
+  }, [id, active, store.customBorders, template]);
 
   if (!template) return null;
 

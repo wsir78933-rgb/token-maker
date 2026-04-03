@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
 import '../globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
-import { ThemeInitScript } from '@/components/theme/ThemeInitScript';
 import { I18nProvider } from '@/lib/i18n';
 import { createLocaleLayoutMetadata, createSiteViewport, getHtmlLang } from '@/lib/site-metadata';
 import { DEFAULT_THEME } from '@/lib/theme';
@@ -19,11 +18,10 @@ export default function EnglishRootLayout({
     <html
       lang={getHtmlLang('en')}
       data-theme={DEFAULT_THEME}
-      className={`${DEFAULT_THEME === 'dark' ? 'dark ' : ''}scroll-smooth`}
+      className="dark scroll-smooth"
       suppressHydrationWarning
     >
       <body className="antialiased">
-        <ThemeInitScript />
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>

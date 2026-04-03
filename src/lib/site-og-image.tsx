@@ -8,7 +8,7 @@ export const seoImageSize = {
 
 export const seoImageContentType = 'image/png';
 
-type SeoImageTone = 'home' | 'templates';
+type SeoImageTone = 'home';
 
 interface SeoImageOptions {
   locale: SiteLocale;
@@ -29,13 +29,8 @@ const toneStyles: Record<
     secondary: '#87a8da',
     background: '#07090d',
   },
-  templates: {
-    accent: '#f1d492',
-    accentSoft: 'rgba(241, 212, 146, 0.16)',
-    secondary: '#5c8ed9',
-    background: '#06070b',
-  },
 };
+
 
 export function createSeoImage({
   locale,

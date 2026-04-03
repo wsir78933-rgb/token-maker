@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { renderToken, drawCheckerboard } from '@/lib/renderer/pipeline';
-import { useThemeMode } from '@/components/theme/useThemeMode';
 import { ImageUploader } from './ImageUploader';
 import { TextCanvasOverlay } from './TextCanvasOverlay';
 
@@ -19,8 +18,7 @@ export function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgCanvasRef = useRef<HTMLCanvasElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
-  const { theme } = useThemeMode();
-  
+
   // 用于拖拽交互的状态
   const [isDragging, setIsDragging] = useState(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
@@ -40,10 +38,10 @@ export function Canvas() {
       512,
       512,
       16,
-      theme === 'dark' ? '#09090b' : '#efe4d5',
-      theme === 'dark' ? '#121217' : '#f8f3eb',
+      '#09090b',
+      '#121217',
     );
-  }, [theme]);
+  }, []);
 
   // 2. 渲染主画布内容
   useEffect(() => {
