@@ -220,7 +220,7 @@ export function BlogDetailPageView({
                       <ArrowRight className="h-4 w-4" />
                     </EditorLaunchButton>
                     <Link
-                      href={getLocalizedPath(locale, '/templates')}
+                      href={getLocalizedPath(locale, '/')}
                       prefetch={false}
                       className="site-cta-secondary w-full justify-center"
                     >

@@ -9,6 +9,7 @@ import {
   type FaqItem,
 } from '@/lib/site-content';
 import { getLanguageAlternates, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
+import { getSeoImageUrl } from '@/lib/site-seo';
 
 
 export interface FaqDocGroup {
@@ -238,11 +239,20 @@ export function createCollectionMetadata(locale: SiteLocale, page: 'faq' | 'priv
       description: copy.description,
       url: absoluteUrl(path),
       type: 'website',
+      images: [
+        {
+          url: getSeoImageUrl(locale, page),
+          width: 1200,
+          height: 630,
+          alt: copy.title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: `${copy.title} | ${siteConfig.name}`,
       description: copy.description,
+      images: [getSeoImageUrl(locale, page)],
     },
   };
 }

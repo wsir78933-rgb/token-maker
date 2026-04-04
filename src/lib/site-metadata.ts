@@ -45,6 +45,7 @@ export function createLocaleLayoutMetadata(locale: SiteLocale): Metadata {
     icons: {
       icon: [{ url: iconUrl, type: 'image/svg+xml', sizes: 'any' }],
       shortcut: [iconUrl],
+      apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
     },
     robots: {
       index: true,

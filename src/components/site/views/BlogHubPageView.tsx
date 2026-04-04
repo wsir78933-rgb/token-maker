@@ -481,7 +481,7 @@ export function BlogHubPageView({
                 </EditorLaunchButton>
 
                 <Link
-                  href={getLocalizedPath(locale, '/templates')}
+                  href={getLocalizedPath(locale, '/')}
                   prefetch={false}
                   className="site-cta-secondary w-full justify-center"
                 >

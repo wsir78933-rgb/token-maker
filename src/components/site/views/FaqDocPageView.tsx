@@ -24,12 +24,12 @@ const copyByLocale = {
         description: 'Drop in a portrait and test the workflow on something real.',
       },
       {
-        href: '/templates',
+        href: '/',
         label: 'Browse templates',
         description: 'Start from the right mask and border family instead of improvising later.',
       },
       {
-        href: '/templates',
+        href: '/',
         label: 'Compare token formats',
         description: 'Use the template hub when the real question is circle, square, hex, or transparent.',
       },
@@ -51,12 +51,12 @@ const copyByLocale = {
         description: 'See the short policy version of the local-first promise.',
       },
       {
-        href: '/templates',
+        href: '/',
         label: 'Compare template directions',
         description: 'Pick a starting format before you spend time tuning borders and export choices.',
       },
       {
-        href: '/templates',
+        href: '/',
         label: 'Browse shape-first templates',
         description: 'Choose the right format before spending time on border styling.',
       },
@@ -83,12 +83,12 @@ const copyByLocale = {
         description: '拿一张真实角色图试一遍，判断工具适不适合最快。',
       },
       {
-        href: '/templates',
+        href: '/',
         label: '浏览模板页',
         description: '先选对形状和边框方向，再决定细节，不要反过来。',
       },
       {
-        href: '/templates',
+        href: '/',
         label: '比较不同 Token 格式',
         description: '如果你真正卡的是圆形、方形、六边形还是透明背景，就直接去模板页。',
       },
@@ -110,12 +110,12 @@ const copyByLocale = {
         description: '需要确认本地优先边界时，隐私页会更直接。',
       },
       {
-        href: '/templates',
+        href: '/',
         label: '先去模板页定路线',
         description: '在继续调边框和导出之前，先把格式方向选对。',
       },
       {
-        href: '/templates',
+        href: '/',
         label: '去模板页选格式',
         description: '先把形状和边框路线确定下来，再去做细节调整。',
       },
