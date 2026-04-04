@@ -42,7 +42,7 @@ export const siteConfig = {
 } as const;
 
 export function getSiteUrl() {
-  const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tokenmaker.one';
+  const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tokenmaker.pro';
   return rawUrl.endsWith('/') ? rawUrl.slice(0, -1) : rawUrl;
 }
 
