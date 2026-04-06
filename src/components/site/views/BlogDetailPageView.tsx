@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, FileText } from 'lucide-react';
+import { ArrowRight, Dice5, FileText } from 'lucide-react';
 
 import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
@@ -37,7 +37,10 @@ const copyByLocale = {
     tocBody: 'Jump straight to the section you want without losing your place.',
     actionCard: 'What to do next',
     editor: 'Open Editor',
-    templates: 'Browse Templates',
+    diceRoller: 'Dice Roller',
+    bottomCtaEyebrow: 'Ready to play?',
+    bottomCtaHeading: 'Start building your adventure',
+    bottomCtaBody: 'Now that you know how armor works, create your character token or roll some dice for your next session.',
     relatedEyebrow: 'Keep Reading',
     relatedHeading: 'Related articles',
     readArticle: 'Read article',
@@ -59,7 +62,10 @@ const copyByLocale = {
     tocBody: '直接跳到你要看的段落，不用反复滚动找位置。',
     actionCard: '现在可以做什么',
     editor: '打开编辑器',
-    templates: '浏览模板',
+    diceRoller: '骰子工具',
+    bottomCtaEyebrow: '准备好开始冒险了吗？',
+    bottomCtaHeading: '开启你的下一次冒险',
+    bottomCtaBody: '既然已经了解了护甲机制，现在去制作你的角色 Token，或者扔几颗骰子开始你的下一场战役吧。',
     relatedEyebrow: '继续读',
     relatedHeading: '相关文章',
     readArticle: '阅读全文',
@@ -220,12 +226,12 @@ export function BlogDetailPageView({
                       <ArrowRight className="h-4 w-4" />
                     </EditorLaunchButton>
                     <Link
-                      href={getLocalizedPath(locale, '/')}
+                      href={getLocalizedPath(locale, '/dice-roller-dnd')}
                       prefetch={false}
                       className="site-cta-secondary w-full justify-center"
                     >
-                      {copy.templates}
-                      <ArrowRight className="h-4 w-4" />
+                      <Dice5 className="h-4 w-4" />
+                      {copy.diceRoller}
                     </Link>
                   </div>
                 </div>
@@ -262,6 +268,37 @@ export function BlogDetailPageView({
                 </>
               )}
             </article>
+
+            {!isPlaceholder ? (
+              <section className="site-surface-card site-surface-card--warm rounded-[34px] px-5 py-6 sm:px-6 sm:py-7">
+                <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                  <div className="max-w-xl space-y-2.5">
+                    <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.bottomCtaEyebrow}</p>
+                    <h2 className="font-display text-[1.75rem] leading-[1.08] text-stone-50 sm:text-[2rem]">
+                      {copy.bottomCtaHeading}
+                    </h2>
+                    <p className="text-sm leading-7 text-stone-300">{copy.bottomCtaBody}</p>
+                  </div>
+                  <div className="flex shrink-0 flex-col gap-2.5 md:min-w-[200px]">
+                    <EditorLaunchButton
+                      href={`${getLocalizedPath(locale, '/')}#editor-workspace`}
+                      className="site-cta-primary w-full justify-center"
+                    >
+                      {copy.editor}
+                      <ArrowRight className="h-4 w-4" />
+                    </EditorLaunchButton>
+                    <Link
+                      href={getLocalizedPath(locale, '/dice-roller-dnd')}
+                      prefetch={false}
+                      className="site-cta-secondary w-full justify-center"
+                    >
+                      <Dice5 className="h-4 w-4" />
+                      {copy.diceRoller}
+                    </Link>
+                  </div>
+                </div>
+              </section>
+            ) : null}
 
             {relatedPosts.length > 0 ? (
               <section className="site-surface-card site-surface-card--plain relative overflow-hidden rounded-[34px] px-4 py-5 lg:px-5 lg:py-6">

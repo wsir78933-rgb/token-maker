@@ -592,6 +592,85 @@
   border-color: var(--site-border-soft);
 }
 
+.site-rich-text table {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 56rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid color-mix(in oklab, var(--site-border-soft) 88%, transparent);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.site-rich-text--detail table {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: min(100%, 56rem);
+}
+
+.site-rich-text thead {
+  background: color-mix(in oklab, var(--site-accent-bg) 62%, var(--site-panel-deep) 38%);
+}
+
+.site-rich-text th {
+  padding: 0.7rem 0.85rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--site-accent-strong);
+  border-bottom: 1px solid color-mix(in oklab, var(--site-border-strong) 56%, transparent);
+  white-space: nowrap;
+}
+
+.site-rich-text tbody tr {
+  background: color-mix(in oklab, var(--site-panel) 42%, transparent);
+  transition: background 200ms ease;
+}
+
+.site-rich-text tbody tr:nth-child(even) {
+  background: color-mix(in oklab, var(--site-panel-deep) 32%, transparent);
+}
+
+.site-rich-text tbody tr:hover {
+  background: color-mix(in oklab, var(--site-accent-bg) 36%, var(--site-panel) 48%);
+}
+
+.site-rich-text td {
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--site-border-soft) 46%, transparent);
+  color: var(--site-ink);
+  white-space: nowrap;
+}
+
+.site-rich-text tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.site-rich-text td:first-child {
+  font-weight: 600;
+  color: var(--site-ink-strong);
+}
+
+@media (max-width: 640px) {
+  .site-rich-text table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 1rem;
+  }
+
+  .site-rich-text th,
+  .site-rich-text td {
+    padding: 0.5rem 0.65rem;
+    font-size: 0.82rem;
+  }
+}
+
 .site-rich-text strong {
   color: var(--site-ink-strong);
   font-weight: 600;
