@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Dice5 } from 'lucide-react';
 
 import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -44,7 +44,7 @@ const copyByLocale = {
       'Pick a frame or transparent style',
       'Export the PNG',
     ],
-    templates: 'Browse Templates',
+    diceRoller: 'Dice Roller',
     editor: 'Open Editor',
     openPreset: 'Try It Now',
   },
@@ -64,7 +64,7 @@ const copyByLocale = {
     ctaEyebrow: '想顺手试一下？',
     stepPrefix: '如果你也想试试，可以这样开始：',
     steps: ['上传头像或角色图', '调整裁切，让主体更清楚', '选择边框或透明样式', '导出 PNG'],
-    templates: '浏览模板',
+    diceRoller: '骰子工具',
     editor: '打开编辑器',
     openPreset: '直接试试',
   },
@@ -481,12 +481,12 @@ export function BlogHubPageView({
                 </EditorLaunchButton>
 
                 <Link
-                  href={getLocalizedPath(locale, '/')}
+                  href={getLocalizedPath(locale, '/dice-roller-dnd')}
                   prefetch={false}
                   className="site-cta-secondary w-full justify-center"
                 >
-                  {copy.templates}
-                  <ArrowRight className="h-4 w-4" />
+                  <Dice5 className="h-4 w-4" />
+                  {copy.diceRoller}
                 </Link>
 
                 <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-stone-300">

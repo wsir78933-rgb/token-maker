@@ -24,9 +24,9 @@ const copyByLocale = {
         description: 'Drop in a portrait and test the workflow on something real.',
       },
       {
-        href: '/',
-        label: 'Browse templates',
-        description: 'Start from the right mask and border family instead of improvising later.',
+        href: '/dice-roller-dnd',
+        label: 'Try the dice roller',
+        description: 'Roll d20s, damage dice, and stat rolls with the built-in DnD dice tray.',
       },
       {
         href: '/',
@@ -83,9 +83,9 @@ const copyByLocale = {
         description: '拿一张真实角色图试一遍，判断工具适不适合最快。',
       },
       {
-        href: '/',
-        label: '浏览模板页',
-        description: '先选对形状和边框方向，再决定细节，不要反过来。',
+        href: '/dice-roller-dnd',
+        label: '试试骰子工具',
+        description: '用内置骰盘直接掷 d20、伤害骰和属性骰。',
       },
       {
         href: '/',

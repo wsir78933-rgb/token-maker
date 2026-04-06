@@ -545,7 +545,7 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
 export const shellCopyByLocale: Record<SiteLocale, ShellCopy> = {
   en: {
     backToSite: 'Back to',
-    browseTemplates: 'Browse templates',
+    browseTemplates: 'Dice Roller',
     whyThisPageExists: 'Why this page exists',
     whyPageBullets: [
       'These inner pages explain when a specific format, workflow, or policy detail matters.',
@@ -555,7 +555,7 @@ export const shellCopyByLocale: Record<SiteLocale, ShellCopy> = {
   },
   zh: {
     backToSite: '返回',
-    browseTemplates: '浏览模板页',
+    browseTemplates: '骰子工具',
     whyThisPageExists: '为什么要有这类页面',
     whyPageBullets: [
       '这些内页用来解释某种格式、流程或策略什么时候真正有用。',

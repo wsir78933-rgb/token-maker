@@ -79,36 +79,28 @@ function RelatedPostCard({ locale, post }: { locale: SiteLocale; post: BlogPost 
     <Link
       href={getBlogPostPath(locale, post.slug)}
       prefetch={false}
-      className="site-surface-card site-surface-card--plain group block h-full rounded-[28px] p-4 transition hover:border-white/18 sm:p-5"
+      className="site-surface-card site-surface-card--plain group relative block h-full overflow-hidden rounded-[28px] p-5 transition duration-500 hover:border-white/20 sm:p-6"
     >
-      <div className="flex h-full flex-col gap-4">
-        {post.coverImage ? (
-          <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] border border-white/10 bg-black/25">
-            <Image
-              src={post.coverImage}
-              alt={post.coverAlt ?? post.title}
-              fill
-              sizes="(min-width: 1280px) 250px, (min-width: 768px) 50vw, 100vw"
-              className="object-cover transition duration-500 group-hover:scale-[1.03]"
-            />
-          </div>
-        ) : (
-          <div className="flex aspect-[16/10] items-end overflow-hidden rounded-[24px] border border-[#d7b46a]/18 bg-[radial-gradient(circle_at_top_left,rgba(215,180,106,0.18),transparent_38%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 sm:p-5">
-            <p className="font-display text-[1.9rem] leading-[0.95] text-stone-100">{post.coverLabel}</p>
-          </div>
-        )}
-
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(215,180,106,0.08),transparent_60%)] opacity-0 transition duration-500 group-hover:opacity-100" />
+      
+      <div className="relative flex h-full flex-col">
         <div className="min-w-0">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#d7b46a]/80">
             {formatBlogUpdatedAt(locale, post.updatedAt)} · {post.readTime}
           </p>
-          <h3 className="mt-3 font-display text-[1.7rem] leading-[1.02] text-stone-50">{post.title}</h3>
-          <p className="mt-3 text-sm leading-7 text-stone-300">{post.excerpt}</p>
+          <h3 className="mt-4 font-display text-[1.4rem] leading-[1.15] text-stone-100 sm:text-[1.5rem]">
+            {post.title}
+          </h3>
+          <p className="mt-3 line-clamp-3 text-sm leading-7 text-stone-400">
+            {post.excerpt}
+          </p>
         </div>
 
-        <div className="mt-auto inline-flex items-center gap-2 text-sm font-medium text-[#f0d48d] transition group-hover:translate-x-1">
-          {copy.readArticle}
-          <ArrowRight className="h-4 w-4" />
+        <div className="mt-6 flex flex-1 items-end pt-2">
+          <div className="inline-flex items-center gap-2 text-sm font-medium text-[#f0d48d] transition duration-300 group-hover:translate-x-1 group-hover:text-[#f8e5b4]">
+            {copy.readArticle}
+            <ArrowRight className="h-4 w-4" />
+          </div>
         </div>
       </div>
     </Link>
@@ -134,7 +126,7 @@ export function BlogDetailPageView({
   const isPlaceholder = !post.bodyHtml;
   const articleHeadings = post.headings ?? [];
   const hasArticleHeadings = articleHeadings.length > 0;
-  const relatedPosts = getRelatedBlogPosts(locale, slug, 3);
+  const relatedPosts = getRelatedBlogPosts(locale, slug, 4);
   const switchLocale = locale === 'en' ? 'zh' : 'en';
   const localeSwitchPath = getBlogPost(switchLocale, slug)
     ? getBlogPostPath(switchLocale, slug)
@@ -241,7 +233,9 @@ export function BlogDetailPageView({
         </section>
 
         <div
-          className={`mx-auto grid max-w-[92rem] gap-8 px-4 py-14 sm:px-5 lg:px-6 lg:py-16 xl:px-8 ${
+          className={`mx-auto grid max-w-[92rem] gap-8 px-4 pt-14 sm:px-5 lg:px-6 lg:pt-16 xl:px-8 ${
+            relatedPosts.length > 0 ? 'pb-8 lg:pb-10' : 'pb-14 lg:pb-16'
+          } ${
             hasArticleHeadings ? 'lg:grid-cols-[minmax(0,1.22fr)_280px] xl:grid-cols-[minmax(0,1.26fr)_300px]' : ''
           }`}
         >
@@ -300,28 +294,6 @@ export function BlogDetailPageView({
               </section>
             ) : null}
 
-            {relatedPosts.length > 0 ? (
-              <section className="site-surface-card site-surface-card--plain relative overflow-hidden rounded-[34px] px-4 py-5 lg:px-5 lg:py-6">
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(127,167,214,0.14),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(215,180,106,0.14),transparent_28%)]" />
-
-                <div className="relative">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.relatedEyebrow}</p>
-                      <h2 className="mt-4 font-display text-[2rem] leading-[1.02] text-stone-50 sm:text-[2.35rem]">
-                        {copy.relatedHeading}
-                      </h2>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {relatedPosts.map((relatedPost) => (
-                      <RelatedPostCard key={relatedPost.slug} locale={locale} post={relatedPost} />
-                    ))}
-                  </div>
-                </div>
-              </section>
-            ) : null}
           </div>
 
           {hasArticleHeadings ? (
@@ -351,6 +323,31 @@ export function BlogDetailPageView({
             </aside>
           ) : null}
         </div>
+
+        {relatedPosts.length > 0 ? (
+          <div className="mx-auto max-w-[92rem] px-4 pb-14 sm:px-5 lg:px-6 lg:pb-16 xl:px-8">
+            <section className="site-surface-card site-surface-card--plain relative overflow-hidden rounded-[34px] px-4 py-5 lg:px-5 lg:py-6">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(127,167,214,0.14),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(215,180,106,0.14),transparent_28%)]" />
+
+              <div className="relative">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.relatedEyebrow}</p>
+                    <h2 className="mt-4 font-display text-[2rem] leading-[1.02] text-stone-50 sm:text-[2.35rem]">
+                      {copy.relatedHeading}
+                    </h2>
+                  </div>
+                </div>
+
+                <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {relatedPosts.map((relatedPost) => (
+                    <RelatedPostCard key={relatedPost.slug} locale={locale} post={relatedPost} />
+                  ))}
+                </div>
+              </div>
+            </section>
+          </div>
+        ) : null}
       </InnerPageChrome>
     </>
   );
