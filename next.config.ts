@@ -20,6 +20,16 @@ const nextConfig: NextConfig = {
         destination: '/zh/blog',
         permanent: true,
       })),
+      {
+        source: '/dice-roller',
+        destination: '/dice-roller-dnd',
+        permanent: true,
+      },
+      {
+        source: '/zh/dice-roller',
+        destination: '/zh/dice-roller-dnd',
+        permanent: true,
+      },
     ];
   },
 };
