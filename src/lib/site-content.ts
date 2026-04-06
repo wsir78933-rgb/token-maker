@@ -353,6 +353,17 @@ export interface DiceRollerPageCopy {
   faqDescription: string;
   faqItems: FaqItem[];
   structuredDataFeatures: string[];
+  statsGuide: {
+    headline: string;
+    methodTitle: string;
+    methodBody: string[];
+    connectTitle: string;
+    connectBody: string[];
+    extraTitle: string;
+    extraBody: string[];
+    alternativesTitle: string;
+    alternativesBody: string[];
+  };
 }
 
 export const siteConfigZh = {
@@ -852,6 +863,30 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
       'DnD-focused dice language including d20 checks and 4d6 drop lowest',
       'Roll breakdown, local history, FAQ, and structured data for search visibility',
     ],
+    statsGuide: {
+      headline: 'How Many Dice to Roll for Stats DnD?',
+      methodTitle: 'The Default Method: 4d6 Drop Lowest',
+      methodBody: [
+        'If you are reading the Player’s Handbook for Dungeons & Dragons 5th Edition, the standard and most widely accepted way to generate character ability scores is the "4d6 drop lowest" method.',
+        'The process is simple: grab four 6-sided dice (4d6) and roll them all at once. Look at the numbers, find the die showing the lowest value, and remove it from the pool. Then, add the remaining three numbers together. This final sum is one of your ability scores. You need to repeat this exact process six times to generate a complete array of six numbers—one for Strength, Dexterity, Constitution, Intelligence, Wisdom, and Charisma.',
+        'Once you have your six numbers, you are completely free to assign them to your stats in whichever order best fits the class you are building. Want to be a wizard? Put your highest roll into Intelligence. Rolling a barbarian? Prioritize Strength.'
+      ],
+      connectTitle: 'Generating Stats Instantly',
+      connectBody: [
+        'Manually rolling 24 individual dice by hand can be tedious when you just want to get to Character Creation. You can bypass the busywork while still keeping the true randomness by using the interactive dice tray above.',
+        'Simply click the "4d6 drop lowest" preset button. The tool automatically rolls four d6s, mathematically identifies and drops the lowest value, and logs the final summed result for you. Click it six times, and your character’s baseline stats are ready.'
+      ],
+      extraTitle: 'Why do we roll 4d6 instead of just 3d6?',
+      extraBody: [
+        'In the very early, hardcore days of tabletop gaming, players generated stats by simply rolling 3d6 strictly "down the line". This created a pure, unyielding bell curve where the average stat was always 10.5—representing an average, unremarkable commoner.',
+        'Modern DnD 5e is designed around heroic fantasy. By rolling a fourth die and dropping the lowest result, the statistical average is pulled upward to roughly 12.24, and the chances of rolling extremely crippling low numbers (like a 3 or 4) are drastically reduced. This mathematical shift ensures that player characters begin the game feeling inherently more competent, durable, and ready for adventure.'
+      ],
+      alternativesTitle: 'Alternative Stat Generation Methods',
+      alternativesBody: [
+        'While rolling dice is iconic and fun, it inherently creates unbalanced parties—some players will roll like gods, while others roll terribly. If your Dungeon Master prefers a balanced table, they might ask you to skip the dice altogether.',
+        'The primary alternatives are the "Standard Array" (where every player gets the exact same six numbers: 15, 14, 13, 12, 10, 8 to assign as they please) or "Point Buy" (where players spend a pool of 27 points to purchase their stats from a fixed escalating cost table, allowing for completely customized stat lines without the risk of a bad roll).'
+      ],
+    },
   },
   zh: {
     metadataTitle: 'dice roller dnd | 在线 d20、d6、d8、d10、d12 与 d100 掷骰页',
@@ -944,6 +979,30 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
       '围绕 d20 检定与 4d6 去最低等 DnD 场景组织内容',
       '结果分解、本地日志、FAQ 与结构化数据一并保留',
     ],
+    statsGuide: {
+      headline: 'How many dice to roll for stats dnd (DnD 5e 属性掷骰指南)',
+      methodTitle: '标准规则：4d6 去最低 (4d6 Drop Lowest)',
+      methodBody: [
+        '如果你翻开《龙与地下城》第五版（DnD 5e）的玩家手册，官方推荐且目前跑团中最普遍使用的属性生成方法，就是大名鼎鼎的“4d6 去最低”法则。',
+        '具体操作极其简单：手里捏住 4 颗六面骰（4d6）同时掷出。挑出其中点数最小的一颗拿走，然后把剩下三颗的点数相加。这加起来的最终防数值，就是你的其中一项能力值（Ability Score）。你需要把这个“掷四去一”的流程完完整整地重复 6 次，从而获得总共 6 个数字。',
+        '当你拿着这 6 个数字后，就可以根据你想要扮演的职业来自由分配它们：分别填进力量、敏捷、体质、智力、感知与魅力中。比如你想玩法师，就把最大的那个数字丢给智力；想玩野蛮人，自然要优先拉满力量。'
+      ],
+      connectTitle: '在这个工具里一键搞定',
+      connectBody: [
+        '如果你真的在桌面上捏塑料骰子，那为了建卡你得手工投 24 次，还要频繁做加减法，很多人嫌麻烦。你完全可以借助上方真正的物理模拟骰盘来省去这些繁琐工作，同时还能享受骰子滚动的快乐。',
+        '只要在面板上点击预设的“4d6 去最低 (4d6 drop lowest)”，系统会立刻投出 4 颗 d6。更重要的是，它懂规则——算法会自动帮你把那颗最小的废点剔除，并在下方的日志区清楚地给你列出计算公式和最终数值。连点 6 次，你的初始人物卡属性就出炉了。'
+      ],
+      extraTitle: '冷知识：为什么要掷四留三，而不是直接掷 3 颗？',
+      extraBody: [
+        '在非常古老的古典桌面角色扮演时代（也就是所谓的 OSR 硬核时期），老前辈们真的是硬碰硬地直接掷 3d6，而且掷出什么就按顺位填什么。但这在概率学上会造就一条毫无情面的“铁血钟形曲线”——平均值永远死死卡在 10.5。这意味着你扮演出来的角色大概率只是一个平平无奇、随处可见的平民。',
+        '但现代的 DnD 5e 主打的是“超凡英雄奇幻”。设计师引入了第四颗骰子并允许你丢掉最差的运气（哪怕掷出 1, 1, 1, 6 也能去掉一个 1）。这一规则上的微调，硬生生把属性的数学期望（平均值）拉高到了 12.24 左右。这一举动极大降低了玩家在一开局就遭遇“天崩开局（属性残废跑不动路）”的挫败感，保证了所有冒险者起步就有超出常人的潜力和英雄光环。'
+      ],
+      alternativesTitle: '除了掷骰子，还有别的办法吗？',
+      alternativesBody: [
+        '虽然“4d6”充满了随机的心跳刺激感，但这也意味着同桌的玩家之间会出现“极度不平衡”的惨象——欧皇全属性 16+ 叱咤风云，非酋最高属性可能才 12。如果你的 DM（地下城主）极其看重团队战斗的数值平衡，他们通常会禁止玩家掷属性。',
+        '这时候的替代方案就是“标准阵列（Standard Array）”——让全桌所有人都拿完全一模一样的 6 个数字（15, 14, 13, 12, 10, 8）去自由分配；或是采用“购点法（Point Buy）”——拨给你一笔 27 点的预算本金，你自己对着价格表去自由选购属性高低。这些方法虽然少了惊心动魄的掷骰环节，但绝对公平。'
+      ],
+    },
   },
 };
 
