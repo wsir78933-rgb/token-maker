@@ -114,9 +114,11 @@ const DND_CLASSES_RANKED_UPDATED_AT = '2026-03-29';
 const BLOG_TOKEN_GUIDE_UPDATED_AT = '2026-03-27';
 const BLOG_SMALL_PARTY_GUIDE_UPDATED_AT = '2026-03-25';
 const DND_ARMOR_UPDATED_AT = '2026-04-06';
+const DND_CONSTITUTION_UPDATED_AT = '2026-04-07';
 const DND_CLASSES_COVER_PATH = '/blog/covers/en/dnd-classes-explained.png';
 const DND_CLASSES_RANKED_COVER_PATH = '/blog/covers/en/dnd-classes-ranked.png';
 const DND_ARMOR_COVER_PATH = '/blog/covers/en/dnd-armor-guide.jpg';
+const DND_CONSTITUTION_COVER_PATH = '/blog/covers/en/dnd-constitution-guide.png';
 const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.png';
 const DND_CLASSES_MARTIAL_IMAGE_PATH = '/blog/inline/dnd-classes/martial-blade-inline.jpg';
 const DND_CLASSES_RANKED_PARTY_IMAGE_PATH = '/blog/inline/dnd-classes-ranked/party-lineup.png';
@@ -1885,11 +1887,160 @@ const dndSmallPartyGuideArticleZh: BlogPost = {
   placeholder: true,
 };
 
+const dndConstitutionArticleHtmlZh = String.raw`
+<p>在 D&amp;D 跑团中，<strong>dnd constitution</strong>（体质）代表了角色的生存底线和忍耐极限。无论是遭遇怪物的毒气喷吐、在危险水域憋气潜水，还是纯粹叠加生命上限，体质都发挥着绝对核心的作用。这篇指南将带你用最直观的方式，彻底搞懂体质如何影响你的生命池（HP）与专注判定。如果你正在规划新角色，本文能帮你避开“因为没点体质而被一刀击杀”的毁灭性误区。</p>
+
+<figure class="inline-figure inline-figure--wide-crop">
+  <img
+    class="inline-figure__image inline-figure__image--wide"
+    src="${DND_CONSTITUTION_COVER_PATH}"
+    alt="矮人战士抵御毒气攻击的 DND Constitution 示意图"
+    width="1024"
+    height="1024"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>极度危险的环境下，高体质能保证角色存活。</figcaption>
+</figure>
+
+<h2>核心机制：Constitution DND 检定中到底影响什么？</h2>
+<p>在建卡时，许多追求初级爆发伤害的新玩家会把点数全押在力量或智力上，留下可悲的 8 点体质。这不仅极度危险，而且拖累了医疗位队友。基于规则核心逻辑，下面这张属性收益表直观地展示了 <strong>constitution dnd</strong> 在抗压维度上的巨大差距：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>你的 Constitution 点数</th>
+      <th>属性修正值 (Modifier)</th>
+      <th>每次升级时的 HP 额外加成</th>
+      <th>在恶劣环境中的生还表现</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>8 或 9</strong></td>
+      <td>-1 (致命缺陷)</td>
+      <td>HP 必定扣减 1 点</td>
+      <td>极度虚弱（容易因负面状态进入绝境）</td>
+    </tr>
+    <tr>
+      <td><strong>10 或 11</strong></td>
+      <td>+0 (普通平民底线)</td>
+      <td>无任何加成</td>
+      <td>勉强合格</td>
+    </tr>
+    <tr>
+      <td><strong>12 或 13</strong></td>
+      <td>+1 (合格冒险者)</td>
+      <td>+1 HP</td>
+      <td>一般正常水平</td>
+    </tr>
+    <tr>
+      <td><strong>14 或 15</strong></td>
+      <td>+2 (标准施法者配置)</td>
+      <td>+2 HP</td>
+      <td>优秀稳健（强烈建议保底此数值）</td>
+    </tr>
+    <tr>
+      <td><strong>16 及以上</strong></td>
+      <td>+3 或更高</td>
+      <td>+3 HP 封顶以上</td>
+      <td>极其强悍（核心近战抗压位必满）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>当你需要长途跨越冰原、在水底脱困、或是对抗毒气，角色必须被动进行体质豁免检定。如果该判定失败，轻则进入“中毒”或“力竭”等严重损伤轮次，重则直接陷入倒地昏迷。这意味着体质修正值（Modifier）不仅仅是每一次级别跃升时强制附带加倍的安全血点基数，更是所有“非战斗高危场景”的刚需保命符。</p>
+
+<div class="mt-8 rounded-[24px] border border-white/8 bg-black/20 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+  <div class="flex-1">
+    <h3 class="text-lg font-medium text-stone-50 m-0 p-0" style="margin: 0;">🎯 实战工具推荐</h3>
+    <p class="mt-2 text-sm leading-7 text-stone-300" style="margin-top: 0.5rem; margin-bottom: 0;">还在为了纯手算豁免结果而打乱跑团节奏？立即切换使用我们系统严密的 D&amp;D 线上掷骰器，一秒准确模拟带有体质修正计算的综合生存掷骰。</p>
+  </div>
+  <a href="/dice-roller-dnd" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-[#f1d492] transition hover:border-[#d7b46a]/50 hover:bg-[#d7b46a]/10">
+    打开 Dice Roller
+  </a>
+</div>
+
+<h2>施法者生存必看：体质如何决定法术专注</h2>
+<p>如果你切入的世界角色是法师、牧师或术士等拥有技能流分支的职业，Constitution 的重要优先级甚至可以与你的核心施法天赋并驱并重。实战记录中，曾经有只配给 10 点体质的法系角色，强行读条放出了改变战局的顶级群体法术，结果被地图边缘毒刺擦伤一滴残血，瞬间专注破裂技能失效，导致全盘崩坏。</p>
+
+<ul>
+  <li><strong>何为专注被动性判定</strong>：当你成功激活并处于维持带有“专注 (Concentration)”标签的强大控制法术时，一旦遭受突发伤害，为了确保该释放法术不被物理中断，你必须通过一次体质豁免检定来强稳心神（DC = 你所遭受单次攻击伤害数额的整整一半，且系统设定最低判定难度门槛不可低于固定的 10 点）。</li>
+  <li><strong>强稳拉平生存下限</strong>：如果在建卡初期果断将体质属性强制锁定在充盈的 14（自带 +2 修正补偿值），你对抗前期小怪乱箭流打断的抗压存活率与法力续航几率会发生质的飞跃。</li>
+  <li><strong>最佳专长额外防御</strong>：强烈推荐法系角色在面临获取额外被动专长节点时，第一优选拿下 <strong>“战地施法者 (War Caster)”</strong> 或 <strong>“坚如磐石 (Resilient - Constitution)”</strong>。高体质基础直接红利叠加这些防御性专长，能死死卡住核心控场技能的释放稳定性。</li>
+</ul>
+
+<h2>高体质加成：跑团种族搭配与流派实战推荐</h2>
+<p>若要在开局阶段就彻底避免沦为战队底层“吸血漏勺”，聪明的做法是定向利用特定类别的初始天赋种族血脉来“白嫖”生命加成。以下建议都是能以最低代价极限拉满体质收益的优选项：</p>
+
+<ul>
+  <li><strong>矮人 (Dwarves)</strong>：先天基因即自带 +2 的 Constitution 高加成定底。其中“山地矮人”分类甚至天生骨骼强健兼备中型护甲熟练适应力，毫无疑问是当前最完美的新建肉盾底子。</li>
+  <li><strong>野蛮人 (Barbarians)</strong>：整套 D&amp;D 模组中对体测数值吸收最透彻的近战物理职业。倚靠核心的“无甲防御 (Unarmored Defense)”体系算法，不仅最大化撑高了血线纵深，你的体质修正补偿甚至可以直接变现转化为实体绝对护甲面板（AC 减伤值）。此时高体质等同于“极厚血库与极度防弹双向叠加”。</li>
+  <li><strong>半兽人 (Half-Orcs)</strong>：综合其并不低的原始三围底子，他们更依赖纯种族独占的超硬被动能力——面临致死贯穿级打击时能强行用肉体将其过滤，“锁住最后 1 滴保底生命”金刚不倒。这种置死地而后生的容错底牌配合原本就极其蛮横的骨架肉包，经常强扭逆境创造反杀生还局。</li>
+</ul>
+
+<section class="mt-12 rounded-[34px] border border-white/10 bg-white/[0.03] p-6 sm:p-8">
+  <h2 class="font-display text-2xl sm:text-3xl text-stone-50" style="margin-top: 0;">常见问题解答 (FAQ)</h2>
+  
+  <div class="mt-6 space-y-4">
+    <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
+      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">What happens if my constitution is reduced in D&amp;D?</h3>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">当你的 Constitution 数据受到超自然诅咒或外力毒素被迫削减时，你的角色生命上限（HP 值底池）将即刻重置暴跌。极其极端的灾难后果是：如果该项体指标被高阶死灵系怪物的特性机制抽干、强压归结为 0 点底裤线，规则会直接宣判触发即死，系统直接没收挽救性质的死亡抢救（Death Saving Throws）流程权限。</p>
+    </article>
+
+    <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
+      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Does Constitution add to HP at level 1 in D&amp;D 5e?</h3>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">是的，你的角色刚刚涉足迈进最初的 1 级阶段门槛位时，你 Constitution 身上的点数修正值就已经在后台计算、并完全折算加合到了你的裸装备初始生命池体系中。尤且不止，之后经历所有的每一次升级阈值突破阶段，这同一份固定的修正分红将稳稳地兑现成红利血珠奖励，精准叠套在你不断攀升拔高的 HP 最大值之顶。</p>
+    </article>
+
+    <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
+      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">What is Constitution in DND used for mainly?</h3>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">解构到整套纸笔桌面系统的基石上来看，Constitution （体质）主要是为了被用于决定该玩家能撑多大的绝对生命气血容量池（Max HP）；负责在突遭不明病毒感染、承受毒药浸透或陷入严寒酷暑侵袭时触发基础豁免活命保底；以及影响施法者人群战局的一环——当被围殴受创却非要卡点吟唱长效强力魔法时，它承担着能不能抗衡住伤痛、强制锁死法力集中度的底层验证性（Concentration Checks）把控门槛。</p>
+    </article>
+  </div>
+</section>
+
+<iframe
+  class="inline-embed inline-embed--video"
+  src="https://www.youtube.com/embed/WoV5iM7peOg"
+  title="DND constitution rules and mechanics video"
+  loading="lazy"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
+`;
+
+const dndConstitutionArticle: BlogPost = {
+  slug: 'dnd-constitution-guide',
+  title: 'D&D Constitution Guide',
+  excerpt: 'Learn exactly how constitution impacts your hit points, concentration saves, and what races benefit the most in D&D 5e.',
+  updatedAt: DND_CONSTITUTION_UPDATED_AT,
+  readTime: '6 min read',
+  coverLabel: 'Mechanics',
+  coverImage: DND_CONSTITUTION_COVER_PATH,
+  bodyHtml: dndConstitutionArticleHtmlZh,
+};
+
+const dndConstitutionArticleZh: BlogPost = {
+  slug: 'dnd-constitution-guide',
+  title: 'D&D Constitution 指南：生命值与专注判定的核心机制',
+  seoTitle: 'D&D Constitution 指南：生命值与法术专注判定的核心机制',
+  metaDescription: '在 D&D 中，Constitution 决定了你的角色能活多久。本文提供 dnd constitution 的实战数据、法术专注机制解析与种族选择推荐，并内置工具辅助检定。',
+  excerpt: '本文提供 dnd constitution 的实战数据、专注机制解析与种族推荐，帮你避开致命车卡误区。',
+  updatedAt: DND_CONSTITUTION_UPDATED_AT,
+  readTime: '6 分钟阅读',
+  coverLabel: '跑团机制',
+  coverImage: DND_CONSTITUTION_COVER_PATH,
+  coverAlt: 'dnd constitution dwarf warrior resisting poison',
+  bodyHtml: dndConstitutionArticleHtmlZh,
+};
+
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndClassesArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle].map(
+  en: [dndClassesArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndClassesArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh].map(
+  zh: [dndClassesArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh].map(
     addHeadingAnchors,
   ),
 };
