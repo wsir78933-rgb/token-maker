@@ -210,7 +210,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                     <div className="relative w-11 h-11 sm:w-14 sm:h-14 drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
                       <Image
                         src={`/dice/d${sides}.svg`}
-                        alt={`d${sides} die`}
+                        alt={`Add a ${sides}-sided die (d${sides}) to your dice pool`}
                         fill
                         className="object-contain"
                         unoptimized

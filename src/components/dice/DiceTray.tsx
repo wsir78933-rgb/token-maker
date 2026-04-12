@@ -118,7 +118,7 @@ export function DiceTray({ playback, stagedGroups, stagedExpr, locale, title, cl
                     >
                       <Image
                         src={`/dice/d${d.sides}.svg`}
-                        alt={`d${d.sides}`}
+                        alt={`${d.sides}-sided die (d${d.sides}) ready to roll`}
                         fill
                         className="object-contain opacity-60"
                         unoptimized

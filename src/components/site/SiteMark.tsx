@@ -9,7 +9,7 @@ export function SiteMark({ className }: SiteMarkProps) {
   return (
     <Image
       src="/icon.svg?v=20260312b"
-      alt=""
+      alt="Token Maker logo"
       width={36}
       height={36}
       aria-hidden="true"

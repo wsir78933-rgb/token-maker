@@ -96,7 +96,7 @@ export function DiceAnimatedDie({ die }: DiceAnimatedDieProps) {
       >
         <Image
           src={`/dice/d${die.sides}.svg`}
-          alt={`d${die.sides}`}
+          alt={`${die.sides}-sided die (d${die.sides}) showing result`}
           fill
           className="object-contain"
           unoptimized
