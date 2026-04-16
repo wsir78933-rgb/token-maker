@@ -24,7 +24,9 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     url: absoluteUrl('/zh'),
+    siteName: siteConfig.name,
     type: 'website',
+    locale: 'zh_CN',
     images: [
       {
         url: getSeoImageUrl(locale, 'home'),

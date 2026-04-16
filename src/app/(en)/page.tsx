@@ -24,7 +24,9 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     url: absoluteUrl('/'),
+    siteName: siteConfig.name,
     type: 'website',
+    locale: 'en_US',
     images: [
       {
         url: getSeoImageUrl(locale, 'home'),

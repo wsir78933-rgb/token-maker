@@ -624,7 +624,10 @@
   text-align: left;
   color: var(--site-accent-strong);
   border-bottom: 1px solid color-mix(in oklab, var(--site-border-strong) 56%, transparent);
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  vertical-align: top;
 }
 
 .site-rich-text tbody tr {
@@ -644,7 +647,10 @@
   padding: 0.6rem 0.85rem;
   border-bottom: 1px solid color-mix(in oklab, var(--site-border-soft) 46%, transparent);
   color: var(--site-ink);
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  vertical-align: top;
 }
 
 .site-rich-text tbody tr:last-child td {
@@ -658,16 +664,15 @@
 
 @media (max-width: 640px) {
   .site-rich-text table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     border-radius: 1rem;
+    table-layout: fixed;
   }
 
   .site-rich-text th,
   .site-rich-text td {
     padding: 0.5rem 0.65rem;
     font-size: 0.82rem;
+    line-height: 1.55;
   }
 }
 
@@ -902,4 +907,3 @@
 .editor-stage {
   background: radial-gradient(circle at top, rgba(215, 180, 106, 0.08), transparent 30%), transparent;
 }
-

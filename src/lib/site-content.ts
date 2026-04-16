@@ -38,7 +38,7 @@ export const siteConfig = {
   shortName: 'Token Maker',
   title: 'Token Maker | Browser VTT Token Tool for DnD, Roll20, and Foundry VTT',
   description:
-    'Build VTT tokens in your browser with Token Maker. Upload character art, crop portraits, add masks, borders, and text, then export transparent PNG tokens for DnD, Roll20, and Foundry VTT.',
+    'The best free VTT token maker for DnD, Roll20, and Foundry VTT. Upload character art, crop portraits, add masks, borders, and text, then export transparent PNG tokens in seconds.',
 } as const;
 
 export function getSiteUrl() {
@@ -371,7 +371,7 @@ export const siteConfigZh = {
   shortName: 'Token Maker',
   title: 'Token Maker | VTT Token 制作器与 TRPG 角色 Token 在线工具',
   description:
-    '用 Token Maker 在浏览器里完成 VTT Token 制作。上传 TRPG 角色立绘，裁切头像，添加边框、遮罩和文字，导出适合 DnD、Roll20、Foundry VTT 的透明 PNG Token。',
+    '全球最好用的免费 VTT Token 制作工具，适合 DnD、Roll20 和 Foundry VTT。上传角色立绘，裁切头像，添加边框、遮罩和文字，几秒内导出透明 PNG Token。',
 } as const;
 
 export const homeSignalsZh: HomeSignal[] = [
@@ -581,7 +581,7 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
     heroEyebrow: 'VTT token maker',
     heroTitle: 'Token Maker for TRPG and VTT tokens',
     heroDescription:
-      'Upload character art, crop the portrait, add masks, borders, and text, then export a transparent PNG token. Token Maker is built for DnD, Roll20, and Foundry VTT, so it gets you to a usable token faster than a general editor.',
+      'The best free VTT token maker for DnD, Roll20, and Foundry VTT. Upload character art, crop the portrait, add masks, borders, and text, then export a transparent PNG token in seconds.',
     heroHighlights: [
       'Circle, square, and hex token formats',
       'Transparent PNG export up to 2048',
@@ -630,7 +630,7 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
     heroEyebrow: 'VTT Token 制作器',
     heroTitle: '在浏览器里完成 TRPG 角色 Token 制作',
     heroDescription:
-      '上传角色立绘后，直接裁切头像、添加遮罩、边框和文字，然后导出透明 PNG。Token Maker 适合 DnD、Roll20、Foundry VTT，比在 Photoshop 里反复开画布、做蒙版再导出更快。',
+      '全球最好用的免费 VTT Token 制作工具，适合 DnD、Roll20 和 Foundry VTT。上传角色立绘后，直接裁切头像、添加遮罩、边框和文字，几秒内导出透明 PNG。',
     heroHighlights: [
       '圆形、方形、六边形格式',
       '透明 PNG 导出最高 2048',

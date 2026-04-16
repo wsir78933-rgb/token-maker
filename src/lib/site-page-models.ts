@@ -238,7 +238,9 @@ export function createCollectionMetadata(locale: SiteLocale, page: 'faq' | 'priv
       title: `${copy.title} | ${siteConfig.name}`,
       description: copy.description,
       url: absoluteUrl(path),
+      siteName: siteConfig.name,
       type: 'website',
+      locale: locale === 'zh' ? 'zh_CN' : 'en_US',
       images: [
         {
           url: getSeoImageUrl(locale, page),
@@ -295,4 +297,3 @@ export function buildCollectionStructuredData(
     },
   };
 }
-

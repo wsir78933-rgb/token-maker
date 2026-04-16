@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 
 import { DiceRollerPageView } from '@/components/site/views/DiceRollerPageView';
-import { getDiceRollerPageCopy, getSiteUrl } from '@/lib/site-content';
+import { getDiceRollerPageCopy, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates } from '@/lib/site-locale';
 
 const locale = 'zh';
 const copy = getDiceRollerPageCopy(locale);
+const siteConfig = getSiteConfig(locale);
 const path = '/dice-roller-dnd';
 
 export const metadata: Metadata = {
@@ -30,7 +31,9 @@ export const metadata: Metadata = {
     title: copy.metadataTitle,
     description: copy.metadataDescription,
     url: '/zh/dice-roller-dnd',
+    siteName: siteConfig.name,
     type: 'website',
+    locale: 'zh_CN',
     images: [
       {
         url: getSeoImageUrl(locale, 'home'),
