@@ -1,12 +1,29 @@
 'use client';
 
-import { startTransition, type MouseEvent } from 'react';
+import { startTransition, type MouseEvent, type KeyboardEvent } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface RichTextHtmlProps {
   as?: 'article' | 'div' | 'section';
   className?: string;
   html: string;
+}
+
+function activateLiteVideo(container: HTMLElement) {
+  const videoId = container.dataset.videoId;
+  const title = container.dataset.videoTitle ?? 'Video';
+
+  if (!videoId) return;
+
+  const iframe = document.createElement('iframe');
+  iframe.className = 'inline-embed inline-embed--video';
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  iframe.title = title;
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+  iframe.allowFullscreen = true;
+
+  container.replaceWith(iframe);
 }
 
 export function RichTextHtml({
@@ -24,6 +41,14 @@ export function RichTextHtml({
       return;
     }
 
+    // Lite video embed activation
+    const liteVideo = target.closest<HTMLElement>('.lite-video');
+    if (liteVideo) {
+      event.preventDefault();
+      activateLiteVideo(liteVideo);
+      return;
+    }
+
     const launchButton = target.closest<HTMLElement>('[data-editor-launch]');
     const href = launchButton?.getAttribute('data-editor-launch');
 
@@ -38,10 +63,24 @@ export function RichTextHtml({
     });
   };
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const liteVideo = target.closest<HTMLElement>('.lite-video');
+    if (liteVideo) {
+      event.preventDefault();
+      activateLiteVideo(liteVideo);
+    }
+  };
+
   return (
     <Component
       className={className}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

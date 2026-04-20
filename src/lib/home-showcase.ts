@@ -23,7 +23,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
     quickStart: [
       {
         id: 'radiant-paladin',
-        imageSrc: '/showcase/radiant-paladin-circle.png',
+        imageSrc: '/showcase/radiant-paladin-circle.webp',
         presetId: 'cleric',
         title: '圣辉骑士',
         description: '金色圆环和正中构图，适合主角头像与阵营核心角色。',
@@ -33,7 +33,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'moon-archmage',
-        imageSrc: '/showcase/moon-archmage-gold.png',
+        imageSrc: '/showcase/moon-archmage-gold.webp',
         presetId: 'mage',
         title: '月下法师',
         description: '冷蓝法术和月夜背景，适合高辨识度的法系角色。',
@@ -43,7 +43,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'grave-necromancer',
-        imageSrc: '/showcase/grave-necromancer-silver.png',
+        imageSrc: '/showcase/grave-necromancer-silver.webp',
         presetId: 'undead',
         title: '墓域亡语者',
         description: '银刺边框和幽绿色烟雾，更适合亡灵首领与危险敌人。',
@@ -55,7 +55,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
     gallery: [
       {
         id: 'inferno-drake',
-        imageSrc: '/showcase/inferno-drake-fire.png',
+        imageSrc: '/showcase/inferno-drake-fire.webp',
         presetId: 'monster',
         title: '炼狱龙先锋',
         description: '高温火焰边框和压近构图，适合怪物首领、精英单位和需要第一眼就有威压感的遭遇战入口。',
@@ -65,7 +65,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'dusk-rogue',
-        imageSrc: '/showcase/dusk-rogue-ring.png',
+        imageSrc: '/showcase/dusk-rogue-ring.webp',
         presetId: 'rogue',
         title: '暮城潜行者',
         description: '深色外环和贴脸构图，适合盗贼、刺客、侦查角色与城市场景 NPC。',
@@ -75,7 +75,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'void-sorceress',
-        imageSrc: '/showcase/void-sorceress-frame.png',
+        imageSrc: '/showcase/void-sorceress-frame.webp',
         presetId: 'mage',
         title: '虚空召法者',
         description: '紫黑能量和厚重圆框更适合法术核心、稀有敌人和高戏剧性的施法角色。',
@@ -85,7 +85,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'frost-ranger',
-        imageSrc: '/showcase/frost-ranger-ice.png',
+        imageSrc: '/showcase/frost-ranger-ice.webp',
         presetId: 'ranger',
         title: '霜环游侠',
         description: '冰晶边框和偏冷森林背景，适合游侠、精灵、北境角色和偏自然系的队伍成员。',
@@ -95,7 +95,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'scale-brute',
-        imageSrc: '/showcase/scale-brute-silver.png',
+        imageSrc: '/showcase/scale-brute-silver.webp',
         presetId: 'warrior',
         title: '鳞甲战斗者',
         description: '银色尖环和强轮廓主体，适合兽人、蜥蜴人、近战怪与高识别度的前排单位。',
@@ -109,7 +109,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
     quickStart: [
       {
         id: 'radiant-paladin',
-        imageSrc: '/showcase/radiant-paladin-circle.png',
+        imageSrc: '/showcase/radiant-paladin-circle.webp',
         presetId: 'cleric',
         title: 'Radiant Paladin',
         description: 'A gold ring and centered crop for hero portraits and faction anchors.',
@@ -119,7 +119,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'moon-archmage',
-        imageSrc: '/showcase/moon-archmage-gold.png',
+        imageSrc: '/showcase/moon-archmage-gold.webp',
         presetId: 'mage',
         title: 'Moonlit Archmage',
         description: 'Cold blue magic and a moonlit backdrop for high-readability casters.',
@@ -129,7 +129,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'grave-necromancer',
-        imageSrc: '/showcase/grave-necromancer-silver.png',
+        imageSrc: '/showcase/grave-necromancer-silver.webp',
         presetId: 'undead',
         title: 'Grave Necromancer',
         description: 'Silver spikes and sickly green haze for undead bosses and cursed enemies.',
@@ -141,7 +141,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
     gallery: [
       {
         id: 'inferno-drake',
-        imageSrc: '/showcase/inferno-drake-fire.png',
+        imageSrc: '/showcase/inferno-drake-fire.webp',
         presetId: 'monster',
         title: 'Inferno Drake',
         description: 'An aggressive fire frame and close crop for monster bosses, elite enemies, and encounter openers that need instant threat.',
@@ -151,7 +151,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'dusk-rogue',
-        imageSrc: '/showcase/dusk-rogue-ring.png',
+        imageSrc: '/showcase/dusk-rogue-ring.webp',
         presetId: 'rogue',
         title: 'Dusk Rogue',
         description: 'A dark outer ring and face-first crop for rogues, assassins, scouts, and city NPCs.',
@@ -161,7 +161,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'void-sorceress',
-        imageSrc: '/showcase/void-sorceress-frame.png',
+        imageSrc: '/showcase/void-sorceress-frame.webp',
         presetId: 'mage',
         title: 'Void Sorceress',
         description: 'Purple-black energy and a heavier frame for dramatic spellcasters, rare enemies, and high-magic table moments.',
@@ -171,7 +171,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'frost-ranger',
-        imageSrc: '/showcase/frost-ranger-ice.png',
+        imageSrc: '/showcase/frost-ranger-ice.webp',
         presetId: 'ranger',
         title: 'Frost Ranger',
         description: 'A crystalline ice frame for rangers, elves, frontier characters, and colder wilderness parties.',
@@ -181,7 +181,7 @@ const showcaseByLocale: Record<SiteLocale, HomeShowcaseModel> = {
       },
       {
         id: 'scale-brute',
-        imageSrc: '/showcase/scale-brute-silver.png',
+        imageSrc: '/showcase/scale-brute-silver.webp',
         presetId: 'warrior',
         title: 'Scale Vanguard',
         description: 'A silver spike silhouette for lizardfolk, bruisers, frontliners, and any unit that needs a bold combat read.',

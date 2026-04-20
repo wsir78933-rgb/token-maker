@@ -54,9 +54,9 @@ const TFF_BORDER_TEMPLATES: BorderTemplate[] = TFF_BORDER_PACK.map((border) => (
   name: border.name,
   type: 'image',
   linkedMaskId: border.linkedMaskId,
-  imageUrl: `/borders/tff/${border.id}.png`,
-  thumbSrc: `/borders/tff/${border.id}.png`,
-  maskUrl: `/masks/tff/${border.id}.png`,
+  imageUrl: `/borders/tff/${border.id}.webp`,
+  thumbSrc: `/borders/tff/${border.id}.webp`,
+  maskUrl: `/masks/tff/${border.id}.webp`,
   tintMode: TFF_3D_RINGS.has(border.id) ? 'screen' : 'solid',
 }));
 

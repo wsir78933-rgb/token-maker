@@ -118,22 +118,22 @@ const DND_CONSTITUTION_UPDATED_AT = '2026-04-07';
 const DND_DRUID_SPELLS_UPDATED_AT = '2026-04-09';
 const DND_DHAMPIR_UPDATED_AT = '2026-04-17';
 const DND_GRUNG_UPDATED_AT = '2026-04-20';
-const DND_CLASSES_COVER_PATH = '/blog/covers/en/dnd-classes-explained.png';
-const DND_CLASSES_RANKED_COVER_PATH = '/blog/covers/en/dnd-classes-ranked.png';
+const DND_CLASSES_COVER_PATH = '/blog/covers/en/dnd-classes-explained.webp';
+const DND_CLASSES_RANKED_COVER_PATH = '/blog/covers/en/dnd-classes-ranked.webp';
 const DND_ARMOR_COVER_PATH = '/blog/covers/en/dnd-armor-guide.jpg';
-const DND_CONSTITUTION_COVER_PATH = '/blog/covers/en/dnd-constitution-guide.png';
-const DND_DRUID_SPELLS_COVER_PATH = '/blog/covers/en/dnd-druid-spells.png';
+const DND_CONSTITUTION_COVER_PATH = '/blog/covers/en/dnd-constitution-guide.webp';
+const DND_DRUID_SPELLS_COVER_PATH = '/blog/covers/en/dnd-druid-spells.webp';
 const DND_DHAMPIR_COVER_PATH = '/blog/covers/en/dnd-dhampir-guide.svg';
-const DND_GRUNG_COVER_PATH = '/blog/covers/en/dnd-grung-guide.png';
-const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.png';
+const DND_GRUNG_COVER_PATH = '/blog/covers/en/dnd-grung-guide.webp';
+const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
 const DND_CLASSES_MARTIAL_IMAGE_PATH = '/blog/inline/dnd-classes/martial-blade-inline.jpg';
-const DND_CLASSES_RANKED_PARTY_IMAGE_PATH = '/blog/inline/dnd-classes-ranked/party-lineup.png';
-const DND_ARMOR_TYPES_IMAGE_PATH = '/blog/inline/dnd-armor/armor-types-armory.png';
-const DND_ARMOR_HEAVY_IMAGE_PATH = '/blog/inline/dnd-armor/heavy-armor-paladin.png';
+const DND_CLASSES_RANKED_PARTY_IMAGE_PATH = '/blog/inline/dnd-classes-ranked/party-lineup.webp';
+const DND_ARMOR_TYPES_IMAGE_PATH = '/blog/inline/dnd-armor/armor-types-armory.webp';
+const DND_ARMOR_HEAVY_IMAGE_PATH = '/blog/inline/dnd-armor/heavy-armor-paladin.webp';
 const DND_DHAMPIR_CEILING_IMAGE_PATH = '/blog/inline/dnd-dhampir/dhampir-ceiling-crawl.svg';
 const DND_DHAMPIR_BITE_IMAGE_PATH = '/blog/inline/dnd-dhampir/dhampir-bite-plan.svg';
-const DND_GRUNG_LEAP_IMAGE_PATH = '/blog/inline/dnd-grung/grung-ruins-leap.png';
-const DND_GRUNG_POISON_IMAGE_PATH = '/blog/inline/dnd-grung/grung-poison-closeup.png';
+const DND_GRUNG_LEAP_IMAGE_PATH = '/blog/inline/dnd-grung/grung-ruins-leap.webp';
+const DND_GRUNG_POISON_IMAGE_PATH = '/blog/inline/dnd-grung/grung-poison-closeup.webp';
 const DND_DHAMPIR_LINEAGE_URL =
   'https://www.dndbeyond.com/posts/1014-play-a-dhampir-hexblood-or-reborn-with-rules-from';
 const DND_DHAMPIR_VAMPIRE_URL = 'https://www.dndbeyond.com/posts/1467-playing-as-a-vampire-in-d-d';
@@ -144,6 +144,20 @@ const DND_GRUNG_SOURCE_URL = 'https://marketplace.dndbeyond.com/category/SRC-000
 const DND_GRUNG_WIKI_URL = 'https://forgottenrealms.fandom.com/wiki/Grung';
 const DND_GRUNG_VIDEO_URL = 'https://www.youtube.com/watch?v=EVwBW5GbGwQ';
 const DND_GRUNG_VIDEO_EMBED_URL = 'https://www.youtube.com/embed/EVwBW5GbGwQ';
+function liteVideoEmbed(videoId: string, title: string): string {
+  const thumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  return `<div class="inline-embed inline-embed--video lite-video" data-video-id="${videoId}" data-video-title="${title}" role="button" tabindex="0" aria-label="Play video: ${title}">
+  <img class="lite-video__thumb" src="${thumb}" alt="${title}" loading="lazy" decoding="async" width="480" height="360" />
+  <div class="lite-video__overlay" aria-hidden="true"></div>
+  <button class="lite-video__play" type="button" aria-label="Play: ${title}">
+    <svg class="lite-video__play-icon" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#f00"/>
+      <path d="M45 24 27 14v20" fill="#fff"/>
+    </svg>
+  </button>
+</div>`;
+}
+
 const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
 const ZH_DND_CLASSES_PATH = getLocalizedPath('zh', '/blog/dnd-classes-explained');
 const EN_DND_CONSTITUTION_PATH = getLocalizedPath('en', '/blog/dnd-constitution-guide');
@@ -309,15 +323,7 @@ const dndClassesArticleHtml = String.raw`
 <h2>Video Overview of DND Classes</h2>
 <p>If you want a fast visual recap after reading, this video works well as a companion summary of the main <strong>DND classes</strong> and the playstyles they support.</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="https://www.youtube.com/embed/K4YtOhYzOfo"
-  title="DND classes overview video"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('K4YtOhYzOfo', 'DND classes overview video')}
 `;
 
 const dndClassesArticleHtmlZh = String.raw`
@@ -453,15 +459,7 @@ const dndClassesArticleHtmlZh = String.raw`
 <h2>DND 职业视频总览</h2>
 <p>如果你读完后想再用更直观的方式快速回顾一遍，这段视频很适合作为收尾补充，帮你重新梳理主要 <strong>DND 职业</strong> 的差异和定位。</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="https://www.youtube.com/embed/K4YtOhYzOfo"
-  title="DND 职业视频总览"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('K4YtOhYzOfo', 'DND 职业视频总览')}
 `;
 
 const dndClassesRankedArticleHtml = String.raw`
@@ -895,15 +893,7 @@ const dndClassesRankedArticleHtml = String.raw`
 <h2>Watch a Quick Video Recap</h2>
 <p>If you want a more conversational follow-up after reading, this video is a natural next step. It covers the same "which D&amp;D class actually feels best to play" question from a faster angle. You can watch it directly on <a href="https://www.youtube.com/watch?v=K2Qs8q2JBRY" target="_blank" rel="noreferrer">YouTube here</a>, or use the embedded version below.</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="https://www.youtube.com/embed/K2Qs8q2JBRY"
-  title="DnD classes ranked video recap"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('K2Qs8q2JBRY', 'DnD classes ranked video recap')}
 `;
 
 const dndClassesRankedArticleHtmlZh = String.raw`
@@ -1336,15 +1326,7 @@ const dndClassesRankedArticleHtmlZh = String.raw`
 <h2>看一段视频快速回顾</h2>
 <p>如果你读完之后还想用更轻松、更口语化的方式再回顾一遍，这段视频很适合作为收尾补充。它讨论的也是“哪个 D&amp;D 职业玩起来最舒服、最值得选”这个问题。你可以直接在 <a href="https://www.youtube.com/watch?v=K2Qs8q2JBRY" target="_blank" rel="noreferrer">YouTube 查看</a>，也可以直接看下面的嵌入版本。</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="https://www.youtube.com/embed/K2Qs8q2JBRY"
-  title="DND 职业排名视频回顾"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('K2Qs8q2JBRY', 'DND 职业排名视频回顾')}
 `;
 
 const dndArmorArticleHtml = String.raw`
@@ -1539,15 +1521,7 @@ const dndArmorArticleHtml = String.raw`
 <h2>Watch This Visual Breakdown of DND Armor and AC</h2>
 <p>If you want a clear visual walkthrough of how <strong>DND armor</strong> and Armor Class actually work in play, this video from <em>How It's Played</em> does an excellent job of explaining the mechanics step by step. It covers AC calculation, how different armor types apply Dexterity, and how bonus sources like shields and spells stack.</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="https://www.youtube.com/embed/pKxuStjRTxo"
-  title="DND armor and Armor Class explained video"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('pKxuStjRTxo', 'DND armor and Armor Class explained video')}
 `;
 
 const dndArmorArticleHtmlZh = String.raw`
@@ -1742,15 +1716,7 @@ const dndArmorArticleHtmlZh = String.raw`
 <h2>观看 DND 护甲与 AC 机制的视频讲解</h2>
 <p>如果你想更直观地理解 <strong>DND 护甲</strong> 和护甲等级在实际游戏中的运作方式，<em>How It's Played</em> 频道的这段视频把机制讲得非常清楚。它涵盖了 AC 计算、不同类型护甲如何应用敏捷加值，以及盾牌和法术等加值来源如何叠加。</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="https://www.youtube.com/embed/pKxuStjRTxo"
-  title="DND 护甲与护甲等级机制详解视频"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('pKxuStjRTxo', 'DND 护甲与护甲等级机制详解视频')}
 `;
 
 const dndClassesArticle: BlogPost = {
@@ -2026,15 +1992,7 @@ const dndConstitutionArticleHtmlZh = String.raw`
   </div>
 </section>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="https://www.youtube.com/embed/WoV5iM7peOg"
-  title="DND constitution rules and mechanics video"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('WoV5iM7peOg', 'DND constitution rules and mechanics video')}
 `;
 
 const dndConstitutionArticle: BlogPost = {
@@ -2149,15 +2107,7 @@ const dndDruidSpellsArticleHtml = String.raw`
 
 <p>To see how ridiculous and powerful the Druid kit can get with the right magic and wild shapes, watch this rapid-fire breakdown. It highlights exactly what makes them fun, frustrating, and absurdly versatile at the table.</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="https://www.youtube.com/embed/WMo_gCRMSfA"
-  title="A Crap Guide to D&D [5th Edition] - Druid"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('WMo_gCRMSfA', 'A Crap Guide to D&D [5th Edition] - Druid')}
 `;
 
 const dndDruidSpellsArticleHtmlZh = String.raw`
@@ -2247,15 +2197,7 @@ const dndDruidSpellsArticleHtmlZh = String.raw`
 
 <p>如果你想看看在这个强大的 <strong>DND 德鲁伊法术</strong> 系统和野兽形态加持下，德鲁伊在实战桌面上到底有多“离谱”又有多好用，一定要看看下面这段带劲的职业盘点吐槽。</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="https://www.youtube.com/embed/WMo_gCRMSfA"
-  title="A Crap Guide to D&D [5th Edition] - Druid"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('WMo_gCRMSfA', 'A Crap Guide to D&D [5th Edition] - Druid')}
 `;
 
 const dndDruidSpellsArticle: BlogPost = {
@@ -2506,15 +2448,7 @@ const dndDhampirArticleHtml = String.raw`
 <h2>Extra D&amp;D Watch</h2>
 <p>If you want one more light D&amp;D video after this guide, the one below works well as a casual follow-up. It leans more toward class vibe and table energy than rules detail: <a href="${DND_DHAMPIR_VIDEO_URL}" rel="noreferrer noopener">How DM&rsquo;s react to what Class you play in Dungeons and Dragons</a>.</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="${DND_DHAMPIR_VIDEO_EMBED_URL}"
-  title="How DM's react to what Class you play in Dungeons and Dragons"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('ZXcwHPW3GR8', "How DM's react to what Class you play in Dungeons and Dragons")}
 `;
 
 const dndDhampirArticleHtmlZh = String.raw`
@@ -2740,15 +2674,7 @@ const dndDhampirArticleHtmlZh = String.raw`
 <h2>延伸观看</h2>
 <p>如果你看完这篇，还想顺手再看一条更轻松一点的 D&amp;D 视频，下面这条可以当作补充。它更偏职业气质和桌面氛围，适合看完正文后放松一下继续看：<a href="${DND_DHAMPIR_VIDEO_URL}" rel="noreferrer noopener">How DM&rsquo;s react to what Class you play in Dungeons and Dragons</a>。</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="${DND_DHAMPIR_VIDEO_EMBED_URL}"
-  title="How DM's react to what Class you play in Dungeons and Dragons"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('ZXcwHPW3GR8', "How DM's react to what Class you play in Dungeons and Dragons")}
 `;
 
 const dndDhampirArticle: BlogPost = {
@@ -3024,15 +2950,7 @@ const dndGrungArticleHtml = String.raw`
 <h2>Watch: Why Grung Gets Such a Strong DM Reaction</h2>
 <p>If you want a lighter follow-up after the guide, this video is the right kind of companion watch. It approaches race choice from the DM-reaction angle, which fits <strong>dnd grung</strong> better than a pure optimization lens. That is exactly the conversation Grung usually triggers at real tables: not "is it possible?" but "what kind of energy does this bring into the campaign?" You can watch it on <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">YouTube here</a>, or use the embed below.</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="${DND_GRUNG_VIDEO_EMBED_URL}"
-  title="How DM's react to what Race you play in Dungeons and Dragons"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons")}
 `;
 
 const dndGrungArticle: BlogPost = {
@@ -3291,15 +3209,7 @@ const dndGrungArticleHtmlZh = String.raw`
 <h2>延伸观看：为什么 Grung 总会让 DM 先皱一下眉</h2>
 <p>如果你看完正文还想用更轻松的方式再补一层，这条视频很适合作为收尾。它用的是“DM 会怎么理解你带来的种族气质”这个角度，而不是纯堆数值，这和 <strong>dnd grung</strong> 的真实桌面处境非常贴合。Grung 真正引发讨论的点，往往不是“能不能玩”，而是“它会把整张桌的节奏和氛围往哪里带”。你可以直接去 <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">YouTube 查看</a>，也可以直接看下面的嵌入版本。</p>
 
-<iframe
-  class="inline-embed inline-embed--video"
-  src="${DND_GRUNG_VIDEO_EMBED_URL}"
-  title="How DM's react to what Race you play in Dungeons and Dragons"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons")}
 `;
 
 const dndGrungArticleZh: BlogPost = {
