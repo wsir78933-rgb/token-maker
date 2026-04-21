@@ -126,6 +126,22 @@ const zh = {
   showcaseApplyPreset: '以这个风格开始',
   showcaseApplied: '已套用',
 
+  // 批处理
+  batchMode: '批量模式',
+  batchDropHint: '拖拽多张图片到这里',
+  batchOrClick: '或点击选择文件',
+  batchStartHint: '将当前样式应用到所有图片',
+  batchProcess: '开始批量处理',
+  batchDownloadZip: '下载 ZIP',
+  batchExit: '退出批量模式',
+  batchProgress: '处理中…',
+  batchDone: '全部完成！',
+  batchRetry: '重试',
+  batchRemove: '移除',
+  batchItemCount: '张图片',
+  batchClearAll: '全部清除',
+  batchNoItems: '还没有添加图片',
+
   // 导出
   exportSection: '导出',
   exportSize: '导出尺寸',

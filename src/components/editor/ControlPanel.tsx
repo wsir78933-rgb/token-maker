@@ -7,7 +7,9 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { RotateCcw, Trash2 } from 'lucide-react';
+import { RotateCcw, Trash2, Layers } from 'lucide-react';
+import { useBatchStore } from '@/lib/store/batch-store';
+import type { I18nKey } from '@/lib/i18n';
 
 function getSliderValue(value: number | readonly number[]) {
   return Array.isArray(value) ? value[0] ?? 0 : value;
@@ -254,6 +256,16 @@ export function ControlPanel() {
             {t('clearWorkspace')}
           </Button>
         </div>
+        <div className="my-3 border-t border-border/40" />
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-9 w-full gap-2 text-xs font-medium text-primary hover:border-primary/40 hover:bg-primary/10"
+          onClick={() => useBatchStore.getState().activate()}
+        >
+          <Layers className="h-3.5 w-3.5" />
+          {t('batchMode' as I18nKey)}
+        </Button>
       </div>
 
     </div>
