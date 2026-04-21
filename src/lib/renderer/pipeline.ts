@@ -288,6 +288,8 @@ export function renderToken(
 
   canvas.width = outputSize;
   canvas.height = outputSize;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   ctx.clearRect(0, 0, outputSize, outputSize);
 
   let border = getBorderById(state.selectedBorderId);
@@ -298,6 +300,8 @@ export function renderToken(
   baseLayer.height = outputSize;
   const baseCtx = baseLayer.getContext('2d');
   if (!baseCtx) return;
+  baseCtx.imageSmoothingEnabled = true;
+  baseCtx.imageSmoothingQuality = 'high';
 
   // ------- Step 1 & 2: 裁切 + 主图 -------
   if (state.imageElement) {
