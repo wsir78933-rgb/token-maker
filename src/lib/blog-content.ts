@@ -121,7 +121,7 @@ const DND_GRUNG_UPDATED_AT = '2026-04-20';
 const DND_CLASSES_COVER_PATH = '/blog/covers/en/dnd-classes-explained.webp';
 const DND_CLASSES_RANKED_COVER_PATH = '/blog/covers/en/dnd-classes-ranked.webp';
 const DND_ARMOR_COVER_PATH = '/blog/covers/en/dnd-armor-guide.jpg';
-const DND_CONSTITUTION_COVER_PATH = '/blog/covers/en/dnd-constitution-guide.webp';
+const DND_CONSTITUTION_COVER_PATH = '/blog/covers/en/dnd-constitution-guide-v2.webp';
 const DND_DRUID_SPELLS_COVER_PATH = '/blog/covers/en/dnd-druid-spells.webp';
 const DND_DHAMPIR_COVER_PATH = '/blog/covers/en/dnd-dhampir-guide.svg';
 const DND_GRUNG_COVER_PATH = '/blog/covers/en/dnd-grung-guide.webp';
@@ -132,8 +132,10 @@ const DND_ARMOR_TYPES_IMAGE_PATH = '/blog/inline/dnd-armor/armor-types-armory.we
 const DND_ARMOR_HEAVY_IMAGE_PATH = '/blog/inline/dnd-armor/heavy-armor-paladin.webp';
 const DND_DHAMPIR_CEILING_IMAGE_PATH = '/blog/inline/dnd-dhampir/dhampir-ceiling-crawl.svg';
 const DND_DHAMPIR_BITE_IMAGE_PATH = '/blog/inline/dnd-dhampir/dhampir-bite-plan.svg';
+const DND_CONSTITUTION_INLINE_IMAGE_PATH = '/blog/inline/dnd-constitution/constitution-survival-inline.webp';
 const DND_GRUNG_LEAP_IMAGE_PATH = '/blog/inline/dnd-grung/grung-ruins-leap.webp';
 const DND_GRUNG_POISON_IMAGE_PATH = '/blog/inline/dnd-grung/grung-poison-closeup.webp';
+const DND_GRUNG_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-grung/grung-video-placeholder.webp';
 const DND_DHAMPIR_LINEAGE_URL =
   'https://www.dndbeyond.com/posts/1014-play-a-dhampir-hexblood-or-reborn-with-rules-from';
 const DND_DHAMPIR_VAMPIRE_URL = 'https://www.dndbeyond.com/posts/1467-playing-as-a-vampire-in-d-d';
@@ -144,10 +146,12 @@ const DND_GRUNG_SOURCE_URL = 'https://marketplace.dndbeyond.com/category/SRC-000
 const DND_GRUNG_WIKI_URL = 'https://forgottenrealms.fandom.com/wiki/Grung';
 const DND_GRUNG_VIDEO_URL = 'https://www.youtube.com/watch?v=EVwBW5GbGwQ';
 const DND_GRUNG_VIDEO_EMBED_URL = 'https://www.youtube.com/embed/EVwBW5GbGwQ';
-function liteVideoEmbed(videoId: string, title: string): string {
-  const thumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src: string; alt: string }): string {
+  const thumb = thumbnail?.src ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  const thumbAlt = thumbnail?.alt ?? title;
+
   return `<div class="inline-embed inline-embed--video lite-video" data-video-id="${videoId}" data-video-title="${title}" role="button" tabindex="0" aria-label="Play video: ${title}">
-  <img class="lite-video__thumb" src="${thumb}" alt="${title}" loading="lazy" decoding="async" width="480" height="360" />
+  <img class="lite-video__thumb" src="${thumb}" alt="${thumbAlt}" loading="lazy" decoding="async" width="480" height="360" />
   <div class="lite-video__overlay" aria-hidden="true"></div>
   <button class="lite-video__play" type="button" aria-label="Play: ${title}">
     <svg class="lite-video__play-icon" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -162,6 +166,8 @@ const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained'
 const ZH_DND_CLASSES_PATH = getLocalizedPath('zh', '/blog/dnd-classes-explained');
 const EN_DND_CONSTITUTION_PATH = getLocalizedPath('en', '/blog/dnd-constitution-guide');
 const ZH_DND_CONSTITUTION_PATH = getLocalizedPath('zh', '/blog/dnd-constitution-guide');
+const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
+const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 const EN_DICE_ROLLER_PATH = getLocalizedPath('en', '/dice-roller-dnd');
 const ZH_DICE_ROLLER_PATH = getLocalizedPath('zh', '/dice-roller-dnd');
 
@@ -1879,16 +1885,187 @@ const dndSmallPartyGuideArticleZh: BlogPost = {
   placeholder: true,
 };
 
+const dndConstitutionArticleHtml = String.raw`
+<p>In D&amp;D, <strong>dnd constitution</strong> is the ability score that decides how much punishment your character can survive before the plan falls apart. It affects hit points, Constitution saving throws, concentration checks, poison resistance moments, exhaustion pressure, and the small survival rolls that rarely look exciting until they save the session.</p>
+
+<p>This guide gives you the practical version first: what Constitution changes on your sheet, how much HP different scores are worth, and why many characters should treat 14 Constitution as the baseline rather than a luxury.</p>
+
+<figure class="inline-figure inline-figure--wide-crop">
+  <img
+    class="inline-figure__image inline-figure__image--wide"
+    src="${DND_CONSTITUTION_INLINE_IMAGE_PATH}"
+    alt="DND constitution guide inline image showing a dwarf adventurer bracing against poison mist and storm magic in a ruined mountain pass"
+    width="1672"
+    height="941"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>Constitution is not flashy, but it is the score that keeps your character standing when the table gets messy.</figcaption>
+</figure>
+
+<h2>What Does Constitution Do in DND?</h2>
+<p>Constitution mainly affects your maximum hit points, Constitution saving throws, and concentration checks after taking damage.</p>
+
+<p>That sounds simple, but it touches almost every dangerous part of play. A low Constitution character is not just easier to knock out. They are also worse at resisting poison, surviving harsh environments, holding important spells, and staying useful after repeated damage.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Constitution score</th>
+      <th>Modifier</th>
+      <th>Extra HP per level</th>
+      <th>Real table meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>8 or 9</strong></td>
+      <td>-1</td>
+      <td>-1 HP</td>
+      <td>Fragile. I would only do this for a very specific roleplay reason.</td>
+    </tr>
+    <tr>
+      <td><strong>10 or 11</strong></td>
+      <td>+0</td>
+      <td>+0 HP</td>
+      <td>Playable, but thin for anyone who expects to get hit.</td>
+    </tr>
+    <tr>
+      <td><strong>12 or 13</strong></td>
+      <td>+1</td>
+      <td>+1 HP</td>
+      <td>Fine for safer backline characters in easier campaigns.</td>
+    </tr>
+    <tr>
+      <td><strong>14 or 15</strong></td>
+      <td>+2</td>
+      <td>+2 HP</td>
+      <td>The best default for most serious adventurers.</td>
+    </tr>
+    <tr>
+      <td><strong>16 or higher</strong></td>
+      <td>+3 or better</td>
+      <td>+3 HP or more</td>
+      <td>Excellent for frontliners, tanks, and concentration-heavy builds.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>How Constitution Affects Hit Points</h2>
+<p>Your Constitution modifier is added to your hit points at level 1 and again every time you gain a level.</p>
+
+<p>This is why Constitution scales better than it first appears. A +2 modifier is not just two extra hit points once. It is two extra hit points per level. By level 5, that is 10 extra HP. By level 10, it is 20 extra HP. On a fragile caster, that can be the difference between maintaining the fight and spending the round unconscious.</p>
+
+<ul>
+  <li><strong>8 Constitution:</strong> risky unless your table is very forgiving.</li>
+  <li><strong>10 Constitution:</strong> workable, but I would not put it on a frontliner.</li>
+  <li><strong>12 Constitution:</strong> acceptable for cautious ranged characters.</li>
+  <li><strong>14 Constitution:</strong> my default recommendation for most builds.</li>
+  <li><strong>16 Constitution:</strong> strong for Barbarians, Fighters, Paladins, and concentration casters.</li>
+</ul>
+
+<h2>Why Constitution Saves Matter</h2>
+<p>Constitution saving throws usually show up when your body is being tested directly: poison, disease, exhaustion, extreme weather, monster breath, and other survival pressure.</p>
+
+<p>In my games, failed Constitution saves often hurt more than failed skill checks because they do not just block progress. They drain resources. A failed save can mean poisoned attacks, lost time, healing spent too early, or exhaustion that follows the party into the next encounter.</p>
+
+<section class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+  <h3 class="font-display text-2xl text-stone-50" style="margin-top: 0;">Quick Tool Tip</h3>
+  <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">When a session starts calling for repeated survival saves, poison saves, or concentration checks, use the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> to keep the math moving. Constitution checks come up often enough that a clean roller saves table time.</p>
+</section>
+
+<h2>Constitution and Concentration Checks</h2>
+<p>When you take damage while concentrating on a spell, you make a Constitution saving throw to keep that spell active.</p>
+
+<p>The DC is 10 or half the damage you took, whichever is higher. This is the rule that makes Constitution so important for Wizards, Clerics, Druids, Warlocks, Sorcerers, Paladins, Rangers, and any character relying on concentration magic.</p>
+
+<p>I have seen low-Constitution casters lose a fight because they landed the perfect control spell, took a small hit, failed the concentration save, and suddenly the whole party plan collapsed. That is why I usually prefer <strong>14 Constitution</strong> on a serious caster unless the build has a very good reason to go lower.</p>
+
+<ul>
+  <li><strong>War Caster:</strong> excellent if you make many concentration saves.</li>
+  <li><strong>Resilient (Constitution):</strong> strong when proficiency will scale across the campaign.</li>
+  <li><strong>Higher Constitution:</strong> simple, reliable, and useful even when you are not casting.</li>
+</ul>
+
+<h2>Best Classes and Builds for High Constitution</h2>
+<p>The characters that benefit most from high Constitution are frontliners, concentration casters, and anyone expected to take repeated damage.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Build type</th>
+      <th>Why Constitution matters</th>
+      <th>My recommendation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Barbarian</strong></td>
+      <td>More HP, better durability, and Unarmored Defense value.</td>
+      <td>Go high. Constitution is part of the class fantasy and the math.</td>
+    </tr>
+    <tr>
+      <td><strong>Fighter or Paladin</strong></td>
+      <td>You will stand near danger and take repeated hits.</td>
+      <td>14 is a good floor; 16 feels great if stats allow it.</td>
+    </tr>
+    <tr>
+      <td><strong>Cleric or Druid</strong></td>
+      <td>Many important spells require concentration while you stand near the fight.</td>
+      <td>Do not treat Constitution as optional.</td>
+    </tr>
+    <tr>
+      <td><strong>Wizard or Sorcerer</strong></td>
+      <td>Low HP and concentration pressure make every point count.</td>
+      <td>14 Constitution is often worth more than a cute secondary stat.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If you are still comparing which class needs Constitution most, read the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> next. It will help you decide whether your character is supposed to absorb pressure, avoid pressure, or control the fight from a safer angle.</p>
+
+<section class="mt-12 rounded-[34px] border border-white/10 bg-white/[0.03] p-6 sm:p-8">
+  <h2 class="font-display text-2xl sm:text-3xl text-stone-50" style="margin-top: 0;">FAQ About DND Constitution</h2>
+
+  <div class="mt-6 space-y-4">
+    <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
+      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Does Constitution add to HP at level 1 in D&amp;D 5e?</h3>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">Yes. Your Constitution modifier is added to your hit points at level 1, and the same modifier is added again every time you gain another level.</p>
+    </article>
+
+    <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
+      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">What is Constitution in DND used for mainly?</h3>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">Constitution is mainly used for maximum hit points, Constitution saving throws, and concentration checks when a spellcaster takes damage while maintaining a spell.</p>
+    </article>
+
+    <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
+      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Is 14 Constitution enough in D&amp;D?</h3>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">For many characters, yes. A 14 Constitution gives a +2 modifier, which is a strong baseline for hit points and concentration saves without consuming too much of your stat budget.</p>
+    </article>
+
+    <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
+      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">What happens if Constitution is reduced to 0?</h3>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">If a creature's Constitution is reduced to 0, it dies. That is rare in normal play, but it shows how directly Constitution is tied to physical survival.</p>
+    </article>
+  </div>
+</section>
+
+<h2>Watch: Constitution Rules and Survival Pressure</h2>
+<p>The video below is included as a companion watch for players who want a faster table explanation after reading the guide. Use it as a refresher, then come back to the tables above when you are deciding how much Constitution your next character actually needs.</p>
+
+${liteVideoEmbed('WoV5iM7peOg', 'DND constitution rules and mechanics video')}
+`;
+
 const dndConstitutionArticleHtmlZh = String.raw`
 <p>在 D&amp;D 跑团中，<strong>dnd constitution</strong>（体质）代表了角色的生存底线和忍耐极限。无论是遭遇怪物的毒气喷吐、在危险水域憋气潜水，还是纯粹叠加生命上限，体质都发挥着绝对核心的作用。这篇指南将带你用最直观的方式，彻底搞懂体质如何影响你的生命池（HP）与专注判定。如果你正在规划新角色，本文能帮你避开“因为没点体质而被一刀击杀”的毁灭性误区。</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
   <img
     class="inline-figure__image inline-figure__image--wide"
-    src="${DND_CONSTITUTION_COVER_PATH}"
-    alt="矮人战士抵御毒气攻击的 DND Constitution 示意图"
-    width="1024"
-    height="1024"
+    src="${DND_CONSTITUTION_INLINE_IMAGE_PATH}"
+    alt="DND constitution 指南正文配图，一名矮人冒险者在山道废墟中顶着毒雾与风暴硬扛前进"
+    width="1672"
+    height="941"
     loading="lazy"
     decoding="async"
   />
@@ -1998,12 +2175,16 @@ ${liteVideoEmbed('WoV5iM7peOg', 'DND constitution rules and mechanics video')}
 const dndConstitutionArticle: BlogPost = {
   slug: 'dnd-constitution-guide',
   title: 'D&D Constitution Guide',
+  seoTitle: 'D&D Constitution Guide: HP, Saves, and Concentration',
+  metaDescription:
+    'Learn how D&D Constitution affects hit points, saving throws, concentration checks, and survivability. Includes score tables, class tips, FAQ, and a dice roller link.',
   excerpt: 'Learn exactly how constitution impacts your hit points, concentration saves, and what races benefit the most in D&D 5e.',
   updatedAt: DND_CONSTITUTION_UPDATED_AT,
   readTime: '6 min read',
   coverLabel: 'Mechanics',
   coverImage: DND_CONSTITUTION_COVER_PATH,
-  bodyHtml: dndConstitutionArticleHtmlZh,
+  coverAlt: 'DND constitution guide cover showing a dwarf guardian raising a rune shield into toxic energy inside a stone chamber',
+  bodyHtml: dndConstitutionArticleHtml,
 };
 
 const dndConstitutionArticleZh: BlogPost = {
@@ -2016,7 +2197,7 @@ const dndConstitutionArticleZh: BlogPost = {
   readTime: '6 分钟阅读',
   coverLabel: '跑团机制',
   coverImage: DND_CONSTITUTION_COVER_PATH,
-  coverAlt: 'dnd constitution dwarf warrior resisting poison',
+  coverAlt: 'dnd constitution 封面图，一名矮人守卫在符文石室里举盾抵挡毒性能量',
   bodyHtml: dndConstitutionArticleHtmlZh,
 };
 
@@ -2712,7 +2893,7 @@ const dndDhampirArticleZh: BlogPost = {
 };
 
 const dndGrungArticleHtml = String.raw`
-<p>If you searched for <strong>dnd grung</strong>, you probably want the fast answer first: is this frogfolk race actually worth asking your DM about, what makes it strong in play, and what makes some tables hesitate? This guide answers those questions up front, then gets practical. In my experience, Grung is fun when you treat it like a mobility-and-pressure pick, not a novelty costume with poison skin.</p>
+<p>If you searched for <strong>dnd grung</strong>, you probably want the fast answer first: is this frogfolk race actually worth asking your DM about, what makes it strong in play, and what makes some tables hesitate? This guide answers those questions up front, then gets practical. In my experience, a <strong>dnd grung</strong> is fun when you treat it like a mobility-and-pressure pick, not a novelty costume with poison skin.</p>
 
 <p>This page is built for encyclopedia-style search intent, so the quick reference comes first. After that, I break down the rules, the DM approval issues, the best classes, and the roleplay choices that make a <strong>dnd grung</strong> character memorable instead of exhausting.</p>
 
@@ -2726,14 +2907,14 @@ const dndGrungArticleHtml = String.raw`
   <tbody>
     <tr>
       <td><strong>What is a DND Grung?</strong></td>
-      <td>A small poisonous frogfolk ancestry from <em>One Grung Above</em>, built around mobility, poison, and jungle flavor.</td>
+      <td>A <strong>dnd grung</strong> is a small poisonous frogfolk ancestry from <em>One Grung Above</em>, built around mobility, poison, and jungle flavor.</td>
     </tr>
     <tr>
       <td><strong>Is it official?</strong></td>
       <td>It was published by Wizards of the Coast, but outside the main core books, so DM approval matters more than usual.</td>
     </tr>
     <tr>
-      <td><strong>Best classes</strong></td>
+      <td><strong>Best dnd grung classes</strong></td>
       <td>Monk, Ranger, Fighter, and Rogue are the cleanest fits for most players.</td>
     </tr>
     <tr>
@@ -2741,7 +2922,7 @@ const dndGrungArticleHtml = String.raw`
       <td>Climb speed, standing leap, poison immunity, amphibious movement, and disruptive map control.</td>
     </tr>
     <tr>
-      <td><strong>Biggest drawback</strong></td>
+      <td><strong>Biggest dnd grung drawback</strong></td>
       <td><em>Water Dependency</em> is real, and some DMs dislike how awkward the poison rules can get at the table.</td>
     </tr>
     <tr>
@@ -2750,6 +2931,8 @@ const dndGrungArticleHtml = String.raw`
     </tr>
   </tbody>
 </table>
+
+<p><strong>Quick verdict:</strong> choose <strong>dnd grung</strong> if you want a race that changes movement, terrain, and DM rulings from session one. Avoid <strong>dnd grung</strong> if your table dislikes extra poison saves, daily logistics, or unusual player ancestries.</p>
 
 <h2>What Is a DND Grung?</h2>
 <p>A <strong>dnd grung</strong> is a small amphibious frogfolk character option best known for poisonous skin, powerful jumping, and a strict jungle-caste identity.</p>
@@ -2760,34 +2943,34 @@ const dndGrungArticleHtml = String.raw`
   <img
     class="inline-figure__image inline-figure__image--wide"
     src="${DND_GRUNG_LEAP_IMAGE_PATH}"
-    alt="A DND grung scout leaping between ruined jungle platforms above swamp water with a poisoned blowgun dart"
+    alt="A dnd grung VTT token reference scene showing a frogfolk scout leaping between jungle ruin platforms with a poisoned dart"
     width="1536"
     height="1024"
     loading="lazy"
     decoding="async"
   />
-  <figcaption>Grung stops feeling like a joke race the moment the map has ledges, swamp channels, and vertical ruin geometry.</figcaption>
+  <figcaption>A dnd grung stops feeling like a joke race the moment the map has ledges, swamp channels, and vertical ruin geometry.</figcaption>
 </figure>
 
 <ul>
   <li><strong>Size:</strong> Small.</li>
   <li><strong>Main stat lean:</strong> Dexterity and Constitution in the original writeup.</li>
   <li><strong>Most important traits:</strong> poison immunity, poisonous skin, standing leap, amphibious breathing, climb speed, and water dependency.</li>
-  <li><strong>Playstyle identity:</strong> mobile skirmisher, awkward problem-solver, and chaos magnet for DMs who like clean encounter geometry.</li>
+  <li><strong>Playstyle identity:</strong> a dnd grung works as a mobile skirmisher, awkward problem-solver, and chaos magnet for DMs who like clean encounter geometry.</li>
   <li><strong>Best fantasy:</strong> jungle scout, toxic ambusher, weird monk, or hyper-mobile hunter.</li>
 </ul>
 
 <h2>Is Grung Official in D&amp;D 5e?</h2>
 <p>Yes, <strong>dnd grung</strong> was officially published by Wizards of the Coast, but it sits in a side supplement rather than a mainline player book.</p>
 
-<p>That distinction matters. In practice, many players treat Grung as "official but optional" because it lives in <em>One Grung Above</em> instead of a core ancestry chapter. That is why experienced DMs often ask for a quick conversation before approving it, especially in long campaigns.</p>
+<p>That distinction matters. In practice, many players treat <strong>dnd grung</strong> as "official but optional" because it lives in <em>One Grung Above</em> instead of a core ancestry chapter. That is why experienced DMs often ask for a quick conversation before approving it, especially in long campaigns.</p>
 
-<p>If you want the simplest rule-of-thumb, use this one: <strong>Grung is published content, but not default content</strong>. Ask before building around it.</p>
+<p>If you want the simplest rule-of-thumb, use this one: <strong>a dnd grung is published content, but not default content</strong>. Ask before building around it.</p>
 
 <h2>What Will Your DM Care About Before Approving a DND Grung?</h2>
 <p>Your DM will usually care about four things first: poison rulings, water dependency, campaign tone, and whether the race fits the setting.</p>
 
-<p>This is also why the linked video works as a useful companion piece. Its whole angle is "how DMs react to the race you bring to the table," and that is exactly the right lens for <strong>dnd grung</strong>. Grung is not controversial because it is weak. It gets reactions because it creates friction points that a DM has to actively manage.</p>
+<p>This is also why the linked video works as a useful companion piece. Its whole angle is "how DMs react to the race you bring to the table," and that is exactly the right lens for <strong>dnd grung</strong>. A <strong>dnd grung</strong> is not controversial because it is weak. It gets reactions because it creates friction points that a DM has to actively manage.</p>
 
 <ul>
   <li><strong>Poisonous Skin:</strong> direct contact and piercing-weapon interactions can create repeated save calls.</li>
@@ -2798,23 +2981,23 @@ const dndGrungArticleHtml = String.raw`
 </ul>
 
 <section class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
-  <h3 class="font-display text-2xl text-stone-50" style="margin-top: 0;">My DM Approval Checklist for Grung</h3>
-  <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">Before I lock in a Grung character, I ask four direct questions: Are you using the original poison wording, how strict are you about water immersion, does the setting have room for a jungle frogfolk outsider, and are we smoothing the language issue? Those four answers tell you almost everything about whether the build will be fun or annoying.</p>
+  <h3 class="font-display text-2xl text-stone-50" style="margin-top: 0;">My DM Approval Checklist for a DND Grung</h3>
+  <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">Before I lock in a <strong>dnd grung</strong> character, I ask four direct questions: Are you using the original poison wording, how strict are you about water immersion, does the setting have room for a jungle frogfolk outsider, and are we smoothing the language issue? Those four answers tell you almost everything about whether the build will be fun or annoying.</p>
 </section>
 
 <h2>Which DND Grung Traits Actually Matter in Play?</h2>
 <p>The best way to evaluate a <strong>dnd grung</strong> is not by reading the trait list once. It is by asking which traits still matter after round three, during travel, and in scenes where the map is not flat.</p>
 
 <h3>Poisonous Skin and poison immunity are the headline traits</h3>
-<p><strong>Poisonous Skin</strong> is the reason Grung gets so much attention. The short version is simple: creatures that touch you can be forced into a save, and your poison can also be applied to piercing weapon attacks for extra poison damage.</p>
+<p><strong>Poisonous Skin</strong> is the reason <strong>dnd grung</strong> gets so much attention. The short version is simple: creatures that touch you can be forced into a save, and your poison can also be applied to piercing weapon attacks for extra poison damage.</p>
 
-<p>The practical takeaway is even simpler. Grung punishes grapples, rewards repeated attack patterns, and makes otherwise ordinary turns feel annoying in a way many DMs notice fast. Meanwhile, <strong>poison immunity</strong> is just excellent defense. It quietly carries a lot of value over a long campaign.</p>
+<p>The practical takeaway is even simpler. A <strong>dnd grung</strong> punishes grapples, rewards repeated attack patterns, and makes otherwise ordinary turns feel annoying in a way many DMs notice fast. Meanwhile, <strong>poison immunity</strong> is just excellent defense. It quietly carries a lot of value over a long campaign.</p>
 
 <figure class="inline-figure inline-figure--square-crop">
   <img
     class="inline-figure__image inline-figure__image--square"
     src="${DND_GRUNG_POISON_IMAGE_PATH}"
-    alt="Close-up dark fantasy illustration of a DND grung coating a dart with glowing green poison in jungle armor"
+    alt="Close-up dnd grung VTT portrait reference of a poisonous frogfolk coating a dart with glowing green toxin"
     width="1024"
     height="1024"
     loading="lazy"
@@ -2831,7 +3014,7 @@ const dndGrungArticleHtml = String.raw`
 <h3>Amphibious movement is nice, but Water Dependency changes the campaign more</h3>
 <p><strong>Amphibious</strong> is great. Breathing air and water opens up some very fun scenes. But the trait that actually changes day-to-day play is <strong>Water Dependency</strong>.</p>
 
-<p>If your Grung does not immerse in water for at least one hour during the day, the race takes a level of exhaustion at day&rsquo;s end. That means the question is never "does this matter?" The real question is "how often will the campaign make this inconvenient?"</p>
+<p>If your <strong>dnd grung</strong> does not immerse in water for at least one hour during the day, the race takes a level of exhaustion at day&rsquo;s end. That means the question is never "does this matter?" The real question is "how often will the campaign make this inconvenient?"</p>
 
 <ul>
   <li><strong>In jungle or river campaigns:</strong> Water Dependency is often flavor with a little planning.</li>
@@ -2841,7 +3024,7 @@ const dndGrungArticleHtml = String.raw`
 </ul>
 
 <h3>The language issue is more important than it looks</h3>
-<p>One detail many players miss is that <strong>dnd grung</strong> is not as socially frictionless as elf, dwarf, or human. Depending on how strictly your table reads the original writeup, language can become a real early-game problem.</p>
+<p>One <strong>dnd grung</strong> detail many players miss is that this race is not as socially frictionless as elf, dwarf, or human. Depending on how strictly your table reads the original writeup, language can become a real early-game problem.</p>
 
 <p>I do not think this is a deal-breaker. I do think it deserves an explicit session-zero ruling. If the DM wants Grung to feel strange, keep it. If the campaign needs faster integration, smooth it out and move on.</p>
 
@@ -2860,7 +3043,7 @@ const dndGrungArticleHtml = String.raw`
     <tr>
       <td><strong>Monk</strong></td>
       <td>Movement, repeated attacks, weird angles, and skin-contact flavor all line up extremely well.</td>
-      <td>If you want the funniest and most distinct Grung table feel, Monk is hard to beat.</td>
+      <td>If you want the funniest and most distinct dnd grung table feel, Monk is hard to beat.</td>
     </tr>
     <tr>
       <td><strong>Ranger</strong></td>
@@ -2870,12 +3053,12 @@ const dndGrungArticleHtml = String.raw`
     <tr>
       <td><strong>Fighter</strong></td>
       <td>A stable chassis lets the racial traits add pressure without carrying the whole build.</td>
-      <td>This is the safest recommendation if you want Grung mechanics with less risk.</td>
+      <td>This is the safest recommendation if you want dnd grung mechanics with less risk.</td>
     </tr>
     <tr>
       <td><strong>Rogue</strong></td>
       <td>Mobility and vertical approach paths fit beautifully, even if you do not maximize poison triggers.</td>
-      <td>Excellent if your fantasy is "toxic frog assassin" instead of "frog blender."</td>
+      <td>Excellent if your dnd grung fantasy is "toxic frog assassin" instead of "frog blender."</td>
     </tr>
     <tr>
       <td><strong>Druid</strong></td>
@@ -2885,34 +3068,49 @@ const dndGrungArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>If you are still comparing race-class shells, our <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> is the next tab I would open. If your Grung build is leaning toward concentration, survivability, or a higher Constitution floor, the more useful companion is our <a href="${EN_DND_CONSTITUTION_PATH}">D&amp;D Constitution guide</a>.</p>
+<p>If you are still comparing race-class shells, our <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> is the next tab I would open. If your <strong>dnd grung</strong> build is leaning toward concentration, survivability, or a higher Constitution floor, the more useful companion is our <a href="${EN_DND_CONSTITUTION_PATH}">D&amp;D Constitution guide</a>.</p>
+
+<h2>How to Make a Better DND Grung Token for VTT Play</h2>
+<p>A good <strong>dnd grung</strong> token needs to read as poisonous, mobile, and small even when it is reduced to a one-inch square on a VTT map.</p>
+
+<p>This is where I would treat a <strong>dnd grung</strong> differently from a generic humanoid portrait. The silhouette matters more than facial detail. A crouched pose, bright skin contrast, a visible dart or spear, and a darker swamp or ruin background all help the token stay readable in Roll20, Foundry VTT, or Owlbear Rodeo.</p>
+
+<ul>
+  <li><strong>Use a clear outline:</strong> dnd grung is small, so avoid busy shoulder armor and cluttered plants around the head.</li>
+  <li><strong>Push the poison color:</strong> green, yellow, blue, or red accents help the token communicate threat at small scale.</li>
+  <li><strong>Keep the weapon visible:</strong> a dart, blowgun, shortsword, or spear tells the table how this creature fights.</li>
+  <li><strong>Crop tighter than usual:</strong> for a dnd grung PC token, face, hands, and weapon should win over full-body detail.</li>
+  <li><strong>Export at 512 first:</strong> that is enough for most live VTT sessions; use 1024 when you want a cleaner campaign archive.</li>
+</ul>
+
+<p>You can build the token in the <a href="${EN_EDITOR_PATH}">Token Maker editor</a> by uploading your <strong>dnd grung</strong> art, choosing a circular or hex mask, and using a thin high-contrast border so the frogfolk silhouette does not disappear into swamp maps. If your table is testing poison damage or jump-and-attack turns at the same time, keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open in another tab.</p>
 
 <section class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
   <h3 class="font-display text-2xl text-stone-50" style="margin-top: 0;">Useful Tool for Grung Builds</h3>
-  <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">If you want to test poison damage, jump-and-attack turns, or concentration checks without slowing your table down, use the on-site <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a>. I use it for oddball race interactions because Grung creates more "wait, how does this resolve?" moments than most race picks.</p>
+  <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">If you want to test poison damage, jump-and-attack turns, or concentration checks without slowing your table down, use the on-site <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a>. I use it for oddball race interactions because <strong>dnd grung</strong> creates more "wait, how does this resolve?" moments than most race picks.</p>
 </section>
 
 <h2>How I Would Roleplay a DND Grung Without Turning It Into a Joke</h2>
 <p>The easiest mistake with <strong>dnd grung</strong> is playing it like a meme first and a person second. Frog energy is funny for ten minutes. A character with actual priorities lasts a whole campaign.</p>
 
-<p>What works better is choosing one strong anchor and building around it. In practice, I think the best Grung roleplay usually starts with one of three angles: caste exile, practical hunter, or hyper-formal outsider who reads social rules too literally.</p>
+<p>What works better is choosing one strong anchor and building around it. In practice, I think the best <strong>dnd grung</strong> roleplay usually starts with one of three angles: caste exile, practical hunter, or hyper-formal outsider who reads social rules too literally.</p>
 
 <ul>
   <li><strong>Pick one relationship to the caste system:</strong> loyalist, exile, skeptic, or escapee.</li>
-  <li><strong>Decide how your Grung sees other peoples:</strong> prey, curiosity, trade partners, or confusing equals.</li>
+  <li><strong>Decide how your dnd grung sees other peoples:</strong> prey, curiosity, trade partners, or confusing equals.</li>
   <li><strong>Give the character one ritual habit:</strong> cleaning skin, sorting colors, measuring water, or ranking every room by threat.</li>
   <li><strong>Keep the alien flavor, but keep the teamwork:</strong> strange is good, sabotage is not.</li>
-  <li><strong>Lean into physicality:</strong> stillness, sudden hops, wall-clinging, and short blunt statements all help sell the race fast.</li>
+  <li><strong>Lean into physicality:</strong> stillness, sudden hops, wall-clinging, and short blunt statements all help sell the dnd grung race fast.</li>
 </ul>
 
 <h2>Common DND Grung Mistakes</h2>
 <p>The most common <strong>dnd grung</strong> mistake is assuming the race will carry a weak build on its own. It will not.</p>
 
 <ul>
-  <li><strong>Mistake 1:</strong> choosing Grung for poison alone and then putting it on a build with very few meaningful attacks.</li>
-  <li><strong>Mistake 2:</strong> forgetting to ask about Water Dependency before the campaign starts.</li>
-  <li><strong>Mistake 3:</strong> picking the race for a flat urban campaign where climb speed and leap distance rarely matter.</li>
-  <li><strong>Mistake 4:</strong> roleplaying the character as comic relief with no center.</li>
+  <li><strong>Mistake 1:</strong> choosing dnd grung for poison alone and then putting it on a build with very few meaningful attacks.</li>
+  <li><strong>Mistake 2:</strong> forgetting to ask about dnd grung Water Dependency before the campaign starts.</li>
+  <li><strong>Mistake 3:</strong> picking dnd grung for a flat urban campaign where climb speed and leap distance rarely matter.</li>
+  <li><strong>Mistake 4:</strong> roleplaying dnd grung as comic relief with no center.</li>
   <li><strong>Mistake 5:</strong> assuming every DM will allow the original wording without modification.</li>
 </ul>
 
@@ -2921,17 +3119,17 @@ const dndGrungArticleHtml = String.raw`
 
   <div class="mt-6 space-y-4">
     <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
-      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Is Grung official in D&amp;D 5e?</h3>
-      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">Yes. Grung was published by Wizards of the Coast in <em>One Grung Above</em>, but because it is outside the main player books, many tables still treat it as ask-first content.</p>
+      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Is DND Grung official in D&amp;D 5e?</h3>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">Yes. <strong>dnd grung</strong> was published by Wizards of the Coast in <em>One Grung Above</em>, but because it is outside the main player books, many tables still treat it as ask-first content.</p>
     </article>
 
     <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
       <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Does a DND Grung need water every day?</h3>
-      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">Yes. A Grung needs to immerse in water for at least one hour each day or it suffers a level of exhaustion at the end of that day.</p>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">Yes. A <strong>dnd grung</strong> needs to immerse in water for at least one hour each day or it suffers a level of exhaustion at the end of that day.</p>
     </article>
 
     <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
-      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Is Grung poison overpowered?</h3>
+      <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Is DND Grung poison overpowered?</h3>
       <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">It can feel overpowered at some tables, especially at low levels or in games with many contact and grappling situations. In practice, the bigger issue is often bookkeeping and repeated save calls, not raw damage alone.</p>
     </article>
 
@@ -2947,25 +3145,28 @@ const dndGrungArticleHtml = String.raw`
   </div>
 </section>
 
-<h2>Watch: Why Grung Gets Such a Strong DM Reaction</h2>
-<p>If you want a lighter follow-up after the guide, this video is the right kind of companion watch. It approaches race choice from the DM-reaction angle, which fits <strong>dnd grung</strong> better than a pure optimization lens. That is exactly the conversation Grung usually triggers at real tables: not "is it possible?" but "what kind of energy does this bring into the campaign?" You can watch it on <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">YouTube here</a>, or use the embed below.</p>
+<h2>Watch: Why DND Grung Gets Such a Strong DM Reaction</h2>
+<p>If you want a lighter follow-up after the guide, this video is the right kind of companion watch. It approaches race choice from the DM-reaction angle, which fits <strong>dnd grung</strong> better than a pure optimization lens. That is exactly the conversation a <strong>dnd grung</strong> usually triggers at real tables: not "is it possible?" but "what kind of energy does this bring into the campaign?" You can watch it on <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">YouTube here</a>, or use the embed below.</p>
 
-${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons")}
+${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons", {
+  src: DND_GRUNG_VIDEO_PLACEHOLDER_PATH,
+  alt: 'Clickable webp video cover for a dnd grung guide showing a frogfolk scout aiming a poisoned dart across flooded jungle ruins',
+})}
 `;
 
 const dndGrungArticle: BlogPost = {
   slug: 'dnd-grung',
   title: 'DND Grung Guide: Traits, Best Classes, Poison Rules, and DM Tips',
-  seoTitle: 'DND Grung Guide: Traits, Builds, and Roleplay in 5e',
+  seoTitle: 'DND Grung Guide: Traits, Builds, Poison Rules, and DM Tips',
   metaDescription:
-    'Learn what a DND grung is, how poison and water dependency work, and which classes fit best. Includes DM tips, FAQ, and a YouTube embed.',
+    'Learn what a DND grung is, how poison and water dependency work, which classes fit best, and what to ask your DM before playing one.',
   excerpt:
     'A practical DND grung guide with quick reference answers, trait breakdowns, DM approval tips, best classes, roleplay notes, FAQ answers, and a video embed.',
   updatedAt: DND_GRUNG_UPDATED_AT,
   readTime: '10 min read',
   coverLabel: 'Race Guide',
   coverImage: DND_GRUNG_COVER_PATH,
-  coverAlt: 'Dark fantasy DND grung cover showing a poisonous frogfolk scout crouched on jungle ruins with a glowing green dart',
+  coverAlt: 'DND grung VTT token guide cover showing a poisonous frogfolk scout crouched on jungle ruins with a glowing green dart',
   bodyHtml: dndGrungArticleHtml,
   relatedSlugs: ['dnd-classes-explained', 'dnd-constitution-guide'],
 };
@@ -3019,7 +3220,7 @@ const dndGrungArticleHtmlZh = String.raw`
   <img
     class="inline-figure__image inline-figure__image--wide"
     src="${DND_GRUNG_LEAP_IMAGE_PATH}"
-    alt="一名 DND grung 侦察兵在沼泽上空的丛林遗迹平台之间跃起，手中吹箭带着绿色毒素"
+    alt="DND grung 的 VTT Token 参考图，一名毒蛙人侦察兵在丛林遗迹平台之间跃起并举起毒镖"
     width="1536"
     height="1024"
     loading="lazy"
@@ -3073,7 +3274,7 @@ const dndGrungArticleHtmlZh = String.raw`
   <img
     class="inline-figure__image inline-figure__image--square"
     src="${DND_GRUNG_POISON_IMAGE_PATH}"
-    alt="深色奇幻风格的 DND grung 特写，一只蛙人战士正把发光绿色毒液抹到飞镖尖端"
+    alt="DND grung 的 VTT 头像参考特写，一只毒蛙人正在把绿色毒液抹到飞镖尖端"
     width="1024"
     height="1024"
     loading="lazy"
@@ -3146,6 +3347,21 @@ const dndGrungArticleHtmlZh = String.raw`
 
 <p>如果你还在横向比较 race + class 的底盘，下一篇我建议直接开我们的 <a href="${ZH_DND_CLASSES_PATH}">DND 职业详解</a>。如果你的 Grung 更想往生存、专注检定或者更高的 Constitution 去靠，那篇 <a href="${ZH_DND_CONSTITUTION_PATH}">D&amp;D Constitution 指南</a> 会更有帮助。</p>
 
+<h2>如何为 VTT 做一个更清晰的 Grung Token</h2>
+<p>一个好用的 <strong>dnd grung</strong> Token，在 VTT 地图上缩到一格大小时，也应该能让玩家一眼看出三件事：它有毒、它很灵活、它不是普通矮小人形怪。</p>
+
+<p>所以我不会把 Grung 当成普通半身像去裁。它更需要清楚的轮廓、明显的皮肤色块、能看见的毒镖或短矛，以及不要抢主体的沼泽或遗迹背景。这样放进 Roll20、Foundry VTT 或 Owlbear Rodeo 时，Token 才不会被地图纹理吞掉。</p>
+
+<ul>
+  <li><strong>轮廓要干净：</strong>Grung 本来就小，头部周围不要塞太多叶子、肩甲和杂物。</li>
+  <li><strong>毒素色要明显：</strong>绿色、黄色、蓝色或红色的皮肤和毒液点缀，能让威胁感在小尺寸下也读得出来。</li>
+  <li><strong>武器最好露出来：</strong>飞镖、吹箭、短剑或长矛，会立刻告诉玩家它大概怎么打。</li>
+  <li><strong>裁切要比普通角色更紧：</strong>Grung PC Token 优先保留脸、手和武器，不要为了全身细节牺牲可读性。</li>
+  <li><strong>先导出 512：</strong>多数实际跑团已经够用；如果你要做长期素材库或角色档案，再导出 1024。</li>
+</ul>
+
+<p>你可以在 <a href="${ZH_EDITOR_PATH}">Token Maker 编辑器</a> 里上传 Grung 图，选择圆形或六边形裁切，再配一圈高对比度细边框，让毒蛙人的轮廓在沼泽地图上更清楚。如果你同时还在测试毒伤、跳跃进场或专注判定，可以把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D Dice Roller</a> 一起打开。</p>
+
 <section class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
   <h3 class="font-display text-2xl text-stone-50" style="margin-top: 0;">Grung 构筑会顺手用到的工具</h3>
   <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">如果你想快速试一下毒伤、跳跃进场、或者专注判定，不想在桌上把节奏拖慢，我建议直接开站内的 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D Dice Roller</a>。Grung 特别容易制造“等一下，这回合到底怎么算”的小判定，这种时候工具就很省事。</p>
@@ -3209,22 +3425,25 @@ const dndGrungArticleHtmlZh = String.raw`
 <h2>延伸观看：为什么 Grung 总会让 DM 先皱一下眉</h2>
 <p>如果你看完正文还想用更轻松的方式再补一层，这条视频很适合作为收尾。它用的是“DM 会怎么理解你带来的种族气质”这个角度，而不是纯堆数值，这和 <strong>dnd grung</strong> 的真实桌面处境非常贴合。Grung 真正引发讨论的点，往往不是“能不能玩”，而是“它会把整张桌的节奏和氛围往哪里带”。你可以直接去 <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">YouTube 查看</a>，也可以直接看下面的嵌入版本。</p>
 
-${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons")}
+${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons", {
+  src: DND_GRUNG_VIDEO_PLACEHOLDER_PATH,
+  alt: 'DND grung 指南视频的可点击 webp 占位图，画面是一只毒蛙人侦察兵在被水淹没的丛林遗迹里举起毒镖',
+})}
 `;
 
 const dndGrungArticleZh: BlogPost = {
   slug: 'dnd-grung',
   title: 'DND Grung 指南：特性、最佳职业、毒素规则与 DM 建议',
-  seoTitle: 'DND Grung 指南：特性、构筑与跑团演法',
+  seoTitle: 'DND Grung 指南：特性、构筑、毒素规则与 DM 建议',
   metaDescription:
-    '想知道 dnd grung 到底值不值得玩？这篇指南会直接讲清 Grung 的官方出处、毒素和 Water Dependency 怎么算、哪些职业最适合，以及 DM 最在意什么。',
+    '想知道 dnd grung 到底值不值得玩？这篇指南会讲清 Grung 的官方出处、毒素和 Water Dependency 怎么算、哪些职业最适合，以及 DM 最在意什么。',
   excerpt:
     '围绕 dnd grung 关键词整理的一篇实战百科页，先给速查结论，再讲规则要点、职业搭配、DM 关注点、FAQ 和视频补充。',
   updatedAt: DND_GRUNG_UPDATED_AT,
   readTime: '10 分钟阅读',
   coverLabel: '种族百科',
   coverImage: DND_GRUNG_COVER_PATH,
-  coverAlt: 'DND grung 封面图：一只带毒飞镖的蛙人侦察兵蹲伏在昏暗丛林遗迹上',
+  coverAlt: 'DND grung VTT Token 指南封面图，一只带毒飞镖的蛙人侦察兵蹲伏在昏暗丛林遗迹上',
   bodyHtml: dndGrungArticleHtmlZh,
   relatedSlugs: ['dnd-classes-explained', 'dnd-constitution-guide'],
 };

@@ -102,26 +102,26 @@ export function Canvas() {
   };
 
   return (
-    <div className="relative flex h-full items-center justify-center bg-background/10 p-8">
+    <div className="relative flex h-full items-center justify-center bg-background/10 p-4 sm:p-8">
       <div 
         ref={previewRef}
-        className={`relative overflow-hidden rounded-2xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors ${
+        className={`relative overflow-hidden rounded-2xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors aspect-square ${
           store.isImageSelected ? 'border border-primary ring-2 ring-primary/30' : 'border border-border/50'
         }`}
-        style={{ width: 512, height: 512 }}
+        style={{ width: 512, height: 512, maxWidth: '100%', maxHeight: '100%' }}
       >
         {store.imageElement ? (
           <>
             {/* 背景层：棋盘格 */}
             <canvas 
               ref={bgCanvasRef}
-              className="absolute inset-0 pointer-events-none opacity-50" 
+              className="absolute inset-0 pointer-events-none opacity-50 w-full h-full" 
             />
             
             {/* 主渲染层（带交互） */}
             <canvas
               ref={canvasRef}
-              className="absolute inset-0 cursor-move touch-none"
+              className="absolute inset-0 cursor-move touch-none w-full h-full"
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
@@ -137,7 +137,7 @@ export function Canvas() {
       </div>
       
       {store.imageElement ? (
-        <div className="absolute bottom-6 bg-background/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-border text-xs font-medium tabular-nums text-foreground/80 flex items-center gap-2 pointer-events-none shadow-sm">
+        <div className="absolute bottom-4 sm:bottom-6 bg-background/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-border text-xs font-medium tabular-nums text-foreground/80 flex items-center gap-2 pointer-events-none shadow-sm">
           <span className="opacity-50">Scale</span>
           {Math.round(store.imageScale * 100)}%
         </div>

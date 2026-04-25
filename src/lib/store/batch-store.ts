@@ -3,6 +3,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import type { EditorState } from '@/types/editor';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
+import { useEditorStore } from './editor-store';
 
 // ============================================================
 // 批处理 Store — 独立于编辑器主 Store
@@ -140,8 +141,11 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
 
     set((state) => ({ items: [...state.items, ...newItems] }));
 
+    // 判断是否是首批图片（当前列表为空时为首批）
+    const isFirstBatch = get().items.length === newItems.length;
+
     // 异步加载每张图片
-    newItems.forEach(async (item) => {
+    newItems.forEach(async (item, index) => {
       try {
         const { url, element } = await loadImageFromFile(item.file);
         set((state) => ({
@@ -151,6 +155,14 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
               : i
           ),
         }));
+
+        // 首批的第一张图片自动设置到编辑器，作为实时预览
+        if (isFirstBatch && index === 0) {
+          const editorState = useEditorStore.getState();
+          if (!editorState.imageElement) {
+            useEditorStore.getState().setImage(url, element);
+          }
+        }
       } catch {
         set((state) => ({
           items: state.items.map((i) =>
