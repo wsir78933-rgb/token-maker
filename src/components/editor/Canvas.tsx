@@ -5,6 +5,7 @@ import { useEditorStore } from '@/lib/store/editor-store';
 import { renderToken, drawCheckerboard } from '@/lib/renderer/pipeline';
 import { ImageUploader } from './ImageUploader';
 import { TextCanvasOverlay } from './TextCanvasOverlay';
+import type { EditorState } from '@/types/editor';
 
 function getNextImageScale(currentScale: number, deltaY: number) {
   const scaleFactor = 0.05;
@@ -14,43 +15,145 @@ function getNextImageScale(currentScale: number, deltaY: number) {
 }
 
 export function Canvas() {
-  const store = useEditorStore();
+  const imageUrl = useEditorStore((state) => state.imageUrl);
+  const imageElement = useEditorStore((state) => state.imageElement);
+  const imageOffsetX = useEditorStore((state) => state.imageOffsetX);
+  const imageOffsetY = useEditorStore((state) => state.imageOffsetY);
+  const imageScale = useEditorStore((state) => state.imageScale);
+  const selectedBorderId = useEditorStore((state) => state.selectedBorderId);
+  const selectedMaskId = useEditorStore((state) => state.selectedMaskId);
+  const customBorders = useEditorStore((state) => state.customBorders);
+  const borderTint = useEditorStore((state) => state.borderTint);
+  const imageBorderTintEnabled = useEditorStore((state) => state.imageBorderTintEnabled);
+  const overlayTint = useEditorStore((state) => state.overlayTint);
+  const borderOpacity = useEditorStore((state) => state.borderOpacity);
+  const overlayOpacity = useEditorStore((state) => state.overlayOpacity);
+  const textBoxes = useEditorStore((state) => state.textBoxes);
+  const isImageSelected = useEditorStore((state) => state.isImageSelected);
+  const renderRevision = useEditorStore((state) => state.renderRevision);
+  const setImageOffset = useEditorStore((state) => state.setImageOffset);
+  const setSelectedText = useEditorStore((state) => state.setSelectedText);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgCanvasRef = useRef<HTMLCanvasElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
+  const [canvasSize, setCanvasSize] = useState(512);
+
   // 用于拖拽交互的状态
   const [isDragging, setIsDragging] = useState(false);
-  const lastMousePos = useRef({ x: 0, y: 0 });
+  const dragStartPointer = useRef({ x: 0, y: 0 });
+  const dragStartOffset = useRef({ x: 0, y: 0 });
+  const pendingOffset = useRef<{ x: number; y: number } | null>(null);
+  const offsetFrame = useRef<number | null>(null);
 
-  // 1. 初始化背景棋盘格 (只画一次)
+  // ResizeObserver: 让 canvas 渲染分辨率跟随容器实际像素尺寸
+  useEffect(() => {
+    const el = previewRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const { width } = entries[0].contentRect;
+      const px = Math.round(width * window.devicePixelRatio);
+      setCanvasSize(px > 0 ? px : 512);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // 1. 初始化背景棋盘格 (canvasSize 变化时重绘)
   useEffect(() => {
     const bgCanvas = bgCanvasRef.current;
     if (!bgCanvas) return;
     const ctx = bgCanvas.getContext('2d');
     if (!ctx) return;
-    
-    // 假设固定 512x512 预览
-    bgCanvas.width = 512;
-    bgCanvas.height = 512;
-    drawCheckerboard(
-      ctx,
-      512,
-      512,
-      16,
-      '#09090b',
-      '#121217',
-    );
-  }, []);
+    bgCanvas.width = canvasSize;
+    bgCanvas.height = canvasSize;
+    drawCheckerboard(ctx, canvasSize, canvasSize, 16, '#09090b', '#121217');
+  }, [canvasSize, imageElement]);
 
   // 2. 渲染主画布内容
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !store.imageElement) return;
+    if (!canvas || !imageElement) return;
+
+    const renderState: EditorState = {
+      imageUrl,
+      imageElement,
+      imageOffsetX,
+      imageOffsetY,
+      imageScale,
+      selectedBorderId,
+      selectedMaskId,
+      customBorders,
+      borderLibraryMode: 'default',
+      borderTint,
+      imageBorderTintEnabled,
+      textColor: '#ffffff',
+      overlayTint,
+      borderOpacity,
+      overlayOpacity,
+      textBoxes,
+      selectedTextId: null,
+      isImageSelected: false,
+      exportSize: 512,
+      activePresetId: null,
+      renderRevision,
+    };
     
     // 重新渲染 Canvas
-    renderToken(canvas, store, 512, { clipFinalOutputToMask: true });
-  }, [store]);
+    renderToken(canvas, renderState, canvasSize, { clipFinalOutputToMask: true });
+  }, [
+    imageUrl,
+    imageElement,
+    imageOffsetX,
+    imageOffsetY,
+    imageScale,
+    selectedBorderId,
+    selectedMaskId,
+    customBorders,
+    borderTint,
+    imageBorderTintEnabled,
+    overlayTint,
+    borderOpacity,
+    overlayOpacity,
+    textBoxes,
+    renderRevision,
+    canvasSize,
+  ]);
+
+  useEffect(() => {
+    return () => {
+      if (offsetFrame.current !== null) {
+        cancelAnimationFrame(offsetFrame.current);
+      }
+    };
+  }, []);
+
+  const scheduleImageOffset = (x: number, y: number) => {
+    pendingOffset.current = { x, y };
+    if (offsetFrame.current !== null) return;
+
+    offsetFrame.current = requestAnimationFrame(() => {
+      offsetFrame.current = null;
+      const nextOffset = pendingOffset.current;
+      pendingOffset.current = null;
+      if (nextOffset) {
+        setImageOffset(nextOffset.x, nextOffset.y);
+      }
+    });
+  };
+
+  const flushPendingImageOffset = () => {
+    if (offsetFrame.current !== null) {
+      cancelAnimationFrame(offsetFrame.current);
+      offsetFrame.current = null;
+    }
+
+    const nextOffset = pendingOffset.current;
+    pendingOffset.current = null;
+    if (nextOffset) {
+      setImageOffset(nextOffset.x, nextOffset.y);
+    }
+  };
 
   useEffect(() => {
     const previewElement = previewRef.current;
@@ -79,38 +182,38 @@ export function Canvas() {
 
   // ======== 交互事件 ========
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (!store.imageElement) return;
-    store.setSelectedText(null);
+    if (!imageElement) return;
+    setSelectedText(null);
     setIsDragging(true);
-    lastMousePos.current = { x: e.clientX, y: e.clientY };
+    dragStartPointer.current = { x: e.clientX, y: e.clientY };
+    dragStartOffset.current = { x: imageOffsetX, y: imageOffsetY };
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging || !store.imageElement) return;
-    const dx = e.clientX - lastMousePos.current.x;
-    const dy = e.clientY - lastMousePos.current.y;
+    if (!isDragging || !imageElement) return;
+    const dx = e.clientX - dragStartPointer.current.x;
+    const dy = e.clientY - dragStartPointer.current.y;
     
-    store.setImageOffset(store.imageOffsetX + dx, store.imageOffsetY + dy);
-    lastMousePos.current = { x: e.clientX, y: e.clientY };
+    scheduleImageOffset(dragStartOffset.current.x + dx, dragStartOffset.current.y + dy);
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
     if (!isDragging) return;
+    flushPendingImageOffset();
     setIsDragging(false);
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
   };
 
   return (
-    <div className="relative flex h-full items-center justify-center bg-background/10 p-4 sm:p-8">
-      <div 
+    <div className="relative flex h-full items-center justify-center bg-background/10 p-4">
+      <div
         ref={previewRef}
-        className={`relative overflow-hidden rounded-2xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors aspect-square ${
-          store.isImageSelected ? 'border border-primary ring-2 ring-primary/30' : 'border border-border/50'
+        className={`relative overflow-hidden rounded-2xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors aspect-square h-full max-h-[512px] ${
+          isImageSelected ? 'border border-primary ring-2 ring-primary/30' : 'border border-border/50'
         }`}
-        style={{ width: 512, height: 512, maxWidth: '100%', maxHeight: '100%' }}
       >
-        {store.imageElement ? (
+        {imageElement ? (
           <>
             {/* 背景层：棋盘格 */}
             <canvas 
@@ -136,10 +239,10 @@ export function Canvas() {
         )}
       </div>
       
-      {store.imageElement ? (
+      {imageElement ? (
         <div className="absolute bottom-4 sm:bottom-6 bg-background/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-border text-xs font-medium tabular-nums text-foreground/80 flex items-center gap-2 pointer-events-none shadow-sm">
           <span className="opacity-50">Scale</span>
-          {Math.round(store.imageScale * 100)}%
+          {Math.round(imageScale * 100)}%
         </div>
       ) : null}
     </div>

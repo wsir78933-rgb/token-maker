@@ -9,6 +9,7 @@ import { createMaskPathWithInset } from './masks';
 import { drawBorder } from './borders';
 import { drawTextBoxes } from './text';
 import { getCachedImage } from '@/lib/utils/imageCache';
+import { getLruCacheEntry, setLruCacheEntry } from '@/lib/utils/lruCache';
 import { useEditorStore } from '@/lib/store/editor-store';
 
 interface RenderTokenOptions {
@@ -16,6 +17,7 @@ interface RenderTokenOptions {
 }
 
 const IMAGE_BORDER_MASK_CACHE = new Map<string, HTMLCanvasElement>();
+const MAX_IMAGE_BORDER_MASK_CACHE_ENTRIES = 16;
 const BORDER_ALPHA_THRESHOLD = 8;
 const BORDER_INSET_RATIO = 0.032;
 
@@ -44,7 +46,7 @@ function hasImageBasedBorder(border?: BorderTemplate): boolean {
 }
 
 function forceRenderRefresh() {
-  useEditorStore.setState({ activePresetId: useEditorStore.getState().activePresetId });
+  useEditorStore.setState((state) => ({ renderRevision: state.renderRevision + 1 }));
 }
 
 function getExplicitMaskImageUrl(border?: BorderTemplate): string | null {
@@ -90,7 +92,7 @@ function buildImageBorderMask(
   cacheKey: string,
   outputSize: number
 ): HTMLCanvasElement | null {
-  const cachedMask = IMAGE_BORDER_MASK_CACHE.get(cacheKey);
+  const cachedMask = getLruCacheEntry(IMAGE_BORDER_MASK_CACHE, cacheKey);
   if (cachedMask) return cachedMask;
 
   const sourceCanvas = document.createElement('canvas');
@@ -163,7 +165,12 @@ function buildImageBorderMask(
   }
 
   maskCtx.putImageData(maskImageData, 0, 0);
-  IMAGE_BORDER_MASK_CACHE.set(cacheKey, maskCanvas);
+  setLruCacheEntry(
+    IMAGE_BORDER_MASK_CACHE,
+    cacheKey,
+    maskCanvas,
+    MAX_IMAGE_BORDER_MASK_CACHE_ENTRIES
+  );
 
   return maskCanvas;
 }
@@ -175,26 +182,6 @@ function applyFinalMask(
   border?: BorderTemplate
 ) {
   const inset = getBorderRenderInset(outputSize, border);
-  const borderMaskImageUrl = getDerivedBorderMaskImageUrl(border);
-  if (hasImageBasedBorder(border) && borderMaskImageUrl) {
-    const borderImage = getCachedImage(borderMaskImageUrl, forceRenderRefresh);
-    if (borderImage) {
-      const maskCanvas = buildImageBorderMask(
-        borderImage,
-        `${borderMaskImageUrl}::${outputSize}`,
-        outputSize
-      );
-
-      if (maskCanvas) {
-        ctx.save();
-        ctx.globalCompositeOperation = 'destination-in';
-        ctx.drawImage(maskCanvas, 0, 0);
-        ctx.restore();
-        return;
-      }
-    }
-  }
-
   const explicitMaskUrl = getExplicitMaskImageUrl(border);
   if (explicitMaskUrl) {
     const explicitMaskImage = getCachedImage(explicitMaskUrl, forceRenderRefresh);
@@ -204,6 +191,28 @@ function applyFinalMask(
       drawImageAssetWithInset(ctx, explicitMaskImage, outputSize, inset);
       ctx.restore();
       return;
+    }
+  }
+
+  if (!explicitMaskUrl) {
+    const borderMaskImageUrl = getDerivedBorderMaskImageUrl(border);
+    if (hasImageBasedBorder(border) && borderMaskImageUrl) {
+      const borderImage = getCachedImage(borderMaskImageUrl, forceRenderRefresh);
+      if (borderImage) {
+        const maskCanvas = buildImageBorderMask(
+          borderImage,
+          `${borderMaskImageUrl}::${outputSize}`,
+          outputSize
+        );
+
+        if (maskCanvas) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'destination-in';
+          ctx.drawImage(maskCanvas, 0, 0);
+          ctx.restore();
+          return;
+        }
+      }
     }
   }
 

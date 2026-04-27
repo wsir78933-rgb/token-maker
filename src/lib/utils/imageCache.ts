@@ -4,6 +4,9 @@
 // 确保 Canvas 同步绘制时能够立即拿到解析好的 HTMLImageElement
 // ============================================================
 
+import { getLruCacheEntry, setLruCacheEntry } from './lruCache';
+
+const MAX_CACHED_IMAGES = 32;
 const IMAGES_CACHE = new Map<string, HTMLImageElement>();
 const PENDING_IMAGE_LOADS = new Map<string, Set<() => void>>();
 
@@ -15,8 +18,9 @@ const PENDING_IMAGE_LOADS = new Map<string, Set<() => void>>();
 export function getCachedImage(url: string, onChange?: () => void): HTMLImageElement | null {
   if (!url) return null;
   
-  if (IMAGES_CACHE.has(url)) {
-    return IMAGES_CACHE.get(url) || null;
+  const cachedImage = getLruCacheEntry(IMAGES_CACHE, url);
+  if (cachedImage) {
+    return cachedImage;
   }
 
   const pendingCallbacks = PENDING_IMAGE_LOADS.get(url);
@@ -36,7 +40,7 @@ export function getCachedImage(url: string, onChange?: () => void): HTMLImageEle
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = () => {
-    IMAGES_CACHE.set(url, img);
+    setLruCacheEntry(IMAGES_CACHE, url, img, MAX_CACHED_IMAGES);
     const resolvedCallbacks = PENDING_IMAGE_LOADS.get(url);
     PENDING_IMAGE_LOADS.delete(url);
     if (resolvedCallbacks) {
@@ -69,14 +73,15 @@ export async function fileToBase64(file: File): Promise<string> {
  * 直接将 base64 预热并放入缓存中
  */
 export async function preloadImageToCache(url: string): Promise<HTMLImageElement> {
-  if (IMAGES_CACHE.has(url)) {
-    return IMAGES_CACHE.get(url)!;
+  const cachedImage = getLruCacheEntry(IMAGES_CACHE, url);
+  if (cachedImage) {
+    return cachedImage;
   }
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      IMAGES_CACHE.set(url, img);
+      setLruCacheEntry(IMAGES_CACHE, url, img, MAX_CACHED_IMAGES);
       resolve(img);
     };
     img.onerror = reject;

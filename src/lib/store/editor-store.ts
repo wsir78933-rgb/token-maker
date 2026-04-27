@@ -44,8 +44,9 @@ const INITIAL_STATE: Omit<EditorState, 'imageElement'> = {
   textBoxes: [],
   selectedTextId: null,
   isImageSelected: false,
-  exportSize: 512, // 默认导出 512
+  exportSize: 256,
   activePresetId: null,
+  renderRevision: 0,
 };
 
 export const useEditorStore = create<EditorStore>()(
@@ -172,7 +173,6 @@ export const useEditorStore = create<EditorStore>()(
           overlayOpacity: state.overlayOpacity,
           textBoxes: state.textBoxes,
           selectedTextId: state.selectedTextId,
-          exportSize: state.exportSize,
           activePresetId: state.activePresetId,
         };
       },

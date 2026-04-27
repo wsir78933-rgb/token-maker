@@ -8,6 +8,7 @@ import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { RichTextHtml } from '@/components/site/RichTextHtml';
 import { StructuredData } from '@/components/site/StructuredData';
 import {
+  buildBlogPostFaqStructuredData,
   buildBlogPostStructuredData,
   formatBlogUpdatedAt,
   getBlogPlaceholderCopy,
@@ -40,7 +41,7 @@ const copyByLocale = {
     diceRoller: 'Dice Roller',
     bottomCtaEyebrow: 'Ready to play?',
     bottomCtaHeading: 'Start building your adventure',
-    bottomCtaBody: 'Now that you know how armor works, create your character token or roll some dice for your next session.',
+    bottomCtaBody: 'Now that you have the rule reference, create your character token or roll some dice for your next session.',
     relatedEyebrow: 'Keep Reading',
     relatedHeading: 'Related articles',
     readArticle: 'Read article',
@@ -65,7 +66,7 @@ const copyByLocale = {
     diceRoller: '骰子工具',
     bottomCtaEyebrow: '准备好开始冒险了吗？',
     bottomCtaHeading: '开启你的下一次冒险',
-    bottomCtaBody: '既然已经了解了护甲机制，现在去制作你的角色 Token，或者扔几颗骰子开始你的下一场战役吧。',
+    bottomCtaBody: '看完这份规则参考后，现在去制作你的角色 Token，或者扔几颗骰子开始你的下一场战役吧。',
     relatedEyebrow: '继续读',
     relatedHeading: '相关文章',
     readArticle: '阅读全文',
@@ -131,10 +132,14 @@ export function BlogDetailPageView({
   const localeSwitchPath = getBlogPost(switchLocale, slug)
     ? getBlogPostPath(switchLocale, slug)
     : getLocalizedPath(switchLocale, '/blog');
+  const faqStructuredData = buildBlogPostFaqStructuredData(locale, slug);
 
   return (
     <>
       <StructuredData id={`blog-post-${locale}-${slug}`} data={buildBlogPostStructuredData(locale, slug) ?? {}} />
+      {faqStructuredData ? (
+        <StructuredData id={`blog-post-faq-${locale}-${slug}`} data={faqStructuredData} />
+      ) : null}
       <StructuredData
         id={`blog-post-breadcrumb-${locale}-${slug}`}
         data={buildBreadcrumbStructuredData(locale, [
@@ -190,6 +195,7 @@ export function BlogDetailPageView({
                       width={2770}
                       height={1504}
                       priority
+                      sizes="(min-width: 1024px) 50vw, 100vw"
                       className="h-auto w-full object-cover"
                     />
                   </div>

@@ -5,12 +5,20 @@
 import type { BorderTemplate } from '@/types/editor';
 import { generatePolygonPoints } from './masks';
 import { getCachedImage } from '@/lib/utils/imageCache';
+import { getLruCacheEntry, setLruCacheEntry } from '@/lib/utils/lruCache';
 import { useEditorStore } from '@/lib/store/editor-store';
 
 const IMAGE_BORDER_TINT_CACHE = new Map<string, HTMLCanvasElement>();
 const BORDER_DEPTH_CACHE = new Map<string, HTMLCanvasElement>();
 const BORDER_EDGE_MASK_CACHE = new Map<string, HTMLCanvasElement>();
+const MAX_IMAGE_BORDER_TINT_CACHE_ENTRIES = 12;
+const MAX_BORDER_DEPTH_CACHE_ENTRIES = 24;
+const MAX_BORDER_EDGE_MASK_CACHE_ENTRIES = 48;
 const BORDER_INSET_RATIO = 0.032;
+
+function forceRenderRefresh() {
+  useEditorStore.setState((state) => ({ renderRevision: state.renderRevision + 1 }));
+}
 
 function getBorderRenderInset(size: number, borderType: BorderTemplate['type']): number {
   if (borderType === 'none') return 1;
@@ -36,7 +44,7 @@ function buildDirectionalEdgeMask(
   offsetX: number,
   offsetY: number
 ): HTMLCanvasElement {
-  const cached = BORDER_EDGE_MASK_CACHE.get(cacheKey);
+  const cached = getLruCacheEntry(BORDER_EDGE_MASK_CACHE, cacheKey);
   if (cached) return cached;
 
   const canvas = createSquareCanvas(size);
@@ -48,7 +56,12 @@ function buildDirectionalEdgeMask(
   ctx.globalCompositeOperation = 'destination-out';
   ctx.drawImage(source, offsetX, offsetY, size, size);
 
-  BORDER_EDGE_MASK_CACHE.set(cacheKey, canvas);
+  setLruCacheEntry(
+    BORDER_EDGE_MASK_CACHE,
+    cacheKey,
+    canvas,
+    MAX_BORDER_EDGE_MASK_CACHE_ENTRIES
+  );
   return canvas;
 }
 
@@ -72,7 +85,7 @@ function buildDepthComposedBorder(
   cacheKey: string,
   renderBase: (ctx: CanvasRenderingContext2D) => void
 ): HTMLCanvasElement {
-  const cached = BORDER_DEPTH_CACHE.get(cacheKey);
+  const cached = getLruCacheEntry(BORDER_DEPTH_CACHE, cacheKey);
   if (cached) return cached;
 
   const baseCanvas = createSquareCanvas(size);
@@ -156,7 +169,7 @@ function buildDepthComposedBorder(
   composedCtx.drawImage(shadowCanvas, 0, 0);
   composedCtx.drawImage(highlightCanvas, 0, 0);
 
-  BORDER_DEPTH_CACHE.set(cacheKey, composedCanvas);
+  setLruCacheEntry(BORDER_DEPTH_CACHE, cacheKey, composedCanvas, MAX_BORDER_DEPTH_CACHE_ENTRIES);
   return composedCanvas;
 }
 
@@ -312,7 +325,7 @@ function getTintedImageBorder(
   tint: string,
   tintMode: 'solid' | 'metallic' | 'screen' = 'metallic'
 ): HTMLCanvasElement | null {
-  const cached = IMAGE_BORDER_TINT_CACHE.get(cacheKey);
+  const cached = getLruCacheEntry(IMAGE_BORDER_TINT_CACHE, cacheKey);
   if (cached) return cached;
 
   const tintRgb = parseHexColor(tint);
@@ -336,6 +349,7 @@ function getTintedImageBorder(
       tintRgb.g,
       tintRgb.b
     );
+    const metallicColorCache = new Map<number, [number, number, number]>();
 
     for (let index = 0; index < data.length; index += 4) {
       const alpha = data[index + 3];
@@ -376,6 +390,15 @@ function getTintedImageBorder(
       const red = data[index];
       const green = data[index + 1];
       const blue = data[index + 2];
+      const colorKey = (red << 16) | (green << 8) | blue;
+      const cachedColor = metallicColorCache.get(colorKey);
+      if (cachedColor) {
+        data[index] = cachedColor[0];
+        data[index + 1] = cachedColor[1];
+        data[index + 2] = cachedColor[2];
+        continue;
+      }
+
       const [, , sourceLightness] = rgbToHsl(red, green, blue);
       const sourceLuminance =
         (0.2126 * red + 0.7152 * green + 0.0722 * blue) / 255;
@@ -398,15 +421,24 @@ function getTintedImageBorder(
 
       const highlightStrength = Math.max(0, sourceLuminance - 0.74) / 0.26;
 
-      data[index] = Math.round(nextRed + (255 - nextRed) * highlightStrength * 0.3);
-      data[index + 1] = Math.round(
+      const finalRed = Math.round(nextRed + (255 - nextRed) * highlightStrength * 0.3);
+      const finalGreen = Math.round(
         nextGreen + (255 - nextGreen) * highlightStrength * 0.3
       );
-      data[index + 2] = Math.round(nextBlue + (255 - nextBlue) * highlightStrength * 0.3);
+      const finalBlue = Math.round(nextBlue + (255 - nextBlue) * highlightStrength * 0.3);
+      metallicColorCache.set(colorKey, [finalRed, finalGreen, finalBlue]);
+      data[index] = finalRed;
+      data[index + 1] = finalGreen;
+      data[index + 2] = finalBlue;
     }
 
     ctx.putImageData(imageData, 0, 0);
-    IMAGE_BORDER_TINT_CACHE.set(cacheKey, canvas);
+    setLruCacheEntry(
+      IMAGE_BORDER_TINT_CACHE,
+      cacheKey,
+      canvas,
+      MAX_IMAGE_BORDER_TINT_CACHE_ENTRIES
+    );
     return canvas;
   } catch (error) {
     console.warn('Failed to tint border image, using original image instead.', error);
@@ -512,10 +544,7 @@ export function drawBorder(
       ctx.restore();
       return;
     }
-    const img = getCachedImage(url, () => {
-      // 图像加载完成后强制刷新 Zustand
-      useEditorStore.setState({ activePresetId: useEditorStore.getState().activePresetId });
-    });
+    const img = getCachedImage(url, forceRenderRefresh);
     if (img) {
       const borderImage = tintImageBorder
         ? getTintedImageBorder(

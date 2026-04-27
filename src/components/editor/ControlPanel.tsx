@@ -16,8 +16,36 @@ function getSliderValue(value: number | readonly number[]) {
 }
 
 export function ControlPanel() {
-  const store = useEditorStore();
   const { t } = useI18n();
+  const imageScale = useEditorStore((state) => state.imageScale);
+  const imageElement = useEditorStore((state) => state.imageElement);
+  const selectedTextId = useEditorStore((state) => state.selectedTextId);
+  const selectedTextFontSize = useEditorStore((state) => {
+    const text = state.selectedTextId
+      ? state.textBoxes.find((textBox) => textBox.id === state.selectedTextId)
+      : null;
+    return text?.fontSize ?? null;
+  });
+  const selectedTextColor = useEditorStore((state) => {
+    const text = state.selectedTextId
+      ? state.textBoxes.find((textBox) => textBox.id === state.selectedTextId)
+      : null;
+    return text?.color ?? null;
+  });
+  const borderTint = useEditorStore((state) => state.borderTint);
+  const overlayTint = useEditorStore((state) => state.overlayTint);
+  const borderOpacity = useEditorStore((state) => state.borderOpacity);
+  const overlayOpacity = useEditorStore((state) => state.overlayOpacity);
+  const setImageScale = useEditorStore((state) => state.setImageScale);
+  const addTextBox = useEditorStore((state) => state.addTextBox);
+  const removeTextBox = useEditorStore((state) => state.removeTextBox);
+  const updateTextBox = useEditorStore((state) => state.updateTextBox);
+  const setBorderTint = useEditorStore((state) => state.setBorderTint);
+  const setOverlayTint = useEditorStore((state) => state.setOverlayTint);
+  const setBorderOpacity = useEditorStore((state) => state.setBorderOpacity);
+  const setOverlayOpacity = useEditorStore((state) => state.setOverlayOpacity);
+  const resetPosition = useEditorStore((state) => state.resetPosition);
+  const clearImage = useEditorStore((state) => state.clearImage);
   const imageScaleLabelId = useId();
   const fontSizeLabelId = useId();
   const textColorInputId = useId();
@@ -47,17 +75,17 @@ export function ControlPanel() {
                 {t('imageScale')}
               </Label>
               <span className="text-xs tabular-nums text-muted-foreground">
-                {Math.round(store.imageScale * 100)}%
+                {Math.round(imageScale * 100)}%
               </span>
             </div>
             <Slider
               aria-labelledby={imageScaleLabelId}
               getAriaLabel={() => t('imageScale')}
-              value={[store.imageScale]}
+              value={[imageScale]}
               min={0.1}
               max={5}
               step={0.01}
-              onValueChange={(value) => store.setImageScale(getSliderValue(value))}
+              onValueChange={(value) => setImageScale(getSliderValue(value))}
               className="[&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
             />
           </div>
@@ -72,67 +100,61 @@ export function ControlPanel() {
             <Button
               variant="outline"
               size="sm"
-              onClick={store.addTextBox}
+              onClick={addTextBox}
               className="h-7 text-xs"
-              disabled={!store.imageElement}
+              disabled={!imageElement}
             >
               + {t('addText')}
             </Button>
           </div>
 
-          {store.selectedTextId ? (
+          {selectedTextId && selectedTextFontSize !== null && selectedTextColor ? (
             <div className="space-y-4 rounded-lg border border-border/50 bg-muted/30 p-3">
-              {(() => {
-                const text = store.textBoxes.find((tb) => tb.id === store.selectedTextId);
-                if (!text) return null;
-                return (
-                  <>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label id={fontSizeLabelId} className="text-xs text-muted-foreground">
-                          {t('fontSize')}
-                        </Label>
-                        <span className="text-xs tabular-nums text-muted-foreground">{text.fontSize}px</span>
-                      </div>
-                      <Slider
-                        aria-labelledby={fontSizeLabelId}
-                        getAriaLabel={() => t('fontSize')}
-                        value={[text.fontSize]}
-                        min={12}
-                        max={200}
-                        step={1}
-                        onValueChange={(value) =>
-                          store.updateTextBox(text.id, { fontSize: getSliderValue(value) })
-                        }
-                        className="[&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <Label htmlFor={textColorInputId} className="text-xs text-muted-foreground">
-                        {t('textColor')}
-                      </Label>
-                      <div className="flex items-center gap-3">
-                        <input
-                          id={textColorInputId}
-                          type="color"
-                          value={text.color}
-                          onChange={(e) => store.updateTextBox(text.id, { color: e.target.value })}
-                          className="h-8 w-8 shrink-0 cursor-pointer overflow-hidden rounded border-0 bg-transparent p-0"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 flex-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          onClick={() => store.removeTextBox(text.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          {t('delete')}
-                        </Button>
-                      </div>
-                    </div>
-                  </>
-                );
-              })()}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label id={fontSizeLabelId} className="text-xs text-muted-foreground">
+                    {t('fontSize')}
+                  </Label>
+                  <span className="text-xs tabular-nums text-muted-foreground">
+                    {selectedTextFontSize}px
+                  </span>
+                </div>
+                <Slider
+                  aria-labelledby={fontSizeLabelId}
+                  getAriaLabel={() => t('fontSize')}
+                  value={[selectedTextFontSize]}
+                  min={12}
+                  max={200}
+                  step={1}
+                  onValueChange={(value) =>
+                    updateTextBox(selectedTextId, { fontSize: getSliderValue(value) })
+                  }
+                  className="[&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+                />
+              </div>
+              <div className="space-y-3">
+                <Label htmlFor={textColorInputId} className="text-xs text-muted-foreground">
+                  {t('textColor')}
+                </Label>
+                <div className="flex items-center gap-3">
+                  <input
+                    id={textColorInputId}
+                    type="color"
+                    value={selectedTextColor}
+                    onChange={(e) => updateTextBox(selectedTextId, { color: e.target.value })}
+                    className="h-8 w-8 shrink-0 cursor-pointer overflow-hidden rounded border-0 bg-transparent p-0"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 flex-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    onClick={() => removeTextBox(selectedTextId)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t('delete')}
+                  </Button>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="rounded-lg border border-dashed border-border/50 bg-muted/20 py-4 text-center text-xs text-muted-foreground">
@@ -156,12 +178,12 @@ export function ControlPanel() {
               <input
                 id={borderTintInputId}
                 type="color"
-                value={store.borderTint}
-                onChange={(e) => store.setBorderTint(e.target.value)}
+                value={borderTint}
+                onChange={(e) => setBorderTint(e.target.value)}
                 className="h-8 w-8 shrink-0 cursor-pointer overflow-hidden rounded border-0 bg-transparent p-0"
               />
               <div className="w-full rounded bg-muted/50 px-2 py-1 font-mono text-xs uppercase text-muted-foreground">
-                {store.borderTint}
+                {borderTint}
               </div>
             </div>
           </div>
@@ -175,12 +197,12 @@ export function ControlPanel() {
               <input
                 id={overlayTintInputId}
                 type="color"
-                value={store.overlayTint}
-                onChange={(e) => store.setOverlayTint(e.target.value)}
+                value={overlayTint}
+                onChange={(e) => setOverlayTint(e.target.value)}
                 className="h-8 w-8 shrink-0 cursor-pointer overflow-hidden rounded border-0 bg-transparent p-0"
               />
               <div className="w-full rounded bg-muted/50 px-2 py-1 font-mono text-xs uppercase text-muted-foreground">
-                {store.overlayTint}
+                {overlayTint}
               </div>
             </div>
           </div>
@@ -192,17 +214,17 @@ export function ControlPanel() {
                 {t('borderOpacity')}
               </Label>
               <span className="text-xs tabular-nums text-muted-foreground">
-                {Math.round(store.borderOpacity * 100)}%
+                {Math.round(borderOpacity * 100)}%
               </span>
             </div>
             <Slider
               aria-labelledby={borderOpacityLabelId}
               getAriaLabel={() => t('borderOpacity')}
-              value={[store.borderOpacity]}
+              value={[borderOpacity]}
               min={0}
               max={1}
               step={0.01}
-              onValueChange={(value) => store.setBorderOpacity(getSliderValue(value))}
+              onValueChange={(value) => setBorderOpacity(getSliderValue(value))}
               className="[&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
             />
           </div>
@@ -214,17 +236,17 @@ export function ControlPanel() {
                 {t('overlayOpacity')}
               </Label>
               <span className="text-xs tabular-nums text-muted-foreground">
-                {Math.round(store.overlayOpacity * 100)}%
+                {Math.round(overlayOpacity * 100)}%
               </span>
             </div>
             <Slider
               aria-labelledby={overlayOpacityLabelId}
               getAriaLabel={() => t('overlayOpacity')}
-              value={[store.overlayOpacity]}
+              value={[overlayOpacity]}
               min={0}
               max={1}
               step={0.01}
-              onValueChange={(value) => store.setOverlayOpacity(getSliderValue(value))}
+              onValueChange={(value) => setOverlayOpacity(getSliderValue(value))}
               className="[&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
             />
           </div>
@@ -239,7 +261,7 @@ export function ControlPanel() {
             variant="outline"
             size="sm"
             className="h-9 flex-1 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
-            onClick={store.resetPosition}
+            onClick={resetPosition}
             title={t('resetPosition')}
           >
             <RotateCcw className="h-3.5 w-3.5" />
@@ -249,7 +271,7 @@ export function ControlPanel() {
             variant="outline"
             size="sm"
             className="h-9 flex-1 gap-1.5 text-xs text-destructive hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
-            onClick={store.clearImage}
+            onClick={clearImage}
             title={t('clearWorkspace')}
           >
             <Trash2 className="h-3.5 w-3.5" />

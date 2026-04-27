@@ -42,15 +42,25 @@ function getSelectedFrameName(
 }
 
 export function TemplatePanel() {
-  const store = useEditorStore();
   const { t } = useI18n();
-  const selectedFrameName = getSelectedFrameName(store.selectedBorderId, store.customBorders, t);
+  const selectedBorderId = useEditorStore((state) => state.selectedBorderId);
+  const customBorders = useEditorStore((state) => state.customBorders);
+  const borderLibraryMode = useEditorStore((state) => state.borderLibraryMode);
+  const activePresetId = useEditorStore((state) => state.activePresetId);
+  const exportSize = useEditorStore((state) => state.exportSize);
+  const imageElement = useEditorStore((state) => state.imageElement);
+  const applyPreset = useEditorStore((state) => state.applyPreset);
+  const setSelectedBorder = useEditorStore((state) => state.setSelectedBorder);
+  const addCustomBorder = useEditorStore((state) => state.addCustomBorder);
+  const setExportSize = useEditorStore((state) => state.setExportSize);
+  const selectedFrameName = getSelectedFrameName(selectedBorderId, customBorders, t);
   const bordersGridRef = useRef<HTMLDivElement>(null);
   const visibleBorderTemplates =
-    store.borderLibraryMode === 'competitor' ? COMPETITOR_BORDER_TEMPLATES : DEFAULT_BORDER_TEMPLATES;
+    borderLibraryMode === 'competitor' ? COMPETITOR_BORDER_TEMPLATES : DEFAULT_BORDER_TEMPLATES;
 
   const handleExport = async () => {
-    const blob = await exportTokenAsPNG(store, store.exportSize);
+    const state = useEditorStore.getState();
+    const blob = await exportTokenAsPNG(state, state.exportSize);
     if (blob) {
       saveAs(blob, `token_${Date.now()}.png`);
       trackDownloadToken(selectedFrameName);
@@ -64,7 +74,7 @@ export function TemplatePanel() {
     if (!grid) return;
 
     const activeBorderButton = grid.querySelector<HTMLElement>(
-      `[data-border-id="${CSS.escape(store.selectedBorderId)}"]`
+      `[data-border-id="${CSS.escape(selectedBorderId)}"]`
     );
 
     activeBorderButton?.scrollIntoView({
@@ -72,7 +82,7 @@ export function TemplatePanel() {
       inline: 'nearest',
       behavior: 'smooth',
     });
-  }, [store.selectedBorderId]);
+  }, [selectedBorderId]);
 
   const handleUploadBorder = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -80,14 +90,14 @@ export function TemplatePanel() {
     const base64 = await fileToBase64(file);
     await preloadImageToCache(base64);
     const newId = `custom-border-${Date.now()}`;
-    store.addCustomBorder({
+    addCustomBorder({
       id: newId,
       name: 'Custom',
       type: 'image',
       isCustom: true,
       customImageUrl: base64
     });
-    store.setSelectedBorder(newId);
+    setSelectedBorder(newId);
     trackSelectFrame('Custom');
     if (borderInputRef.current) borderInputRef.current.value = '';
   };
@@ -107,11 +117,11 @@ export function TemplatePanel() {
           <h3 className="text-sm font-semibold text-foreground/90">{t('presets')}</h3>
           <div className="grid grid-cols-3 gap-2">
             {STYLE_PRESETS.map((preset) => {
-              const isActive = store.activePresetId === preset.id;
+              const isActive = activePresetId === preset.id;
               return (
                 <button
                   key={preset.id}
-                  onClick={() => store.applyPreset(preset)}
+                  onClick={() => applyPreset(preset)}
                   className={`flex aspect-square flex-col items-center justify-center rounded-lg border p-2 transition-all ${
                     isActive
                       ? 'border-primary bg-primary/10 text-primary shadow-[0_12px_28px_-18px_color-mix(in_oklab,var(--color-primary)_75%,transparent)]'
@@ -132,15 +142,15 @@ export function TemplatePanel() {
           <h3 className="text-sm font-semibold text-foreground/90">{t('borderTemplates')}</h3>
           <div ref={bordersGridRef} className="max-h-[280px] overflow-y-auto rounded-lg border border-border/30 bg-muted/10 p-2">
             <div className="grid grid-cols-3 gap-2">
-            {[...visibleBorderTemplates, ...store.customBorders].map((border) => {
-              const isActive = store.selectedBorderId === border.id;
+            {[...visibleBorderTemplates, ...customBorders].map((border) => {
+              const isActive = selectedBorderId === border.id;
               const label = getLocalizedName(border.name, t);
               return (
                 <button
                   key={border.id}
                   data-border-id={border.id}
                   onClick={() => {
-                    store.setSelectedBorder(border.id);
+                    setSelectedBorder(border.id);
                     trackSelectFrame(label);
                   }}
                   title={label}
@@ -151,7 +161,7 @@ export function TemplatePanel() {
                       : 'border-border/50 hover:border-primary/50 hover:bg-accent/50'
                   }`}
                 >
-                  <BorderThumbnail id={border.id} active={isActive} label={label} />
+                  <BorderThumbnail border={border} active={isActive} label={label} />
                 </button>
               );
             })}
@@ -184,9 +194,9 @@ export function TemplatePanel() {
             {SIZES.map(size => (
               <button
                 key={size}
-                onClick={() => store.setExportSize(size)}
+                onClick={() => setExportSize(size)}
                 className={`rounded px-2 py-1 text-[10px] transition-colors ${
-                  store.exportSize === size
+                  exportSize === size
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:bg-background/50 hover:text-foreground'
                 }`}
@@ -201,7 +211,7 @@ export function TemplatePanel() {
           className="w-full font-medium"
           size="default"
           onClick={handleExport}
-          disabled={!store.imageElement}
+          disabled={!imageElement}
         >
           <DownloadCloud className="mr-2 h-4 w-4" />
           {t('download')}
@@ -239,18 +249,11 @@ function getBorderAlt(id: string, defaultLabel: string): string {
   return altMap[id] || `${defaultLabel} custom token border frame for D&D and Roll20`;
 }
 
-function BorderThumbnail({ id, active, label }: { id: string; active: boolean; label: string }) {
-  const store = useEditorStore();
+function BorderThumbnail({ border, active, label }: { border: BorderTemplate; active: boolean; label: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  let template = BORDER_TEMPLATES.find(t => t.id === id);
-  if (!template) {
-     template = store.customBorders.find(t => t.id === id);
-  }
-
   useEffect(() => {
-    if (!template) return;
-    if ((template.type === 'image' && template.imageUrl) || (template.isCustom && template.customImageUrl)) {
+    if ((border.type === 'image' && border.imageUrl) || (border.isCustom && border.customImageUrl)) {
       return; // 图片类型直接走原生 img，跳过 canvas 渲染
     }
 
@@ -259,16 +262,14 @@ function BorderThumbnail({ id, active, label }: { id: string; active: boolean; l
     
     ctx.clearRect(0, 0, 64, 64);
     const color = active ? '#d7b46a' : '#68657a';
-    drawBorderThumbnail(ctx, template, 64, color);
-  }, [id, active, store.customBorders, template]);
+    drawBorderThumbnail(ctx, border, 64, color);
+  }, [active, border]);
 
-  if (!template) return null;
-
-  if ((template.type === 'image' && template.imageUrl) || (template.isCustom && template.customImageUrl)) {
-     const src = template.isCustom ? template.customImageUrl : template.thumbSrc || template.imageUrl;
+  if ((border.type === 'image' && border.imageUrl) || (border.isCustom && border.customImageUrl)) {
+     const src = border.isCustom ? border.customImageUrl : border.thumbSrc || border.imageUrl;
      if (!src) return null;
 
-     const altText = template.isCustom ? `${label} custom token border frame` : getBorderAlt(id, label);
+     const altText = border.isCustom ? `${label} custom token border frame` : getBorderAlt(border.id, label);
      const isDataUrl = src.startsWith('data:');
 
      return (

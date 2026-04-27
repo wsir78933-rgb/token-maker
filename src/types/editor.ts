@@ -131,6 +131,9 @@ export interface EditorState {
 
   // --- 预设 ---
   activePresetId: string | null;
+
+  // --- 渲染 ---
+  renderRevision: number;
 }
 
 /** 编辑器 Actions */

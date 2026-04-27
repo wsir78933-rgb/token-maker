@@ -9,23 +9,24 @@ import type { TextBox } from '@/types/editor';
  * 在主画布上方绝对定位，提供文本的拖动和双击编辑能力。
  */
 export function TextCanvasOverlay() {
-  const store = useEditorStore();
+  const textBoxes = useEditorStore((state) => state.textBoxes);
+  const setSelectedText = useEditorStore((state) => state.setSelectedText);
   
   // 点击空白处取消选中
   const handleWrapperClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      store.setSelectedText(null);
+      setSelectedText(null);
     }
   };
 
-  if (store.textBoxes.length === 0) return null;
+  if (textBoxes.length === 0) return null;
 
   return (
     <div 
       className="absolute inset-0 pointer-events-auto overflow-hidden" 
       onClick={handleWrapperClick}
     >
-      {store.textBoxes.map((text) => (
+      {textBoxes.map((text) => (
         <DraggableText key={text.id} text={text} />
       ))}
     </div>
@@ -33,7 +34,9 @@ export function TextCanvasOverlay() {
 }
 
 function DraggableText({ text }: { text: TextBox }) {
-  const store = useEditorStore();
+  const selectedTextId = useEditorStore((state) => state.selectedTextId);
+  const setSelectedText = useEditorStore((state) => state.setSelectedText);
+  const updateTextBox = useEditorStore((state) => state.updateTextBox);
   const boxRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -41,14 +44,14 @@ function DraggableText({ text }: { text: TextBox }) {
   const [isDragging, setIsDragging] = useState(false);
   const dragStartOffset = useRef({ x: 0, y: 0 });
 
-  const isSelected = store.selectedTextId === text.id;
+  const isSelected = selectedTextId === text.id;
 
   // ==== 拖拽逻辑 ====
   const onPointerDown = (e: React.PointerEvent) => {
     if (isEditing) return;
     
     e.stopPropagation(); // 阻止冒泡到外层取消选中
-    store.setSelectedText(text.id);
+    setSelectedText(text.id);
     
     // 捕获指针准备拖动
     if (boxRef.current) {
@@ -72,7 +75,7 @@ function DraggableText({ text }: { text: TextBox }) {
     const dx = e.clientX - dragStartOffset.current.x;
     const dy = e.clientY - dragStartOffset.current.y;
     
-    store.updateTextBox(text.id, {
+    updateTextBox(text.id, {
       x: text.x + dx,
       y: text.y + dy,
     });
@@ -95,7 +98,7 @@ function DraggableText({ text }: { text: TextBox }) {
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsEditing(true);
-    store.setSelectedText(text.id);
+    setSelectedText(text.id);
   };
 
   useEffect(() => {
@@ -151,7 +154,7 @@ function DraggableText({ text }: { text: TextBox }) {
           ref={inputRef}
           type="text"
           value={text.content}
-          onChange={(e) => store.updateTextBox(text.id, { content: e.target.value })}
+          onChange={(e) => updateTextBox(text.id, { content: e.target.value })}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           className="bg-transparent border-none outline-none w-auto min-w-[20px]"

@@ -26,16 +26,24 @@ import { useI18n, type I18nKey } from '@/lib/i18n';
 
 export function BatchPanel() {
   const { t } = useI18n();
-  const batch = useBatchStore();
+  const items = useBatchStore((state) => state.items);
+  const isProcessing = useBatchStore((state) => state.isProcessing);
+  const deactivate = useBatchStore((state) => state.deactivate);
+  const addFiles = useBatchStore((state) => state.addFiles);
+  const removeItem = useBatchStore((state) => state.removeItem);
+  const clearAll = useBatchStore((state) => state.clearAll);
+  const processAll = useBatchStore((state) => state.processAll);
+  const retryItem = useBatchStore((state) => state.retryItem);
+  const downloadZip = useBatchStore((state) => state.downloadZip);
   // 只取批处理需要的字段，避免渲染管线 forceRenderRefresh 触发的重渲染
   const exportSize = useEditorStore((s) => s.exportSize);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragActive, setIsDragActive] = useState(false);
   const dragDepthRef = useRef(0);
 
-  const doneCount = batch.items.filter((i) => i.status === 'done').length;
-  const errorCount = batch.items.filter((i) => i.status === 'error').length;
-  const totalCount = batch.items.length;
+  const doneCount = items.filter((i) => i.status === 'done').length;
+  const errorCount = items.filter((i) => i.status === 'error').length;
+  const totalCount = items.length;
   const allDone = totalCount > 0 && doneCount === totalCount;
   const hasItems = totalCount > 0;
 
@@ -73,26 +81,26 @@ export function BatchPanel() {
 
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
-      batch.addFiles(files);
+      addFiles(files);
     }
   };
 
   const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (files.length > 0) {
-      batch.addFiles(files);
+      addFiles(files);
     }
     e.target.value = '';
   };
 
   const handleProcess = () => {
     const snapshot = useEditorStore.getState();
-    batch.processAll(snapshot, exportSize);
+    processAll(snapshot, exportSize);
   };
 
   const handleRetry = (id: string) => {
     const snapshot = useEditorStore.getState();
-    batch.retryItem(id, snapshot, exportSize);
+    retryItem(id, snapshot, exportSize);
   };
 
   return (
@@ -101,7 +109,7 @@ export function BatchPanel() {
       {/* ── 顶部操作栏 (flow layout, not absolute) ── */}
       <div className="mb-4 flex shrink-0 items-center justify-between">
         <button
-          onClick={() => batch.deactivate()}
+          onClick={deactivate}
           className="flex items-center gap-2 rounded-full border border-border/50 bg-background/80 px-4 py-2 text-sm font-medium text-foreground/80 shadow-sm backdrop-blur transition-colors hover:bg-background hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -116,7 +124,7 @@ export function BatchPanel() {
               {errorCount > 0 && ` · ${errorCount} ✗`}
             </span>
             <button
-              onClick={() => batch.clearAll()}
+              onClick={clearAll}
               className="rounded-full border border-border/50 bg-background/80 p-2 text-muted-foreground shadow-sm backdrop-blur transition-colors hover:bg-destructive/10 hover:text-destructive"
               title={t('batchClearAll' as I18nKey)}
             >
@@ -180,11 +188,11 @@ export function BatchPanel() {
             }`}
           >
             <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
-              {batch.items.map((item) => (
+              {items.map((item) => (
                 <BatchItemCard
                   key={item.id}
                   item={item}
-                  onRemove={() => batch.removeItem(item.id)}
+                  onRemove={() => removeItem(item.id)}
                   onRetry={() => handleRetry(item.id)}
                   t={t}
                 />
@@ -212,7 +220,7 @@ export function BatchPanel() {
           {/* 底部操作栏 */}
           <div className="mt-4 flex shrink-0 flex-col gap-3">
             {/* 进度条 */}
-            {batch.isProcessing && (
+            {isProcessing && (
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <span className="flex items-center gap-1.5">
@@ -231,7 +239,7 @@ export function BatchPanel() {
             )}
 
             {/* 完成提示 */}
-            {allDone && !batch.isProcessing && (
+            {allDone && !isProcessing && (
               <div className="flex items-center justify-center gap-2 rounded-lg bg-emerald-500/10 py-2 text-sm font-medium text-emerald-400">
                 <CheckCircle2 className="h-4 w-4" />
                 {t('batchDone' as I18nKey)}
@@ -243,7 +251,7 @@ export function BatchPanel() {
               <Button
                 className="flex-1 gap-2 font-medium"
                 onClick={handleProcess}
-                disabled={batch.isProcessing || batch.items.filter((i) => i.status === 'pending' || i.status === 'error').length === 0}
+                disabled={isProcessing || items.filter((i) => i.status === 'pending' || i.status === 'error').length === 0}
               >
                 <Play className="h-4 w-4" />
                 {t('batchProcess' as I18nKey)}
@@ -252,7 +260,7 @@ export function BatchPanel() {
               <Button
                 variant="outline"
                 className="flex-1 gap-2 font-medium"
-                onClick={() => batch.downloadZip()}
+                onClick={downloadZip}
                 disabled={doneCount === 0}
               >
                 <Download className="h-4 w-4" />

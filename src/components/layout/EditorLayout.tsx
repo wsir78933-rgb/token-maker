@@ -21,7 +21,7 @@ export function EditorLayout() {
     <div
       id="editor-workspace"
       tabIndex={-1}
-      className="editor-shell scroll-mt-28 flex min-h-screen w-full flex-col overflow-hidden bg-background text-foreground selection:bg-primary/30"
+      className="editor-shell scroll-mt-28 flex h-screen w-full flex-col overflow-hidden bg-background text-foreground selection:bg-primary/30"
     >
       <Suspense fallback={null}>
         <EditorSearchParamsSync />
