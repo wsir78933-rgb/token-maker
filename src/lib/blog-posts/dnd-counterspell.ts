@@ -323,20 +323,6 @@ export const dndCounterspellArticleHtmlZh = String.raw`
 
 <p>我把这篇当作法术百科页来写，而不是单纯吹强度。按我自己的跑团经验，<strong>dnd counterspell</strong> 真正决定体验的不是法术本身，而是三件事：你们桌用哪个版本、DM 会不会在反应前报出法术名、敌方法师会不会频繁拿它来反制玩家。</p>
 
-<nav aria-label="文章目录">
-  <p><strong>本文目录：</strong></p>
-  <ol>
-    <li><a href="#quick-rules">DND Counterspell 速查规则</a></li>
-    <li><a href="#who-can-cast">谁能施放 Counterspell</a></li>
-    <li><a href="#counterspell-2014">2014 版怎么结算</a></li>
-    <li><a href="#counterspell-2024">2024 版怎么结算</a></li>
-    <li><a href="#when-to-cast">什么时候值得施放 Counterspell</a></li>
-    <li><a href="#rulings">最容易吵起来的常见裁定</a></li>
-    <li><a href="#faq">FAQ</a></li>
-    <li><a href="#video">视频</a></li>
-  </ol>
-</nav>
-
 <h2 id="quick-rules">DND Counterspell 速查规则</h2>
 <p><strong>dnd counterspell</strong> 是一个用反应打断对方施法的法术。关键是，<a href="${DND_COUNTERSPELL_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules 的 Counterspell</a> 和 <a href="${DND_COUNTERSPELL_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules 的 Counterspell</a> 差异很大，所以开团前最该问的不是“它强不强”，而是“我们今天用哪一版”。</p>
 
