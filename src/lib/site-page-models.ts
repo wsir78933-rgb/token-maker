@@ -198,6 +198,15 @@ const staticPageLastModifiedByLocale: Record<
   },
 };
 
+const toolPageLastModifiedByLocale: Record<SiteLocale, Record<'diceRoller', string>> = {
+  en: {
+    diceRoller: '2026-03-30',
+  },
+  zh: {
+    diceRoller: '2026-03-30',
+  },
+};
+
 export function getFaqDocModel(locale: SiteLocale): FaqDocModel & { items: FaqItem[] } {
   return {
     ...faqDocModels[locale],
@@ -219,6 +228,10 @@ export function getStaticPageLastModified(
   page: 'faq' | 'privacy',
 ) {
   return staticPageLastModifiedByLocale[locale][page];
+}
+
+export function getToolPageLastModified(locale: SiteLocale, page: 'diceRoller') {
+  return toolPageLastModifiedByLocale[locale][page];
 }
 
 export function createCollectionMetadata(locale: SiteLocale, page: 'faq' | 'privacy'): Metadata {
@@ -295,5 +308,18 @@ export function buildCollectionStructuredData(
       name: siteConfig.name,
       url: absoluteUrl(getLocalizedPath(locale, '/')),
     },
+  };
+}
+
+export function buildWebsiteStructuredData(locale: SiteLocale) {
+  const siteConfig = getSiteConfig(locale);
+  const homePath = getLocalizedPath(locale, '/');
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteConfig.name,
+    url: absoluteUrl(homePath),
+    inLanguage: locale === 'zh' ? 'zh-CN' : 'en-US',
   };
 }

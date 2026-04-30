@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { seededUnit } from '@/lib/dice/random';
 import { DICE_THEME, type DiceTrayDie } from '@/lib/dice/tray-css';
 import { cn } from '@/lib/utils';
 
@@ -20,20 +21,15 @@ export function DiceAnimatedDie({ die }: DiceAnimatedDieProps) {
 
   const theme = DICE_THEME[die.sides];
 
-  // 挂载时生成真随机散布，因为每次投掷 die.id 都会变化导致重挂载
   const { randomX, randomY, finalRotate, dropXOffset } = useMemo(() => {
-    // 强制散布范围：X向两端延展，避免中心堆积
-    // 用一个简单的碰撞偏移规避：
-    const rX = (Math.random() * 320) - 160; 
-    const rY = (Math.random() * 160) - 80;
-    const fRot = (Math.random() * 120) - 60;
-    const dropX = Math.random() > 0.5 ? 400 : -400; // Left or right screen bounds
+    const rX = seededUnit(die.id, 'x') * 320 - 160;
+    const rY = seededUnit(die.id, 'y') * 160 - 80;
+    const fRot = seededUnit(die.id, 'rot') * 120 - 60;
+    const dropX = seededUnit(die.id, 'drop') > 0.5 ? 400 : -400;
     return { randomX: rX, randomY: rY, finalRotate: fRot, dropXOffset: dropX };
-  }, []);
+  }, [die.id]);
 
   useEffect(() => {
-    setSettled(false);
-
     const card = cardRef.current;
     const icon = iconRef.current;
     if (!card || !icon) return;

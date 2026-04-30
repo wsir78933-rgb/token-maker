@@ -5,29 +5,38 @@ import {
   getBlogPosts,
 } from '@/lib/blog-content';
 import { getSiteUrl } from '@/lib/site-content';
-import { getStaticPageLastModified } from '@/lib/site-page-models';
+import { getStaticPageLastModified, getToolPageLastModified } from '@/lib/site-page-models';
 import { LOCALES, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
-
-const DEFAULT_LAST_MODIFIED = '2026-03-12';
-const DICE_ROLLER_LAST_MODIFIED = '2026-03-30';
 
 function pickLatestIsoDate(
   values: Array<string | undefined>,
-  fallback = DEFAULT_LAST_MODIFIED,
+  fallback: string,
 ) {
   const normalizedValues = values.filter(
     (value): value is string => typeof value === 'string' && value.length > 0,
   );
 
   return normalizedValues.reduce((latest, value) => {
-    return new Date(value).getTime() > new Date(latest).getTime() ? value : latest;
+    const candidateTime = new Date(value).getTime();
+    const latestTime = new Date(latest).getTime();
+
+    if (!Number.isFinite(candidateTime)) {
+      return latest;
+    }
+
+    if (!Number.isFinite(latestTime)) {
+      return value;
+    }
+
+    return candidateTime > latestTime ? value : latest;
   }, fallback);
 }
 
 function getHomepageLastModified(locale: SiteLocale) {
   return pickLatestIsoDate([
     getStaticPageLastModified(locale, 'faq'),
-  ]);
+    getStaticPageLastModified(locale, 'privacy'),
+  ], '2026-03-17');
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -47,7 +56,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         url: `${siteUrl}${getLocalizedPath(locale, path)}`,
         lastModified:
           path === '/dice-roller-dnd'
-            ? new Date(DICE_ROLLER_LAST_MODIFIED)
+            ? new Date(getToolPageLastModified(locale, 'diceRoller'))
             : pageKey
             ? new Date(getStaticPageLastModified(locale, pageKey))
             : new Date(getHomepageLastModified(locale)),
@@ -69,7 +78,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
           return {
             url: `${siteUrl}${getLocalizedPath(locale, path)}`,
             lastModified: new Date(
-              pickLatestIsoDate(getBlogPosts(locale).map((post) => post.updatedAt)),
+              pickLatestIsoDate(getBlogPosts(locale).map((post) => post.updatedAt), getHomepageLastModified(locale)),
             ),
             changeFrequency: 'weekly' as const,
             priority: pageNumber === 1 ? 0.75 : 0.55,

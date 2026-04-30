@@ -1,25 +1,19 @@
 'use client';
 
-import { Copy, Trash2, RotateCcw } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { DiceTray } from '@/components/dice/DiceTray';
+import { createRollId } from '@/lib/dice/random';
 import { 
   createEmptyPlayback,
-  appendDieToPlayback,
   rerollPlayback,
-  updatePlaybackModifier,
   type DiceTrayPlayback, 
-  type DiceSides, 
 } from '@/lib/dice/tray-css';
 import { formatMixedDiceRequest, type SupportedDieSides } from '@/lib/dice/roller';
 import type { SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
-
-function createRollId() {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
 
 const toolCopyByLocale = {
   en: {
@@ -38,8 +32,6 @@ const toolCopyByLocale = {
     clearLogLabel: 'Clear',
     emptyLogLabel: 'No rolls yet.',
     trayTitle: 'Dice Tray',
-    copyButton: 'Copy',
-    copiedButton: 'Copied',
     trayBadges: ['Custom Pools', 'd4 · d6 · d20', 'Modifiers'],
   },
   zh: {
@@ -55,8 +47,6 @@ const toolCopyByLocale = {
     clearLogLabel: '清空',
     emptyLogLabel: '还没有掷骰记录。',
     trayTitle: '骰子托盘',
-    copyButton: '复制',
-    copiedButton: '已复制',
     trayBadges: ['自由搭配', 'd12 · d20 · d100', '加值修正'],
   },
 } as const;
@@ -91,13 +81,6 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
 
   // We maintain a history list of strings/descriptions if needed, or total roll objects.
   const [history, setHistory] = useState<Array<{ id: string; playback: DiceTrayPlayback; timestampLabel: string }>>([]);
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (!copied) return;
-    const timer = window.setTimeout(() => setCopied(false), 1200);
-    return () => window.clearTimeout(timer);
-  }, [copied]);
 
   const commitToHistory = (playback: DiceTrayPlayback) => {
     if (playback.dice.length === 0) return;
@@ -130,7 +113,6 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
     setStagedGroups([]);
     setBonusInput('0');
     setActivePlayback(null);
-    setCopied(false);
     syncUrl(null);
   };
 
@@ -145,7 +127,6 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
     const nextPb = rerollPlayback(playback, createRollId());
     setActivePlayback(nextPb);
     commitToHistory(nextPb);
-    setCopied(false);
   };
 
   const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -157,15 +138,6 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
       nextModifier = parsed;
     }
     syncUrl(formatMixedDiceRequest({ groups: stagedGroups, modifier: nextModifier }));
-  };
-
-  const handleCopy = async () => {
-    if (!activePlayback) return;
-    try {
-      const rolls = activePlayback.result.allRolls.map(r => r.value).join(', ');
-      await navigator.clipboard.writeText(`${activePlayback.headline}\nRolls: ${rolls || 'None'}`);
-      setCopied(true);
-    } catch { setCopied(false); }
   };
 
   return (
