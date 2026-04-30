@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Image from 'next/image';
 import {
   UploadCloud,
   X,
@@ -299,10 +300,13 @@ function BatchItemCard({ item, onRemove, onRetry, t }: BatchItemCardProps) {
     <div className="group relative aspect-square overflow-hidden rounded-lg border border-border/30 bg-background/50 transition-all hover:border-border/60">
       {/* 缩略图 */}
       {displayUrl ? (
-        <img
+        <Image
           src={displayUrl}
           alt={item.fileName}
-          className="h-full w-full object-cover"
+          fill
+          sizes="(max-width: 768px) 50vw, 20vw"
+          className="object-cover"
+          unoptimized
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center bg-muted/20">

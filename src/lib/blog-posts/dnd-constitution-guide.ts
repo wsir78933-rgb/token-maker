@@ -2,7 +2,6 @@ import {
   DND_CONSTITUTION_INLINE_IMAGE_PATH,
   EN_DND_CLASSES_PATH,
   EN_DICE_ROLLER_PATH,
-  ZH_DICE_ROLLER_PATH,
   liteVideoEmbed,
 } from './shared';
 

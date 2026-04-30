@@ -11,8 +11,7 @@ nextDev.stderr.on('data', (data) => console.error(`[Next Error] ${data.toString(
 setTimeout(() => {
   console.log("Fetching http://localhost:3009/zh/dice-roller-dnd");
   http.get('http://localhost:3009/zh/dice-roller-dnd', (res) => {
-    let data = '';
-    res.on('data', (chunk) => { data += chunk; });
+    res.on('data', () => {});
     res.on('end', () => {
       console.log(`Status: ${res.statusCode}`);
       // console.log(data);

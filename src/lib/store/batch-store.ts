@@ -305,7 +305,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
 
     doneItems.forEach((item) => {
       // 确保文件名唯一
-      let baseName = item.fileName.replace(/\.[^.]+$/, '');
+      const baseName = item.fileName.replace(/\.[^.]+$/, '');
       let finalName = `${baseName}_token.png`;
       let counter = 1;
       while (usedNames.has(finalName)) {

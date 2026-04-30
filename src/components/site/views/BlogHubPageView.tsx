@@ -6,7 +6,6 @@ import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { StructuredData } from '@/components/site/StructuredData';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import {
-  BLOG_POSTS_PER_PAGE,
   buildBlogHubStructuredData,
   formatBlogUpdatedAt,
   getBlogPageCount,

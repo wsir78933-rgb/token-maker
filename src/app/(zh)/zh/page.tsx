@@ -6,6 +6,7 @@ import { StructuredData } from '@/components/site/StructuredData';
 import { absoluteUrl, getFaqItems, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates } from '@/lib/site-locale';
+import { buildWebsiteStructuredData } from '@/lib/site-page-models';
 
 const locale = 'zh';
 const siteConfig = getSiteConfig(locale);
@@ -80,6 +81,7 @@ export default function ChineseHomePage() {
   return (
     <>
       <StructuredData id="homepage-zh-jsonld" data={structuredData} />
+      <StructuredData id="website-zh-jsonld" data={buildWebsiteStructuredData(locale)} />
       <main lang="zh-CN" className="site-shell site-shell--home min-h-screen">
         <HomeHero locale="zh" />
         <EditorLayout />

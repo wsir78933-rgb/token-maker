@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const THREE = require('three');
 
 function extractFaces(geom) {

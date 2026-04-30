@@ -6,6 +6,7 @@ import { StructuredData } from '@/components/site/StructuredData';
 import { absoluteUrl, getFaqItems, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates } from '@/lib/site-locale';
+import { buildWebsiteStructuredData } from '@/lib/site-page-models';
 
 const locale = 'en';
 const siteConfig = getSiteConfig(locale);
@@ -86,6 +87,7 @@ export default function Home() {
   return (
     <>
       <StructuredData id="homepage-jsonld" data={structuredData} />
+      <StructuredData id="website-jsonld" data={buildWebsiteStructuredData(locale)} />
       <main lang="en" className="site-shell site-shell--home min-h-screen">
         <HomeHero locale="en" />
         <EditorLayout />

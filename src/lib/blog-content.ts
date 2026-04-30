@@ -30,6 +30,7 @@ export interface BlogPost {
   slug: string;
   title: string;
   excerpt: string;
+  publishedAt?: string;
   updatedAt: string;
   readTime: string;
   coverLabel: string;
@@ -708,6 +709,7 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
   const metadataTitle = post.seoTitle ?? post.title;
   const description = post.metaDescription ?? post.excerpt;
   const absoluteCoverImage = post.coverImage ? absoluteUrl(post.coverImage) : undefined;
+  const publishedTime = post.publishedAt ?? post.updatedAt;
 
   return {
     metadataBase: new URL(getSiteUrl()),
@@ -724,7 +726,7 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
       siteName: siteConfig.name,
       type: 'article',
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
-      publishedTime: post.updatedAt,
+      publishedTime,
       modifiedTime: post.updatedAt,
       images: absoluteCoverImage
         ? [
@@ -775,6 +777,7 @@ export function buildBlogHubStructuredData(locale: SiteLocale, page = 1) {
 
 export function buildBlogPostStructuredData(locale: SiteLocale, slug: string) {
   const post = getBlogPost(locale, slug);
+  const siteConfig = getSiteConfig(locale);
 
   if (!post) {
     return null;
@@ -782,14 +785,31 @@ export function buildBlogPostStructuredData(locale: SiteLocale, slug: string) {
 
   return {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: post.seoTitle ?? post.title,
+    name: post.title,
     description: post.metaDescription ?? post.excerpt,
     dateModified: post.updatedAt,
-    datePublished: post.updatedAt,
+    datePublished: post.publishedAt ?? post.updatedAt,
     inLanguage: locale === 'zh' ? 'zh-CN' : 'en-US',
     url: absoluteUrl(getBlogPostPath(locale, slug)),
     image: post.coverImage ? [absoluteUrl(post.coverImage)] : undefined,
+    author: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+      logo: {
+        '@type': 'ImageObject',
+        url: absoluteUrl('/apple-touch-icon.png'),
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': absoluteUrl(getBlogPostPath(locale, slug)),
+    },
   };
 }
 
