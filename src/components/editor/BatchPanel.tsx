@@ -299,6 +299,8 @@ function BatchItemCard({ item, onRemove, onRetry, t }: BatchItemCardProps) {
     <div className="group relative aspect-square overflow-hidden rounded-lg border border-border/30 bg-background/50 transition-all hover:border-border/60">
       {/* 缩略图 */}
       {displayUrl ? (
+        // Blob/object URLs are generated locally and cannot be optimized by next/image.
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={displayUrl}
           alt={item.fileName}

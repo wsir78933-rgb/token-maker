@@ -6,7 +6,6 @@ import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { StructuredData } from '@/components/site/StructuredData';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import {
-  BLOG_POSTS_PER_PAGE,
   buildBlogHubStructuredData,
   formatBlogUpdatedAt,
   getBlogPageCount,
@@ -63,12 +62,14 @@ function PostCover({
   className,
   fallbackClassName,
   imageClassName = 'object-top',
+  loading = 'lazy',
   sizes,
 }: {
   post: BlogPostItem;
   className: string;
   fallbackClassName: string;
   imageClassName?: string;
+  loading?: 'eager' | 'lazy';
   sizes: string;
 }) {
   if (post.coverImage) {
@@ -78,6 +79,7 @@ function PostCover({
           src={post.coverImage}
           alt={post.coverAlt ?? post.title}
           fill
+          loading={loading}
           sizes={sizes}
           className={`object-cover ${imageClassName}`}
         />
@@ -114,6 +116,7 @@ function HeroCard({ locale, post }: { locale: SiteLocale; post: BlogPostItem }) 
             className="h-[260px] lg:h-full lg:min-h-[440px] rounded-t-[32px] lg:rounded-l-[32px] lg:rounded-tr-none border-b border-white/8 lg:border-b-0 lg:border-r lg:border-white/8"
             fallbackClassName="flex h-full w-full items-end justify-start rounded-t-[32px] lg:rounded-l-[32px] lg:rounded-tr-none bg-[linear-gradient(135deg,rgba(42,35,23,0.95),rgba(76,58,22,0.9))] p-8 font-display text-5xl text-stone-100"
             imageClassName="object-top"
+            loading="eager"
             sizes="(min-width: 1024px) 48vw, 100vw"
           />
 

@@ -30,6 +30,20 @@ function getHomepageLastModified(locale: SiteLocale) {
   ]);
 }
 
+function buildAlternates(path: string, siteUrl: string) {
+  return {
+    languages: {
+      'x-default': `${siteUrl}${getLocalizedPath('en', path)}`,
+      ...Object.fromEntries(
+        LOCALES.map((loc) => [
+          loc === 'zh' ? 'zh-CN' : 'en-US',
+          `${siteUrl}${getLocalizedPath(loc, path)}`,
+        ]),
+      ),
+    },
+  };
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
   const staticPaths = ['/', '/faq', '/privacy', '/dice-roller-dnd'] as const;
@@ -53,6 +67,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             : new Date(getHomepageLastModified(locale)),
         changeFrequency: path === '/' ? 'weekly' : path === '/privacy' ? 'monthly' : 'weekly',
         priority: path === '/' ? 1 : path === '/privacy' ? 0.4 : path === '/faq' ? 0.6 : 0.8,
+        alternates: buildAlternates(path, siteUrl),
       };
     }),
   );
@@ -73,6 +88,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ),
             changeFrequency: 'weekly' as const,
             priority: pageNumber === 1 ? 0.75 : 0.55,
+            alternates: buildAlternates(path, siteUrl),
           };
         });
       });
@@ -85,6 +101,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
           lastModified: new Date(post.updatedAt),
           changeFrequency: 'monthly' as const,
           priority: post.featured ? 0.72 : 0.6,
+          alternates: buildAlternates(`/blog/${post.slug}`, siteUrl),
         })),
       );
 

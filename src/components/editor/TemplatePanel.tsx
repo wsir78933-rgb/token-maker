@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
 import { trackDownloadToken, trackSelectFrame } from '@/lib/analytics';
@@ -16,10 +16,53 @@ import { Button } from '@/components/ui/button';
 import type { BorderTemplate, ExportSize } from '@/types/editor';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
 import { saveAs } from 'file-saver';
-import { DownloadCloud, Plus } from 'lucide-react';
+import { DownloadCloud, Plus, Trash2 } from 'lucide-react';
 import { fileToBase64, preloadImageToCache } from '@/lib/utils/imageCache';
 
 const SIZES: ExportSize[] = [256, 512, 1024, 2048];
+const MAX_CUSTOM_BORDERS = 8;
+const MAX_CUSTOM_BORDER_BYTES = 512 * 1024;
+const MAX_CUSTOM_BORDER_STORAGE_CHARS = 2 * 1024 * 1024;
+const SUPPORTED_CUSTOM_BORDER_NAME = /\.(png|jpe?g|webp|svg)$/i;
+const SUPPORTED_CUSTOM_BORDER_TYPES = new Set([
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/svg+xml',
+]);
+
+function isSupportedCustomBorderFile(file: File) {
+  return SUPPORTED_CUSTOM_BORDER_TYPES.has(file.type) || SUPPORTED_CUSTOM_BORDER_NAME.test(file.name);
+}
+
+function getCustomBorderStorageUsage(customBorders: BorderTemplate[]) {
+  return customBorders.reduce((total, border) => total + (border.customImageUrl?.length ?? 0), 0);
+}
+
+function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
+  return {
+    unsupported:
+      locale === 'zh'
+        ? '请上传 PNG、JPG、WEBP 或 SVG 边框文件。'
+        : 'Upload a PNG, JPG, WEBP, or SVG border file.',
+    tooLarge:
+      locale === 'zh'
+        ? '自定义边框不能超过 512KB，避免浏览器存储失效。'
+        : 'Custom borders must stay under 512KB to keep browser storage reliable.',
+    tooMany:
+      locale === 'zh'
+        ? `最多保留 ${MAX_CUSTOM_BORDERS} 个自定义边框，请先删除旧边框。`
+        : `Keep at most ${MAX_CUSTOM_BORDERS} custom borders. Remove one before adding more.`,
+    storageFull:
+      locale === 'zh'
+        ? '自定义边框存储空间已满，请先删除旧边框。'
+        : 'Custom border storage is full. Remove an older border first.',
+    failed:
+      locale === 'zh'
+        ? '读取这个边框失败，请换一个文件再试。'
+        : 'Failed to read this border. Try another file.',
+  };
+}
 
 function getLocalizedName(name: string, t: (key: I18nKey) => string) {
   return name.includes('.') ? t(name as I18nKey) : name;
@@ -42,7 +85,7 @@ function getSelectedFrameName(
 }
 
 export function TemplatePanel() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const selectedBorderId = useEditorStore((state) => state.selectedBorderId);
   const customBorders = useEditorStore((state) => state.customBorders);
   const borderLibraryMode = useEditorStore((state) => state.borderLibraryMode);
@@ -52,9 +95,11 @@ export function TemplatePanel() {
   const applyPreset = useEditorStore((state) => state.applyPreset);
   const setSelectedBorder = useEditorStore((state) => state.setSelectedBorder);
   const addCustomBorder = useEditorStore((state) => state.addCustomBorder);
+  const removeCustomBorder = useEditorStore((state) => state.removeCustomBorder);
   const setExportSize = useEditorStore((state) => state.setExportSize);
   const selectedFrameName = getSelectedFrameName(selectedBorderId, customBorders, t);
   const bordersGridRef = useRef<HTMLDivElement>(null);
+  const [customBorderError, setCustomBorderError] = useState<string | null>(null);
   const visibleBorderTemplates =
     borderLibraryMode === 'competitor' ? COMPETITOR_BORDER_TEMPLATES : DEFAULT_BORDER_TEMPLATES;
 
@@ -87,19 +132,54 @@ export function TemplatePanel() {
   const handleUploadBorder = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const base64 = await fileToBase64(file);
-    await preloadImageToCache(base64);
-    const newId = `custom-border-${Date.now()}`;
-    addCustomBorder({
-      id: newId,
-      name: 'Custom',
-      type: 'image',
-      isCustom: true,
-      customImageUrl: base64
-    });
-    setSelectedBorder(newId);
-    trackSelectFrame('Custom');
-    if (borderInputRef.current) borderInputRef.current.value = '';
+    const errorCopy = getCustomBorderErrorCopy(locale);
+
+    const resetInput = () => {
+      if (borderInputRef.current) borderInputRef.current.value = '';
+    };
+
+    if (customBorders.length >= MAX_CUSTOM_BORDERS) {
+      setCustomBorderError(errorCopy.tooMany);
+      resetInput();
+      return;
+    }
+
+    if (!isSupportedCustomBorderFile(file)) {
+      setCustomBorderError(errorCopy.unsupported);
+      resetInput();
+      return;
+    }
+
+    if (file.size > MAX_CUSTOM_BORDER_BYTES) {
+      setCustomBorderError(errorCopy.tooLarge);
+      resetInput();
+      return;
+    }
+
+    try {
+      const base64 = await fileToBase64(file);
+      if (getCustomBorderStorageUsage(customBorders) + base64.length > MAX_CUSTOM_BORDER_STORAGE_CHARS) {
+        setCustomBorderError(errorCopy.storageFull);
+        return;
+      }
+
+      await preloadImageToCache(base64);
+      const newId = `custom-border-${Date.now()}`;
+      addCustomBorder({
+        id: newId,
+        name: 'Custom',
+        type: 'image',
+        isCustom: true,
+        customImageUrl: base64
+      });
+      setSelectedBorder(newId);
+      setCustomBorderError(null);
+      trackSelectFrame('Custom');
+    } catch {
+      setCustomBorderError(errorCopy.failed);
+    } finally {
+      resetInput();
+    }
   };
 
   return (
@@ -142,31 +222,49 @@ export function TemplatePanel() {
           <h3 className="text-sm font-semibold text-foreground/90">{t('borderTemplates')}</h3>
           <div ref={bordersGridRef} className="max-h-[280px] overflow-y-auto rounded-lg border border-border/30 bg-muted/10 p-2">
             <div className="grid grid-cols-3 gap-2">
-            {[...visibleBorderTemplates, ...customBorders].map((border) => {
-              const isActive = selectedBorderId === border.id;
-              const label = getLocalizedName(border.name, t);
-              return (
-                <button
-                  key={border.id}
-                  data-border-id={border.id}
-                  onClick={() => {
-                    setSelectedBorder(border.id);
-                    trackSelectFrame(label);
-                  }}
-                  title={label}
-                  aria-label={label}
-                  className={`relative flex items-center justify-center p-1 aspect-square rounded-md border transition-all overflow-hidden ${
-                    isActive 
-                      ? 'border-primary ring-1 ring-primary/50 bg-primary/5' 
-                      : 'border-border/50 hover:border-primary/50 hover:bg-accent/50'
-                  }`}
-                >
-                  <BorderThumbnail border={border} active={isActive} label={label} />
-                </button>
-              );
-            })}
+              {[...visibleBorderTemplates, ...customBorders].map((border) => {
+                const isActive = selectedBorderId === border.id;
+                const label = getLocalizedName(border.name, t);
+                const removeLabel = locale === 'zh' ? `删除 ${label}` : `Delete ${label}`;
+                return (
+                  <div key={border.id} className="relative aspect-square">
+                    <button
+                      type="button"
+                      data-border-id={border.id}
+                      onClick={() => {
+                        setSelectedBorder(border.id);
+                        trackSelectFrame(label);
+                      }}
+                      title={label}
+                      aria-label={label}
+                      className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-md border p-1 transition-all ${
+                        isActive
+                          ? 'border-primary ring-1 ring-primary/50 bg-primary/5'
+                          : 'border-border/50 hover:border-primary/50 hover:bg-accent/50'
+                      }`}
+                    >
+                      <BorderThumbnail border={border} active={isActive} label={label} />
+                    </button>
+                    {border.isCustom ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          removeCustomBorder(border.id);
+                          setCustomBorderError(null);
+                        }}
+                        title={removeLabel}
+                        aria-label={removeLabel}
+                        className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-md border border-border/70 bg-background/90 text-muted-foreground shadow-sm transition hover:border-destructive/70 hover:text-destructive"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    ) : null}
+                  </div>
+                );
+              })}
             
             <button
+              type="button"
               onClick={() => borderInputRef.current?.click()}
               className="relative flex flex-col items-center justify-center p-2 aspect-square rounded-md border border-dashed border-border hover:border-primary/50 hover:bg-accent/50 text-muted-foreground hover:text-foreground transition-all"
               title={t('uploadCustomBorder')}
@@ -175,13 +273,18 @@ export function TemplatePanel() {
             </button>
             <input 
               type="file" 
-              accept="image/png,image/svg+xml,image/webp" 
+              accept="image/png,image/jpeg,image/svg+xml,image/webp"
               ref={borderInputRef} 
               className="hidden" 
               onChange={handleUploadBorder} 
             />
           </div>
           </div>
+          {customBorderError ? (
+            <p className="text-xs leading-5 text-destructive" role="alert">
+              {customBorderError}
+            </p>
+          ) : null}
         </div>
 
       </div>

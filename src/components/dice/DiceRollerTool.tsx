@@ -2,18 +2,18 @@
 
 import { Copy, Trash2, RotateCcw } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { DiceTray } from '@/components/dice/DiceTray';
 import { 
-  createEmptyPlayback,
-  appendDieToPlayback,
-  rerollPlayback,
-  updatePlaybackModifier,
+  createDiceTrayPlayback,
   type DiceTrayPlayback, 
-  type DiceSides, 
 } from '@/lib/dice/tray-css';
-import { formatMixedDiceRequest, type SupportedDieSides } from '@/lib/dice/roller';
+import {
+  formatMixedDiceRequest,
+  parseMixedDiceExpression,
+  type SupportedDieSides,
+} from '@/lib/dice/roller';
 import type { SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
 
@@ -29,8 +29,11 @@ const toolCopyByLocale = {
     heroDescription:
       'Build your roll with d4, d6, d8, d10, d12, d20, or d100. Add a bonus modifier and click Roll. Results are calculated and logged.',
     rollButton: 'Roll!',
+    rollButtonAria: 'Roll Dice',
     clearButton: 'Clear',
+    clearButtonAria: 'Reset',
     bonusLabel: 'Bonus',
+    bonusInputLabel: 'Bonus modifier',
     latestRollLabel: 'LATEST ROLL',
     latestRollHint: 'Roll dice to see the result here.',
     breakdownPrefix: 'Breakdown:',
@@ -39,6 +42,7 @@ const toolCopyByLocale = {
     emptyLogLabel: 'No rolls yet.',
     trayTitle: 'Dice Tray',
     copyButton: 'Copy',
+    copyButtonAria: 'Copy Result',
     copiedButton: 'Copied',
     trayBadges: ['Custom Pools', 'd4 · d6 · d20', 'Modifiers'],
   },
@@ -49,13 +53,17 @@ const toolCopyByLocale = {
     heroDescription:
       '点击下方骰子组建你需要投掷的骰子池，支持设置加值。准备好后点击投掷即可。',
     rollButton: '投掷 (Roll!)',
+    rollButtonAria: '开始掷骰',
     clearButton: '清空托盘',
+    clearButtonAria: '重置',
     bonusLabel: '加值 (Bonus)',
+    bonusInputLabel: '加值',
     rollLogLabel: '掷骰日志',
     clearLogLabel: '清空',
     emptyLogLabel: '还没有掷骰记录。',
     trayTitle: '骰子托盘',
     copyButton: '复制',
+    copyButtonAria: '复制结果',
     copiedButton: '已复制',
     trayBadges: ['自由搭配', 'd12 · d20 · d100', '加值修正'],
   },
@@ -80,6 +88,31 @@ function syncUrl(requestString: string | null) {
   window.history.replaceState(null, '', `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
 }
 
+function decodeQueryPart(value: string, preservePlus: boolean) {
+  const normalized = preservePlus ? value.replace(/\+/g, '%2B') : value.replace(/\+/g, ' ');
+  try {
+    return decodeURIComponent(normalized);
+  } catch {
+    return preservePlus ? value.replace(/\+/g, '+') : value;
+  }
+}
+
+function getRawExprParam(search: string) {
+  const query = search.startsWith('?') ? search.slice(1) : search;
+  if (!query) return null;
+
+  for (const part of query.split('&')) {
+    const separatorIndex = part.indexOf('=');
+    const rawKey = separatorIndex >= 0 ? part.slice(0, separatorIndex) : part;
+    if (decodeQueryPart(rawKey, false) !== 'expr') continue;
+
+    const rawValue = separatorIndex >= 0 ? part.slice(separatorIndex + 1) : '';
+    return decodeQueryPart(rawValue, true);
+  }
+
+  return null;
+}
+
 const SUPPORTED_DICE: SupportedDieSides[] = [4, 6, 8, 10, 12, 20, 100];
 
 export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
@@ -92,6 +125,23 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
   // We maintain a history list of strings/descriptions if needed, or total roll objects.
   const [history, setHistory] = useState<Array<{ id: string; playback: DiceTrayPlayback; timestampLabel: string }>>([]);
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const expression = getRawExprParam(window.location.search);
+    if (!expression) return;
+
+    const parsed = parseMixedDiceExpression(expression);
+    if (!parsed) return;
+
+    const timer = window.setTimeout(() => {
+      setStagedGroups(parsed.groups);
+      setBonusInput(String(parsed.modifier));
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!copied) return;
@@ -120,6 +170,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
 
     setStagedGroups(nextGroups);
     setActivePlayback(null);
+    setCopied(false);
     syncUrl(nextGroups.length > 0
       ? formatMixedDiceRequest({ groups: nextGroups, modifier: parseInt(bonusInput, 10) || 0 })
       : null
@@ -137,15 +188,19 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
   const runRoll = () => {
     if (stagedGroups.length === 0) return;
     const modifier = parseInt(bonusInput, 10) || 0;
-    
-    // Create playback from staged groups
-    const playback = createEmptyPlayback(createRollId(), modifier);
-    playback.request.groups = stagedGroups;
-    
-    const nextPb = rerollPlayback(playback, createRollId());
-    setActivePlayback(nextPb);
-    commitToHistory(nextPb);
+
+    const request = {
+      rollId: createRollId(),
+      groups: stagedGroups,
+      modifier,
+    };
+    const playback = createDiceTrayPlayback(request);
+    if (!playback) return;
+
+    setActivePlayback(playback);
+    commitToHistory(playback);
     setCopied(false);
+    syncUrl(formatMixedDiceRequest({ groups: stagedGroups, modifier }));
   };
 
   const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,6 +256,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                   {/* Clickable die icon — always +1 */}
                   <button
                     type="button"
+                    aria-label={`Add d${sides} die`}
                     onClick={() => updateDieCount(sides, count + 1)}
                     className={cn(
                       "flex flex-col items-center gap-2 sm:gap-3 transition duration-200 outline-none cursor-pointer",
@@ -229,6 +285,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                     <div className="flex items-center gap-1">
                       <button
                         type="button"
+                        aria-label={`Decrease d${sides} count`}
                         onClick={() => updateDieCount(sides, count - 1)}
                         className="flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-xs text-stone-400 transition hover:bg-white/[0.08] hover:text-stone-200 cursor-pointer"
                       >
@@ -236,6 +293,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                       </button>
                       <input
                         type="text"
+                        aria-label={`d${sides} count`}
                         inputMode="numeric"
                         value={count}
                         onChange={(e) => {
@@ -246,6 +304,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                       />
                       <button
                         type="button"
+                        aria-label={`Increase d${sides} count`}
                         onClick={() => updateDieCount(sides, count + 1)}
                         className="flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-xs text-stone-400 transition hover:bg-white/[0.08] hover:text-stone-200 cursor-pointer"
                       >
@@ -262,6 +321,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
             <div className="flex flex-col gap-2 shrink-0">
                <input
                 type="text"
+                aria-label={copy.bonusInputLabel}
                 inputMode="numeric"
                 pattern="[\-0-9]*"
                 value={bonusInput}
@@ -274,16 +334,21 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
             </div>
 
             <button
+              type="button"
               onClick={runRoll}
+              aria-label={copy.rollButtonAria}
               className="flex-1 flex items-center justify-center bg-[linear-gradient(180deg,#d7b46a,#b38d38)] hover:bg-[linear-gradient(180deg,#e5c47f,#c29a41)] text-slate-950 font-display text-2xl tracking-wide font-semibold rounded-2xl shadow-[0_8px_24px_rgba(215,180,106,0.2)] transition active:scale-[0.98]"
             >
               🚀 {copy.rollButton}
             </button>
 
             <button
+              type="button"
               onClick={handleClear}
+              aria-label={copy.clearButtonAria}
               className="px-5 md:px-7 rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 text-stone-300 font-medium transition active:scale-[0.98]"
             >
+              <RotateCcw className="mr-2 inline h-4 w-4" />
               {copy.clearButton}
             </button>
           </div>
@@ -299,6 +364,17 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
           locale={locale}
           title={copy.trayTitle}
         />
+
+        <button
+          type="button"
+          onClick={handleCopy}
+          disabled={!activePlayback}
+          aria-label={copied ? copy.copiedButton : copy.copyButtonAria}
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-stone-300 transition hover:border-white/20 hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <Copy className="h-4 w-4" />
+          {copied ? copy.copiedButton : copy.copyButton}
+        </button>
 
         {/* Bottom badges */}
         <div className="flex flex-wrap justify-center gap-2">

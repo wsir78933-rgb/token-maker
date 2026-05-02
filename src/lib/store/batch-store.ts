@@ -60,6 +60,16 @@ function loadImageFromFile(file: File): Promise<{ url: string; element: HTMLImag
   });
 }
 
+function revokeObjectUrl(url: string | null) {
+  if (!url || typeof URL === 'undefined') return;
+  URL.revokeObjectURL(url);
+}
+
+function revokeItemUrls(item: BatchItem) {
+  revokeObjectUrl(item.previewUrl);
+  revokeObjectUrl(item.renderedUrl);
+}
+
 /**
  * 构造虚拟 EditorState 用于批量渲染
  * 保留当前编辑器的模板样式，替换图片相关字段
@@ -75,8 +85,7 @@ function buildVirtualState(
     imageOffsetX: 0,
     imageOffsetY: 0,
     imageScale: 1,
-    // 批量模式下不渲染文字（每张图不同，文字意义不大）
-    textBoxes: editorState.textBoxes,
+    textBoxes: [],
     selectedTextId: null,
     isImageSelected: false,
   };
@@ -116,10 +125,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
   deactivate: () => {
     const { items } = get();
     // 清理所有 object URLs
-    items.forEach((item) => {
-      if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
-      if (item.renderedUrl) URL.revokeObjectURL(item.renderedUrl);
-    });
+    items.forEach(revokeItemUrls);
     set({ isActive: false, items: [], isProcessing: false });
   },
 
@@ -148,6 +154,16 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
     newItems.forEach(async (item, index) => {
       try {
         const { url, element } = await loadImageFromFile(item.file);
+        const currentItem = get().items.find((i) => i.id === item.id);
+        if (!currentItem) {
+          revokeObjectUrl(url);
+          return;
+        }
+
+        if (currentItem.previewUrl && currentItem.previewUrl !== url) {
+          revokeObjectUrl(currentItem.previewUrl);
+        }
+
         set((state) => ({
           items: state.items.map((i) =>
             i.id === item.id
@@ -160,7 +176,19 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
         if (isFirstBatch && index === 0) {
           const editorState = useEditorStore.getState();
           if (!editorState.imageElement) {
-            useEditorStore.getState().setImage(url, element);
+            try {
+              const previewImage = await loadImageFromFile(item.file);
+              const itemStillPresent = get().items.some((currentItem) => currentItem.id === item.id);
+              const latestEditorState = useEditorStore.getState();
+
+              if (itemStillPresent && !latestEditorState.imageElement) {
+                latestEditorState.setImage(previewImage.url, previewImage.element);
+              } else {
+                URL.revokeObjectURL(previewImage.url);
+              }
+            } catch {
+              // Batch thumbnails still work; the editor preview is only a convenience.
+            }
           }
         }
       } catch {
@@ -178,19 +206,13 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
   removeItem: (id: string) => {
     const { items } = get();
     const item = items.find((i) => i.id === id);
-    if (item) {
-      if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
-      if (item.renderedUrl) URL.revokeObjectURL(item.renderedUrl);
-    }
+    if (item) revokeItemUrls(item);
     set({ items: items.filter((i) => i.id !== id) });
   },
 
   clearAll: () => {
     const { items } = get();
-    items.forEach((item) => {
-      if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
-      if (item.renderedUrl) URL.revokeObjectURL(item.renderedUrl);
-    });
+    items.forEach(revokeItemUrls);
     set({ items: [] });
   },
 
@@ -217,6 +239,15 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
 
           try {
             const { blob, renderedUrl } = await renderSingleItem(item, editorState, exportSize);
+            const currentItem = get().items.find((it) => it.id === item.id);
+            if (!currentItem) {
+              revokeObjectUrl(renderedUrl);
+              return;
+            }
+
+            if (currentItem.renderedUrl && currentItem.renderedUrl !== renderedUrl) {
+              revokeObjectUrl(currentItem.renderedUrl);
+            }
 
             set((state) => ({
               items: state.items.map((it) =>
@@ -252,6 +283,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
     const { items } = get();
     const item = items.find((i) => i.id === id);
     if (!item || item.status !== 'error') return;
+    let loadedPreviewUrl: string | null = null;
 
     set((state) => ({
       items: state.items.map((it) =>
@@ -267,10 +299,29 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
         const result = await loadImageFromFile(item.file);
         imageElement = result.element;
         previewUrl = result.url;
+        loadedPreviewUrl = result.url;
+      }
+
+      if (!get().items.some((it) => it.id === id)) {
+        revokeObjectUrl(loadedPreviewUrl);
+        return;
       }
 
       const updatedItem = { ...item, imageElement, previewUrl };
       const { blob, renderedUrl } = await renderSingleItem(updatedItem, editorState, exportSize);
+      const currentItem = get().items.find((it) => it.id === id);
+      if (!currentItem) {
+        revokeObjectUrl(loadedPreviewUrl);
+        revokeObjectUrl(renderedUrl);
+        return;
+      }
+
+      if (currentItem.previewUrl && currentItem.previewUrl !== previewUrl) {
+        revokeObjectUrl(currentItem.previewUrl);
+      }
+      if (currentItem.renderedUrl && currentItem.renderedUrl !== renderedUrl) {
+        revokeObjectUrl(currentItem.renderedUrl);
+      }
 
       set((state) => ({
         items: state.items.map((it) =>
@@ -280,6 +331,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
         ),
       }));
     } catch (err) {
+      revokeObjectUrl(loadedPreviewUrl);
       set((state) => ({
         items: state.items.map((it) =>
           it.id === id
@@ -305,7 +357,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
 
     doneItems.forEach((item) => {
       // 确保文件名唯一
-      let baseName = item.fileName.replace(/\.[^.]+$/, '');
+      const baseName = item.fileName.replace(/\.[^.]+$/, '');
       let finalName = `${baseName}_token.png`;
       let counter = 1;
       while (usedNames.has(finalName)) {

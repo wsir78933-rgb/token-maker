@@ -1,23 +1,25 @@
 import { getLocalizedPath } from '@/lib/site-locale';
 
 // Cover images
-export const DND_CLASSES_COVER_PATH = '/blog/covers/en/dnd-classes-explained.webp';
-export const DND_CLASSES_RANKED_COVER_PATH = '/blog/covers/en/dnd-classes-ranked.webp';
-export const DND_ARMOR_COVER_PATH = '/blog/covers/en/dnd-armor-guide.jpg';
+export const DND_CLASSES_COVER_PATH = '/blog/covers/en/dnd-classes-explained-redesign.webp';
+export const DND_CLASSES_RANKED_COVER_PATH = '/blog/covers/en/dnd-classes-ranked-redesign.webp';
+export const DND_ARMOR_COVER_PATH = '/blog/covers/en/dnd-armor-guide-redesign.webp';
 export const DND_CONSTITUTION_COVER_PATH = '/blog/covers/en/dnd-constitution-guide-v2.webp';
-export const DND_DRUID_SPELLS_COVER_PATH = '/blog/covers/en/dnd-druid-spells.webp';
-export const DND_DHAMPIR_COVER_PATH = '/blog/covers/en/dnd-dhampir-guide.svg';
+export const DND_DRUID_SPELLS_COVER_PATH = '/blog/covers/en/dnd-druid-spells-redesign.webp';
+export const DND_DHAMPIR_COVER_PATH = '/blog/covers/en/dnd-dhampir-guide-redesign.webp';
 export const DND_GRUNG_COVER_PATH = '/blog/covers/en/dnd-grung-guide.webp';
 export const DND_COUNTERSPELL_COVER_PATH = '/blog/covers/en/dnd-counterspell-cinematic.webp';
+export const DND_GIANTS_COVER_PATH = '/blog/covers/en/dnd-giants-guide.webp';
+export const DND_MAGE_ARMOR_COVER_PATH = '/blog/covers/en/dnd-mage-armor-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
-export const DND_CLASSES_MARTIAL_IMAGE_PATH = '/blog/inline/dnd-classes/martial-blade-inline.jpg';
+export const DND_CLASSES_MARTIAL_IMAGE_PATH = '/blog/inline/dnd-classes/martial-blade.webp';
 export const DND_CLASSES_RANKED_PARTY_IMAGE_PATH = '/blog/inline/dnd-classes-ranked/party-lineup.webp';
 export const DND_ARMOR_TYPES_IMAGE_PATH = '/blog/inline/dnd-armor/armor-types-armory.webp';
 export const DND_ARMOR_HEAVY_IMAGE_PATH = '/blog/inline/dnd-armor/heavy-armor-paladin.webp';
-export const DND_DHAMPIR_CEILING_IMAGE_PATH = '/blog/inline/dnd-dhampir/dhampir-ceiling-crawl.svg';
-export const DND_DHAMPIR_BITE_IMAGE_PATH = '/blog/inline/dnd-dhampir/dhampir-bite-plan.svg';
+export const DND_DHAMPIR_CEILING_IMAGE_PATH = '/blog/inline/dnd-dhampir/dhampir-ceiling-crawl.webp';
+export const DND_DHAMPIR_BITE_IMAGE_PATH = '/blog/inline/dnd-dhampir/dhampir-bite-plan.webp';
 export const DND_CONSTITUTION_INLINE_IMAGE_PATH = '/blog/inline/dnd-constitution/constitution-survival-inline.webp';
 export const DND_GRUNG_LEAP_IMAGE_PATH = '/blog/inline/dnd-grung/grung-ruins-leap.webp';
 export const DND_GRUNG_POISON_IMAGE_PATH = '/blog/inline/dnd-grung/grung-poison-closeup.webp';
@@ -25,6 +27,10 @@ export const DND_GRUNG_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-grung/grung-vi
 export const DND_COUNTERSPELL_TIMING_IMAGE_PATH = '/blog/inline/dnd-counterspell/counterspell-alchemy-reaction-window.webp';
 export const DND_COUNTERSPELL_FIELD_NOTES_IMAGE_PATH = '/blog/inline/dnd-counterspell/counterspell-field-notes.webp';
 export const DND_COUNTERSPELL_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-counterspell/counterspell-video-placeholder.webp';
+export const DND_GIANTS_BATTLEFIELD_IMAGE_PATH = '/blog/inline/dnd-giants/giant-battlefield-scale.webp';
+export const DND_GIANTS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-giants/giants-video-placeholder.webp';
+export const DND_MAGE_ARMOR_AC_IMAGE_PATH = '/blog/inline/dnd-mage-armor/mage-armor-ac-tabletop.webp';
+export const DND_MAGE_ARMOR_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mage-armor/mage-armor-video-placeholder.webp';
 
 // External URLs
 export const DND_DHAMPIR_LINEAGE_URL = 'https://www.dndbeyond.com/posts/1014-play-a-dhampir-hexblood-or-reborn-with-rules-from';
@@ -37,6 +43,14 @@ export const DND_GRUNG_VIDEO_URL = 'https://www.youtube.com/watch?v=EVwBW5GbGwQ'
 export const DND_COUNTERSPELL_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#Counterspell';
 export const DND_COUNTERSPELL_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Counterspell';
 export const DND_COUNTERSPELL_VIDEO_URL = 'https://www.youtube.com/watch?v=VQ1rmjrX4K0';
+export const DND_GIANTS_BASIC_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/monsters';
+export const DND_GIANTS_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024';
+export const DND_GIANTS_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Giant_(Dungeons_%26_Dragons)';
+export const DND_GIANTS_VIDEO_URL = 'https://www.youtube.com/watch?v=aM0s_ZFsNr4';
+export const DND_MAGE_ARMOR_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#MageArmor';
+export const DND_MAGE_ARMOR_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#MageArmor';
+export const DND_MAGE_ARMOR_SAGE_ADVICE_URL = 'https://www.dndbeyond.com/sources/dnd/sac/sage-advice-compendium';
+export const DND_MAGE_ARMOR_VIDEO_URL = 'https://www.youtube.com/watch?v=ZBbhI8Mp8fE';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -45,6 +59,12 @@ export const EN_DND_CONSTITUTION_PATH = getLocalizedPath('en', '/blog/dnd-consti
 export const ZH_DND_CONSTITUTION_PATH = getLocalizedPath('zh', '/blog/dnd-constitution-guide');
 export const EN_DND_DRUID_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-druid-spells');
 export const ZH_DND_DRUID_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-druid-spells');
+export const EN_DND_COUNTERSPELL_PATH = getLocalizedPath('en', '/blog/dnd-counterspell');
+export const ZH_DND_COUNTERSPELL_PATH = getLocalizedPath('zh', '/blog/dnd-counterspell');
+export const EN_DND_ARMOR_PATH = getLocalizedPath('en', '/blog/dnd-armor-guide');
+export const ZH_DND_ARMOR_PATH = getLocalizedPath('zh', '/blog/dnd-armor-guide');
+export const EN_DND_MAGE_ARMOR_PATH = getLocalizedPath('en', '/blog/dnd-mage-armor');
+export const ZH_DND_MAGE_ARMOR_PATH = getLocalizedPath('zh', '/blog/dnd-mage-armor');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_DICE_ROLLER_PATH = getLocalizedPath('en', '/dice-roller-dnd');

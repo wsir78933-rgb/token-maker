@@ -8,7 +8,7 @@ import type { TextBox } from '@/types/editor';
  * 文本图层交互覆盖组件
  * 在主画布上方绝对定位，提供文本的拖动和双击编辑能力。
  */
-export function TextCanvasOverlay() {
+export function TextCanvasOverlay({ previewScale = 1 }: { previewScale?: number }) {
   const textBoxes = useEditorStore((state) => state.textBoxes);
   const setSelectedText = useEditorStore((state) => state.setSelectedText);
   
@@ -27,13 +27,13 @@ export function TextCanvasOverlay() {
       onClick={handleWrapperClick}
     >
       {textBoxes.map((text) => (
-        <DraggableText key={text.id} text={text} />
+        <DraggableText key={text.id} text={text} previewScale={previewScale} />
       ))}
     </div>
   );
 }
 
-function DraggableText({ text }: { text: TextBox }) {
+function DraggableText({ text, previewScale }: { text: TextBox; previewScale: number }) {
   const selectedTextId = useEditorStore((state) => state.selectedTextId);
   const setSelectedText = useEditorStore((state) => state.setSelectedText);
   const updateTextBox = useEditorStore((state) => state.updateTextBox);
@@ -45,6 +45,7 @@ function DraggableText({ text }: { text: TextBox }) {
   const dragStartOffset = useRef({ x: 0, y: 0 });
 
   const isSelected = selectedTextId === text.id;
+  const scale = Math.max(0.001, previewScale);
 
   // ==== 拖拽逻辑 ====
   const onPointerDown = (e: React.PointerEvent) => {
@@ -72,8 +73,8 @@ function DraggableText({ text }: { text: TextBox }) {
     if (!isDragging) return;
     e.preventDefault();
 
-    const dx = e.clientX - dragStartOffset.current.x;
-    const dy = e.clientY - dragStartOffset.current.y;
+    const dx = (e.clientX - dragStartOffset.current.x) / scale;
+    const dy = (e.clientY - dragStartOffset.current.y) / scale;
     
     updateTextBox(text.id, {
       x: text.x + dx,
@@ -121,8 +122,9 @@ function DraggableText({ text }: { text: TextBox }) {
 
   // 计算对应的 CSS 样式，要和 Canvas 渲染对齐
   // Canvas: x, y, align, textBaseline=middle
-  const transform = `translate(${text.x}px, ${text.y}px)`;
+  const transform = `translate(${text.x * scale}px, ${text.y * scale}px)`;
   const translateFix = text.align === 'center' ? '-50%' : text.align === 'right' ? '-100%' : '0%';
+  const strokeWidth = Math.max(1, 2 * scale);
 
   return (
     <div
@@ -134,13 +136,13 @@ function DraggableText({ text }: { text: TextBox }) {
         left: 0,
         top: 0,
         transform: `${transform} translate(${translateFix}, -50%)`, // 居中修正
-        fontSize: text.fontSize,
+        fontSize: text.fontSize * scale,
         fontWeight: text.fontWeight,
         color: text.color,
         textAlign: text.align,
         // 添加一点文字阴影模拟描边
-        textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000',
-        padding: '0 4px',
+        textShadow: `${-strokeWidth}px ${-strokeWidth}px 0 #000, ${strokeWidth}px ${-strokeWidth}px 0 #000, ${-strokeWidth}px ${strokeWidth}px 0 #000, ${strokeWidth}px ${strokeWidth}px 0 #000`,
+        padding: `0 ${4 * scale}px`,
         whiteSpace: 'nowrap'
       }}
       onPointerDown={onPointerDown}

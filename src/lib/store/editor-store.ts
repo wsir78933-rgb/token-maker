@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { getBorderById } from '@/lib/templates/borders';
+import { STYLE_PRESETS } from '@/lib/templates/presets';
 import type { BorderLibraryMode, EditorStore, EditorState, StylePreset } from '@/types/editor';
 
 function isImageBorderSelection(
@@ -23,29 +24,39 @@ function getBorderLibraryModeForPreset(preset: StylePreset): BorderLibraryMode {
   return preset.id === 'other' ? 'competitor' : 'default';
 }
 
+function revokeOwnedObjectUrl(url: string | null, nextUrl?: string | null) {
+  if (!url || url === nextUrl || !url.startsWith('blob:') || typeof URL === 'undefined') {
+    return;
+  }
+
+  URL.revokeObjectURL(url);
+}
+
+const DEFAULT_PRESET = STYLE_PRESETS.find((preset) => preset.id === 'other') ?? STYLE_PRESETS[0]!;
+
 const INITIAL_STATE: Omit<EditorState, 'imageElement'> = {
   imageUrl: null,
   imageOffsetX: 0,
   imageOffsetY: 0,
   imageScale: 1,
 
-  selectedBorderId: 'thick-ring',
-  selectedMaskId: 'circle',
+  selectedBorderId: DEFAULT_PRESET.borderId,
+  selectedMaskId: DEFAULT_PRESET.maskId,
   customBorders: [],
-  borderLibraryMode: 'default',
+  borderLibraryMode: getBorderLibraryModeForPreset(DEFAULT_PRESET),
 
-  borderTint: '#8b5cf6', // 默认偏紫色系
-  imageBorderTintEnabled: false,
+  borderTint: DEFAULT_PRESET.borderTint,
+  imageBorderTintEnabled: !isImageBorderSelection(DEFAULT_PRESET.borderId, []),
   textColor: '#ffffff',
-  overlayTint: '#000000',
-  borderOpacity: 1,
-  overlayOpacity: 0,
+  overlayTint: DEFAULT_PRESET.overlayTint,
+  borderOpacity: DEFAULT_PRESET.borderOpacity,
+  overlayOpacity: DEFAULT_PRESET.overlayOpacity,
 
   textBoxes: [],
   selectedTextId: null,
   isImageSelected: false,
   exportSize: 256,
-  activePresetId: null,
+  activePresetId: DEFAULT_PRESET.id,
   renderRevision: 0,
 };
 
@@ -57,16 +68,25 @@ export const useEditorStore = create<EditorStore>()(
 
       // --- 图片 ---
       setImage: (url, element) =>
-        set({
-          imageUrl: url,
-          imageElement: element,
-          imageOffsetX: 0,
-          imageOffsetY: 0,
-          imageScale: 1,
-          isImageSelected: true,
-          selectedTextId: null,
+        set((state) => {
+          revokeOwnedObjectUrl(state.imageUrl, url);
+
+          return {
+            imageUrl: url,
+            imageElement: element,
+            imageOffsetX: 0,
+            imageOffsetY: 0,
+            imageScale: 1,
+            isImageSelected: true,
+            selectedTextId: null,
+          };
         }),
-      clearImage: () => set({ imageUrl: null, imageElement: null, isImageSelected: false }),
+      clearImage: () =>
+        set((state) => {
+          revokeOwnedObjectUrl(state.imageUrl);
+
+          return { imageUrl: null, imageElement: null, isImageSelected: false };
+        }),
       setImageSelected: (selected) => set({ isImageSelected: selected }),
       setImageOffset: (x, y) => set({ imageOffsetX: x, imageOffsetY: y }),
       setImageScale: (scale) => set({ imageScale: scale }),
@@ -150,7 +170,12 @@ export const useEditorStore = create<EditorStore>()(
         })),
 
       // --- 全局 ---
-      resetAll: () => set({ ...INITIAL_STATE, imageElement: null }),
+      resetAll: () =>
+        set((state) => {
+          revokeOwnedObjectUrl(state.imageUrl);
+
+          return { ...INITIAL_STATE, imageElement: null };
+        }),
     }),
     {
       name: 'token-maker-storage',

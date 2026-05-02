@@ -17,9 +17,9 @@ import {
 } from './shared';
 
 export const dndGrungArticleHtml = String.raw`
-<p>If you searched for <strong>dnd grung</strong>, you probably want the fast answer first: is this frogfolk race actually worth asking your DM about, what makes it strong in play, and what makes some tables hesitate? This guide answers those questions up front, then gets practical. In my experience, a <strong>dnd grung</strong> is fun when you treat it like a mobility-and-pressure pick, not a novelty costume with poison skin.</p>
+<p>Before you bring a <strong>dnd grung</strong> to the table, it helps to answer the practical questions first: is this frogfolk race worth asking your DM about, what makes it strong in play, and what makes some tables hesitate? This guide answers those questions up front, then gets practical. In my experience, a <strong>dnd grung</strong> is fun when you treat it like a mobility-and-pressure pick, not a novelty costume with poison skin.</p>
 
-<p>This page is built for encyclopedia-style search intent, so the quick reference comes first. After that, I break down the rules, the DM approval issues, the best classes, and the roleplay choices that make a <strong>dnd grung</strong> character memorable instead of exhausting.</p>
+<p>The quick reference comes first so you can judge whether the race fits your campaign. After that, I break down the rules, the DM approval issues, the best classes, and the roleplay choices that make a <strong>dnd grung</strong> character memorable instead of exhausting.</p>
 
 <table>
   <thead>
@@ -279,9 +279,9 @@ ${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeon
 `;
 
 export const dndGrungArticleHtmlZh = String.raw`
-<p>如果你搜的是 <strong>dnd grung</strong>，大概率最想先确认三件事：这个青蛙人种族到底值不值得玩，它在实战里强在哪里，以及为什么不少 DM 会先犹豫一下。本文会先把这些问题讲清楚，再往下拆规则。按我的实际跑团体验，Grung 好玩不是因为它“很怪”，而是因为它把机动、毒素压迫和地形利用绑在了一起。</p>
+<p>选 <strong>dnd grung</strong> 前，最好先确认三件事：这个青蛙人种族到底值不值得玩，它在实战里强在哪里，以及为什么不少 DM 会先犹豫一下。本文会先把这些问题讲清楚，再往下拆规则。按我的实际跑团体验，Grung 好玩不是因为它“很怪”，而是因为它把机动、毒素压迫和地形利用绑在了一起。</p>
 
-<p>这篇内容按百科页的搜索意图来写，所以最前面先给速查表。后面再分别解决四个核心问题：<strong>dnd grung</strong> 到底是什么、DM 最在意什么、哪些职业最顺手、以及这个角色该怎么演才不会只剩下搞笑梗。</p>
+<p>前面先放速查表，方便你快速判断能不能带上桌。后面再分别解决四个核心问题：<strong>dnd grung</strong> 到底是什么、DM 最在意什么、哪些职业最顺手、以及这个角色该怎么演才不会只剩下搞笑梗。</p>
 
 <table>
   <thead>
@@ -534,6 +534,6 @@ export const dndGrungArticleHtmlZh = String.raw`
 
 ${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons", {
   src: DND_GRUNG_VIDEO_PLACEHOLDER_PATH,
-  alt: 'DND grung 指南视频的可点击 webp 占位图，画面是一只毒蛙人侦察兵在被水淹没的丛林遗迹里举起毒镖',
+  alt: 'DND grung 指南视频封面，画面是一只毒蛙人侦察兵在被水淹没的丛林遗迹里举起毒镖',
 })}
 `;

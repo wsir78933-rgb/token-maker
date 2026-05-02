@@ -4,7 +4,7 @@ import {
 } from './shared';
 
 export const dndClassesRankedArticleHtml = String.raw`
-<p>If you are searching for <strong>dnd classes ranked</strong>, you probably want a clear answer to one question: which class is actually worth playing in Dungeons &amp; Dragons?</p>
+<p>A useful <strong>dnd classes ranked</strong> guide should answer one question clearly: which class is actually worth playing in Dungeons &amp; Dragons?</p>
 
 <p>The problem is that most class rankings are either too complicated or too opinion-based. Some lists only care about raw power. Others only care about roleplay flavor. And some rankings ignore the simple fact that a class can be strong on paper but still frustrating for real players at the table.</p>
 
@@ -411,7 +411,7 @@ export const dndClassesRankedArticleHtml = String.raw`
 
 <p>At the same time, lower-ranked classes like Barbarian and Monk are not bad in a useless sense. They are simply more limited. They can still be great fun at the right table, but they usually rely more on taste than on broad mechanical strength.</p>
 
-<p>That difference matters for SEO readers too, because people searching best D&amp;D classes, D&amp;D classes ranked, or strongest D&amp;D class usually want an answer that balances theory with actual play.</p>
+<p>That difference matters because a useful class ranking should balance theory with actual play. The strongest class on paper is not always the class that gives a real table the best campaign experience.</p>
 
 <h2>Final Verdict: Which D&amp;D Class Should You Pick?</h2>
 <p>If you want the strongest overall class, pick Wizard.</p>
@@ -438,7 +438,7 @@ ${liteVideoEmbed('K2Qs8q2JBRY', 'DnD classes ranked video recap')}
 `;
 
 export const dndClassesRankedArticleHtmlZh = String.raw`
-<p>如果你在搜索 <strong>DND 职业排名</strong>，你真正想知道的往往只有一件事：在《龙与地下城》里，到底哪个职业最值得玩？</p>
+<p>看 <strong>DND 职业排名</strong> 时，真正值得先问的往往只有一件事：在《龙与地下城》里，到底哪个职业最值得玩？</p>
 
 <p>问题在于，大多数职业榜单不是太复杂，就是太看个人口味。有些只盯着纸面强度，有些只在乎角色风格，还有些忽略了一个很现实的事实：一个职业理论上很强，不代表它在真实桌面上就一定玩得舒服。</p>
 
@@ -844,7 +844,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
 
 <p>而像野蛮人和武僧这种排得更后的职业，也不是“废”。它们只是限制更明显，更吃玩家口味或具体环境，而不是那种放进大多数队伍里都能稳定强势的职业。</p>
 
-<p>这对搜索 best D&amp;D classes、D&amp;D classes ranked 或 strongest D&amp;D class 的玩家也很重要，因为大多数人真正想要的不是一个只停留在纸面的答案，而是一个在实际桌面上也成立的结论。</p>
+<p>这也是职业排名最容易误导人的地方：大多数玩家真正想要的不是一个只停留在纸面的答案，而是一个在实际桌面上也成立的结论。</p>
 
 <h2>最终结论：你该选哪个 D&amp;D 职业？</h2>
 <p>如果你想要综合强度最高的职业，选法师。</p>

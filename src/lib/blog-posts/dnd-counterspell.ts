@@ -19,7 +19,7 @@ import {
 } from './shared';
 
 export const dndCounterspellArticleHtml = String.raw`
-<p>If you searched for <strong>dnd counterspell</strong>, you probably want the ruling before the debate: Counterspell is a 3rd-level Abjuration reaction that interrupts another creature while it is casting a spell within 60 feet. This guide gives you the fast table, the 2014 vs 2024 rules split, and the table calls that stop a rules argument from eating the best round of combat.</p>
+<p>For <strong>dnd counterspell</strong>, the useful answer usually starts with the ruling, not the debate: Counterspell is a 3rd-level Abjuration reaction that interrupts another creature while it is casting a spell within 60 feet. This guide gives you the fast table, the 2014 vs 2024 rules split, and the table calls that stop a rules argument from eating the best round of combat.</p>
 
 <table>
   <thead>
@@ -267,7 +267,7 @@ export const dndCounterspellArticleHtml = String.raw`
 <p><strong>Counterspell is powerful, but the table procedure matters more than the spell alone.</strong> The 2014 version can feel oppressive if every enemy caster has it. The 2024 version is softer because it gives the target a save and preserves spell slots.</p>
 
 <h2 id="video">Watch the Counterspell Video</h2>
-<p>The video attached to this keyword is <a href="${DND_COUNTERSPELL_VIDEO_URL}" rel="noreferrer noopener">Critical Role - Sam the Wide Deceiver - Spoilers Ep 114</a>. I would not treat it as a rules tutorial. Treat it as a design lesson: Counterspell hits hardest when it is a meaningful sacrifice, not a button everyone presses every round.</p>
+<p>The video below is <a href="${DND_COUNTERSPELL_VIDEO_URL}" rel="noreferrer noopener">Critical Role - Sam the Wide Deceiver - Spoilers Ep 114</a>. I would not treat it as a rules tutorial. Treat it as a design lesson: Counterspell hits hardest when it is a meaningful sacrifice, not a button everyone presses every round.</p>
 
 ${liteVideoEmbed('VQ1rmjrX4K0', 'Critical Role - Sam the Wide Deceiver - Spoilers Ep 114', {
   src: DND_COUNTERSPELL_VIDEO_PLACEHOLDER_PATH,
@@ -276,7 +276,7 @@ ${liteVideoEmbed('VQ1rmjrX4K0', 'Critical Role - Sam the Wide Deceiver - Spoiler
 `;
 
 export const dndCounterspellArticleHtmlZh = String.raw`
-<p>如果你搜索的是 <strong>dnd counterspell</strong>，最想先知道的通常不是一大段规则史，而是：什么时候能反制、2014 和 2024 规则到底差在哪、能不能反制别人的 Counterspell。这篇会先给速查表，再把实战里最容易吵起来的点拆开讲清楚。</p>
+<p><strong>dnd counterspell</strong> 最容易在桌上引发争论的不是法术名字，而是时机、版本和裁定：什么时候能反制、2014 和 2024 规则到底差在哪、能不能反制别人的 Counterspell。这篇会先给速查表，再把实战里最容易吵起来的点拆开讲清楚。</p>
 
 <table>
   <thead>
@@ -321,7 +321,7 @@ export const dndCounterspellArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>我把这篇当作法术百科页来写，而不是单纯吹强度。按我自己的跑团经验，<strong>dnd counterspell</strong> 真正决定体验的不是法术本身，而是三件事：你们桌用哪个版本、DM 会不会在反应前报出法术名、敌方法师会不会频繁拿它来反制玩家。</p>
+<p>Counterspell 不能只看强度。按我自己的跑团经验，<strong>dnd counterspell</strong> 真正决定体验的不是法术本身，而是三件事：你们桌用哪个版本、DM 会不会在反应前报出法术名、敌方法师会不会频繁拿它来反制玩家。</p>
 
 <h2 id="quick-rules">DND Counterspell 速查规则</h2>
 <p><strong>dnd counterspell</strong> 是一个用反应打断对方施法的法术。关键是，<a href="${DND_COUNTERSPELL_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules 的 Counterspell</a> 和 <a href="${DND_COUNTERSPELL_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules 的 Counterspell</a> 差异很大，所以开团前最该问的不是“它强不强”，而是“我们今天用哪一版”。</p>
@@ -510,10 +510,10 @@ export const dndCounterspellArticleHtmlZh = String.raw`
 <p><strong>Counterspell 很强，但真正影响体验的是桌面流程。</strong>2014 版如果给太多敌方法师使用，会很压迫；2024 版因为给目标豁免且保留法术位，压力会小很多。</p>
 
 <h2 id="video">观看 Counterspell 视频</h2>
-<p>表格里给这个关键词配的视频是 <a href="${DND_COUNTERSPELL_VIDEO_URL}" rel="noreferrer noopener">Critical Role - Sam the Wide Deceiver - Spoilers Ep 114</a>。我不建议把它当纯规则教程看，更适合当成一个设计提醒：Counterspell 最有力的时候，是它代表一次明确的代价和选择，而不是每轮都按的取消键。</p>
+<p>下面这段视频是 <a href="${DND_COUNTERSPELL_VIDEO_URL}" rel="noreferrer noopener">Critical Role - Sam the Wide Deceiver - Spoilers Ep 114</a>。我不建议把它当纯规则教程看，更适合当成一个设计提醒：Counterspell 最有力的时候，是它代表一次明确的代价和选择，而不是每轮都按的取消键。</p>
 
 ${liteVideoEmbed('VQ1rmjrX4K0', 'Critical Role - Sam the Wide Deceiver - Spoilers Ep 114', {
   src: DND_COUNTERSPELL_VIDEO_PLACEHOLDER_PATH,
-  alt: 'dnd counterspell 指南视频的可点击 webp 占位图，蓝色与金色魔法碰撞，中间有播放按钮',
+  alt: 'dnd counterspell 指南视频封面，蓝色与金色魔法碰撞，中间有播放按钮',
 })}
 `;

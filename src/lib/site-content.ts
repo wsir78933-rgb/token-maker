@@ -774,30 +774,30 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
     metadataTitle:
       'dice roller dnd | Fast d20, d6, d8, d10, d12 and d100 roller online',
     metadataDescription:
-      'dice roller dnd page inside Token Maker with an animated dice tray, fast DnD presets, roll breakdown, local roll log, and FAQ content for tabletop search intent.',
+      'Roll d20, d6, d8, d10, d12, and d100 online with an animated DnD dice tray, fast presets, roll breakdowns, local history, and practical FAQ notes.',
     eyebrow: 'dice roller dnd',
     title: 'dice roller dnd',
     description:
-      'A dedicated dice roller dnd route for Token Maker with an animated dice tray, fast expression input, common tabletop presets, and support content that still reads cleanly outside the canvas.',
+      'A DnD dice roller inside Token Maker with an animated tray, fast expression input, common tabletop presets, roll breakdowns, and a local roll log.',
     intro:
-      'The tray is live. You can roll d20, d12, d10, d8, d6, d4, and d100 expressions intuitively, while the surrounding DOM keeps the route indexable, readable, and useful for tabletop players who land here from search.',
-    heroBadges: ['Keyword locked: dice roller dnd', 'Animated dice tray', 'Local roll log and breakdown'],
-    trayEyebrow: 'Interactive tray host',
-    trayTitle: 'Scene surface for the real dice roller',
+      'Roll d20, d12, d10, d8, d6, d4, and d100 directly in the tray, or type expressions such as 1d20+5, 2d6+3, and 4d6dl1.',
+    heroBadges: ['Common DnD rolls', 'Animated dice tray', 'Local roll log and breakdown'],
+    trayEyebrow: 'Interactive dice tray',
+    trayTitle: 'Roll dice in a live tabletop tray',
     trayDescription:
-      'The hero surface now runs an animated dice tray. Expression input, quick presets, result breakdown, and roll history sit directly underneath so the page works as a usable tool instead of a visual demo.',
+      'Use the animated tray for quick rolls, then read the expression input, presets, result breakdown, and roll history without leaving the page.',
     trayNotes: [
       'The primary roll interaction stays above the fold, so a user can start with the tray immediately.',
-      'FAQ, rules guidance, and search copy remain in standard DOM text instead of disappearing into the canvas.',
-      'The 3D scene is one part of a working tabletop route, not an isolated animation showcase.',
+      'FAQ and rules notes explain common dice expressions, roll breakdowns, and character stat generation.',
+      'The animated tray stays tied to the tabletop workflow instead of acting like a separate visual showcase.',
     ],
-    presetsTitle: 'Common DnD roll intents to support first',
+    presetsTitle: 'Common DnD roll presets',
     presetsDescription:
-      'These are the high-frequency tabletop actions this route should expose first, because they are the quickest way to prove the tool is useful in a live session.',
+      'These expressions cover the checks, attacks, damage rolls, and character stat rolls most tables need during play.',
     presets: [
       {
         label: '1d20 ability check',
-        description: 'The baseline DnD check that most users expect to test first on a dice roller dnd page.',
+        description: 'The baseline roll for ability checks, saves, attacks, and many quick rulings.',
       },
       {
         label: '1d20 + modifier',
@@ -805,41 +805,41 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
       },
       {
         label: '2d6 + 3 damage',
-        description: 'Damage expressions should read clearly in both the tray and the roll breakdown so the page works past the first demo click.',
+        description: 'Damage expressions stay readable in both the tray result and the detailed roll breakdown.',
       },
       {
         label: '4d6 drop lowest',
-        description: 'Character generation remains a strong long-tail use case and deserves its own supporting explanation and FAQ copy.',
+        description: 'Use the classic 4d6 drop lowest method for ability scores and keep each result in the local log.',
       },
     ],
-    guideTitle: 'What this route needs to communicate beyond the 3D canvas',
+    guideTitle: 'What the Dice Tray Supports',
     guideDescription:
-      'Search traffic for dice roller dnd does not only need a dramatic tray. It also needs quick confirmation about supported dice, common expressions, and how the route behaves when you are using it mid-session.',
+      'The dice roller is built for live DnD play, so it needs to make supported dice, common expressions, and mid-session behavior clear before the first roll.',
     guideSections: [
       {
         title: 'Supported dice language',
         body:
-          'This route is framed around DnD-first expectations: d4, d6, d8, d10, d12, d20, and d100, plus familiar expressions such as 1d20+5 or 4d6dl1.',
+          'The roller supports d4, d6, d8, d10, d12, d20, and d100, plus familiar expressions such as 1d20+5 or 4d6dl1.',
       },
       {
-        title: 'Why keep it separate from the token editor',
+        title: 'Why it has its own page',
         body:
-          'A dedicated page is easier to rank, easier to explain, and easier to maintain than trying to squeeze dice mechanics into the main token workflow. The editor stays the product core, while this page becomes a clean tabletop utility route.',
+          'Dice rolling and token editing are different tabletop jobs. Keeping the tray on its own page makes it faster to open during a session while the editor stays focused on portrait and token prep.',
       },
       {
-        title: 'What the support content is for',
+        title: 'What the guide content covers',
         body:
-          'FAQ, breadcrumb data, and short explanatory sections give the 3D tool a stable SEO foundation and make the route understandable even before a user throws the first roll.',
+          'The short notes and FAQ explain dice notation, common presets, character stat rolling, and how to use the tray without interrupting the table.',
       },
     ],
-    faqTitle: 'FAQ for the dice roller dnd route',
+    faqTitle: 'Dice Roller DnD FAQ',
     faqDescription:
-      'These answers clarify what the route supports right now, how the 3D tray works in practice, and why the page lives separately from the token editor.',
+      'These answers clarify what the roller supports, how the 3D tray works in practice, and why dice rolling lives separately from token editing.',
     faqItems: [
       {
         question: 'What is the dice roller dnd page for on Token Maker?',
         answer:
-          'It is a dedicated tabletop utility route for DnD-style dice rolling. The page combines an interactive tray, expression input, quick presets, roll breakdown, and FAQ content in one route.',
+          'It is a tabletop utility page for DnD-style dice rolling. It combines an interactive tray, expression input, quick presets, roll breakdown, local history, and FAQ notes.',
       },
       {
         question: 'Which dice should the page focus on first?',
@@ -849,19 +849,19 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
       {
         question: 'Why not merge this directly into the token editor?',
         answer:
-          'The token editor and the dice roller solve different jobs. Keeping dice roller dnd on its own route makes the page easier to rank, easier to navigate, and easier to extend with FAQ and structured data without polluting the main editor flow.',
+          'The token editor and the dice roller solve different jobs. Keeping dice roller dnd on its own page makes the tray easier to open during play and keeps the main editor flow focused on token creation.',
       },
       {
-        question: 'Does this route need normal HTML content if the final tool is 3D?',
+        question: 'Does the 3D tray still include written rules help?',
         answer:
-          'Yes. The 3D tray handles the interaction, but the route still needs real DOM text for titles, guidance, FAQ content, and structured data so the page remains understandable, indexable, and accessible.',
+          'Yes. The 3D tray handles the interaction, while the surrounding text explains supported dice, common DnD expressions, stat rolling, and practical table use.',
       },
     ],
     structuredDataFeatures: [
-      'Dedicated dice roller dnd route inside Token Maker',
+      'Dedicated dice roller dnd tool inside Token Maker',
       'Animated physics-like dice tray with live roll animation',
       'DnD-focused dice language including d20 checks and 4d6 drop lowest',
-      'Roll breakdown, local history, FAQ, and structured data for search visibility',
+      'Roll breakdown, local history, FAQ, and practical rules notes',
     ],
     statsGuide: {
       headline: 'How Many Dice to Roll for Stats DnD?',
@@ -895,29 +895,29 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
     eyebrow: 'dice roller dnd',
     title: 'dice roller dnd',
     description:
-      '这是 Token Maker 里单独承接 dice roller dnd 的页面入口，搭载动态骰子托盘，同时把常见 DnD 掷骰说明、FAQ 和搜索所需的基础文案放在同一路由下。',
+      '这是 Token Maker 的 DnD 掷骰工具页，包含动态骰子托盘、表达式输入、常见 DnD 预设、结果分解、日志和 FAQ。',
     intro:
-      '这页现在就是可用工具，而不只是接入层。你可以直接在骰盘里直观地掷出 d20、d12、d10、d8、d6、d4 和 d100，同时保留正常 DOM 里的说明、FAQ 与结构化数据，让整页既能用也能收录。',
-    heroBadges: ['关键词固定: dice roller dnd', '直观物理感动态骰盘', '结果分解与本地日志'],
+      '你可以直接在骰盘里掷出 d20、d12、d10、d8、d6、d4 和 d100，也可以输入 1d20+5、2d6+3、4d6dl1 这类常见表达式。',
+    heroBadges: ['DnD 常用骰式', '直观动态骰盘', '结果分解与本地日志'],
     trayEyebrow: '交互托盘区域',
     trayTitle: '直观骰子场景的主舞台',
     trayDescription:
-      '这里已经接上动态动画骰子托盘。表达式输入、快捷预设、结果分解和日志紧跟在托盘下方，让这页是可直接使用的掷骰工具，而不是只展示概念的 Demo。',
+      '这里已经接上动态动画骰子托盘。表达式输入、快捷预设、结果分解和日志紧跟在托盘下方，让这页成为可直接使用的掷骰工具，而不只是展示动画效果。',
     trayNotes: [
       '主交互留在首屏，用户进入页面就能直接开始掷骰。',
-      'FAQ、规则说明和关键词文案继续保留在正常 DOM 里，让搜索引擎能顺利读取。',
+      'FAQ 和规则说明会解释常见骰式、结果分解和角色属性生成。',
       '把动态骰子托盘当成页面核心组件，与上下文强融合。',
     ],
-    presetsTitle: '第一批应该优先支持的 DnD 掷骰意图',
-    presetsDescription: '这些是页面现在就应该优先覆盖的高频桌面场景，也是最能证明这页在实际跑团里有用的表达式。',
+    presetsTitle: '常用 DnD 掷骰预设',
+    presetsDescription: '这些表达式覆盖跑团中最常见的检定、攻击、伤害和角色属性生成场景。',
     presets: [
       {
         label: '1d20 检定',
-        description: '多数用户第一次进入 dice roller dnd 页面时，首先会想试的就是最基础的 d20 检定。',
+        description: '适合技能检定、豁免和多数需要 d20 的即时判定。',
       },
       {
         label: '1d20 + 修正值',
-        description: '攻击、豁免和技能检定都需要清楚的修正值路径，不能埋在过深的次级控件里。',
+        description: '攻击、豁免和技能检定都可以直接把熟练、属性或临时加值加进去。',
       },
       {
         label: '2d6 + 3 伤害',
@@ -925,37 +925,37 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
       },
       {
         label: '4d6 去最低',
-        description: '角色生成仍然是高频长尾需求，应该在页面说明和 FAQ 里单独照顾到。',
+        description: '适合用 4d6 去最低的方式生成角色属性，并在日志里保留每次结果。',
       },
     ],
-    guideTitle: '除了 3D 画面，这条路由还必须讲清楚什么',
+    guideTitle: '除了 3D 骰盘，这页还支持什么',
     guideDescription:
-      '搜到 dice roller dnd 的用户要的不是一个抽象随机数按钮，而是一个面向 DnD 语境、打开就能用的独立工具页，所以支持骰子、常见场景和页面定位都要讲清楚。',
+      '这不是一个抽象随机数按钮，而是面向 DnD 桌面的工具页，所以支持骰子、常见场景和使用方式都要讲清楚。',
     guideSections: [
       {
         title: '支持的骰子语言',
         body:
-          '这页应该围绕 DnD 用户的直觉去组织，包括 d4、d6、d8、d10、d12、d20、d100，以及 1d20+5、4d6dl1 这类常见写法。',
+          '支持 d4、d6、d8、d10、d12、d20、d100，以及 1d20+5、4d6dl1 这类常见写法。',
       },
       {
         title: '为什么单独做页面而不是塞进编辑器',
         body:
-          '骰子工具和 Token 编辑器解决的是两件不同的事。独立页面更利于搜索收录、文案组织和后续维护，也不会把主编辑器的工作流搅乱。',
+          '骰子工具和 Token 编辑器解决的是两件不同的事。独立页面更适合跑团时快速打开，也不会打断主编辑器里的头像处理流程。',
       },
       {
-        title: '支持内容的作用',
+        title: '说明内容的作用',
         body:
-          'FAQ、面包屑和简短说明块是这页的 SEO 地基，也能让用户在真正掷骰前先理解这页支持什么。',
+          'FAQ 和简短说明会讲清常见骰式、角色属性生成、结果分解和日志使用方式。',
       },
     ],
     faqTitle: 'dice roller dnd 页面 FAQ',
     faqDescription:
-      '这些问题先把页面现在支持什么、3D 托盘怎么用、以及为什么独立成页讲清楚，让用户和搜索引擎都能更早理解这条路由的价值。',
+      '这些问题会讲清页面现在支持什么、3D 托盘怎么用，以及为什么骰子工具适合单独成页。',
     faqItems: [
       {
         question: 'Token Maker 里的 dice roller dnd 页面是做什么的？',
         answer:
-          '它是一个面向 DnD 风格掷骰的独立工具页，内含互动式动画骰子托盘，同时保留 FAQ、说明文案和页面级 metadata，让这条路由既能用也能被清楚理解。',
+          '它是一个面向 DnD 风格掷骰的独立工具页，内含互动式动画骰子托盘、表达式输入、常用预设、结果分解和 FAQ。',
       },
       {
         question: '这页第一步应该优先覆盖哪些骰子？',
@@ -965,19 +965,19 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
       {
         question: '为什么不直接把骰子功能塞进主编辑器？',
         answer:
-          '因为 token 编辑器和掷骰器是两种不同任务。把 dice roller dnd 做成独立页面，更利于收录、更好维护，也方便把 FAQ 和结构化数据完整挂在这条路由上。',
+          '因为 token 编辑器和掷骰器是两种不同任务。把 dice roller dnd 做成独立页面，跑团时更容易快速打开，也不会打断主编辑器里的头像处理流程。',
       },
       {
-        question: '这个页面兼顾了搜索引擎优化吗？',
+        question: '除了 3D 骰盘，这页还有文字说明吗？',
         answer:
-          '是的。虽然有丰富的动态 CSS 交互托盘，但也保留了正常 DOM 里的标题、说明、FAQ 和结构化数据，这样页面才更容易被理解、索引和访问。',
+          '有。骰盘负责交互，旁边的说明和 FAQ 会补充常见骰式、角色属性生成、结果分解和本地日志怎么用。',
       },
     ],
     structuredDataFeatures: [
-      'Token Maker 内的独立 dice roller dnd 路由',
+      'Token Maker 内的独立 dice roller dnd 工具页',
       'CSS 动画物理感骰盘与在线掷骰体验',
-      '围绕 d20 检定与 4d6 去最低等 DnD 场景组织内容',
-      '结果分解、本地日志、FAQ 与结构化数据一并保留',
+      '覆盖 d20 检定与 4d6 去最低等 DnD 场景',
+      '结果分解、本地日志、FAQ 与规则说明一并保留',
     ],
     statsGuide: {
       headline: 'How many dice to roll for stats dnd (DnD 5e 属性掷骰指南)',

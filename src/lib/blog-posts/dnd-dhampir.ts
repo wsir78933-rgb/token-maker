@@ -15,7 +15,7 @@ import {
 } from './shared';
 
 export const dndDhampirArticleHtml = String.raw`
-<p>If you searched for <strong>dnd dhampir</strong>, you probably want the short answer first: is the lineage actually good, how does <em>Vampiric Bite</em> work, and which classes make it feel strong instead of gimmicky? This guide answers those three questions fast, then goes deeper. In our campaigns, Dhampir performs best as a mobile predator chassis, not as a fake-vampire damage meme.</p>
+<p>Before you build a <strong>dnd dhampir</strong>, the short answer matters first: is the lineage actually good, how does <em>Vampiric Bite</em> work, and which classes make it feel strong instead of gimmicky? This guide answers those three questions fast, then goes deeper. In our campaigns, Dhampir performs best as a mobile predator chassis, not as a fake-vampire damage meme.</p>
 
 <p>If you only need the practical answer, start with the quick table below. The sections after it are there to help you decide three things fast: whether <strong>dnd dhampir</strong> fits your class, whether your campaign gives it enough vertical space to matter, and whether you actually want the hunger-driven roleplay that comes with it.</p>
 
@@ -67,7 +67,7 @@ export const dndDhampirArticleHtml = String.raw`
   <img
     class="inline-figure__image inline-figure__image--wide"
     src="${DND_DHAMPIR_CEILING_IMAGE_PATH}"
-    alt="DND dhampir doodle illustration of a cartoon adventurer crawling across a ceiling above a battle map"
+    alt="DND dhampir adventurer crawling across a moonlit gothic ceiling above guards"
     width="1400"
     height="900"
     loading="lazy"
@@ -124,7 +124,7 @@ export const dndDhampirArticleHtml = String.raw`
   <img
     class="inline-figure__image inline-figure__image--square"
     src="${DND_DHAMPIR_BITE_IMAGE_PATH}"
-    alt="DND dhampir doodle illustration showing a cartoon vampire bite that can heal or boost the next roll"
+    alt="DND dhampir using Vampiric Bite in battle with restrained crimson life energy"
     width="1000"
     height="1000"
     loading="lazy"
@@ -241,7 +241,7 @@ ${liteVideoEmbed('ZXcwHPW3GR8', "How DM's react to what Class you play in Dungeo
 `;
 
 export const dndDhampirArticleHtmlZh = String.raw`
-<p>如果你搜的是 <strong>dnd dhampir</strong>，大概率不是想先看一长段世界观设定，而是想立刻搞清楚三件事：这个谱系到底强不强，<em>Vampiric Bite</em> 到底怎么用，什么职业最适合它。本文会先把速查结论摆在前面，再展开讲机制和构筑。按我们跑团的经验，Dhampir 最强的从来不是“吸血鬼噱头”，而是它把机动、残局续航和角色张力绑到了一起。</p>
+<p>选 <strong>dnd dhampir</strong> 前，最该先弄清楚三件事：这个谱系到底强不强，<em>Vampiric Bite</em> 到底怎么用，什么职业最适合它。本文会先把速查结论摆在前面，再展开讲机制和构筑。按我们跑团的经验，Dhampir 最强的从来不是“吸血鬼噱头”，而是它把机动、残局续航和角色张力绑到了一起。</p>
 
 <p>如果你只想先拿到实用结论，直接看下面的速查表就够了。后面的内容再分别解决三个问题：<strong>dnd dhampir</strong> 适不适合你的职业、它在什么样的地图和战役里最值、以及这个角色该怎么演才有张力又不惹人烦。</p>
 
@@ -293,7 +293,7 @@ export const dndDhampirArticleHtmlZh = String.raw`
   <img
     class="inline-figure__image inline-figure__image--wide"
     src="${DND_DHAMPIR_CEILING_IMAGE_PATH}"
-    alt="DND dhampir 简笔插画，卡通冒险者倒挂在天花板上穿过战斗地图"
+    alt="DND dhampir 冒险者在月光下的哥特大厅天花板上潜行"
     width="1400"
     height="900"
     loading="lazy"
@@ -350,7 +350,7 @@ export const dndDhampirArticleHtmlZh = String.raw`
   <img
     class="inline-figure__image inline-figure__image--square"
     src="${DND_DHAMPIR_BITE_IMAGE_PATH}"
-    alt="DND dhampir 简笔插画，卡通吸血裔咬击后可以回血或强化下一次掷骰"
+    alt="DND dhampir 在战斗中使用 Vampiric Bite，周围有克制的红色生命能量"
     width="1000"
     height="1000"
     loading="lazy"

@@ -11,6 +11,8 @@ import {
   DND_DHAMPIR_COVER_PATH,
   DND_GRUNG_COVER_PATH,
   DND_COUNTERSPELL_COVER_PATH,
+  DND_GIANTS_COVER_PATH,
+  DND_MAGE_ARMOR_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -20,6 +22,8 @@ import { dndDruidSpellsArticleHtml, dndDruidSpellsArticleHtmlZh } from '@/lib/bl
 import { dndDhampirArticleHtml, dndDhampirArticleHtmlZh } from '@/lib/blog-posts/dnd-dhampir';
 import { dndGrungArticleHtml, dndGrungArticleHtmlZh } from '@/lib/blog-posts/dnd-grung';
 import { dndCounterspellArticleHtml, dndCounterspellArticleHtmlZh } from '@/lib/blog-posts/dnd-counterspell';
+import { dndGiantsArticleHtml, dndGiantsArticleHtmlZh } from '@/lib/blog-posts/dnd-giants';
+import { dndMageArmorArticleHtml, dndMageArmorArticleHtmlZh } from '@/lib/blog-posts/dnd-mage-armor';
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
@@ -143,27 +147,29 @@ const DND_DRUID_SPELLS_UPDATED_AT = '2026-04-09';
 const DND_DHAMPIR_UPDATED_AT = '2026-04-17';
 const DND_GRUNG_UPDATED_AT = '2026-04-20';
 const DND_COUNTERSPELL_UPDATED_AT = '2026-04-25';
+const DND_GIANTS_UPDATED_AT = '2026-04-28';
+const DND_MAGE_ARMOR_UPDATED_AT = '2026-04-29';
 
 const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
-    featuredTitle: 'Featured Article Placeholder',
+    featuredTitle: 'Featured Article Coming Soon',
     featuredExcerpt:
-      'Replace this summary with the lead article you want to feature at the top of the list.',
+      'A new tabletop guide is being prepared for this spot.',
     coverLabel: 'Cover',
-    detailTitle: 'Content Placeholder',
+    detailTitle: 'Article coming soon',
     detailBody:
-      'This article has not been written yet. Replace the placeholder post data with your real title, summary, and body source later.',
+      'This guide is not ready yet. Check back later for the full article.',
     ctaTitle: 'Want to make your own tabletop portrait?',
     ctaBody:
       'Upload an image and turn it into a token for Roll20, Foundry, or any other virtual tabletop.',
   },
   zh: {
-    featuredTitle: '重点文章占位标题',
-    featuredExcerpt: '这里先留给你后续要放在首屏的重点文章摘要。',
+    featuredTitle: '新文章准备中',
+    featuredExcerpt: '这篇桌面指南还在准备，后续会放在这里。',
     coverLabel: '封面',
-    detailTitle: '内容占位区',
+    detailTitle: '文章准备中',
     detailBody:
-      '这篇文章还没有开始写。后续你只需要把占位数据替换成真实标题、摘要和正文来源就可以了。',
+      '这篇指南还没准备好，后续会补上完整正文。',
     ctaTitle: '如果你也想做自己的桌面头像',
     ctaBody: '这里可以直接把角色图处理成适合 Roll20、Foundry 或其他虚拟桌面的 Token。',
   },
@@ -218,7 +224,7 @@ const dndArmorArticle: BlogPost = {
   readTime: '13 min read',
   coverLabel: 'DND Armor',
   coverImage: DND_ARMOR_COVER_PATH,
-  coverAlt: 'A hooded rogue in dark leather armor standing in a moonlit medieval city, representing DND armor choices',
+  coverAlt: 'A fantasy armory with leather, chain mail, shields, and polished plate armor arranged for DND armor choices',
   bodyHtml: dndArmorArticleHtml,
   relatedSlugs: ['dnd-classes-explained', 'dnd-classes-ranked'],
 };
@@ -235,7 +241,7 @@ const dndArmorArticleZh: BlogPost = {
   readTime: '13 分钟阅读',
   coverLabel: 'DND 护甲',
   coverImage: DND_ARMOR_COVER_PATH,
-  coverAlt: '一名穿着深色皮甲的兔帽潜行者站在月光下的中世纪城市中，代表 DND 护甲选择',
+  coverAlt: '奇幻军械库中陈列着皮甲、锁子甲、盾牌和板甲，用来展示 DND 护甲选择',
   bodyHtml: dndArmorArticleHtmlZh,
   relatedSlugs: ['dnd-classes-explained', 'dnd-classes-ranked'],
 };
@@ -371,6 +377,7 @@ const dndDruidSpellsArticle: BlogPost = {
   readTime: '6 min read',
   coverLabel: 'Spells',
   coverImage: DND_DRUID_SPELLS_COVER_PATH,
+  coverAlt: 'DND druid spells cover showing a druid channeling moonlit nature magic in an ancient forest clearing',
   bodyHtml: dndDruidSpellsArticleHtml,
 };
 
@@ -384,7 +391,7 @@ const dndDruidSpellsArticleZh: BlogPost = {
   readTime: '6 分钟阅读',
   coverLabel: '百科',
   coverImage: DND_DRUID_SPELLS_COVER_PATH,
-  coverAlt: 'A cute doodle illustration of a DND druid casting a spell',
+  coverAlt: 'DND druid spells cover showing a druid channeling moonlit nature magic in an ancient forest clearing',
   bodyHtml: dndDruidSpellsArticleHtmlZh,
 };
 
@@ -402,7 +409,7 @@ const dndDhampirArticle: BlogPost = {
   readTime: '9 min read',
   coverLabel: 'Lineage Guide',
   coverImage: DND_DHAMPIR_COVER_PATH,
-  coverAlt: 'DND dhampir doodle cover showing a cartoon half-vampire adventurer under a moonlit castle',
+  coverAlt: 'DND dhampir guide cover showing a moonlit half-vampire adventurer on a gothic castle terrace',
   bodyHtml: dndDhampirArticleHtml,
   relatedSlugs: ['dnd-classes-explained', 'dnd-constitution-guide'],
 };
@@ -412,14 +419,14 @@ const dndDhampirArticleZh: BlogPost = {
   title: 'DND Dhampir 指南：种族特性、咬击机制、最佳职业与跑团演法',
   seoTitle: 'DND Dhampir 指南：特性、咬击与最佳构筑',
   metaDescription:
-    '这篇 DND Dhampir 百科页会直接告诉你 Dhampir 强不强、Vampiric Bite 怎么用、哪些职业最适合，以及怎样把这个谱系演得有张力又不烦人。',
+    '想玩 DND Dhampir？这篇指南会讲清 Dhampir 强不强、Vampiric Bite 怎么用、哪些职业最适合，以及怎样把这个谱系演得有张力又不烦人。',
   excerpt:
-    '围绕 dnd dhampir 关键词整理的一篇实战百科页，先给速查表，再讲咬击、职业搭配、角色扮演和 FAQ。',
+    '想玩 DND Dhampir 但怕只剩吸血鬼噱头？这里先给速查结论，再讲咬击机制、职业搭配、角色演法和常见问题。',
   updatedAt: DND_DHAMPIR_UPDATED_AT,
   readTime: '9 分钟阅读',
   coverLabel: '种族百科',
   coverImage: DND_DHAMPIR_COVER_PATH,
-  coverAlt: 'DND dhampir 简笔插画封面，月光下的半吸血鬼卡通冒险者',
+  coverAlt: 'DND dhampir 指南封面图，月光下的半吸血鬼冒险者站在哥特城堡露台上',
   bodyHtml: dndDhampirArticleHtmlZh,
   relatedSlugs: ['dnd-classes-explained', 'dnd-constitution-guide'],
 };
@@ -450,7 +457,7 @@ const dndGrungArticleZh: BlogPost = {
   metaDescription:
     '想知道 dnd grung 到底值不值得玩？这篇指南会讲清 Grung 的官方出处、毒素和 Water Dependency 怎么算、哪些职业最适合，以及 DM 最在意什么。',
   excerpt:
-    '围绕 dnd grung 关键词整理的一篇实战百科页，先给速查结论，再讲规则要点、职业搭配、DM 关注点、FAQ 和视频补充。',
+    '想玩 DND Grung 前，先看清毒素、水依赖和 DM 顾虑怎么处理，再决定职业搭配与跑团演法。',
   updatedAt: DND_GRUNG_UPDATED_AT,
   readTime: '10 分钟阅读',
   coverLabel: '种族百科',
@@ -513,7 +520,7 @@ const dndCounterspellArticleZh: BlogPost = {
   metaDescription:
     '这篇 dnd counterspell 百科指南会讲清 2014 版与 2024 版 Counterspell 差异、什么时候值得反制、反制链怎么裁定，以及 FAQ。',
   excerpt:
-    '围绕 dnd counterspell 关键词整理的实战百科页，先给速查表，再讲 2014/2024 规则差异、常见裁定、DM 建议、FAQ 和视频嵌入。',
+    'Counterspell 最怕桌上临时吵规则。这篇先给速查表，再讲 2014/2024 差异、反制时机、常见裁定和 DM 建议。',
   updatedAt: DND_COUNTERSPELL_UPDATED_AT,
   readTime: '11 分钟阅读',
   coverLabel: '法术百科',
@@ -550,11 +557,181 @@ const dndCounterspellArticleZh: BlogPost = {
   relatedSlugs: ['dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndGiantsArticle: BlogPost = {
+  slug: 'dnd-giants',
+  title: 'DND Giants Guide: Types, Lore, Encounter Tips, and VTT Tokens',
+  seoTitle: 'DND Giants Guide: Types, Lore, Encounters & Tokens',
+  metaDescription:
+    'Learn the main DND giants, how each giant type plays at the table, how to design better giant encounters, and how to make readable VTT tokens.',
+  excerpt:
+    'A practical dnd giants encyclopedia guide with a quick type table, lore notes, encounter design advice, VTT token tips, FAQ answers, and a YouTube video embed.',
+  updatedAt: DND_GIANTS_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Monster Guide',
+  coverImage: DND_GIANTS_COVER_PATH,
+  coverAlt:
+    'DND giants guide cover showing frost, fire, hill, cloud, and storm giants looming over tiny adventurers in a mountain pass',
+  bodyHtml: dndGiantsArticleHtml,
+  faqItems: [
+    {
+      question: 'What are the main DND giants?',
+      answer:
+        'The main DND giants most players recognize are hill giants, stone giants, frost giants, fire giants, cloud giants, and storm giants.',
+    },
+    {
+      question: 'Are DND giants humanoids?',
+      answer:
+        'In 5e, many classic DND giants use the giant creature type rather than ordinary humanoid. Always check the exact stat block your table is using.',
+    },
+    {
+      question: 'Which DND giant is best for a first giant encounter?',
+      answer:
+        'A hill giant is usually the easiest first choice because its threat is clear and its tactics are simple. A stone giant is better if you want a more tactical terrain fight.',
+    },
+    {
+      question: 'How do you make DND giants feel bigger in combat?',
+      answer:
+        'Use scale cues, vertical terrain, thrown objects, destructible cover, and objectives beyond damage. A giant should change the room, not just occupy more squares.',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-counterspell', 'dnd-constitution-guide'],
+};
+
+const dndGiantsArticleZh: BlogPost = {
+  slug: 'dnd-giants',
+  title: 'DND Giants 指南：巨人类型、设定、遭遇设计与 VTT Token',
+  seoTitle: 'DND Giants 指南：类型、设定、遭遇与 Token',
+  metaDescription:
+    '想了解 dnd giants 有哪些类型、每种巨人怎么跑、如何设计更有压迫感的巨人遭遇，以及怎样制作清晰的 VTT Token？这篇直接给你速查和实战建议。',
+  excerpt:
+    '想把 DND 巨人跑得有压迫感而不是单纯磨血？这里整理巨人类型、设定用法、遭遇设计和 VTT Token 建议。',
+  updatedAt: DND_GIANTS_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '怪物百科',
+  coverImage: DND_GIANTS_COVER_PATH,
+  coverAlt:
+    'DND giants 指南封面图，霜巨人、火巨人、丘陵巨人、云巨人和风暴巨人在山道中俯视小型冒险者',
+  bodyHtml: dndGiantsArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND giants 主要有哪些？',
+      answer:
+        '最常见的 DND giants 包括 hill giant、stone giant、frost giant、fire giant、cloud giant 和 storm giant。',
+    },
+    {
+      question: 'DND giants 算 humanoid 吗？',
+      answer:
+        '在 5e 中，许多经典 DND giants 使用的是 giant 类型，而不是普通 humanoid。具体仍要看你桌使用的 stat block。',
+    },
+    {
+      question: '第一次巨人遭遇用哪种 DND giant 最好？',
+      answer:
+        'Hill giant 通常最适合作为第一次巨人遭遇，因为威胁清晰、跑法简单。如果你想要更强的地形战术感，stone giant 更合适。',
+    },
+    {
+      question: '怎样让 DND giants 在战斗里更有巨大感？',
+      answer:
+        '使用尺度参照、立体地形、投掷物、可破坏掩体和非伤害目标。巨人应该改变房间，而不是只占更多格子。',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-counterspell', 'dnd-constitution-guide'],
+};
+
+const dndMageArmorArticle: BlogPost = {
+  slug: 'dnd-mage-armor',
+  title: 'DND Mage Armor Guide: AC Rules, Best Uses, and Common Rulings',
+  seoTitle: 'DND Mage Armor Guide: AC, Rules, Best Uses',
+  metaDescription:
+    'Learn how dnd mage armor works, how to calculate AC, what it stacks with, who should use it, and the overlooked touch-target trick many players miss.',
+  excerpt:
+    'A practical dnd mage armor guide covering AC math, 2014/2024 rules, stacking rulings, best users, VTT token tips, FAQ, and a lazy-loaded YouTube video embed.',
+  updatedAt: DND_MAGE_ARMOR_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_MAGE_ARMOR_COVER_PATH,
+  coverAlt:
+    'DND mage armor guide cover showing a robed spellcaster protected by glowing blue spectral armor inside a stone dungeon study',
+  bodyHtml: dndMageArmorArticleHtml,
+  faqItems: [
+    {
+      question: 'Is Mage Armor concentration?',
+      answer:
+        'No. Mage Armor is not concentration, so you can maintain another concentration spell while Mage Armor stays active for its 8-hour duration.',
+    },
+    {
+      question: 'Can you cast Mage Armor on someone else?',
+      answer:
+        'Yes. Mage Armor has a range of Touch and targets a willing creature who is not wearing armor, so it can be cast on another eligible creature.',
+    },
+    {
+      question: 'Does Mage Armor stack with Unarmored Defense?',
+      answer:
+        'No. Mage Armor and Unarmored Defense are different base AC calculations. You choose which calculation to use; you do not combine them.',
+    },
+    {
+      question: 'Does Mage Armor work with a shield?',
+      answer:
+        'Under the 2014 Sage Advice ruling, yes. Mage Armor works with a shield because the shield is wielded rather than worn armor. For strict 2024 tables, confirm the shield ruling with your DM before relying on it.',
+    },
+    {
+      question: 'Is Mage Armor worth it at higher levels?',
+      answer:
+        'It depends on your build. Mage Armor remains useful for unarmored high-Dex casters, but it becomes easier to replace with armor proficiency, magic items, subclass features, or better positioning.',
+    },
+  ],
+  relatedSlugs: ['dnd-armor-guide', 'dnd-counterspell', 'dnd-classes-explained', 'dnd-constitution-guide'],
+};
+
+const dndMageArmorArticleZh: BlogPost = {
+  slug: 'dnd-mage-armor',
+  title: 'dnd mage armor 指南：AC 规则、最佳用法与常见裁定',
+  seoTitle: 'dnd mage armor 指南：AC 规则、叠加与最佳用法',
+  metaDescription:
+    '这篇 dnd mage armor 指南会讲清 AC 怎么算、能和什么叠加、谁最适合使用，以及很多玩家会忽略的 Touch 目标技巧。',
+  excerpt:
+    '一篇实用 dnd mage armor 法术百科，覆盖 AC 计算、2014/2024 规则、叠加裁定、适用角色、VTT Token 建议、FAQ 和视频嵌入。',
+  updatedAt: DND_MAGE_ARMOR_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '法术百科',
+  coverImage: DND_MAGE_ARMOR_COVER_PATH,
+  coverAlt:
+    'dnd mage armor 指南封面图，石质地城书房里一名长袍施法者被蓝色幽灵护甲保护',
+  bodyHtml: dndMageArmorArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'Mage Armor 需要 Concentration 吗？',
+      answer:
+        '不需要。Mage Armor 不是 Concentration 法术，所以它持续期间，你仍然可以维持另一个专注法术。',
+    },
+    {
+      question: 'Mage Armor 能给别人施放吗？',
+      answer:
+        '可以。Mage Armor 的距离是 Touch，目标是一个自愿且未穿护甲的生物，所以可以给符合条件的其他生物施放。',
+    },
+    {
+      question: 'Mage Armor 能和 Unarmored Defense 叠加吗？',
+      answer:
+        '不能。Mage Armor 和 Unarmored Defense 是两套不同的基础 AC 计算方式。你选择其中一种使用，不能把公式加在一起。',
+    },
+    {
+      question: 'Mage Armor 可以和 shield 一起用吗？',
+      answer:
+        '按 2014 Sage Advice 裁定，可以。Mage Armor 可以和 shield 一起用，因为 shield 是被 wield，而不是 worn armor。严格 2024 桌最好先问 DM。',
+    },
+    {
+      question: '高等级还值得用 Mage Armor 吗？',
+      answer:
+        '看构筑。对高 Dex 无甲施法者仍然有价值，但高等级后更容易被护甲熟练、魔法物品、子职业特性或更好的站位替代。',
+    },
+  ],
+  relatedSlugs: ['dnd-armor-guide', 'dnd-counterspell', 'dnd-classes-explained', 'dnd-constitution-guide'],
+};
+
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndClassesArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndClassesArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndClassesArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndClassesArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

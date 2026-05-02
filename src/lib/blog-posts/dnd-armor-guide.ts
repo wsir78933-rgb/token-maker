@@ -66,7 +66,7 @@ export const dndArmorArticleHtml = String.raw`
   <img
     class="inline-figure__image inline-figure__image--wide"
     src="${DND_ARMOR_TYPES_IMAGE_PATH}"
-    alt="Three types of DND armor displayed on stands in a medieval armory: leather, scale mail, and full plate"
+    alt="DND armor types arranged in a clean fantasy armory, including leather, chain, breastplate, shield, and plate"
     width="1024"
     height="1024"
     loading="lazy"
@@ -261,7 +261,7 @@ export const dndArmorArticleHtmlZh = String.raw`
   <img
     class="inline-figure__image inline-figure__image--wide"
     src="${DND_ARMOR_TYPES_IMAGE_PATH}"
-    alt="中世纪军械库中展示的三种 DND 护甲：皮甲、鳞甲和全身板甲"
+    alt="奇幻军械库中整齐展示多种 DND 护甲，包括皮甲、锁甲、胸甲、盾牌和板甲"
     width="1024"
     height="1024"
     loading="lazy"

@@ -26,7 +26,7 @@ export const dndClassesArticleHtml = String.raw`
   <img
     class="inline-figure__image inline-figure__image--wide"
     src="${DND_CLASSES_TABLETOP_IMAGE_PATH}"
-    alt="A D20 die and a dagger resting on a candlelit tabletop before a Dungeons & Dragons session"
+    alt="Dungeons & Dragons class miniatures and character sheets arranged around a warm tabletop"
     width="1024"
     height="1024"
     loading="lazy"
@@ -51,7 +51,7 @@ export const dndClassesArticleHtml = String.raw`
   <img
     class="inline-figure__image inline-figure__image--square"
     src="${DND_CLASSES_MARTIAL_IMAGE_PATH}"
-    alt="A weathered longsword buried in stone, evoking the raw strength of martial Dungeons & Dragons classes"
+    alt="A Dungeons & Dragons fighter in practical armor training with sword and shield"
     width="960"
     height="960"
     loading="lazy"
@@ -162,7 +162,7 @@ export const dndClassesArticleHtmlZh = String.raw`
   <img
     class="inline-figure__image inline-figure__image--wide"
     src="${DND_CLASSES_TABLETOP_IMAGE_PATH}"
-    alt="烛光下的桌面上放着一枚二十面骰和一把匕首，营造出跑团开场前的氛围"
+    alt="温暖桌面上摆放着 DND 职业微缩模型、骰子和角色纸"
     width="1024"
     height="1024"
     loading="lazy"
@@ -187,7 +187,7 @@ export const dndClassesArticleHtmlZh = String.raw`
   <img
     class="inline-figure__image inline-figure__image--square"
     src="${DND_CLASSES_MARTIAL_IMAGE_PATH}"
-    alt="一把插在岩石中的长剑，呈现出近战职业那种粗犷直接的力量感"
+    alt="一名 DND 战士穿着实用护甲，正在用长剑和盾牌训练"
     width="960"
     height="960"
     loading="lazy"

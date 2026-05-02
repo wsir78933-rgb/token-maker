@@ -23,14 +23,14 @@ import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 const copyByLocale = {
   en: {
     eyebrow: 'Feature Guide',
-    placeholderEyebrow: 'Article Placeholder',
+    placeholderEyebrow: 'Coming Soon',
     blog: 'Blog',
     liveLabel: 'Published Article',
-    placeholderLabel: 'Placeholder Entry',
+    placeholderLabel: 'Draft Article',
     detailHeading: 'Full article',
-    placeholderDetailHeading: 'Write your content here later',
+    placeholderDetailHeading: 'Article coming soon',
     placeholderDetailBody:
-      'This page is already wired into the route structure. When you are ready, replace the placeholder post with your real article title, summary, and content source.',
+      'This guide is not ready yet. Check back later for the full article.',
     sourceHint: 'Source file',
     sourcePath: 'src/lib/blog-content.ts',
     tocEyebrow: 'On this page',
@@ -48,14 +48,14 @@ const copyByLocale = {
   },
   zh: {
     eyebrow: '专题文章',
-    placeholderEyebrow: '文章占位页',
+    placeholderEyebrow: '文章准备中',
     blog: '博客',
     liveLabel: '正式文章',
-    placeholderLabel: '占位文章',
+    placeholderLabel: '草稿文章',
     detailHeading: '正文',
-    placeholderDetailHeading: '后续正文直接写在这里',
+    placeholderDetailHeading: '文章准备中',
     placeholderDetailBody:
-      '这页路由已经接通了。等你准备写正式文章时，只需要把占位数据替换成真实标题、摘要和正文来源即可。',
+      '这篇指南还没准备好，后续会补上完整正文。',
     sourceHint: '内容来源文件',
     sourcePath: 'src/lib/blog-content.ts',
     tocEyebrow: '文章目录',

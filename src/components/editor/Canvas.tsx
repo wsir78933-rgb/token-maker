@@ -14,6 +14,8 @@ function getNextImageScale(currentScale: number, deltaY: number) {
   return Math.max(0.1, Math.min(currentScale + direction * scaleFactor, 5));
 }
 
+const EDITOR_REFERENCE_SIZE = 512;
+
 export function Canvas() {
   const imageUrl = useEditorStore((state) => state.imageUrl);
   const imageElement = useEditorStore((state) => state.imageElement);
@@ -38,6 +40,7 @@ export function Canvas() {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const [canvasSize, setCanvasSize] = useState(512);
+  const [previewCssSize, setPreviewCssSize] = useState(512);
 
   // 用于拖拽交互的状态
   const [isDragging, setIsDragging] = useState(false);
@@ -52,8 +55,9 @@ export function Canvas() {
     if (!el) return;
     const ro = new ResizeObserver((entries) => {
       const { width } = entries[0].contentRect;
+      setPreviewCssSize(width > 0 ? width : EDITOR_REFERENCE_SIZE);
       const px = Math.round(width * window.devicePixelRatio);
-      setCanvasSize(px > 0 ? px : 512);
+      setCanvasSize(px > 0 ? px : EDITOR_REFERENCE_SIZE);
     });
     ro.observe(el);
     return () => ro.disconnect();
@@ -192,8 +196,9 @@ export function Canvas() {
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging || !imageElement) return;
-    const dx = e.clientX - dragStartPointer.current.x;
-    const dy = e.clientY - dragStartPointer.current.y;
+    const previewScale = previewCssSize / EDITOR_REFERENCE_SIZE || 1;
+    const dx = (e.clientX - dragStartPointer.current.x) / previewScale;
+    const dy = (e.clientY - dragStartPointer.current.y) / previewScale;
     
     scheduleImageOffset(dragStartOffset.current.x + dx, dragStartOffset.current.y + dy);
   };
@@ -232,7 +237,7 @@ export function Canvas() {
             />
             
             {/* 文字交互层 */}
-            <TextCanvasOverlay />
+            <TextCanvasOverlay previewScale={previewCssSize / EDITOR_REFERENCE_SIZE || 1} />
           </>
         ) : (
           <ImageUploader />

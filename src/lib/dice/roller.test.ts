@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  describeDiceRoll,
-  parseDiceExpression,
-  rollDiceExpression,
+  formatMixedDiceRequest,
+  parseMixedDiceExpression,
+  rollMixedDice,
 } from '@/lib/dice/roller';
 
 function createSequenceRandom(values: number[]) {
@@ -16,72 +16,64 @@ function createSequenceRandom(values: number[]) {
   };
 }
 
-describe('parseDiceExpression', () => {
-  it('能把常见 DnD 表达式规范化', () => {
-    expect(parseDiceExpression(' 4 d 6 dl 1 + 2 ')).toEqual({
-      raw: '4 d 6 dl 1 + 2',
-      count: 4,
-      sides: 6,
-      modifier: 2,
-      dropMode: 'lowest',
-      dropCount: 1,
-      normalized: '4d6dl1+2',
+describe('parseMixedDiceExpression', () => {
+  it('能把常见混合骰表达式规范化为骰子池', () => {
+    expect(parseMixedDiceExpression(' 2 d 6 + d20 - 3 + 1d6 ')).toEqual({
+      groups: [
+        { sides: 6, count: 3 },
+        { sides: 20, count: 1 },
+      ],
+      modifier: -3,
     });
   });
 
-  it('会为省略数量的表达式补成 1 颗骰子', () => {
-    expect(parseDiceExpression('d20')).toMatchObject({
-      count: 1,
-      sides: 20,
-      normalized: '1d20',
-    });
-  });
-
-  it('会拒绝超范围和不合法的表达式', () => {
-    expect(parseDiceExpression('13d6')).toBeNull();
-    expect(parseDiceExpression('4d6dl4')).toBeNull();
-    expect(parseDiceExpression('2d3')).toBeNull();
+  it('会拒绝超范围和不支持的表达式', () => {
+    expect(parseMixedDiceExpression('16d6')).toBeNull();
+    expect(parseMixedDiceExpression('2d3')).toBeNull();
+    expect(parseMixedDiceExpression('2d6-1d4')).toBeNull();
+    expect(parseMixedDiceExpression('bad-input')).toBeNull();
   });
 });
 
-describe('rollDiceExpression', () => {
-  it('能按 drop lowest 和 modifier 计算结果', () => {
-    const result = rollDiceExpression('4d6dl1+2', createSequenceRandom([0.99, 0.2, 0.49, 0.01]));
+describe('rollMixedDice', () => {
+  it('能按骰子池和 modifier 计算总数并保留分组', () => {
+    const result = rollMixedDice(
+      {
+        groups: [
+          { sides: 6, count: 2 },
+          { sides: 20, count: 1 },
+        ],
+        modifier: 3,
+      },
+      createSequenceRandom([0, 0.99, 0.49]),
+    );
 
     expect(result).toMatchObject({
-      normalizedExpression: '4d6dl1+2',
-      rolls: [6, 2, 3, 1],
-      keptIndexes: [0, 1, 2],
-      droppedIndexes: [3],
-      keptRolls: [6, 2, 3],
-      droppedRolls: [1],
-      subtotal: 11,
-      total: 13,
-      dropMode: 'lowest',
-      dropCount: 1,
+      modifier: 3,
+      total: 20,
+      groups: [
+        { sides: 6, count: 2, rolls: [1, 6], subtotal: 7 },
+        { sides: 20, count: 1, rolls: [10], subtotal: 10 },
+      ],
+      allRolls: [
+        { sides: 6, value: 1, groupIndex: 0, rollIndex: 0 },
+        { sides: 6, value: 6, groupIndex: 0, rollIndex: 1 },
+        { sides: 20, value: 10, groupIndex: 1, rollIndex: 0 },
+      ],
     });
   });
+});
 
-  it('能按 drop highest 计算结果并保留原始顺序索引', () => {
-    const result = rollDiceExpression('4d6dh1-1', createSequenceRandom([0.99, 0.2, 0.49, 0.01]));
-
-    expect(result).toMatchObject({
-      rolls: [6, 2, 3, 1],
-      keptIndexes: [1, 2, 3],
-      droppedIndexes: [0],
-      keptRolls: [2, 3, 1],
-      droppedRolls: [6],
-      subtotal: 6,
-      total: 5,
-      dropMode: 'highest',
-      dropCount: 1,
-    });
-  });
-
-  it('能输出面向 UI 的自然语言描述', () => {
-    const result = rollDiceExpression('4d6dl1+2', createSequenceRandom([0.8, 0.6, 0.4, 0.2]));
-
-    expect(result).not.toBeNull();
-    expect(describeDiceRoll(result!)).toBe('4d6 drop lowest 1 + 2');
+describe('formatMixedDiceRequest', () => {
+  it('能输出面向 UI 和 URL 的表达式', () => {
+    expect(
+      formatMixedDiceRequest({
+        groups: [
+          { sides: 4, count: 1 },
+          { sides: 8, count: 2 },
+        ],
+        modifier: -1,
+      }),
+    ).toBe('1d4 + 2d8 - 1');
   });
 });

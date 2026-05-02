@@ -40,6 +40,13 @@ function extractState(state: EditorState): PartialTrackedState {
   };
 }
 
+const HISTORY_LIMIT = 50;
+const HISTORY_DEBOUNCE_MS = 400;
+
+function stringifyTrackedState(state: PartialTrackedState) {
+  return JSON.stringify(state);
+}
+
 interface HistoryState {
   past: PartialTrackedState[];
   future: PartialTrackedState[];
@@ -57,28 +64,11 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
   isTimeTraveling: false,
 
   commit: () => {
-    // 提交历史记录应该在状态已经改变【之后】执行，以捕获最新状态？
-    // 或者在状态改变【之前】执行，以捕获旧状态？
-    // 为了简单起见，我们在改变【之前】记录当前状态，然后压入 past。
-    const currentState = extractState(useEditorStore.getState());
-    
-    set((state) => {
-      // 避免重复推送相同状态
-      if (state.past.length > 0) {
-        const last = state.past[state.past.length - 1];
-        if (JSON.stringify(last) === JSON.stringify(currentState)) {
-          return state;
-        }
-      }
-      const newPast = [...state.past, currentState];
-      // 限制历史记录条数 (最大 50 条)
-      if (newPast.length > 50) newPast.shift();
-
-      return { past: newPast, future: [] };
-    });
+    flushPendingHistoryCommit();
   },
 
   undo: () => {
+    flushPendingHistoryCommit();
     const { past, future } = get();
     if (past.length === 0) return;
 
@@ -92,6 +82,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
     });
 
     useEditorStore.setState(previous);
+    setHistoryBaseline(previous);
 
     // 释放标志位，使得后续普通操作可以正常触发订阅
     setTimeout(() => {
@@ -100,6 +91,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
   },
 
   redo: () => {
+    flushPendingHistoryCommit();
     const { past, future } = get();
     if (future.length === 0) return;
 
@@ -113,6 +105,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
     });
 
     useEditorStore.setState(next);
+    setHistoryBaseline(next);
 
     setTimeout(() => {
       set({ isTimeTraveling: false });
@@ -120,13 +113,66 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
   },
 
   clearHistory: () => {
+    clearPendingHistoryCommit();
+    setHistoryBaseline(extractState(useEditorStore.getState()));
     set({ past: [], future: [] });
   }
 }));
 
 // ============== 自动防抖抓取中间件 (非侵入式) ==============
 let saveTimeout: NodeJS.Timeout | null = null;
-let lastSavedStateStr = '';
+let baselineState = extractState(useEditorStore.getState());
+let baselineStateStr = stringifyTrackedState(baselineState);
+let pendingPastState: PartialTrackedState | null = null;
+let pendingCurrentState: PartialTrackedState | null = null;
+
+function clearPendingHistoryCommit() {
+  if (saveTimeout) {
+    clearTimeout(saveTimeout);
+    saveTimeout = null;
+  }
+
+  pendingPastState = null;
+  pendingCurrentState = null;
+}
+
+function setHistoryBaseline(state: PartialTrackedState) {
+  clearPendingHistoryCommit();
+  baselineState = state;
+  baselineStateStr = stringifyTrackedState(state);
+}
+
+function pushPastState(snapshot: PartialTrackedState) {
+  const snapshotStr = stringifyTrackedState(snapshot);
+
+  useHistoryStore.setState((state) => {
+    const last = state.past[state.past.length - 1];
+    const past =
+      last && stringifyTrackedState(last) === snapshotStr
+        ? state.past
+        : [...state.past, snapshot].slice(-HISTORY_LIMIT);
+
+    return { past, future: [] };
+  });
+}
+
+function flushPendingHistoryCommit() {
+  if (saveTimeout) {
+    clearTimeout(saveTimeout);
+    saveTimeout = null;
+  }
+
+  if (!pendingPastState || !pendingCurrentState) return;
+
+  const snapshot = pendingPastState;
+  const current = pendingCurrentState;
+  pendingPastState = null;
+  pendingCurrentState = null;
+
+  pushPastState(snapshot);
+  baselineState = current;
+  baselineStateStr = stringifyTrackedState(current);
+}
 
 // 订阅全局变化自动节流收录历史，降低手动调用的心智负担
 useEditorStore.subscribe((state) => {
@@ -134,28 +180,21 @@ useEditorStore.subscribe((state) => {
   if (historyStore.isTimeTraveling) return;
 
   const tracked = extractState(state);
-  const currentStr = JSON.stringify(tracked);
+  const currentStr = stringifyTrackedState(tracked);
 
-  if (currentStr === lastSavedStateStr) return;
+  if (currentStr === baselineStateStr) {
+    clearPendingHistoryCommit();
+    return;
+  }
 
   if (saveTimeout) {
     clearTimeout(saveTimeout);
   }
 
-  // 使用 300ms 延迟作为自动提交点
-  // 当用户连续拖拽滑块或图片时，只有停顿 300ms 后才会产生一个 commit
+  pendingPastState ??= baselineState;
+  pendingCurrentState = tracked;
+
   saveTimeout = setTimeout(() => {
-    // 因为这已经是延期执行了，意味着此时 state 就是当前的最终结果
-    // 我们在此刻要把【改变之前】的状态推入吗？
-    // 事实上，如果是从上一个稳定点推过来的，我们其实只是想确保历史栈有快照。
-    // 在时间旅行模型中，当前状态保存在 EditorStore，历史节点保存在 past。
-    // 所以由于我们是滞后收集，那么推入栈里的应当是过去某个快照，还是将它作为 `past` 新元素处理？
-    // 比较安全的打法：把延时的 state push 到栈里，但是在进行下一次修改前。
-    // 更好的方式：我们直接拿目前的稳定态 currentStr 作为一个关键帧 push。但这在 undo 时相当于我们还原到了前一个关键帧，而不是撤销本次动作。
-    // 真正正确的逻辑：
-    // 每当发生变化前，我们快照，放入 past。
-    // 因为此时不好截获前状态，我们可以维持一个 prevTrackedState。
-    lastSavedStateStr = currentStr;
-    useHistoryStore.getState().commit();
-  }, 400); // 400ms 防抖
+    flushPendingHistoryCommit();
+  }, HISTORY_DEBOUNCE_MS);
 });

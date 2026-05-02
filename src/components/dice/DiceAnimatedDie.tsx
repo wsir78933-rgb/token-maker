@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { DICE_THEME, type DiceTrayDie } from '@/lib/dice/tray-css';
 import { cn } from '@/lib/utils';
@@ -13,30 +13,35 @@ interface DiceAnimatedDieProps {
 /** Total spin time in ms */
 const SPIN_MS = 1400;
 
+interface ScatterLayout {
+  randomX: number;
+  randomY: number;
+  finalRotate: number;
+  dropXOffset: number;
+}
+
+function createScatterLayout(): ScatterLayout {
+  return {
+    randomX: Math.random() * 320 - 160,
+    randomY: Math.random() * 160 - 80,
+    finalRotate: Math.random() * 120 - 60,
+    dropXOffset: Math.random() > 0.5 ? 400 : -400,
+  };
+}
+
 export function DiceAnimatedDie({ die }: DiceAnimatedDieProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLDivElement>(null);
   const [settled, setSettled] = useState(false);
+  const [resultRotate, setResultRotate] = useState(0);
 
   const theme = DICE_THEME[die.sides];
 
-  // 挂载时生成真随机散布，因为每次投掷 die.id 都会变化导致重挂载
-  const { randomX, randomY, finalRotate, dropXOffset } = useMemo(() => {
-    // 强制散布范围：X向两端延展，避免中心堆积
-    // 用一个简单的碰撞偏移规避：
-    const rX = (Math.random() * 320) - 160; 
-    const rY = (Math.random() * 160) - 80;
-    const fRot = (Math.random() * 120) - 60;
-    const dropX = Math.random() > 0.5 ? 400 : -400; // Left or right screen bounds
-    return { randomX: rX, randomY: rY, finalRotate: fRot, dropXOffset: dropX };
-  }, []);
-
   useEffect(() => {
-    setSettled(false);
-
     const card = cardRef.current;
     const icon = iconRef.current;
     if (!card || !icon) return;
+    const { randomX, randomY, finalRotate, dropXOffset } = createScatterLayout();
 
     // ── 1. Card container drop & bounce ───────────────────────────────────
     // Thrown from high up (outside the tray)
@@ -72,13 +77,16 @@ export function DiceAnimatedDie({ die }: DiceAnimatedDieProps) {
       },
     );
 
-    const onFinish = () => setSettled(true);
+    const onFinish = () => {
+      setResultRotate(finalRotate);
+      setSettled(true);
+    };
     spinAnim.addEventListener('finish', onFinish);
     return () => {
       spinAnim.removeEventListener('finish', onFinish);
       spinAnim.cancel();
     };
-  }, [die.id, die.delayMs, randomX, randomY, finalRotate, dropXOffset]);
+  }, [die.id, die.delayMs]);
 
   return (
     <div
@@ -117,7 +125,7 @@ export function DiceAnimatedDie({ die }: DiceAnimatedDieProps) {
         className="absolute inset-0 flex items-center justify-center transition-all duration-300 pointer-events-none z-10"
         style={{
           opacity: settled ? 1 : 0,
-          transform: settled ? `scale(1) rotate(${-finalRotate}deg)` : `scale(0.5) rotate(${-finalRotate}deg)`,
+          transform: settled ? `scale(1) rotate(${-resultRotate}deg)` : `scale(0.5) rotate(${-resultRotate}deg)`,
         }}
       >
         <span
