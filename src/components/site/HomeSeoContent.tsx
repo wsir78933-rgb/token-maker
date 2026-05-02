@@ -28,8 +28,8 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
 
   return (
     <>
-      <div className="site-topbar sticky top-0 z-50">
-        <div className="mx-auto max-w-6xl px-6 py-4 lg:px-8">
+      <div className="site-topbar z-50 md:sticky md:top-0">
+        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link
               href={homeHref}
@@ -49,7 +49,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
             </div>
           </div>
 
-          <nav className="mt-4 flex flex-wrap items-center gap-2">
+          <nav className="mt-3 flex flex-wrap items-center gap-2 sm:mt-4">
             {navLinks.map((link, index) => (
               <Link
                 key={link.href}

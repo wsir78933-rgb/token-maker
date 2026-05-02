@@ -4,9 +4,8 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
-import { trackDownloadToken, trackSelectFrame } from '@/lib/analytics';
+import { trackSelectFrame } from '@/lib/analytics';
 import {
-  BORDER_TEMPLATES,
   COMPETITOR_BORDER_TEMPLATES,
   DEFAULT_BORDER_TEMPLATES,
 } from '@/lib/templates/borders';
@@ -14,10 +13,9 @@ import { STYLE_PRESETS } from '@/lib/templates/presets';
 import { drawBorderThumbnail } from '@/lib/renderer/borders';
 import { Button } from '@/components/ui/button';
 import type { BorderTemplate, ExportSize } from '@/types/editor';
-import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
-import { saveAs } from 'file-saver';
 import { DownloadCloud, Plus, Trash2 } from 'lucide-react';
 import { fileToBase64, preloadImageToCache } from '@/lib/utils/imageCache';
+import { downloadCurrentToken, getLocalizedName } from './export-token';
 
 const SIZES: ExportSize[] = [256, 512, 1024, 2048];
 const MAX_CUSTOM_BORDERS = 8;
@@ -64,26 +62,6 @@ function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
   };
 }
 
-function getLocalizedName(name: string, t: (key: I18nKey) => string) {
-  return name.includes('.') ? t(name as I18nKey) : name;
-}
-
-function getSelectedFrameName(
-  borderId: string,
-  customBorders: BorderTemplate[],
-  t: (key: I18nKey) => string
-) {
-  const selectedBorder =
-    BORDER_TEMPLATES.find((border) => border.id === borderId) ??
-    customBorders.find((border) => border.id === borderId);
-
-  if (!selectedBorder) {
-    return borderId;
-  }
-
-  return getLocalizedName(selectedBorder.name, t);
-}
-
 export function TemplatePanel() {
   const { t, locale } = useI18n();
   const selectedBorderId = useEditorStore((state) => state.selectedBorderId);
@@ -97,19 +75,13 @@ export function TemplatePanel() {
   const addCustomBorder = useEditorStore((state) => state.addCustomBorder);
   const removeCustomBorder = useEditorStore((state) => state.removeCustomBorder);
   const setExportSize = useEditorStore((state) => state.setExportSize);
-  const selectedFrameName = getSelectedFrameName(selectedBorderId, customBorders, t);
   const bordersGridRef = useRef<HTMLDivElement>(null);
   const [customBorderError, setCustomBorderError] = useState<string | null>(null);
   const visibleBorderTemplates =
     borderLibraryMode === 'competitor' ? COMPETITOR_BORDER_TEMPLATES : DEFAULT_BORDER_TEMPLATES;
 
   const handleExport = async () => {
-    const state = useEditorStore.getState();
-    const blob = await exportTokenAsPNG(state, state.exportSize);
-    if (blob) {
-      saveAs(blob, `token_${Date.now()}.png`);
-      trackDownloadToken(selectedFrameName);
-    }
+    await downloadCurrentToken(t);
   };
 
   const borderInputRef = useRef<HTMLInputElement>(null);
@@ -183,19 +155,19 @@ export function TemplatePanel() {
   };
 
   return (
-    <div className="flex w-full flex-col overflow-hidden border-l border-border bg-card/65 backdrop-blur xl:h-full xl:w-80">
+    <div className="order-3 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-80 xl:overflow-hidden xl:border-y-0 xl:border-l">
 
       {/* ── 顶部固定标题栏 ── */}
-      <div className="shrink-0 border-b border-border/50 px-4 py-4">
+      <div className="shrink-0 border-b border-border/50 px-4 py-3 sm:py-4">
         <h3 className="text-sm font-semibold text-foreground/90">{t('templatePanel')}</h3>
       </div>
 
-      <div className="flex-1 space-y-8 overflow-y-auto px-4 py-6">
+      <div className="flex-none space-y-6 overflow-visible px-4 py-4 sm:space-y-8 sm:py-6 xl:flex-1 xl:overflow-y-auto">
         
         {/* 风格预设 */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-foreground/90">{t('presets')}</h3>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2 min-[480px]:grid-cols-4 md:grid-cols-6 xl:grid-cols-3">
             {STYLE_PRESETS.map((preset) => {
               const isActive = activePresetId === preset.id;
               return (
@@ -220,8 +192,8 @@ export function TemplatePanel() {
         {/* 边框模板 */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-foreground/90">{t('borderTemplates')}</h3>
-          <div ref={bordersGridRef} className="max-h-[280px] overflow-y-auto rounded-lg border border-border/30 bg-muted/10 p-2">
-            <div className="grid grid-cols-3 gap-2">
+          <div ref={bordersGridRef} className="max-h-[280px] overflow-y-auto rounded-lg border border-border/30 bg-muted/10 p-2 sm:max-h-[360px] xl:max-h-[280px]">
+            <div className="grid grid-cols-3 gap-2 min-[480px]:grid-cols-4 md:grid-cols-6 xl:grid-cols-3">
               {[...visibleBorderTemplates, ...customBorders].map((border) => {
                 const isActive = selectedBorderId === border.id;
                 const label = getLocalizedName(border.name, t);
@@ -291,7 +263,7 @@ export function TemplatePanel() {
 
       {/* ── 底部固定导出栏 ── */}
       <div className="shrink-0 space-y-3 border-t border-border bg-card/92 p-4 shadow-[0_-10px_40px_-15px_var(--workspace-shadow-color)]">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <span className="text-xs font-medium text-foreground/80">{t('exportSection')}</span>
           <div className="flex rounded-md bg-muted/50 p-1">
             {SIZES.map(size => (
@@ -311,7 +283,7 @@ export function TemplatePanel() {
         </div>
 
         <Button
-          className="w-full font-medium"
+          className="hidden w-full font-medium xl:inline-flex"
           size="default"
           onClick={handleExport}
           disabled={!imageElement}

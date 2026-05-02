@@ -13,6 +13,7 @@ import {
   DND_COUNTERSPELL_COVER_PATH,
   DND_GIANTS_COVER_PATH,
   DND_MAGE_ARMOR_COVER_PATH,
+  DND_NECROMANCER_SPELLS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -24,6 +25,7 @@ import { dndGrungArticleHtml, dndGrungArticleHtmlZh } from '@/lib/blog-posts/dnd
 import { dndCounterspellArticleHtml, dndCounterspellArticleHtmlZh } from '@/lib/blog-posts/dnd-counterspell';
 import { dndGiantsArticleHtml, dndGiantsArticleHtmlZh } from '@/lib/blog-posts/dnd-giants';
 import { dndMageArmorArticleHtml, dndMageArmorArticleHtmlZh } from '@/lib/blog-posts/dnd-mage-armor';
+import { dndNecromancerSpellsArticleHtml, dndNecromancerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-necromancer-spells';
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
@@ -96,6 +98,115 @@ function createHeadingSlug(text: string) {
   return normalized || 'section';
 }
 
+function isFaqHeadingText(text: string) {
+  const normalized = text.toLowerCase();
+
+  return normalized.includes('faq') || normalized.includes('常见问题');
+}
+
+function addHtmlClass(openingTag: string, className: string) {
+  const classMatch = openingTag.match(/\sclass=(['"])(.*?)\1/i);
+
+  if (!classMatch) {
+    return openingTag.replace(/>$/, ` class="${className}">`);
+  }
+
+  const [fullMatch, quote, currentClasses] = classMatch;
+  const classNames = currentClasses.split(/\s+/).filter(Boolean);
+
+  if (classNames.includes(className)) {
+    return openingTag;
+  }
+
+  return openingTag.replace(fullMatch, ` class=${quote}${className} ${currentClasses}${quote}`);
+}
+
+function addHtmlAttribute(openingTag: string, name: string, value: string) {
+  const attrPattern = new RegExp(`\\s${name}=(['"]).*?\\1`, 'i');
+
+  if (attrPattern.test(openingTag)) {
+    return openingTag;
+  }
+
+  return openingTag.replace(/>$/, ` ${name}="${value}">`);
+}
+
+function enhanceExistingFaqCards(html: string) {
+  return html.replace(
+    /(<section\b(?=[^>]*\bid=["']faq["'])[^>]*>)([\s\S]*?)(<\/section>)/gi,
+    (_match, openingTag: string, innerHtml: string, closingTag: string) => {
+      const sectionTag = addHtmlClass(openingTag, 'blog-faq-section');
+      const enhancedInnerHtml = innerHtml.replace(/<article\b[^>]*>/gi, (articleTag) =>
+        addHtmlAttribute(addHtmlClass(articleTag, 'blog-faq-item'), 'tabindex', '0'),
+      );
+
+      return `${sectionTag}${enhancedInnerHtml}${closingTag}`;
+    },
+  );
+}
+
+function wrapFaqSegment(segmentHtml: string) {
+  if (/<article\b/i.test(segmentHtml) || /\bblog-faq-list\b/i.test(segmentHtml)) {
+    return segmentHtml;
+  }
+
+  const questionMatches = Array.from(segmentHtml.matchAll(/<h3\b[^>]*>[\s\S]*?<\/h3>/gi));
+
+  if (questionMatches.length === 0) {
+    return segmentHtml;
+  }
+
+  const firstQuestionIndex = questionMatches[0].index ?? 0;
+  const leadInHtml = segmentHtml.slice(0, firstQuestionIndex);
+  const faqItemsHtml = questionMatches
+    .map((questionMatch, index) => {
+      const questionHtml = questionMatch[0];
+      const questionIndex = questionMatch.index ?? 0;
+      const answerStartIndex = questionIndex + questionHtml.length;
+      const nextQuestionIndex = questionMatches[index + 1]?.index ?? segmentHtml.length;
+      const answerHtml = segmentHtml.slice(answerStartIndex, nextQuestionIndex).trim();
+
+      return `<article class="blog-faq-item" tabindex="0">
+${questionHtml}
+<div class="blog-faq-answer">
+${answerHtml}
+</div>
+</article>`;
+    })
+    .join('\n');
+
+  return `${leadInHtml}<div class="blog-faq-list">
+${faqItemsHtml}
+</div>`;
+}
+
+function enhanceBlogFaqHtml(html: string) {
+  const htmlWithFaqCards = enhanceExistingFaqCards(html);
+  const h2Matches = Array.from(htmlWithFaqCards.matchAll(/<h2\b[^>]*>[\s\S]*?<\/h2>/gi));
+
+  if (h2Matches.length === 0) {
+    return htmlWithFaqCards;
+  }
+
+  let enhancedHtml = '';
+  let cursor = 0;
+
+  h2Matches.forEach((headingMatch, index) => {
+    const headingStartIndex = headingMatch.index ?? 0;
+    const headingHtml = headingMatch[0];
+    const headingEndIndex = headingStartIndex + headingHtml.length;
+    const nextHeadingIndex = h2Matches[index + 1]?.index ?? htmlWithFaqCards.length;
+    const sectionHtml = htmlWithFaqCards.slice(headingEndIndex, nextHeadingIndex);
+    const headingText = decodeHeadingText(headingHtml);
+
+    enhancedHtml += htmlWithFaqCards.slice(cursor, headingEndIndex);
+    enhancedHtml += isFaqHeadingText(headingText) ? wrapFaqSegment(sectionHtml) : sectionHtml;
+    cursor = nextHeadingIndex;
+  });
+
+  return enhancedHtml + htmlWithFaqCards.slice(cursor);
+}
+
 function addHeadingAnchors(post: BlogPost): BlogPost {
   if (!post.bodyHtml) {
     return post;
@@ -103,7 +214,7 @@ function addHeadingAnchors(post: BlogPost): BlogPost {
 
   const headingCounts = new Map<string, number>();
   const headings: BlogPostHeading[] = [];
-  const bodyHtml = post.bodyHtml.replace(/<h([23])([^>]*)>([\s\S]*?)<\/h\1>/gi, (match, levelValue, attrs, innerHtml) => {
+  const bodyHtml = enhanceBlogFaqHtml(post.bodyHtml).replace(/<h([23])([^>]*)>([\s\S]*?)<\/h\1>/gi, (match, levelValue, attrs, innerHtml) => {
     const text = decodeHeadingText(innerHtml);
 
     if (!text) {
@@ -149,6 +260,7 @@ const DND_GRUNG_UPDATED_AT = '2026-04-20';
 const DND_COUNTERSPELL_UPDATED_AT = '2026-04-25';
 const DND_GIANTS_UPDATED_AT = '2026-04-28';
 const DND_MAGE_ARMOR_UPDATED_AT = '2026-04-29';
+const DND_NECROMANCER_SPELLS_UPDATED_AT = '2026-05-02';
 
 const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -727,11 +839,121 @@ const dndMageArmorArticleZh: BlogPost = {
   relatedSlugs: ['dnd-armor-guide', 'dnd-counterspell', 'dnd-classes-explained', 'dnd-constitution-guide'],
 };
 
+const dndNecromancerSpellsArticle: BlogPost = {
+  slug: 'dnd-necromancer-spells',
+  title: 'dnd necromancer spells: Best 5e Spell List, Animate Dead, and Minion Tips',
+  seoTitle: 'dnd necromancer spells: Best 5e Spell List',
+  metaDescription:
+    'Full dnd necromancer spells guide with a level-by-level necromancy spell list, Animate Dead rules, skeleton vs zombie tips, FAQ, and video.',
+  excerpt:
+    'A practical dnd necromancer spells guide with a level-by-level spell list, Animate Dead rules, skeleton vs zombie advice, Necromancer Wizard loadouts, FAQ, and video.',
+  updatedAt: DND_NECROMANCER_SPELLS_UPDATED_AT,
+  readTime: '13 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_NECROMANCER_SPELLS_COVER_PATH,
+  coverAlt:
+    'dnd necromancer spells guide cover showing a necromancer commanding skeleton archers and a zombie beside Animate Dead notes and spell cards',
+  bodyHtml: dndNecromancerSpellsArticleHtml,
+  faqItems: [
+    {
+      question: 'What is the best dnd necromancer spell?',
+      answer:
+        'The best dnd necromancer spell is Animate Dead if you want the classic undead-minion playstyle. For non-minion value, Blindness/Deafness and Speak with Dead are often cleaner at the table.',
+    },
+    {
+      question: 'What level can a necromancer cast Animate Dead?',
+      answer:
+        'A necromancer can usually cast Animate Dead at character level 5 if they are a full caster such as a Wizard or Cleric with access to 3rd-level spells. Exact access still depends on your class, subclass, and source rules.',
+    },
+    {
+      question: 'How many undead can Animate Dead control?',
+      answer:
+        'At 3rd level, Animate Dead creates one skeleton or zombie, or reasserts control over up to four undead you previously animated. Each slot level above 3 adds two more undead to the animate or reassert-control limit.',
+    },
+    {
+      question: 'Can a Wizard be a necromancer in DND 5e?',
+      answer:
+        'Yes. A Wizard can play the necromancer role, and the School of Necromancy subclass is the most obvious route in 2014-style 5e games. Clerics can also use several key necromancy spells.',
+    },
+    {
+      question: 'Does Animate Dead require concentration?',
+      answer:
+        'No. Animate Dead does not require concentration. The important limit is the 24-hour control duration, which you maintain by recasting the spell before control expires.',
+    },
+    {
+      question: 'Are skeletons better than zombies in DND?',
+      answer:
+        'Skeletons are usually better for ranged damage and clean turns. Zombies are better as blockers or horror props because they are tougher but slower and less accurate.',
+    },
+    {
+      question: 'Is necromancy evil in DND?',
+      answer:
+        'Not automatically by rules, but many DND worlds treat undead creation as taboo or evil. Ask your DM before making Animate Dead a public-facing part of your character.',
+    },
+  ],
+  relatedSlugs: ['dnd-counterspell', 'dnd-mage-armor', 'dnd-classes-explained', 'dnd-constitution-guide'],
+};
+
+const dndNecromancerSpellsArticleZh: BlogPost = {
+  slug: 'dnd-necromancer-spells',
+  title: 'dnd necromancer spells 指南：死灵法术清单、Animate Dead 与亡灵小队',
+  seoTitle: 'dnd necromancer spells 指南：死灵法术清单',
+  metaDescription:
+    '这篇 dnd necromancer spells 指南整理按环级死灵法术清单、Animate Dead 规则、Skeleton vs Zombie、FAQ 和懒加载视频。',
+  excerpt:
+    '一篇实用 dnd necromancer spells 法术百科，覆盖按环级法术清单、Animate Dead 规则、骷髅与僵尸选择、FAQ 和视频。',
+  updatedAt: DND_NECROMANCER_SPELLS_UPDATED_AT,
+  readTime: '13 分钟阅读',
+  coverLabel: '法术百科',
+  coverImage: DND_NECROMANCER_SPELLS_COVER_PATH,
+  coverAlt:
+    'dnd necromancer spells 指南封面图，死灵法师在 Animate Dead 笔记和法术卡旁指挥 skeleton 弓手与 zombie',
+  bodyHtml: dndNecromancerSpellsArticleHtmlZh,
+  faqItems: [
+    {
+      question: '最好的 dnd necromancer spell 是哪个？',
+      answer:
+        '最经典也最核心的是 Animate Dead，尤其当你想玩亡灵小队路线时。如果不想管理小兵，Blindness/Deafness 和 Speak with Dead 往往更干净。',
+    },
+    {
+      question: 'Necromancer 几级可以施放 Animate Dead？',
+      answer:
+        '通常来说，如果你是 Wizard 或 Cleric 这类能获得 3 环法术的 full caster，角色 5 级就可以施放 Animate Dead。具体仍要看你的职业、子职业和你们桌允许的规则来源。',
+    },
+    {
+      question: 'Animate Dead 可以控制多少个 undead？',
+      answer:
+        '3 环施放时，Animate Dead 可以创造 1 个 skeleton 或 zombie，或者重新控制最多 4 个你之前用此法术创造的 undead。3 环以上每升 1 环，创造或重新控制的上限再增加 2 个。',
+    },
+    {
+      question: 'Wizard 可以在 DND 5e 里玩 necromancer 吗？',
+      answer:
+        '可以。Wizard 是最常见的 necromancer 路线，2014 风格 5e 里 School of Necromancy 子职业尤其直观。Cleric 也能使用不少关键 necromancy spells。',
+    },
+    {
+      question: 'Animate Dead 需要 Concentration 吗？',
+      answer:
+        '不需要。Animate Dead 不吃 Concentration。真正要管理的是 24 小时控制时限，你需要在控制结束前重施法来维持命令权。',
+    },
+    {
+      question: 'Skeleton 比 Zombie 更好吗？',
+      answer:
+        '多数情况下，skeleton 更适合远程输出和快速结算；zombie 更适合堵门、吃伤害和营造恐怖感，因为它更慢、命中也更差。',
+    },
+    {
+      question: 'DND 里的 necromancy 一定是邪恶的吗？',
+      answer:
+        '规则上不一定自动邪恶，但很多 DND 世界会把创造亡灵视为禁忌或邪恶行为。想公开使用 Animate Dead 前，先和 DM 对齐世界观。',
+    },
+  ],
+  relatedSlugs: ['dnd-counterspell', 'dnd-mage-armor', 'dnd-classes-explained', 'dnd-constitution-guide'],
+};
+
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndClassesArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndClassesArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndClassesArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndClassesArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

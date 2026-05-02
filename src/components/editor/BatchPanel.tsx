@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   UploadCloud,
   X,
@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { useBatchStore } from '@/lib/store/batch-store';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
+import { getSupportedImageFiles, loadEditorImageFile } from './upload-files';
 
 // ============================================================
 // BatchPanel — 批处理主面板
@@ -50,6 +51,28 @@ export function BatchPanel() {
   // 进度百分比
   const progressPercent = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
 
+  useEffect(() => {
+    if (isProcessing || totalCount !== 1) return;
+    const singleItem = items[0];
+    if (!singleItem) return;
+
+    loadEditorImageFile(singleItem.file);
+    deactivate();
+  }, [deactivate, isProcessing, items, totalCount]);
+
+  const handleFiles = (files: File[]) => {
+    const imageFiles = getSupportedImageFiles(files);
+    if (imageFiles.length === 0) return;
+
+    if (!hasItems && imageFiles.length === 1) {
+      deactivate();
+      loadEditorImageFile(imageFiles[0]);
+      return;
+    }
+
+    addFiles(imageFiles);
+  };
+
   // ── 拖拽事件处理 ──
   const onDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
@@ -79,17 +102,11 @@ export function BatchPanel() {
     dragDepthRef.current = 0;
     setIsDragActive(false);
 
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      addFiles(files);
-    }
+    handleFiles(Array.from(e.dataTransfer.files));
   };
 
   const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    if (files.length > 0) {
-      addFiles(files);
-    }
+    handleFiles(Array.from(e.target.files ?? []));
     e.target.value = '';
   };
 

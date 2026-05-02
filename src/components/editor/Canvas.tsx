@@ -211,10 +211,10 @@ export function Canvas() {
   };
 
   return (
-    <div className="relative flex h-full items-center justify-center bg-background/10 p-4">
+    <div className="relative flex min-h-[24rem] w-full items-center justify-center bg-background/10 p-3 sm:min-h-[32rem] sm:p-4 xl:h-full xl:min-h-0 xl:p-6">
       <div
         ref={previewRef}
-        className={`relative overflow-hidden rounded-2xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors aspect-square h-full max-h-[512px] ${
+        className={`relative aspect-square w-full max-w-[512px] shrink-0 overflow-hidden rounded-xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors sm:rounded-2xl ${
           isImageSelected ? 'border border-primary ring-2 ring-primary/30' : 'border border-border/50'
         }`}
       >
@@ -245,7 +245,7 @@ export function Canvas() {
       </div>
       
       {imageElement ? (
-        <div className="absolute bottom-4 sm:bottom-6 bg-background/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-border text-xs font-medium tabular-nums text-foreground/80 flex items-center gap-2 pointer-events-none shadow-sm">
+        <div className="absolute bottom-3 flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5 text-xs font-medium tabular-nums text-foreground/80 shadow-sm backdrop-blur-md pointer-events-none sm:bottom-6">
           <span className="opacity-50">Scale</span>
           {Math.round(imageScale * 100)}%
         </div>

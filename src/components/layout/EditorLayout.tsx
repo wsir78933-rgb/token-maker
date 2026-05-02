@@ -21,7 +21,7 @@ export function EditorLayout() {
     <div
       id="editor-workspace"
       tabIndex={-1}
-      className="editor-shell scroll-mt-28 flex h-screen w-full flex-col overflow-hidden bg-background text-foreground selection:bg-primary/30"
+      className="editor-shell scroll-mt-0 flex min-h-[100svh] w-full flex-col overflow-visible bg-background text-foreground selection:bg-primary/30 md:scroll-mt-24 xl:h-screen xl:overflow-hidden"
     >
       <Suspense fallback={null}>
         <EditorSearchParamsSync />
@@ -31,17 +31,17 @@ export function EditorLayout() {
       </Suspense>
       <section
         aria-labelledby={workspaceHeadingId}
-        className="relative flex flex-1 flex-col overflow-auto xl:flex-row xl:overflow-hidden"
+        className="relative flex flex-1 flex-col overflow-visible xl:flex-row xl:overflow-hidden"
       >
         <h2 id={workspaceHeadingId} className="sr-only">
           {t('workspaceLabel')}
         </h2>
         <ControlPanel />
         {isBatchActive ? (
-          <div className="flex min-h-[36rem] flex-1 flex-col overflow-hidden">
+          <div className="order-1 flex min-h-[32rem] flex-none flex-col overflow-hidden xl:order-none xl:min-h-[36rem] xl:flex-1">
             {/* 有预览图时才显示 Canvas */}
             {hasEditorImage && (
-              <div className="editor-stage bg-dot-pattern shrink-0 bg-[length:16px_16px]" style={{ height: '320px' }}>
+              <div className="editor-stage bg-dot-pattern shrink-0 bg-[length:16px_16px] xl:h-80">
                 <Canvas />
               </div>
             )}
@@ -51,7 +51,7 @@ export function EditorLayout() {
             </div>
           </div>
         ) : (
-          <div className="editor-stage bg-dot-pattern min-h-[36rem] flex-1 bg-[length:16px_16px]">
+          <div className="editor-stage bg-dot-pattern order-1 flex-none bg-[length:16px_16px] xl:order-none xl:min-h-[36rem] xl:flex-1">
             <Canvas />
           </div>
         )}
@@ -60,4 +60,3 @@ export function EditorLayout() {
     </div>
   );
 }
-

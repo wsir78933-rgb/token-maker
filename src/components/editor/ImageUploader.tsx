@@ -2,17 +2,15 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { UploadCloud, Image as ImageIcon } from 'lucide-react';
-import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n } from '@/lib/i18n';
-import { trackUploadImage } from '@/lib/analytics';
+import { useBatchStore } from '@/lib/store/batch-store';
 import { ImageUploaderShowcaseStrip } from '@/components/site/ImageUploaderShowcaseStrip';
-
-const SUPPORTED_IMAGE_NAME = /\.(png|jpe?g|webp)$/i;
-
-function isSupportedImageFile(file: File | null | undefined): file is File {
-  if (!file) return false;
-  return file.type.startsWith('image/') || SUPPORTED_IMAGE_NAME.test(file.name);
-}
+import {
+  extractImageFiles,
+  getSupportedImageFiles,
+  loadEditorImageFile,
+  SUPPORTED_IMAGE_NAME,
+} from './upload-files';
 
 function isSupportedImageSource(value: string | null | undefined) {
   if (!value) return false;
@@ -25,18 +23,6 @@ function hasTransferPayload(dataTransfer: DataTransfer | null) {
     dataTransfer.files.length > 0 ||
     dataTransfer.items.length > 0 ||
     dataTransfer.types.length > 0
-  );
-}
-
-function extractImageFile(dataTransfer: DataTransfer) {
-  const fileFromFiles = Array.from(dataTransfer.files).find(isSupportedImageFile);
-  if (fileFromFiles) return fileFromFiles;
-
-  return (
-    Array.from(dataTransfer.items)
-      .filter((item) => item.kind === 'file')
-      .map((item) => item.getAsFile())
-      .find(isSupportedImageFile) ?? null
   );
 }
 
@@ -87,21 +73,19 @@ export function ImageUploader() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragDepthRef = useRef(0);
   const [isDragActive, setIsDragActive] = useState(false);
-  const setImage = useEditorStore((state) => state.setImage);
 
-  const handleFile = (file: File | null | undefined) => {
-    if (!isSupportedImageFile(file)) return;
+  const handleFiles = (files: File[]) => {
+    const imageFiles = getSupportedImageFiles(files);
+    if (imageFiles.length === 0) return;
 
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      setImage(url, img);
-      trackUploadImage();
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-    };
-    img.src = url;
+    if (imageFiles.length === 1) {
+      loadEditorImageFile(imageFiles[0]);
+      return;
+    }
+
+    const batchStore = useBatchStore.getState();
+    batchStore.activate();
+    batchStore.addFiles(imageFiles);
   };
 
   const handleImageUrl = async (url: string) => {
@@ -115,7 +99,7 @@ export function ImageUploader() {
       const mimeType =
         blob.type || (url.endsWith('.webp') ? 'image/webp' : url.match(/\.jpe?g(?=([?#].*)?$)/i) ? 'image/jpeg' : 'image/png');
       const file = new File([blob], createFileNameFromUrl(url, mimeType), { type: mimeType });
-      handleFile(file);
+      handleFiles([file]);
     } catch (error) {
       console.warn('Failed to read dropped image URL.', error);
     }
@@ -171,9 +155,9 @@ export function ImageUploader() {
     dragDepthRef.current = 0;
     setIsDragActive(false);
 
-    const droppedFile = extractImageFile(e.dataTransfer);
-    if (droppedFile) {
-      handleFile(droppedFile);
+    const droppedFiles = extractImageFiles(e.dataTransfer);
+    if (droppedFiles.length > 0) {
+      handleFiles(droppedFiles);
       return;
     }
 
@@ -184,7 +168,7 @@ export function ImageUploader() {
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleFile(e.target.files?.[0]);
+    handleFiles(Array.from(e.target.files ?? []));
     e.target.value = '';
   };
 
@@ -194,7 +178,7 @@ export function ImageUploader() {
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
-      className={`flex h-full min-h-[400px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors ${
+      className={`flex h-full min-h-0 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors ${
         isDragActive
           ? 'border-primary bg-primary/10 shadow-[0_0_0_1px_color-mix(in_oklab,var(--color-primary)_45%,transparent)]'
           : 'border-border bg-muted/20 hover:bg-muted/40'
@@ -207,24 +191,27 @@ export function ImageUploader() {
         onChange={onChange}
         accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
         className="hidden"
+        multiple
       />
-      <div className="flex flex-col items-center gap-4 text-muted-foreground p-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-          <UploadCloud className="w-8 h-8" />
+      <div className="flex flex-col items-center gap-3 p-4 text-center text-muted-foreground sm:gap-4 sm:p-6">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-16 sm:w-16">
+          <UploadCloud className="h-6 w-6 sm:h-8 sm:w-8" />
         </div>
         <div>
-          <h3 className="text-lg font-medium text-foreground mb-1">
+          <h3 className="mb-1 text-base font-medium text-foreground sm:text-lg">
             {t('dropHint')}
           </h3>
-          <p className="text-sm">
+          <p className="text-xs sm:text-sm">
             {t('orClickToUpload')}
           </p>
         </div>
-        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground sm:mt-2">
           <ImageIcon className="w-4 h-4" />
           {t('supportedFormats')}
         </div>
-        <ImageUploaderShowcaseStrip locale={locale} />
+        <div className="hidden w-full sm:block">
+          <ImageUploaderShowcaseStrip locale={locale} />
+        </div>
       </div>
     </div>
   );

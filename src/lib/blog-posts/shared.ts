@@ -11,6 +11,7 @@ export const DND_GRUNG_COVER_PATH = '/blog/covers/en/dnd-grung-guide.webp';
 export const DND_COUNTERSPELL_COVER_PATH = '/blog/covers/en/dnd-counterspell-cinematic.webp';
 export const DND_GIANTS_COVER_PATH = '/blog/covers/en/dnd-giants-guide.webp';
 export const DND_MAGE_ARMOR_COVER_PATH = '/blog/covers/en/dnd-mage-armor-guide.webp';
+export const DND_NECROMANCER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-necromancer-spells-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -31,6 +32,8 @@ export const DND_GIANTS_BATTLEFIELD_IMAGE_PATH = '/blog/inline/dnd-giants/giant-
 export const DND_GIANTS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-giants/giants-video-placeholder.webp';
 export const DND_MAGE_ARMOR_AC_IMAGE_PATH = '/blog/inline/dnd-mage-armor/mage-armor-ac-tabletop.webp';
 export const DND_MAGE_ARMOR_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mage-armor/mage-armor-video-placeholder.webp';
+export const DND_NECROMANCER_SPELLS_TABLE_IMAGE_PATH = '/blog/inline/dnd-necromancer-spells/necromancer-spell-table.webp';
+export const DND_NECROMANCER_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-necromancer-spells/necromancer-video-placeholder.webp';
 
 // External URLs
 export const DND_DHAMPIR_LINEAGE_URL = 'https://www.dndbeyond.com/posts/1014-play-a-dhampir-hexblood-or-reborn-with-rules-from';
@@ -51,6 +54,10 @@ export const DND_MAGE_ARMOR_2014_RULES_URL = 'https://www.dndbeyond.com/sources/
 export const DND_MAGE_ARMOR_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#MageArmor';
 export const DND_MAGE_ARMOR_SAGE_ADVICE_URL = 'https://www.dndbeyond.com/sources/dnd/sac/sage-advice-compendium';
 export const DND_MAGE_ARMOR_VIDEO_URL = 'https://www.youtube.com/watch?v=ZBbhI8Mp8fE';
+export const DND_ANIMATE_DEAD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#AnimateDead';
+export const DND_ANIMATE_DEAD_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#AnimateDead';
+export const NECROMANCY_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Necromancy';
+export const DND_NECROMANCER_SPELLS_VIDEO_URL = 'https://www.youtube.com/watch?v=wYBEbNbirkA';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -65,6 +72,8 @@ export const EN_DND_ARMOR_PATH = getLocalizedPath('en', '/blog/dnd-armor-guide')
 export const ZH_DND_ARMOR_PATH = getLocalizedPath('zh', '/blog/dnd-armor-guide');
 export const EN_DND_MAGE_ARMOR_PATH = getLocalizedPath('en', '/blog/dnd-mage-armor');
 export const ZH_DND_MAGE_ARMOR_PATH = getLocalizedPath('zh', '/blog/dnd-mage-armor');
+export const EN_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-necromancer-spells');
+export const ZH_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-necromancer-spells');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_DICE_ROLLER_PATH = getLocalizedPath('en', '/dice-roller-dnd');

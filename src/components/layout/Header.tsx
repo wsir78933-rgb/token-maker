@@ -68,13 +68,13 @@ export function Header() {
   }, [history]);
 
   return (
-    <header className="border-b border-[#d7b46a]/12 bg-background/92 px-4 py-3 shadow-[0_18px_50px_-36px_var(--workspace-shadow-color)] backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:px-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <header className="border-b border-[#d7b46a]/12 bg-background/92 px-3 py-2.5 shadow-[0_18px_50px_-36px_var(--workspace-shadow-color)] backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:px-6 sm:py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div className="flex items-center gap-3">
-          <SiteMark className="h-10 w-10 rounded-2xl ring-1 ring-[#d7b46a]/15" />
+          <SiteMark className="h-9 w-9 rounded-2xl ring-1 ring-[#d7b46a]/15 sm:h-10 sm:w-10" />
           <div className="flex flex-col gap-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-[#d7b46a]/20 bg-[#d7b46a]/8 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.24em] text-[#e8cb8f]">
+              <span className="hidden rounded-full border border-[#d7b46a]/20 bg-[#d7b46a]/8 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-[#e8cb8f] min-[380px]:inline-flex sm:tracking-[0.24em]">
                 {t('workspaceLabel')}
               </span>
               <span className="hidden rounded-full border border-border/70 bg-card/70 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground sm:inline-flex">
@@ -82,10 +82,10 @@ export function Header() {
               </span>
             </div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-lg font-semibold tracking-tight text-foreground">
+              <span className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
                 {t('appName')}
               </span>
-              <span className="text-xs text-muted-foreground">
+              <span className="hidden text-xs text-muted-foreground min-[420px]:inline">
                 {t('appSubtitle')}
               </span>
             </div>

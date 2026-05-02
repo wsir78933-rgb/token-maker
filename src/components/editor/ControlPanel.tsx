@@ -7,9 +7,10 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { RotateCcw, Trash2, Layers } from 'lucide-react';
+import { DownloadCloud, Layers, RotateCcw, Trash2 } from 'lucide-react';
 import { useBatchStore } from '@/lib/store/batch-store';
 import type { I18nKey } from '@/lib/i18n';
+import { downloadCurrentToken } from './export-token';
 
 function getSliderValue(value: number | readonly number[]) {
   return Array.isArray(value) ? value[0] ?? 0 : value;
@@ -54,16 +55,20 @@ export function ControlPanel() {
   const borderOpacityLabelId = useId();
   const overlayOpacityLabelId = useId();
 
+  const handleExport = async () => {
+    await downloadCurrentToken(t);
+  };
+
   return (
-    <div className="flex w-full flex-col overflow-hidden border-r border-border bg-card/65 backdrop-blur xl:h-full xl:w-80">
+    <div className="order-2 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-80 xl:overflow-hidden xl:border-y-0 xl:border-r">
 
       {/* ── 顶部固定标题栏 ── */}
-      <div className="shrink-0 border-b border-border/50 px-4 py-4">
+      <div className="shrink-0 border-b border-border/50 px-4 py-3 sm:py-4">
         <h3 className="text-sm font-semibold text-foreground/90">{t('controlPanel')}</h3>
       </div>
 
       {/* ── 中间可滚动内容区 ── */}
-      <div className="flex-1 space-y-8 overflow-y-auto px-4 py-6">
+      <div className="flex-none space-y-6 overflow-visible px-4 py-4 sm:space-y-8 sm:py-6 xl:flex-1 xl:overflow-y-auto">
 
         {/* 图片设置 */}
         <div className="space-y-4">
@@ -256,7 +261,7 @@ export function ControlPanel() {
 
       {/* ── 底部固定操作栏 ── */}
       <div className="shrink-0 border-t border-border bg-card/92 p-4 shadow-[0_-10px_40px_-15px_var(--workspace-shadow-color)]">
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 min-[380px]:flex-row">
           <Button
             variant="outline"
             size="sm"
@@ -287,6 +292,15 @@ export function ControlPanel() {
         >
           <Layers className="h-3.5 w-3.5" />
           {t('batchMode' as I18nKey)}
+        </Button>
+        <Button
+          className="mt-3 h-10 w-full gap-2 text-sm font-medium xl:hidden"
+          size="default"
+          onClick={handleExport}
+          disabled={!imageElement}
+        >
+          <DownloadCloud className="h-4 w-4" />
+          {t('download')}
         </Button>
       </div>
 

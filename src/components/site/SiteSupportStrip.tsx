@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, CircleHelp, ShieldCheck } from 'lucide-react';
+import { ArrowRight, CircleHelp, Mail, ShieldCheck } from 'lucide-react';
 
 import { getLocalizedPath, stripLocalePrefix, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
@@ -18,6 +18,11 @@ const copyByLocale = {
         label: 'Privacy',
         icon: ShieldCheck,
       },
+      {
+        href: '/contact',
+        label: 'Contact',
+        icon: Mail,
+      },
     ],
   },
   zh: {
@@ -32,6 +37,11 @@ const copyByLocale = {
         href: '/privacy',
         label: '隐私',
         icon: ShieldCheck,
+      },
+      {
+        href: '/contact',
+        label: '联系',
+        icon: Mail,
       },
     ],
   },
@@ -53,7 +63,7 @@ export function SiteSupportStrip({ locale, currentPath, className }: SiteSupport
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <p className="text-[11px] uppercase tracking-[0.34em] text-stone-500">{copy.eyebrow}</p>
 
-          <div className="grid gap-2 md:grid-cols-2 md:gap-3">
+          <div className="grid gap-2 md:grid-cols-3 md:gap-3">
           {copy.links.map((link) => {
             const Icon = link.icon;
             const href = getLocalizedPath(locale, link.href);

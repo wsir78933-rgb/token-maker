@@ -23,6 +23,21 @@ Google Analytics has been wired into the shared app layouts.
 - Analytics loads only in production builds.
 - Set `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX` in your production environment to enable it.
 
+## Contact Email
+
+The contact form posts to `/api/contact` and sends email through the Resend Email API.
+
+Set these environment variables in `.env.local` for development and in your production host:
+
+```bash
+RESEND_API_KEY=re_xxxxxxxxx
+RESEND_FROM_EMAIL="Token Maker <contact@yourdomain.com>"
+CONTACT_TO_EMAIL="you@example.com"
+CONTACT_SUBJECT_PREFIX="Token Maker contact"
+```
+
+`RESEND_FROM_EMAIL` should use a domain verified in Resend. `CONTACT_TO_EMAIL` is the inbox that receives user messages. The user's submitted email is sent as the reply-to address.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
