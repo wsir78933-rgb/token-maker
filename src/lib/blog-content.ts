@@ -14,6 +14,7 @@ import {
   DND_GIANTS_COVER_PATH,
   DND_MAGE_ARMOR_COVER_PATH,
   DND_NECROMANCER_SPELLS_COVER_PATH,
+  DND_HUNTERS_MARK_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -26,6 +27,7 @@ import { dndCounterspellArticleHtml, dndCounterspellArticleHtmlZh } from '@/lib/
 import { dndGiantsArticleHtml, dndGiantsArticleHtmlZh } from '@/lib/blog-posts/dnd-giants';
 import { dndMageArmorArticleHtml, dndMageArmorArticleHtmlZh } from '@/lib/blog-posts/dnd-mage-armor';
 import { dndNecromancerSpellsArticleHtml, dndNecromancerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-necromancer-spells';
+import { dndHuntersMarkArticleHtml, dndHuntersMarkArticleHtmlZh } from '@/lib/blog-posts/dnd-hunters-mark';
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
@@ -261,6 +263,7 @@ const DND_COUNTERSPELL_UPDATED_AT = '2026-04-25';
 const DND_GIANTS_UPDATED_AT = '2026-04-28';
 const DND_MAGE_ARMOR_UPDATED_AT = '2026-04-29';
 const DND_NECROMANCER_SPELLS_UPDATED_AT = '2026-05-02';
+const DND_HUNTERS_MARK_UPDATED_AT = '2026-05-02';
 
 const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -839,6 +842,96 @@ const dndMageArmorArticleZh: BlogPost = {
   relatedSlugs: ['dnd-armor-guide', 'dnd-counterspell', 'dnd-classes-explained', 'dnd-constitution-guide'],
 };
 
+const dndHuntersMarkArticle: BlogPost = {
+  slug: 'dnd-hunters-mark',
+  title: "dnd hunter's mark Guide: 2024/2014 Rules, Damage, and VTT Tips",
+  seoTitle: "dnd hunter's mark Guide: 2024 Rules, Damage & FAQ",
+  metaDescription:
+    "Learn dnd hunter's mark fast: 2024 and 2014 rules, concentration, damage, bonus action timing, table rulings, VTT token tracking, and FAQ.",
+  excerpt:
+    "A practical dnd hunter's mark spell guide covering 2024/2014 rules, damage triggers, concentration tradeoffs, common rulings, VTT token tracking, FAQ, and a lazy-loaded video embed.",
+  updatedAt: DND_HUNTERS_MARK_UPDATED_AT,
+  readTime: '11 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_HUNTERS_MARK_COVER_PATH,
+  coverAlt:
+    "dnd hunter's mark guide cover showing a hooded Ranger aiming at a monster marked by a glowing quarry sigil on a moonlit battle map",
+  bodyHtml: dndHuntersMarkArticleHtml,
+  faqItems: [
+    {
+      question: "Is Hunter's Mark concentration?",
+      answer:
+        "Yes. Hunter's Mark requires concentration for up to 1 hour, unless a specific feature changes how concentration works for that spell.",
+    },
+    {
+      question: "Does Hunter's Mark trigger on every hit?",
+      answer:
+        "Hunter's Mark works on every hit that matches the trigger. In 2014, that means weapon attacks. In 2024, it means hits with attack rolls.",
+    },
+    {
+      question: "Can you move Hunter's Mark after the target drops to 0 HP?",
+      answer:
+        'Yes. If the marked target drops to 0 HP before the spell ends, you can spend a Bonus Action to move the mark to a new visible creature within range.',
+    },
+    {
+      question: "Does Hunter's Mark reveal the target?",
+      answer:
+        "No. Hunter's Mark gives Advantage on checks to find the marked creature, but it does not automatically reveal an invisible or hidden target.",
+    },
+    {
+      question: "Is upcasting Hunter's Mark worth it?",
+      answer:
+        "Usually only when the extended duration matters across multiple scenes. Upcasting Hunter's Mark extends concentration duration; it does not increase the 1d6 damage die.",
+    },
+  ],
+  relatedSlugs: ['dnd-constitution-guide', 'dnd-classes-explained', 'dnd-mage-armor', 'dnd-counterspell'],
+};
+
+const dndHuntersMarkArticleZh: BlogPost = {
+  slug: 'dnd-hunters-mark',
+  title: "dnd hunter's mark 指南：2024/2014 规则、伤害与 VTT Token",
+  seoTitle: "dnd hunter's mark 指南：2024/2014 规则与 FAQ",
+  metaDescription:
+    "这篇 dnd hunter's mark 指南快速讲清 2024/2014 规则差异、伤害、专注、附赠动作、常见裁定与 VTT Token 标记建议。",
+  excerpt:
+    "一篇实用 dnd hunter's mark 法术百科，覆盖 2024/2014 规则、伤害触发、专注取舍、常见裁定、VTT Token 标记、FAQ 和视频嵌入。",
+  updatedAt: DND_HUNTERS_MARK_UPDATED_AT,
+  readTime: '11 分钟阅读',
+  coverLabel: '法术百科',
+  coverImage: DND_HUNTERS_MARK_COVER_PATH,
+  coverAlt:
+    "dnd hunter's mark 指南封面图，月夜战斗地图上一名 Ranger 瞄准带有发光 quarry 标记的怪物",
+  bodyHtml: dndHuntersMarkArticleHtmlZh,
+  faqItems: [
+    {
+      question: "Hunter's Mark 需要 Concentration 吗？",
+      answer:
+        "需要。Hunter's Mark 是专注法术，最多持续 1 小时，除非某个明确特性改变它的专注规则。",
+    },
+    {
+      question: "Hunter's Mark 每次命中都能加伤害吗？",
+      answer:
+        "它会在每次符合触发条件的命中上加伤害。2014 版是 weapon attack；2024 版是 attack roll 命中。",
+    },
+    {
+      question: "目标降到 0 HP 后能转移 Hunter's Mark 吗？",
+      answer:
+        '可以。被标记目标在法术结束前降到 0 HP 后，你可以花 Bonus Action，把标记转移到距离内另一个你能看见的生物。',
+    },
+    {
+      question: "Hunter's Mark 会暴露目标位置吗？",
+      answer:
+        "不会。Hunter's Mark 只让你寻找目标的检定有 Advantage，不会自动让隐形或隐藏目标显形。",
+    },
+    {
+      question: "Hunter's Mark 升环值得吗？",
+      answer:
+        "通常只有你真的需要跨多个场景维持时才值得。Hunter's Mark 升环延长专注时长，但不会提高 1d6 伤害。",
+    },
+  ],
+  relatedSlugs: ['dnd-constitution-guide', 'dnd-classes-explained', 'dnd-mage-armor', 'dnd-counterspell'],
+};
+
 const dndNecromancerSpellsArticle: BlogPost = {
   slug: 'dnd-necromancer-spells',
   title: 'dnd necromancer spells: Best 5e Spell List, Animate Dead, and Minion Tips',
@@ -950,10 +1043,10 @@ const dndNecromancerSpellsArticleZh: BlogPost = {
 };
 
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndClassesArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndClassesArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

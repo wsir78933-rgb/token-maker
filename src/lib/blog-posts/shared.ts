@@ -12,6 +12,7 @@ export const DND_COUNTERSPELL_COVER_PATH = '/blog/covers/en/dnd-counterspell-cin
 export const DND_GIANTS_COVER_PATH = '/blog/covers/en/dnd-giants-guide.webp';
 export const DND_MAGE_ARMOR_COVER_PATH = '/blog/covers/en/dnd-mage-armor-guide.webp';
 export const DND_NECROMANCER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-necromancer-spells-guide.webp';
+export const DND_HUNTERS_MARK_COVER_PATH = '/blog/covers/en/dnd-hunters-mark-cinematic.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -34,6 +35,8 @@ export const DND_MAGE_ARMOR_AC_IMAGE_PATH = '/blog/inline/dnd-mage-armor/mage-ar
 export const DND_MAGE_ARMOR_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mage-armor/mage-armor-video-placeholder.webp';
 export const DND_NECROMANCER_SPELLS_TABLE_IMAGE_PATH = '/blog/inline/dnd-necromancer-spells/necromancer-spell-table.webp';
 export const DND_NECROMANCER_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-necromancer-spells/necromancer-video-placeholder.webp';
+export const DND_HUNTERS_MARK_VTT_IMAGE_PATH = '/blog/inline/dnd-hunters-mark/hunters-mark-vtt-tracking.webp';
+export const DND_HUNTERS_MARK_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-hunters-mark/hunters-mark-video-placeholder.webp';
 
 // External URLs
 export const DND_DHAMPIR_LINEAGE_URL = 'https://www.dndbeyond.com/posts/1014-play-a-dhampir-hexblood-or-reborn-with-rules-from';
@@ -58,6 +61,10 @@ export const DND_ANIMATE_DEAD_2014_RULES_URL = 'https://www.dndbeyond.com/source
 export const DND_ANIMATE_DEAD_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#AnimateDead';
 export const NECROMANCY_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Necromancy';
 export const DND_NECROMANCER_SPELLS_VIDEO_URL = 'https://www.youtube.com/watch?v=wYBEbNbirkA';
+export const DND_HUNTERS_MARK_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#HuntersMark';
+export const DND_HUNTERS_MARK_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#HuntersMark';
+export const DND_RANGER_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Ranger';
+export const DND_HUNTERS_MARK_VIDEO_URL = 'https://www.youtube.com/watch?v=JwINRY1eD7M';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
