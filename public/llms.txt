@@ -1,0 +1,42 @@
+# Token Maker
+
+> Token Maker is a browser-based VTT token maker for DnD, Roll20, Foundry VTT, and similar tabletop workflows. It helps users upload character art, crop portraits, apply token masks and borders, add labels, and export transparent PNG tokens.
+
+Token Maker is designed for tabletop creators, game masters, players, and content publishers who need practical virtual tabletop tokens. The normal editor workflow is local-first: portrait images can stay in the browser during crop, style, and export.
+
+The site has English pages at root-level URLs and Simplified Chinese pages under `/zh`. Use `sitemap.xml` for the full indexable URL set and `robots.txt` for crawler access rules. Do not treat this file as permission to access disallowed paths such as `/api/`.
+
+## Core Pages
+
+- [Token Maker home](https://www.tokenmaker.one/): Main browser editor and English overview for creating VTT tokens.
+- [Token Maker Chinese home](https://www.tokenmaker.one/zh): Simplified Chinese version of the main editor and overview.
+- [DnD dice roller](https://www.tokenmaker.one/dice-roller-dnd): Browser dice roller for DnD stat rolls, common dice presets, roll logs, and tabletop use.
+- [DnD dice roller Chinese](https://www.tokenmaker.one/zh/dice-roller-dnd): Simplified Chinese version of the DnD dice roller.
+- [FAQ](https://www.tokenmaker.one/faq): Questions about image handling, workflow fit, supported token styles, and export size.
+- [FAQ Chinese](https://www.tokenmaker.one/zh/faq): Simplified Chinese FAQ.
+- [Privacy](https://www.tokenmaker.one/privacy): Privacy information, including the local-first image workflow.
+- [Contact](https://www.tokenmaker.one/contact): Public contact form for site feedback and support requests.
+
+## Blog And Guides
+
+- [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
+- [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DND Classes Explained](https://www.tokenmaker.one/blog/dnd-classes-explained): Guide to choosing DnD classes.
+- [DND Armor Guide](https://www.tokenmaker.one/blog/dnd-armor-guide): Armor types, AC values, and class picks.
+- [Build a DND character token](https://www.tokenmaker.one/blog/how-to-build-a-dnd-character-token): How to turn character art into a clean VTT token.
+- [DND Counterspell Guide](https://www.tokenmaker.one/blog/dnd-counterspell): Counterspell timing, 2014/2024 rules, and FAQ.
+- [DND Necromancer Spells](https://www.tokenmaker.one/blog/dnd-necromancer-spells): Spell list and minion-management guidance for necromancer play.
+
+## Site Files
+
+- [Sitemap](https://www.tokenmaker.one/sitemap.xml): Complete indexable URL list with localized alternates.
+- [Robots](https://www.tokenmaker.one/robots.txt): Crawler access rules.
+- [Web manifest](https://www.tokenmaker.one/manifest.webmanifest): App name, icons, colors, and install metadata.
+
+## Optional
+
+- [Chinese DND Classes Explained](https://www.tokenmaker.one/zh/blog/dnd-classes-explained)
+- [Chinese DND Armor Guide](https://www.tokenmaker.one/zh/blog/dnd-armor-guide)
+- [Chinese character token guide](https://www.tokenmaker.one/zh/blog/how-to-build-a-dnd-character-token)
+- [Chinese DND Counterspell Guide](https://www.tokenmaker.one/zh/blog/dnd-counterspell)
+- [Chinese DND Necromancer Spells](https://www.tokenmaker.one/zh/blog/dnd-necromancer-spells)

@@ -11,7 +11,7 @@ export function getSeoImagePath(locale: SiteLocale, kind: SeoImageKind) {
     case 'home':
     case 'faq':
     case 'privacy':
-      return '/opengraph-image.png';
+      return getLocalizedPath(locale, '/opengraph-image');
     default:
       return getLocalizedPath(locale, '/opengraph-image');
   }
