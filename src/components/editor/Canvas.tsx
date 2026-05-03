@@ -82,6 +82,7 @@ export function Canvas() {
     const renderState: EditorState = {
       imageUrl,
       imageElement,
+      imageLoadRevision: 0,
       imageOffsetX,
       imageOffsetY,
       imageScale,

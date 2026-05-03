@@ -28,13 +28,24 @@ export function extractImageFiles(dataTransfer: DataTransfer) {
 export function loadEditorImageFile(file: File | null | undefined) {
   if (!isSupportedImageFile(file)) return;
 
+  const requestRevision = useEditorStore.getState().beginImageLoad();
   const url = URL.createObjectURL(file);
   const img = new Image();
   img.onload = () => {
-    useEditorStore.getState().setImage(url, img);
+    const store = useEditorStore.getState();
+    if (store.imageLoadRevision !== requestRevision) {
+      URL.revokeObjectURL(url);
+      return;
+    }
+
+    store.setImage(url, img);
     trackUploadImage();
   };
   img.onerror = () => {
+    const store = useEditorStore.getState();
+    if (store.imageLoadRevision === requestRevision) {
+      store.cancelImageLoad();
+    }
     URL.revokeObjectURL(url);
   };
   img.src = url;

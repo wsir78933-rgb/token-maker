@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { getBorderById } from '@/lib/templates/borders';
 import { STYLE_PRESETS } from '@/lib/templates/presets';
 import type { BorderLibraryMode, EditorStore, EditorState, StylePreset } from '@/types/editor';
@@ -34,8 +34,24 @@ function revokeOwnedObjectUrl(url: string | null, nextUrl?: string | null) {
 
 const DEFAULT_PRESET = STYLE_PRESETS.find((preset) => preset.id === 'other') ?? STYLE_PRESETS[0]!;
 
+function getBrowserStorage() {
+  const storage = typeof window === 'undefined' ? undefined : window.localStorage;
+
+  if (
+    !storage ||
+    typeof storage.getItem !== 'function' ||
+    typeof storage.setItem !== 'function' ||
+    typeof storage.removeItem !== 'function'
+  ) {
+    throw new Error('localStorage is unavailable');
+  }
+
+  return storage;
+}
+
 const INITIAL_STATE: Omit<EditorState, 'imageElement'> = {
   imageUrl: null,
+  imageLoadRevision: 0,
   imageOffsetX: 0,
   imageOffsetY: 0,
   imageScale: 1,
@@ -67,6 +83,16 @@ export const useEditorStore = create<EditorStore>()(
       imageElement: null,
 
       // --- 图片 ---
+      beginImageLoad: () => {
+        let nextRevision = 0;
+        set((state) => {
+          nextRevision = state.imageLoadRevision + 1;
+          return { imageLoadRevision: nextRevision };
+        });
+        return nextRevision;
+      },
+      cancelImageLoad: () =>
+        set((state) => ({ imageLoadRevision: state.imageLoadRevision + 1 })),
       setImage: (url, element) =>
         set((state) => {
           revokeOwnedObjectUrl(state.imageUrl, url);
@@ -74,6 +100,7 @@ export const useEditorStore = create<EditorStore>()(
           return {
             imageUrl: url,
             imageElement: element,
+            imageLoadRevision: state.imageLoadRevision + 1,
             imageOffsetX: 0,
             imageOffsetY: 0,
             imageScale: 1,
@@ -85,7 +112,12 @@ export const useEditorStore = create<EditorStore>()(
         set((state) => {
           revokeOwnedObjectUrl(state.imageUrl);
 
-          return { imageUrl: null, imageElement: null, isImageSelected: false };
+          return {
+            imageUrl: null,
+            imageElement: null,
+            imageLoadRevision: state.imageLoadRevision + 1,
+            isImageSelected: false,
+          };
         }),
       setImageSelected: (selected) => set({ isImageSelected: selected }),
       setImageOffset: (x, y) => set({ imageOffsetX: x, imageOffsetY: y }),
@@ -174,11 +206,16 @@ export const useEditorStore = create<EditorStore>()(
         set((state) => {
           revokeOwnedObjectUrl(state.imageUrl);
 
-          return { ...INITIAL_STATE, imageElement: null };
+          return {
+            ...INITIAL_STATE,
+            imageElement: null,
+            imageLoadRevision: state.imageLoadRevision + 1,
+          };
         }),
     }),
     {
       name: 'token-maker-storage',
+      storage: createJSONStorage(getBrowserStorage),
       // 不持久化 imageElement (因为是 DOM 对象) 和 imageUrl (如果是 objectURL)
       partialize: (state) => {
         return {

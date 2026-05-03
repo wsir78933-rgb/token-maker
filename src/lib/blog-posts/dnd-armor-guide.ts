@@ -1,6 +1,8 @@
 import {
   DND_ARMOR_TYPES_IMAGE_PATH,
   DND_ARMOR_HEAVY_IMAGE_PATH,
+  EN_DND_CLASSES_PATH,
+  ZH_DND_CLASSES_PATH,
   liteVideoEmbed,
 } from './shared';
 
@@ -162,7 +164,7 @@ export const dndArmorArticleHtml = String.raw`
 </table>
 
 <h2>Mage Armor: The Caster's Alternative to Physical Armor</h2>
-<p>Characters without armor proficiency are not defenseless. The <strong><a href="/blog/dnd-classes-explained">Wizard</a></strong> spell <em>Mage Armor</em> sets your base AC to <strong>13 + Dex modifier</strong> and lasts 8 hours without concentration. For a Wizard with 16 Dexterity, that is AC 16 &mdash; better than chain mail.</p>
+<p>Characters without armor proficiency are not defenseless. The <strong><a href="${EN_DND_CLASSES_PATH}">Wizard</a></strong> spell <em>Mage Armor</em> sets your base AC to <strong>13 + Dex modifier</strong> and lasts 8 hours without concentration. For a Wizard with 16 Dexterity, that is AC 16 &mdash; better than chain mail.</p>
 
 <p>The tradeoff is that it uses a 1st-level spell slot every day. At low levels that hurts; at higher levels it becomes trivial. If you are playing a squishy caster, <em>Mage Armor</em> is essentially mandatory until you find magical alternatives.</p>
 
@@ -342,7 +344,7 @@ export const dndArmorArticleHtmlZh = String.raw`
     <tr><th>职业</th><th>推荐护甲</th><th>补充说明</th></tr>
   </thead>
   <tbody>
-    <tr><td><a href="/blog/dnd-classes-explained">战士</a></td><td>重甲 + 盾牌</td><td>1 级穿锁子甲，攒够钱立刻升级板甲</td></tr>
+    <tr><td><a href="${ZH_DND_CLASSES_PATH}">战士</a></td><td>重甲 + 盾牌</td><td>1 级穿锁子甲，攒够钱立刻升级板甲</td></tr>
     <tr><td>圣武士</td><td>重甲 + 盾牌</td><td>和战士一样；光环能力需要你站前排</td></tr>
     <tr><td>游荡者</td><td>镶嵌皮甲</td><td>必须加全敏捷，不能承受隐匿劣势</td></tr>
     <tr><td>游侠</td><td>镶嵌皮甲 / 胸甲</td><td>取决于敏捷；力量型游侠适合中甲</td></tr>
@@ -357,7 +359,7 @@ export const dndArmorArticleHtmlZh = String.raw`
 </table>
 
 <h2>法师护甲：施法者的物理护甲替代品</h2>
-<p>没有护甲熟练度的角色并非毫无防御。<strong><a href="/blog/dnd-classes-explained">法师</a></strong>的<em>法师护甲</em>法术能将基础 AC 设为 <strong>13 + 敏捷修正值</strong>，持续 8 小时且不需要专注。一个敏捷 16 的法师用这个法术就有 AC 16 &mdash; 比锁子甲还高。</p>
+<p>没有护甲熟练度的角色并非毫无防御。<strong><a href="${ZH_DND_CLASSES_PATH}">法师</a></strong>的<em>法师护甲</em>法术能将基础 AC 设为 <strong>13 + 敏捷修正值</strong>，持续 8 小时且不需要专注。一个敏捷 16 的法师用这个法术就有 AC 16 &mdash; 比锁子甲还高。</p>
 
 <p>代价是它每天消耗一个 1 环法术位。低等级时这很心疼；高等级时就不值一提了。如果你玩的是脆皮施法者，<em>法师护甲</em>基本上是必修课，直到你找到魔法替代品。</p>
 

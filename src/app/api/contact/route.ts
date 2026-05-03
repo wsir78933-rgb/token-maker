@@ -4,6 +4,7 @@ export const runtime = 'nodejs';
 
 const RESEND_EMAILS_ENDPOINT = 'https://api.resend.com/emails';
 const MAX_MESSAGE_LENGTH = 4000;
+const MAX_REQUEST_BODY_BYTES = 32 * 1024;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -24,6 +25,55 @@ function normalizeText(value: unknown) {
 
 function jsonResponse(body: Record<string, unknown>, status: number) {
   return NextResponse.json(body, { status });
+}
+
+function getContentLength(request: NextRequest) {
+  const value = request.headers.get('content-length');
+  if (!value) return null;
+
+  const length = Number(value);
+  return Number.isFinite(length) && length >= 0 ? length : null;
+}
+
+async function readLimitedRequestBody(request: NextRequest, maxBytes: number) {
+  const contentLength = getContentLength(request);
+  if (contentLength !== null && contentLength > maxBytes) {
+    return null;
+  }
+
+  if (!request.body) {
+    return '';
+  }
+
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      totalBytes += value.byteLength;
+      if (totalBytes > maxBytes) {
+        await reader.cancel();
+        return null;
+      }
+
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  const body = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+
+  return new TextDecoder().decode(body);
 }
 
 function getClientIp(request: NextRequest) {
@@ -92,7 +142,12 @@ export async function POST(request: NextRequest) {
   let payload: ContactPayload;
 
   try {
-    payload = (await request.json()) as ContactPayload;
+    const body = await readLimitedRequestBody(request, MAX_REQUEST_BODY_BYTES);
+    if (body === null) {
+      return jsonResponse({ error: 'request_too_large' }, 413);
+    }
+
+    payload = JSON.parse(body) as ContactPayload;
   } catch {
     return jsonResponse({ error: 'invalid_json' }, 400);
   }

@@ -28,6 +28,7 @@ const copyByLocale = {
       email_not_configured: 'Email is not configured yet.',
       email_send_failed: 'Resend could not send the message. Try again later.',
       invalid_json: 'The form submission was malformed.',
+      request_too_large: 'The message payload is too large.',
     },
   },
   zh: {
@@ -49,6 +50,7 @@ const copyByLocale = {
       email_not_configured: '邮件服务还没有配置完成。',
       email_send_failed: 'Resend 暂时无法发送消息，请稍后再试。',
       invalid_json: '表单提交格式异常。',
+      request_too_large: '提交内容过大，请缩短消息后再试。',
     },
   },
 } as const;

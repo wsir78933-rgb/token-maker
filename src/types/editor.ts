@@ -103,6 +103,7 @@ export interface EditorState {
   // --- 图片 ---
   imageUrl: string | null;
   imageElement: HTMLImageElement | null;
+  imageLoadRevision: number;
   imageOffsetX: number;
   imageOffsetY: number;
   imageScale: number;
@@ -139,6 +140,8 @@ export interface EditorState {
 /** 编辑器 Actions */
 export interface EditorActions {
   // 图片
+  beginImageLoad: () => number;
+  cancelImageLoad: () => void;
   setImage: (url: string, element: HTMLImageElement) => void;
   clearImage: () => void;
   setImageSelected: (selected: boolean) => void;
