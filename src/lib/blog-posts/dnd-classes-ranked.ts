@@ -1,5 +1,7 @@
 import {
   DND_CLASSES_RANKED_PARTY_IMAGE_PATH,
+  EN_DND_DRUID_SPELLS_PATH,
+  ZH_DND_DRUID_SPELLS_PATH,
   liteVideoEmbed,
 } from './shared';
 
@@ -212,7 +214,7 @@ export const dndClassesRankedArticleHtml = String.raw`
   <li>Can feel overwhelming for first-time players.</li>
 </ul>
 
-<p><strong>Verdict:</strong> Druid is extremely strong, but it is better for players who enjoy complexity rather than players who want the simplest path.</p>
+<p><strong>Verdict:</strong> Druid is extremely strong, but it is better for players who enjoy complexity rather than players who want the simplest path. The class rises or falls on preparation, so use the <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells guide</a> if you want a practical prepared-list starting point.</p>
 
 <h2>7. Warlock</h2>
 <p>Warlock is one of the most distinctive classes in the game, both mechanically and thematically.</p>
@@ -646,7 +648,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
   <li>对第一次跑团的新玩家来说容易手忙脚乱。</li>
 </ul>
 
-<p><strong>结论：</strong>德鲁伊非常强，但它更适合喜欢复杂工具箱的玩家，而不是只想要最直观上手体验的人。</p>
+<p><strong>结论：</strong>德鲁伊非常强，但它更适合喜欢复杂工具箱的玩家，而不是只想要最直观上手体验的人。这个职业很吃每日准备质量，所以可以配合 <a href="${ZH_DND_DRUID_SPELLS_PATH}">DND 德鲁伊法术指南</a> 来确定起步法术表。</p>
 
 <h2>7. 契术师 Warlock</h2>
 <p>契术师是游戏里辨识度最高的职业之一，无论从机制还是剧情风格来看都是如此。</p>

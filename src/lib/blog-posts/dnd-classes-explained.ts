@@ -1,6 +1,8 @@
 import {
   DND_CLASSES_TABLETOP_IMAGE_PATH,
   DND_CLASSES_MARTIAL_IMAGE_PATH,
+  EN_DND_DRUID_SPELLS_PATH,
+  ZH_DND_DRUID_SPELLS_PATH,
   liteVideoEmbed,
 } from './shared';
 
@@ -79,7 +81,7 @@ export const dndClassesArticleHtml = String.raw`
 
 <p><strong>Cleric</strong> is often underestimated by beginners who assume support means passive play. In reality, Cleric is one of the most consistently useful <strong>DND classes</strong> because it can heal, protect, fight, and solve problems with divine magic. If you want to help the party without feeling sidelined, Cleric is a smart choice.</p>
 
-<p><strong>Druid</strong> is one of the most flexible <strong>DND classes</strong>, but it can also demand more effort to learn. Wild Shape, control spells, and utility tools give Druid tremendous range, yet that same flexibility can feel heavy if you are still learning the rhythm of the game. For players who love unusual solutions, Druid is fantastic.</p>
+<p><strong>Druid</strong> is one of the most flexible <strong>DND classes</strong>, but it can also demand more effort to learn. Wild Shape, control spells, and utility tools give Druid tremendous range, yet that same flexibility can feel heavy if you are still learning the rhythm of the game. For players who love unusual solutions, Druid is fantastic; if you choose it, read the <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells guide</a> before your first long campaign.</p>
 
 <h3>Roleplay-heavy and identity-driven DND classes</h3>
 <p>Some <strong>DND classes</strong> are easy to connect with because the fantasy is emotionally clear from the start. If you want options with strong personality, values, or performance energy, these are usually the first ones people fall in love with.</p>
@@ -215,7 +217,7 @@ export const dndClassesArticleHtmlZh = String.raw`
 
 <p><strong>牧师</strong> 经常被新手低估，因为很多人一听到“辅助”就以为自己只能站在后排加血。实际上，在大量 <strong>DND 职业</strong> 里，牧师是整体稳定性非常高的职业之一：它能治疗、能支援、能打、也能解场。如果你希望自己在各种场景里都不容易失去价值，牧师是很强的选择。</p>
 
-<p><strong>德鲁伊</strong> 是最灵活的职业之一，但这份灵活同时也会带来学习成本。在很多 <strong>DND 职业</strong> 中，德鲁伊最适合那些喜欢非常规解法的玩家。变形、控场、自然系工具都很强，但如果你还在熟悉 D&amp;D 的基本节奏，它可能会显得有点忙。</p>
+<p><strong>德鲁伊</strong> 是最灵活的职业之一，但这份灵活同时也会带来学习成本。在很多 <strong>DND 职业</strong> 中，德鲁伊最适合那些喜欢非常规解法的玩家。变形、控场、自然系工具都很强，但如果你还在熟悉 D&amp;D 的基本节奏，它可能会显得有点忙。决定选德鲁伊后，建议先看 <a href="${ZH_DND_DRUID_SPELLS_PATH}">DND 德鲁伊法术指南</a>，再准备长期战役的法术表。</p>
 
 <h3>角色感最强的 DND 职业</h3>
 <p>有些 <strong>DND 职业</strong> 天然更容易让人投入，因为它们的幻想方向从一开始就很鲜明。如果你在选职业时最看重的是角色气质、信念、戏剧张力或表现空间，那么下面这些职业通常会更有吸引力。</p>

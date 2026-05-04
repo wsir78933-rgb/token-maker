@@ -37,8 +37,13 @@ export const DND_NECROMANCER_SPELLS_TABLE_IMAGE_PATH = '/blog/inline/dnd-necroma
 export const DND_NECROMANCER_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-necromancer-spells/necromancer-video-placeholder.webp';
 export const DND_HUNTERS_MARK_VTT_IMAGE_PATH = '/blog/inline/dnd-hunters-mark/hunters-mark-vtt-tracking.webp';
 export const DND_HUNTERS_MARK_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-hunters-mark/hunters-mark-video-placeholder.webp';
+export const DND_DRUID_SPELLS_PLANNING_IMAGE_PATH = '/blog/inline/dnd-druid-spells/druid-spell-planning-map.webp';
 
 // External URLs
+export const DND_DRUID_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Druid';
+export const DND_DRUID_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Druid';
+export const DND_GOODBERRY_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#Goodberry';
+export const DND_CONJURE_ANIMALS_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#ConjureAnimals';
 export const DND_DHAMPIR_LINEAGE_URL = 'https://www.dndbeyond.com/posts/1014-play-a-dhampir-hexblood-or-reborn-with-rules-from';
 export const DND_DHAMPIR_VAMPIRE_URL = 'https://www.dndbeyond.com/posts/1467-playing-as-a-vampire-in-d-d';
 export const DHAMPIR_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Dhampir';

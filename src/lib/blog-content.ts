@@ -256,7 +256,7 @@ const BLOG_TOKEN_GUIDE_UPDATED_AT = '2026-03-27';
 const BLOG_SMALL_PARTY_GUIDE_UPDATED_AT = '2026-03-25';
 const DND_ARMOR_UPDATED_AT = '2026-04-06';
 const DND_CONSTITUTION_UPDATED_AT = '2026-04-07';
-const DND_DRUID_SPELLS_UPDATED_AT = '2026-04-09';
+const DND_DRUID_SPELLS_UPDATED_AT = '2026-05-04';
 const DND_DHAMPIR_UPDATED_AT = '2026-04-17';
 const DND_GRUNG_UPDATED_AT = '2026-04-20';
 const DND_COUNTERSPELL_UPDATED_AT = '2026-04-25';
@@ -486,28 +486,100 @@ const dndConstitutionArticleZh: BlogPost = {
 
 const dndDruidSpellsArticle: BlogPost = {
   slug: 'dnd-druid-spells',
-  title: 'D&D Druid Spells Guide: Best Cantrips and Circle Magic Explained',
-  excerpt: 'A highly structured tier list of the absolute best DND druid spells from levels 0s to 3 based on years of tabletop play. Avoid spell traps and maximize your impact.',
+  title: 'D&D Druid Spells Guide: Best Cantrips, Prepared Lists, and Circle Magic',
+  seoTitle: 'DND Druid Spells Guide: Best 5e Spells, Cantrips, and Prepared Lists',
+  metaDescription:
+    'Complete DND druid spells guide for 5e with best cantrips, 1st-3rd level spell picks, concentration advice, prepared spell examples, Circle notes, traps, and FAQ.',
+  excerpt:
+    'A complete DND druid spells guide with best cantrips, 1st-3rd level picks, prepared spell examples, concentration traps, Circle notes, and FAQ.',
   updatedAt: DND_DRUID_SPELLS_UPDATED_AT,
-  readTime: '6 min read',
+  readTime: '13 min read',
   coverLabel: 'Spells',
   coverImage: DND_DRUID_SPELLS_COVER_PATH,
   coverAlt: 'DND druid spells cover showing a druid channeling moonlit nature magic in an ancient forest clearing',
   bodyHtml: dndDruidSpellsArticleHtml,
+  faqItems: [
+    {
+      question: 'What are the best DND druid spells for beginners?',
+      answer:
+        'The best beginner DND druid spells are Guidance, Thorn Whip, Goodberry, Entangle, Healing Word, Pass without Trace, Spike Growth, Plant Growth, Sleet Storm, and Dispel Magic because they cover utility, emergency healing, stealth, control, and anti-magic.',
+    },
+    {
+      question: 'Can a Druid cast spells while in Wild Shape?',
+      answer:
+        'Normally, a Druid cannot cast new spells while in Wild Shape in 2014-style 5e play, but can maintain concentration on a spell cast before transforming. High-level features and different rules versions can change the details.',
+    },
+    {
+      question: 'How many spells can a Druid prepare in DND 5e?',
+      answer:
+        'In common 2014 5e rules, a Druid prepares a number of spells equal to Druid level plus Wisdom modifier after a long rest. Cantrips are separate, and 2024 or homebrew rules may use different preparation progression.',
+    },
+    {
+      question: 'Is Goodberry overpowered?',
+      answer:
+        'Goodberry is very efficient because one 1st-level slot creates predictable healing and food. It can feel overpowered if a table allows stockpiling before every long rest, so some DMs set a clear policy.',
+    },
+    {
+      question: 'Is Conjure Animals still worth preparing?',
+      answer:
+        'Conjure Animals can be very strong in 2014 5e, but it can also slow the table down. Prepare it only after the DM confirms the active summoning rules, who chooses the beasts, and how fast their turns should run.',
+    },
+    {
+      question: 'Should a Druid prepare healing or damage spells?',
+      answer:
+        'A Druid should usually prepare at least one emergency healing spell, often Healing Word, but should not build the whole list around healing. Control, stealth, and terrain spells often prevent more damage than direct healing restores.',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-constitution-guide', 'dnd-counterspell'],
 };
 
 const dndDruidSpellsArticleZh: BlogPost = {
   slug: 'dnd-druid-spells',
-  title: 'DND 德鲁伊法术 (Druid Spells) 终极指南：实测最好用的法术避坑排名',
-  seoTitle: 'DND 德鲁伊法术 (Druid Spells) 终极红黑榜：新手最好用的法术推荐',
-  metaDescription: 'DND 德鲁伊法术不知道怎么选？这份基于实战跑团经验整理的 0-3 环法术红黑榜，带你避开坑爹法术，一眼挑出最强神技（内附视频解读）。',
-  excerpt: '不知道怎么选 DND 德鲁伊法术？这份基于两年实战带团经验整理的 0-3 环法术红黑榜，带你完美避开法术表里的“假神技”。',
+  title: 'DND 德鲁伊法术 (Druid Spells) 指南：最佳戏法、准备列表与避坑',
+  seoTitle: 'DND 德鲁伊法术指南：5e 最佳法术、戏法和每日准备列表',
+  metaDescription:
+    '完整 DND 德鲁伊法术指南，覆盖 5e 最佳戏法、1-3 环法术推荐、专注选择、每日准备列表、结社差异、陷阱法术和 FAQ。',
+  excerpt:
+    '完整 DND 德鲁伊法术指南：最佳戏法、1-3 环法术推荐、每日准备模板、专注陷阱、结社差异和 FAQ。',
   updatedAt: DND_DRUID_SPELLS_UPDATED_AT,
-  readTime: '6 分钟阅读',
+  readTime: '13 分钟阅读',
   coverLabel: '百科',
   coverImage: DND_DRUID_SPELLS_COVER_PATH,
-  coverAlt: 'DND druid spells cover showing a druid channeling moonlit nature magic in an ancient forest clearing',
+  coverAlt: 'DND 德鲁伊法术指南封面图，一名德鲁伊在古老森林空地中引导月光自然魔法',
   bodyHtml: dndDruidSpellsArticleHtmlZh,
+  faqItems: [
+    {
+      question: '新手最好用的 DND 德鲁伊法术有哪些？',
+      answer:
+        '新手最值得优先看的 DND 德鲁伊法术是神导术、荆棘之鞭、神莓术、纠缠术、治愈真言、无踪步、荆棘丛生、植物滋长、雪雨暴和解除魔法，因为它们覆盖工具、救急治疗、潜行、控场和反魔法。',
+    },
+    {
+      question: '德鲁伊可以在野兽形态下施法吗？',
+      answer:
+        '在常见 2014 风格 5e 规则下，德鲁伊通常不能在野兽形态里施放新的法术，但可以维持变形前已经施放的专注法术。高等级特性和不同规则版本可能改变细节。',
+    },
+    {
+      question: 'DND 5e 德鲁伊能准备多少法术？',
+      answer:
+        '在常见 2014 版 5e 规则下，德鲁伊长休后可准备的法术数量等于德鲁伊等级加感知修正值，戏法另算。2024 规则或自定义规则可能使用不同准备进度。',
+    },
+    {
+      question: '神莓术是否太强？',
+      answer:
+        '神莓术很强，因为 1 环法术位能换稳定治疗和食物。它在允许长休前囤神莓的桌上会显得过强，所以有些 DM 会提前定规则。',
+    },
+    {
+      question: '召唤动物还值得准备吗？',
+      answer:
+        '在 2014 版 5e 中，召唤动物可以非常强，但也容易拖慢桌面节奏。只有当 DM 说清使用哪套召唤规则、谁选择野兽、召唤物回合必须多快跑完时，才适合作为核心法术。',
+    },
+    {
+      question: '德鲁伊应该准备治疗法术还是伤害法术？',
+      answer:
+        '德鲁伊通常至少要准备一个救急治疗法术，常见选择是治愈真言，但不要把整张表都围绕治疗搭建。控场、潜行和地形法术经常能阻止比治疗更多的伤害。',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-constitution-guide', 'dnd-counterspell'],
 };
 
 

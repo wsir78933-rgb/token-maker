@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
 import '../globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
+import { MicrosoftClarity } from '@/components/analytics/MicrosoftClarity';
 import { I18nProvider } from '@/lib/i18n';
 import { createLocaleLayoutMetadata, createSiteViewport, getHtmlLang } from '@/lib/site-metadata';
 import { DEFAULT_THEME } from '@/lib/theme';
@@ -21,6 +22,9 @@ export default function EnglishRootLayout({
       className="dark scroll-smooth"
       suppressHydrationWarning
     >
+      <head>
+        <MicrosoftClarity />
+      </head>
       <body className="antialiased">
         <Suspense fallback={null}>
           <GoogleAnalytics />

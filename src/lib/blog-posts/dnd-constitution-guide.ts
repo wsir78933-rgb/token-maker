@@ -1,7 +1,9 @@
 import {
   DND_CONSTITUTION_INLINE_IMAGE_PATH,
   EN_DND_CLASSES_PATH,
+  EN_DND_DRUID_SPELLS_PATH,
   EN_DICE_ROLLER_PATH,
+  ZH_DND_DRUID_SPELLS_PATH,
   liteVideoEmbed,
 } from './shared';
 
@@ -97,7 +99,7 @@ export const dndConstitutionArticleHtml = String.raw`
 <h2>Constitution and Concentration Checks</h2>
 <p>When you take damage while concentrating on a spell, you make a Constitution saving throw to keep that spell active.</p>
 
-<p>The DC is 10 or half the damage you took, whichever is higher. This is the rule that makes Constitution so important for Wizards, Clerics, Druids, Warlocks, Sorcerers, Paladins, Rangers, and any character relying on concentration magic.</p>
+<p>The DC is 10 or half the damage you took, whichever is higher. This is the rule that makes Constitution so important for Wizards, Clerics, Druids, Warlocks, Sorcerers, Paladins, Rangers, and any character relying on concentration magic. If you are preparing a nature caster, the <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells guide</a> shows which control spells most need that concentration protection.</p>
 
 <p>I have seen low-Constitution casters lose a fight because they landed the perfect control spell, took a small hit, failed the concentration save, and suddenly the whole party plan collapsed. That is why I usually prefer <strong>14 Constitution</strong> on a serious caster unless the build has a very good reason to go lower.</p>
 
@@ -251,7 +253,7 @@ export const dndConstitutionArticleHtmlZh = String.raw`
 </div>
 
 <h2>施法者生存必看：体质如何决定法术专注</h2>
-<p>如果你切入的世界角色是法师、牧师或术士等拥有技能流分支的职业，Constitution 的重要优先级甚至可以与你的核心施法天赋并驱并重。实战记录中，曾经有只配给 10 点体质的法系角色，强行读条放出了改变战局的顶级群体法术，结果被地图边缘毒刺擦伤一滴残血，瞬间专注破裂技能失效，导致全盘崩坏。</p>
+<p>如果你切入的世界角色是法师、牧师、术士或德鲁伊等拥有技能流分支的职业，Constitution 的重要优先级甚至可以与你的核心施法天赋并驱并重。实战记录中，曾经有只配给 10 点体质的法系角色，强行读条放出了改变战局的顶级群体法术，结果被地图边缘毒刺擦伤一滴残血，瞬间专注破裂技能失效，导致全盘崩坏。如果你正在玩自然系控场角色，可以结合 <a href="${ZH_DND_DRUID_SPELLS_PATH}">DND 德鲁伊法术指南</a> 判断哪些专注法术最值得保护。</p>
 
 <ul>
   <li><strong>何为专注被动性判定</strong>：当你成功激活并处于维持带有“专注 (Concentration)”标签的强大控制法术时，一旦遭受突发伤害，为了确保该释放法术不被物理中断，你必须通过一次体质豁免检定来强稳心神（DC = 你所遭受单次攻击伤害数额的整整一半，且系统设定最低判定难度门槛不可低于固定的 10 点）。</li>
