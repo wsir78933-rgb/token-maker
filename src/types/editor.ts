@@ -151,6 +151,7 @@ export interface EditorActions {
 
   // 模板
   setSelectedBorder: (id: string) => void;
+  setSelectedMask: (id: string) => void;
   addCustomBorder: (template: BorderTemplate) => void;
   removeCustomBorder: (id: string) => void;
   setBorderLibraryMode: (mode: BorderLibraryMode) => void;

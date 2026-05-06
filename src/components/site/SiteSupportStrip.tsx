@@ -51,10 +51,12 @@ interface SiteSupportStripProps {
   locale: SiteLocale;
   currentPath?: string;
   className?: string;
+  hideContact?: boolean;
 }
 
-export function SiteSupportStrip({ locale, currentPath, className }: SiteSupportStripProps) {
+export function SiteSupportStrip({ locale, currentPath, className, hideContact = false }: SiteSupportStripProps) {
   const copy = copyByLocale[locale];
+  const links = hideContact ? copy.links.filter((link) => link.href !== '/contact') : copy.links;
   const normalizedCurrentPath = currentPath ? stripLocalePrefix(currentPath) : undefined;
 
   return (
@@ -63,8 +65,8 @@ export function SiteSupportStrip({ locale, currentPath, className }: SiteSupport
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <p className="text-[11px] uppercase tracking-[0.34em] text-stone-500">{copy.eyebrow}</p>
 
-          <div className="grid gap-2 md:grid-cols-3 md:gap-3">
-          {copy.links.map((link) => {
+          <div className={cn('grid gap-2 md:gap-3', links.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3')}>
+          {links.map((link) => {
             const Icon = link.icon;
             const href = getLocalizedPath(locale, link.href);
             const isActive = normalizedCurrentPath === link.href;

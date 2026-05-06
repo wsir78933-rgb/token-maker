@@ -12,6 +12,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [Token Maker Chinese home](https://www.tokenmaker.one/zh): Simplified Chinese version of the main editor and overview.
 - [DnD dice roller](https://www.tokenmaker.one/dice-roller-dnd): Browser dice roller for DnD stat rolls, common dice presets, roll logs, and tabletop use.
 - [DnD dice roller Chinese](https://www.tokenmaker.one/zh/dice-roller-dnd): Simplified Chinese version of the DnD dice roller.
+- [Square token maker](https://www.tokenmaker.one/templates/square-token-maker): Square VTT token workflow for grid maps, 1:1 crops, borders, and transparent PNG export.
+- [Square token maker Chinese](https://www.tokenmaker.one/zh/templates/square-token-maker): Simplified Chinese square token maker workflow.
 - [FAQ](https://www.tokenmaker.one/faq): Questions about image handling, workflow fit, supported token styles, and export size.
 - [FAQ Chinese](https://www.tokenmaker.one/zh/faq): Simplified Chinese FAQ.
 - [Privacy](https://www.tokenmaker.one/privacy): Privacy information, including the local-first image workflow.
@@ -23,10 +25,10 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
 - [DND Classes Explained](https://www.tokenmaker.one/blog/dnd-classes-explained): Guide to choosing DnD classes.
 - [DND Armor Guide](https://www.tokenmaker.one/blog/dnd-armor-guide): Armor types, AC values, and class picks.
-- [Build a DND character token](https://www.tokenmaker.one/blog/how-to-build-a-dnd-character-token): How to turn character art into a clean VTT token.
 - [DND Counterspell Guide](https://www.tokenmaker.one/blog/dnd-counterspell): Counterspell timing, 2014/2024 rules, and FAQ.
 - [DND Necromancer Spells](https://www.tokenmaker.one/blog/dnd-necromancer-spells): Spell list and minion-management guidance for necromancer play.
 - [mephistopheles dnd: Cania's Archdevil, Pact Traps, and DM Hooks](https://www.tokenmaker.one/blog/mephistopheles-dnd): Archdevil lore, Cania, pact traps, and DM encounter hooks.
+- [dnd bard spells: Best Picks for Support, Control, and Social Play](https://www.tokenmaker.one/blog/dnd-bard-spells): Bard spell picks by role, cantrips, control, healing, social magic, concentration, and VTT prep.
 
 ## Site Files
 
@@ -38,7 +40,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Chinese DND Classes Explained](https://www.tokenmaker.one/zh/blog/dnd-classes-explained)
 - [Chinese DND Armor Guide](https://www.tokenmaker.one/zh/blog/dnd-armor-guide)
-- [Chinese character token guide](https://www.tokenmaker.one/zh/blog/how-to-build-a-dnd-character-token)
 - [Chinese DND Counterspell Guide](https://www.tokenmaker.one/zh/blog/dnd-counterspell)
 - [Chinese DND Necromancer Spells](https://www.tokenmaker.one/zh/blog/dnd-necromancer-spells)
 - [mephistopheles dnd：Cania 冰狱大魔鬼、契约陷阱与跑团钩子](https://www.tokenmaker.one/zh/blog/mephistopheles-dnd)
+- [dnd bard spells：支援、控场、社交与救场法术推荐](https://www.tokenmaker.one/zh/blog/dnd-bard-spells)

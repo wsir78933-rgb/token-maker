@@ -94,7 +94,7 @@ export const dndGrungArticleHtml = String.raw`
 <h2>What Will Your DM Care About Before Approving a DND Grung?</h2>
 <p>Your DM will usually care about four things first: poison rulings, water dependency, campaign tone, and whether the race fits the setting.</p>
 
-<p>This is also why the linked video works as a useful companion piece. Its whole angle is "how DMs react to the race you bring to the table," and that is exactly the right lens for <strong>dnd grung</strong>. A <strong>dnd grung</strong> is not controversial because it is weak. It gets reactions because it creates friction points that a DM has to actively manage.</p>
+<p>The useful lens is "how DMs react to the race you bring to the table," and that is exactly the right way to think about <strong>dnd grung</strong>. A <strong>dnd grung</strong> is not controversial because it is weak. It gets reactions because it creates friction points that a DM has to actively manage.</p>
 
 <ul>
   <li><strong>Poisonous Skin:</strong> direct contact and piercing-weapon interactions can create repeated save calls.</li>
@@ -207,7 +207,7 @@ export const dndGrungArticleHtml = String.raw`
   <li><strong>Export at 512 first:</strong> that is enough for most live VTT sessions; use 1024 when you want a cleaner campaign archive.</li>
 </ul>
 
-<p>You can build the token in the <a href="${EN_EDITOR_PATH}">Token Maker editor</a> by uploading your <strong>dnd grung</strong> art, choosing a circular or hex mask, and using a thin high-contrast border so the frogfolk silhouette does not disappear into swamp maps. If your table is testing poison damage or jump-and-attack turns at the same time, keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open in another tab.</p>
+<p>You can build the token in the <a href="${EN_EDITOR_PATH}">VTT token maker</a> by uploading your <strong>dnd grung</strong> art, choosing a circular or hex mask, and using a thin high-contrast border so the frogfolk silhouette does not disappear into swamp maps. If your table is testing poison damage or jump-and-attack turns at the same time, keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open in another tab.</p>
 
 <section class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
   <h3 class="font-display text-2xl text-stone-50" style="margin-top: 0;">Useful Tool for Grung Builds</h3>
@@ -270,7 +270,7 @@ export const dndGrungArticleHtml = String.raw`
 </section>
 
 <h2>Watch: Why DND Grung Gets Such a Strong DM Reaction</h2>
-<p>If you want a lighter follow-up after the guide, this video is the right kind of companion watch. It approaches race choice from the DM-reaction angle, which fits <strong>dnd grung</strong> better than a pure optimization lens. That is exactly the conversation a <strong>dnd grung</strong> usually triggers at real tables: not "is it possible?" but "what kind of energy does this bring into the campaign?" You can watch it on <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">YouTube here</a>, or use the embed below.</p>
+<p>If you want a lighter follow-up after the guide, this video is the right kind of companion watch. It approaches race choice from the DM-reaction angle, which fits <strong>dnd grung</strong> better than a pure optimization lens. That is exactly the conversation a <strong>dnd grung</strong> usually triggers at real tables: not "is it possible?" but "what kind of energy does this bring into the campaign?" You can watch the <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">DND grung companion video on YouTube</a>, or use the embed below.</p>
 
 ${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons", {
   src: DND_GRUNG_VIDEO_PLACEHOLDER_PATH,
@@ -354,7 +354,7 @@ export const dndGrungArticleHtmlZh = String.raw`
 <h2>DM 在放行 DND Grung 前最在意什么？</h2>
 <p>一个 DM 在看见 <strong>dnd grung</strong> 角色卡时，通常最先在意四件事：毒素规则、Water Dependency、战役调性，以及这个种族跟世界观到底合不合。</p>
 
-<p>这也是为什么表格里那条视频值得挂在文末。它的核心视角其实就是“DM 会怎么理解你带来的种族能量”，而这正好是 Grung 最真实的问题。Grung 不会让人皱眉，是因为它太弱；恰恰相反，是因为它会制造额外的判定、额外的物流问题和额外的桌面氛围。</p>
+<p>这里最有用的视角其实是“DM 会怎么理解你带来的种族能量”，而这正好是 Grung 最真实的问题。Grung 不会让人皱眉，是因为它太弱；恰恰相反，是因为它会制造额外的判定、额外的物流问题和额外的桌面氛围。</p>
 
 <ul>
   <li><strong>Poisonous Skin：</strong>直接接触和穿刺武器附毒，会让战斗里多出一串 saving throw。</li>
@@ -467,11 +467,11 @@ export const dndGrungArticleHtmlZh = String.raw`
   <li><strong>先导出 512：</strong>多数实际跑团已经够用；如果你要做长期素材库或角色档案，再导出 1024。</li>
 </ul>
 
-<p>你可以在 <a href="${ZH_EDITOR_PATH}">Token Maker 编辑器</a> 里上传 Grung 图，选择圆形或六边形裁切，再配一圈高对比度细边框，让毒蛙人的轮廓在沼泽地图上更清楚。如果你同时还在测试毒伤、跳跃进场或专注判定，可以把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D Dice Roller</a> 一起打开。</p>
+<p>你可以在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里上传 Grung 图，选择圆形或六边形裁切，再配一圈高对比度细边框，让毒蛙人的轮廓在沼泽地图上更清楚。如果你同时还在测试毒伤、跳跃进场或专注判定，可以把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 一起打开。</p>
 
 <section class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
   <h3 class="font-display text-2xl text-stone-50" style="margin-top: 0;">Grung 构筑会顺手用到的工具</h3>
-  <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">如果你想快速试一下毒伤、跳跃进场、或者专注判定，不想在桌上把节奏拖慢，我建议直接开站内的 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D Dice Roller</a>。Grung 特别容易制造“等一下，这回合到底怎么算”的小判定，这种时候工具就很省事。</p>
+  <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">如果你想快速试一下毒伤、跳跃进场、或者专注判定，不想在桌上把节奏拖慢，我建议直接开站内的 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a>。Grung 特别容易制造“等一下，这回合到底怎么算”的小判定，这种时候工具就很省事。</p>
 </section>
 
 <h2>我会怎么演 DND Grung，才不会只剩下一个梗</h2>

@@ -473,7 +473,7 @@ export const dndDruidSpellsArticleHtml = String.raw`
 
 <p>Druids create more table markers than many classes: restrained enemies, Spike Growth areas, Moonbeam zones, summoned beasts, Wild Shape forms, stealth states, and concentration reminders. On a virtual tabletop, that can become messy unless the visuals are readable.</p>
 
-<p>For Roll20, Foundry, Owlbear Rodeo, or another VTT, use a distinct token for your normal form and a distinct token for your most common Wild Shape. You can make those quickly in the <a href="${EN_EDITOR_PATH}">Token Maker editor</a>. Give the Wild Shape token a different border or color so the table instantly knows which form is active. Keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open when concentration saves, Goodberry tracking, or repeated area damage starts slowing the session.</p>
+<p>For Roll20, Foundry, Owlbear Rodeo, or another VTT, use a distinct token for your normal form and a distinct token for your most common Wild Shape. You can make those quickly in the <a href="${EN_EDITOR_PATH}">VTT token maker</a>. Give the Wild Shape token a different border or color so the table instantly knows which form is active. Keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open when concentration saves, Goodberry tracking, or repeated area damage starts slowing the session.</p>
 
 <h2>FAQ About DND Druid Spells</h2>
 
@@ -958,7 +958,7 @@ export const dndDruidSpellsArticleHtmlZh = String.raw`
 
 <p>德鲁伊比很多职业更容易制造桌面标记：束缚敌人、荆棘丛生区域、月华之光区域、召唤物、野兽形态、潜行状态和专注提醒。在 Roll20、Foundry、Owlbear Rodeo 这类虚拟桌面里，如果视觉不清楚，场面很快会乱。</p>
 
-<p>建议给普通形态和最常用野兽形态分别准备不同 Token。你可以直接在 <a href="${ZH_EDITOR_PATH}">Token Maker 编辑器</a> 里制作，把野兽形态的边框或颜色做出明显区别。遇到专注豁免、神莓术数量、重复区域伤害时，把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 开在旁边，能减少查数和口算时间。</p>
+<p>建议给普通形态和最常用野兽形态分别准备不同 Token。你可以直接在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里制作，把野兽形态的边框或颜色做出明显区别。遇到专注豁免、神莓术数量、重复区域伤害时，把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 开在旁边，能减少查数和口算时间。</p>
 
 <h2>关于 DND 德鲁伊法术的常见问题 (FAQ)</h2>
 

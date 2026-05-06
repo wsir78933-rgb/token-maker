@@ -2,7 +2,11 @@ import {
   DND_ARMOR_TYPES_IMAGE_PATH,
   DND_ARMOR_HEAVY_IMAGE_PATH,
   EN_DND_CLASSES_PATH,
+  EN_DICE_ROLLER_PATH,
+  EN_EDITOR_PATH,
   ZH_DND_CLASSES_PATH,
+  ZH_DICE_ROLLER_PATH,
+  ZH_EDITOR_PATH,
   liteVideoEmbed,
 } from './shared';
 
@@ -142,7 +146,7 @@ export const dndArmorArticleHtml = String.raw`
 </ul>
 
 <h2>Which DND Armor Is Best for Each Class?</h2>
-<p>Choosing armor is not just about the highest AC number. It is about matching your defenses to your class abilities, your Dexterity score, and how your character actually plays. Here is what I recommend based on years of table time:</p>
+<p>Choosing armor is not just about the highest AC number. It is about matching your defenses to your class abilities, your Dexterity score, and how your character actually plays. If you are preparing a VTT campaign, build the armored portrait in the <a href="${EN_EDITOR_PATH}">VTT token maker</a> and compare a few AC targets in the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> before deciding whether plate, breastplate, or studded leather actually fits the table. Here is what I recommend based on years of table time:</p>
 
 <table>
   <thead>
@@ -337,7 +341,7 @@ export const dndArmorArticleHtmlZh = String.raw`
 </ul>
 
 <h2>每个职业应该穿什么 DND 护甲？</h2>
-<p>选护甲不仅仅是看哪个 AC 最高。它需要匹配你的职业能力、敏捷属性和实际打法。以下是我根据多年桌面经验的推荐：</p>
+<p>选护甲不仅仅是看哪个 AC 最高。它需要匹配你的职业能力、敏捷属性和实际打法。如果你正在准备虚拟桌面战役，可以先在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里做出护甲形象，再用 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 对比几个常见 AC 目标，判断板甲、胸甲或镶嵌皮甲到底适不适合这张桌。以下是我根据多年桌面经验的推荐：</p>
 
 <table>
   <thead>

@@ -14,6 +14,7 @@ export const DND_MAGE_ARMOR_COVER_PATH = '/blog/covers/en/dnd-mage-armor-guide.w
 export const DND_NECROMANCER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-necromancer-spells-guide.webp';
 export const DND_HUNTERS_MARK_COVER_PATH = '/blog/covers/en/dnd-hunters-mark-cinematic.webp';
 export const DND_MEPHISTOPHELES_COVER_PATH = '/blog/covers/en/mephistopheles-dnd-guide.webp';
+export const DND_BARD_SPELLS_COVER_PATH = '/blog/covers/en/dnd-bard-spells-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -41,8 +42,12 @@ export const DND_HUNTERS_MARK_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-hunters
 export const DND_DRUID_SPELLS_PLANNING_IMAGE_PATH = '/blog/inline/dnd-druid-spells/druid-spell-planning-map.webp';
 export const MEPHISTOPHELES_CANIA_IMAGE_PATH = '/blog/inline/mephistopheles-dnd/mephistopheles-cania-archive.webp';
 export const MEPHISTOPHELES_VIDEO_PLACEHOLDER_PATH = '/blog/inline/mephistopheles-dnd/mephistopheles-video-placeholder.webp';
+export const DND_BARD_SPELLS_LIBRARY_IMAGE_PATH = '/blog/inline/dnd-bard-spells/bard-spell-library.webp';
+export const DND_BARD_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-bard-spells/bard-video-placeholder.webp';
 
 // External URLs
+export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
+export const DND_BARD_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Bard';
 export const DND_DRUID_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Druid';
 export const DND_DRUID_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Druid';
 export const DND_GOODBERRY_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#Goodberry';
@@ -76,6 +81,7 @@ export const DND_HUNTERS_MARK_VIDEO_URL = 'https://www.youtube.com/watch?v=JwINR
 export const DND_2024_TIEFLING_URL = 'https://www.dndbeyond.com/species/1751443-tiefling';
 export const MEPHISTOPHELES_FR_WIKI_URL = 'https://forgottenrealms.fandom.com/wiki/Mephistopheles';
 export const MEPHISTOPHELES_VIDEO_URL = 'https://www.youtube.com/watch?v=Xdu_5_ZL7pQ';
+export const DND_BARD_SPELLS_VIDEO_URL = 'https://www.youtube.com/watch?v=qiHXxrCB5yk';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');

@@ -1,7 +1,11 @@
 import {
   DND_CLASSES_RANKED_PARTY_IMAGE_PATH,
   EN_DND_DRUID_SPELLS_PATH,
+  EN_DICE_ROLLER_PATH,
+  EN_EDITOR_PATH,
   ZH_DND_DRUID_SPELLS_PATH,
+  ZH_DICE_ROLLER_PATH,
+  ZH_EDITOR_PATH,
   liteVideoEmbed,
 } from './shared';
 
@@ -75,7 +79,7 @@ export const dndClassesRankedArticleHtml = String.raw`
   <li>Harder to play than the reward justifies.</li>
 </ul>
 
-<p>That means this is not a ranking for one-shots only, and it is not based only on level 20 theorycrafting. It is built around the classes people actually enjoy and succeed with across normal campaigns.</p>
+<p>That means this is not a ranking for one-shots only, and it is not based only on level 20 theorycrafting. It is built around the classes people actually enjoy and succeed with across normal campaigns. Once you narrow the list to one or two picks, build a quick portrait in the <a href="${EN_EDITOR_PATH}">VTT token maker</a> and use the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> to test the attack rolls, saves, or one-shot checks that class will make most often.</p>
 
 <h2>1. Wizard</h2>
 <p>If you look at almost any serious <strong>dnd classes ranked</strong> discussion, Wizard ends up near the top. That is because no class matches its overall magical flexibility.</p>
@@ -434,7 +438,7 @@ export const dndClassesRankedArticleHtml = String.raw`
 <p>That makes this ranking more useful than a pure theorycraft tier list, because it helps real players choose a class they will actually enjoy.</p>
 
 <h2>Watch a Quick Video Recap</h2>
-<p>If you want a more conversational follow-up after reading, this video is a natural next step. It covers the same "which D&amp;D class actually feels best to play" question from a faster angle. You can watch it directly on <a href="https://www.youtube.com/watch?v=K2Qs8q2JBRY" target="_blank" rel="noreferrer">YouTube here</a>, or use the embedded version below.</p>
+<p>If you want a more conversational follow-up after reading, this video is a natural next step. It covers the same "which D&amp;D class actually feels best to play" question from a faster angle. You can watch the <a href="https://www.youtube.com/watch?v=K2Qs8q2JBRY" target="_blank" rel="noreferrer">DnD classes ranked video on YouTube</a>, or use the embedded version below.</p>
 
 ${liteVideoEmbed('K2Qs8q2JBRY', 'DnD classes ranked video recap')}
 `;
@@ -509,7 +513,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
   <li>操作成本偏高，但收益并没有高到值得。</li>
 </ul>
 
-<p>也就是说，这份排名不是只看一次性团本，也不是只看满级理论构筑，而是围绕“普通玩家在正常战役里真正会觉得好用、好玩、好带队”的标准来排。</p>
+<p>也就是说，这份排名不是只看一次性团本，也不是只看满级理论构筑，而是围绕“普通玩家在正常战役里真正会觉得好用、好玩、好带队”的标准来排。等你把候选职业缩到一两个时，可以先在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里做一个临时头像，再用 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 测一下这个职业最常用的攻击、豁免或一次性团检定。</p>
 
 <h2>1. 法师 Wizard</h2>
 <p>几乎所有严肃一点的 <strong>DND 职业排名</strong> 讨论里，法师最后都会靠近榜首。原因很简单，没有哪个职业能真正匹配它的整体法术灵活度。</p>

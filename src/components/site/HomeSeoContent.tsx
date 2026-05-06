@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Shield, Sparkles } from 'lucide-react';
+import { ArrowRight, MessageSquareText, Shield, Sparkles } from 'lucide-react';
 import {
   getFaqItems,
   getHomeCopy,
@@ -12,6 +12,64 @@ import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
 import { SiteMark } from '@/components/site/SiteMark';
 import { SiteSupportStrip } from '@/components/site/SiteSupportStrip';
+
+function HomeFaqDisclosure({ item }: { item: { question: string; answer: string } }) {
+  return (
+    <details
+      className="site-surface-card site-surface-card--plain group rounded-[28px] p-5 transition duration-300 hover:-translate-y-0.5 hover:border-[#d7b46a]/35 open:border-[#d7b46a]/35 open:bg-[#d7b46a]/[0.06]"
+    >
+      <summary className="flex cursor-pointer list-none items-start justify-between gap-4 outline-none focus-visible:ring-2 focus-visible:ring-[#d7b46a]/25 [&::-webkit-details-marker]:hidden">
+        <h3 className="text-lg font-medium text-stone-50">{item.question}</h3>
+        <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-stone-500 transition duration-300 group-open:rotate-90 group-open:text-[#f1d492]" />
+      </summary>
+      <p className="mt-4 text-sm leading-7 text-stone-300">{item.answer}</p>
+    </details>
+  );
+}
+
+function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
+  const copy = {
+    en: {
+      eyebrow: 'Feedback',
+      title: 'Questions or feedback?',
+      body:
+        'Tell me what broke, what felt slow, or which token workflow you want next. Real table feedback helps improve Token Maker faster.',
+      cta: 'Send feedback',
+    },
+    zh: {
+      eyebrow: '反馈',
+      title: '有问题或建议？',
+      body:
+        '如果你在制作 Token、导出 PNG、适配 Roll20 或 Foundry VTT 时遇到问题，欢迎直接告诉我。我会优先根据这些反馈修复问题、补足常用场景。',
+      cta: '发送反馈',
+    },
+  }[locale];
+
+  return (
+    <section className="site-content-section">
+      <div className="mx-auto max-w-6xl px-6 py-10 lg:px-8 lg:py-12">
+        <div className="border-t border-white/10 pt-10 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[#d7b46a]/30 bg-[#d7b46a]/10 text-[#f1d492]">
+            <MessageSquareText className="h-5 w-5" />
+          </div>
+          <p className="mt-5 text-xs uppercase tracking-[0.34em] text-[#d7b46a]">{copy.eyebrow}</p>
+          <h2 className="mx-auto mt-4 max-w-3xl font-display text-3xl leading-tight text-stone-50 sm:text-4xl">
+            {copy.title}
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-300 sm:text-base">{copy.body}</p>
+          <Link
+            href={getLocalizedPath(locale, '/contact')}
+            prefetch={false}
+            className="mt-7 inline-flex items-center gap-2 text-base font-medium text-[#f1d492] underline decoration-white/25 underline-offset-8 transition hover:text-[#f7dfab] hover:decoration-[#f1d492]"
+          >
+            {copy.cta}
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export function HomeHero({ locale }: { locale: SiteLocale }) {
   const copy = getHomeCopy(locale);
@@ -108,6 +166,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
 export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
   const copy = getHomeCopy(locale);
   const homeFeatures = getHomeFeatures(locale);
+  const answerSections = copy.answerSections;
   const faqItems = getFaqItems(locale).slice(0, 3);
   const faqCtaLabel = locale === 'zh' ? '查看全部解答' : 'Read all answers';
 
@@ -160,26 +219,48 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
         </div>
       </section>
 
+      <section className="site-content-section">
+        <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
+          <div className="mb-8 max-w-3xl">
+            <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">
+              {locale === 'zh' ? '制作流程' : 'Token workflow'}
+            </p>
+            <h2 className="font-display mt-3 text-3xl text-stone-50 sm:text-4xl">
+              {locale === 'zh' ? '制作 Token 前最常遇到的选择' : 'Answers before you export a token'}
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-stone-300 sm:text-base">
+              {locale === 'zh'
+                ? '如果你要为 DnD、Roll20、Foundry VTT 或 Owlbear 准备头像素材，先确认形状、边框、透明 PNG 和导出尺寸会更省时间。'
+                : 'If you are preparing DnD tokens for Roll20, Foundry VTT, Owlbear, or another VTT, these notes help you choose the right shape, border, PNG format, and export size.'}
+            </p>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            {answerSections.map((section, index) => (
+              <article
+                key={section.title}
+                className={cn(
+                  'site-surface-card site-surface-card--plain rounded-[30px] p-6',
+                  index === 0 && 'site-surface-card--warm lg:col-span-2',
+                )}
+              >
+                <h2 className="font-display text-2xl leading-tight text-stone-50">{section.title}</h2>
+                <p className="mt-4 text-sm leading-7 text-stone-300">{section.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="faq" className="site-content-section">
         <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Shield className="h-5 w-5 text-[#d7b46a]" />
-              <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.faqTitle}</h2>
-            </div>
-            <div className="max-w-sm text-sm leading-7 text-stone-400">{copy.faqDescription}</div>
+          <div className="mb-8 flex items-center gap-3">
+            <Shield className="h-5 w-5 text-[#d7b46a]" />
+            <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.faqTitle}</h2>
           </div>
           <div className="grid items-start gap-4 lg:grid-cols-2">
             {faqItems.map((item) => (
-              <details
-                key={item.question}
-                className="site-surface-card site-surface-card--plain group rounded-[28px] p-5"
-              >
-                <summary className="cursor-pointer list-none text-lg font-medium text-stone-50">
-                  {item.question}
-                </summary>
-                <p className="mt-4 text-sm leading-7 text-stone-300">{item.answer}</p>
-              </details>
+              <HomeFaqDisclosure key={item.question} item={item} />
             ))}
           </div>
           <div className="mt-8">
@@ -195,7 +276,9 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
         </div>
       </section>
 
-      <SiteSupportStrip locale={locale} currentPath="/" className="pt-0" />
+      <HomeFeedbackSection locale={locale} />
+
+      <SiteSupportStrip locale={locale} currentPath="/" className="pt-0" hideContact />
     </div>
   );
 }

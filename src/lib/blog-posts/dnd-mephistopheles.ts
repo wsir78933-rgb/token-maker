@@ -6,7 +6,6 @@ import {
   MEPHISTOPHELES_CANIA_IMAGE_PATH,
   MEPHISTOPHELES_FR_WIKI_URL,
   MEPHISTOPHELES_VIDEO_PLACEHOLDER_PATH,
-  MEPHISTOPHELES_VIDEO_URL,
   ZH_DND_CLASSES_PATH,
   ZH_EDITOR_PATH,
   ZH_DICE_ROLLER_PATH,
@@ -86,7 +85,7 @@ export const dndMephistophelesArticleHtml = String.raw`
   <li><strong>Keep the rules readable.</strong> If the bargain is too vague, players feel tricked by the DM. If it is clear but painful, players blame the devil.</li>
 </ul>
 
-<p>The video linked at the bottom is useful as a companion because it pushes the same idea: Mephistopheles is more interesting as a scheme than as a stat block. I used that lens here. Build the situation first, then decide whether dice are needed.</p>
+<p>The useful companion lens is this: Mephistopheles is more interesting as a scheme than as a stat block. Build the situation first, then decide whether dice are needed.</p>
 
 <h2>Mephistopheles vs Other Archdevils</h2>
 <p><strong>Mephistopheles stands out because he feels like a magical researcher and contract predator, not only a ruler with armies.</strong> That makes him especially good for Wizard, Warlock, and forbidden-knowledge plots.</p>
@@ -233,7 +232,7 @@ export const dndMephistophelesArticleHtml = String.raw`
 <p>At the table, I would keep the handout short. Two clauses, one signature line, one weird witness. Long legal props are fun to write but slow to play.</p>
 
 <h2>VTT Token Notes for Mephistopheles and His Agents</h2>
-<p><strong>A Mephistopheles VTT token should read as infernal authority at 512 px, not as a pile of red effects.</strong> In <a href="${EN_EDITOR_PATH}">Token Maker</a>, I would use a controlled palette: black glass, cold blue highlights, gold contract lines, and one sharp ember color.</p>
+<p><strong>A Mephistopheles VTT token should read as infernal authority at 512 px, not as a pile of red effects.</strong> In the <a href="${EN_EDITOR_PATH}">VTT token maker</a>, I would use a controlled palette: black glass, cold blue highlights, gold contract lines, and one sharp ember color.</p>
 
 <ul>
   <li><strong>For Mephistopheles:</strong> keep the face readable and put the magic in the border or sigil.</li>
@@ -274,10 +273,9 @@ export const dndMephistophelesArticleHtml = String.raw`
 </section>
 
 <h2 id="video">Watch the Mephistopheles D&amp;D Lore Video</h2>
-<p>This <a href="${MEPHISTOPHELES_VIDEO_URL}" rel="noreferrer noopener">Mephistopheles D&amp;D video</a> works best after you already have the campaign structure in mind. Use it to lock in the mood: the cold court, the dangerous bargain, and the feeling that this villain can win before initiative is rolled.</p>
 
 <ul>
-  <li><strong>Cold authority:</strong> the article leans into Cania and frozen pressure instead of generic fire-devil imagery.</li>
+  <li><strong>Cold authority:</strong> Cania and frozen pressure make Mephistopheles feel different from generic fire-devil imagery.</li>
   <li><strong>Contracts before combat:</strong> the strongest Mephistopheles scene should threaten the party through terms, not only damage.</li>
   <li><strong>Table usability:</strong> turn that mood into encounter, patron, and token decisions instead of stopping at lore trivia.</li>
 </ul>
@@ -357,7 +355,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
   <li><strong>条款必须可读。</strong>如果契约太模糊，玩家会觉得是 DM 阴人；如果清楚但痛，玩家会怪魔鬼。</li>
 </ul>
 
-<p>文末表格里的视频适合作为氛围补充。它提醒的是同一件事：Mephistopheles 的重点不是“我有多强”，而是“我怎样让你在动手前就已经输了半步”。</p>
+<p>这里最重要的提醒是同一件事：Mephistopheles 的重点不是“我有多强”，而是“我怎样让你在动手前就已经输了半步”。</p>
 
 <h2>Mephistopheles 和其他 Archdevils 有什么不同？</h2>
 <p><strong>Mephistopheles 的差异在于他像一个研究禁忌魔法的契约猎手，而不只是有军队的统治者。</strong>所以他特别适合 Wizard、Warlock、禁忌知识和高风险交易主题。</p>
@@ -498,7 +496,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
 </ol>
 
 <h2>Mephistopheles 和代理人的 VTT Token 怎么做？</h2>
-<p><strong>Mephistopheles 的 VTT Token 要在 512 px 下仍然读得出“地狱权威”，不要堆成一团红色特效。</strong>我会在 <a href="${ZH_EDITOR_PATH}">Token Maker</a> 里用黑色玻璃、冷蓝边光、金色契约线和少量 ember 色。</p>
+<p><strong>Mephistopheles 的 VTT Token 要在 512 px 下仍然读得出“地狱权威”，不要堆成一团红色特效。</strong>我会在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里用黑色玻璃、冷蓝边光、金色契约线和少量 ember 色。</p>
 
 <ul>
   <li><strong>本尊：</strong>脸和轮廓优先，魔法效果放在边框或印记里。</li>
@@ -539,10 +537,9 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
 </section>
 
 <h2 id="video">视频：Mephistopheles D&amp;D Lore</h2>
-<p>这条 <a href="${MEPHISTOPHELES_VIDEO_URL}" rel="noreferrer noopener">Mephistopheles D&amp;D 视频</a> 适合作为文末补充。看完前面的跑团用法后，再用视频补足气氛：冰冷宫廷、危险交易、以及这个反派在开打前就让人吃亏的感觉。</p>
 
 <ul>
-  <li><strong>冰冷权威：</strong>正文强化了 Cania 和寒冷压迫，而不是把他写成普通火焰 devil。</li>
+  <li><strong>冰冷权威：</strong>Cania 和寒冷压迫能把 Mephistopheles 和普通火焰 devil 区分开。</li>
   <li><strong>先契约，后战斗：</strong>真正好用的 Mephistopheles 场景，应该先用条款威胁玩家，而不是只靠伤害。</li>
   <li><strong>落到桌面：</strong>把这些氛围转成遭遇、patron 和 Token 设计建议，而不是只停留在设定名词。</li>
 </ul>

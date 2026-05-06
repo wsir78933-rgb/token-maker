@@ -8,9 +8,11 @@ import {
   EN_DND_CLASSES_PATH,
   EN_DND_CONSTITUTION_PATH,
   EN_DICE_ROLLER_PATH,
+  EN_EDITOR_PATH,
   ZH_DND_CLASSES_PATH,
   ZH_DND_CONSTITUTION_PATH,
   ZH_DICE_ROLLER_PATH,
+  ZH_EDITOR_PATH,
   liteVideoEmbed,
 } from './shared';
 
@@ -173,7 +175,7 @@ export const dndDhampirArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>If you are still comparing frames, open our <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> next. If your plan is to lean into bite healing, concentration checks, or a tougher front line, our <a href="${EN_DND_CONSTITUTION_PATH}">D&amp;D Constitution guide</a> is the better companion piece.</p>
+<p>If you are still comparing frames, open our <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> next. If your plan is to lean into bite healing, concentration checks, or a tougher front line, our <a href="${EN_DND_CONSTITUTION_PATH}">D&amp;D Constitution guide</a> is the better companion piece; once the concept is set, a dark, high-contrast portrait from the <a href="${EN_EDITOR_PATH}">VTT token maker</a> helps the Dhampir read clearly on a crowded map.</p>
 
 <section class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
   <h2 class="font-display text-2xl text-stone-50" style="margin-top: 0;">Quick Utility Link for Dhampir Players</h2>
@@ -399,11 +401,11 @@ export const dndDhampirArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>如果你还在横向对比底盘，下一篇我建议直接看我们的 <a href="${ZH_DND_CLASSES_PATH}">DND 职业详解</a>。如果你打算把 Dhampir 往咬击续航、专注检定或前排耐久去靠，那篇 <a href="${ZH_DND_CONSTITUTION_PATH}">D&amp;D Constitution 指南</a> 也应该一起打开。</p>
+<p>如果你还在横向对比底盘，下一篇我建议直接看我们的 <a href="${ZH_DND_CLASSES_PATH}">DND 职业详解</a>。如果你打算把 Dhampir 往咬击续航、专注检定或前排耐久去靠，那篇 <a href="${ZH_DND_CONSTITUTION_PATH}">D&amp;D Constitution 指南</a> 也应该一起打开；等概念确定后，再用 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 做一张高对比度头像，Dhampir 在拥挤地图上会更容易被看清。</p>
 
 <section class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
   <h2 class="font-display text-2xl text-stone-50" style="margin-top: 0;">Dhampir 玩家顺手会用到的工具</h2>
-  <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">如果你想快速试一下咬击后的补血量、下一次关键检定怎么垫，或者纯粹想跑一段 rooftop chase 的奇怪骰点，我建议直接开站内的 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D Dice Roller</a>。Dhampir 经常会把原本普通的移动和保命局面，变成需要马上判断的小战术题。</p>
+  <p class="mt-3 text-[0.98rem] leading-8 text-stone-300">如果你想快速试一下咬击后的补血量、下一次关键检定怎么垫，或者纯粹想跑一段 rooftop chase 的奇怪骰点，我建议直接开站内的 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a>。Dhampir 经常会把原本普通的移动和保命局面，变成需要马上判断的小战术题。</p>
 </section>
 
 <h2>我会怎么演一个 Dhampir，才不会让全桌烦躁</h2>

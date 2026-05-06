@@ -6,6 +6,7 @@ import {
   getPrivacySections,
   getSiteConfig,
   getSiteUrl,
+  getTemplatePage,
   type FaqItem,
 } from '@/lib/site-content';
 import { getLanguageAlternates, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
@@ -294,6 +295,53 @@ export function buildCollectionStructuredData(
       '@type': 'WebSite',
       name: siteConfig.name,
       url: absoluteUrl(getLocalizedPath(locale, '/')),
+    },
+  };
+}
+
+export function createTemplatePageMetadata(locale: SiteLocale, slug: string): Metadata {
+  const page = getTemplatePage(locale, slug);
+  const siteConfig = getSiteConfig(locale);
+  const path = `/templates/${slug}`;
+  const localizedPath = getLocalizedPath(locale, path);
+
+  if (!page) {
+    return {
+      title: locale === 'zh' ? '模板页不存在' : 'Template not found',
+    };
+  }
+
+  return {
+    metadataBase: new URL(getSiteUrl()),
+    title: {
+      absolute: page.metadataTitle,
+    },
+    description: page.metadataDescription,
+    alternates: {
+      canonical: localizedPath,
+      languages: getLanguageAlternates(path),
+    },
+    openGraph: {
+      title: page.metadataTitle,
+      description: page.metadataDescription,
+      url: absoluteUrl(localizedPath),
+      siteName: siteConfig.name,
+      type: 'website',
+      locale: locale === 'zh' ? 'zh_CN' : 'en_US',
+      images: [
+        {
+          url: getSeoImageUrl(locale, 'home'),
+          width: 1200,
+          height: 630,
+          alt: page.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.metadataTitle,
+      description: page.metadataDescription,
+      images: [getSeoImageUrl(locale, 'home')],
     },
   };
 }

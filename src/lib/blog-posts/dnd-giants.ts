@@ -211,7 +211,7 @@ export const dndGiantsArticleHtml = String.raw`
   <li><strong>Make minion tokens simpler:</strong> ogres, wolves, cultists, or servants should not visually compete with the giant.</li>
 </ul>
 
-<p>You can make those tokens in the <a href="${EN_EDITOR_PATH}">Token Maker editor</a>. If the encounter includes rock throws, fall damage, or concentration saves, keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open beside it. For party role coverage before a giant arc, the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> is a useful planning companion. For reaction timing at a caster-heavy table, see the <a href="${EN_DND_COUNTERSPELL_PATH}">dnd counterspell guide</a>.</p>
+<p>You can make those tokens in the <a href="${EN_EDITOR_PATH}">VTT token maker</a>. If the encounter includes rock throws, fall damage, or concentration saves, keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open beside it. For party role coverage before a giant arc, the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> is a useful planning companion. For reaction timing at a caster-heavy table, see the <a href="${EN_DND_COUNTERSPELL_PATH}">dnd counterspell guide</a>.</p>
 
 <h2>Common Mistakes With DND Giants</h2>
 <p>The most common mistake with <strong>dnd giants</strong> is making them physically big but tactically small.</p>
@@ -225,7 +225,7 @@ export const dndGiantsArticleHtml = String.raw`
 </ul>
 
 <h2>Video: DND Giants Companion Watch</h2>
-<p>The companion video is <a href="${DND_GIANTS_VIDEO_URL}" rel="noreferrer noopener">available on YouTube here</a>. I use it as a tone companion rather than a replacement for rules text: watch for the way giants are framed as scale, personality, and table spectacle. That is the right lens for building better <strong>dnd giants</strong> encounters.</p>
+<p>The companion video is the <a href="${DND_GIANTS_VIDEO_URL}" rel="noreferrer noopener">DND giants companion video on YouTube</a>. I use it as a tone companion rather than a replacement for rules text: watch for the way giants are framed as scale, personality, and table spectacle. That is the right lens for building better <strong>dnd giants</strong> encounters.</p>
 
 ${liteVideoEmbed('aM0s_ZFsNr4', 'DND giants video companion', {
   src: DND_GIANTS_VIDEO_PLACEHOLDER_PATH,
@@ -454,7 +454,7 @@ export const dndGiantsArticleHtmlZh = String.raw`
   <li><strong>杂兵 Token 简化：</strong>食人魔、狼、邪教徒或仆从不要抢巨人的视觉主位。</li>
 </ul>
 
-<p>你可以直接在 <a href="${ZH_EDITOR_PATH}">Token Maker 编辑器</a> 里做这些 Token。如果遭遇里有投石、坠落伤害或专注检定，把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 放旁边会省很多时间。巨人篇章前如果要检查队伍分工，可以顺手看 <a href="${ZH_DND_CLASSES_PATH}">DND 职业指南</a>；如果队伍里有很多施法者，也可以参考 <a href="${ZH_DND_COUNTERSPELL_PATH}">dnd counterspell 指南</a>。</p>
+<p>你可以直接在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里做这些 Token。如果遭遇里有投石、坠落伤害或专注检定，把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 放旁边会省很多时间。巨人篇章前如果要检查队伍分工，可以顺手看 <a href="${ZH_DND_CLASSES_PATH}">DND 职业指南</a>；如果队伍里有很多施法者，也可以参考 <a href="${ZH_DND_COUNTERSPELL_PATH}">dnd counterspell 指南</a>。</p>
 
 <h2>DND Giants 常见错误</h2>
 <p>使用 <strong>dnd giants</strong> 最常见的错误，是让它们体型很大，但战术上很小。</p>
@@ -468,7 +468,7 @@ export const dndGiantsArticleHtmlZh = String.raw`
 </ul>
 
 <h2>视频：DND Giants 补充观看</h2>
-<p>表格里给 <strong>dnd giants</strong> 配的视频在 <a href="${DND_GIANTS_VIDEO_URL}" rel="noreferrer noopener">YouTube 这里</a>。我建议把它当成氛围和思路补充，而不是规则文本替代：重点看它如何把巨人处理成尺度、个性和桌面 spectacle。这正是设计巨人遭遇时最该抓住的角度。</p>
+<p>这条 <strong>dnd giants</strong> 视频可以在 <a href="${DND_GIANTS_VIDEO_URL}" rel="noreferrer noopener">YouTube 这里</a>观看。把它当成氛围和思路补充，而不是规则文本替代：重点看它如何把巨人处理成尺度、个性和桌面 spectacle。这正是设计巨人遭遇时最该抓住的角度。</p>
 
 ${liteVideoEmbed('aM0s_ZFsNr4', 'DND giants video companion', {
   src: DND_GIANTS_VIDEO_PLACEHOLDER_PATH,

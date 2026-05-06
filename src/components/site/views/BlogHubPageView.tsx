@@ -8,6 +8,8 @@ import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import {
   buildBlogHubStructuredData,
   formatBlogUpdatedAt,
+  getBlogHubDescription,
+  getBlogHubTitle,
   getBlogPageCount,
   getBlogPagePath,
   getBlogPlaceholderCopy,
@@ -23,6 +25,30 @@ type BlogPostItem = ReturnType<typeof getBlogPosts>[number];
 
 const copyByLocale = {
   en: {
+    hubEyebrow: 'Token Maker Blog',
+    topicTags: ['DnD Guides', 'VTT Tools', 'Square Tokens', 'Tabletop Resources'],
+    resourceCards: [
+      {
+        title: 'DnD Guides',
+        description: 'Classes, spells, armor, and rules explainers.',
+        href: '/blog/dnd-classes-explained',
+      },
+      {
+        title: 'VTT Tools',
+        description: 'Dice, platform workflows, and table prep utilities.',
+        href: '/dice-roller-dnd',
+      },
+      {
+        title: 'Square Token Maker',
+        description: 'Make 1:1 grid tokens with borders and PNG export.',
+        href: '/templates/square-token-maker',
+      },
+      {
+        title: 'Quick Start',
+        description: 'Open the editor and test one real portrait.',
+        href: '/#editor-workspace',
+      },
+    ],
     featuredEyebrow: "Editor's Pick",
     allArticles: 'All Articles',
     readArticle: 'Read article',
@@ -41,6 +67,30 @@ const copyByLocale = {
     editor: 'Open Editor',
   },
   zh: {
+    hubEyebrow: 'Token Maker 博客',
+    topicTags: ['DnD 指南', 'VTT 工具', '方形 Token', '桌面跑团资源'],
+    resourceCards: [
+      {
+        title: 'DnD 指南',
+        description: '职业、法术、护甲和规则解释。',
+        href: '/blog/dnd-classes-explained',
+      },
+      {
+        title: 'VTT 工具',
+        description: '骰子、平台流程和桌面准备工具。',
+        href: '/dice-roller-dnd',
+      },
+      {
+        title: '方形 Token 制作器',
+        description: '制作 1:1 网格 Token，支持边框和 PNG 导出。',
+        href: '/templates/square-token-maker',
+      },
+      {
+        title: '快速开始',
+        description: '打开编辑器，用真实头像试一张。',
+        href: '/#editor-workspace',
+      },
+    ],
     featuredEyebrow: '编辑精选',
     allArticles: '全部文章',
     readArticle: '阅读全文',
@@ -93,64 +143,115 @@ function PostCover({
   );
 }
 
-// ─── Hero card (full-width, image left / text right on desktop) ───────────────
+// ─── Blog hub lead ────────────────────────────────────────────────────────────
 
-function HeroCard({ locale, post }: { locale: SiteLocale; post: BlogPostItem }) {
+function BlogHubHeader({ locale, page }: { locale: SiteLocale; page: number }) {
+  const copy = copyByLocale[locale];
+  const title = getBlogHubTitle(locale, page);
+  const description = getBlogHubDescription(locale);
+
+  return (
+    <header className="max-w-5xl space-y-5">
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="rounded-full border border-[#d7b46a]/35 bg-[#d7b46a]/12 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#f1d492]">
+          {copy.hubEyebrow}
+        </span>
+        {page > 1 && (
+          <span className="text-[11px] uppercase tracking-[0.16em] text-stone-500">
+            {locale === 'zh' ? `第 ${page} 页` : `Page ${page}`}
+          </span>
+        )}
+      </div>
+      <h1 className="font-display max-w-4xl text-[2.35rem] leading-[1.04] text-stone-50 sm:text-[3rem] lg:text-[3.35rem] xl:text-[3.7rem]">
+        {title}
+      </h1>
+      <p className="max-w-3xl text-base leading-8 text-stone-300 sm:text-lg">
+        {description}
+      </p>
+      <div className="flex flex-wrap gap-2.5 pt-1">
+        {copy.topicTags.map((tag) => (
+          <span
+            key={tag}
+            className="rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium text-stone-300"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+      <div className="grid gap-3 pt-2 sm:grid-cols-2">
+        {copy.resourceCards.map((card) => (
+          <Link
+            key={card.title}
+            href={getLocalizedPath(locale, card.href)}
+            prefetch={false}
+            className="group rounded-[22px] border border-white/10 bg-white/[0.035] px-4 py-4 transition duration-300 hover:border-[#d7b46a]/35 hover:bg-[#d7b46a]/[0.08]"
+          >
+            <span className="flex items-center justify-between gap-3">
+              <span className="text-sm font-medium text-stone-100">{card.title}</span>
+              <ArrowRight className="h-4 w-4 shrink-0 text-[#d7b46a] transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
+            <span className="mt-2 block text-sm leading-6 text-stone-400">{card.description}</span>
+          </Link>
+        ))}
+      </div>
+    </header>
+  );
+}
+
+function FeaturedArticleCard({ locale, post }: { locale: SiteLocale; post: BlogPostItem }) {
   const copy = copyByLocale[locale];
 
   return (
     <Link
       href={getBlogPostPath(locale, post.slug)}
       prefetch={false}
-      className="group block"
+      className="group block h-full"
       aria-label={post.title}
     >
-      <article className="site-surface-card site-surface-card--warm relative overflow-hidden rounded-[32px]">
+      <article className="site-surface-card site-surface-card--warm relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-[28px]">
         {/* ambient glow */}
         <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_top_left,rgba(215,180,106,0.14),transparent_48%)]" />
 
-        <div className="relative grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-          {/* Cover */}
-          <PostCover
-            post={post}
-            className="h-[260px] lg:h-full lg:min-h-[440px] rounded-t-[32px] lg:rounded-l-[32px] lg:rounded-tr-none border-b border-white/8 lg:border-b-0 lg:border-r lg:border-white/8"
-            fallbackClassName="flex h-full w-full items-end justify-start rounded-t-[32px] lg:rounded-l-[32px] lg:rounded-tr-none bg-[linear-gradient(135deg,rgba(42,35,23,0.95),rgba(76,58,22,0.9))] p-8 font-display text-5xl text-stone-100"
-            imageClassName="object-top"
-            loading="eager"
-            sizes="(min-width: 1024px) 48vw, 100vw"
-          />
+        {/* Cover */}
+        <PostCover
+          post={post}
+          className="h-[180px] shrink-0 rounded-t-[28px] border-b border-white/8 bg-black/25 sm:h-[210px]"
+          fallbackClassName="flex h-full w-full items-end justify-start rounded-t-[28px] bg-[linear-gradient(135deg,rgba(42,35,23,0.95),rgba(76,58,22,0.9))] p-6 font-display text-4xl text-stone-100"
+          imageClassName="object-top"
+          loading="eager"
+          sizes="(min-width: 1024px) 34vw, 100vw"
+        />
 
-          {/* Text */}
-          <div className="relative z-10 flex flex-col justify-between gap-8 p-8 sm:p-10 lg:p-12">
-            <div className="space-y-5">
-              {/* badges */}
-              <div className="flex flex-wrap items-center gap-2.5">
-                <span className="rounded-full border border-[#d7b46a]/35 bg-[#d7b46a]/12 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#f1d492]">
-                  {copy.featuredEyebrow}
-                </span>
-                <span className="text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                  {formatBlogUpdatedAt(locale, post.updatedAt)}
-                </span>
-                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.16em] text-stone-400">
-                  {post.readTime}
-                </span>
-              </div>
-
-              <h1 className="font-display text-[2rem] leading-[1.01] text-stone-50 transition-colors duration-300 group-hover:text-[#f3ddb0] sm:text-[2.6rem] lg:text-[3.1rem]">
-                {post.title}
-              </h1>
-
-              <p className="text-base leading-8 text-stone-300 sm:text-lg">
-                {post.excerpt}
-              </p>
+        {/* Text */}
+        <div className="relative z-10 flex flex-1 flex-col justify-between gap-6 p-5 sm:p-6">
+          <div className="space-y-4">
+            {/* badges */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="rounded-full border border-[#d7b46a]/35 bg-[#d7b46a]/12 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#f1d492]">
+                {copy.featuredEyebrow}
+              </span>
+              <span className="text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                {formatBlogUpdatedAt(locale, post.updatedAt)}
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.16em] text-stone-400">
+                {post.readTime}
+              </span>
             </div>
 
-            {/* CTA */}
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#d7b46a]/28 bg-[#d7b46a]/10 px-6 py-3 text-sm font-medium text-[#f0d48d] transition duration-300 group-hover:border-[#d7b46a]/50 group-hover:bg-[#d7b46a]/18">
-              {copy.readArticle}
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </span>
+            <h2 className="font-display text-[1.85rem] leading-[1.04] text-stone-50 transition-colors duration-300 group-hover:text-[#f3ddb0] sm:text-[2.2rem] lg:text-[2.35rem]">
+              {post.title}
+            </h2>
+
+            <p className="line-clamp-3 text-sm leading-7 text-stone-300 sm:text-base">
+              {post.excerpt}
+            </p>
           </div>
+
+          {/* CTA */}
+          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#d7b46a]/28 bg-[#d7b46a]/10 px-5 py-2.5 text-sm font-medium text-[#f0d48d] transition duration-300 group-hover:border-[#d7b46a]/50 group-hover:bg-[#d7b46a]/18">
+            {copy.readArticle}
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </span>
         </div>
       </article>
     </Link>
@@ -217,10 +318,7 @@ export function BlogHubPageView({
   const placeholderCopy = getBlogPlaceholderCopy(locale);
   const allPosts = getBlogPosts(locale);
   const featuredPost = getFeaturedBlogPost(locale);
-  const gridPosts =
-    page === 1
-      ? allPosts.filter((p) => p.slug !== featuredPost.slug)
-      : getBlogPostsForPage(locale, page);
+  const gridPosts = getBlogPostsForPage(locale, page);
   const totalPages = getBlogPageCount(locale);
   const currentPath = page === 1 ? '/blog' : `/blog/page/${page}`;
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -242,10 +340,16 @@ export function BlogHubPageView({
       />
 
       <InnerPageChrome locale={locale} currentPath={currentPath} tone="hub" showSupportStrip={false}>
-        <div className="mx-auto max-w-[92rem] space-y-12 px-4 py-10 sm:px-5 lg:px-6 lg:py-14 xl:px-8">
+        <div className="mx-auto max-w-[92rem] space-y-10 px-4 py-10 sm:px-5 lg:px-6 lg:py-14 xl:px-8">
 
-          {/* ── Hero ── */}
-          {page === 1 && <HeroCard locale={locale} post={featuredPost} />}
+          {page === 1 ? (
+            <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.72fr)] lg:items-stretch xl:gap-10">
+              <BlogHubHeader locale={locale} page={page} />
+              <FeaturedArticleCard locale={locale} post={featuredPost} />
+            </section>
+          ) : (
+            <BlogHubHeader locale={locale} page={page} />
+          )}
 
           {/* ── Grid ── */}
           <section>

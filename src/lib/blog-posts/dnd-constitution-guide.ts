@@ -3,14 +3,17 @@ import {
   EN_DND_CLASSES_PATH,
   EN_DND_DRUID_SPELLS_PATH,
   EN_DICE_ROLLER_PATH,
+  EN_EDITOR_PATH,
   ZH_DND_DRUID_SPELLS_PATH,
+  ZH_DICE_ROLLER_PATH,
+  ZH_EDITOR_PATH,
   liteVideoEmbed,
 } from './shared';
 
 export const dndConstitutionArticleHtml = String.raw`
 <p>In D&amp;D, <strong>dnd constitution</strong> is the ability score that decides how much punishment your character can survive before the plan falls apart. It affects hit points, Constitution saving throws, concentration checks, poison resistance moments, exhaustion pressure, and the small survival rolls that rarely look exciting until they save the session.</p>
 
-<p>This guide gives you the practical version first: what Constitution changes on your sheet, how much HP different scores are worth, and why many characters should treat 14 Constitution as the baseline rather than a luxury.</p>
+<p>This guide gives you the practical version first: what Constitution changes on your sheet, how much HP different scores are worth, and why many characters should treat 14 Constitution as the baseline rather than a luxury. If you are turning the build into a VTT-ready character, pair the sheet math with a sturdy portrait from the <a href="${EN_EDITOR_PATH}">free DnD token maker</a> so the token looks as durable as the numbers suggest.</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
   <img
@@ -245,9 +248,9 @@ export const dndConstitutionArticleHtmlZh = String.raw`
 <div class="mt-8 rounded-[24px] border border-white/8 bg-black/20 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
   <div class="flex-1">
     <h3 class="text-lg font-medium text-stone-50 m-0 p-0" style="margin: 0;">🎯 实战工具推荐</h3>
-    <p class="mt-2 text-sm leading-7 text-stone-300" style="margin-top: 0.5rem; margin-bottom: 0;">还在为了纯手算豁免结果而打乱跑团节奏？立即切换使用我们系统严密的 D&amp;D 线上掷骰器，一秒准确模拟带有体质修正计算的综合生存掷骰。</p>
+    <p class="mt-2 text-sm leading-7 text-stone-300" style="margin-top: 0.5rem; margin-bottom: 0;">如果你已经在 <a href="${ZH_EDITOR_PATH}">免费 DnD token maker</a> 里做好了高体质角色头像，实际开团时再用 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 线上掷骰器</a> 快速模拟带有体质修正的生存豁免，就不会因为手算结果打断节奏。</p>
   </div>
-  <a href="/dice-roller-dnd" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-[#f1d492] transition hover:border-[#d7b46a]/50 hover:bg-[#d7b46a]/10">
+  <a href="${ZH_DICE_ROLLER_PATH}" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-[#f1d492] transition hover:border-[#d7b46a]/50 hover:bg-[#d7b46a]/10">
     打开 Dice Roller
   </a>
 </div>

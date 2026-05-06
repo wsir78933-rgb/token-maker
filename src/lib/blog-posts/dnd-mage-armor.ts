@@ -198,7 +198,7 @@ export const dndMageArmorArticleHtml = String.raw`
 <h2 id="overlooked-use">What Is the Overlooked Trick with Mage Armor?</h2>
 <p><strong>The overlooked trick is that Mage Armor can target another willing unarmored creature, not only the caster.</strong> That is the part many players miss for years because the spell feels like a personal wizard tax.</p>
 
-<p>This is also the idea I took from the video linked at the bottom. The title is casual, but the useful lesson is practical: stop reading Mage Armor as "I cast it on myself after initiative." It is a touch spell with an 8-hour duration, which means you can use it before a dangerous scene starts.</p>
+<p>The companion video points at the same practical habit: stop reading Mage Armor as "I cast it on myself after initiative." It is a touch spell with an 8-hour duration, which means you can use it before a dangerous scene starts.</p>
 
 <ul>
   <li><strong>Protect a familiar or scout</strong> before it risks a trap corridor or enemy lookout.</li>
@@ -260,7 +260,7 @@ export const dndMageArmorArticleHtml = String.raw`
   <li><strong>Export a transparent PNG:</strong> it layers more cleanly over dark dungeon maps.</li>
 </ul>
 
-<p>You can build that look in the <a href="${EN_EDITOR_PATH}">Token Maker editor</a>. If you are testing whether Mage Armor changes an encounter enough to matter, keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open and compare how often attack rolls hit AC 12, 15, and 16.</p>
+<p>You can build that look in the <a href="${EN_EDITOR_PATH}">VTT token maker</a>. If you are testing whether Mage Armor changes an encounter enough to matter, keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open and compare how often attack rolls hit AC 12, 15, and 16.</p>
 
 <section id="faq" class="mt-12 rounded-[34px] border border-white/10 bg-white/[0.03] p-6 sm:p-8">
   <h2 class="font-display text-2xl sm:text-3xl text-stone-50" style="margin-top: 0;">FAQ About DND Mage Armor</h2>
@@ -294,7 +294,7 @@ export const dndMageArmorArticleHtml = String.raw`
 </section>
 
 <h2 id="video">Watch: The Mage Armor Trick People Miss</h2>
-<p>The video from the keyword sheet is <a href="${DND_MAGE_ARMOR_VIDEO_URL}" rel="noreferrer noopener">It took me 10 years to realize i could do this</a>. I am using it as the practical capstone because it points at the same table habit this guide is trying to fix: <strong>Mage Armor is not just a self-buff you remember after combat starts</strong>. Treat it as an 8-hour touch spell, decide who actually needs it, and cast it before the arrows start flying.</p>
+<p><a href="${DND_MAGE_ARMOR_VIDEO_URL}" rel="noreferrer noopener">It took me 10 years to realize i could do this</a> points at a table habit worth fixing: <strong>Mage Armor is not just a self-buff you remember after combat starts</strong>. Treat it as an 8-hour touch spell, decide who actually needs it, and cast it before the arrows start flying.</p>
 
 ${liteVideoEmbed('ZBbhI8Mp8fE', 'It took me 10 years to realize i could do this', {
   src: DND_MAGE_ARMOR_VIDEO_PLACEHOLDER_PATH,
@@ -482,7 +482,7 @@ export const dndMageArmorArticleHtmlZh = String.raw`
 <h2 id="overlooked-use">Mage Armor 最容易被忽略的技巧是什么？</h2>
 <p><strong>最容易被忽略的技巧是：Mage Armor 可以给另一个自愿且未穿护甲的生物施放，不是只能给施法者自己上。</strong>很多玩家会漏掉这一点，因为它看起来太像“法师自保税”。</p>
 
-<p>文末视频给我的启发也是这个方向。标题很随意，但真正有用的思路是：不要把 Mage Armor 理解成“开战后我给自己补一下”。它是一个持续 8 小时的 Touch 法术，所以完全可以在危险场景开始前使用。</p>
+<p>这条视频的有用思路很直接：不要把 Mage Armor 理解成“开战后我给自己补一下”。它是一个持续 8 小时的 Touch 法术，所以完全可以在危险场景开始前使用。</p>
 
 <ul>
   <li><strong>给魔宠或侦察目标上</strong>，再让它去探陷阱走廊或敌方哨点。</li>
@@ -544,7 +544,7 @@ export const dndMageArmorArticleHtmlZh = String.raw`
   <li><strong>导出透明 PNG：</strong>叠在深色地城地图上会更干净。</li>
 </ul>
 
-<p>你可以在 <a href="${ZH_EDITOR_PATH}">Token Maker 编辑器</a> 里做这种效果。如果你想顺手测试 Mage Armor 到底让敌人少命中多少次，可以打开 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D Dice Roller</a>，分别掷几轮 AC 12、15、16 的攻击对比。</p>
+<p>你可以在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里做这种效果。如果你想顺手测试 Mage Armor 到底让敌人少命中多少次，可以打开 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a>，分别掷几轮 AC 12、15、16 的攻击对比。</p>
 
 <section id="faq" class="mt-12 rounded-[34px] border border-white/10 bg-white/[0.03] p-6 sm:p-8">
   <h2 class="font-display text-2xl sm:text-3xl text-stone-50" style="margin-top: 0;">FAQ：关于 DND Mage Armor 的高频问题</h2>
@@ -578,7 +578,7 @@ export const dndMageArmorArticleHtmlZh = String.raw`
 </section>
 
 <h2 id="video">延伸观看：很多人漏掉的 Mage Armor 用法</h2>
-<p>表格里的视频是 <a href="${DND_MAGE_ARMOR_VIDEO_URL}" rel="noreferrer noopener">It took me 10 years to realize i could do this</a>。我把它放在底部，是因为它和本文想强调的是同一个习惯问题：<strong>Mage Armor 不只是开战后给自己补的自保法术</strong>。把它当成一个持续 8 小时的 Touch 法术，先判断谁真的需要，再在箭飞过来之前放好。</p>
+<p><a href="${DND_MAGE_ARMOR_VIDEO_URL}" rel="noreferrer noopener">It took me 10 years to realize i could do this</a> 指向一个很容易漏掉的桌面习惯：<strong>Mage Armor 不只是开战后给自己补的自保法术</strong>。把它当成一个持续 8 小时的 Touch 法术，先判断谁真的需要，再在箭飞过来之前放好。</p>
 
 ${liteVideoEmbed('ZBbhI8Mp8fE', 'It took me 10 years to realize i could do this', {
   src: DND_MAGE_ARMOR_VIDEO_PLACEHOLDER_PATH,

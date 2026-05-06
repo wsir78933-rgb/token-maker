@@ -132,6 +132,11 @@ export const useEditorStore = create<EditorStore>()(
           imageBorderTintEnabled: !isImageBorderSelection(id, state.customBorders),
           activePresetId: null,
         })),
+      setSelectedMask: (id) =>
+        set({
+          selectedMaskId: id,
+          activePresetId: null,
+        }),
       addCustomBorder: (template) =>
         set((state) => ({ customBorders: [...state.customBorders, template] })),
       removeCustomBorder: (id) =>

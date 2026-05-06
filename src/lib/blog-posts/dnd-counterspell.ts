@@ -235,7 +235,7 @@ export const dndCounterspellArticleHtml = String.raw`
 <p><strong>Sometimes, but not always.</strong> The key question is whether a creature is actually casting a spell and whether that casting is perceivable. If the item simply creates a magical effect without spellcasting, Counterspell is the wrong tool; <em>Dispel Magic</em> or another answer may matter more.</p>
 
 <h2 id="dm-policy">My DM Policy for Counterspell</h2>
-<p>I like <strong>dnd counterspell</strong> when it creates a hard choice. I dislike it when it becomes a reflex tax. The video below works as a useful reminder: the memorable part of a famous Counterspell scene is not just "the spell was stopped." It is the cost, the timing, and the table realizing that one reaction mattered.</p>
+<p>I like <strong>dnd counterspell</strong> when it creates a hard choice. I dislike it when it becomes a reflex tax. A memorable Counterspell scene is not just "the spell was stopped." It is the cost, the timing, and the table realizing that one reaction mattered.</p>
 
 <p>For DMs, my practical policy is:</p>
 <ol>
@@ -248,7 +248,7 @@ export const dndCounterspellArticleHtml = String.raw`
 <h2 id="vtt-prep">Using Counterspell with VTT Prep</h2>
 <p>If you are building a spellcaster villain, archmage NPC, or abjurer PC for a virtual tabletop, make the Counterspell-ready character easy to read on the map. A clear hand pose, arcane focus, or blue-gold warding effect helps everyone remember that this token is not just another ranged attacker.</p>
 
-<p>You can prep that portrait in the <a href="${EN_EDITOR_PATH}">Token Maker editor</a>, then keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D Dice Roller</a> open for the 2014 ability check or the 2024 Constitution save. If you are still choosing the caster chassis, the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a>, <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells list</a>, and <a href="${EN_DND_CONSTITUTION_PATH}">Constitution guide</a> are the closest related reads on this site.</p>
+<p>You can prep that portrait in the <a href="${EN_EDITOR_PATH}">VTT token maker</a>, then keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open for the 2014 ability check or the 2024 Constitution save. If you are still choosing the caster chassis, the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a>, <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells list</a>, and <a href="${EN_DND_CONSTITUTION_PATH}">Constitution guide</a> are the closest related reads on this site.</p>
 
 <h2 id="faq">FAQ About DND Counterspell</h2>
 <h3>What level is DND Counterspell?</h3>
@@ -478,7 +478,7 @@ export const dndCounterspellArticleHtmlZh = String.raw`
 <p><strong>有时可以，但不是永远可以。</strong> 核心问题是：是否有一个生物正在施放法术，以及这个施法过程是否能被感知。如果物品只是制造魔法效果，而不是让生物施法，那 Counterspell 往往不是正确答案。</p>
 
 <h2 id="dm-policy">我给 DM 的 Counterspell 处理建议</h2>
-<p>我喜欢 <strong>dnd counterspell</strong> 制造艰难选择，但不喜欢它变成每个法师都要交的“反应税”。文末视频很适合作为提醒：一个经典 Counterspell 场面之所以好，不只是因为法术被反掉，而是因为时机、代价和角色选择都很明确。</p>
+<p>我喜欢 <strong>dnd counterspell</strong> 制造艰难选择，但不喜欢它变成每个法师都要交的“反应税”。一个经典 Counterspell 场面之所以好，不只是因为法术被反掉，而是因为时机、代价和角色选择都很明确。</p>
 
 <p>如果我是 DM，我会这么处理：</p>
 <ol>
@@ -491,7 +491,7 @@ export const dndCounterspellArticleHtmlZh = String.raw`
 <h2 id="vtt-prep">在 VTT 里准备 Counterspell 角色</h2>
 <p>如果你要做一个会 Counterspell 的反派法师、学院派 abjurer，或者专门保护队友的施法者 Token，建议让头像在地图上一眼就能读出“这个人会反制”。清楚的手势、奥术焦点、蓝金色护盾光效，都比普通站桩头像更能提醒玩家它的桌面功能。</p>
 
-<p>你可以在 <a href="${ZH_EDITOR_PATH}">Token Maker 编辑器</a> 里处理这类施法者头像，再把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D Dice Roller</a> 打开，用来跑 2014 版属性检定或 2024 版 Constitution 豁免。如果你还在选施法者底盘，可以继续看站内的 <a href="${ZH_DND_CLASSES_PATH}">DND 职业详解</a>、<a href="${ZH_DND_DRUID_SPELLS_PATH}">DND 德鲁伊法术</a> 和 <a href="${ZH_DND_CONSTITUTION_PATH}">Constitution 指南</a>。</p>
+<p>你可以在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里处理这类施法者头像，再把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 打开，用来跑 2014 版属性检定或 2024 版 Constitution 豁免。如果你还在选施法者底盘，可以继续看站内的 <a href="${ZH_DND_CLASSES_PATH}">DND 职业详解</a>、<a href="${ZH_DND_DRUID_SPELLS_PATH}">DND 德鲁伊法术</a> 和 <a href="${ZH_DND_CONSTITUTION_PATH}">Constitution 指南</a>。</p>
 
 <h2 id="faq">FAQ：关于 DND Counterspell 的常见问题</h2>
 <h3>DND Counterspell 是几环法术？</h3>

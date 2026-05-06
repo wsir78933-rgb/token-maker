@@ -4,13 +4,15 @@ import {
   getBlogPageCount,
   getBlogPosts,
 } from '@/lib/blog-content';
-import { getSiteUrl } from '@/lib/site-content';
+import { getSiteUrl, getTemplatePages } from '@/lib/site-content';
 import { getStaticPageLastModified } from '@/lib/site-page-models';
 import { LOCALES, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
 const DEFAULT_LAST_MODIFIED = '2026-03-12';
+const HOME_LAST_MODIFIED = '2026-05-06';
 const DICE_ROLLER_LAST_MODIFIED = '2026-03-30';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
+const TEMPLATE_LAST_MODIFIED = '2026-05-06';
 
 function pickLatestIsoDate(
   values: Array<string | undefined>,
@@ -27,6 +29,7 @@ function pickLatestIsoDate(
 
 function getHomepageLastModified(locale: SiteLocale) {
   return pickLatestIsoDate([
+    HOME_LAST_MODIFIED,
     getStaticPageLastModified(locale, 'faq'),
   ]);
 }
@@ -117,5 +120,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
         })),
       );
 
-  return [...staticRoutes, ...blogHubRoutes, ...blogPostRoutes];
+  const templateRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
+    getTemplatePages(locale).map((page) => {
+      const path = `/templates/${page.slug}`;
+
+      return {
+        url: `${siteUrl}${getLocalizedPath(locale, path)}`,
+        lastModified: new Date(TEMPLATE_LAST_MODIFIED),
+        changeFrequency: 'weekly' as const,
+        priority: 0.78,
+        alternates: buildAlternates(path, siteUrl),
+      };
+    }),
+  );
+
+  return [...staticRoutes, ...templateRoutes, ...blogHubRoutes, ...blogPostRoutes];
 }

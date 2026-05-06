@@ -2,7 +2,11 @@ import {
   DND_CLASSES_TABLETOP_IMAGE_PATH,
   DND_CLASSES_MARTIAL_IMAGE_PATH,
   EN_DND_DRUID_SPELLS_PATH,
+  EN_DICE_ROLLER_PATH,
+  EN_EDITOR_PATH,
   ZH_DND_DRUID_SPELLS_PATH,
+  ZH_DICE_ROLLER_PATH,
+  ZH_EDITOR_PATH,
   liteVideoEmbed,
 } from './shared';
 
@@ -115,7 +119,7 @@ export const dndClassesArticleHtml = String.raw`
   <li><strong>If you want strong roleplay hooks:</strong> Paladin, Bard, Cleric, and Warlock stand out.</li>
 </ul>
 
-<p>When you compare <strong>DND classes</strong>, try asking yourself three quick questions: Do I want simple turns or many options? Do I want magic or weapons first? Do I care more about mechanics or fantasy identity? Those questions usually narrow the field faster than reading every subclass on day one.</p>
+<p>When you compare <strong>DND classes</strong>, try asking yourself three quick questions: Do I want simple turns or many options? Do I want magic or weapons first? Do I care more about mechanics or fantasy identity? Once a class starts to feel real, make a matching portrait in the <a href="${EN_EDITOR_PATH}">free DnD token maker</a> and keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> ready for quick session-zero checks. Those questions usually narrow the field faster than reading every subclass on day one.</p>
 
 <h2>FAQ About DND Classes</h2>
 <h3>What are DND classes in simple terms?</h3>
@@ -251,7 +255,7 @@ export const dndClassesArticleHtmlZh = String.raw`
   <li><strong>想要明显的扮演钩子：</strong>圣武士、吟游诗人、牧师和契术师都很强。</li>
 </ul>
 
-<p>如果你在几个 <strong>DND 职业</strong> 之间犹豫不决，不妨先问自己三个问题：我更喜欢简单还是复杂？我更想挥武器还是放法术？我更想扮演一个什么样的人？这些问题通常比一口气把所有子职全看完更有效。</p>
+<p>如果你在几个 <strong>DND 职业</strong> 之间犹豫不决，不妨先问自己三个问题：我更喜欢简单还是复杂？我更想挥武器还是放法术？我更想扮演一个什么样的人？当职业形象已经清楚时，可以顺手在 <a href="${ZH_EDITOR_PATH}">免费 DnD token maker</a> 里做一张对应头像，再把 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 开着测试开卡时常见的检定。这样通常比一口气把所有子职全看完更有效。</p>
 
 <h2>DND 职业常见问题</h2>
 <h3>什么是 DND 职业？</h3>

@@ -23,22 +23,43 @@ export interface FaqItem {
 
 export interface TemplatePageData {
   slug: string;
+  metadataTitle: string;
+  metadataDescription: string;
+  eyebrow: string;
   title: string;
   description: string;
   summary: string;
   intent: string;
+  heroBadges: string[];
   bestFor: string[];
   settings: string[];
   tips: string[];
+  workflowTitle: string;
+  workflowDescription: string;
+  workflowSteps: StaticPageSection[];
+  platformTitle: string;
+  platformDescription: string;
+  platforms: StaticPageSection[];
+  video: {
+    videoId: string;
+    title: string;
+    description: string;
+    thumbnailAlt: string;
+  };
+  faqTitle: string;
+  faqItems: FaqItem[];
+  ctaTitle: string;
+  ctaBody: string;
+  ctaLabel: string;
   query: string;
 }
 
 export const siteConfig = {
   name: 'Token Maker',
   shortName: 'Token Maker',
-  title: 'Token Maker | Browser VTT Token Tool for DnD, Roll20, and Foundry VTT',
+  title: 'DnD Token Maker | Free VTT Token Maker for Roll20 & Foundry VTT',
   description:
-    'The best free VTT token maker for DnD, Roll20, and Foundry VTT. Upload character art, crop portraits, add masks, borders, and text, then export transparent PNG tokens in seconds.',
+    'Create DnD and VTT tokens online for Roll20, Foundry VTT, and Owlbear. Upload character art, add circular or square masks, token borders, text, and export transparent PNG tokens.',
 } as const;
 
 export function getSiteUrl() {
@@ -116,41 +137,46 @@ export const workflowSteps: WorkflowStep[] = [
 
 export const faqItems: FaqItem[] = [
   {
-    question: 'What is Token Maker actually for?',
+    question: 'What is a DnD token maker?',
     answer:
-      'Token Maker is a browser editor for turning character art, monster portraits, and NPC avatars into tabletop tokens with cropping, masks, borders, text, and PNG export.',
+      'A DnD token maker turns character art, monster portraits, and NPC avatars into clean VTT tokens with cropping, masks, borders, labels, and PNG export.',
   },
   {
-    question: 'Do my images stay in the browser?',
+    question: 'Can I make Roll20 and Foundry VTT tokens here?',
     answer:
-      'The default workflow is local-first. For the normal crop-and-export flow, portrait images can stay in the browser instead of being pushed to a remote upload step.',
+      'Yes. The exported PNG tokens are designed for Roll20, Foundry VTT, Owlbear Rodeo, and similar virtual tabletop workflows that accept image tokens.',
   },
   {
-    question: 'Which tabletops and workflows does it fit best?',
+    question: 'Can I export transparent PNG tokens?',
     answer:
-      'The output is aimed at common PNG-based tabletop workflows such as Roll20, Foundry VTT, Owlbear Rodeo, and similar setups where a clean token image matters more than a layered design file.',
+      'Yes. Token Maker exports transparent PNG tokens, so the finished token can sit cleanly on battle maps, character sheets, and token libraries.',
   },
   {
-    question: 'Can I use shapes, custom borders, and masks that match my campaign?',
+    question: 'Can I make circular, square, and token border styles?',
     answer:
-      'Yes. The editor supports circular, square, and polygon crops, and you can also bring in custom border or mask artwork when the default styles are not enough.',
+      'Yes. The editor supports circular tokens, square tokens, polygon masks, built-in token borders, tint controls, and custom border artwork.',
   },
   {
-    question: 'What export size should I pick first?',
+    question: 'Do my uploaded images leave the browser?',
     answer:
-      'Start with 512 for most tables. Move to 1024 when you want cleaner archive-quality edges, and reserve 2048 for premium packs, print-adjacent output, or long-term asset libraries.',
+      'The normal editing workflow is local-first. Portrait images can stay in the browser while you crop, frame, and export tokens.',
   },
 ];
 
 export const templatePages: TemplatePageData[] = [
   {
     slug: 'square-token-maker',
-    title: 'Square Token Maker',
+    metadataTitle: 'Square Token Maker | Make Square VTT Tokens for Roll20 & Foundry',
+    metadataDescription:
+      'Create square VTT tokens from character art with a 1:1 crop, borders, transparent PNG export, and settings for Roll20, Foundry VTT, and Owlbear.',
+    eyebrow: 'Square token maker',
+    title: 'Square Token Maker for VTT Maps, NPC Portraits, and Grid Tokens',
     description:
-      'Build square map tokens for grid-based tabletop play, handout markers, and UI-aligned NPC portraits.',
+      'Turn character art, monster portraits, and NPC images into square VTT tokens that read cleanly on grid maps and handouts.',
     summary:
-      'Square tokens are useful when you want more edge detail, visible props, or stronger alignment with grid-first map software. This setup works well for battlemaps with dense props or modern / sci-fi encounters where portraits need room around the subject.',
-    intent: 'Best for grid-aligned markers, sci-fi portraits, and handout style tokens.',
+      'People searching for a square token maker usually want a practical 1:1 export, not a long design essay. This page focuses on the decisions that matter before export: when a square token beats a circle, how much shoulder and prop detail to keep, which border style stays readable, and what PNG size works for Roll20, Foundry VTT, Owlbear, and similar tabletop workflows.',
+    intent: 'Best for grid-aligned markers, sci-fi portraits, prop-heavy NPC art, and handout style tokens.',
+    heroBadges: ['1:1 square crop', 'Transparent PNG', 'Roll20 and Foundry ready'],
     bestFor: [
       'Square grid battlemaps',
       'Portraits with visible shoulders, hats, or weapons',
@@ -166,7 +192,81 @@ export const templatePages: TemplatePageData[] = [
       'A square token works well with thin borders when the art already has a decorative frame.',
       'Use text only when the token needs a call sign, rank, or room code.',
     ],
-    query: '/?mask=square&border=thin-ring#editor-workspace',
+    workflowTitle: 'How to make a square token',
+    workflowDescription:
+      'The goal is a clean square image that survives small map zoom levels. Start with the subject, then tune the crop, border, and export size.',
+    workflowSteps: [
+      {
+        title: 'Upload portrait or monster art',
+        body:
+          'Use artwork where the subject is already readable from the waist, shoulders, or head. Square tokens reward a little extra context, so do not crop as tightly as you would for a circular portrait token.',
+      },
+      {
+        title: 'Set a 1:1 square crop',
+        body:
+          'Keep the face near the visual center, then leave enough edge room for hats, horns, weapons, and faction symbols. A square crop can carry more scene detail, but the subject should still win at tabletop scale.',
+      },
+      {
+        title: 'Choose a border and export PNG',
+        body:
+          'Use a thin ring, metal frame, or no border for a card-like look. Export 512 for most live VTT sessions, 1024 for archive quality, and 2048 only when the token is part of a premium pack or long-term asset library.',
+      },
+    ],
+    platformTitle: 'Square token settings by VTT workflow',
+    platformDescription:
+      'A square token can work across common VTT platforms, but the best export depends on how the token appears on the map.',
+    platforms: [
+      {
+        title: 'Roll20 square tokens',
+        body:
+          'Use a transparent PNG when the square frame should sit above the map. Keep the subject centered and avoid tiny labels unless the token is used as a marker rather than a creature portrait.',
+      },
+      {
+        title: 'Foundry VTT tokens',
+        body:
+          'Square tokens work well for NPC portraits, vehicles, faction markers, and map objects. Export at 512 or 1024, then tune in Foundry only if the scene uses unusually close zoom levels.',
+      },
+      {
+        title: 'Owlbear and lightweight tabletops',
+        body:
+          'For fast prep, use a simpler border and keep file size moderate. Square PNG tokens are especially useful when you want handout-style markers or room labels to align with grid cells.',
+      },
+    ],
+    video: {
+      videoId: 'hjE_N0wTHOc',
+      title: 'How do I Make Tokens for My Online Dungeons and Dragons Game?',
+      description:
+        'A practical companion video for users who want to understand the broader online D&D token workflow before exporting square VTT tokens.',
+      thumbnailAlt: 'YouTube video cover for making tokens for an online Dungeons and Dragons game',
+    },
+    faqTitle: 'Square token maker FAQ',
+    faqItems: [
+      {
+        question: 'When should I use a square token instead of a circular token?',
+        answer:
+          'Use a square token when the artwork needs more shoulder, weapon, banner, vehicle, or room-detail context. Circular tokens are better for tight character portraits; square tokens are better for grid markers and prop-heavy art.',
+      },
+      {
+        question: 'What size should a square VTT token be?',
+        answer:
+          'Use 512 for most live table sessions. Use 1024 when you want cleaner archived edges or close zoom. Reserve 2048 for premium packs, print-adjacent output, or long-term libraries.',
+      },
+      {
+        question: 'Should square tokens have transparent backgrounds?',
+        answer:
+          'Usually yes. A transparent PNG keeps the token flexible across Roll20, Foundry VTT, Owlbear, maps, handouts, and character sheets.',
+      },
+      {
+        question: 'Can I add borders to square tokens?',
+        answer:
+          'Yes. Thin borders, metal frames, and flat card-style edges all work. Avoid heavy borders when the original art already has strong edge detail.',
+      },
+    ],
+    ctaTitle: 'Make a square token from your own art',
+    ctaBody:
+      'Open the editor with a square mask preset, adjust the crop, choose a border, and export a transparent PNG for your table.',
+    ctaLabel: 'Open square token maker',
+    query: '/?mask=square&border=plain-square-thin#editor-workspace',
   },
 ];
 
@@ -210,8 +310,8 @@ export interface HomeCopy {
   resourcesEyebrow: string;
   resourcesTitle: string;
   resourcesDescription: string;
+  answerSections: StaticPageSection[];
   faqTitle: string;
-  faqDescription: string;
 }
 
 export interface CollectionPageCopy {
@@ -269,9 +369,9 @@ export interface DiceRollerPageCopy {
 export const siteConfigZh = {
   name: 'Token Maker',
   shortName: 'Token Maker',
-  title: 'Token Maker | VTT Token 制作器与 TRPG 角色 Token 在线工具',
+  title: 'DnD Token Maker | Roll20 与 Foundry VTT 透明 PNG Token 制作器',
   description:
-    '全球最好用的免费 VTT Token 制作工具，适合 DnD、Roll20 和 Foundry VTT。上传角色立绘，裁切头像，添加边框、遮罩和文字，几秒内导出透明 PNG Token。',
+    '在线制作 DnD 和 VTT Token，适合 Roll20、Foundry VTT 与 Owlbear。上传角色立绘，添加圆形或方形遮罩、Token 边框和文字，导出透明 PNG。',
 } as const;
 
 export const homeSignalsZh: HomeSignal[] = [
@@ -333,34 +433,40 @@ export const workflowStepsZh: WorkflowStep[] = [
 
 export const faqItemsZh: FaqItem[] = [
   {
-    question: 'Token Maker 到底适合拿来做什么？',
-    answer: '它是一个浏览器编辑器，专门把角色立绘、怪物头像和 NPC 头像快速做成可裁切、可加边框和遮罩、并能导出 PNG 的桌面 token。',
+    question: '什么是 DnD Token Maker？',
+    answer: 'DnD Token Maker 是把角色立绘、怪物头像和 NPC 图片快速做成 VTT Token 的在线工具，支持裁切、遮罩、边框、文字和 PNG 导出。',
   },
   {
-    question: '图片默认会留在浏览器里吗？',
-    answer: '默认流程是本地优先。正常的裁切和导出过程中，角色图可以一直停留在浏览器里，不需要先走远程上传这一步。',
+    question: '可以制作 Roll20 和 Foundry VTT 的 Token 吗？',
+    answer: '可以。导出的 PNG Token 面向 Roll20、Foundry VTT、Owlbear Rodeo 这类虚拟桌面和地图工具，适合直接放进战斗地图或素材库。',
   },
   {
-    question: '它更适合哪些桌面和工作流？',
-    answer: '导出结果主要面向 Roll20、Foundry VTT、Owlbear Rodeo 这类接受 PNG token 的工作流，也适合任何只需要干净透明图片输出的桌面环境。',
+    question: '能导出透明 PNG Token 吗？',
+    answer: '可以。Token Maker 会导出透明 PNG，方便头像边缘干净地叠在地图、角色卡或 VTT 素材库里。',
   },
   {
-    question: '能不能用更贴合战役的形状、边框和遮罩？',
-    answer: '可以。编辑器已经支持圆形、方形和多边形裁切，也支持自定义边框和遮罩素材，不够用时可以按你自己的世界观继续扩展。',
+    question: '能做圆形、方形和带边框的 Token 吗？',
+    answer: '可以。编辑器支持圆形 Token、方形 Token、多边形遮罩、内置 Token 边框、颜色调整和自定义边框素材。',
   },
   {
-    question: '导出尺寸第一步应该怎么选？',
-    answer: '大多数桌面场景先用 512 就够了。想保留更干净的归档边缘时升到 1024，只有做高质量资源包、打印相关输出或长期素材库时再考虑 2048。',
+    question: '上传的图片会离开浏览器吗？',
+    answer: '默认编辑流程是本地优先。正常裁切、加框和导出时，角色图片可以一直留在浏览器里。',
   },
 ];
 
 export const templatePagesZh: TemplatePageData[] = [
   {
     slug: 'square-token-maker',
-    title: '方形 Token 制作器',
-    description: '制作适合网格地图、手札标记和更完整头像构图的方形 token。',
-    summary: '方形 token 更适合保留肩部、武器和更多边缘细节，也更容易和网格型地图或现代题材 UI 风格融合。',
-    intent: '适合网格地图标记、科幻头像和手札风格 token。',
+    metadataTitle: '方形 Token 制作器 | Roll20 与 Foundry VTT 方形头像工具',
+    metadataDescription:
+      '用角色图制作方形 VTT Token，支持 1:1 裁切、边框、透明 PNG 导出，并适配 Roll20、Foundry VTT 与 Owlbear。',
+    eyebrow: '方形 Token 制作器',
+    title: '方形 Token 制作器，适合 VTT 网格地图与 NPC 头像',
+    description: '把角色立绘、怪物头像和 NPC 图片做成适合网格地图、手札标记和更完整构图的方形 VTT Token。',
+    summary:
+      '搜索 square token maker 的用户通常不是想读一篇泛泛介绍，而是想直接做一个 1:1 方形 Token。这个页面优先回答实际制作问题：什么时候方形比圆形更合适，头像应该保留多少肩部和道具细节，边框要不要加，透明 PNG 应该导出多大，以及如何放进 Roll20、Foundry VTT、Owlbear 这类桌面流程。',
+    intent: '适合网格地图标记、科幻头像、带道具的 NPC 立绘和手札风格 Token。',
+    heroBadges: ['1:1 方形裁切', '透明 PNG', '适合 Roll20 与 Foundry'],
     bestFor: ['方格地图', '需要保留帽子、肩甲或武器的头像', '阵营标记与房间标签'],
     settings: ['遮罩：方形', '边框：细环、金属或无边框', '导出：512 或 1024 视地图缩放而定'],
     tips: [
@@ -368,7 +474,80 @@ export const templatePagesZh: TemplatePageData[] = [
       '如果原图自带装饰边缘，方形 token 反而更适合薄边框。',
       '只有在需要代号、军衔或房间编号时再加文字，避免画面过满。',
     ],
-    query: '/zh?mask=square&border=thin-ring#editor-workspace',
+    workflowTitle: '如何制作方形 Token',
+    workflowDescription:
+      '目标不是把图片塞进正方形，而是导出一个在小尺寸地图上仍然清楚的 1:1 Token。先处理主体，再处理边框和导出尺寸。',
+    workflowSteps: [
+      {
+        title: '上传角色图或怪物图',
+        body:
+          '优先选择主体已经清楚的头像、半身像或怪物图。方形 Token 可以保留更多背景和道具信息，所以不要像圆形头像那样裁得过紧。',
+      },
+      {
+        title: '设置 1:1 方形裁切',
+        body:
+          '让脸部或主体位于视觉中心，同时给帽子、角、武器、旗帜和阵营符号留出边缘空间。方形 Token 可以承载更多细节，但地图缩小时主体仍然要最先被看见。',
+      },
+      {
+        title: '选择边框并导出 PNG',
+        body:
+          '可使用细边框、金属边框，也可以做成无边框卡片风格。大多数实战桌面先导出 512，想要更干净的归档边缘用 1024，资源包或长期素材库再考虑 2048。',
+      },
+    ],
+    platformTitle: '不同 VTT 里怎么使用方形 Token',
+    platformDescription:
+      '方形 Token 可以进入常见 VTT 平台，但导出策略要看它在地图上承担什么角色。',
+    platforms: [
+      {
+        title: 'Roll20 方形 Token',
+        body:
+          '如果希望方形边框浮在地图上，优先导出透明 PNG。角色头像要居中，小字标签尽量少用，除非这个 Token 本来就是地图标记或房间编号。',
+      },
+      {
+        title: 'Foundry VTT Token',
+        body:
+          '方形 Token 很适合 NPC 头像、载具、阵营标记和地图物件。一般导出 512 或 1024 即可，只有场景经常近距离缩放时再提高尺寸。',
+      },
+      {
+        title: 'Owlbear 与轻量桌面流程',
+        body:
+          '快速备战时建议用更简单的边框，并控制文件大小。方形 PNG 尤其适合手札风格标记、房间标签，以及需要和网格对齐的视觉元素。',
+      },
+    ],
+    video: {
+      videoId: 'hjE_N0wTHOc',
+      title: 'How do I Make Tokens for My Online Dungeons and Dragons Game?',
+      description:
+        '这段视频适合作为补充参考，帮助用户理解线上 D&D Token 的整体制作思路，再回到页面里制作方形 VTT Token。',
+      thumbnailAlt: 'YouTube 视频封面，主题是为线上 Dungeons and Dragons 游戏制作 Token',
+    },
+    faqTitle: '方形 Token 制作器常见问题',
+    faqItems: [
+      {
+        question: '什么时候应该用方形 Token，而不是圆形 Token？',
+        answer:
+          '当原图需要保留肩甲、武器、旗帜、载具、房间或阵营信息时，用方形 Token 更合适。圆形 Token 更适合紧凑角色头像，方形 Token 更适合网格标记和细节更多的图片。',
+      },
+      {
+        question: '方形 VTT Token 应该导出多大？',
+        answer:
+          '大多数实时桌面先用 512 就够。想保留更干净的边缘或近距离缩放时用 1024。2048 更适合资源包、长期素材库或高质量归档。',
+      },
+      {
+        question: '方形 Token 需要透明背景吗？',
+        answer:
+          '通常建议导出透明 PNG。这样放进 Roll20、Foundry VTT、Owlbear、地图、手札和角色卡时更灵活。',
+      },
+      {
+        question: '方形 Token 可以加边框吗？',
+        answer:
+          '可以。细边框、金属边框和卡片式边缘都适合方形 Token。如果原图边缘已经很复杂，边框应该轻一点，避免抢主体。',
+      },
+    ],
+    ctaTitle: '用自己的角色图制作方形 Token',
+    ctaBody: '打开预设为方形遮罩的编辑器，调整裁切、选择边框，然后为你的桌面导出透明 PNG。',
+    ctaLabel: '打开方形 Token 制作器',
+    query: '/?mask=square&border=plain-square-thin#editor-workspace',
   },
 ];
 
@@ -419,24 +598,24 @@ export const shellCopyByLocale: Record<SiteLocale, ShellCopy> = {
 export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
   en: {
     heroEyebrow: 'VTT token maker',
-    heroTitle: 'Token Maker for TRPG and VTT tokens',
+    heroTitle: 'Free DnD Token Maker for Roll20 and Foundry VTT',
     heroDescription:
-      'The best free VTT token maker for DnD, Roll20, and Foundry VTT. Upload character art, crop the portrait, add masks, borders, and text, then export a transparent PNG token in seconds.',
+      'Create circular, square, and transparent PNG VTT tokens from character art. Add token borders, masks, and text, then export locally for DnD, Roll20, Foundry VTT, and Owlbear.',
     heroHighlights: [
-      'Circle, square, and hex token formats',
+      'Circular, square, and polygon token maker',
       'Transparent PNG export up to 2048',
-      'DnD, Roll20, Foundry VTT, and Owlbear',
+      'Token borders for DnD, Roll20, Foundry VTT, and Owlbear',
     ],
     heroPrimaryCta: 'Start making tokens',
     heroSecondaryCta: 'See token templates',
-    featuresTitle: 'Why this workflow is faster for real table prep',
+    featuresTitle: 'Make DnD and VTT tokens without rebuilding each image',
     featuresDescription:
-      'The workflow stays focused on the three steps that matter most for tabletop art: crop, style, and export.',
-    comparisonTitle: 'Faster than rebuilding each token in Photoshop',
+      'Use one focused workflow to upload character art, crop the portrait, choose the token shape, apply a border, and export a transparent PNG.',
+    comparisonTitle: 'Built for real table prep',
     comparisonPoints: [
-      'No manual canvas setup, masking layers, or repeat export actions for every portrait.',
-      'Frames, crops, and token shapes are already tuned for repeated tabletop work.',
-      'You finish with a transparent PNG token instead of a generic project file.',
+      'DnD token maker, VTT token maker, and Roll20 token maker intent all lead to the same browser workflow.',
+      'Circular token maker, square token maker, and token border maker choices are visible in one workspace.',
+      'The final output is a transparent PNG token instead of a layered project file.',
     ],
     audienceEyebrow: 'Best for',
     audienceTitle: 'Made for GMs, players, and token pack builders',
@@ -463,29 +642,50 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
     resourcesTitle: 'Templates and FAQ cover the decisions that slow people down',
     resourcesDescription:
       'Use the template directory and FAQ when you need a second pass on export size, platform fit, or workflow choices.',
-    faqTitle: 'Three questions people check before exporting',
-    faqDescription: 'Open the full FAQ for privacy, export sizing, and tabletop compatibility.',
+    answerSections: [
+      {
+        title: 'How to make a DnD token online',
+        body: 'Start by dropping character art, monster art, or an NPC portrait into the editor. Position the subject, set the crop, then choose a mask and border that still reads clearly at tabletop scale.',
+      },
+      {
+        title: 'VTT token maker for Roll20, Foundry VTT, and Owlbear',
+        body: 'The export flow is aimed at common virtual tabletop platforms that accept image tokens. Download the transparent PNG, then add it to Roll20, Foundry VTT, Owlbear Rodeo, or another map workflow.',
+      },
+      {
+        title: 'Circular, square, and polygon token shapes',
+        body: 'Use circular tokens for classic character portraits, square tokens when you want more shoulder or weapon detail, and polygon masks when a monster, faction, or encounter needs a stronger silhouette.',
+      },
+      {
+        title: 'Token borders, masks, and transparent PNG export',
+        body: 'Token Maker separates the crop shape from the frame style, so a portrait can keep the same art while you test border colors, overlay tint, custom borders, and transparent PNG output.',
+      },
+      {
+        title: 'When to use 512, 1024, or 2048 token size',
+        body: 'Use 512 for most live VTT tables, 1024 when you want cleaner archived edges, and 2048 for premium token packs or long-term asset libraries where detail matters more than file size.',
+      },
+    ],
+    faqTitle: 'DnD token maker FAQ',
   },
   zh: {
     heroEyebrow: 'VTT Token 制作器',
-    heroTitle: '在浏览器里完成 TRPG 角色 Token 制作',
+    heroTitle: '免费 DnD Token Maker，适合 Roll20 和 Foundry VTT',
     heroDescription:
-      '全球最好用的免费 VTT Token 制作工具，适合 DnD、Roll20 和 Foundry VTT。上传角色立绘后，直接裁切头像、添加遮罩、边框和文字，几秒内导出透明 PNG。',
+      '把角色立绘做成圆形、方形或多边形 VTT Token，添加 Token 边框、遮罩和文字，然后为 DnD、Roll20、Foundry VTT 与 Owlbear 导出透明 PNG。',
     heroHighlights: [
-      '圆形、方形、六边形格式',
+      '圆形、方形和多边形 Token',
       '透明 PNG 导出最高 2048',
-      '适合 DnD、Roll20、Foundry VTT',
+      '适合 DnD、Roll20、Foundry VTT 和 Owlbear',
     ],
     heroPrimaryCta: '开始制作 Token',
     heroSecondaryCta: '查看 Token 模板',
-    featuresTitle: '为什么这个 Token 制作器更适合真实桌面流程',
+    featuresTitle: '不用每张图都重做，也能快速生成 DnD 和 VTT Token',
     featuresDescription:
-      '它把你最常重复的动作压缩成一条短流程: 裁切、加框、导出，不再让通用修图步骤拖慢节奏。',
-    comparisonTitle: '比在 Photoshop 里一张张处理头像更快',
+      '用一条集中的流程完成上传角色立绘、裁切头像、选择 Token 形状、套边框和导出透明 PNG。',
+    comparisonTitle: '围绕真实桌面准备场景组织',
     comparisonPoints: [
-      '不用每次重新建画布、画蒙版和重复导出动作。',
-      '圆形、方形、六边形和常用边框已经围绕桌面头像制作准备好。',
-      '最后拿到的是透明 PNG，可直接丢进 Roll20、Foundry VTT 等桌面工具。',
+      'DnD token maker、VTT token maker 和 Roll20 token maker 的需求都落到同一个编辑流程。',
+      '圆形 Token、方形 Token 和 Token 边框都能在同一个工作区里选择。',
+      '最后拿到的是透明 PNG Token，而不是需要继续处理的工程文件。',
     ],
     audienceEyebrow: '适合谁',
     audienceTitle: '适合 GM、玩家和做资源包的人',
@@ -511,8 +711,29 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
     resourcesEyebrow: '需要更细的判断时',
     resourcesTitle: '模板页和 FAQ 解决尺寸、平台和流程选择',
     resourcesDescription: '当你要决定导出尺寸、平台适配或批量风格时，优先回看模板页和 FAQ。',
-    faqTitle: '上手前最常确认的 3 个问题',
-    faqDescription: '隐私、尺寸和平台兼容还有更多说明，继续看完整 FAQ。',
+    answerSections: [
+      {
+        title: '如何在线制作 DnD Token',
+        body: '把角色立绘、怪物头像或 NPC 图片拖进编辑器，先调整人物位置和裁切范围，再选择适合桌面识别的遮罩和边框。',
+      },
+      {
+        title: '适合 Roll20、Foundry VTT 和 Owlbear 的 VTT Token 制作器',
+        body: '导出流程面向常见虚拟桌面平台。下载透明 PNG 后，可以直接放进 Roll20、Foundry VTT、Owlbear Rodeo 或其他地图工具。',
+      },
+      {
+        title: '圆形、方形和多边形 Token 形状',
+        body: '经典角色头像适合圆形 Token，需要保留肩甲、武器或更多边缘细节时适合方形 Token，怪物或阵营单位可以用多边形遮罩强化轮廓。',
+      },
+      {
+        title: 'Token 边框、遮罩和透明 PNG 导出',
+        body: 'Token Maker 把裁切形状和边框样式分开处理，同一张头像可以反复测试边框颜色、叠加层、自定义边框和透明 PNG 输出。',
+      },
+      {
+        title: '512、1024、2048 Token 尺寸怎么选',
+        body: '大多数实时 VTT 桌面先用 512 就够。想做更干净的归档素材可以用 1024，资源包、长期素材库或高精度输出再考虑 2048。',
+      },
+    ],
+    faqTitle: 'DnD Token Maker 常见问题',
   },
 };
 

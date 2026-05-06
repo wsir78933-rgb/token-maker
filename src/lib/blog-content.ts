@@ -16,6 +16,7 @@ import {
   DND_NECROMANCER_SPELLS_COVER_PATH,
   DND_HUNTERS_MARK_COVER_PATH,
   DND_MEPHISTOPHELES_COVER_PATH,
+  DND_BARD_SPELLS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -30,11 +31,25 @@ import { dndMageArmorArticleHtml, dndMageArmorArticleHtmlZh } from '@/lib/blog-p
 import { dndNecromancerSpellsArticleHtml, dndNecromancerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-necromancer-spells';
 import { dndHuntersMarkArticleHtml, dndHuntersMarkArticleHtmlZh } from '@/lib/blog-posts/dnd-hunters-mark';
 import { dndMephistophelesArticleHtml, dndMephistophelesArticleHtmlZh } from '@/lib/blog-posts/dnd-mephistopheles';
+import { dndBardSpellsArticleHtml, dndBardSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-bard-spells';
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
 // Blog routes are ready for indexing and should be included in sitemap output.
 export const BLOG_PLACEHOLDER_MODE = false;
+
+const blogHubCopyByLocale = {
+  en: {
+    title: 'DnD Token Maker Guides, VTT Tools, and Tabletop Resources',
+    description:
+      'Read DnD Token Maker guides, VTT tool advice, tabletop resources, class explainers, and portrait workflow notes for Roll20 and Foundry VTT.',
+  },
+  zh: {
+    title: 'DnD Token Maker 指南、VTT 工具与桌面跑团资源',
+    description:
+      '阅读 DnD Token Maker 指南、VTT 工具建议、桌面跑团资源、职业说明，以及适合 Roll20 与 Foundry VTT 的头像处理流程。',
+  },
+} as const;
 
 export interface BlogPost {
   slug: string;
@@ -267,6 +282,7 @@ const DND_MAGE_ARMOR_UPDATED_AT = '2026-04-29';
 const DND_NECROMANCER_SPELLS_UPDATED_AT = '2026-05-02';
 const DND_HUNTERS_MARK_UPDATED_AT = '2026-05-02';
 const DND_MEPHISTOPHELES_UPDATED_AT = '2026-05-05';
+const DND_BARD_SPELLS_UPDATED_AT = '2026-05-06';
 
 const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1207,11 +1223,101 @@ const dndMephistophelesArticleZh: BlogPost = {
   relatedSlugs: ['dnd-classes-explained', 'dnd-counterspell', 'dnd-mage-armor', 'dnd-necromancer-spells'],
 };
 
+const dndBardSpellsArticle: BlogPost = {
+  slug: 'dnd-bard-spells',
+  title: 'dnd bard spells: Best Picks for Support, Control, and Social Play',
+  seoTitle: 'dnd bard spells: Best Picks by Role',
+  metaDescription:
+    'Pick dnd bard spells faster: best cantrips, early control, healing, social magic, 2nd/3rd-level picks, concentration tips, FAQ, and Bard table strategy.',
+  excerpt:
+    'A practical dnd bard spells guide covering cantrips, control, healing, social magic, party gaps, concentration, Bardic Inspiration, and VTT prep.',
+  updatedAt: DND_BARD_SPELLS_UPDATED_AT,
+  readTime: '11 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_BARD_SPELLS_COVER_PATH,
+  coverAlt:
+    'dnd bard spells guide cover showing a lute, colorful spell cards, dice, sheet music, and arcane sound magic on a tabletop',
+  bodyHtml: dndBardSpellsArticleHtml,
+  faqItems: [
+    {
+      question: 'What is the best Bard spell in DND?',
+      answer:
+        'For many tables, Healing Word and Hypnotic Pattern are the best Bard spells because one rescues allies efficiently and the other can remove multiple enemies from the fight.',
+    },
+    {
+      question: 'Should Bards take damage spells?',
+      answer:
+        'Bards can take damage spells, but most Bard lists are stronger when they focus on control, support, and emergency utility instead of trying to out-blast dedicated damage casters.',
+    },
+    {
+      question: 'Is Healing Word better than Cure Wounds for Bards?',
+      answer:
+        'Usually yes. Healing Word works at range and uses a Bonus Action, so it is better for picking up a fallen ally without giving up your whole turn.',
+    },
+    {
+      question: 'Do Bard spells use Charisma?',
+      answer:
+        'Yes. Bard spellcasting uses Charisma, so your spell save DC and spell attack bonus depend on Charisma plus proficiency.',
+    },
+    {
+      question: 'Which Bard spells are best for roleplay?',
+      answer:
+        'Suggestion, Disguise Self, Enhance Ability, Detect Thoughts, and Zone of Truth are strong roleplay picks when your campaign has negotiations, deception, investigations, or courts.',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-druid-spells', 'dnd-counterspell', 'dnd-constitution-guide'],
+};
+
+const dndBardSpellsArticleZh: BlogPost = {
+  slug: 'dnd-bard-spells',
+  title: 'dnd bard spells：支援、控场、社交与救场法术推荐',
+  seoTitle: 'dnd bard spells：Bard 法术推荐',
+  metaDescription:
+    '这篇 dnd bard spells 指南快速整理 Bard 戏法、1-3 环法术、控场、治疗、社交工具、concentration 取舍和常见问题。',
+  excerpt:
+    '一篇实用 dnd bard spells 法术百科，覆盖 Bard 戏法、控场、治疗、社交工具、concentration 取舍和跑团准备。',
+  updatedAt: DND_BARD_SPELLS_UPDATED_AT,
+  readTime: '11 分钟阅读',
+  coverLabel: '法术百科',
+  coverImage: DND_BARD_SPELLS_COVER_PATH,
+  coverAlt:
+    'dnd bard spells 指南封面图，桌面上摆放鲁特琴、彩色法术卡、骰子、乐谱和奥术音乐光效',
+  bodyHtml: dndBardSpellsArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND 里最好的 Bard spell 是哪个？',
+      answer:
+        '很多桌上，Healing Word 和 Hypnotic Pattern 是最强 Bard 法术之一：前者高效救人，后者可能让多个敌人暂时离开战斗。',
+    },
+    {
+      question: 'Bard 需要拿伤害法术吗？',
+      answer:
+        '可以拿，但多数 Bard 法术表更适合专注控场、支援和救场工具，而不是试图和专职输出施法者比爆发。',
+    },
+    {
+      question: 'Healing Word 比 Cure Wounds 更适合 Bard 吗？',
+      answer:
+        '通常是。Healing Word 有距离，而且是 Bonus Action，更适合在不牺牲整回合的情况下拉起倒地队友。',
+    },
+    {
+      question: 'Bard 法术使用 Charisma 吗？',
+      answer:
+        '是。Bard 使用 Charisma 施法，所以法术豁免 DC 和法术攻击加值都依赖 Charisma 和熟练加值。',
+    },
+    {
+      question: '哪些 Bard 法术最适合 roleplay？',
+      answer:
+        'Suggestion、Disguise Self、Enhance Ability、Detect Thoughts 和 Zone of Truth 很适合谈判、欺骗、调查和宫廷剧情。',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-druid-spells', 'dnd-counterspell', 'dnd-constitution-guide'],
+};
+
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };
@@ -1303,22 +1409,26 @@ export function formatBlogUpdatedAt(locale: SiteLocale, isoDate: string) {
   return formatter.format(new Date(isoDate));
 }
 
+export function getBlogHubTitle(locale: SiteLocale, page = 1) {
+  const title = blogHubCopyByLocale[locale].title;
+
+  if (page <= 1) {
+    return title;
+  }
+
+  return locale === 'zh' ? `${title} - 第 ${page} 页` : `${title} - Page ${page}`;
+}
+
+export function getBlogHubDescription(locale: SiteLocale) {
+  return blogHubCopyByLocale[locale].description;
+}
+
 export function createBlogHubMetadata(locale: SiteLocale, page = 1): Metadata {
   const siteConfig = getSiteConfig(locale);
   const path = page === 1 ? '/blog' : `/blog/page/${page}`;
   const localizedPath = getLocalizedPath(locale, path);
-  const title =
-    locale === 'zh'
-      ? page === 1
-        ? 'Token Maker 文章列表'
-        : `Token Maker 文章列表 - 第 ${page} 页`
-      : page === 1
-        ? 'Token Maker Articles'
-        : `Token Maker Articles - Page ${page}`;
-  const description =
-    locale === 'zh'
-      ? '阅读 Token Maker 的桌面头像与 DND 相关文章，查看职业选择、角色头像处理和虚拟桌面使用建议。'
-      : 'Read Token Maker articles about DND classes, tabletop portraits, and practical virtual tabletop workflows.';
+  const title = getBlogHubTitle(locale, page);
+  const description = getBlogHubDescription(locale);
 
   return {
     metadataBase: new URL(getSiteUrl()),
@@ -1410,17 +1520,15 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
 export function buildBlogHubStructuredData(locale: SiteLocale, page = 1) {
   const siteConfig = getSiteConfig(locale);
   const path = page === 1 ? '/blog' : `/blog/page/${page}`;
-  const title = locale === 'zh' ? 'Token Maker 文章列表' : 'Token Maker Articles';
+  const title = getBlogHubTitle(locale, page);
+  const description = getBlogHubDescription(locale);
 
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: title,
     url: absoluteUrl(getLocalizedPath(locale, path)),
-    description:
-      locale === 'zh'
-        ? 'Token Maker 博客文章列表，聚焦 DND 职业选择、头像处理和虚拟桌面实践。'
-        : 'Token Maker blog archive covering DND classes, portrait prep, and practical VTT workflow advice.',
+    description,
     inLanguage: locale === 'zh' ? 'zh-CN' : 'en-US',
     isPartOf: {
       '@type': 'WebSite',

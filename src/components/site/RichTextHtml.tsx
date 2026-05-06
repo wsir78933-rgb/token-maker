@@ -18,7 +18,7 @@ function activateLiteVideo(container: HTMLElement) {
 
   const iframe = document.createElement('iframe');
   iframe.className = 'inline-embed inline-embed--video';
-  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
   iframe.title = title;
   iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
   iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');

@@ -49,7 +49,7 @@ export function DiceRollerPageView({ locale }: { locale: SiteLocale }) {
     <>
       <StructuredData id={`dice-roller-dnd-${locale}-jsonld`} data={structuredData} />
 
-      <InnerPageChrome locale={locale} currentPath={path} tone="hub" showSupportStrip={false}>
+      <InnerPageChrome locale={locale} currentPath={path} tone="hub">
         <div className="mx-auto max-w-[82rem] px-5 py-8 lg:px-8 lg:py-10">
           <DiceRollerTool locale={locale} />
           

@@ -223,7 +223,7 @@ export const dndNecromancerSpellsArticleHtml = String.raw`
   <li><strong>Upcasting:</strong> higher slots animate or reassert control over two extra undead per slot level above 3.</li>
 </ul>
 
-<p>The video at the bottom is useful because it frames <em>Animate Dead</em> as a spell about teammates, not just a creepy animation button. I agree with that framing, with one condition: you need a table procedure before the army appears.</p>
+<p>The companion video is useful because it frames <em>Animate Dead</em> as a spell about teammates, not just a creepy animation button. That framing only works at the table if you have a clear procedure before the army appears.</p>
 
 <h2 id="skeletons-zombies">Are Skeletons or Zombies Better for Animate Dead?</h2>
 <p><strong>Skeletons are usually better for damage and ranged pressure, while zombies are better as slow blockers that can absorb ugly hits.</strong> The right pick depends on what job your undead servant has this session.</p>
@@ -306,7 +306,7 @@ export const dndNecromancerSpellsArticleHtml = String.raw`
 <h2 id="vtt-token">How Should a Necromancer Look on a VTT Token?</h2>
 <p><strong>A necromancer VTT token should read as undead magic at 512 px without hiding the face or silhouette.</strong> Green smoke everywhere looks fine at full size, then turns into a muddy blob on a battle map.</p>
 
-<p>When I make necromancer tokens in <a href="${EN_EDITOR_PATH}">Token Maker</a>, I keep the magic effect around the hands, eyes, or border. I avoid covering the whole portrait because Roll20, Foundry VTT, and Owlbear Rodeo all punish noisy token art when zoomed out.</p>
+<p>When I make necromancer tokens in the <a href="${EN_EDITOR_PATH}">VTT token maker</a>, I keep the magic effect around the hands, eyes, or border. I avoid covering the whole portrait because Roll20, Foundry VTT, and Owlbear Rodeo all punish noisy token art when zoomed out.</p>
 
 <ul>
   <li><strong>Use bone, silver, or dark iron frames</strong> for undead casters and grave clerics.</li>
@@ -358,7 +358,7 @@ export const dndNecromancerSpellsArticleHtml = String.raw`
 </section>
 
 <h2 id="video">Watch: D&amp;D 5E Animate Dead</h2>
-<p>The video from the keyword sheet is <a href="${DND_NECROMANCER_SPELLS_VIDEO_URL}" rel="noreferrer noopener">D&amp;D 5E Animate Dead</a> by Zee Bashew. I used it as the capstone because it nails the practical lesson: <strong>Animate Dead is funniest and strongest when you treat skeletons as simple teammates with simple jobs</strong>. Keep the commands clean, keep the turns fast, and your necromancer will feel clever instead of exhausting.</p>
+<p>Zee Bashew's <a href="${DND_NECROMANCER_SPELLS_VIDEO_URL}" rel="noreferrer noopener">D&amp;D 5E Animate Dead</a> nails the practical lesson: <strong>Animate Dead is funniest and strongest when you treat skeletons as simple teammates with simple jobs</strong>. Keep the commands clean, keep the turns fast, and your necromancer will feel clever instead of exhausting.</p>
 
 ${liteVideoEmbed('wYBEbNbirkA', 'D&D 5E Animate Dead', {
   src: DND_NECROMANCER_SPELLS_VIDEO_PLACEHOLDER_PATH,
@@ -571,7 +571,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
   <li><strong>升环：</strong>3 环以上每高 1 环，可以额外创造或重新控制 2 个 undead。</li>
 </ul>
 
-<p>文末视频有用的地方，是它把 <em>Animate Dead</em> 讲成“队友管理”而不是“按一下尸体动起来”。我同意这个思路，但有一个前提：你在召出小队前，必须先有桌面流程。</p>
+<p>这条视频有用的地方，是它把 <em>Animate Dead</em> 讲成“队友管理”而不是“按一下尸体动起来”。这个思路有一个前提：你在召出小队前，必须先有桌面流程。</p>
 
 <h2 id="skeletons-zombies">Skeleton 和 Zombie 哪个更适合 Animate Dead？</h2>
 <p><strong>Skeleton 通常更适合输出和远程压制，Zombie 更适合慢速堵门和吃伤害。</strong>选哪个取决于你这次让亡灵负责什么工作。</p>
@@ -654,7 +654,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
 <h2 id="vtt-token">Necromancer 的 VTT Token 应该怎么做？</h2>
 <p><strong>Necromancer 的 VTT Token 要在 512 px 下仍然看得出“亡灵魔法”，同时不能遮住脸和轮廓。</strong>满屏绿烟在大图里挺帅，但缩到战斗地图上经常变成一团脏色。</p>
 
-<p>我在 <a href="${ZH_EDITOR_PATH}">Token Maker</a> 里做 necromancer token 时，会把魔法效果控制在手、眼睛或边框附近。不要整张立绘都铺特效，因为 Roll20、Foundry VTT 和 Owlbear Rodeo 在缩放后都会惩罚过于嘈杂的 token。</p>
+<p>我在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里做 necromancer token 时，会把魔法效果控制在手、眼睛或边框附近。不要整张立绘都铺特效，因为 Roll20、Foundry VTT 和 Owlbear Rodeo 在缩放后都会惩罚过于嘈杂的 token。</p>
 
 <ul>
   <li><strong>亡灵施法者和墓地牧师</strong>适合骨质、银色或暗铁边框。</li>
@@ -706,7 +706,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
 </section>
 
 <h2 id="video">视频：D&amp;D 5E Animate Dead</h2>
-<p>表格里给的视频是 Zee Bashew 的 <a href="${DND_NECROMANCER_SPELLS_VIDEO_URL}" rel="noreferrer noopener">D&amp;D 5E Animate Dead</a>。我把它放在文末，是因为它抓住了这个法术最实用的一点：<strong>Animate Dead 最好玩、也最强的时候，是你把 skeleton 当成任务简单的队友，而不是一堆需要逐个表演的小兵</strong>。指令保持清楚，回合保持快速，你的死灵法师才会显得聪明，而不是拖沓。</p>
+<p>Zee Bashew 的 <a href="${DND_NECROMANCER_SPELLS_VIDEO_URL}" rel="noreferrer noopener">D&amp;D 5E Animate Dead</a> 抓住了这个法术最实用的一点：<strong>Animate Dead 最好玩、也最强的时候，是你把 skeleton 当成任务简单的队友，而不是一堆需要逐个表演的小兵</strong>。指令保持清楚，回合保持快速，你的死灵法师才会显得聪明，而不是拖沓。</p>
 
 ${liteVideoEmbed('wYBEbNbirkA', 'D&D 5E Animate Dead', {
   src: DND_NECROMANCER_SPELLS_VIDEO_PLACEHOLDER_PATH,

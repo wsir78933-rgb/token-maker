@@ -160,7 +160,7 @@ export const dndHuntersMarkArticleHtml = String.raw`
 <p>The quick math is simple: one Hunter's Mark hit is only 3.5 average damage before accuracy. At two hits per round it starts feeling better, but the real cost is not the spell slot. The real cost is concentration, Bonus Action timing, and the Ranger spell you are not concentrating on.</p>
 
 <h2 id="action-economy">Why Hunter's Mark Can Become a Trap</h2>
-<p><strong>Hunter's Mark becomes a trap when you cast it by habit instead of checking concentration and Bonus Action pressure.</strong> The linked video at the bottom is about Hex, but the lesson transfers directly: a 1d6 damage rider looks cheap until it blocks the turn you actually needed.</p>
+<p><strong>Hunter's Mark becomes a trap when you cast it by habit instead of checking concentration and Bonus Action pressure.</strong> The same Hex lesson transfers directly: a 1d6 damage rider looks cheap until it blocks the turn you actually needed.</p>
 
 <ul>
   <li><strong>Concentration is crowded.</strong> Rangers have real alternatives, especially <em>Pass without Trace</em>, <em>Spike Growth</em>, <em>Entangle</em>, <em>Silence</em>, and summons.</li>
@@ -213,7 +213,7 @@ export const dndHuntersMarkArticleHtml = String.raw`
   <li><strong>Use one marker language for the campaign.</strong> If Hunter's Mark, Hex, and curses all look different, players stop asking "which 1d6 is this?"</li>
 </ul>
 
-<p>You can build a clean Ranger or marked-target portrait in the <a href="${EN_EDITOR_PATH}">Token Maker editor</a>. If you want to test the expected damage swing, keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open and compare one hit, two hits, and a missed Bonus Action turn. For broader character planning, start with the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> or the spell-guide pattern in <a href="${EN_DND_MAGE_ARMOR_PATH}">DND Mage Armor</a>.</p>
+<p>You can build a clean Ranger or marked-target portrait in the <a href="${EN_EDITOR_PATH}">VTT token maker</a>. If you want to test the expected damage swing, keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open and compare one hit, two hits, and a missed Bonus Action turn. For broader character planning, start with the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> or the spell-guide pattern in <a href="${EN_DND_MAGE_ARMOR_PATH}">DND Mage Armor</a>.</p>
 
 <h2 id="cheat-sheet">Player and DM Cheat Sheet</h2>
 <p><strong>The easiest way to run Hunter's Mark quickly is to use the same table phrases every time.</strong> That keeps the spell from turning into a mid-combat rules search.</p>
@@ -266,7 +266,7 @@ export const dndHuntersMarkArticleHtml = String.raw`
 <p>Usually only when the extended duration matters across multiple scenes. Upcasting Hunter's Mark extends concentration duration; it does not increase the 1d6 damage die.</p>
 
 <h2 id="video">Watch: Why the Hex Trap Matters for Hunter's Mark</h2>
-<p>The video from the keyword sheet is <a href="${DND_HUNTERS_MARK_VIDEO_URL}" rel="noreferrer noopener">Hex is a trap in D&amp;D 5E - Advanced guide to Hex</a>. It is not a Hunter's Mark tutorial, but the useful idea is the same: <strong>a small damage rider can look automatic while quietly spending concentration and Bonus Actions</strong>. Use that lens before you mark every goblin in the room.</p>
+<p><a href="${DND_HUNTERS_MARK_VIDEO_URL}" rel="noreferrer noopener">Hex is a trap in D&amp;D 5E - Advanced guide to Hex</a> is not a Hunter's Mark tutorial, but the useful idea is the same: <strong>a small damage rider can look automatic while quietly spending concentration and Bonus Actions</strong>. Use that lens before you mark every goblin in the room.</p>
 
 ${liteVideoEmbed('JwINRY1eD7M', 'Hex is a trap in D&D 5E - Advanced guide to Hex', {
   src: DND_HUNTERS_MARK_VIDEO_PLACEHOLDER_PATH,
@@ -414,7 +414,7 @@ export const dndHuntersMarkArticleHtmlZh = String.raw`
 <p>粗算一下就很清楚：一次命中的 Hunter's Mark 只有平均 3.5 伤害，还没算命中率。每轮能命中两次时它开始像样，但真正成本不是法术位，而是专注、Bonus Action，以及你没法同时维持的另一个 Ranger 法术。</p>
 
 <h2 id="action-economy">为什么 Hunter's Mark 会变成陷阱？</h2>
-<p><strong>当你只是因为习惯而施放 Hunter's Mark，却没有检查专注和 Bonus Action 压力时，它就会变成陷阱。</strong>文章底部的视频讲的是 Hex，但思路可以直接借过来：看似便宜的 1d6 伤害，可能正在偷偷吃掉你最关键的资源。</p>
+<p><strong>当你只是因为习惯而施放 Hunter's Mark，却没有检查专注和 Bonus Action 压力时，它就会变成陷阱。</strong>Hex 的同一套思路可以直接借过来：看似便宜的 1d6 伤害，可能正在偷偷吃掉你最关键的资源。</p>
 
 <ul>
   <li><strong>专注很拥挤。</strong>Ranger 有不少强力选择，比如 <em>Pass without Trace</em>、<em>Spike Growth</em>、<em>Entangle</em>、<em>Silence</em> 和召唤类法术。</li>
@@ -467,7 +467,7 @@ export const dndHuntersMarkArticleHtmlZh = String.raw`
   <li><strong>整场战役统一标记语言。</strong>Hunter's Mark、Hex 和诅咒如果长得太像，玩家很快会搞不清是哪一个 1d6。</li>
 </ul>
 
-<p>你可以在 <a href="${ZH_EDITOR_PATH}">Token Maker 编辑器</a>里做一个清晰的 Ranger 头像，或者给被标记目标做一个高对比边框。如果想测试伤害收益，打开 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a>，比较一次命中、两次命中和错过 Bonus Action 的差距。更大的角色规划可以从 <a href="${ZH_DND_CLASSES_PATH}">DND 职业指南</a>开始，或者参考 <a href="${ZH_DND_MAGE_ARMOR_PATH}">DND Mage Armor</a> 这类法术指南的判定方式。</p>
+<p>你可以在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里做一个清晰的 Ranger 头像，或者给被标记目标做一个高对比边框。如果想测试伤害收益，打开 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a>，比较一次命中、两次命中和错过 Bonus Action 的差距。更大的角色规划可以从 <a href="${ZH_DND_CLASSES_PATH}">DND 职业指南</a>开始，或者参考 <a href="${ZH_DND_MAGE_ARMOR_PATH}">DND Mage Armor</a> 这类法术指南的判定方式。</p>
 
 <h2 id="cheat-sheet">玩家和 DM 速用话术</h2>
 <p><strong>跑 Hunter's Mark 最省事的方法，是每次都用同一套桌面话术。</strong>这样它就不会在战斗中途变成一次规则检索。</p>
@@ -520,7 +520,7 @@ export const dndHuntersMarkArticleHtmlZh = String.raw`
 <p>通常只有你真的需要跨多个场景维持时才值得。Hunter's Mark 升环延长专注时长，但不会提高 1d6 伤害。</p>
 
 <h2 id="video">视频：为什么 Hex 陷阱也适用于 Hunter's Mark</h2>
-<p>表格里的视频是 <a href="${DND_HUNTERS_MARK_VIDEO_URL}" rel="noreferrer noopener">Hex is a trap in D&amp;D 5E - Advanced guide to Hex</a>。它不是 Hunter's Mark 教程，但思路很值得借用：<strong>小额伤害加骰看起来像白送，实际却可能在消耗专注和 Bonus Action</strong>。所以不要见到每个哥布林都本能标记，先看这场战斗是否真的需要。</p>
+<p><a href="${DND_HUNTERS_MARK_VIDEO_URL}" rel="noreferrer noopener">Hex is a trap in D&amp;D 5E - Advanced guide to Hex</a> 不是 Hunter's Mark 教程，但思路很值得借用：<strong>小额伤害加骰看起来像白送，实际却可能在消耗专注和 Bonus Action</strong>。所以不要见到每个哥布林都本能标记，先看这场战斗是否真的需要。</p>
 
 ${liteVideoEmbed('JwINRY1eD7M', 'Hex is a trap in D&D 5E - Advanced guide to Hex', {
   src: DND_HUNTERS_MARK_VIDEO_PLACEHOLDER_PATH,

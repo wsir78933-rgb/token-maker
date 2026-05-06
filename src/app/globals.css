@@ -418,6 +418,10 @@
   max-width: 44rem;
 }
 
+.site-rich-text .inline-figure--four-three-crop {
+  max-width: 44rem;
+}
+
 .site-rich-text .inline-figure--tall-crop {
   max-width: 30rem;
 }
@@ -434,6 +438,11 @@
 
 .site-rich-text .inline-figure__image--wide {
   aspect-ratio: 16 / 10;
+  object-position: center 52%;
+}
+
+.site-rich-text .inline-figure__image--four-three {
+  aspect-ratio: 4 / 3;
   object-position: center 52%;
 }
 
@@ -767,6 +776,10 @@
 .site-rich-text--detail .inline-figure--wide-crop,
 .site-rich-text--detail .inline-embed--video {
   max-width: min(100%, 60rem);
+}
+
+.site-rich-text--detail .inline-figure--four-three-crop {
+  max-width: min(100%, 56rem);
 }
 
 .site-rich-text--detail .inline-figure--tall-crop {
