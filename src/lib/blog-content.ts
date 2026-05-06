@@ -15,6 +15,7 @@ import {
   DND_MAGE_ARMOR_COVER_PATH,
   DND_NECROMANCER_SPELLS_COVER_PATH,
   DND_HUNTERS_MARK_COVER_PATH,
+  DND_MEPHISTOPHELES_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -28,6 +29,7 @@ import { dndGiantsArticleHtml, dndGiantsArticleHtmlZh } from '@/lib/blog-posts/d
 import { dndMageArmorArticleHtml, dndMageArmorArticleHtmlZh } from '@/lib/blog-posts/dnd-mage-armor';
 import { dndNecromancerSpellsArticleHtml, dndNecromancerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-necromancer-spells';
 import { dndHuntersMarkArticleHtml, dndHuntersMarkArticleHtmlZh } from '@/lib/blog-posts/dnd-hunters-mark';
+import { dndMephistophelesArticleHtml, dndMephistophelesArticleHtmlZh } from '@/lib/blog-posts/dnd-mephistopheles';
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
@@ -264,6 +266,7 @@ const DND_GIANTS_UPDATED_AT = '2026-04-28';
 const DND_MAGE_ARMOR_UPDATED_AT = '2026-04-29';
 const DND_NECROMANCER_SPELLS_UPDATED_AT = '2026-05-02';
 const DND_HUNTERS_MARK_UPDATED_AT = '2026-05-02';
+const DND_MEPHISTOPHELES_UPDATED_AT = '2026-05-05';
 
 const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -589,7 +592,7 @@ const dndDhampirArticle: BlogPost = {
   title: 'DND Dhampir Guide: Traits, Vampiric Bite, Best Classes, and Roleplay Tips',
   seoTitle: 'DND Dhampir Guide: Traits, Bite, and Best Builds in 5e',
   metaDescription:
-    'Learn what a DND dhampir is, how Vampiric Bite works, which classes fit best, and how to roleplay the lineage without annoying your table. Includes a quick reference table and video embed.',
+    'Learn what a DND dhampir is, how Vampiric Bite works, which classes fit best, and how to roleplay the lineage without annoying your table.',
   excerpt:
     'A practical DND dhampir guide with quick trait summaries, bite strategy, best classes, roleplay tips, and FAQ answers for 5e players.',
   updatedAt: DND_DHAMPIR_UPDATED_AT,
@@ -626,7 +629,7 @@ const dndGrungArticle: BlogPost = {
   metaDescription:
     'Learn what a DND grung is, how poison and water dependency work, which classes fit best, and what to ask your DM before playing one.',
   excerpt:
-    'A practical DND grung guide with quick reference answers, trait breakdowns, DM approval tips, best classes, roleplay notes, FAQ answers, and a video embed.',
+    'A practical DND grung guide with quick reference answers, trait breakdowns, DM approval tips, best classes, roleplay notes, and FAQ answers.',
   updatedAt: DND_GRUNG_UPDATED_AT,
   readTime: '10 min read',
   coverLabel: 'Race Guide',
@@ -663,7 +666,7 @@ const dndCounterspellArticle: BlogPost = {
   metaDescription:
     'Learn how dnd counterspell works in 2014 5e and the 2024 rules, when to cast it, how Counterspell chains work, and which table rulings prevent arguments.',
   excerpt:
-    'A practical dnd counterspell encyclopedia guide covering 2014 and 2024 rules, timing, spell slot outcomes, common rulings, DM policy, FAQ, and a video embed.',
+    'A practical dnd counterspell encyclopedia guide covering 2014 and 2024 rules, timing, spell slot outcomes, common rulings, DM policy, and FAQ.',
   updatedAt: DND_COUNTERSPELL_UPDATED_AT,
   readTime: '11 min read',
   coverLabel: 'Spell Guide',
@@ -751,7 +754,7 @@ const dndGiantsArticle: BlogPost = {
   metaDescription:
     'Learn the main DND giants, how each giant type plays at the table, how to design better giant encounters, and how to make readable VTT tokens.',
   excerpt:
-    'A practical dnd giants encyclopedia guide with a quick type table, lore notes, encounter design advice, VTT token tips, FAQ answers, and a YouTube video embed.',
+    'A practical dnd giants encyclopedia guide with a quick type table, lore notes, encounter design advice, VTT token tips, and FAQ answers.',
   updatedAt: DND_GIANTS_UPDATED_AT,
   readTime: '10 min read',
   coverLabel: 'Monster Guide',
@@ -831,7 +834,7 @@ const dndMageArmorArticle: BlogPost = {
   metaDescription:
     'Learn how dnd mage armor works, how to calculate AC, what it stacks with, who should use it, and the overlooked touch-target trick many players miss.',
   excerpt:
-    'A practical dnd mage armor guide covering AC math, 2014/2024 rules, stacking rulings, best users, VTT token tips, FAQ, and a lazy-loaded YouTube video embed.',
+    'A practical dnd mage armor guide covering AC math, 2014/2024 rules, stacking rulings, best users, VTT token tips, and FAQ.',
   updatedAt: DND_MAGE_ARMOR_UPDATED_AT,
   readTime: '10 min read',
   coverLabel: 'Spell Guide',
@@ -876,7 +879,7 @@ const dndMageArmorArticleZh: BlogPost = {
   metaDescription:
     '这篇 dnd mage armor 指南会讲清 AC 怎么算、能和什么叠加、谁最适合使用，以及很多玩家会忽略的 Touch 目标技巧。',
   excerpt:
-    '一篇实用 dnd mage armor 法术百科，覆盖 AC 计算、2014/2024 规则、叠加裁定、适用角色、VTT Token 建议、FAQ 和视频嵌入。',
+    '一篇实用 dnd mage armor 法术百科，覆盖 AC 计算、2014/2024 规则、叠加裁定、适用角色、VTT Token 建议和 FAQ。',
   updatedAt: DND_MAGE_ARMOR_UPDATED_AT,
   readTime: '10 分钟阅读',
   coverLabel: '法术百科',
@@ -921,7 +924,7 @@ const dndHuntersMarkArticle: BlogPost = {
   metaDescription:
     "Learn dnd hunter's mark fast: 2024 and 2014 rules, concentration, damage, bonus action timing, table rulings, VTT token tracking, and FAQ.",
   excerpt:
-    "A practical dnd hunter's mark spell guide covering 2024/2014 rules, damage triggers, concentration tradeoffs, common rulings, VTT token tracking, FAQ, and a lazy-loaded video embed.",
+    "A practical dnd hunter's mark spell guide covering 2024/2014 rules, damage triggers, concentration tradeoffs, common rulings, VTT token tracking, and FAQ.",
   updatedAt: DND_HUNTERS_MARK_UPDATED_AT,
   readTime: '11 min read',
   coverLabel: 'Spell Guide',
@@ -966,7 +969,7 @@ const dndHuntersMarkArticleZh: BlogPost = {
   metaDescription:
     "这篇 dnd hunter's mark 指南快速讲清 2024/2014 规则差异、伤害、专注、附赠动作、常见裁定与 VTT Token 标记建议。",
   excerpt:
-    "一篇实用 dnd hunter's mark 法术百科，覆盖 2024/2014 规则、伤害触发、专注取舍、常见裁定、VTT Token 标记、FAQ 和视频嵌入。",
+    "一篇实用 dnd hunter's mark 法术百科，覆盖 2024/2014 规则、伤害触发、专注取舍、常见裁定、VTT Token 标记和 FAQ。",
   updatedAt: DND_HUNTERS_MARK_UPDATED_AT,
   readTime: '11 分钟阅读',
   coverLabel: '法术百科',
@@ -1064,7 +1067,7 @@ const dndNecromancerSpellsArticleZh: BlogPost = {
   title: 'dnd necromancer spells 指南：死灵法术清单、Animate Dead 与亡灵小队',
   seoTitle: 'dnd necromancer spells 指南：死灵法术清单',
   metaDescription:
-    '这篇 dnd necromancer spells 指南整理按环级死灵法术清单、Animate Dead 规则、Skeleton vs Zombie、FAQ 和懒加载视频。',
+    '这篇 dnd necromancer spells 指南整理按环级死灵法术清单、Animate Dead 规则、Skeleton vs Zombie 和 FAQ。',
   excerpt:
     '一篇实用 dnd necromancer spells 法术百科，覆盖按环级法术清单、Animate Dead 规则、骷髅与僵尸选择、FAQ 和视频。',
   updatedAt: DND_NECROMANCER_SPELLS_UPDATED_AT,
@@ -1114,11 +1117,101 @@ const dndNecromancerSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-counterspell', 'dnd-mage-armor', 'dnd-classes-explained', 'dnd-constitution-guide'],
 };
 
+const dndMephistophelesArticle: BlogPost = {
+  slug: 'mephistopheles-dnd',
+  title: "mephistopheles dnd: Cania's Archdevil, Pact Traps, and DM Hooks",
+  seoTitle: 'mephistopheles dnd: Cania, Pacts & DM Hooks',
+  metaDescription:
+    'Learn mephistopheles dnd fast: who the archdevil is, how Cania and hellfire shape his lore, how to use him as a patron or villain, and when not to run him as a stat block.',
+  excerpt:
+    'A practical mephistopheles dnd encyclopedia guide covering Cania lore, archdevil identity, Warlock and tiefling hooks, DM encounter use, FAQ, and a companion lore video.',
+  updatedAt: DND_MEPHISTOPHELES_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Archdevil Guide',
+  coverImage: DND_MEPHISTOPHELES_COVER_PATH,
+  coverAlt:
+    'mephistopheles dnd guide cover showing an icy infernal contract tabletop with dice, frost, hellfire, and a sealed bargain',
+  bodyHtml: dndMephistophelesArticleHtml,
+  faqItems: [
+    {
+      question: 'Who is Mephistopheles in DND?',
+      answer:
+        'Mephistopheles is an archdevil connected to Cania, the Nine Hells, arcane ambition, and hellfire. Use him as a patron or endgame threat, not as a casual monster encounter.',
+    },
+    {
+      question: 'Is Mephistopheles a god in D&D?',
+      answer:
+        'Mephistopheles is usually treated as an archdevil rather than a normal god. For campaign purposes, that still makes him powerful enough to shape plots through contracts, cults, and infernal magic.',
+    },
+    {
+      question: 'Can a Warlock have Mephistopheles as a patron?',
+      answer:
+        'Yes. A Fiend Warlock can use Mephistopheles as patron flavor if the DM agrees. Intermediaries and written obligations keep the pact playable.',
+    },
+    {
+      question: 'What layer of Hell is Mephistopheles tied to?',
+      answer:
+        'Mephistopheles is tied to Cania, commonly presented as the icy eighth layer of the Nine Hells.',
+    },
+    {
+      question: 'Is Mephistopheles good for a beginner campaign?',
+      answer:
+        'Not as the main villain. For beginners, use one agent, one simple bargain, and one visible consequence before expanding into infernal politics.',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-counterspell', 'dnd-mage-armor', 'dnd-necromancer-spells'],
+};
+
+const dndMephistophelesArticleZh: BlogPost = {
+  slug: 'mephistopheles-dnd',
+  title: 'mephistopheles dnd：Cania 冰狱大魔鬼、契约陷阱与跑团钩子',
+  seoTitle: 'mephistopheles dnd：Cania、契约陷阱与跑团钩子',
+  metaDescription:
+    '这篇 mephistopheles dnd 百科指南快速讲清 Mephistopheles 是谁、Cania 和 hellfire 设定、Warlock/Tiefling 关联、DM 怎么用以及 FAQ。',
+  excerpt:
+    '一篇实用 mephistopheles dnd 设定百科，覆盖 Cania、archdevil 身份、Warlock 和 Tiefling 钩子、DM 用法',
+  updatedAt: DND_MEPHISTOPHELES_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '魔鬼百科',
+  coverImage: DND_MEPHISTOPHELES_COVER_PATH,
+  coverAlt:
+    'mephistopheles dnd 指南封面图，展示冰狱契约桌面、骰子、寒霜、地狱火和封蜡交易',
+  bodyHtml: dndMephistophelesArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND 里的 Mephistopheles 是谁？',
+      answer:
+        'Mephistopheles 是和 Cania、九层地狱、奥术野心与 hellfire 相关的 archdevil，更适合当 patron 或终局威胁，不适合当随手遭遇怪。',
+    },
+    {
+      question: 'Mephistopheles 是 D&D 里的神吗？',
+      answer:
+        '通常更准确地说，他是 archdevil，而不是普通意义上的 god。但在战役里，他仍然足够强，可以通过契约、邪教和地狱魔法影响剧情。',
+    },
+    {
+      question: 'Warlock 可以把 Mephistopheles 当 patron 吗？',
+      answer:
+        '可以，只要 DM 同意。建议用 Fiend Warlock 的方向，并通过代理人、印记和明确债务来表现。',
+    },
+    {
+      question: 'Mephistopheles 和哪一层地狱有关？',
+      answer:
+        'Mephistopheles 通常和 Cania 绑定，也就是九层地狱中冰冷的第八层。',
+    },
+    {
+      question: '新手团适合用 Mephistopheles 当主反派吗？',
+      answer:
+        '不太适合直接当主反派。新手团可以先用一个代理人、一个简单契约和一个可见后果。',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-counterspell', 'dnd-mage-armor', 'dnd-necromancer-spells'],
+};
+
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

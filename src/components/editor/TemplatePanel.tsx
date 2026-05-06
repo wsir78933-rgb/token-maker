@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
-import { trackSelectFrame } from '@/lib/analytics';
+import { trackApplyBorder } from '@/lib/analytics';
 import {
   COMPETITOR_BORDER_TEMPLATES,
   DEFAULT_BORDER_TEMPLATES,
@@ -146,7 +146,7 @@ export function TemplatePanel() {
       });
       setSelectedBorder(newId);
       setCustomBorderError(null);
-      trackSelectFrame('Custom');
+      trackApplyBorder('Custom');
     } catch {
       setCustomBorderError(errorCopy.failed);
     } finally {
@@ -205,7 +205,7 @@ export function TemplatePanel() {
                       data-border-id={border.id}
                       onClick={() => {
                         setSelectedBorder(border.id);
-                        trackSelectFrame(label);
+                        trackApplyBorder(label);
                       }}
                       title={label}
                       aria-label={label}

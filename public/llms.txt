@@ -26,6 +26,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [Build a DND character token](https://www.tokenmaker.one/blog/how-to-build-a-dnd-character-token): How to turn character art into a clean VTT token.
 - [DND Counterspell Guide](https://www.tokenmaker.one/blog/dnd-counterspell): Counterspell timing, 2014/2024 rules, and FAQ.
 - [DND Necromancer Spells](https://www.tokenmaker.one/blog/dnd-necromancer-spells): Spell list and minion-management guidance for necromancer play.
+- [mephistopheles dnd: Cania's Archdevil, Pact Traps, and DM Hooks](https://www.tokenmaker.one/blog/mephistopheles-dnd): Archdevil lore, Cania, pact traps, and DM encounter hooks.
 
 ## Site Files
 
@@ -40,3 +41,4 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [Chinese character token guide](https://www.tokenmaker.one/zh/blog/how-to-build-a-dnd-character-token)
 - [Chinese DND Counterspell Guide](https://www.tokenmaker.one/zh/blog/dnd-counterspell)
 - [Chinese DND Necromancer Spells](https://www.tokenmaker.one/zh/blog/dnd-necromancer-spells)
+- [mephistopheles dnd：Cania 冰狱大魔鬼、契约陷阱与跑团钩子](https://www.tokenmaker.one/zh/blog/mephistopheles-dnd)

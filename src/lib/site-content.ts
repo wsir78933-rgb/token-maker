@@ -144,31 +144,6 @@ export const faqItems: FaqItem[] = [
 
 export const templatePages: TemplatePageData[] = [
   {
-    slug: 'circle-token-maker',
-    title: 'Circle Token Maker',
-    description:
-      'Create round tabletop tokens for DnD, Roll20, and Foundry VTT with browser-based cropping, border controls, and PNG export.',
-    summary:
-      'Circular tokens remain the default for many fantasy portraits because they frame a face quickly and read cleanly on cluttered battle maps. This template page is for character portraits, NPC heads, and boss icons where a centered crop matters more than edge detail.',
-    intent: 'Best for character portraits, NPC heads, and classic VTT avatar circles.',
-    bestFor: [
-      'DnD character portraits',
-      'NPC tokens with readable faces',
-      'Boss portraits that need a clean silhouette',
-    ],
-    settings: [
-      'Mask: circle',
-      'Borders: metal, bone, gold, wood, or thin ring',
-      'Export size: 512 for play, 1024 for archive sets',
-    ],
-    tips: [
-      'Frame the eyes slightly above center so helmets and hair are not clipped.',
-      'Use the border tint sparingly when your portrait already contains strong color contrast.',
-      'Keep the background darker than the face so tokens stay readable at small sizes.',
-    ],
-    query: '/?mask=circle&preset=classic#editor-workspace',
-  },
-  {
     slug: 'square-token-maker',
     title: 'Square Token Maker',
     description:
@@ -192,81 +167,6 @@ export const templatePages: TemplatePageData[] = [
       'Use text only when the token needs a call sign, rank, or room code.',
     ],
     query: '/?mask=square&border=thin-ring#editor-workspace',
-  },
-  {
-    slug: 'hex-token-maker',
-    title: 'Hex Token Maker',
-    description:
-      'Create hex-shaped counters for strategy overlays, war game maps, region markers, and hex-based VTT encounters.',
-    summary:
-      'Hex tokens are helpful when the play surface itself is hex-based or when you want a more tactical board-game silhouette. They also work well for scouting markers, region ownership icons, and overworld movement counters.',
-    intent: 'Best for hex maps, strategy overlays, and board-game style counters.',
-    bestFor: [
-      'Hex crawls and regional movement maps',
-      'Unit counters and terrain markers',
-      'Faction and ownership indicators',
-    ],
-    settings: [
-      'Mask: hexagon',
-      'Borders: wood, ice, or thin ring depending on campaign tone',
-      'Export size: 512 for table use, 1024 for print sheets',
-    ],
-    tips: [
-      'Center on the strongest silhouette instead of the face when the token represents a unit or mount.',
-      'Keep border density moderate so the six edges remain easy to read.',
-      'Use muted background colors for map markers that need to coexist in large groups.',
-    ],
-    query: '/?mask=hexagon&border=wood#editor-workspace',
-  },
-  {
-    slug: 'monster-token-maker',
-    title: 'Monster Token Maker',
-    description:
-      'Turn creature art into readable monster tokens with aggressive frames, dark backdrops, and export sizes ready for encounter prep.',
-    summary:
-      'Monster tokens usually need stronger contrast than player portraits because they appear in groups, at smaller scale, and against noisy combat maps. This page focuses on high-readability setups for beasts, undead, fiends, and boss creatures.',
-    intent: 'Best for encounter prep, creature libraries, and reusable bestiary sets.',
-    bestFor: [
-      'Encounter packs for GMs',
-      'Undead, fiend, and beast portrait sets',
-      'Readable tokens for dense battle maps',
-    ],
-    settings: [
-      'Mask: circle or hexagon depending on campaign style',
-      'Borders: bone, fire, barbarian metal, or silver spikes',
-      'Export size: 512 for encounter speed, 1024 for library building',
-    ],
-    tips: [
-      'Push the subject closer than you would for a player character so the creature stays visible at table zoom.',
-      'Use darker backgrounds and brighter borders to separate monsters from map textures.',
-      'Group encounter art by border family so the whole bestiary feels coherent.',
-    ],
-    query: '/?mask=circle&preset=monster#editor-workspace',
-  },
-  {
-    slug: 'transparent-token-maker',
-    title: 'Transparent Token Maker',
-    description:
-      'Export tokens with clean transparency for VTTs that layer portraits over dynamic maps, fog, and lighting effects.',
-    summary:
-      'Transparent token output matters when you want the art and frame to sit cleanly on top of map assets. This page is aimed at portrait crops where you do not want a boxed background or heavy color fill competing with the board below.',
-    intent: 'Best for transparent PNG libraries and minimalist token sets.',
-    bestFor: [
-      'Minimalist portrait tokens',
-      'Premium marketplace asset packs',
-      'Tables that rely on lighting and fog layers',
-    ],
-    settings: [
-      'Mask: circle or square',
-      'Borders: none, thin ring, or a light decorative frame',
-      'Export size: 1024 when you need cleaner transparency edges',
-    ],
-    tips: [
-      'Keep overlay opacity low so the outer edge remains crisp on bright maps.',
-      'Avoid heavy drop shadows if your VTT already renders lighting cues.',
-      'Check the token on both dark and parchment maps before exporting a full set.',
-    ],
-    query: '/?mask=circle&border=none#editor-workspace',
   },
 ];
 
@@ -456,21 +356,6 @@ export const faqItemsZh: FaqItem[] = [
 
 export const templatePagesZh: TemplatePageData[] = [
   {
-    slug: 'circle-token-maker',
-    title: '圆形 Token 制作器',
-    description: '把角色头像做成适合 DnD、Roll20 和 Foundry VTT 的圆形 token，支持裁切、边框和 PNG 导出。',
-    summary: '圆形 token 依然是很多奇幻桌面的默认形态，因为它能快速聚焦到脸部，也最适合拥挤战斗地图中的角色识别。',
-    intent: '适合角色头像、NPC 头像和传统圆形 VTT token。',
-    bestFor: ['DnD 角色头像', '需要清晰脸部识别的 NPC', '首领或重要单位的经典头像型 token'],
-    settings: ['遮罩：圆形', '边框：金属、骨质、木质或细环', '导出：日常 512，长期素材库 1024'],
-    tips: [
-      '让眼睛略高于中心点，能减少头发和头盔被裁掉的问题。',
-      '如果原图对比已经很强，边框染色不要下手太重。',
-      '背景最好比脸部更暗，这样缩小后仍然容易识别。',
-    ],
-    query: '/zh?mask=circle&preset=classic#editor-workspace',
-  },
-  {
     slug: 'square-token-maker',
     title: '方形 Token 制作器',
     description: '制作适合网格地图、手札标记和更完整头像构图的方形 token。',
@@ -484,51 +369,6 @@ export const templatePagesZh: TemplatePageData[] = [
       '只有在需要代号、军衔或房间编号时再加文字，避免画面过满。',
     ],
     query: '/zh?mask=square&border=thin-ring#editor-workspace',
-  },
-  {
-    slug: 'hex-token-maker',
-    title: '六边形 Token 制作器',
-    description: '为六角地图、战棋覆盖层和区域控制标记制作六边形 token。',
-    summary: '六边形 token 在六角地图、区域推进和战棋单位标记中很有用，也更接近桌游式的战术视觉语言。',
-    intent: '适合六角地图、战术覆盖层和桌游风格计数标记。',
-    bestFor: ['Hex crawl 地图', '单位计数器和地形标记', '阵营与区域控制标识'],
-    settings: ['遮罩：六边形', '边框：木质、寒霜或细环', '导出：桌面使用 512，打印或归档 1024'],
-    tips: [
-      '如果 token 代表单位而不是角色头像，优先居中主体轮廓而不是脸部。',
-      '边框不要太重，否则六边形边缘会变得不清晰。',
-      '大量地图标记同时出现时，背景颜色尽量压低饱和度。',
-    ],
-    query: '/zh?mask=hexagon&border=wood#editor-workspace',
-  },
-  {
-    slug: 'monster-token-maker',
-    title: '怪物 Token 制作器',
-    description: '把怪物立绘做成高识别度 token，适合遭遇战准备、怪物库整理和长期复用。',
-    summary: '怪物 token 往往需要比玩家头像更强的对比度，因为它们通常成群出现，而且战斗地图本身就很杂乱。',
-    intent: '适合遭遇战准备、怪物库整理和长期复用的生物 token。',
-    bestFor: ['GM 遭遇包', '亡灵、恶魔、野兽等怪物头像集', '需要高识别度的战斗地图 token'],
-    settings: ['遮罩：圆形或六边形', '边框：骨质、火焰、野蛮金属或白银尖刺', '导出：战斗用 512，素材库 1024'],
-    tips: [
-      '怪物构图通常要比玩家角色更近一些，避免缩小时细节丢失。',
-      '用更暗背景和更亮边框，能把怪物从地图纹理里拉出来。',
-      '按怪物类型统一边框家族，会让整套 bestiary 更有秩序。',
-    ],
-    query: '/zh?mask=circle&preset=monster#editor-workspace',
-  },
-  {
-    slug: 'transparent-token-maker',
-    title: '透明背景 Token 制作器',
-    description: '导出边缘干净的透明 PNG token，适合叠在复杂地图、雾效和光照层之上。',
-    summary: '当你不想让 token 带一个明显背景盒子时，透明输出就很关键，尤其适合强调角色头像本身的地图场景。',
-    intent: '适合透明 PNG 素材库和极简风格 token。',
-    bestFor: ['极简头像 token', '更干净的商用资源包', '依赖雾效和灯光层的地图'],
-    settings: ['遮罩：圆形或方形', '边框：无边框、细环或轻装饰边框', '导出：需要更细边缘时优先 1024'],
-    tips: [
-      '叠加层透明度尽量低一些，透明边缘会更干净。',
-      '如果桌面工具已经有灯光效果，就不要再加太重的阴影。',
-      '最好在深色和浅色地图上都看一遍，再决定整套导出参数。',
-    ],
-    query: '/zh?mask=circle&border=none#editor-workspace',
   },
 ];
 
@@ -687,8 +527,8 @@ export const collectionPageCopyByLocale: Record<
   en: {
     templates: {
       eyebrow: 'Template collection',
-      title: 'Token maker templates for specific play styles',
-      description: 'Explore template pages for circle, square, hex, monster, and transparent token workflows, then open the matching editor setup.',
+      title: 'Square token maker template',
+      description: 'Open the square token maker workflow for grid-based tabletop maps, handout markers, and UI-aligned NPC portraits.',
       ctaLabel: 'Open the editor',
     },
     faq: {
@@ -705,8 +545,8 @@ export const collectionPageCopyByLocale: Record<
   zh: {
     templates: {
       eyebrow: '模板集合',
-      title: '针对不同桌面场景的 Token 模板页',
-      description: '这里整理了圆形、方形、六边形、怪物和透明背景等不同 token 工作流，并能直接打开对应预设。',
+      title: '方形 Token 制作器模板页',
+      description: '这里保留方形 token 工作流，适合网格地图、手札标记和更完整头像构图。',
       ctaLabel: '打开编辑器',
     },
     faq: {

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { UploadCloud, Image as ImageIcon } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useBatchStore } from '@/lib/store/batch-store';
+import { trackUploadImage, trackUseBatchMode } from '@/lib/analytics';
 import { ImageUploaderShowcaseStrip } from '@/components/site/ImageUploaderShowcaseStrip';
 import {
   extractImageFiles,
@@ -84,6 +85,8 @@ export function ImageUploader() {
     }
 
     const batchStore = useBatchStore.getState();
+    trackUseBatchMode('multi_upload', imageFiles.length);
+    trackUploadImage(imageFiles.length, 'batch');
     batchStore.activate();
     batchStore.addFiles(imageFiles);
   };

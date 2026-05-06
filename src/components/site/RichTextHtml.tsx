@@ -2,6 +2,7 @@
 
 import { startTransition, type MouseEvent, type KeyboardEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { trackBlogToEditorClick, trackStartEditor } from '@/lib/analytics';
 
 interface RichTextHtmlProps {
   as?: 'article' | 'div' | 'section';
@@ -24,6 +25,10 @@ function activateLiteVideo(container: HTMLElement) {
   iframe.allowFullscreen = true;
 
   container.replaceWith(iframe);
+}
+
+function isModifiedClick(event: MouseEvent<HTMLElement>) {
+  return event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
 }
 
 export function RichTextHtml({
@@ -50,9 +55,17 @@ export function RichTextHtml({
     }
 
     const launchButton = target.closest<HTMLElement>('[data-editor-launch]');
-    const href = launchButton?.getAttribute('data-editor-launch');
+    const editorLink = target.closest<HTMLAnchorElement>('a[href*="#editor-workspace"]');
+    const href = launchButton?.getAttribute('data-editor-launch') ?? editorLink?.getAttribute('href');
 
-    if (!href) {
+    if (!href || !href.includes('#editor-workspace')) {
+      return;
+    }
+
+    trackStartEditor('rich_text_editor_link');
+    trackBlogToEditorClick(href);
+
+    if (editorLink && isModifiedClick(event)) {
       return;
     }
 

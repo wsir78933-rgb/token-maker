@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useId } from 'react';
+import { Suspense, useEffect, useId, useRef } from 'react';
 import { Header } from '@/components/layout/Header';
 import { ControlPanel } from '@/components/editor/ControlPanel';
 import { TemplatePanel } from '@/components/editor/TemplatePanel';
@@ -10,15 +10,41 @@ import { EditorSearchParamsSync } from '@/components/layout/EditorSearchParamsSy
 import { useI18n } from '@/lib/i18n';
 import { useBatchStore } from '@/lib/store/batch-store';
 import { useEditorStore } from '@/lib/store/editor-store';
+import { trackStartEditor } from '@/lib/analytics';
 
 export function EditorLayout() {
   const { t } = useI18n();
   const workspaceHeadingId = useId();
+  const workspaceRef = useRef<HTMLDivElement>(null);
   const isBatchActive = useBatchStore((s) => s.isActive);
   const hasEditorImage = useEditorStore((s) => !!s.imageElement);
 
+  useEffect(() => {
+    const workspace = workspaceRef.current;
+    if (!workspace) return;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      trackStartEditor('editor_mount');
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        trackStartEditor('editor_visible');
+        observer.disconnect();
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(workspace);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
+      ref={workspaceRef}
       id="editor-workspace"
       tabIndex={-1}
       className="editor-shell scroll-mt-0 flex min-h-[100svh] w-full flex-col overflow-visible bg-background text-foreground selection:bg-primary/30 md:scroll-mt-24 xl:h-screen xl:overflow-hidden"

@@ -14,6 +14,7 @@ import {
   parseMixedDiceExpression,
   type SupportedDieSides,
 } from '@/lib/dice/roller';
+import { trackDiceRoll } from '@/lib/analytics';
 import type { SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
 
@@ -200,7 +201,13 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
     setActivePlayback(playback);
     commitToHistory(playback);
     setCopied(false);
-    syncUrl(formatMixedDiceRequest({ groups: stagedGroups, modifier }));
+    const diceExpression = formatMixedDiceRequest({ groups: stagedGroups, modifier });
+    syncUrl(diceExpression);
+    trackDiceRoll(
+      diceExpression,
+      stagedGroups.reduce((sum, group) => sum + group.count, 0),
+      playback.result.total
+    );
   };
 
   const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { DownloadCloud, Layers, RotateCcw, Trash2 } from 'lucide-react';
 import { useBatchStore } from '@/lib/store/batch-store';
+import { trackUseBatchMode } from '@/lib/analytics';
 import type { I18nKey } from '@/lib/i18n';
 import { downloadCurrentToken } from './export-token';
 
@@ -288,7 +289,10 @@ export function ControlPanel() {
           variant="outline"
           size="sm"
           className="h-9 w-full gap-2 text-xs font-medium text-primary hover:border-primary/40 hover:bg-primary/10"
-          onClick={() => useBatchStore.getState().activate()}
+          onClick={() => {
+            trackUseBatchMode('control_button');
+            useBatchStore.getState().activate();
+          }}
         >
           <Layers className="h-3.5 w-3.5" />
           {t('batchMode' as I18nKey)}

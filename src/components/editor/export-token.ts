@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import { trackDownloadToken } from '@/lib/analytics';
+import { trackDownloadPng } from '@/lib/analytics';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { BORDER_TEMPLATES } from '@/lib/templates/borders';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
@@ -32,6 +32,6 @@ export async function downloadCurrentToken(t: (key: I18nKey) => string) {
 
   if (blob) {
     saveAs(blob, `token_${Date.now()}.png`);
-    trackDownloadToken(getSelectedFrameName(state.selectedBorderId, state.customBorders, t));
+    trackDownloadPng(getSelectedFrameName(state.selectedBorderId, state.customBorders, t));
   }
 }

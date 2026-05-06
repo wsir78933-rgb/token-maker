@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { useBatchStore } from '@/lib/store/batch-store';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
+import { trackUploadImage } from '@/lib/analytics';
 import { getSupportedImageFiles, loadEditorImageFile } from './upload-files';
 
 // ============================================================
@@ -70,6 +71,7 @@ export function BatchPanel() {
       return;
     }
 
+    trackUploadImage(imageFiles.length, 'batch_add');
     addFiles(imageFiles);
   };
 

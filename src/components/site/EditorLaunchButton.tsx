@@ -2,6 +2,7 @@
 
 import { startTransition, type ButtonHTMLAttributes, type MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { trackBlogToEditorClick, trackStartEditor } from '@/lib/analytics';
 
 interface EditorLaunchButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
@@ -20,6 +21,18 @@ export function EditorLaunchButton({
 
     if (event.defaultPrevented) {
       return;
+    }
+
+    if (href.includes('#editor-workspace')) {
+      trackStartEditor('editor_launch_button');
+
+      if (
+        window.location.pathname === '/blog' ||
+        window.location.pathname.endsWith('/blog') ||
+        window.location.pathname.includes('/blog/')
+      ) {
+        trackBlogToEditorClick(href);
+      }
     }
 
     startTransition(() => {

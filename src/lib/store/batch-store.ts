@@ -3,6 +3,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import type { EditorState } from '@/types/editor';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
+import { trackDownloadPng } from '@/lib/analytics';
 import { useEditorStore } from './editor-store';
 
 // ============================================================
@@ -369,5 +370,6 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
 
     const content = await zip.generateAsync({ type: 'blob' });
     saveAs(content, `tokens_batch_${Date.now()}.zip`);
+    trackDownloadPng('batch', doneItems.length, 'zip');
   },
 }));

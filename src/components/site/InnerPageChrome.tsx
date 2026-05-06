@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { SiteMark } from '@/components/site/SiteMark';
 import { SiteSupportStrip } from '@/components/site/SiteSupportStrip';
+import { TrackedEditorLink } from '@/components/site/TrackedEditorLink';
 import { getNavLabels, getSiteConfig } from '@/lib/site-content';
 import { getLocalizedPath, stripLocalePrefix, switchLocalePath, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
@@ -54,7 +55,7 @@ export function InnerPageChrome({
       <div className="site-topbar sticky top-0 z-50">
         <div className="mx-auto max-w-7xl px-6 py-4 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <Link
+            <TrackedEditorLink
               href={`${getLocalizedPath(locale, '/')}#editor-workspace`}
               prefetch={false}
               className="site-brand-link inline-flex items-center gap-3 text-sm transition-colors"
@@ -67,7 +68,7 @@ export function InnerPageChrome({
                   {locale === 'zh' ? '返回首页编辑器' : 'Back to the editor'}
                 </span>
               </span>
-            </Link>
+            </TrackedEditorLink>
 
             <div className="flex items-center">
               <Link href={switchedPath} prefetch={false} className="site-switch-chip">

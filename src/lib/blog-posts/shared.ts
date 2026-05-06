@@ -13,6 +13,7 @@ export const DND_GIANTS_COVER_PATH = '/blog/covers/en/dnd-giants-guide.webp';
 export const DND_MAGE_ARMOR_COVER_PATH = '/blog/covers/en/dnd-mage-armor-guide.webp';
 export const DND_NECROMANCER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-necromancer-spells-guide.webp';
 export const DND_HUNTERS_MARK_COVER_PATH = '/blog/covers/en/dnd-hunters-mark-cinematic.webp';
+export const DND_MEPHISTOPHELES_COVER_PATH = '/blog/covers/en/mephistopheles-dnd-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -38,6 +39,8 @@ export const DND_NECROMANCER_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-n
 export const DND_HUNTERS_MARK_VTT_IMAGE_PATH = '/blog/inline/dnd-hunters-mark/hunters-mark-vtt-tracking.webp';
 export const DND_HUNTERS_MARK_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-hunters-mark/hunters-mark-video-placeholder.webp';
 export const DND_DRUID_SPELLS_PLANNING_IMAGE_PATH = '/blog/inline/dnd-druid-spells/druid-spell-planning-map.webp';
+export const MEPHISTOPHELES_CANIA_IMAGE_PATH = '/blog/inline/mephistopheles-dnd/mephistopheles-cania-archive.webp';
+export const MEPHISTOPHELES_VIDEO_PLACEHOLDER_PATH = '/blog/inline/mephistopheles-dnd/mephistopheles-video-placeholder.webp';
 
 // External URLs
 export const DND_DRUID_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Druid';
@@ -70,6 +73,9 @@ export const DND_HUNTERS_MARK_2014_RULES_URL = 'https://www.dndbeyond.com/source
 export const DND_HUNTERS_MARK_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#HuntersMark';
 export const DND_RANGER_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Ranger';
 export const DND_HUNTERS_MARK_VIDEO_URL = 'https://www.youtube.com/watch?v=JwINRY1eD7M';
+export const DND_2024_TIEFLING_URL = 'https://www.dndbeyond.com/species/1751443-tiefling';
+export const MEPHISTOPHELES_FR_WIKI_URL = 'https://forgottenrealms.fandom.com/wiki/Mephistopheles';
+export const MEPHISTOPHELES_VIDEO_URL = 'https://www.youtube.com/watch?v=Xdu_5_ZL7pQ';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -86,6 +92,8 @@ export const EN_DND_MAGE_ARMOR_PATH = getLocalizedPath('en', '/blog/dnd-mage-arm
 export const ZH_DND_MAGE_ARMOR_PATH = getLocalizedPath('zh', '/blog/dnd-mage-armor');
 export const EN_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-necromancer-spells');
 export const ZH_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-necromancer-spells');
+export const EN_DND_MEPHISTOPHELES_PATH = getLocalizedPath('en', '/blog/mephistopheles-dnd');
+export const ZH_DND_MEPHISTOPHELES_PATH = getLocalizedPath('zh', '/blog/mephistopheles-dnd');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_DICE_ROLLER_PATH = getLocalizedPath('en', '/dice-roller-dnd');
@@ -96,7 +104,7 @@ export function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src
   const thumbAlt = thumbnail?.alt ?? title;
 
   return `<div class="inline-embed inline-embed--video lite-video" data-video-id="${videoId}" data-video-title="${title}" role="button" tabindex="0" aria-label="Play video: ${title}">
-  <img class="lite-video__thumb" src="${thumb}" alt="${thumbAlt}" loading="lazy" decoding="async" width="480" height="360" />
+  <img class="lite-video__thumb" src="${thumb}" alt="${thumbAlt}" loading="eager" decoding="async" fetchpriority="low" width="480" height="360" />
   <div class="lite-video__overlay" aria-hidden="true"></div>
   <button class="lite-video__play" type="button" aria-label="Play: ${title}">
     <svg class="lite-video__play-icon" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
