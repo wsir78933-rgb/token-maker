@@ -8,7 +8,7 @@ import { getBorderById } from '@/lib/templates/borders';
 import { createMaskPathWithInset } from './masks';
 import { drawBorder } from './borders';
 import { drawTextBoxes } from './text';
-import { getCachedImage } from '@/lib/utils/imageCache';
+import { getCachedImage, preloadImageToCache } from '@/lib/utils/imageCache';
 import { getLruCacheEntry, setLruCacheEntry } from '@/lib/utils/lruCache';
 import { useEditorStore } from '@/lib/store/editor-store';
 
@@ -55,6 +55,36 @@ function getExplicitMaskImageUrl(border?: BorderTemplate): string | null {
 
 function getDerivedBorderMaskImageUrl(border?: BorderTemplate): string | null {
   return border?.customImageUrl || border?.imageUrl || null;
+}
+
+function getSelectedBorder(state: EditorState) {
+  return (
+    getBorderById(state.selectedBorderId) ??
+    state.customBorders.find((border) => border.id === state.selectedBorderId)
+  );
+}
+
+export function getTokenRenderAssetUrls(state: EditorState): string[] {
+  const border = getSelectedBorder(state);
+  if (!border || border.type === 'none') return [];
+
+  const urls = new Set<string>();
+  const borderImageUrl = getDerivedBorderMaskImageUrl(border);
+  if (hasImageBasedBorder(border) && borderImageUrl) {
+    urls.add(borderImageUrl);
+  }
+
+  const explicitMaskUrl = getExplicitMaskImageUrl(border);
+  if (explicitMaskUrl) {
+    urls.add(explicitMaskUrl);
+  }
+
+  return Array.from(urls);
+}
+
+export async function preloadTokenRenderAssets(state: EditorState) {
+  const urls = getTokenRenderAssetUrls(state);
+  await Promise.all(urls.map((url) => preloadImageToCache(url)));
 }
 
 function applyMaskToCanvas(
@@ -301,8 +331,7 @@ export function renderToken(
   ctx.imageSmoothingQuality = 'high';
   ctx.clearRect(0, 0, outputSize, outputSize);
 
-  let border = getBorderById(state.selectedBorderId);
-  if (!border) border = state.customBorders.find((b) => b.id === state.selectedBorderId);
+  const border = getSelectedBorder(state);
 
   const baseLayer = document.createElement('canvas');
   baseLayer.width = outputSize;
@@ -374,6 +403,13 @@ export async function exportTokenAsPNG(
   state: EditorState,
   exportSize: number
 ): Promise<Blob | null> {
+  try {
+    await preloadTokenRenderAssets(state);
+  } catch (error) {
+    console.warn('Failed to preload token render assets.', error);
+    return null;
+  }
+
   const offscreen = document.createElement('canvas');
   renderToken(offscreen, state, exportSize, { clipFinalOutputToMask: true });
 

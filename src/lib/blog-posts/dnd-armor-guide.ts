@@ -4,26 +4,21 @@ import {
   EN_DND_CLASSES_PATH,
   EN_DICE_ROLLER_PATH,
   EN_EDITOR_PATH,
+  EN_SQUARE_TOKEN_MAKER_PATH,
   ZH_DND_CLASSES_PATH,
   ZH_DICE_ROLLER_PATH,
   ZH_EDITOR_PATH,
+  ZH_SQUARE_TOKEN_MAKER_PATH,
   liteVideoEmbed,
 } from './shared';
 
 export const dndArmorArticleHtml = String.raw`
-<p>Choosing the right <strong>DND armor</strong> might be the single biggest factor in whether your character survives a dungeon crawl or drops in the first round of combat. Armor Class determines how hard you are to hit, and in D&amp;D 5e, every point of AC matters more than most new players realize.</p>
+<p>If you only need the quick answer: high-Dex characters usually want <strong>studded leather</strong>, Dex +2 builds often want <strong>breastplate</strong> or <strong>half plate</strong>, and Strength frontliners want <strong>chain mail</strong> early before upgrading to <strong>plate armor</strong>. The table below compares every <strong>DND 5e armor</strong> option by AC, cost, weight, stealth penalty, and Strength requirement.</p>
 
-<p>This guide covers every type of <strong>DND armor</strong> available in the 5th Edition rules. Instead of copying the Player's Handbook word for word, it focuses on what each armor option actually means for your character at the table &mdash; the real AC numbers, the tradeoffs, and which classes should wear what.</p>
+<p>This guide covers every type of <strong>DND armor</strong> available in the 5th Edition rules. Instead of copying the Player's Handbook word for word, it focuses on what each armor option means at the table: the real AC numbers, the tradeoffs, and which classes should wear what.</p>
 
-<h2>What Is Armor Class in DND?</h2>
-<p><strong>Armor Class (AC)</strong> is the number an attacker needs to meet or beat on their attack roll to hit you. The higher your AC, the harder you are to hit. Without any armor at all, your base AC is <strong>10 + your Dexterity modifier</strong>.</p>
-
-<p>That formula is the starting point for everything. When you put on <strong>DND armor</strong>, it replaces or modifies that base calculation. Some armor types let you add your full Dexterity bonus, others cap it, and heavy armor ignores Dexterity entirely.</p>
-
-<p>As the video by <em>How It's Played</em> explains clearly, a common beginner mistake is thinking that armor proficiency adds to your AC. <strong>It does not.</strong> Proficiency only means you can wear the armor without suffering penalties to attack rolls, ability checks, saving throws, and spellcasting. The AC number on the armor is what you get regardless of proficiency.</p>
-
-<h2>DND Armor Table: Every Armor Type at a Glance</h2>
-<p>If you want the short version, here is the full <strong>DND 5e armor</strong> table with every option and its real AC value.</p>
+<h2>DND 5e Armor Table: AC, Cost, Weight, and Stealth</h2>
+<p>Use this <strong>DND armor table</strong> as the fast lookup. Light armor rewards high Dexterity, medium armor rewards Dex +2 builds, heavy armor ignores Dexterity, and shields add +2 AC on top of your chosen armor calculation.</p>
 
 <h3>Light Armor</h3>
 <table>
@@ -67,7 +62,14 @@ export const dndArmorArticleHtml = String.raw`
 <h3>Shields</h3>
 <p>A <strong>shield</strong> adds +2 AC on top of whatever armor you are wearing. It costs 10 gp, weighs 6 lb, and requires one free hand. Any class proficient with shields can use one.</p>
 
-<h2>Light Armor in DND: Best for Dex-Based Characters</h2>
+<h2>How Armor Class Works in DND</h2>
+<p><strong>Armor Class (AC)</strong> is the number an attacker needs to meet or beat on their attack roll to hit you. The higher your AC, the harder you are to hit. Without any armor at all, your base AC is <strong>10 + your Dexterity modifier</strong>.</p>
+
+<p>That formula is the starting point for everything. When you put on <strong>DND armor</strong>, it replaces or modifies that base calculation. Some armor types let you add your full Dexterity bonus, others cap it, and heavy armor ignores Dexterity entirely.</p>
+
+<p>As the video by <em>How It's Played</em> explains clearly, a common beginner mistake is thinking that armor proficiency adds to your AC. <strong>It does not.</strong> Proficiency only means you can wear the armor without suffering penalties to attack rolls, ability checks, saving throws, and spellcasting. The AC number on the armor is what you get regardless of proficiency.</p>
+
+<h2>DND Light Armor: Best for High-Dex Characters</h2>
 <figure class="inline-figure inline-figure--wide-crop">
   <img
     class="inline-figure__image inline-figure__image--wide"
@@ -89,7 +91,7 @@ export const dndArmorArticleHtml = String.raw`
   <li><strong>Max realistic AC:</strong> 17 (studded leather + 5 Dex) or 19 with a shield if your class allows it.</li>
 </ul>
 
-<h2>Medium Armor in DND: The Versatile Middle Ground</h2>
+<h2>DND Medium Armor: Best for Dex +2 Builds</h2>
 <p>Medium armor caps your Dexterity bonus at +2, but it provides higher base AC than light options. If your Dex modifier is +2 or lower, medium armor almost always gives you better protection than light armor.</p>
 
 <p>The standout choices here are <strong>breastplate</strong> and <strong>half plate</strong>. Breastplate gives you AC 16 (with +2 Dex) and no stealth disadvantage &mdash; that is the sweet spot for characters who need decent defense without being loud. Half plate pushes to AC 17 but comes with stealth disadvantage.</p>
@@ -100,7 +102,7 @@ export const dndArmorArticleHtml = String.raw`
   <li><strong>Max realistic AC:</strong> 17 (half plate + 2 Dex) or 19 with a shield.</li>
 </ul>
 
-<h2>Heavy Armor in DND: Maximum Protection, Zero Dexterity</h2>
+<h2>DND Heavy Armor: Best for Strength Frontliners</h2>
 <figure class="inline-figure inline-figure--square-crop">
   <img
     class="inline-figure__image inline-figure__image--square"
@@ -124,7 +126,7 @@ export const dndArmorArticleHtml = String.raw`
   <li><strong>Max realistic AC:</strong> 20 (plate + shield) or higher with magic items like <em>+1 plate</em> or <em>Shield of Faith</em> spell.</li>
 </ul>
 
-<h2>How to Calculate Armor Class in DND 5e</h2>
+<h2>How to Calculate AC in DND 5e</h2>
 <p>AC calculation confuses a lot of beginners because different armor types use different formulas. Here is the simple breakdown:</p>
 
 <ul>
@@ -145,7 +147,7 @@ export const dndArmorArticleHtml = String.raw`
   <li><strong>Magic items:</strong> +1/+2/+3 armor, Ring of Protection, Cloak of Protection.</li>
 </ul>
 
-<h2>Which DND Armor Is Best for Each Class?</h2>
+<h2>Best DND Armor by Class</h2>
 <p>Choosing armor is not just about the highest AC number. It is about matching your defenses to your class abilities, your Dexterity score, and how your character actually plays. If you are preparing a VTT campaign, build the armored portrait in the <a href="${EN_EDITOR_PATH}">VTT token maker</a> and compare a few AC targets in the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> before deciding whether plate, breastplate, or studded leather actually fits the table. Here is what I recommend based on years of table time:</p>
 
 <table>
@@ -167,7 +169,12 @@ export const dndArmorArticleHtml = String.raw`
   </tbody>
 </table>
 
-<h2>Mage Armor: The Caster's Alternative to Physical Armor</h2>
+<blockquote>
+  <p><strong>VTT prep tip:</strong> after you choose the armor, make the character readable on the battle map. Use the <a href="${EN_EDITOR_PATH}">Token Maker editor</a> to turn an armored Fighter, Paladin, Rogue, or Cleric portrait into a Roll20 or Foundry-ready token, or start from the <a href="${EN_SQUARE_TOKEN_MAKER_PATH}">square token maker</a> if your table uses square portraits.</p>
+  <p style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;"><a href="${EN_EDITOR_PATH}" class="site-cta-primary">Make an armored token</a> <a href="${EN_SQUARE_TOKEN_MAKER_PATH}" class="site-cta-secondary">Square token maker</a></p>
+</blockquote>
+
+<h2>Mage Armor vs Physical Armor</h2>
 <p>Characters without armor proficiency are not defenseless. The <strong><a href="${EN_DND_CLASSES_PATH}">Wizard</a></strong> spell <em>Mage Armor</em> sets your base AC to <strong>13 + Dex modifier</strong> and lasts 8 hours without concentration. For a Wizard with 16 Dexterity, that is AC 16 &mdash; better than chain mail.</p>
 
 <p>The tradeoff is that it uses a 1st-level spell slot every day. At low levels that hurts; at higher levels it becomes trivial. If you are playing a squishy caster, <em>Mage Armor</em> is essentially mandatory until you find magical alternatives.</p>
@@ -206,19 +213,12 @@ ${liteVideoEmbed('pKxuStjRTxo', 'DND armor and Armor Class explained video')}
 `;
 
 export const dndArmorArticleHtmlZh = String.raw`
-<p>在《龙与地下城》里，选对 <strong>DND 护甲</strong> 几乎决定了你的角色是能扛住一整场地城探险，还是在第一轮战斗就倒地。护甲等级（AC）代表敌人攻击你有多难命中，而在 D&amp;D 5e 里，每一点 AC 的价值比大多数新手以为的都重要得多。</p>
+<p>如果你只想先看结论：高敏捷角色通常选 <strong>Studded Leather 镶嵌皮甲</strong>，敏捷 +2 的角色常在 <strong>Breastplate 胸甲</strong> 和 <strong>Half Plate 半身板甲</strong> 之间取舍，力量前排前期穿 <strong>Chain Mail 锁子甲</strong>，中后期升级到 <strong>Plate 全身板甲</strong>。下面这张表会按 AC、价格、重量、隐匿劣势和力量需求对比所有 <strong>DND 5e 护甲</strong>。</p>
 
-<p>这篇指南覆盖了第五版规则中每种 <strong>DND 护甲</strong> 类型。它不会照搬《玩家手册》原文，而是专注于每种护甲选项在真实桌面上到底意味着什么 &mdash; 实际 AC 数值、使用代价，以及哪些职业应该穿什么。</p>
+<p>这篇指南覆盖第五版规则中每种 <strong>DND 护甲</strong> 类型。它不会照搬《玩家手册》原文，而是专注于每种护甲在真实桌面上到底意味着什么：实际 AC 数值、使用代价，以及哪些职业应该穿什么。</p>
 
-<h2>什么是 DND 护甲等级（AC）？</h2>
-<p><strong>护甲等级（Armor Class, AC）</strong> 是攻击者需要在攻击骰上达到或超过的数值才能命中你。AC 越高，你就越难被打中。在没有任何护甲的情况下，你的基础 AC 是 <strong>10 + 敏捷修正值</strong>。</p>
-
-<p>这个公式是一切的起点。当你穿上 <strong>DND 护甲</strong> 后，它会替换或修改这个基础计算方式。有些护甲类型允许你加上全部敏捷加值，有些会封顶，而重甲则完全忽略敏捷。</p>
-
-<p>就像 <em>How It's Played</em> 频道在视频中清楚解释的那样，新手最常犯的一个错误是以为护甲熟练度会增加 AC。<strong>不会。</strong> 熟练度只意味着你穿这件护甲时不会在攻击骰、属性检定、豁免骰和施法上受到惩罚。护甲上标注的 AC 数值就是你实际获得的 AC，无论你是否熟练。</p>
-
-<h2>DND 护甲总表：所有护甲类型一览</h2>
-<p>如果你想先看结论，这里是完整的 <strong>DND 5e 护甲</strong> 参考表。</p>
+<h2>DND 5e 护甲总表：AC、价格、重量与隐匿</h2>
+<p>这张 <strong>DND 护甲表</strong> 可以作为快速查询入口。轻甲奖励高敏捷，中甲适合敏捷 +2 的构筑，重甲完全不看敏捷，而盾牌会在你选定的护甲计算基础上额外增加 +2 AC。</p>
 
 <h3>轻甲</h3>
 <table>
@@ -262,7 +262,14 @@ export const dndArmorArticleHtmlZh = String.raw`
 <h3>盾牌</h3>
 <p><strong>盾牌</strong> 在你当前穿戴的护甲基础上额外提供 +2 AC。价格 10 gp，重 6 磅，需要一只空闲的手。任何拥有盾牌熟练度的职业都可以使用。</p>
 
-<h2>DND 轻甲：敏捷型角色的首选</h2>
+<h2>DND 护甲等级（AC）怎么运作？</h2>
+<p><strong>护甲等级（Armor Class, AC）</strong> 是攻击者需要在攻击骰上达到或超过的数值才能命中你。AC 越高，你就越难被打中。在没有任何护甲的情况下，你的基础 AC 是 <strong>10 + 敏捷修正值</strong>。</p>
+
+<p>这个公式是一切的起点。当你穿上 <strong>DND 护甲</strong> 后，它会替换或修改这个基础计算方式。有些护甲类型允许你加上全部敏捷加值，有些会封顶，而重甲则完全忽略敏捷。</p>
+
+<p>就像 <em>How It's Played</em> 频道在视频中清楚解释的那样，新手最常犯的一个错误是以为护甲熟练度会增加 AC。<strong>不会。</strong> 熟练度只意味着你穿这件护甲时不会在攻击骰、属性检定、豁免骰和施法上受到惩罚。护甲上标注的 AC 数值就是你实际获得的 AC，无论你是否熟练。</p>
+
+<h2>DND 轻甲：高敏捷角色的首选</h2>
 <figure class="inline-figure inline-figure--wide-crop">
   <img
     class="inline-figure__image inline-figure__image--wide"
@@ -284,7 +291,7 @@ export const dndArmorArticleHtmlZh = String.raw`
   <li><strong>最大实际 AC：</strong>17（镶嵌皮甲 + 5 敏捷），如果职业允许加盾牌则为 19。</li>
 </ul>
 
-<h2>DND 中甲：灵活的折中选择</h2>
+<h2>DND 中甲：适合敏捷 +2 的构筑</h2>
 <p>中甲将敏捷加值封顶为 +2，但基础 AC 比轻甲更高。如果你的敏捷修正值不超过 +2，那么中甲几乎总比轻甲更好。</p>
 
 <p>中甲里最值得关注的是 <strong>胸甲</strong> 和 <strong>半身板甲</strong>。胸甲给你 AC 16（敏捷 +2 时）且不带隐匿劣势 &mdash; 这对需要一定防御力但不能太吵的角色来说是最佳平衡点。半身板甲能到 AC 17 但有隐匿劣势。</p>
@@ -295,7 +302,7 @@ export const dndArmorArticleHtmlZh = String.raw`
   <li><strong>最大实际 AC：</strong>17（半身板甲 + 2 敏捷），加盾牌为 19。</li>
 </ul>
 
-<h2>DND 重甲：最高防护，不看敏捷</h2>
+<h2>DND 重甲：适合力量前排</h2>
 <figure class="inline-figure inline-figure--square-crop">
   <img
     class="inline-figure__image inline-figure__image--square"
@@ -319,7 +326,7 @@ export const dndArmorArticleHtmlZh = String.raw`
   <li><strong>最大实际 AC：</strong>20（板甲 + 盾牌），有了 <em>+1 板甲</em> 或 <em>虔诚护盾</em> 法术还能更高。</li>
 </ul>
 
-<h2>DND 5e 护甲等级怎么算？</h2>
+<h2>DND 5e AC 怎么计算？</h2>
 <p>AC 计算让很多新手困惑，因为不同类型的护甲使用不同的公式。下面是最简明的拆解：</p>
 
 <ul>
@@ -340,7 +347,7 @@ export const dndArmorArticleHtmlZh = String.raw`
   <li><strong>魔法物品：</strong>+1/+2/+3 护甲、防护戒指、防护披风。</li>
 </ul>
 
-<h2>每个职业应该穿什么 DND 护甲？</h2>
+<h2>各职业最佳 DND 护甲推荐</h2>
 <p>选护甲不仅仅是看哪个 AC 最高。它需要匹配你的职业能力、敏捷属性和实际打法。如果你正在准备虚拟桌面战役，可以先在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里做出护甲形象，再用 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 对比几个常见 AC 目标，判断板甲、胸甲或镶嵌皮甲到底适不适合这张桌。以下是我根据多年桌面经验的推荐：</p>
 
 <table>
@@ -362,7 +369,12 @@ export const dndArmorArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<h2>法师护甲：施法者的物理护甲替代品</h2>
+<blockquote>
+  <p><strong>VTT 准备建议：</strong>选完护甲后，下一步是让角色在战斗地图上容易识别。你可以用 <a href="${ZH_EDITOR_PATH}">Token Maker 编辑器</a> 把穿甲的战士、圣武士、游荡者或牧师头像做成适合 Roll20 / Foundry 的 Token；如果你的桌使用方形头像，也可以直接从 <a href="${ZH_SQUARE_TOKEN_MAKER_PATH}">Square Token Maker</a> 开始。</p>
+  <p style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;"><a href="${ZH_EDITOR_PATH}" class="site-cta-primary">制作穿甲角色 Token</a> <a href="${ZH_SQUARE_TOKEN_MAKER_PATH}" class="site-cta-secondary">Square Token Maker</a></p>
+</blockquote>
+
+<h2>法师护甲 vs 物理护甲</h2>
 <p>没有护甲熟练度的角色并非毫无防御。<strong><a href="${ZH_DND_CLASSES_PATH}">法师</a></strong>的<em>法师护甲</em>法术能将基础 AC 设为 <strong>13 + 敏捷修正值</strong>，持续 8 小时且不需要专注。一个敏捷 16 的法师用这个法术就有 AC 16 &mdash; 比锁子甲还高。</p>
 
 <p>代价是它每天消耗一个 1 环法术位。低等级时这很心疼；高等级时就不值一提了。如果你玩的是脆皮施法者，<em>法师护甲</em>基本上是必修课，直到你找到魔法替代品。</p>

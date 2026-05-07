@@ -12,14 +12,14 @@ const description = '向 Token Maker 反馈 bug、工作流问题、缺少的 to
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
-  title: `${title} | ${siteConfig.name}`,
+  title,
   description,
   alternates: {
     canonical: '/zh/contact',
     languages: getLanguageAlternates('/contact'),
   },
   openGraph: {
-    title: `${title} | ${siteConfig.name}`,
+    title,
     description,
     url: absoluteUrl('/zh/contact'),
     siteName: siteConfig.name,
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${title} | ${siteConfig.name}`,
+    title,
     description,
     images: [getSeoImageUrl(locale, 'home')],
   },

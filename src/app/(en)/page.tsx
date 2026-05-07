@@ -3,7 +3,7 @@ import { EditorLayout } from '@/components/layout/EditorLayout';
 import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
-import { absoluteUrl, getFaqItems, getSiteConfig, getSiteUrl } from '@/lib/site-content';
+import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates } from '@/lib/site-locale';
 
@@ -45,41 +45,25 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const faqItems = getFaqItems(locale).slice(0, 3);
   const structuredData = {
     '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'SoftwareApplication',
-        name: siteConfig.name,
-        applicationCategory: 'MultimediaApplication',
-        operatingSystem: 'Any',
-        offers: {
-          '@type': 'Offer',
-          price: '0',
-          priceCurrency: 'USD',
-        },
-        url: absoluteUrl('/'),
-        description: siteConfig.description,
-        featureList: [
-          'Browser-based VTT token maker',
-          'Circle, square, and polygon masks',
-          'Border and tint controls',
-          'Text overlays and transparent PNG export',
-          'Local-first tabletop image workflow',
-        ],
-      },
-      {
-        '@type': 'FAQPage',
-        mainEntity: faqItems.map((item) => ({
-          '@type': 'Question',
-          name: item.question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: item.answer,
-          },
-        })),
-      },
+    '@type': 'SoftwareApplication',
+    name: siteConfig.name,
+    applicationCategory: 'MultimediaApplication',
+    operatingSystem: 'Any',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    url: absoluteUrl('/'),
+    description: siteConfig.description,
+    featureList: [
+      'Browser-based VTT token maker',
+      'Circle, square, and polygon masks',
+      'Border and tint controls',
+      'Text overlays and transparent PNG export',
+      'Local-first tabletop image workflow',
     ],
   };
 

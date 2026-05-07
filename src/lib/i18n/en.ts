@@ -103,7 +103,7 @@ const en = {
 
   dropHint: 'Drop image here to start',
   orClickToUpload: 'or click to select',
-  supportedFormats: 'JPG, PNG, WEBP supported',
+  supportedFormats: 'JPG, PNG, WEBP up to 10 MB',
   showcaseQuickStartEyebrow: 'Choose a direction',
   showcaseQuickStartTitle: 'Set the mood before you upload',
   showcaseQuickStartHint: 'Style only',

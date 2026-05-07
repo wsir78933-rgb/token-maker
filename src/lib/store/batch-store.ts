@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 import type { EditorState } from '@/types/editor';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
 import { trackDownloadPng } from '@/lib/analytics';
+import { getSupportedImageFiles } from '@/lib/utils/imageValidation';
 import { useEditorStore } from './editor-store';
 
 // ============================================================
@@ -131,9 +132,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
   },
 
   addFiles: (files: File[]) => {
-    const imageFiles = files.filter(
-      (f) => f.type.startsWith('image/') || /\.(png|jpe?g|webp)$/i.test(f.name)
-    );
+    const imageFiles = getSupportedImageFiles(files);
 
     const newItems: BatchItem[] = imageFiles.map((file) => ({
       id: `batch-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,

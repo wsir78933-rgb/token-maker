@@ -13,14 +13,14 @@ const description =
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
-  title: `${title} | ${siteConfig.name}`,
+  title,
   description,
   alternates: {
     canonical: '/contact',
     languages: getLanguageAlternates('/contact'),
   },
   openGraph: {
-    title: `${title} | ${siteConfig.name}`,
+    title,
     description,
     url: absoluteUrl('/contact'),
     siteName: siteConfig.name,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${title} | ${siteConfig.name}`,
+    title,
     description,
     images: [getSeoImageUrl(locale, 'home')],
   },

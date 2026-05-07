@@ -1,70 +1,190 @@
 import Link from 'next/link';
-import { ArrowRight, MessageSquareText, Shield, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Bug, Gauge, ImagePlus, MessageSquareText, Sparkles } from 'lucide-react';
 import {
-  getFaqItems,
   getHomeCopy,
-  getHomeFeatures,
   getHomeSignals,
   getNavLabels,
   getSiteConfig,
 } from '@/lib/site-content';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
-import { cn } from '@/lib/utils';
 import { SiteMark } from '@/components/site/SiteMark';
 import { SiteSupportStrip } from '@/components/site/SiteSupportStrip';
-
-function HomeFaqDisclosure({ item }: { item: { question: string; answer: string } }) {
-  return (
-    <details
-      className="site-surface-card site-surface-card--plain group rounded-[28px] p-5 transition duration-300 hover:-translate-y-0.5 hover:border-[#d7b46a]/35 open:border-[#d7b46a]/35 open:bg-[#d7b46a]/[0.06]"
-    >
-      <summary className="flex cursor-pointer list-none items-start justify-between gap-4 outline-none focus-visible:ring-2 focus-visible:ring-[#d7b46a]/25 [&::-webkit-details-marker]:hidden">
-        <h3 className="text-lg font-medium text-stone-50">{item.question}</h3>
-        <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-stone-500 transition duration-300 group-open:rotate-90 group-open:text-[#f1d492]" />
-      </summary>
-      <p className="mt-4 text-sm leading-7 text-stone-300">{item.answer}</p>
-    </details>
-  );
-}
 
 function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
   const copy = {
     en: {
-      eyebrow: 'Feedback',
-      title: 'Questions or feedback?',
+      eyebrow: 'Fix requests',
+      title: 'Need a token export fixed?',
       body:
-        'Tell me what broke, what felt slow, or which token workflow you want next. Real table feedback helps improve Token Maker faster.',
-      cta: 'Send feedback',
+        'If upload, crop, PNG export, Roll20 or Foundry fit, or missing styles are blocking prep, send the details. Reproducible issues get fixed first, and common requests become new borders, masks, or presets.',
+      cta: 'Report an issue',
+      ctaNote: 'Screenshots, VTT platform, and export settings make the issue easier to fix.',
+      visualEyebrow: 'Export goal',
+      visualTitle: 'Export once, drop it into your VTT',
+      visualBody: 'The target is simple: clean transparent edges, readable portraits at battle-map scale, and token files that need less resizing after they land in Roll20, Foundry, or Owlbear.',
+      imageAlt: 'Finished fantasy character token made in Token Maker',
+      prompts: [
+        {
+          title: 'Export issue',
+          body: 'Transparent PNG, size, edge, or download problems.',
+          icon: Bug,
+        },
+        {
+          title: 'VTT fit problem',
+          body: 'Roll20, Foundry, or Owlbear tokens that need extra fixing.',
+          icon: Gauge,
+        },
+        {
+          title: 'Missing style',
+          body: 'Borders, masks, labels, or presets your table needs.',
+          icon: ImagePlus,
+        },
+      ],
+      focusItems: ['Clean transparent PNG edges', 'Readable faces at map scale', 'Less resizing after VTT import'],
     },
     zh: {
       eyebrow: '反馈',
       title: '有问题或建议？',
       body:
-        '如果你在制作 Token、导出 PNG、适配 Roll20 或 Foundry VTT 时遇到问题，欢迎直接告诉我。我会优先根据这些反馈修复问题、补足常用场景。',
+        '如果你在制作 Token、导出 PNG、适配 Roll20 或 Foundry VTT 时遇到问题，欢迎直接告诉我。',
       cta: '发送反馈',
+      ctaNote: '附上截图、使用平台和导出设置，会更容易定位。',
+      visualEyebrow: '导出目标',
+      visualTitle: '导出后少修一次图',
+      visualBody: '目标很直接：透明 PNG 边缘干净，头像在战斗地图缩放下看得清，导入 Roll20、Foundry 或 Owlbear 后不用反复裁切和改尺寸。',
+      imageAlt: '使用 Token Maker 制作完成的奇幻角色 Token',
+      prompts: [
+        {
+          title: '导出有问题',
+          body: '透明 PNG、尺寸、边缘或下载异常。',
+          icon: Bug,
+        },
+        {
+          title: '平台不适配',
+          body: 'Roll20、Foundry 或 Owlbear 里还要二次调整。',
+          icon: Gauge,
+        },
+        {
+          title: '缺少样式',
+          body: '你需要的边框、遮罩、文字或预设。',
+          icon: ImagePlus,
+        },
+      ],
+      focusItems: ['透明 PNG 边缘干净', '地图缩放下头像清楚', '导入 VTT 后少调尺寸'],
     },
   }[locale];
 
   return (
-    <section className="site-content-section">
-      <div className="mx-auto max-w-6xl px-6 py-10 lg:px-8 lg:py-12">
-        <div className="border-t border-white/10 pt-10 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[#d7b46a]/30 bg-[#d7b46a]/10 text-[#f1d492]">
-            <MessageSquareText className="h-5 w-5" />
+    <section id="feedback" className="site-content-section overflow-hidden">
+      <div
+        className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(215,180,106,0.16),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(143,183,255,0.14),transparent_28%)]"
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto max-w-6xl px-6 py-10 lg:px-8 lg:py-16">
+        <div className="border-t border-white/10 pt-8 lg:pt-10">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.72fr)] lg:items-center">
+            <div>
+              <div className="inline-flex items-center gap-3 rounded-full border border-[#d7b46a]/24 bg-[#d7b46a]/10 px-3 py-2 text-[#f1d492]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/24">
+                  <MessageSquareText className="h-4 w-4" />
+                </span>
+                <span className="text-xs uppercase tracking-[0.26em]">{copy.eyebrow}</span>
+              </div>
+
+              <h2
+                className="mt-5 max-w-3xl font-display text-3xl leading-tight text-stone-50 sm:text-4xl lg:text-5xl"
+                style={{ letterSpacing: 0 }}
+              >
+                {copy.title}
+              </h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-stone-300 sm:text-base">{copy.body}</p>
+
+              <div className="mt-7 grid gap-3 sm:grid-cols-3">
+                {copy.prompts.map((prompt) => {
+                  const Icon = prompt.icon;
+
+                  return (
+                    <div
+                      key={prompt.title}
+                      className="rounded-[24px] border border-white/10 bg-black/22 p-4 shadow-[0_24px_80px_-56px_rgba(0,0,0,0.76)] backdrop-blur transition hover:border-[#d7b46a]/32 hover:bg-white/[0.045]"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-[#f1d492]">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <h3 className="mt-4 text-sm font-semibold text-stone-50">{prompt.title}</h3>
+                      <p className="mt-2 text-xs leading-6 text-stone-400">{prompt.body}</p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Link href={getLocalizedPath(locale, '/contact')} prefetch={false} className="site-cta-primary">
+                  {copy.cta}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <p className="max-w-sm text-xs leading-6 text-stone-500">{copy.ctaNote}</p>
+              </div>
+            </div>
+
+            <aside className="relative min-h-[340px] overflow-hidden rounded-[30px] border border-white/10 bg-black/30 p-5 shadow-[0_30px_100px_-54px_rgba(0,0,0,0.88)]">
+              <div
+                className="absolute inset-0 bg-[radial-gradient(circle_at_50%_15%,rgba(215,180,106,0.2),transparent_32%),linear-gradient(150deg,rgba(143,183,255,0.14),rgba(215,180,106,0.08)_44%,rgba(0,0,0,0)_78%)]"
+                aria-hidden="true"
+              />
+              <div className="relative flex items-center justify-between gap-3">
+                <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.visualEyebrow}</p>
+                <Sparkles className="h-5 w-5 text-[#f1d492]" />
+              </div>
+
+              <div className="relative mt-6 h-40 sm:h-48">
+                <Image
+                  src="/showcase/radiant-paladin-circle.webp"
+                  alt={copy.imageAlt}
+                  width={260}
+                  height={260}
+                  sizes="(min-width: 1024px) 180px, 42vw"
+                  className="absolute left-0 top-4 h-32 w-32 rounded-full border border-white/12 bg-black/35 object-contain p-2 shadow-[0_22px_54px_-24px_rgba(0,0,0,0.9)] sm:h-40 sm:w-40"
+                />
+                <Image
+                  src="/showcase/dusk-rogue-ring.webp"
+                  alt={copy.imageAlt}
+                  width={260}
+                  height={260}
+                  sizes="(min-width: 1024px) 180px, 42vw"
+                  className="absolute left-1/2 top-0 h-36 w-36 -translate-x-1/2 rounded-full border border-[#d7b46a]/28 bg-black/40 object-contain p-2 shadow-[0_28px_70px_-24px_rgba(215,180,106,0.42)] sm:h-44 sm:w-44"
+                />
+                <Image
+                  src="/showcase/frost-ranger-ice.webp"
+                  alt={copy.imageAlt}
+                  width={260}
+                  height={260}
+                  sizes="(min-width: 1024px) 180px, 42vw"
+                  className="absolute right-0 top-8 h-28 w-28 rounded-full border border-[#8fb7ff]/24 bg-black/35 object-contain p-2 shadow-[0_22px_54px_-24px_rgba(143,183,255,0.34)] sm:h-36 sm:w-36"
+                />
+              </div>
+
+              <div className="relative mt-7">
+                <h3 className="font-display text-2xl leading-tight text-stone-50" style={{ letterSpacing: 0 }}>
+                  {copy.visualTitle}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-stone-300">{copy.visualBody}</p>
+
+                <div className="mt-5 grid gap-2">
+                  {copy.focusItems.map((item) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-3 rounded-[18px] border border-white/10 bg-white/[0.045] px-3 py-2.5 text-sm text-stone-200"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#f1d492]" />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
           </div>
-          <p className="mt-5 text-xs uppercase tracking-[0.34em] text-[#d7b46a]">{copy.eyebrow}</p>
-          <h2 className="mx-auto mt-4 max-w-3xl font-display text-3xl leading-tight text-stone-50 sm:text-4xl">
-            {copy.title}
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-300 sm:text-base">{copy.body}</p>
-          <Link
-            href={getLocalizedPath(locale, '/contact')}
-            prefetch={false}
-            className="mt-7 inline-flex items-center gap-2 text-base font-medium text-[#f1d492] underline decoration-white/25 underline-offset-8 transition hover:text-[#f7dfab] hover:decoration-[#f1d492]"
-          >
-            {copy.cta}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </div>
     </section>
@@ -164,118 +284,8 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
 }
 
 export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
-  const copy = getHomeCopy(locale);
-  const homeFeatures = getHomeFeatures(locale);
-  const answerSections = copy.answerSections;
-  const faqItems = getFaqItems(locale).slice(0, 3);
-  const faqCtaLabel = locale === 'zh' ? '查看全部解答' : 'Read all answers';
-
   return (
     <div className="site-shell__content relative overflow-hidden text-stone-100">
-      <section className="site-content-section">
-        <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
-            <div>
-              <div className="flex items-center gap-3">
-                <Sparkles className="h-5 w-5 text-[#d7b46a]" />
-                <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.featuresTitle}</h2>
-              </div>
-              <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-300 sm:text-base">
-                {copy.featuresDescription}
-              </p>
-            </div>
-
-            <aside className="site-surface-card site-surface-card--warm rounded-[32px] p-6">
-              <h3 className="font-display text-2xl leading-tight text-stone-50">{copy.comparisonTitle}</h3>
-              <ul className="mt-5 space-y-3 text-sm leading-7 text-stone-300">
-                {copy.comparisonPoints.map((point) => (
-                  <li key={point} className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d7b46a]" />
-                    <span>{point}</span>
-                  </li>
-                ))}
-              </ul>
-            </aside>
-          </div>
-
-          <div className="mt-8 grid gap-4 lg:grid-cols-2">
-            {homeFeatures.map((feature, index) => (
-              <article
-                key={feature.title}
-                className={cn(
-                  'site-surface-card rounded-[30px] p-6',
-                  index === 0 && 'site-surface-card--warm lg:col-span-2',
-                  index > 0 && 'site-surface-card--plain',
-                  index === homeFeatures.length - 1 &&
-                    (homeFeatures.length - 1) % 2 === 1 &&
-                    'lg:col-span-2',
-                )}
-              >
-                <h3 className="text-xl font-medium text-stone-50">{feature.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-stone-300">{feature.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="site-content-section">
-        <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="mb-8 max-w-3xl">
-            <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">
-              {locale === 'zh' ? '制作流程' : 'Token workflow'}
-            </p>
-            <h2 className="font-display mt-3 text-3xl text-stone-50 sm:text-4xl">
-              {locale === 'zh' ? '制作 Token 前最常遇到的选择' : 'Answers before you export a token'}
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-stone-300 sm:text-base">
-              {locale === 'zh'
-                ? '如果你要为 DnD、Roll20、Foundry VTT 或 Owlbear 准备头像素材，先确认形状、边框、透明 PNG 和导出尺寸会更省时间。'
-                : 'If you are preparing DnD tokens for Roll20, Foundry VTT, Owlbear, or another VTT, these notes help you choose the right shape, border, PNG format, and export size.'}
-            </p>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            {answerSections.map((section, index) => (
-              <article
-                key={section.title}
-                className={cn(
-                  'site-surface-card site-surface-card--plain rounded-[30px] p-6',
-                  index === 0 && 'site-surface-card--warm lg:col-span-2',
-                )}
-              >
-                <h2 className="font-display text-2xl leading-tight text-stone-50">{section.title}</h2>
-                <p className="mt-4 text-sm leading-7 text-stone-300">{section.body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="faq" className="site-content-section">
-        <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="mb-8 flex items-center gap-3">
-            <Shield className="h-5 w-5 text-[#d7b46a]" />
-            <h2 className="font-display text-3xl text-stone-50 sm:text-4xl">{copy.faqTitle}</h2>
-          </div>
-          <div className="grid items-start gap-4 lg:grid-cols-2">
-            {faqItems.map((item) => (
-              <HomeFaqDisclosure key={item.question} item={item} />
-            ))}
-          </div>
-          <div className="mt-8">
-            <Link
-              href={getLocalizedPath(locale, '/faq')}
-              prefetch={false}
-              className="inline-flex items-center gap-2 text-sm text-[#f1d492] transition hover:text-[#f7dfab]"
-            >
-              {faqCtaLabel}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       <HomeFeedbackSection locale={locale} />
 
       <SiteSupportStrip locale={locale} currentPath="/" className="pt-0" hideContact />

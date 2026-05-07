@@ -112,7 +112,7 @@ const zh = {
   // 画布
   dropHint: '拖拽图片到这里开始',
   orClickToUpload: '或点击选择图片',
-  supportedFormats: '支持 JPG、PNG、WEBP',
+  supportedFormats: '支持 10MB 内 JPG、PNG、WEBP',
   showcaseQuickStartEyebrow: '先选一个方向',
   showcaseQuickStartTitle: '上传前先定下你想要的气质',
   showcaseQuickStartHint: '只套用风格',

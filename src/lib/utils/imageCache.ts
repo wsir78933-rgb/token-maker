@@ -8,7 +8,43 @@ import { getLruCacheEntry, setLruCacheEntry } from './lruCache';
 
 const MAX_CACHED_IMAGES = 32;
 const IMAGES_CACHE = new Map<string, HTMLImageElement>();
-const PENDING_IMAGE_LOADS = new Map<string, Set<() => void>>();
+const PENDING_IMAGE_LOADS = new Map<
+  string,
+  {
+    callbacks: Set<() => void>;
+    promise: Promise<HTMLImageElement>;
+  }
+>();
+
+function startImageLoad(url: string, onChange?: () => void) {
+  const pendingLoad = PENDING_IMAGE_LOADS.get(url);
+  if (pendingLoad) {
+    if (onChange) pendingLoad.callbacks.add(onChange);
+    return pendingLoad.promise;
+  }
+
+  const callbacks = new Set<() => void>();
+  if (onChange) callbacks.add(onChange);
+
+  const promise = new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      setLruCacheEntry(IMAGES_CACHE, url, img, MAX_CACHED_IMAGES);
+      PENDING_IMAGE_LOADS.delete(url);
+      callbacks.forEach((callback) => callback());
+      resolve(img);
+    };
+    img.onerror = () => {
+      PENDING_IMAGE_LOADS.delete(url);
+      reject(new Error(`Failed to cache image: ${url}`));
+    };
+    img.src = url;
+  });
+
+  PENDING_IMAGE_LOADS.set(url, { callbacks, promise });
+  return promise;
+}
 
 /**
  * 获取或加载缓存图像
@@ -23,35 +59,9 @@ export function getCachedImage(url: string, onChange?: () => void): HTMLImageEle
     return cachedImage;
   }
 
-  const pendingCallbacks = PENDING_IMAGE_LOADS.get(url);
-  if (pendingCallbacks) {
-    if (onChange) {
-      pendingCallbacks.add(onChange);
-    }
-    return null;
-  }
-
-  const callbacks = new Set<() => void>();
-  if (onChange) {
-    callbacks.add(onChange);
-  }
-  PENDING_IMAGE_LOADS.set(url, callbacks);
-
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = () => {
-    setLruCacheEntry(IMAGES_CACHE, url, img, MAX_CACHED_IMAGES);
-    const resolvedCallbacks = PENDING_IMAGE_LOADS.get(url);
-    PENDING_IMAGE_LOADS.delete(url);
-    if (resolvedCallbacks) {
-      resolvedCallbacks.forEach((callback) => callback());
-    }
-  };
-  img.onerror = () => {
-    PENDING_IMAGE_LOADS.delete(url);
-    console.warn(`Failed to cache image: ${url}`);
-  };
-  img.src = url;
+  startImageLoad(url, onChange).catch((error) => {
+    console.warn(error);
+  });
 
   return null;
 }
@@ -77,14 +87,6 @@ export async function preloadImageToCache(url: string): Promise<HTMLImageElement
   if (cachedImage) {
     return cachedImage;
   }
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      setLruCacheEntry(IMAGES_CACHE, url, img, MAX_CACHED_IMAGES);
-      resolve(img);
-    };
-    img.onerror = reject;
-    img.src = url;
-  });
+
+  return startImageLoad(url);
 }

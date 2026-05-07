@@ -1,18 +1,14 @@
 import { trackUploadImage } from '@/lib/analytics';
 import { useEditorStore } from '@/lib/store/editor-store';
+import { getSupportedImageFiles, isSupportedImageFile } from '@/lib/utils/imageValidation';
 
-export const SUPPORTED_IMAGE_NAME = /\.(png|jpe?g|webp)$/i;
-
-export function isSupportedImageFile(file: File | null | undefined): file is File {
-  if (!file) return false;
-  return file.type.startsWith('image/') || SUPPORTED_IMAGE_NAME.test(file.name);
-}
-
-export function getSupportedImageFiles(
-  files: ArrayLike<File | null | undefined> | Iterable<File | null | undefined>
-) {
-  return Array.from(files).filter(isSupportedImageFile);
-}
+export {
+  getSupportedImageFiles,
+  isSupportedImageFile,
+  MAX_UPLOAD_IMAGE_BYTES,
+  SUPPORTED_IMAGE_ACCEPT,
+  SUPPORTED_IMAGE_NAME,
+} from '@/lib/utils/imageValidation';
 
 export function extractImageFiles(dataTransfer: DataTransfer) {
   const filesFromFiles = getSupportedImageFiles(dataTransfer.files);

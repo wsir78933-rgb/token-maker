@@ -3,7 +3,7 @@ import { EditorLayout } from '@/components/layout/EditorLayout';
 import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
-import { absoluteUrl, getFaqItems, getSiteConfig, getSiteUrl } from '@/lib/site-content';
+import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates } from '@/lib/site-locale';
 
@@ -45,36 +45,20 @@ export const metadata: Metadata = {
 };
 
 export default function ChineseHomePage() {
-  const faqItems = getFaqItems(locale).slice(0, 3);
   const structuredData = {
     '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'SoftwareApplication',
-        name: siteConfig.name,
-        applicationCategory: 'MultimediaApplication',
-        operatingSystem: 'Any',
-        offers: {
-          '@type': 'Offer',
-          price: '0',
-          priceCurrency: 'USD',
-        },
-        url: absoluteUrl('/zh'),
-        description: siteConfig.description,
-        featureList: ['浏览器 VTT Token 制作器', '圆形、方形和多边形遮罩', '边框与配色控制', '文字叠加与透明 PNG Token 导出', '本地优先图片流程'],
-      },
-      {
-        '@type': 'FAQPage',
-        mainEntity: faqItems.map((item) => ({
-          '@type': 'Question',
-          name: item.question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: item.answer,
-          },
-        })),
-      },
-    ],
+    '@type': 'SoftwareApplication',
+    name: siteConfig.name,
+    applicationCategory: 'MultimediaApplication',
+    operatingSystem: 'Any',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    url: absoluteUrl('/zh'),
+    description: siteConfig.description,
+    featureList: ['浏览器 VTT Token 制作器', '圆形、方形和多边形遮罩', '边框与配色控制', '文字叠加与透明 PNG Token 导出', '本地优先图片流程'],
   };
 
   return (

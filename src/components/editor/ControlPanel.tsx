@@ -61,7 +61,7 @@ export function ControlPanel() {
   };
 
   return (
-    <div className="order-2 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-80 xl:overflow-hidden xl:border-y-0 xl:border-r">
+    <div className="order-3 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-80 xl:overflow-hidden xl:border-y-0 xl:border-r">
 
       {/* ── 顶部固定标题栏 ── */}
       <div className="shrink-0 border-b border-border/50 px-4 py-3 sm:py-4">

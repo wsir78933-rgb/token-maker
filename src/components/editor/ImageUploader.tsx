@@ -7,16 +7,16 @@ import { useBatchStore } from '@/lib/store/batch-store';
 import { trackUploadImage, trackUseBatchMode } from '@/lib/analytics';
 import { ImageUploaderShowcaseStrip } from '@/components/site/ImageUploaderShowcaseStrip';
 import {
+  getSupportedImageMimeType,
+  getSupportedImageMimeTypeFromUrl,
+  isSupportedImageSource,
+  SUPPORTED_IMAGE_ACCEPT,
+} from '@/lib/utils/imageValidation';
+import {
   extractImageFiles,
   getSupportedImageFiles,
   loadEditorImageFile,
-  SUPPORTED_IMAGE_NAME,
 } from './upload-files';
-
-function isSupportedImageSource(value: string | null | undefined) {
-  if (!value) return false;
-  return value.startsWith('data:image/') || SUPPORTED_IMAGE_NAME.test(value);
-}
 
 function hasTransferPayload(dataTransfer: DataTransfer | null) {
   if (!dataTransfer) return false;
@@ -99,8 +99,12 @@ export function ImageUploader() {
       if (!response.ok) return;
 
       const blob = await response.blob();
+      if (blob.type && !getSupportedImageMimeType(blob.type)) return;
+
       const mimeType =
-        blob.type || (url.endsWith('.webp') ? 'image/webp' : url.match(/\.jpe?g(?=([?#].*)?$)/i) ? 'image/jpeg' : 'image/png');
+        getSupportedImageMimeType(blob.type) ?? getSupportedImageMimeTypeFromUrl(url);
+      if (!mimeType) return;
+
       const file = new File([blob], createFileNameFromUrl(url, mimeType), { type: mimeType });
       handleFiles([file]);
     } catch (error) {
@@ -192,7 +196,7 @@ export function ImageUploader() {
         type="file"
         ref={fileInputRef}
         onChange={onChange}
-        accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+        accept={SUPPORTED_IMAGE_ACCEPT}
         className="hidden"
         multiple
       />

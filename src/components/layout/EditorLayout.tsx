@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useId, useRef } from 'react';
 import { Header } from '@/components/layout/Header';
 import { ControlPanel } from '@/components/editor/ControlPanel';
-import { TemplatePanel } from '@/components/editor/TemplatePanel';
+import { MobileBorderTemplatesPanel, TemplatePanel } from '@/components/editor/TemplatePanel';
 import { Canvas } from '@/components/editor/Canvas';
 import { BatchPanel } from '@/components/editor/BatchPanel';
 import { EditorSearchParamsSync } from '@/components/layout/EditorSearchParamsSync';
@@ -63,6 +63,7 @@ export function EditorLayout() {
           {t('workspaceLabel')}
         </h2>
         <ControlPanel />
+        <MobileBorderTemplatesPanel />
         {isBatchActive ? (
           <div className="order-1 flex min-h-[32rem] flex-none flex-col overflow-hidden xl:order-none xl:min-h-[36rem] xl:flex-1">
             {/* 有预览图时才显示 Canvas */}

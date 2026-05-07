@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+import { isIP } from 'node:net';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
@@ -7,9 +9,12 @@ const MAX_MESSAGE_LENGTH = 4000;
 const MAX_REQUEST_BODY_BYTES = 32 * 1024;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
+const RATE_LIMIT_MAX_BUCKETS = 500;
+const RATE_LIMIT_CLEANUP_INTERVAL_MS = 60 * 1000;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
+let lastRateLimitCleanupAt = 0;
 
 interface ContactPayload {
   name?: unknown;
@@ -76,27 +81,99 @@ async function readLimitedRequestBody(request: NextRequest, maxBytes: number) {
   return new TextDecoder().decode(body);
 }
 
-function getClientIp(request: NextRequest) {
-  const forwardedFor = request.headers.get('x-forwarded-for');
-  const realIp = request.headers.get('x-real-ip');
+function normalizeIpCandidate(value: string | null) {
+  const token = value?.trim().replace(/^"|"$/g, '');
+  if (!token) return null;
 
-  return forwardedFor?.split(',')[0]?.trim() || realIp || 'anonymous';
+  if (isIP(token)) return token;
+
+  const bracketedIpv6 = token.match(/^\[([^\]]+)](?::\d+)?$/)?.[1];
+  if (bracketedIpv6 && isIP(bracketedIpv6)) return bracketedIpv6;
+
+  const ipv4WithPort = token.match(/^(\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?$/)?.[1];
+  if (ipv4WithPort && isIP(ipv4WithPort)) return ipv4WithPort;
+
+  return null;
 }
 
-function isRateLimited(key: string) {
-  const now = Date.now();
-  const bucket = rateLimitBuckets.get(key);
+function getForwardedForCandidates(request: NextRequest) {
+  return (
+    request.headers
+      .get('x-forwarded-for')
+      ?.split(',')
+      .map((value) => value.trim()) ?? []
+  );
+}
 
-  if (!bucket || bucket.resetAt <= now) {
-    rateLimitBuckets.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
+function getClientIp(request: NextRequest) {
+  const candidates = [
+    request.headers.get('cf-connecting-ip'),
+    request.headers.get('true-client-ip'),
+    request.headers.get('x-real-ip'),
+    ...getForwardedForCandidates(request),
+  ];
+
+  for (const candidate of candidates) {
+    const normalizedIp = normalizeIpCandidate(candidate);
+    if (normalizedIp) return normalizedIp;
   }
 
-  if (bucket.count >= RATE_LIMIT_MAX_REQUESTS) {
+  return 'anonymous';
+}
+
+function getRateLimitHash(value: string) {
+  return createHash('sha256').update(value).digest('hex').slice(0, 24);
+}
+
+function cleanupRateLimitBuckets(now: number) {
+  if (
+    rateLimitBuckets.size < RATE_LIMIT_MAX_BUCKETS &&
+    now - lastRateLimitCleanupAt < RATE_LIMIT_CLEANUP_INTERVAL_MS
+  ) {
+    return;
+  }
+
+  lastRateLimitCleanupAt = now;
+  for (const [key, bucket] of rateLimitBuckets) {
+    if (bucket.resetAt <= now) {
+      rateLimitBuckets.delete(key);
+    }
+  }
+
+  if (rateLimitBuckets.size <= RATE_LIMIT_MAX_BUCKETS) return;
+
+  const staleKeys = Array.from(rateLimitBuckets.entries())
+    .sort(([, a], [, b]) => a.resetAt - b.resetAt)
+    .slice(0, rateLimitBuckets.size - RATE_LIMIT_MAX_BUCKETS)
+    .map(([key]) => key);
+
+  staleKeys.forEach((key) => rateLimitBuckets.delete(key));
+}
+
+function isRateLimited(keys: string[]) {
+  const now = Date.now();
+  cleanupRateLimitBuckets(now);
+
+  const uniqueKeys = Array.from(new Set(keys));
+  const hasLimitedBucket = uniqueKeys.some((key) => {
+    const bucket = rateLimitBuckets.get(key);
+    return Boolean(bucket && bucket.resetAt > now && bucket.count >= RATE_LIMIT_MAX_REQUESTS);
+  });
+
+  if (hasLimitedBucket) {
     return true;
   }
 
-  bucket.count += 1;
+  uniqueKeys.forEach((key) => {
+    const bucket = rateLimitBuckets.get(key);
+    if (!bucket || bucket.resetAt <= now) {
+      rateLimitBuckets.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+      return;
+    }
+
+    bucket.count += 1;
+  });
+
   return false;
 }
 
@@ -152,16 +229,16 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ error: 'invalid_json' }, 400);
   }
 
+  const ip = getClientIp(request);
+
+  if (isRateLimited([`ip:${ip}`])) {
+    return jsonResponse({ error: 'rate_limited' }, 429);
+  }
+
   const honeypot = normalizeText(payload.website);
 
   if (honeypot) {
     return jsonResponse({ ok: true }, 200);
-  }
-
-  const ip = getClientIp(request);
-
-  if (isRateLimited(ip)) {
-    return jsonResponse({ error: 'rate_limited' }, 429);
   }
 
   const name = normalizeText(payload.name);
@@ -179,6 +256,10 @@ export async function POST(request: NextRequest) {
 
   if (message.length < 10 || message.length > MAX_MESSAGE_LENGTH) {
     return jsonResponse({ error: 'invalid_message' }, 400);
+  }
+
+  if (isRateLimited([`email:${getRateLimitHash(email)}`])) {
+    return jsonResponse({ error: 'rate_limited' }, 429);
   }
 
   const apiKey = process.env.RESEND_API_KEY;

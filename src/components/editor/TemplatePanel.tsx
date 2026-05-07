@@ -63,27 +63,114 @@ function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
 }
 
 export function TemplatePanel() {
-  const { t, locale } = useI18n();
-  const selectedBorderId = useEditorStore((state) => state.selectedBorderId);
-  const customBorders = useEditorStore((state) => state.customBorders);
-  const borderLibraryMode = useEditorStore((state) => state.borderLibraryMode);
+  const { t } = useI18n();
   const activePresetId = useEditorStore((state) => state.activePresetId);
   const exportSize = useEditorStore((state) => state.exportSize);
   const imageElement = useEditorStore((state) => state.imageElement);
   const applyPreset = useEditorStore((state) => state.applyPreset);
-  const setSelectedBorder = useEditorStore((state) => state.setSelectedBorder);
-  const addCustomBorder = useEditorStore((state) => state.addCustomBorder);
-  const removeCustomBorder = useEditorStore((state) => state.removeCustomBorder);
   const setExportSize = useEditorStore((state) => state.setExportSize);
-  const bordersGridRef = useRef<HTMLDivElement>(null);
-  const [customBorderError, setCustomBorderError] = useState<string | null>(null);
-  const visibleBorderTemplates =
-    borderLibraryMode === 'competitor' ? COMPETITOR_BORDER_TEMPLATES : DEFAULT_BORDER_TEMPLATES;
 
   const handleExport = async () => {
     await downloadCurrentToken(t);
   };
 
+  return (
+    <div className="order-4 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-80 xl:overflow-hidden xl:border-y-0 xl:border-l">
+
+      {/* ── 顶部固定标题栏 ── */}
+      <div className="shrink-0 border-b border-border/50 px-4 py-3 sm:py-4">
+        <h3 className="text-sm font-semibold text-foreground/90">{t('templatePanel')}</h3>
+      </div>
+
+      <div className="flex-none space-y-6 overflow-visible px-4 py-4 sm:space-y-8 sm:py-6 xl:flex-1 xl:overflow-y-auto">
+        
+        {/* 风格预设 */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold text-foreground/90">{t('presets')}</h3>
+          <div className="grid grid-cols-3 gap-2 min-[480px]:grid-cols-4 md:grid-cols-6 xl:grid-cols-3">
+            {STYLE_PRESETS.map((preset) => {
+              const isActive = activePresetId === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  onClick={() => applyPreset(preset)}
+                  className={`flex aspect-square flex-col items-center justify-center rounded-lg border p-2 transition-all ${
+                    isActive
+                      ? 'border-primary bg-primary/10 text-primary shadow-[0_12px_28px_-18px_color-mix(in_oklab,var(--color-primary)_75%,transparent)]'
+                      : 'border-border/50 hover:border-primary/50 hover:bg-accent text-muted-foreground hover:text-foreground'
+                  }`}
+                  title={t(preset.name as I18nKey)}
+                >
+                  <span className="mb-1 text-xl">{preset.icon}</span>
+                  <span className="text-[10px] whitespace-nowrap">{t(preset.name as I18nKey)}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        
+        <BorderTemplatesSection className="hidden xl:block" />
+
+      </div>
+
+      {/* ── 底部固定导出栏 ── */}
+      <div className="shrink-0 space-y-3 border-t border-border bg-card/92 p-4 shadow-[0_-10px_40px_-15px_var(--workspace-shadow-color)]">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span className="text-xs font-medium text-foreground/80">{t('exportSection')}</span>
+          <div className="flex rounded-md bg-muted/50 p-1">
+            {SIZES.map(size => (
+              <button
+                key={size}
+                onClick={() => setExportSize(size)}
+                className={`rounded px-2 py-1 text-[10px] transition-colors ${
+                  exportSize === size
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:bg-background/50 hover:text-foreground'
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <Button
+          className="hidden w-full font-medium xl:inline-flex"
+          size="default"
+          onClick={handleExport}
+          disabled={!imageElement}
+        >
+          <DownloadCloud className="mr-2 h-4 w-4" />
+          {t('download')}
+        </Button>
+      </div>
+
+    </div>
+  );
+}
+
+export function MobileBorderTemplatesPanel() {
+  return (
+    <div className="order-2 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:hidden">
+      <div className="px-4 py-4 sm:py-6">
+        <BorderTemplatesSection />
+      </div>
+    </div>
+  );
+}
+
+function BorderTemplatesSection({ className = '' }: { className?: string }) {
+  const { t, locale } = useI18n();
+  const selectedBorderId = useEditorStore((state) => state.selectedBorderId);
+  const customBorders = useEditorStore((state) => state.customBorders);
+  const borderLibraryMode = useEditorStore((state) => state.borderLibraryMode);
+  const setSelectedBorder = useEditorStore((state) => state.setSelectedBorder);
+  const addCustomBorder = useEditorStore((state) => state.addCustomBorder);
+  const removeCustomBorder = useEditorStore((state) => state.removeCustomBorder);
+  const bordersGridRef = useRef<HTMLDivElement>(null);
+  const [customBorderError, setCustomBorderError] = useState<string | null>(null);
+  const visibleBorderTemplates =
+    borderLibraryMode === 'competitor' ? COMPETITOR_BORDER_TEMPLATES : DEFAULT_BORDER_TEMPLATES;
   const borderInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -155,42 +242,7 @@ export function TemplatePanel() {
   };
 
   return (
-    <div className="order-3 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-80 xl:overflow-hidden xl:border-y-0 xl:border-l">
-
-      {/* ── 顶部固定标题栏 ── */}
-      <div className="shrink-0 border-b border-border/50 px-4 py-3 sm:py-4">
-        <h3 className="text-sm font-semibold text-foreground/90">{t('templatePanel')}</h3>
-      </div>
-
-      <div className="flex-none space-y-6 overflow-visible px-4 py-4 sm:space-y-8 sm:py-6 xl:flex-1 xl:overflow-y-auto">
-        
-        {/* 风格预设 */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-foreground/90">{t('presets')}</h3>
-          <div className="grid grid-cols-3 gap-2 min-[480px]:grid-cols-4 md:grid-cols-6 xl:grid-cols-3">
-            {STYLE_PRESETS.map((preset) => {
-              const isActive = activePresetId === preset.id;
-              return (
-                <button
-                  key={preset.id}
-                  onClick={() => applyPreset(preset)}
-                  className={`flex aspect-square flex-col items-center justify-center rounded-lg border p-2 transition-all ${
-                    isActive
-                      ? 'border-primary bg-primary/10 text-primary shadow-[0_12px_28px_-18px_color-mix(in_oklab,var(--color-primary)_75%,transparent)]'
-                      : 'border-border/50 hover:border-primary/50 hover:bg-accent text-muted-foreground hover:text-foreground'
-                  }`}
-                  title={t(preset.name as I18nKey)}
-                >
-                  <span className="mb-1 text-xl">{preset.icon}</span>
-                  <span className="text-[10px] whitespace-nowrap">{t(preset.name as I18nKey)}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-        
-        {/* 边框模板 */}
-        <div className="space-y-4">
+        <div className={`space-y-4 ${className}`}>
           <h3 className="text-sm font-semibold text-foreground/90">{t('borderTemplates')}</h3>
           <div ref={bordersGridRef} className="max-h-[280px] overflow-y-auto rounded-lg border border-border/30 bg-muted/10 p-2 sm:max-h-[360px] xl:max-h-[280px]">
             <div className="grid grid-cols-3 gap-2 min-[480px]:grid-cols-4 md:grid-cols-6 xl:grid-cols-3">
@@ -258,42 +310,6 @@ export function TemplatePanel() {
             </p>
           ) : null}
         </div>
-
-      </div>
-
-      {/* ── 底部固定导出栏 ── */}
-      <div className="shrink-0 space-y-3 border-t border-border bg-card/92 p-4 shadow-[0_-10px_40px_-15px_var(--workspace-shadow-color)]">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="text-xs font-medium text-foreground/80">{t('exportSection')}</span>
-          <div className="flex rounded-md bg-muted/50 p-1">
-            {SIZES.map(size => (
-              <button
-                key={size}
-                onClick={() => setExportSize(size)}
-                className={`rounded px-2 py-1 text-[10px] transition-colors ${
-                  exportSize === size
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:bg-background/50 hover:text-foreground'
-                }`}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <Button
-          className="hidden w-full font-medium xl:inline-flex"
-          size="default"
-          onClick={handleExport}
-          disabled={!imageElement}
-        >
-          <DownloadCloud className="mr-2 h-4 w-4" />
-          {t('download')}
-        </Button>
-      </div>
-
-    </div>
   );
 }
 

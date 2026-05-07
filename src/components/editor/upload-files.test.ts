@@ -3,7 +3,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useEditorStore } from '@/lib/store/editor-store';
-import { loadEditorImageFile } from './upload-files';
+import {
+  getSupportedImageFiles,
+  isSupportedImageFile,
+  loadEditorImageFile,
+  MAX_UPLOAD_IMAGE_BYTES,
+} from './upload-files';
 
 class MockImage {
   static instances: MockImage[] = [];
@@ -121,5 +126,24 @@ describe('loadEditorImageFile', () => {
     expect(useEditorStore.getState().imageUrl).toBeNull();
     expect(useEditorStore.getState().imageElement).toBeNull();
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:image-1');
+  });
+
+  it('accepts only declared raster formats within the upload size limit', () => {
+    const png = new File(['png'], 'token.png', { type: 'image/png' });
+    const webpWithoutType = new File(['webp'], 'token.webp', { type: '' });
+    const gif = new File(['gif'], 'animated.gif', { type: 'image/gif' });
+    const svg = new File(['svg'], 'vector.svg', { type: 'image/svg+xml' });
+    const oversized = new File(['png'], 'huge.png', { type: 'image/png' });
+    Object.defineProperty(oversized, 'size', {
+      configurable: true,
+      value: MAX_UPLOAD_IMAGE_BYTES + 1,
+    });
+
+    expect(isSupportedImageFile(png)).toBe(true);
+    expect(isSupportedImageFile(webpWithoutType)).toBe(true);
+    expect(isSupportedImageFile(gif)).toBe(false);
+    expect(isSupportedImageFile(svg)).toBe(false);
+    expect(isSupportedImageFile(oversized)).toBe(false);
+    expect(getSupportedImageFiles([png, gif, svg, oversized])).toEqual([png]);
   });
 });

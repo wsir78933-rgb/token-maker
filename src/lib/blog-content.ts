@@ -56,6 +56,7 @@ export interface BlogPost {
   title: string;
   excerpt: string;
   updatedAt: string;
+  publishedAt?: string;
   readTime: string;
   coverLabel: string;
   coverImage?: string;
@@ -271,7 +272,8 @@ const DND_CLASSES_UPDATED_AT = '2026-03-29';
 const DND_CLASSES_RANKED_UPDATED_AT = '2026-03-29';
 const BLOG_TOKEN_GUIDE_UPDATED_AT = '2026-03-27';
 const BLOG_SMALL_PARTY_GUIDE_UPDATED_AT = '2026-03-25';
-const DND_ARMOR_UPDATED_AT = '2026-04-06';
+const DND_ARMOR_PUBLISHED_AT = '2026-04-06';
+const DND_ARMOR_UPDATED_AT = '2026-05-07';
 const DND_CONSTITUTION_UPDATED_AT = '2026-04-07';
 const DND_DRUID_SPELLS_UPDATED_AT = '2026-05-04';
 const DND_DHAMPIR_UPDATED_AT = '2026-04-17';
@@ -348,35 +350,91 @@ const dndClassesArticleZh: BlogPost = {
 
 const dndArmorArticle: BlogPost = {
   slug: 'dnd-armor-guide',
-  title: 'DND Armor Guide: Every Armor Type, AC Values, and Best Picks by Class',
-  seoTitle: 'DND Armor Guide: All Armor Types, AC Values & Class Picks in D&D 5e',
+  title: 'DND Armor 5e Guide: AC Table and Best Picks by Class',
+  seoTitle: 'DND Armor 5e Guide: AC Table & Best Picks by Class',
   metaDescription:
-    'Complete DND armor guide with every armor type, AC values, and class recommendations. Compare light, medium, and heavy armor in D&D 5e and learn which option is best for your build.',
+    'Compare every DND 5e armor option in one AC table. See light, medium, heavy armor, shields, stealth penalties, Str requirements, and best picks by class.',
   excerpt:
-    'A complete reference for every DND armor type in 5e. Compare AC values, stealth penalties, and class fit so you always pick the right armor for your character.',
+    'Compare every DND 5e armor option in one AC table, then choose the best light, medium, heavy armor, shield, or Mage Armor setup for your class.',
+  publishedAt: DND_ARMOR_PUBLISHED_AT,
   updatedAt: DND_ARMOR_UPDATED_AT,
   readTime: '13 min read',
   coverLabel: 'DND Armor',
   coverImage: DND_ARMOR_COVER_PATH,
   coverAlt: 'A fantasy armory with leather, chain mail, shields, and polished plate armor arranged for DND armor choices',
   bodyHtml: dndArmorArticleHtml,
+  faqItems: [
+    {
+      question: 'What is the best armor in DND 5e?',
+      answer:
+        'Plate armor is the best standard DND 5e armor by raw AC value. Combined with a shield, it gives AC 20 before magic items or spells.',
+    },
+    {
+      question: 'Can you wear DND armor without proficiency?',
+      answer:
+        'Yes, but wearing armor without proficiency gives major penalties to Strength and Dexterity checks, saving throws, attacks, and spellcasting, so it is rarely worth doing.',
+    },
+    {
+      question: 'Does Dexterity affect heavy armor AC?',
+      answer:
+        'No. Heavy armor uses a flat AC number. Dexterity does not increase or decrease your AC while wearing heavy armor.',
+    },
+    {
+      question: 'What is the difference between light and medium armor in DND?',
+      answer:
+        'Light armor lets you add your full Dexterity modifier to AC. Medium armor has higher base AC but caps the Dexterity bonus at +2.',
+    },
+    {
+      question: 'Does a shield count as armor in DND?',
+      answer:
+        'A shield appears in the armor table and requires shield proficiency, but it is usually treated as wielded gear rather than worn armor for features that say while not wearing armor.',
+    },
+  ],
   relatedSlugs: ['dnd-classes-explained', 'dnd-classes-ranked'],
 };
 
 const dndArmorArticleZh: BlogPost = {
   slug: 'dnd-armor-guide',
-  title: 'DND 护甲指南：所有护甲类型、AC 数值与职业推荐',
-  seoTitle: 'DND 护甲指南：D&D 5e 全部护甲类型、AC 计算与最佳选择',
+  title: 'DND 5e 护甲指南：AC 表格与各职业最佳选择',
+  seoTitle: 'DND 5e 护甲指南：AC 表格、计算与职业推荐',
   metaDescription:
-    '最完整的 DND 护甲参考指南，涵盖轻甲、中甲和重甲的 AC 数值、隐匿影响和适用职业，帮你为角色选出最合适的护甲。',
+    '用一张 AC 表格对比所有 DND 5e 护甲：轻甲、中甲、重甲、盾牌、隐匿劣势、力量需求，以及各职业最佳护甲推荐。',
   excerpt:
-    '一份覆盖 D&D 5e 所有护甲类型的完整参考。对比 AC 数值、隐匿代价和职业适配，让你每次都能选对护甲。',
+    '用一张表对比所有 DND 5e 护甲的 AC、价格、重量、隐匿和力量需求，再按职业选择轻甲、中甲、重甲或法师护甲。',
+  publishedAt: DND_ARMOR_PUBLISHED_AT,
   updatedAt: DND_ARMOR_UPDATED_AT,
   readTime: '13 分钟阅读',
   coverLabel: 'DND 护甲',
   coverImage: DND_ARMOR_COVER_PATH,
   coverAlt: '奇幻军械库中陈列着皮甲、锁子甲、盾牌和板甲，用来展示 DND 护甲选择',
   bodyHtml: dndArmorArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND 5e 中最好的护甲是什么？',
+      answer:
+        '只看标准护甲的基础 AC，全身板甲是 DND 5e 中最好的护甲。配合盾牌可以达到 AC 20，还没有计算魔法物品或法术。',
+    },
+    {
+      question: '没有熟练度可以穿 DND 护甲吗？',
+      answer:
+        '可以穿，但没有熟练度会让你在相关检定、豁免、攻击和施法上受到严重惩罚，实战中通常不值得。',
+    },
+    {
+      question: '敏捷会影响重甲 AC 吗？',
+      answer:
+        '不会。DND 重甲使用固定 AC 数值，敏捷修正值不会增加或降低重甲提供的 AC。',
+    },
+    {
+      question: 'DND 轻甲和中甲有什么区别？',
+      answer:
+        '轻甲允许加上完整敏捷修正值；中甲基础 AC 更高，但敏捷加值通常封顶为 +2。',
+    },
+    {
+      question: '盾牌算护甲吗？',
+      answer:
+        '盾牌出现在护甲表中并需要盾牌熟练度，但对许多写着未穿戴护甲的能力来说，盾牌通常被当作手持装备，而不是穿在身上的护甲。',
+    },
+  ],
   relatedSlugs: ['dnd-classes-explained', 'dnd-classes-ranked'],
 };
 
@@ -1475,6 +1533,7 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
   const metadataTitle = post.seoTitle ?? post.title;
   const description = post.metaDescription ?? post.excerpt;
   const absoluteCoverImage = post.coverImage ? absoluteUrl(post.coverImage) : undefined;
+  const publishedTime = post.publishedAt ?? post.updatedAt;
 
   return {
     metadataBase: new URL(getSiteUrl()),
@@ -1491,7 +1550,7 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
       siteName: siteConfig.name,
       type: 'article',
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
-      publishedTime: post.updatedAt,
+      publishedTime,
       modifiedTime: post.updatedAt,
       images: absoluteCoverImage
         ? [
@@ -1551,7 +1610,7 @@ export function buildBlogPostStructuredData(locale: SiteLocale, slug: string) {
     headline: post.seoTitle ?? post.title,
     description: post.metaDescription ?? post.excerpt,
     dateModified: post.updatedAt,
-    datePublished: post.updatedAt,
+    datePublished: post.publishedAt ?? post.updatedAt,
     inLanguage: locale === 'zh' ? 'zh-CN' : 'en-US',
     url: absoluteUrl(getBlogPostPath(locale, slug)),
     image: post.coverImage ? [absoluteUrl(post.coverImage)] : undefined,

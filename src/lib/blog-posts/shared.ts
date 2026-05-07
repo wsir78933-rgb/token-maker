@@ -102,6 +102,8 @@ export const EN_DND_MEPHISTOPHELES_PATH = getLocalizedPath('en', '/blog/mephisto
 export const ZH_DND_MEPHISTOPHELES_PATH = getLocalizedPath('zh', '/blog/mephistopheles-dnd');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
+export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');
+export const ZH_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('zh', '/templates/square-token-maker');
 export const EN_DICE_ROLLER_PATH = getLocalizedPath('en', '/dice-roller-dnd');
 export const ZH_DICE_ROLLER_PATH = getLocalizedPath('zh', '/dice-roller-dnd');
 
