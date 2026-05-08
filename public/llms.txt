@@ -29,6 +29,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [DND Necromancer Spells](https://www.tokenmaker.one/blog/dnd-necromancer-spells): Spell list and minion-management guidance for necromancer play.
 - [mephistopheles dnd: Cania's Archdevil, Pact Traps, and DM Hooks](https://www.tokenmaker.one/blog/mephistopheles-dnd): Archdevil lore, Cania, pact traps, and DM encounter hooks.
 - [dnd bard spells: Best Picks for Support, Control, and Social Play](https://www.tokenmaker.one/blog/dnd-bard-spells): Bard spell picks by role, cantrips, control, healing, social magic, concentration, and VTT prep.
+- [dnd demons: Types, Devils Difference, and DM Encounter Guide](https://www.tokenmaker.one/blog/dnd-demons): Demon type reference, demons vs devils, Abyss encounter design, VTT token tips, FAQ, and companion video.
 
 ## Site Files
 
@@ -44,3 +45,4 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [Chinese DND Necromancer Spells](https://www.tokenmaker.one/zh/blog/dnd-necromancer-spells)
 - [mephistopheles dnd：Cania 冰狱大魔鬼、契约陷阱与跑团钩子](https://www.tokenmaker.one/zh/blog/mephistopheles-dnd)
 - [dnd bard spells：支援、控场、社交与救场法术推荐](https://www.tokenmaker.one/zh/blog/dnd-bard-spells)
+- [dnd demons：恶魔类型、Devils 区别与 DM 遭遇设计](https://www.tokenmaker.one/zh/blog/dnd-demons)

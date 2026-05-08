@@ -15,6 +15,7 @@ export const DND_NECROMANCER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-necromance
 export const DND_HUNTERS_MARK_COVER_PATH = '/blog/covers/en/dnd-hunters-mark-cinematic.webp';
 export const DND_MEPHISTOPHELES_COVER_PATH = '/blog/covers/en/mephistopheles-dnd-guide.webp';
 export const DND_BARD_SPELLS_COVER_PATH = '/blog/covers/en/dnd-bard-spells-guide.webp';
+export const DND_DEMONS_COVER_PATH = '/blog/covers/en/dnd-demons-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -44,6 +45,8 @@ export const MEPHISTOPHELES_CANIA_IMAGE_PATH = '/blog/inline/mephistopheles-dnd/
 export const MEPHISTOPHELES_VIDEO_PLACEHOLDER_PATH = '/blog/inline/mephistopheles-dnd/mephistopheles-video-placeholder.webp';
 export const DND_BARD_SPELLS_LIBRARY_IMAGE_PATH = '/blog/inline/dnd-bard-spells/bard-spell-library.webp';
 export const DND_BARD_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-bard-spells/bard-video-placeholder.webp';
+export const DND_DEMONS_TYPE_IMAGE_PATH = '/blog/inline/dnd-demons/dnd-demons-type-table.webp';
+export const DND_DEMONS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-demons/dnd-demons-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -82,6 +85,10 @@ export const DND_2024_TIEFLING_URL = 'https://www.dndbeyond.com/species/1751443-
 export const MEPHISTOPHELES_FR_WIKI_URL = 'https://forgottenrealms.fandom.com/wiki/Mephistopheles';
 export const MEPHISTOPHELES_VIDEO_URL = 'https://www.youtube.com/watch?v=Xdu_5_ZL7pQ';
 export const DND_BARD_SPELLS_VIDEO_URL = 'https://www.youtube.com/watch?v=qiHXxrCB5yk';
+export const DND_DEMONS_MONSTER_FILTER_URL = 'https://www.dndbeyond.com/monsters?filter-sub-types=9';
+export const DND_DEMONS_BASIC_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/monsters';
+export const DND_DEMONS_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Demon_(Dungeons_%26_Dragons)';
+export const DND_DEMONS_VIDEO_URL = 'https://www.youtube.com/watch?v=54sGxOW26fM';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -100,6 +107,8 @@ export const EN_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-
 export const ZH_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-necromancer-spells');
 export const EN_DND_MEPHISTOPHELES_PATH = getLocalizedPath('en', '/blog/mephistopheles-dnd');
 export const ZH_DND_MEPHISTOPHELES_PATH = getLocalizedPath('zh', '/blog/mephistopheles-dnd');
+export const EN_DND_DEMONS_PATH = getLocalizedPath('en', '/blog/dnd-demons');
+export const ZH_DND_DEMONS_PATH = getLocalizedPath('zh', '/blog/dnd-demons');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');

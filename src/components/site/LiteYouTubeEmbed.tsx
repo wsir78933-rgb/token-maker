@@ -22,17 +22,27 @@ export function LiteYouTubeEmbed({
 }: LiteYouTubeEmbedProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const thumbnailSrc = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
   if (isLoaded) {
     return (
-      <iframe
-        className="aspect-video w-full rounded-[28px] border border-white/10 bg-black"
-        src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`}
-        title={title}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      />
+      <div className="video-embed-shell inline-embed inline-embed--video">
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}?rel=0`}
+          title={title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+        <a
+          href={videoUrl}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="video-embed-shell__fallback"
+        >
+          Open on YouTube / 在 YouTube 打开
+        </a>
+      </div>
     );
   }
 

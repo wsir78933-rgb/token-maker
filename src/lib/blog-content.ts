@@ -17,6 +17,7 @@ import {
   DND_HUNTERS_MARK_COVER_PATH,
   DND_MEPHISTOPHELES_COVER_PATH,
   DND_BARD_SPELLS_COVER_PATH,
+  DND_DEMONS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -32,6 +33,7 @@ import { dndNecromancerSpellsArticleHtml, dndNecromancerSpellsArticleHtmlZh } fr
 import { dndHuntersMarkArticleHtml, dndHuntersMarkArticleHtmlZh } from '@/lib/blog-posts/dnd-hunters-mark';
 import { dndMephistophelesArticleHtml, dndMephistophelesArticleHtmlZh } from '@/lib/blog-posts/dnd-mephistopheles';
 import { dndBardSpellsArticleHtml, dndBardSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-bard-spells';
+import { dndDemonsArticleHtml, dndDemonsArticleHtmlZh } from '@/lib/blog-posts/dnd-demons';
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
@@ -285,6 +287,7 @@ const DND_NECROMANCER_SPELLS_UPDATED_AT = '2026-05-02';
 const DND_HUNTERS_MARK_UPDATED_AT = '2026-05-02';
 const DND_MEPHISTOPHELES_UPDATED_AT = '2026-05-05';
 const DND_BARD_SPELLS_UPDATED_AT = '2026-05-06';
+const DND_DEMONS_UPDATED_AT = '2026-05-07';
 
 const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1371,11 +1374,101 @@ const dndBardSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-classes-explained', 'dnd-druid-spells', 'dnd-counterspell', 'dnd-constitution-guide'],
 };
 
+const dndDemonsArticle: BlogPost = {
+  slug: 'dnd-demons',
+  title: 'dnd demons: Types, Devils Difference, and DM Encounter Guide',
+  seoTitle: 'dnd demons: Types, Devils Difference, and DM Uses',
+  metaDescription:
+    'Use this dnd demons guide to pick demon types faster, understand demons vs devils, build better Abyss encounters, and make readable VTT tokens.',
+  excerpt:
+    'A practical dnd demons encyclopedia with a quick demon list, demons vs devils table, DM encounter advice, VTT token tips, FAQ, and companion video.',
+  updatedAt: DND_DEMONS_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Monster Guide',
+  coverImage: DND_DEMONS_COVER_PATH,
+  coverAlt:
+    'dnd demons guide cover showing an Abyssal portal, demon silhouettes, dice, encounter notes, and VTT token frames',
+  bodyHtml: dndDemonsArticleHtml,
+  faqItems: [
+    {
+      question: 'What are DND demons?',
+      answer:
+        'DND demons are chaotic evil fiends associated with the Abyss, usually used for destructive, corrupting, and unstable threats in Dungeons & Dragons campaigns.',
+    },
+    {
+      question: 'Are demons and devils the same in DND?',
+      answer:
+        'No. Demons are chaotic evil Abyssal fiends, while devils are lawful evil infernal fiends. Use demons for chaos and corruption; use devils for contracts, hierarchy, and punishment.',
+    },
+    {
+      question: 'What is the best first DND demon for a new DM?',
+      answer:
+        'A quasit or small group of dretches is usually the easiest first demon choice because they show Abyssal weirdness without forcing a beginner table into a high-level boss fight.',
+    },
+    {
+      question: 'What is the strongest common DND demon?',
+      answer:
+        'The balor is one of the most iconic high-end common demons in DND. It works best as a major set-piece threat, not as a casual random encounter.',
+    },
+    {
+      question: 'How do I make demons feel scary without killing the party?',
+      answer:
+        'Use environmental consequences, visible corruption, escape pressure, and clear warning signs before raw damage. The party should feel the Abyss spreading, not just see bigger attack numbers.',
+    },
+  ],
+  relatedSlugs: ['mephistopheles-dnd', 'dnd-necromancer-spells', 'dnd-counterspell', 'dnd-classes-explained'],
+};
+
+const dndDemonsArticleZh: BlogPost = {
+  slug: 'dnd-demons',
+  title: 'dnd demons：恶魔类型、Devils 区别与 DM 遭遇设计',
+  seoTitle: 'dnd demons：恶魔类型、Devils 区别与 DM 用法',
+  metaDescription:
+    '这篇 dnd demons 百科指南快速整理常用恶魔类型、demons 和 devils 的区别、DM 遭遇设计、VTT token 制作和 FAQ。',
+  excerpt:
+    '一篇实用 dnd demons 百科：快速看懂恶魔类型、demons vs devils、DM 跑法、VTT token 建议、FAQ 和配套视频。',
+  updatedAt: DND_DEMONS_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '怪物百科',
+  coverImage: DND_DEMONS_COVER_PATH,
+  coverAlt:
+    'dnd demons 指南封面图，展示 Abyss 传送门、恶魔剪影、骰子、遭遇笔记和 VTT token 边框',
+  bodyHtml: dndDemonsArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND demons 是什么？',
+      answer:
+        'DND demons 是和 Abyss 相关的混乱邪恶 fiends，通常用于表现破坏、污染、失控和高压战斗。',
+    },
+    {
+      question: 'DND demons 和 devils 一样吗？',
+      answer:
+        '不一样。Demons 是混乱邪恶的 Abyss fiends；devils 是守序邪恶的 infernal fiends。前者适合混乱污染，后者适合契约、等级和惩罚。',
+    },
+    {
+      question: '新手 DM 最适合先用哪只 DND demon？',
+      answer:
+        'Quasit 或一小群 dretches 通常最适合作为第一只 demon。它们能展示 Abyss 的怪异感，又不会把新手桌直接推向高等级 Boss 战。',
+    },
+    {
+      question: 'DND 里最经典的高阶 demon 是谁？',
+      answer:
+        'Balor 是最经典的高阶 demon 之一。它适合作为重大 set-piece 威胁，而不是随手塞进随机遭遇。',
+    },
+    {
+      question: '怎样让 demons 可怕但不团灭玩家？',
+      answer:
+        '用环境后果、可见污染、撤离压力和清晰预警替代单纯堆伤害。玩家应该感到 Abyss 正在扩散，而不是只看到更高攻击数字。',
+    },
+  ],
+  relatedSlugs: ['mephistopheles-dnd', 'dnd-necromancer-spells', 'dnd-counterspell', 'dnd-classes-explained'],
+};
+
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

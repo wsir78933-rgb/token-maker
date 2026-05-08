@@ -687,11 +687,11 @@
   background: linear-gradient(90deg, transparent, var(--site-border-strong), transparent);
 }
 
-.site-rich-text iframe {
+.site-rich-text iframe,
+.video-embed-shell iframe {
   display: block;
   width: 100%;
   min-height: 22rem;
-  margin-top: 2.25rem;
   border: 1px solid var(--site-border-soft);
   border-radius: 1.75rem;
   background: color-mix(in oklab, var(--site-panel-deep) 72%, transparent);
@@ -700,8 +700,40 @@
   overflow: hidden;
 }
 
+.site-rich-text > iframe,
+.site-rich-text--detail > iframe {
+  margin-top: 2.25rem;
+}
+
 .site-rich-text .inline-embed--video {
   max-width: 46rem;
+}
+
+.video-embed-shell {
+  display: grid;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.video-embed-shell__fallback {
+  justify-self: start;
+  border: 1px solid color-mix(in oklab, var(--site-accent-strong) 38%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--site-panel-deep) 76%, transparent);
+  padding: 0.7rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--site-accent-strong);
+  text-decoration: none;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.video-embed-shell__fallback:hover,
+.video-embed-shell__fallback:focus-visible {
+  border-color: color-mix(in oklab, var(--site-accent-strong) 74%, transparent);
+  background: color-mix(in oklab, var(--site-accent-strong) 12%, var(--site-panel-deep));
+  color: #f8e5b4;
 }
 
 /* ── YouTube Lite Embed ─────────────────────────────────── */
@@ -1110,6 +1142,41 @@
     var(--site-card-shadow-hover),
     inset 0 1px 0 var(--site-card-rim),
     inset 0 0 0 1px var(--site-card-inner);
+}
+
+.site-template-faq-card {
+  cursor: default;
+}
+
+.site-template-faq-card:focus {
+  outline: none;
+}
+
+.site-template-faq-card:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--site-accent-strong) 72%, white 8%);
+  outline-offset: 4px;
+}
+
+.site-template-faq-answer {
+  max-height: 0;
+  margin-top: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-4px);
+  transition:
+    max-height 320ms ease,
+    margin-top 320ms ease,
+    opacity 220ms ease,
+    transform 320ms ease;
+}
+
+.site-template-faq-card:hover .site-template-faq-answer,
+.site-template-faq-card:focus .site-template-faq-answer,
+.site-template-faq-card:focus-within .site-template-faq-answer {
+  max-height: 18rem;
+  margin-top: 1rem;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .editor-shell {

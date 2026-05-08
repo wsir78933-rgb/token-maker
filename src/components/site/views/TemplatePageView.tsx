@@ -255,12 +255,14 @@ export function TemplatePageView({
             <h2 className="font-display text-3xl leading-tight text-stone-50 sm:text-4xl">{page.faqTitle}</h2>
             <div className="mt-6 grid gap-4 lg:grid-cols-2">
               {page.faqItems.map((item) => (
-                <details key={item.question} className="site-surface-card site-surface-card--plain group rounded-[28px] p-5">
-                  <summary className="cursor-pointer list-none text-lg font-medium text-stone-50">
-                    {item.question}
-                  </summary>
-                  <p className="mt-4 text-sm leading-7 text-stone-300">{item.answer}</p>
-                </details>
+                <article
+                  key={item.question}
+                  className="site-surface-card site-surface-card--plain site-template-faq-card rounded-[28px] p-5"
+                  tabIndex={0}
+                >
+                  <h3 className="text-lg font-medium text-stone-50">{item.question}</h3>
+                  <p className="site-template-faq-answer text-sm leading-7 text-stone-300">{item.answer}</p>
+                </article>
               ))}
             </div>
           </section>

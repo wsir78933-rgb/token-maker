@@ -13,18 +13,29 @@ interface RichTextHtmlProps {
 function activateLiteVideo(container: HTMLElement) {
   const videoId = container.dataset.videoId;
   const title = container.dataset.videoTitle ?? 'Video';
+  const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
   if (!videoId) return;
 
+  const wrapper = document.createElement('div');
+  wrapper.className = 'inline-embed inline-embed--video video-embed-shell';
+
   const iframe = document.createElement('iframe');
-  iframe.className = 'inline-embed inline-embed--video';
-  iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+  iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0`;
   iframe.title = title;
   iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
   iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
   iframe.allowFullscreen = true;
 
-  container.replaceWith(iframe);
+  const fallback = document.createElement('a');
+  fallback.href = videoUrl;
+  fallback.target = '_blank';
+  fallback.rel = 'noreferrer noopener';
+  fallback.className = 'video-embed-shell__fallback';
+  fallback.textContent = 'Open on YouTube / 在 YouTube 打开';
+
+  wrapper.append(iframe, fallback);
+  container.replaceWith(wrapper);
 }
 
 function isModifiedClick(event: MouseEvent<HTMLElement>) {
