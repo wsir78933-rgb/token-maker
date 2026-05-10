@@ -16,6 +16,7 @@ export const DND_HUNTERS_MARK_COVER_PATH = '/blog/covers/en/dnd-hunters-mark-cin
 export const DND_MEPHISTOPHELES_COVER_PATH = '/blog/covers/en/mephistopheles-dnd-guide.webp';
 export const DND_BARD_SPELLS_COVER_PATH = '/blog/covers/en/dnd-bard-spells-guide.webp';
 export const DND_DEMONS_COVER_PATH = '/blog/covers/en/dnd-demons-guide.webp';
+export const DND_DAGGER_COVER_PATH = '/blog/covers/en/dnd-dagger-guide-v2.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -47,6 +48,9 @@ export const DND_BARD_SPELLS_LIBRARY_IMAGE_PATH = '/blog/inline/dnd-bard-spells/
 export const DND_BARD_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-bard-spells/bard-video-placeholder.webp';
 export const DND_DEMONS_TYPE_IMAGE_PATH = '/blog/inline/dnd-demons/dnd-demons-type-table.webp';
 export const DND_DEMONS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-demons/dnd-demons-video-placeholder.webp';
+export const DND_DAGGER_LOADOUT_IMAGE_PATH = '/blog/inline/dnd-dagger/dagger-loadout-table-v2.webp';
+export const DND_DAGGER_RANGE_IMAGE_PATH = '/blog/inline/dnd-dagger/dagger-throwing-range-v2.webp';
+export const DND_DAGGER_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-dagger/dagger-video-placeholder-v2.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -89,6 +93,10 @@ export const DND_DEMONS_MONSTER_FILTER_URL = 'https://www.dndbeyond.com/monsters
 export const DND_DEMONS_BASIC_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/monsters';
 export const DND_DEMONS_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Demon_(Dungeons_%26_Dragons)';
 export const DND_DEMONS_VIDEO_URL = 'https://www.youtube.com/watch?v=54sGxOW26fM';
+export const DND_DAGGER_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#Weapons';
+export const DND_DAGGER_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
+export const DND_DAGGER_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Dagger';
+export const DND_DAGGER_VIDEO_URL = 'https://www.youtube.com/watch?v=RCnwjLK_ZuQ';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -109,6 +117,8 @@ export const EN_DND_MEPHISTOPHELES_PATH = getLocalizedPath('en', '/blog/mephisto
 export const ZH_DND_MEPHISTOPHELES_PATH = getLocalizedPath('zh', '/blog/mephistopheles-dnd');
 export const EN_DND_DEMONS_PATH = getLocalizedPath('en', '/blog/dnd-demons');
 export const ZH_DND_DEMONS_PATH = getLocalizedPath('zh', '/blog/dnd-demons');
+export const EN_DND_DAGGER_PATH = getLocalizedPath('en', '/blog/dnd-dagger');
+export const ZH_DND_DAGGER_PATH = getLocalizedPath('zh', '/blog/dnd-dagger');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');

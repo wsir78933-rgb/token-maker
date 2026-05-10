@@ -18,6 +18,7 @@ import {
   DND_MEPHISTOPHELES_COVER_PATH,
   DND_BARD_SPELLS_COVER_PATH,
   DND_DEMONS_COVER_PATH,
+  DND_DAGGER_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -34,6 +35,7 @@ import { dndHuntersMarkArticleHtml, dndHuntersMarkArticleHtmlZh } from '@/lib/bl
 import { dndMephistophelesArticleHtml, dndMephistophelesArticleHtmlZh } from '@/lib/blog-posts/dnd-mephistopheles';
 import { dndBardSpellsArticleHtml, dndBardSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-bard-spells';
 import { dndDemonsArticleHtml, dndDemonsArticleHtmlZh } from '@/lib/blog-posts/dnd-demons';
+import { dndDaggerArticleHtml, dndDaggerArticleHtmlZh } from '@/lib/blog-posts/dnd-dagger';
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
@@ -288,6 +290,7 @@ const DND_HUNTERS_MARK_UPDATED_AT = '2026-05-02';
 const DND_MEPHISTOPHELES_UPDATED_AT = '2026-05-05';
 const DND_BARD_SPELLS_UPDATED_AT = '2026-05-06';
 const DND_DEMONS_UPDATED_AT = '2026-05-07';
+const DND_DAGGER_UPDATED_AT = '2026-05-09';
 
 const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1374,6 +1377,98 @@ const dndBardSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-classes-explained', 'dnd-druid-spells', 'dnd-counterspell', 'dnd-constitution-guide'],
 };
 
+const dndDaggerArticle: BlogPost = {
+  slug: 'dnd-dagger',
+  title: 'DND Dagger 5e: Stats, Rules, and Best Uses',
+  seoTitle: 'DND Dagger 5e Guide: Stats, Rules, and Best Uses',
+  metaDescription:
+    'Learn dnd dagger stats fast: 1d4 piercing, finesse, light, thrown range, Rogue uses, 2014 vs 2024 Nick rules, VTT token tips, FAQ, and video.',
+  excerpt:
+    'A practical dnd dagger encyclopedia page with the 1d4 stat block, thrown range, Rogue advice, 2014/2024 Nick notes, VTT token tips, FAQ, and video.',
+  publishedAt: DND_DAGGER_UPDATED_AT,
+  updatedAt: DND_DAGGER_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Equipment Guide',
+  coverImage: DND_DAGGER_COVER_PATH,
+  coverAlt:
+    'dnd dagger guide cover showing a fantasy dagger, dice, character sheet notes, and VTT token frames on a dark tabletop',
+  bodyHtml: dndDaggerArticleHtml,
+  faqItems: [
+    {
+      question: 'Is a dnd dagger a simple weapon?',
+      answer:
+        'Yes, a dnd dagger is a simple melee weapon. That broad access is one reason it appears on many character sheets as a backup weapon.',
+    },
+    {
+      question: 'Can a Rogue use Sneak Attack with a dagger?',
+      answer:
+        'Yes, a Rogue can use Sneak Attack with a dagger when the normal Sneak Attack conditions are met because the dagger has the Finesse property.',
+    },
+    {
+      question: 'Can you throw a dnd dagger with Dexterity?',
+      answer:
+        'Yes, a thrown dagger can use Dexterity because the weapon has Finesse. Its normal range is 20 feet and its long range is 60 feet.',
+    },
+    {
+      question: 'Is a dagger better than a shortsword?',
+      answer:
+        'A dagger is usually worse for raw damage but better for flexibility. It is cheap, throwable, easy to hide, and useful as a backup tool.',
+    },
+    {
+      question: 'Does the 2024 Nick mastery make daggers strong?',
+      answer:
+        'Nick makes daggers more action-efficient for characters with the right weapon mastery access, but it does not change the dagger damage die from 1d4.',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-armor-guide', 'dnd-hunters-mark', 'dnd-counterspell'],
+};
+
+const dndDaggerArticleZh: BlogPost = {
+  slug: 'dnd-dagger',
+  title: 'dnd dagger 指南：5e 数据、用法、Nick 与 FAQ',
+  seoTitle: 'dnd dagger 指南：5e 数据、用法与 FAQ',
+  metaDescription:
+    '快速看懂 dnd dagger：1d4 piercing、Finesse、Light、Thrown 距离、Rogue 用法、2014/2024 Nick 差异、VTT Token 建议和 FAQ。',
+  excerpt:
+    '一篇实用 dnd dagger 装备百科，覆盖 1d4 数据、投掷距离、Rogue 用法、2014/2024 Nick、VTT Token 建议、FAQ 和视频。',
+  publishedAt: DND_DAGGER_UPDATED_AT,
+  updatedAt: DND_DAGGER_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '装备百科',
+  coverImage: DND_DAGGER_COVER_PATH,
+  coverAlt:
+    'dnd dagger 指南封面图，黑色桌面上有奇幻 dagger、骰子、角色卡笔记和 VTT token 边框',
+  bodyHtml: dndDaggerArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'dnd dagger 是 simple weapon 吗？',
+      answer:
+        '是，dnd dagger 是 simple melee weapon。很多职业都能把它当备用武器使用。',
+    },
+    {
+      question: 'Rogue 可以用 dagger 触发 Sneak Attack 吗？',
+      answer:
+        '可以。只要满足正常 Sneak Attack 条件，Rogue 可以用 dagger 打 Sneak Attack，因为 dagger 有 Finesse 属性。',
+    },
+    {
+      question: '投掷 dnd dagger 可以用 Dexterity 吗？',
+      answer:
+        '可以。Dagger 有 Finesse，因此投掷时也可以使用 Dexterity。正常距离是 20 尺，长距离是 60 尺。',
+    },
+    {
+      question: 'Dagger 比 shortsword 更好吗？',
+      answer:
+        '只看伤害通常不是，但看灵活性可能是。Dagger 更便宜、可投、好藏，也更适合作备用工具。',
+    },
+    {
+      question: '2024 Nick mastery 会让 dagger 变强吗？',
+      answer:
+        'Nick 会让有对应 weapon mastery 的角色动作经济更顺，但不会把 dagger 的伤害骰从 1d4 变大。',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-armor-guide', 'dnd-hunters-mark', 'dnd-counterspell'],
+};
+
 const dndDemonsArticle: BlogPost = {
   slug: 'dnd-demons',
   title: 'dnd demons: Types, Devils Difference, and DM Encounter Guide',
@@ -1465,10 +1560,10 @@ const dndDemonsArticleZh: BlogPost = {
 };
 
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };
