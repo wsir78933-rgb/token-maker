@@ -19,6 +19,7 @@ import {
   DND_BARD_SPELLS_COVER_PATH,
   DND_DEMONS_COVER_PATH,
   DND_DAGGER_COVER_PATH,
+  DND_GHOST_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -36,6 +37,7 @@ import { dndMephistophelesArticleHtml, dndMephistophelesArticleHtmlZh } from '@/
 import { dndBardSpellsArticleHtml, dndBardSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-bard-spells';
 import { dndDemonsArticleHtml, dndDemonsArticleHtmlZh } from '@/lib/blog-posts/dnd-demons';
 import { dndDaggerArticleHtml, dndDaggerArticleHtmlZh } from '@/lib/blog-posts/dnd-dagger';
+import { dndGhostArticleHtml, dndGhostArticleHtmlZh } from '@/lib/blog-posts/dnd-ghost';
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
@@ -291,6 +293,7 @@ const DND_MEPHISTOPHELES_UPDATED_AT = '2026-05-05';
 const DND_BARD_SPELLS_UPDATED_AT = '2026-05-06';
 const DND_DEMONS_UPDATED_AT = '2026-05-07';
 const DND_DAGGER_UPDATED_AT = '2026-05-09';
+const DND_GHOST_UPDATED_AT = '2026-05-10';
 
 const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1377,6 +1380,98 @@ const dndBardSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-classes-explained', 'dnd-druid-spells', 'dnd-counterspell', 'dnd-constitution-guide'],
 };
 
+const dndGhostArticle: BlogPost = {
+  slug: 'dnd-ghost',
+  title: 'dnd ghost 5e: Stats, Possession, and Haunting Tips',
+  seoTitle: 'dnd ghost 5e: Stats and Possession',
+  metaDescription:
+    'Use this dnd ghost guide to get fast stats, possession rulings, haunting encounter prep, VTT token tips, FAQ, and the companion dice ghost video.',
+  excerpt:
+    'A practical dnd ghost encyclopedia page with fast stat notes, possession advice, haunted-location encounter prep, VTT token tips, FAQ, and video.',
+  publishedAt: DND_GHOST_UPDATED_AT,
+  updatedAt: DND_GHOST_UPDATED_AT,
+  readTime: '11 min read',
+  coverLabel: 'Monster Guide',
+  coverImage: DND_GHOST_COVER_PATH,
+  coverAlt:
+    'dnd ghost guide cover showing a spectral undead spirit rising from a VTT token frame over a haunted tabletop map',
+  bodyHtml: dndGhostArticleHtml,
+  faqItems: [
+    {
+      question: 'Is a dnd ghost undead?',
+      answer:
+        'Yes, a dnd ghost is undead. That creature type matters for spells, features, and table rulings that interact with undead creatures.',
+    },
+    {
+      question: 'Can a dnd ghost move through walls?',
+      answer:
+        'Yes, a dnd ghost is known for moving through objects and barriers, depending on the exact stat block being used. Build the map so wall movement matters.',
+    },
+    {
+      question: 'Can a dnd ghost possess a player character?',
+      answer:
+        'Yes, the classic dnd ghost can possess a humanoid after a failed save. Decide before play how the party can respond and how the affected player stays involved.',
+    },
+    {
+      question: 'What level party can fight a dnd ghost?',
+      answer:
+        'A dnd ghost works best as a serious low-to-mid-level threat, but magic weapons, saving throws, turn undead, map layout, and possession rulings can change the difficulty.',
+    },
+    {
+      question: 'How do I make a ghost scary without unfairly killing players?',
+      answer:
+        'Use clues, possession pressure, movement, and consequences before raw damage. Give warning signs and response options so fear comes from choices.',
+    },
+  ],
+  relatedSlugs: ['dnd-necromancer-spells', 'dnd-demons', 'dnd-counterspell', 'dnd-dagger'],
+};
+
+const dndGhostArticleZh: BlogPost = {
+  slug: 'dnd-ghost',
+  title: 'dnd ghost 指南：幽灵机制、附身跑法与遭遇设计',
+  seoTitle: 'dnd ghost 指南：幽灵机制与附身跑法',
+  metaDescription:
+    'dnd ghost 不只是会附身的幽灵。这篇讲清核心规则、Possession 裁定、鬼屋线索、遭遇节奏和 Token 制作。',
+  excerpt:
+    'dnd ghost 不适合当普通怪物硬打。先看它为什么危险，再用穿墙、恐惧、附身和未完成执念，把幽灵遭遇跑得有线索、有压迫感。',
+  publishedAt: DND_GHOST_UPDATED_AT,
+  updatedAt: DND_GHOST_UPDATED_AT,
+  readTime: '11 分钟阅读',
+  coverLabel: '怪物百科',
+  coverImage: DND_GHOST_COVER_PATH,
+  coverAlt:
+    'dnd ghost 指南封面图，幽灵从 VTT Token 圆框里升起，背景是闹鬼桌面地图',
+  bodyHtml: dndGhostArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'dnd ghost 是 undead 吗？',
+      answer:
+        '是，dnd ghost 是 undead。这会影响所有关心生物类型的法术、特性和桌面裁定。',
+    },
+    {
+      question: 'dnd ghost 可以穿墙吗？',
+      answer:
+        '可以，dnd ghost 的标志之一就是能穿过物体和障碍，具体按你使用的规则数据执行。地图要让穿墙移动真的有意义。',
+    },
+    {
+      question: 'dnd ghost 可以附身玩家角色吗？',
+      answer:
+        '可以，经典 dnd ghost 可以在类人生物豁免失败后进行 Possession。使用前要决定队伍如何应对，以及被影响玩家如何继续参与。',
+    },
+    {
+      question: '几级队伍适合打 dnd ghost？',
+      answer:
+        'dnd ghost 通常适合作为低到中等级队伍的认真威胁，但魔法武器、豁免、Turn Undead、地图和附身裁定都会改变难度。',
+    },
+    {
+      question: '怎样让 ghost 可怕但不显得强行？',
+      answer:
+        '先用线索、附身压力、移动和后果制造恐惧，再考虑伤害。给玩家预警和反应选项，恐惧才来自选择。',
+    },
+  ],
+  relatedSlugs: ['dnd-necromancer-spells', 'dnd-demons', 'dnd-counterspell', 'dnd-dagger'],
+};
+
 const dndDaggerArticle: BlogPost = {
   slug: 'dnd-dagger',
   title: 'DND Dagger 5e: Stats, Rules, and Best Uses',
@@ -1560,10 +1655,10 @@ const dndDemonsArticleZh: BlogPost = {
 };
 
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

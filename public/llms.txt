@@ -31,6 +31,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [dnd bard spells: Best Picks for Support, Control, and Social Play](https://www.tokenmaker.one/blog/dnd-bard-spells): Bard spell picks by role, cantrips, control, healing, social magic, concentration, and VTT prep.
 - [dnd demons: Types, Devils Difference, and DM Encounter Guide](https://www.tokenmaker.one/blog/dnd-demons): Demon type reference, demons vs devils, Abyss encounter design, VTT token tips, FAQ, and companion video.
 - [DND Dagger 5e: Stats, Rules, and Best Uses](https://www.tokenmaker.one/blog/dnd-dagger): Dagger stats, thrown range, Rogue uses, 2014/2024 Nick rules, VTT token tips, FAQ, and companion video.
+- [dnd ghost 5e: Stats, Possession, and Haunting Tips](https://www.tokenmaker.one/blog/dnd-ghost): Ghost monster reference, possession advice, haunting encounter design, VTT token tips, FAQ, and companion video.
 
 ## Site Files
 
@@ -48,3 +49,4 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [dnd bard spells：支援、控场、社交与救场法术推荐](https://www.tokenmaker.one/zh/blog/dnd-bard-spells)
 - [dnd demons：恶魔类型、Devils 区别与 DM 遭遇设计](https://www.tokenmaker.one/zh/blog/dnd-demons)
 - [dnd dagger 指南：5e 数据、用法、Nick 与 FAQ](https://www.tokenmaker.one/zh/blog/dnd-dagger)
+- [dnd ghost 指南：幽灵机制、附身跑法与遭遇设计](https://www.tokenmaker.one/zh/blog/dnd-ghost)
