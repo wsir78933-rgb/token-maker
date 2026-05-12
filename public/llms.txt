@@ -32,6 +32,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [dnd demons: Types, Devils Difference, and DM Encounter Guide](https://www.tokenmaker.one/blog/dnd-demons): Demon type reference, demons vs devils, Abyss encounter design, VTT token tips, FAQ, and companion video.
 - [DND Dagger 5e: Stats, Rules, and Best Uses](https://www.tokenmaker.one/blog/dnd-dagger): Dagger stats, thrown range, Rogue uses, 2014/2024 Nick rules, VTT token tips, FAQ, and companion video.
 - [dnd ghost 5e: Stats, Possession, and Haunting Tips](https://www.tokenmaker.one/blog/dnd-ghost): Ghost monster reference, possession advice, haunting encounter design, VTT token tips, FAQ, and companion video.
+- [dnd dwarf names: 100+ Names, Clans, and Nicknames](https://www.tokenmaker.one/blog/dnd-dwarf-names): Dwarf first names, clan surnames, funny dwarf names, naming rules, VTT token label tips, FAQ, and companion video.
 
 ## Site Files
 
@@ -50,3 +51,4 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [dnd demons：恶魔类型、Devils 区别与 DM 遭遇设计](https://www.tokenmaker.one/zh/blog/dnd-demons)
 - [dnd dagger 指南：5e 数据、用法、Nick 与 FAQ](https://www.tokenmaker.one/zh/blog/dnd-dagger)
 - [dnd ghost 指南：幽灵机制、附身跑法与遭遇设计](https://www.tokenmaker.one/zh/blog/dnd-ghost)
+- [dnd dwarf names：100+ 个能直接上桌的矮人名字](https://www.tokenmaker.one/zh/blog/dnd-dwarf-names)

@@ -20,6 +20,7 @@ import {
   DND_DEMONS_COVER_PATH,
   DND_DAGGER_COVER_PATH,
   DND_GHOST_COVER_PATH,
+  DND_DWARF_NAMES_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -38,6 +39,7 @@ import { dndBardSpellsArticleHtml, dndBardSpellsArticleHtmlZh } from '@/lib/blog
 import { dndDemonsArticleHtml, dndDemonsArticleHtmlZh } from '@/lib/blog-posts/dnd-demons';
 import { dndDaggerArticleHtml, dndDaggerArticleHtmlZh } from '@/lib/blog-posts/dnd-dagger';
 import { dndGhostArticleHtml, dndGhostArticleHtmlZh } from '@/lib/blog-posts/dnd-ghost';
+import { dndDwarfNamesArticleHtml, dndDwarfNamesArticleHtmlZh } from '@/lib/blog-posts/dnd-dwarf-names';
 
 export const BLOG_POSTS_PER_PAGE = 9;
 
@@ -294,6 +296,7 @@ const DND_BARD_SPELLS_UPDATED_AT = '2026-05-06';
 const DND_DEMONS_UPDATED_AT = '2026-05-07';
 const DND_DAGGER_UPDATED_AT = '2026-05-09';
 const DND_GHOST_UPDATED_AT = '2026-05-10';
+const DND_DWARF_NAMES_UPDATED_AT = '2026-05-11';
 
 const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1426,6 +1429,52 @@ const dndGhostArticle: BlogPost = {
   relatedSlugs: ['dnd-necromancer-spells', 'dnd-demons', 'dnd-counterspell', 'dnd-dagger'],
 };
 
+const dndDwarfNamesArticle: BlogPost = {
+  slug: 'dnd-dwarf-names',
+  title: 'dnd dwarf names: 100+ Names, Clans, and Nicknames',
+  seoTitle: 'dnd dwarf names: 100+ Dwarf Names',
+  metaDescription:
+    'Need a dwarf name that sounds ready for D&D? Grab 100+ dnd dwarf names, clan surnames, funny picks, and VTT token tips in one fast list.',
+  excerpt:
+    'Browse 100+ dwarf first names, clan surnames, and nicknames, then choose one that fits the character identity, family background, and tabletop presentation.',
+  publishedAt: DND_DWARF_NAMES_UPDATED_AT,
+  updatedAt: DND_DWARF_NAMES_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Name Guide',
+  coverImage: DND_DWARF_NAMES_COVER_PATH,
+  coverAlt:
+    'dnd dwarf names guide cover showing a dwarf carving clan names beside dice and VTT token frames in a forge-lit stone hall',
+  bodyHtml: dndDwarfNamesArticleHtml,
+  faqItems: [
+    {
+      question: 'What are good dnd dwarf names?',
+      answer:
+        'Good dnd dwarf names are short, sturdy, and tied to clan identity. Korgan Emberhand, Brakka Stonevow, Durik Ironthane, Hilda Coppervein, and Sigrun Goldmender are strong examples.',
+    },
+    {
+      question: 'How do I make a dwarf clan name?',
+      answer:
+        'Make a dwarf clan name by combining material, craft, place, or oath language, such as Stonevow, Forgewarden, Goldmender, Deepdelver, or Shieldbrand.',
+    },
+    {
+      question: 'Should dwarf names be Norse?',
+      answer:
+        'Dwarf names do not have to be Norse, but Norse-inspired sounds can help when the campaign setting supports that tone.',
+    },
+    {
+      question: 'Can I use funny dwarf names in a serious campaign?',
+      answer:
+        'Yes, but the joke should sit on top of a believable person. A funny name still needs a skill, fear, debt, or secret if players are expected to remember it.',
+    },
+    {
+      question: 'What is the best length for a dwarf token label?',
+      answer:
+        'The best dwarf token label is usually one short name under 12-14 characters. Put the full clan name and title in the sheet or GM notes.',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-dagger', 'dnd-armor-guide', 'dnd-dhampir'],
+};
+
 const dndGhostArticleZh: BlogPost = {
   slug: 'dnd-ghost',
   title: 'dnd ghost 指南：幽灵机制、附身跑法与遭遇设计',
@@ -1654,11 +1703,57 @@ const dndDemonsArticleZh: BlogPost = {
   relatedSlugs: ['mephistopheles-dnd', 'dnd-necromancer-spells', 'dnd-counterspell', 'dnd-classes-explained'],
 };
 
+const dndDwarfNamesArticleZh: BlogPost = {
+  slug: 'dnd-dwarf-names',
+  title: 'dnd dwarf names：100+ 个能直接上桌的矮人名字',
+  seoTitle: 'dnd dwarf names：100+ 个矮人名字',
+  metaDescription:
+    '今晚就能用：100+ 个 dnd dwarf names、氏族姓、搞笑名字、命名方法、VTT Token 标签建议、FAQ 和视频。',
+  excerpt:
+    '整理 100+ 个矮人名字、氏族姓和绰号，并说明怎样挑出适合角色身份、家族背景和桌面展示的名字。',
+  publishedAt: DND_DWARF_NAMES_UPDATED_AT,
+  updatedAt: DND_DWARF_NAMES_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '取名指南',
+  coverImage: DND_DWARF_NAMES_COVER_PATH,
+  coverAlt:
+    'dnd dwarf names 指南封面图，矮人在锻炉光线下雕刻氏族名字，旁边摆着骰子和 VTT Token 圆框',
+  bodyHtml: dndDwarfNamesArticleHtmlZh,
+  faqItems: [
+    {
+      question: '有哪些好用的 dnd dwarf names？',
+      answer:
+        '好用的 dnd dwarf names 通常短、厚重，并且带有氏族身份。Korgan Emberhand、Brakka Stonevow、Durik Ironthane、Hilda Coppervein 和 Sigrun Goldmender 都能马上给玩家一个画面。',
+    },
+    {
+      question: '矮人氏族姓怎么起？',
+      answer:
+        '矮人氏族姓可以用材料、工艺、地点或誓言组合，例如 Stonevow、Forgewarden、Goldmender、Deepdelver 或 Shieldbrand。',
+    },
+    {
+      question: 'dnd dwarf names 一定要像北欧名字吗？',
+      answer:
+        '不一定，但北欧感的音节可以帮助营造矮人语感。把它当调味，不要让所有矮人都变成同一种声音。',
+    },
+    {
+      question: '严肃战役可以用搞笑矮人名字吗？',
+      answer:
+        '可以，但笑点下面要有一个可信的人。搞笑名字也需要技能、恐惧、债务或秘密，否则只会变成一次性笑话。',
+    },
+    {
+      question: '矮人 Token 标签多长合适？',
+      answer:
+        '矮人 Token 标签最好是 12-14 个字符以内的短名。完整氏族姓和头衔放在角色卡、日志或 GM 笔记里更合适。',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-dagger', 'dnd-armor-guide', 'dnd-dhampir'],
+};
+
 const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };
