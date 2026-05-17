@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { isIP } from 'node:net';
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerEnv } from '@/lib/env';
 
 export const runtime = 'nodejs';
 
@@ -262,15 +263,14 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ error: 'rate_limited' }, 429);
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL;
-  const to = process.env.CONTACT_TO_EMAIL;
-
-  if (!apiKey || !from || !to) {
+  let env: ReturnType<typeof getServerEnv>;
+  try {
+    env = getServerEnv();
+  } catch {
     return jsonResponse({ error: 'email_not_configured' }, 503);
   }
 
-  const subjectPrefix = process.env.CONTACT_SUBJECT_PREFIX || 'Token Maker contact';
+  const { RESEND_API_KEY: apiKey, RESEND_FROM_EMAIL: from, CONTACT_TO_EMAIL: to, CONTACT_SUBJECT_PREFIX: subjectPrefix } = env;
   const subjectName = name.length > 48 ? `${name.slice(0, 48)}...` : name;
   const subject = `${subjectPrefix}: ${subjectName}`;
   const text = [

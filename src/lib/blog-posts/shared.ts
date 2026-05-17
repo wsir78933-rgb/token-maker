@@ -19,6 +19,7 @@ export const DND_DEMONS_COVER_PATH = '/blog/covers/en/dnd-demons-guide.webp';
 export const DND_DAGGER_COVER_PATH = '/blog/covers/en/dnd-dagger-guide-v2.webp';
 export const DND_GHOST_COVER_PATH = '/blog/covers/en/dnd-ghost-guide.webp';
 export const DND_DWARF_NAMES_COVER_PATH = '/blog/covers/en/dnd-dwarf-names-guide.webp';
+export const DND_MACE_COVER_PATH = '/blog/covers/en/dnd-mace-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -57,6 +58,8 @@ export const DND_GHOST_MANOR_IMAGE_PATH = '/blog/inline/dnd-ghost/ghost-haunted-
 export const DND_GHOST_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-ghost/ghost-video-placeholder.webp';
 export const DND_DWARF_NAMES_TABLE_IMAGE_PATH = '/blog/inline/dnd-dwarf-names/dwarf-name-table.webp';
 export const DND_DWARF_NAMES_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-dwarf-names/dwarf-names-video-placeholder.webp';
+export const DND_MACE_COMPARISON_IMAGE_PATH = '/blog/inline/dnd-mace/mace-weapon-comparison.webp';
+export const DND_MACE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mace/mace-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -111,6 +114,10 @@ export const DND_DWARF_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/b
 export const DND_DWARF_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-origins#Dwarf';
 export const DND_DWARF_FOLKLORE_URL = 'https://en.wikipedia.org/wiki/Dwarf_(folklore)';
 export const DND_DWARF_NAMES_VIDEO_URL = 'https://www.youtube.com/watch?v=C3I4wpHshuw';
+export const DND_MACE_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#Weapons';
+export const DND_MACE_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
+export const DND_MACE_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Mace_(bludgeon)';
+export const DND_MACE_VIDEO_URL = 'https://www.youtube.com/watch?v=gsl83xofiUw';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -137,6 +144,8 @@ export const EN_DND_GHOST_PATH = getLocalizedPath('en', '/blog/dnd-ghost');
 export const ZH_DND_GHOST_PATH = getLocalizedPath('zh', '/blog/dnd-ghost');
 export const EN_DND_DWARF_NAMES_PATH = getLocalizedPath('en', '/blog/dnd-dwarf-names');
 export const ZH_DND_DWARF_NAMES_PATH = getLocalizedPath('zh', '/blog/dnd-dwarf-names');
+export const EN_DND_MACE_PATH = getLocalizedPath('en', '/blog/dnd-mace');
+export const ZH_DND_MACE_PATH = getLocalizedPath('zh', '/blog/dnd-mace');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');

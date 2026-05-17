@@ -7,7 +7,37 @@ const legacyBlogSlugs = [
   'token-size-and-resolution',
 ];
 
+const isDev = process.env.NODE_ENV === 'development';
+
+const csp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://www.googletagmanager.com https://www.clarity.ms`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com",
+  "font-src 'self'",
+  "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms",
+  "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
+
+const securityHeaders = [
+  { key: 'Content-Security-Policy', value: csp },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+  { key: 'X-DNS-Prefetch-Control', value: 'on' },
+];
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: '/(.*)', headers: securityHeaders }];
+  },
   async redirects() {
     return [
       ...legacyBlogSlugs.map((slug) => ({
