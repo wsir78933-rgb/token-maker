@@ -70,8 +70,8 @@ export function EditorLayout() {
           <div className="order-1 flex min-h-[32rem] flex-none flex-col overflow-hidden xl:order-none xl:min-h-[36rem] xl:flex-1">
             {/* 有预览图时才显示 Canvas */}
             {hasEditorImage && (
-              <div className="editor-stage bg-dot-pattern shrink-0 bg-[length:16px_16px] xl:h-80">
-                <Canvas />
+              <div className="editor-stage bg-dot-pattern h-[18rem] shrink-0 bg-[length:16px_16px] sm:h-[22rem] xl:h-[24rem]">
+                <Canvas previewMode="batch" />
               </div>
             )}
             {/* 批处理网格（有预览图时加上分割线） */}

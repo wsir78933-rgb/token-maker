@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { StrictMode } from 'react';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor, cleanup } from '@testing-library/react';
 
 import { useEditorStore } from '@/lib/store/editor-store';
 import { renderToken } from '@/lib/renderer/pipeline';
@@ -74,6 +74,7 @@ describe('Canvas', () => {
   });
 
   afterEach(() => {
+    cleanup();
     resetStore();
     vi.unstubAllGlobals();
   });
@@ -138,5 +139,20 @@ describe('Canvas', () => {
     await waitFor(() => {
       expect(renderTokenMock.mock.calls.length).toBeGreaterThan(callsBeforeRefresh);
     });
+  });
+
+  it('uses a narrower height-bound preview frame in batch mode', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img });
+
+    render(<Canvas previewMode="batch" />);
+    const canvas = document.querySelector('canvas.cursor-move') as HTMLCanvasElement;
+    const previewFrame = canvas.parentElement;
+
+    expect(previewFrame?.className).toContain('max-h-[16rem]');
+    expect(previewFrame?.className).toContain('sm:max-h-[20rem]');
+    expect(previewFrame?.className).toContain('xl:max-h-[22rem]');
+    expect(previewFrame?.className).not.toContain('max-h-[28rem]');
+    expect(previewFrame?.className).not.toContain('max-w-[512px]');
   });
 });

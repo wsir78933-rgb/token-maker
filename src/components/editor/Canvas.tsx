@@ -16,7 +16,12 @@ function getNextImageScale(currentScale: number, deltaY: number) {
 
 const EDITOR_REFERENCE_SIZE = 512;
 
-export function Canvas() {
+interface CanvasProps {
+  previewMode?: 'default' | 'batch';
+}
+
+export function Canvas({ previewMode = 'default' }: CanvasProps) {
+  const isBatchPreview = previewMode === 'batch';
   const {
     imageUrl,
     imageElement,
@@ -226,11 +231,18 @@ export function Canvas() {
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
   };
 
+  const rootClassName = isBatchPreview
+    ? 'relative flex h-full min-h-0 w-full items-center justify-center bg-background/10 p-2 sm:p-3'
+    : 'relative flex min-h-[24rem] w-full items-center justify-center bg-background/10 p-3 sm:min-h-[32rem] sm:p-4 xl:h-full xl:min-h-0 xl:p-6';
+  const previewFrameSizeClassName = isBatchPreview
+    ? 'h-full max-h-[16rem] w-auto max-w-full sm:max-h-[20rem] xl:max-h-[22rem]'
+    : 'w-full max-w-[512px]';
+
   return (
-    <div className="relative flex min-h-[24rem] w-full items-center justify-center bg-background/10 p-3 sm:min-h-[32rem] sm:p-4 xl:h-full xl:min-h-0 xl:p-6">
+    <div className={rootClassName}>
       <div
         ref={previewRef}
-        className={`relative aspect-square w-full max-w-[512px] shrink-0 overflow-hidden rounded-xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors sm:rounded-2xl ${
+        className={`relative aspect-square ${previewFrameSizeClassName} shrink-0 overflow-hidden rounded-xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors sm:rounded-2xl ${
           isImageSelected ? 'border border-primary ring-2 ring-primary/30' : 'border border-border/50'
         }`}
       >
