@@ -6,7 +6,6 @@ import type { BorderTemplate } from '@/types/editor';
 import { generatePolygonPoints } from './masks';
 import { getCachedImage } from '@/lib/utils/imageCache';
 import { getLruCacheEntry, setLruCacheEntry } from '@/lib/utils/lruCache';
-import { useEditorStore } from '@/lib/store/editor-store';
 
 const IMAGE_BORDER_TINT_CACHE = new Map<string, HTMLCanvasElement>();
 const BORDER_DEPTH_CACHE = new Map<string, HTMLCanvasElement>();
@@ -15,10 +14,6 @@ const MAX_IMAGE_BORDER_TINT_CACHE_ENTRIES = 12;
 const MAX_BORDER_DEPTH_CACHE_ENTRIES = 24;
 const MAX_BORDER_EDGE_MASK_CACHE_ENTRIES = 48;
 const BORDER_INSET_RATIO = 0.032;
-
-function forceRenderRefresh() {
-  useEditorStore.setState((state) => ({ renderRevision: state.renderRevision + 1 }));
-}
 
 function getBorderRenderInset(size: number, borderType: BorderTemplate['type']): number {
   if (borderType === 'none') return 1;
@@ -530,7 +525,8 @@ export function drawBorder(
   size: number,
   tint: string,
   opacity: number,
-  tintImageBorder: boolean = true
+  tintImageBorder: boolean = true,
+  onAssetChange?: () => void
 ): void {
   if (border.type === 'none') return;
 
@@ -544,7 +540,7 @@ export function drawBorder(
       ctx.restore();
       return;
     }
-    const img = getCachedImage(url, forceRenderRefresh);
+    const img = getCachedImage(url, onAssetChange);
     if (img) {
       const borderImage = tintImageBorder
         ? getTintedImageBorder(

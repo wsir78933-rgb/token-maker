@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useEditorStore } from '@/lib/store/editor-store';
+import { getCurrentEditorState } from '@/components/editor/editor-store-hooks';
 import { BORDER_TEMPLATES, isCompetitorBorderId } from '@/lib/templates/borders';
 import { MASK_TEMPLATES } from '@/lib/templates/masks';
 import { STYLE_PRESETS } from '@/lib/templates/presets';
@@ -23,7 +23,7 @@ export function EditorSearchParamsSync() {
       return;
     }
 
-    const store = useEditorStore.getState();
+    const store = getCurrentEditorState();
 
     if (preset) {
       const matchedPreset = STYLE_PRESETS.find((item) => item.id === preset);

@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { StrictMode } from 'react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 
 import { useEditorStore } from '@/lib/store/editor-store';
+import { renderToken } from '@/lib/renderer/pipeline';
 
 vi.mock('@/lib/i18n', () => ({
   useI18n: () => ({ t: (key: string) => key, locale: 'en' }),
@@ -29,6 +31,8 @@ class MockResizeObserver {
 }
 
 import { Canvas } from './Canvas';
+
+const renderTokenMock = vi.mocked(renderToken);
 
 function resetStore() {
   useEditorStore.getState().resetAll();
@@ -65,6 +69,7 @@ describe('Canvas', () => {
       length: 0,
     };
     vi.stubGlobal('localStorage', localStorageMock);
+    renderTokenMock.mockClear();
     resetStore();
   });
 
@@ -109,5 +114,29 @@ describe('Canvas', () => {
     fireEvent.pointerDown(canvas, { clientX: 100, clientY: 100 });
     fireEvent.pointerMove(canvas, { clientX: 150, clientY: 120 });
     fireEvent.pointerUp(canvas, { clientX: 150, clientY: 120 });
+  });
+
+  it('keeps async asset refresh active after StrictMode effect replay', async () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img });
+
+    render(
+      <StrictMode>
+        <Canvas />
+      </StrictMode>
+    );
+
+    expect(renderTokenMock).toHaveBeenCalled();
+    const options = renderTokenMock.mock.calls.at(-1)?.[3];
+    expect(options?.onAssetChange).toBeDefined();
+
+    const callsBeforeRefresh = renderTokenMock.mock.calls.length;
+    act(() => {
+      options?.onAssetChange?.();
+    });
+
+    await waitFor(() => {
+      expect(renderTokenMock.mock.calls.length).toBeGreaterThan(callsBeforeRefresh);
+    });
   });
 });

@@ -76,7 +76,18 @@ describe('ControlPanel', () => {
     useEditorStore.setState({
       imageElement: img,
       imageUrl: 'blob:test',
-      textBoxes: [{ id: 'txt-1', text: 'Hello', x: 0, y: 0, fontSize: 32, color: '#ffffff', fontWeight: 400, textAlign: 'center' }],
+      textBoxes: [
+        {
+          id: 'txt-1',
+          content: 'Hello',
+          x: 0,
+          y: 0,
+          fontSize: 32,
+          color: '#ffffff',
+          fontWeight: 400,
+          align: 'center',
+        },
+      ],
       selectedTextId: 'txt-1',
     });
     render(<ControlPanel />);

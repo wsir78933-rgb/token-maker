@@ -1,7 +1,6 @@
 'use client';
 
 import { useId } from 'react';
-import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n } from '@/lib/i18n';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
@@ -12,6 +11,7 @@ import { useBatchStore } from '@/lib/store/batch-store';
 import { trackUseBatchMode } from '@/lib/analytics';
 import type { I18nKey } from '@/lib/i18n';
 import { downloadCurrentTokenWithSharePrompt } from './export-token';
+import { useControlPanelState } from './editor-store-hooks';
 
 function getSliderValue(value: number | readonly number[]) {
   return Array.isArray(value) ? value[0] ?? 0 : value;
@@ -19,35 +19,27 @@ function getSliderValue(value: number | readonly number[]) {
 
 export function ControlPanel() {
   const { t, locale } = useI18n();
-  const imageScale = useEditorStore((state) => state.imageScale);
-  const imageElement = useEditorStore((state) => state.imageElement);
-  const selectedTextId = useEditorStore((state) => state.selectedTextId);
-  const selectedTextFontSize = useEditorStore((state) => {
-    const text = state.selectedTextId
-      ? state.textBoxes.find((textBox) => textBox.id === state.selectedTextId)
-      : null;
-    return text?.fontSize ?? null;
-  });
-  const selectedTextColor = useEditorStore((state) => {
-    const text = state.selectedTextId
-      ? state.textBoxes.find((textBox) => textBox.id === state.selectedTextId)
-      : null;
-    return text?.color ?? null;
-  });
-  const borderTint = useEditorStore((state) => state.borderTint);
-  const overlayTint = useEditorStore((state) => state.overlayTint);
-  const borderOpacity = useEditorStore((state) => state.borderOpacity);
-  const overlayOpacity = useEditorStore((state) => state.overlayOpacity);
-  const setImageScale = useEditorStore((state) => state.setImageScale);
-  const addTextBox = useEditorStore((state) => state.addTextBox);
-  const removeTextBox = useEditorStore((state) => state.removeTextBox);
-  const updateTextBox = useEditorStore((state) => state.updateTextBox);
-  const setBorderTint = useEditorStore((state) => state.setBorderTint);
-  const setOverlayTint = useEditorStore((state) => state.setOverlayTint);
-  const setBorderOpacity = useEditorStore((state) => state.setBorderOpacity);
-  const setOverlayOpacity = useEditorStore((state) => state.setOverlayOpacity);
-  const resetPosition = useEditorStore((state) => state.resetPosition);
-  const clearImage = useEditorStore((state) => state.clearImage);
+  const {
+    imageScale,
+    imageElement,
+    selectedTextId,
+    selectedTextFontSize,
+    selectedTextColor,
+    borderTint,
+    overlayTint,
+    borderOpacity,
+    overlayOpacity,
+    setImageScale,
+    addTextBox,
+    removeTextBox,
+    updateTextBox,
+    setBorderTint,
+    setOverlayTint,
+    setBorderOpacity,
+    setOverlayOpacity,
+    resetPosition,
+    clearImage,
+  } = useControlPanelState();
   const imageScaleLabelId = useId();
   const fontSizeLabelId = useId();
   const textColorInputId = useId();

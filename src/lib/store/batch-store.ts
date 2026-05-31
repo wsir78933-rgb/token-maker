@@ -1,30 +1,25 @@
 import { create } from 'zustand';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 import type { EditorState } from '@/types/editor';
-import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
-import { trackDownloadPng } from '@/lib/analytics';
 import { getSupportedImageFiles } from '@/lib/utils/imageValidation';
-import { useEditorStore } from './editor-store';
+import type { BatchItem } from '@/lib/batch/types';
+import {
+  createBatchItem,
+  loadBatchImageFile,
+  revokeBatchItemUrls,
+  revokeObjectUrl,
+} from '@/lib/batch/image-files';
+import { renderBatchItem } from '@/lib/batch/rendering';
+import { downloadBatchZip } from '@/lib/batch/zip-export';
 
 // ============================================================
 // 批处理 Store — 独立于编辑器主 Store
 // ============================================================
 
-export interface BatchItem {
-  id: string;
-  file: File;
-  fileName: string;
-  /** 原始图片的 object URL，用于显示缩略图 */
-  previewUrl: string;
-  /** 已加载的 HTMLImageElement */
-  imageElement: HTMLImageElement | null;
-  /** 渲染后的缩略图 dataURL */
-  renderedUrl: string | null;
-  /** 渲染后的 PNG Blob */
-  blob: Blob | null;
-  status: 'loading' | 'pending' | 'rendering' | 'done' | 'error';
-  error?: string;
+export type { BatchItem } from '@/lib/batch/types';
+
+export interface BatchAddFilesOptions {
+  shouldUseFirstImagePreview?: () => boolean;
+  onFirstImageReady?: (image: { url: string; element: HTMLImageElement }) => void | Promise<void>;
 }
 
 interface BatchState {
@@ -36,7 +31,7 @@ interface BatchState {
 interface BatchActions {
   activate: () => void;
   deactivate: () => void;
-  addFiles: (files: File[]) => void;
+  addFiles: (files: File[], options?: BatchAddFilesOptions) => void;
   removeItem: (id: string) => void;
   clearAll: () => void;
   processAll: (editorState: EditorState, exportSize: number) => Promise<void>;
@@ -45,77 +40,6 @@ interface BatchActions {
 }
 
 export type BatchStore = BatchState & BatchActions;
-
-/**
- * 加载图片文件为 HTMLImageElement
- */
-function loadImageFromFile(file: File): Promise<{ url: string; element: HTMLImageElement }> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => resolve({ url, element: img });
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error(`Failed to load: ${file.name}`));
-    };
-    img.src = url;
-  });
-}
-
-function revokeObjectUrl(url: string | null) {
-  if (!url || typeof URL === 'undefined') return;
-  URL.revokeObjectURL(url);
-}
-
-function revokeItemUrls(item: BatchItem) {
-  revokeObjectUrl(item.previewUrl);
-  revokeObjectUrl(item.renderedUrl);
-}
-
-/**
- * 构造虚拟 EditorState 用于批量渲染
- * 保留当前编辑器的模板样式，替换图片相关字段
- */
-function buildVirtualState(
-  editorState: EditorState,
-  imageElement: HTMLImageElement
-): EditorState {
-  return {
-    ...editorState,
-    imageElement,
-    imageUrl: null,
-    imageOffsetX: 0,
-    imageOffsetY: 0,
-    imageScale: 1,
-    textBoxes: [],
-    selectedTextId: null,
-    isImageSelected: false,
-  };
-}
-
-/**
- * 渲染单张图片为 PNG Blob + 缩略图 dataURL
- */
-async function renderSingleItem(
-  item: BatchItem,
-  editorState: EditorState,
-  exportSize: number
-): Promise<{ blob: Blob; renderedUrl: string }> {
-  if (!item.imageElement) {
-    throw new Error('Image not loaded');
-  }
-
-  const virtualState = buildVirtualState(editorState, item.imageElement);
-  const blob = await exportTokenAsPNG(virtualState, exportSize);
-  if (!blob) {
-    throw new Error('Render failed');
-  }
-
-  // 生成缩略图预览用的 dataURL
-  const renderedUrl = URL.createObjectURL(blob);
-
-  return { blob, renderedUrl };
-}
 
 export const useBatchStore = create<BatchStore>()((set, get) => ({
   isActive: false,
@@ -127,23 +51,14 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
   deactivate: () => {
     const { items } = get();
     // 清理所有 object URLs
-    items.forEach(revokeItemUrls);
+    items.forEach(revokeBatchItemUrls);
     set({ isActive: false, items: [], isProcessing: false });
   },
 
-  addFiles: (files: File[]) => {
+  addFiles: (files: File[], options) => {
     const imageFiles = getSupportedImageFiles(files);
 
-    const newItems: BatchItem[] = imageFiles.map((file) => ({
-      id: `batch-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      file,
-      fileName: file.name,
-      previewUrl: '',
-      imageElement: null,
-      renderedUrl: null,
-      blob: null,
-      status: 'loading' as const,
-    }));
+    const newItems = imageFiles.map(createBatchItem);
 
     set((state) => ({ items: [...state.items, ...newItems] }));
 
@@ -153,7 +68,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
     // 异步加载每张图片
     newItems.forEach(async (item, index) => {
       try {
-        const { url, element } = await loadImageFromFile(item.file);
+        const { url, element } = await loadBatchImageFile(item.file);
         const currentItem = get().items.find((i) => i.id === item.id);
         if (!currentItem) {
           revokeObjectUrl(url);
@@ -173,20 +88,22 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
         }));
 
         // 首批的第一张图片自动设置到编辑器，作为实时预览
-        if (isFirstBatch && index === 0) {
-          const editorState = useEditorStore.getState();
-          if (!editorState.imageElement) {
+        if (isFirstBatch && index === 0 && options?.onFirstImageReady) {
+          if (options.shouldUseFirstImagePreview?.() ?? false) {
+            let previewImage: { url: string; element: HTMLImageElement } | null = null;
             try {
-              const previewImage = await loadImageFromFile(item.file);
+              previewImage = await loadBatchImageFile(item.file);
               const itemStillPresent = get().items.some((currentItem) => currentItem.id === item.id);
-              const latestEditorState = useEditorStore.getState();
 
-              if (itemStillPresent && !latestEditorState.imageElement) {
-                latestEditorState.setImage(previewImage.url, previewImage.element);
+              if (itemStillPresent && (options.shouldUseFirstImagePreview?.() ?? false)) {
+                await options.onFirstImageReady(previewImage);
+                previewImage = null;
               } else {
-                URL.revokeObjectURL(previewImage.url);
+                revokeObjectUrl(previewImage.url);
+                previewImage = null;
               }
             } catch {
+              revokeObjectUrl(previewImage?.url);
               // Batch thumbnails still work; the editor preview is only a convenience.
             }
           }
@@ -206,13 +123,13 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
   removeItem: (id: string) => {
     const { items } = get();
     const item = items.find((i) => i.id === id);
-    if (item) revokeItemUrls(item);
+    if (item) revokeBatchItemUrls(item);
     set({ items: items.filter((i) => i.id !== id) });
   },
 
   clearAll: () => {
     const { items } = get();
-    items.forEach(revokeItemUrls);
+    items.forEach(revokeBatchItemUrls);
     set({ items: [] });
   },
 
@@ -238,7 +155,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
           }));
 
           try {
-            const { blob, renderedUrl } = await renderSingleItem(item, editorState, exportSize);
+            const { blob, renderedUrl } = await renderBatchItem(item, editorState, exportSize);
             const currentItem = get().items.find((it) => it.id === item.id);
             if (!currentItem) {
               revokeObjectUrl(renderedUrl);
@@ -296,7 +213,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
       let imageElement = item.imageElement;
       let previewUrl = item.previewUrl;
       if (!imageElement) {
-        const result = await loadImageFromFile(item.file);
+        const result = await loadBatchImageFile(item.file);
         imageElement = result.element;
         previewUrl = result.url;
         loadedPreviewUrl = result.url;
@@ -308,7 +225,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
       }
 
       const updatedItem = { ...item, imageElement, previewUrl };
-      const { blob, renderedUrl } = await renderSingleItem(updatedItem, editorState, exportSize);
+      const { blob, renderedUrl } = await renderBatchItem(updatedItem, editorState, exportSize);
       const currentItem = get().items.find((it) => it.id === id);
       if (!currentItem) {
         revokeObjectUrl(loadedPreviewUrl);
@@ -347,28 +264,6 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
   },
 
   downloadZip: async () => {
-    const { items } = get();
-    const doneItems = items.filter((i) => i.status === 'done' && i.blob);
-
-    if (doneItems.length === 0) return;
-
-    const zip = new JSZip();
-    const usedNames = new Set<string>();
-
-    doneItems.forEach((item) => {
-      // 确保文件名唯一
-      const baseName = item.fileName.replace(/\.[^.]+$/, '');
-      let finalName = `${baseName}_token.png`;
-      let counter = 1;
-      while (usedNames.has(finalName)) {
-        finalName = `${baseName}_token_${counter++}.png`;
-      }
-      usedNames.add(finalName);
-      zip.file(finalName, item.blob!);
-    });
-
-    const content = await zip.generateAsync({ type: 'blob' });
-    saveAs(content, `tokens_batch_${Date.now()}.zip`);
-    trackDownloadPng('batch', doneItems.length, 'zip');
+    await downloadBatchZip(get().items);
   },
 }));

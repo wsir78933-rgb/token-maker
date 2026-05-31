@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
 import { trackApplyBorder } from '@/lib/analytics';
 import {
@@ -16,6 +15,7 @@ import type { BorderTemplate, ExportSize } from '@/types/editor';
 import { DownloadCloud, Plus, Trash2 } from 'lucide-react';
 import { fileToBase64, preloadImageToCache } from '@/lib/utils/imageCache';
 import { downloadCurrentTokenWithSharePrompt, getLocalizedName } from './export-token';
+import { useBorderTemplatesState, useTemplatePanelState } from './editor-store-hooks';
 
 const SIZES: ExportSize[] = [256, 512, 1024, 2048];
 const MAX_CUSTOM_BORDERS = 8;
@@ -64,11 +64,8 @@ function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
 
 export function TemplatePanel() {
   const { t, locale } = useI18n();
-  const activePresetId = useEditorStore((state) => state.activePresetId);
-  const exportSize = useEditorStore((state) => state.exportSize);
-  const imageElement = useEditorStore((state) => state.imageElement);
-  const applyPreset = useEditorStore((state) => state.applyPreset);
-  const setExportSize = useEditorStore((state) => state.setExportSize);
+  const { activePresetId, exportSize, imageElement, applyPreset, setExportSize } =
+    useTemplatePanelState();
 
   const handleExport = async () => {
     await downloadCurrentTokenWithSharePrompt(t, locale);
@@ -161,12 +158,14 @@ export function MobileBorderTemplatesPanel() {
 
 function BorderTemplatesSection({ className = '' }: { className?: string }) {
   const { t, locale } = useI18n();
-  const selectedBorderId = useEditorStore((state) => state.selectedBorderId);
-  const customBorders = useEditorStore((state) => state.customBorders);
-  const borderLibraryMode = useEditorStore((state) => state.borderLibraryMode);
-  const setSelectedBorder = useEditorStore((state) => state.setSelectedBorder);
-  const addCustomBorder = useEditorStore((state) => state.addCustomBorder);
-  const removeCustomBorder = useEditorStore((state) => state.removeCustomBorder);
+  const {
+    selectedBorderId,
+    customBorders,
+    borderLibraryMode,
+    setSelectedBorder,
+    addCustomBorder,
+    removeCustomBorder,
+  } = useBorderTemplatesState();
   const bordersGridRef = useRef<HTMLDivElement>(null);
   const [customBorderError, setCustomBorderError] = useState<string | null>(null);
   const visibleBorderTemplates =

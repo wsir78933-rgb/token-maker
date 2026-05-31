@@ -94,4 +94,26 @@ describe('batch store object URLs', () => {
     expect(createObjectURL).toHaveBeenCalledTimes(1);
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:test-1');
   });
+
+  it('首图预览回调失败时会释放额外创建的 preview URL', async () => {
+    const file = new File(['image'], 'token.png', { type: 'image/png' });
+    const onFirstImageReady = vi.fn(async () => {
+      throw new Error('preview failed');
+    });
+
+    useBatchStore.getState().addFiles([file], {
+      shouldUseFirstImagePreview: () => true,
+      onFirstImageReady,
+    });
+
+    await vi.advanceTimersByTimeAsync(0);
+    await vi.advanceTimersByTimeAsync(0);
+    await vi.waitFor(() => {
+      expect(onFirstImageReady).toHaveBeenCalled();
+    });
+
+    expect(createObjectURL).toHaveBeenCalledTimes(2);
+    expect(useBatchStore.getState().items[0]?.previewUrl).toBe('blob:test-1');
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:test-2');
+  });
 });

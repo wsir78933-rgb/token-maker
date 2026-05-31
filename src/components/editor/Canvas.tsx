@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useEditorStore } from '@/lib/store/editor-store';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { renderToken, drawCheckerboard } from '@/lib/renderer/pipeline';
 import { ImageUploader } from './ImageUploader';
 import { TextCanvasOverlay } from './TextCanvasOverlay';
 import type { EditorState } from '@/types/editor';
+import { getCurrentImageScaleControls, useCanvasEditorState } from './editor-store-hooks';
 
 function getNextImageScale(currentScale: number, deltaY: number) {
   const scaleFactor = 0.05;
@@ -17,30 +17,38 @@ function getNextImageScale(currentScale: number, deltaY: number) {
 const EDITOR_REFERENCE_SIZE = 512;
 
 export function Canvas() {
-  const imageUrl = useEditorStore((state) => state.imageUrl);
-  const imageElement = useEditorStore((state) => state.imageElement);
-  const imageOffsetX = useEditorStore((state) => state.imageOffsetX);
-  const imageOffsetY = useEditorStore((state) => state.imageOffsetY);
-  const imageScale = useEditorStore((state) => state.imageScale);
-  const selectedBorderId = useEditorStore((state) => state.selectedBorderId);
-  const selectedMaskId = useEditorStore((state) => state.selectedMaskId);
-  const customBorders = useEditorStore((state) => state.customBorders);
-  const borderTint = useEditorStore((state) => state.borderTint);
-  const imageBorderTintEnabled = useEditorStore((state) => state.imageBorderTintEnabled);
-  const overlayTint = useEditorStore((state) => state.overlayTint);
-  const borderOpacity = useEditorStore((state) => state.borderOpacity);
-  const overlayOpacity = useEditorStore((state) => state.overlayOpacity);
-  const textBoxes = useEditorStore((state) => state.textBoxes);
-  const isImageSelected = useEditorStore((state) => state.isImageSelected);
-  const renderRevision = useEditorStore((state) => state.renderRevision);
-  const setImageOffset = useEditorStore((state) => state.setImageOffset);
-  const setSelectedText = useEditorStore((state) => state.setSelectedText);
+  const {
+    imageUrl,
+    imageElement,
+    imageOffsetX,
+    imageOffsetY,
+    imageScale,
+    selectedBorderId,
+    selectedMaskId,
+    customBorders,
+    borderTint,
+    imageBorderTintEnabled,
+    overlayTint,
+    borderOpacity,
+    overlayOpacity,
+    textBoxes,
+    isImageSelected,
+    renderRevision,
+    setImageOffset,
+    setSelectedText,
+  } = useCanvasEditorState();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgCanvasRef = useRef<HTMLCanvasElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const isMountedRef = useRef(true);
 
   const [canvasSize, setCanvasSize] = useState(512);
   const [previewCssSize, setPreviewCssSize] = useState(512);
+  const [assetRevision, setAssetRevision] = useState(0);
+  const handleRenderAssetChange = useCallback(() => {
+    if (!isMountedRef.current) return;
+    setAssetRevision((revision) => revision + 1);
+  }, []);
 
   // 用于拖拽交互的状态
   const [isDragging, setIsDragging] = useState(false);
@@ -101,11 +109,14 @@ export function Canvas() {
       isImageSelected: false,
       exportSize: 512,
       activePresetId: null,
-      renderRevision,
+      renderRevision: renderRevision + assetRevision,
     };
     
     // 重新渲染 Canvas
-    renderToken(canvas, renderState, canvasSize, { clipFinalOutputToMask: true });
+    renderToken(canvas, renderState, canvasSize, {
+      clipFinalOutputToMask: true,
+      onAssetChange: handleRenderAssetChange,
+    });
   }, [
     imageUrl,
     imageElement,
@@ -122,11 +133,15 @@ export function Canvas() {
     overlayOpacity,
     textBoxes,
     renderRevision,
+    assetRevision,
     canvasSize,
+    handleRenderAssetChange,
   ]);
 
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
+      isMountedRef.current = false;
       if (offsetFrame.current !== null) {
         cancelAnimationFrame(offsetFrame.current);
       }
@@ -166,7 +181,7 @@ export function Canvas() {
 
     // 使用原生非被动 wheel 监听，避免缩放时触发外层滚动容器滚动。
     const handleWheel = (event: WheelEvent) => {
-      const { imageElement, imageScale, setImageScale } = useEditorStore.getState();
+      const { imageElement, imageScale, setImageScale } = getCurrentImageScaleControls();
       if (!imageElement) return;
 
       event.preventDefault();

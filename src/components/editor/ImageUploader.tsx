@@ -17,6 +17,7 @@ import {
   getSupportedImageFiles,
   loadEditorImageFile,
 } from './upload-files';
+import { getEditorImageFilePreviewOptions } from './editor-store-hooks';
 
 function hasTransferPayload(dataTransfer: DataTransfer | null) {
   if (!dataTransfer) return false;
@@ -88,7 +89,7 @@ export function ImageUploader() {
     trackUseBatchMode('multi_upload', imageFiles.length);
     trackUploadImage(imageFiles.length, 'batch');
     batchStore.activate();
-    batchStore.addFiles(imageFiles);
+    batchStore.addFiles(imageFiles, getEditorImageFilePreviewOptions());
   };
 
   const handleImageUrl = async (url: string) => {

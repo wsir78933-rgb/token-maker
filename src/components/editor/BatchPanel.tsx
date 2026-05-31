@@ -16,10 +16,10 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useBatchStore } from '@/lib/store/batch-store';
-import { useEditorStore } from '@/lib/store/editor-store';
 import { useI18n, type I18nKey } from '@/lib/i18n';
 import { trackUploadImage } from '@/lib/analytics';
 import { getSupportedImageFiles, loadEditorImageFile } from './upload-files';
+import { useBatchEditorBridge } from './editor-store-hooks';
 
 // ============================================================
 // BatchPanel — 批处理主面板
@@ -37,8 +37,7 @@ export function BatchPanel() {
   const processAll = useBatchStore((state) => state.processAll);
   const retryItem = useBatchStore((state) => state.retryItem);
   const downloadZip = useBatchStore((state) => state.downloadZip);
-  // 只取批处理需要的字段，避免渲染管线 forceRenderRefresh 触发的重渲染
-  const exportSize = useEditorStore((s) => s.exportSize);
+  const { exportSize, getEditorSnapshot, firstImagePreviewOptions } = useBatchEditorBridge();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragActive, setIsDragActive] = useState(false);
   const dragDepthRef = useRef(0);
@@ -72,7 +71,7 @@ export function BatchPanel() {
     }
 
     trackUploadImage(imageFiles.length, 'batch_add');
-    addFiles(imageFiles);
+    addFiles(imageFiles, firstImagePreviewOptions);
   };
 
   // ── 拖拽事件处理 ──
@@ -113,12 +112,12 @@ export function BatchPanel() {
   };
 
   const handleProcess = () => {
-    const snapshot = useEditorStore.getState();
+    const snapshot = getEditorSnapshot();
     processAll(snapshot, exportSize);
   };
 
   const handleRetry = (id: string) => {
-    const snapshot = useEditorStore.getState();
+    const snapshot = getEditorSnapshot();
     retryItem(id, snapshot, exportSize);
   };
 

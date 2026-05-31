@@ -1,16 +1,15 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { useEditorStore } from '@/lib/store/editor-store';
 import type { TextBox } from '@/types/editor';
+import { useDraggableTextState, useTextCanvasOverlayState } from './editor-store-hooks';
 
 /**
  * 文本图层交互覆盖组件
  * 在主画布上方绝对定位，提供文本的拖动和双击编辑能力。
  */
 export function TextCanvasOverlay({ previewScale = 1 }: { previewScale?: number }) {
-  const textBoxes = useEditorStore((state) => state.textBoxes);
-  const setSelectedText = useEditorStore((state) => state.setSelectedText);
+  const { textBoxes, setSelectedText } = useTextCanvasOverlayState();
   
   // 点击空白处取消选中
   const handleWrapperClick = (e: React.MouseEvent) => {
@@ -34,9 +33,7 @@ export function TextCanvasOverlay({ previewScale = 1 }: { previewScale?: number 
 }
 
 function DraggableText({ text, previewScale }: { text: TextBox; previewScale: number }) {
-  const selectedTextId = useEditorStore((state) => state.selectedTextId);
-  const setSelectedText = useEditorStore((state) => state.setSelectedText);
-  const updateTextBox = useEditorStore((state) => state.updateTextBox);
+  const { isSelected, setSelectedText, updateTextBox } = useDraggableTextState(text);
   const boxRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -44,7 +41,6 @@ function DraggableText({ text, previewScale }: { text: TextBox; previewScale: nu
   const [isDragging, setIsDragging] = useState(false);
   const dragStartOffset = useRef({ x: 0, y: 0 });
 
-  const isSelected = selectedTextId === text.id;
   const scale = Math.max(0.001, previewScale);
 
   // ==== 拖拽逻辑 ====

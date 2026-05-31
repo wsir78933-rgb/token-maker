@@ -4,9 +4,9 @@ import { useEffect } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { Undo2, Redo2 } from 'lucide-react';
 import { useHistoryStore } from '@/lib/store/history';
-import { useEditorStore } from '@/lib/store/editor-store';
 import { Button } from '@/components/ui/button';
 import { SiteMark } from '@/components/site/SiteMark';
+import { deleteCurrentEditorSelection } from '@/components/editor/editor-store-hooks';
 
 function isEditableTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
@@ -33,17 +33,8 @@ export function Header() {
         !isEditableTarget(e.target) &&
         (e.key === 'Delete' || e.key === 'Backspace')
       ) {
-        const { selectedTextId, removeTextBox, isImageSelected, imageElement, clearImage } =
-          useEditorStore.getState();
-        if (selectedTextId) {
+        if (deleteCurrentEditorSelection()) {
           e.preventDefault();
-          removeTextBox(selectedTextId);
-          return;
-        }
-
-        if (isImageSelected && imageElement) {
-          e.preventDefault();
-          clearImage();
           return;
         }
       }

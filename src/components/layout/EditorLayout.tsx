@@ -10,15 +10,15 @@ import { ShareDialog } from '@/components/editor/ShareDialog';
 import { EditorSearchParamsSync } from '@/components/layout/EditorSearchParamsSync';
 import { useI18n } from '@/lib/i18n';
 import { useBatchStore } from '@/lib/store/batch-store';
-import { useEditorStore } from '@/lib/store/editor-store';
 import { trackStartEditor } from '@/lib/analytics';
+import { useHasEditorImage } from '@/components/editor/editor-store-hooks';
 
 export function EditorLayout() {
   const { t } = useI18n();
   const workspaceHeadingId = useId();
   const workspaceRef = useRef<HTMLDivElement>(null);
   const isBatchActive = useBatchStore((s) => s.isActive);
-  const hasEditorImage = useEditorStore((s) => !!s.imageElement);
+  const hasEditorImage = useHasEditorImage();
 
   useEffect(() => {
     const workspace = workspaceRef.current;

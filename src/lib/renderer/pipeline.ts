@@ -10,10 +10,10 @@ import { drawBorder } from './borders';
 import { drawTextBoxes } from './text';
 import { getCachedImage, preloadImageToCache } from '@/lib/utils/imageCache';
 import { getLruCacheEntry, setLruCacheEntry } from '@/lib/utils/lruCache';
-import { useEditorStore } from '@/lib/store/editor-store';
 
 interface RenderTokenOptions {
   clipFinalOutputToMask?: boolean;
+  onAssetChange?: () => void;
 }
 
 const IMAGE_BORDER_MASK_CACHE = new Map<string, HTMLCanvasElement>();
@@ -43,10 +43,6 @@ function hasImageBasedBorder(border?: BorderTemplate): boolean {
     border.customImageUrl ||
     (border.type === 'image' && border.imageUrl)
   );
-}
-
-function forceRenderRefresh() {
-  useEditorStore.setState((state) => ({ renderRevision: state.renderRevision + 1 }));
 }
 
 function getExplicitMaskImageUrl(border?: BorderTemplate): string | null {
@@ -91,12 +87,13 @@ function applyMaskToCanvas(
   ctx: CanvasRenderingContext2D,
   state: EditorState,
   outputSize: number,
-  border?: BorderTemplate
+  border?: BorderTemplate,
+  onAssetChange?: () => void
 ) {
   const inset = getBorderRenderInset(outputSize, border);
   const explicitMaskUrl = getExplicitMaskImageUrl(border);
   if (explicitMaskUrl) {
-    const maskImage = getCachedImage(explicitMaskUrl, forceRenderRefresh);
+    const maskImage = getCachedImage(explicitMaskUrl, onAssetChange);
     if (maskImage) {
       ctx.save();
       ctx.globalCompositeOperation = 'destination-in';
@@ -209,12 +206,13 @@ function applyFinalMask(
   ctx: CanvasRenderingContext2D,
   state: EditorState,
   outputSize: number,
-  border?: BorderTemplate
+  border?: BorderTemplate,
+  onAssetChange?: () => void
 ) {
   const inset = getBorderRenderInset(outputSize, border);
   const explicitMaskUrl = getExplicitMaskImageUrl(border);
   if (explicitMaskUrl) {
-    const explicitMaskImage = getCachedImage(explicitMaskUrl, forceRenderRefresh);
+    const explicitMaskImage = getCachedImage(explicitMaskUrl, onAssetChange);
     if (explicitMaskImage) {
       ctx.save();
       ctx.globalCompositeOperation = 'destination-in';
@@ -227,7 +225,7 @@ function applyFinalMask(
   if (!explicitMaskUrl) {
     const borderMaskImageUrl = getDerivedBorderMaskImageUrl(border);
     if (hasImageBasedBorder(border) && borderMaskImageUrl) {
-      const borderImage = getCachedImage(borderMaskImageUrl, forceRenderRefresh);
+      const borderImage = getCachedImage(borderMaskImageUrl, onAssetChange);
       if (borderImage) {
         const maskCanvas = buildImageBorderMask(
           borderImage,
@@ -371,7 +369,7 @@ export function renderToken(
     baseCtx.globalAlpha = 1.0;
   }
 
-  applyMaskToCanvas(baseCtx, state, outputSize, border);
+  applyMaskToCanvas(baseCtx, state, outputSize, border, options.onAssetChange);
   ctx.drawImage(baseLayer, 0, 0);
 
   drawBorderContactShadow(ctx, state, outputSize, border);
@@ -384,12 +382,13 @@ export function renderToken(
       outputSize,
       state.borderTint,
       state.borderOpacity,
-      state.imageBorderTintEnabled
+      state.imageBorderTintEnabled,
+      options.onAssetChange
     );
   }
 
   if (options.clipFinalOutputToMask) {
-    applyFinalMask(ctx, state, outputSize, border);
+    applyFinalMask(ctx, state, outputSize, border, options.onAssetChange);
   }
 
   // ------- Step 5: 文字 -------
