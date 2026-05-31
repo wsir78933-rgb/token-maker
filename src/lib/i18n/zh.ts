@@ -1,3 +1,16 @@
+function createPresetBorderCopy(
+  presetId: 'warrior' | 'mage',
+  count: number,
+  labelPrefix: string
+) {
+  return Object.fromEntries(
+    Array.from({ length: count }, (_, index) => {
+      const borderNumber = String(index + 1).padStart(2, '0');
+      return [`border.${presetId}.${borderNumber}`, `${labelPrefix} ${borderNumber}`];
+    })
+  );
+}
+
 /** 中文语言包 */
 const zh = {
   // 头部
@@ -38,6 +51,8 @@ const zh = {
   undead: '亡灵',
   monster: '怪物',
   other: '其他',
+  ...createPresetBorderCopy('warrior', 28, '战士边框'),
+  ...createPresetBorderCopy('mage', 30, '法师边框'),
 
   // 模板面板
   templatePanel: '模板库',
@@ -175,5 +190,5 @@ const zh = {
   upload: '上传图片',
 } as const;
 
-export type I18nKey = keyof typeof zh;
+export type I18nKey = Extract<keyof typeof zh, string>;
 export default zh;

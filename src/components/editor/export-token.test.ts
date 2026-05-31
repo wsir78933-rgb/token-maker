@@ -3,7 +3,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useEditorStore } from '@/lib/store/editor-store';
 import { useShareDialogStore } from '@/lib/store/share-dialog-store';
-import { SHARE_SOCIAL_IMAGE_WIDTH } from '@/lib/share/constants';
+import { SHARE_DIALOG_TOKEN_PREVIEW_SIZE, SHARE_SOCIAL_IMAGE_WIDTH } from '@/lib/share/constants';
 import { downloadCurrentTokenWithSharePrompt } from './export-token';
 
 const mocks = vi.hoisted(() => ({
@@ -43,11 +43,15 @@ const fileName = 'token_1780185600000.png';
 
 describe('downloadCurrentTokenWithSharePrompt', () => {
   const blob = new Blob(['png'], { type: 'image/png' });
+  const previewBlob = new Blob(['preview-png'], { type: 'image/png' });
   const shareBlob = new Blob(['social-png'], { type: 'image/png' });
 
   beforeEach(() => {
     vi.setSystemTime(new Date('2026-05-31T00:00:00.000Z'));
-    mocks.exportTokenAsPNG.mockResolvedValue(blob);
+    mocks.exportTokenAsPNG.mockReset();
+    mocks.createShareSocialImageBlob.mockReset();
+    mocks.shouldShowShareDialog.mockReset();
+    mocks.exportTokenAsPNG.mockResolvedValueOnce(blob).mockResolvedValueOnce(previewBlob);
     mocks.createShareSocialImageBlob.mockResolvedValue(shareBlob);
     mocks.shouldShowShareDialog.mockReturnValue(true);
     useEditorStore.getState().resetAll();
@@ -71,11 +75,18 @@ describe('downloadCurrentTokenWithSharePrompt', () => {
     expect(mocks.createShareSocialImageBlob).toHaveBeenCalledWith(
       expect.objectContaining({ exportSize: 256 })
     );
+    expect(mocks.exportTokenAsPNG).toHaveBeenNthCalledWith(1, expect.any(Object), 256);
+    expect(mocks.exportTokenAsPNG).toHaveBeenNthCalledWith(
+      2,
+      expect.any(Object),
+      SHARE_DIALOG_TOKEN_PREVIEW_SIZE
+    );
 
     const state = useShareDialogStore.getState();
     expect(state.isOpen).toBe(true);
     expect(state.payload).toMatchObject({
       blob,
+      previewBlob,
       shareBlob,
       shareImageWidth: SHARE_SOCIAL_IMAGE_WIDTH,
       exportSize: 256,
@@ -93,6 +104,7 @@ describe('downloadCurrentTokenWithSharePrompt', () => {
     expect(state.isOpen).toBe(true);
     expect(state.payload).toMatchObject({
       blob,
+      previewBlob,
       shareBlob: blob,
       shareImageWidth: 256,
       exportSize: 256,
@@ -108,6 +120,7 @@ describe('downloadCurrentTokenWithSharePrompt', () => {
 
     expect(mocks.saveAs).toHaveBeenCalledWith(blob, fileName);
     expect(mocks.createShareSocialImageBlob).not.toHaveBeenCalled();
+    expect(mocks.exportTokenAsPNG).toHaveBeenCalledTimes(1);
     expect(mocks.trackDownloadPng).toHaveBeenCalledTimes(1);
     expect(mocks.trackShareDialogSuppressed).toHaveBeenCalledWith(256);
     expect(useShareDialogStore.getState().isOpen).toBe(false);

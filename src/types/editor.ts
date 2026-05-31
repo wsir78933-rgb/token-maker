@@ -48,6 +48,10 @@ export interface BorderTemplate {
   thumbSrc?: string;
   /** 着色模式，solid (正片叠底)，metallic (基于HSL亮度提取)，screen (提亮高光) */
   tintMode?: 'solid' | 'metallic' | 'screen';
+  /** 额外立体高光和阴影强度，1 为默认，0 为不追加立体效果 */
+  depthStrength?: number;
+  /** 这个边框归属的风格预设，用于按预设追加显示边框素材 */
+  presetId?: string;
 }
 
 /** 遮罩模板定义 */

@@ -9,7 +9,7 @@ import { useShareDialogStore } from '@/lib/store/share-dialog-store';
 import { BORDER_TEMPLATES } from '@/lib/templates/borders';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
 import { createShareSocialImageBlob } from '@/lib/share/social-image';
-import { SHARE_SOCIAL_IMAGE_WIDTH } from '@/lib/share/constants';
+import { SHARE_DIALOG_TOKEN_PREVIEW_SIZE, SHARE_SOCIAL_IMAGE_WIDTH } from '@/lib/share/constants';
 import type { I18nKey } from '@/lib/i18n';
 import type { BorderTemplate } from '@/types/editor';
 import type { SiteLocale } from '@/lib/site-locale';
@@ -54,6 +54,22 @@ async function createShareSocialImageBlobSafely(state: ReturnType<typeof useEdit
   }
 }
 
+async function createShareDialogPreviewBlobSafely(
+  state: ReturnType<typeof useEditorStore.getState>,
+  downloadBlob: Blob
+) {
+  if (state.exportSize >= SHARE_DIALOG_TOKEN_PREVIEW_SIZE) {
+    return downloadBlob;
+  }
+
+  try {
+    return (await exportTokenAsPNG(state, SHARE_DIALOG_TOKEN_PREVIEW_SIZE)) ?? downloadBlob;
+  } catch (error) {
+    console.warn('Failed to create high resolution share dialog preview.', error);
+    return downloadBlob;
+  }
+}
+
 export async function downloadCurrentToken(t: (key: I18nKey) => string) {
   const state = useEditorStore.getState();
   const blob = await exportTokenAsPNG(state, state.exportSize);
@@ -81,10 +97,12 @@ export async function downloadCurrentTokenWithSharePrompt(
   }
 
   const shareBlob = await createShareSocialImageBlobSafely(state);
+  const previewBlob = await createShareDialogPreviewBlobSafely(state, blob);
 
   trackShareDialogOpen(state.exportSize);
   useShareDialogStore.getState().openShareDialog({
     blob,
+    previewBlob,
     shareBlob: shareBlob ?? blob,
     shareImageWidth: shareBlob ? SHARE_SOCIAL_IMAGE_WIDTH : state.exportSize,
     fileName,

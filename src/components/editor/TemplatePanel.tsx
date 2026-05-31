@@ -5,8 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useI18n, type I18nKey } from '@/lib/i18n';
 import { trackApplyBorder } from '@/lib/analytics';
 import {
-  COMPETITOR_BORDER_TEMPLATES,
-  DEFAULT_BORDER_TEMPLATES,
+  getVisibleBorderTemplates,
 } from '@/lib/templates/borders';
 import { STYLE_PRESETS } from '@/lib/templates/presets';
 import { drawBorderThumbnail } from '@/lib/renderer/borders';
@@ -105,7 +104,7 @@ export function TemplatePanel() {
             })}
           </div>
         </div>
-        
+
         <BorderTemplatesSection className="hidden xl:block" />
 
       </div>
@@ -159,6 +158,7 @@ export function MobileBorderTemplatesPanel() {
 function BorderTemplatesSection({ className = '' }: { className?: string }) {
   const { t, locale } = useI18n();
   const {
+    activePresetId,
     selectedBorderId,
     customBorders,
     borderLibraryMode,
@@ -168,8 +168,11 @@ function BorderTemplatesSection({ className = '' }: { className?: string }) {
   } = useBorderTemplatesState();
   const bordersGridRef = useRef<HTMLDivElement>(null);
   const [customBorderError, setCustomBorderError] = useState<string | null>(null);
-  const visibleBorderTemplates =
-    borderLibraryMode === 'competitor' ? COMPETITOR_BORDER_TEMPLATES : DEFAULT_BORDER_TEMPLATES;
+  const visibleBorderTemplates = getVisibleBorderTemplates({
+    activePresetId,
+    selectedBorderId,
+    borderLibraryMode,
+  });
   const borderInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -266,7 +269,7 @@ function BorderTemplatesSection({ className = '' }: { className?: string }) {
                           : 'border-border/50 hover:border-primary/50 hover:bg-accent/50'
                       }`}
                     >
-                      <BorderThumbnail border={border} active={isActive} label={label} />
+                      <BorderThumbnail border={border} active={isActive} label={label} locale={locale} />
                     </button>
                     {border.isCustom ? (
                       <button
@@ -312,7 +315,7 @@ function BorderTemplatesSection({ className = '' }: { className?: string }) {
   );
 }
 
-function getBorderAlt(id: string, defaultLabel: string): string {
+function getBorderAlt(id: string, defaultLabel: string, locale: 'en' | 'zh'): string {
   const altMap: Record<string, string> = {
     'metalbarbarian': 'Spiked barbarian metal token frame for RPG virtual tabletops, ideal for Barbarian or Fighter characters.',
     'wood': 'Wooden texture circular token border for D&D and Roll20 character avatars, perfect for Druid or Ranger portraits.',
@@ -336,10 +339,24 @@ function getBorderAlt(id: string, defaultLabel: string): string {
     'plain-decagon': 'Minimal decagon token border inspired by classic virtual tabletop portrait markers.',
     'plain-dodecagon': 'Minimal dodecagon token border inspired by classic virtual tabletop portrait markers.',
   };
-  return altMap[id] || `${defaultLabel} custom token border frame for D&D and Roll20`;
+  if (altMap[id]) return altMap[id];
+
+  return locale === 'zh'
+    ? `${defaultLabel}，适合 DnD、Roll20 和 Foundry 的 Token 边框模板`
+    : `${defaultLabel} token border template for DnD, Roll20, and Foundry`;
 }
 
-function BorderThumbnail({ border, active, label }: { border: BorderTemplate; active: boolean; label: string }) {
+function BorderThumbnail({
+  border,
+  active,
+  label,
+  locale,
+}: {
+  border: BorderTemplate;
+  active: boolean;
+  label: string;
+  locale: 'en' | 'zh';
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -359,19 +376,31 @@ function BorderThumbnail({ border, active, label }: { border: BorderTemplate; ac
      const src = border.isCustom ? border.customImageUrl : border.thumbSrc || border.imageUrl;
      if (!src) return null;
 
-     const altText = border.isCustom ? `${label} custom token border frame` : getBorderAlt(border.id, label);
+     const altText = border.isCustom
+       ? locale === 'zh'
+         ? `${label} 自定义 Token 边框`
+         : `${label} custom token border frame`
+       : getBorderAlt(border.id, label, locale);
      const isDataUrl = src.startsWith('data:');
+     const shouldBypassImageOptimization = isDataUrl || Boolean(border.presetId);
 
      return (
-       <Image
-         src={src}
-         alt={altText}
-         width={40}
-         height={40}
-         sizes="40px"
-         unoptimized={isDataUrl}
-         className="w-10 h-10 object-contain drop-shadow-md"
-       />
+       <span
+         data-testid={`border-thumbnail-surface-${border.id}`}
+         className={`flex h-full w-full items-center justify-center overflow-hidden rounded-sm ${
+           border.presetId ? 'bg-black' : 'bg-transparent'
+         }`}
+       >
+         <Image
+           src={src}
+           alt={altText}
+           width={40}
+           height={40}
+           sizes="40px"
+           unoptimized={shouldBypassImageOptimization}
+           className="w-10 h-10 object-contain drop-shadow-md"
+         />
+       </span>
      );
   }
 

@@ -151,7 +151,7 @@ export function ShareDialog() {
 
   const previewUrl = useMemo(() => {
     if (!isOpen || !currentPayload) return null;
-    return URL.createObjectURL(currentPayload.blob);
+    return URL.createObjectURL(currentPayload.previewBlob);
   }, [currentPayload, isOpen]);
 
   const statusLabel = useMemo(() => {

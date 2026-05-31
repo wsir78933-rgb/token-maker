@@ -117,6 +117,18 @@ describe('Canvas', () => {
     fireEvent.pointerUp(canvas, { clientX: 150, clientY: 120 });
   });
 
+  it('zooms the image when the wheel is used over the canvas workspace', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1 });
+
+    render(<Canvas />);
+    const workspace = screen.getByTestId('canvas-workspace');
+
+    fireEvent.wheel(workspace, { deltaY: -100 });
+
+    expect(useEditorStore.getState().imageScale).toBeCloseTo(1.05);
+  });
+
   it('keeps async asset refresh active after StrictMode effect replay', async () => {
     const img = new Image();
     useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img });

@@ -1,3 +1,16 @@
+function createPresetBorderCopy(
+  presetId: 'warrior' | 'mage',
+  count: number,
+  labelPrefix: string
+) {
+  return Object.fromEntries(
+    Array.from({ length: count }, (_, index) => {
+      const borderNumber = String(index + 1).padStart(2, '0');
+      return [`border.${presetId}.${borderNumber}`, `${labelPrefix} ${borderNumber}`];
+    })
+  );
+}
+
 /** English language pack */
 const en = {
   appName: 'Token Maker',
@@ -33,6 +46,8 @@ const en = {
   undead: 'Undead',
   monster: 'Monster',
   other: 'Other',
+  ...createPresetBorderCopy('warrior', 28, 'Warrior Border'),
+  ...createPresetBorderCopy('mage', 30, 'Mage Border'),
 
   templatePanel: 'Templates',
   borderTemplates: 'Borders',

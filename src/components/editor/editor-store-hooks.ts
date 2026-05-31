@@ -81,6 +81,7 @@ export function useTemplatePanelState() {
 
 export function useBorderTemplatesState() {
   return {
+    activePresetId: useEditorStore((state) => state.activePresetId),
     selectedBorderId: useEditorStore((state) => state.selectedBorderId),
     customBorders: useEditorStore((state) => state.customBorders),
     borderLibraryMode: useEditorStore((state) => state.borderLibraryMode),

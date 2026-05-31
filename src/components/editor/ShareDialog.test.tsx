@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { useShareDialogStore } from '@/lib/store/share-dialog-store';
 import { SHARE_SOCIAL_IMAGE_WIDTH } from '@/lib/share/constants';
@@ -9,6 +9,7 @@ import { ShareDialog } from './ShareDialog';
 
 const mocks = vi.hoisted(() => ({
   uploadTokenForShare: vi.fn(() => new Promise(() => undefined)),
+  saveAs: vi.fn(),
 }));
 
 vi.mock('@/lib/i18n', () => ({
@@ -56,17 +57,21 @@ vi.mock('@/lib/share/client-upload', () => ({
 }));
 
 vi.mock('file-saver', () => ({
-  saveAs: vi.fn(),
+  saveAs: mocks.saveAs,
 }));
 
 function openDialog() {
   const blob = new Blob([new Uint8Array([137, 80, 78, 71])], { type: 'image/png' });
+  const previewBlob = new Blob([new Uint8Array([137, 80, 78, 71, 2])], {
+    type: 'image/png',
+  });
   const shareBlob = new Blob([new Uint8Array([137, 80, 78, 71, 1])], {
     type: 'image/png',
   });
 
   useShareDialogStore.getState().openShareDialog({
     blob,
+    previewBlob,
     shareBlob,
     shareImageWidth: SHARE_SOCIAL_IMAGE_WIDTH,
     fileName: 'token.png',
@@ -74,7 +79,7 @@ function openDialog() {
     locale: 'en',
   });
 
-  return { blob, shareBlob };
+  return { blob, previewBlob, shareBlob };
 }
 
 describe('ShareDialog', () => {
@@ -84,6 +89,7 @@ describe('ShareDialog', () => {
       revokeObjectURL: vi.fn(),
     });
     mocks.uploadTokenForShare.mockClear();
+    mocks.saveAs.mockClear();
     useShareDialogStore.setState({ isOpen: false, payload: null });
   });
 
@@ -94,7 +100,7 @@ describe('ShareDialog', () => {
   });
 
   it('uses the final dark drawer design and keeps Download available while share link is preparing', async () => {
-    const { blob, shareBlob } = openDialog();
+    const { blob, previewBlob, shareBlob } = openDialog();
     render(<ShareDialog />);
 
     expect(screen.getByTestId('share-dialog-panel').getAttribute('data-visual-design')).toBe(
@@ -116,11 +122,15 @@ describe('ShareDialog', () => {
     expect(redditButton.disabled).toBe(true);
     expect(downloadButton.disabled).toBe(false);
     expect(downloadButton.getAttribute('data-highlighted')).toBe('true');
-    expect(URL.createObjectURL).toHaveBeenCalledWith(blob);
+    expect(URL.createObjectURL).toHaveBeenCalledWith(previewBlob);
     expect(mocks.uploadTokenForShare).toHaveBeenCalledWith({
       blob: shareBlob,
       width: SHARE_SOCIAL_IMAGE_WIDTH,
       locale: 'en',
     });
+
+    fireEvent.click(downloadButton);
+
+    expect(mocks.saveAs).toHaveBeenCalledWith(blob, 'token.png');
   });
 });

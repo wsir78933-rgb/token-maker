@@ -44,6 +44,7 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
   } = useCanvasEditorState();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgCanvasRef = useRef<HTMLCanvasElement>(null);
+  const workspaceRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const isMountedRef = useRef(true);
 
@@ -181,8 +182,8 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
   };
 
   useEffect(() => {
-    const previewElement = previewRef.current;
-    if (!previewElement) return;
+    const workspaceElement = workspaceRef.current;
+    if (!workspaceElement) return;
 
     // 使用原生非被动 wheel 监听，避免缩放时触发外层滚动容器滚动。
     const handleWheel = (event: WheelEvent) => {
@@ -198,10 +199,10 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
       }
     };
 
-    previewElement.addEventListener('wheel', handleWheel, { passive: false });
+    workspaceElement.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => {
-      previewElement.removeEventListener('wheel', handleWheel);
+      workspaceElement.removeEventListener('wheel', handleWheel);
     };
   }, []);
 
@@ -239,7 +240,7 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     : 'w-full max-w-[512px]';
 
   return (
-    <div className={rootClassName}>
+    <div ref={workspaceRef} data-testid="canvas-workspace" className={rootClassName}>
       <div
         ref={previewRef}
         className={`relative aspect-square ${previewFrameSizeClassName} shrink-0 overflow-hidden rounded-xl bg-background shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)] transition-colors sm:rounded-2xl ${

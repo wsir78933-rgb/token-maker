@@ -1,7 +1,7 @@
 // ============================================================
 // 边框模板 — 数据驱动，新增边框只需追加一条配置
 // ============================================================
-import type { BorderTemplate } from '@/types/editor';
+import type { BorderLibraryMode, BorderTemplate } from '@/types/editor';
 
 const TFF_BORDER_PACK: Array<{
   id: string;
@@ -60,6 +60,42 @@ const TFF_BORDER_TEMPLATES: BorderTemplate[] = TFF_BORDER_PACK.map((border) => (
   tintMode: TFF_3D_RINGS.has(border.id) ? 'screen' : 'solid',
 }));
 
+const PRESET_BORDER_COUNTS = {
+  warrior: 28,
+  mage: 30,
+} as const;
+const PRESET_BORDER_ASSET_VERSION = 'alpha-20260531';
+
+function padPresetBorderIndex(index: number) {
+  return String(index).padStart(2, '0');
+}
+
+function getVersionedPresetBorderUrl(presetId: keyof typeof PRESET_BORDER_COUNTS, borderNumber: string) {
+  return `/borders/${presetId}/${presetId}-${borderNumber}.webp?v=${PRESET_BORDER_ASSET_VERSION}`;
+}
+
+function createPresetBorderTemplates(presetId: keyof typeof PRESET_BORDER_COUNTS): BorderTemplate[] {
+  return Array.from({ length: PRESET_BORDER_COUNTS[presetId] }, (_, index) => {
+    const borderNumber = padPresetBorderIndex(index + 1);
+
+    return {
+      id: `${presetId}-border-${borderNumber}`,
+      name: `border.${presetId}.${borderNumber}`,
+      type: 'image',
+      presetId,
+      linkedMaskId: 'circle',
+      imageUrl: getVersionedPresetBorderUrl(presetId, borderNumber),
+      thumbSrc: getVersionedPresetBorderUrl(presetId, borderNumber),
+      depthStrength: 0.35,
+    };
+  });
+}
+
+const PRESET_BORDER_TEMPLATES: BorderTemplate[] = [
+  ...createPresetBorderTemplates('warrior'),
+  ...createPresetBorderTemplates('mage'),
+];
+
 export const BORDER_TEMPLATES: BorderTemplate[] = [
   {
     id: 'none',
@@ -114,6 +150,7 @@ export const BORDER_TEMPLATES: BorderTemplate[] = [
     type: 'image',
     imageUrl: '/borders/fire833.webp',
     thumbSrc: '/borders/thumbs/fire833.webp',
+    depthStrength: 0.35,
   },
   {
     id: 'ice',
@@ -226,6 +263,7 @@ export const BORDER_TEMPLATES: BorderTemplate[] = [
     strokeWidth: 0.055,
   },
   ...TFF_BORDER_TEMPLATES,
+  ...PRESET_BORDER_TEMPLATES,
 ];
 
 const DEFAULT_BORDER_ID_SET = new Set([
@@ -266,8 +304,50 @@ export const COMPETITOR_BORDER_TEMPLATES = BORDER_TEMPLATES.filter((border) =>
   COMPETITOR_BORDER_ID_SET.has(border.id)
 );
 
+export const ORIGINAL_BORDER_TEMPLATES = [
+  ...new Map(
+    [...DEFAULT_BORDER_TEMPLATES, ...COMPETITOR_BORDER_TEMPLATES].map((border) => [border.id, border])
+  ).values(),
+];
+
+function hasPresetBorderTemplates(presetId: string | null | undefined) {
+  return presetId === 'warrior' || presetId === 'mage';
+}
+
 export function getBorderById(id: string): BorderTemplate | undefined {
   return BORDER_TEMPLATES.find((b) => b.id === id);
+}
+
+export function getPresetBorderTemplates(presetId: string | null | undefined): BorderTemplate[] {
+  if (!presetId) return [];
+
+  return PRESET_BORDER_TEMPLATES.filter((border) => border.presetId === presetId);
+}
+
+export function getPresetIdForBorder(borderId: string): string | null {
+  return getBorderById(borderId)?.presetId ?? null;
+}
+
+export function getVisibleBorderTemplates({
+  activePresetId,
+  selectedBorderId,
+  borderLibraryMode,
+}: {
+  activePresetId: string | null;
+  selectedBorderId: string;
+  borderLibraryMode: BorderLibraryMode;
+}): BorderTemplate[] {
+  const visiblePresetId = activePresetId ?? getPresetIdForBorder(selectedBorderId);
+
+  if (hasPresetBorderTemplates(visiblePresetId)) {
+    return getPresetBorderTemplates(visiblePresetId);
+  }
+
+  if (visiblePresetId === 'other' || borderLibraryMode === 'competitor') {
+    return ORIGINAL_BORDER_TEMPLATES;
+  }
+
+  return DEFAULT_BORDER_TEMPLATES;
 }
 
 export function isCompetitorBorderId(id: string): boolean {

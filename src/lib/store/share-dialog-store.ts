@@ -5,6 +5,7 @@ import type { ExportSize } from '@/types/editor';
 
 export interface ShareDialogPayload {
   blob: Blob;
+  previewBlob: Blob;
   shareBlob: Blob;
   shareImageWidth: ShareUploadWidth;
   fileName: string;

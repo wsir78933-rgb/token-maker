@@ -15,6 +15,14 @@ const MAX_BORDER_DEPTH_CACHE_ENTRIES = 24;
 const MAX_BORDER_EDGE_MASK_CACHE_ENTRIES = 48;
 const BORDER_INSET_RATIO = 0.032;
 
+function clampDepthStrength(depthStrength: number = 1): number {
+  return Math.max(0, Math.min(1, depthStrength));
+}
+
+function scaledRgba(red: number, green: number, blue: number, alpha: number, strength: number): string {
+  return `rgba(${red}, ${green}, ${blue}, ${(alpha * strength).toFixed(3)})`;
+}
+
 function getBorderRenderInset(size: number, borderType: BorderTemplate['type']): number {
   if (borderType === 'none') return 1;
   return Math.max(1, size * BORDER_INSET_RATIO);
@@ -78,9 +86,12 @@ function tintMaskCanvas(
 function buildDepthComposedBorder(
   size: number,
   cacheKey: string,
-  renderBase: (ctx: CanvasRenderingContext2D) => void
+  renderBase: (ctx: CanvasRenderingContext2D) => void,
+  depthStrength: number = 1
 ): HTMLCanvasElement {
-  const cached = getLruCacheEntry(BORDER_DEPTH_CACHE, cacheKey);
+  const strength = clampDepthStrength(depthStrength);
+  const depthCacheKey = `${cacheKey}::depth-${strength.toFixed(2)}`;
+  const cached = getLruCacheEntry(BORDER_DEPTH_CACHE, depthCacheKey);
   if (cached) return cached;
 
   const baseCanvas = createSquareCanvas(size);
@@ -94,77 +105,79 @@ function buildDepthComposedBorder(
 
   composedCtx.drawImage(baseCanvas, 0, 0);
 
-  composedCtx.save();
-  composedCtx.globalCompositeOperation = 'source-atop';
+  if (strength > 0) {
+    composedCtx.save();
+    composedCtx.globalCompositeOperation = 'source-atop';
 
-  const directionalLight = composedCtx.createLinearGradient(
-    size * 0.1,
-    size * 0.08,
-    size * 0.9,
-    size * 0.92
-  );
-  directionalLight.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-  directionalLight.addColorStop(0.18, 'rgba(255, 255, 255, 0.24)');
-  directionalLight.addColorStop(0.44, 'rgba(255, 255, 255, 0.04)');
-  directionalLight.addColorStop(0.68, 'rgba(0, 0, 0, 0.14)');
-  directionalLight.addColorStop(1, 'rgba(0, 0, 0, 0.34)');
-  composedCtx.fillStyle = directionalLight;
-  composedCtx.fillRect(0, 0, size, size);
+    const directionalLight = composedCtx.createLinearGradient(
+      size * 0.1,
+      size * 0.08,
+      size * 0.9,
+      size * 0.92
+    );
+    directionalLight.addColorStop(0, scaledRgba(255, 255, 255, 0.2, strength));
+    directionalLight.addColorStop(0.18, scaledRgba(255, 255, 255, 0.24, strength));
+    directionalLight.addColorStop(0.44, scaledRgba(255, 255, 255, 0.04, strength));
+    directionalLight.addColorStop(0.68, scaledRgba(0, 0, 0, 0.14, strength));
+    directionalLight.addColorStop(1, scaledRgba(0, 0, 0, 0.34, strength));
+    composedCtx.fillStyle = directionalLight;
+    composedCtx.fillRect(0, 0, size, size);
 
-  const volumeGradient = composedCtx.createRadialGradient(
-    size * 0.34,
-    size * 0.28,
-    size * 0.08,
-    size * 0.64,
-    size * 0.7,
-    size * 0.82
-  );
-  volumeGradient.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
-  volumeGradient.addColorStop(0.18, 'rgba(255, 255, 255, 0.12)');
-  volumeGradient.addColorStop(0.58, 'rgba(0, 0, 0, 0.08)');
-  volumeGradient.addColorStop(1, 'rgba(0, 0, 0, 0.26)');
-  composedCtx.fillStyle = volumeGradient;
-  composedCtx.fillRect(0, 0, size, size);
-  composedCtx.restore();
+    const volumeGradient = composedCtx.createRadialGradient(
+      size * 0.34,
+      size * 0.28,
+      size * 0.08,
+      size * 0.64,
+      size * 0.7,
+      size * 0.82
+    );
+    volumeGradient.addColorStop(0, scaledRgba(255, 255, 255, 0.22, strength));
+    volumeGradient.addColorStop(0.18, scaledRgba(255, 255, 255, 0.12, strength));
+    volumeGradient.addColorStop(0.58, scaledRgba(0, 0, 0, 0.08, strength));
+    volumeGradient.addColorStop(1, scaledRgba(0, 0, 0, 0.26, strength));
+    composedCtx.fillStyle = volumeGradient;
+    composedCtx.fillRect(0, 0, size, size);
+    composedCtx.restore();
 
-  const edgeShift = Math.max(2, Math.round(size * 0.016));
-  const highlightMask = buildDirectionalEdgeMask(
-    baseCanvas,
-    size,
-    `${cacheKey}::highlight::${edgeShift}`,
-    edgeShift,
-    edgeShift
-  );
-  const shadowMask = buildDirectionalEdgeMask(
-    baseCanvas,
-    size,
-    `${cacheKey}::shadow::${edgeShift}`,
-    -edgeShift,
-    -edgeShift
-  );
+    const edgeShift = Math.max(1, Math.round(size * 0.016 * strength));
+    const highlightMask = buildDirectionalEdgeMask(
+      baseCanvas,
+      size,
+      `${depthCacheKey}::highlight::${edgeShift}`,
+      edgeShift,
+      edgeShift
+    );
+    const shadowMask = buildDirectionalEdgeMask(
+      baseCanvas,
+      size,
+      `${depthCacheKey}::shadow::${edgeShift}`,
+      -edgeShift,
+      -edgeShift
+    );
 
-  const highlightCanvas = tintMaskCanvas(highlightMask, size, (ctx) => {
-    const gradient = ctx.createLinearGradient(0, 0, size, size);
-    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.82)');
-    gradient.addColorStop(0.28, 'rgba(255, 255, 255, 0.34)');
-    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, size, size);
-  });
+    const highlightCanvas = tintMaskCanvas(highlightMask, size, (ctx) => {
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, scaledRgba(255, 255, 255, 0.82, strength));
+      gradient.addColorStop(0.28, scaledRgba(255, 255, 255, 0.34, strength));
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, size, size);
+    });
 
-  const shadowCanvas = tintMaskCanvas(shadowMask, size, (ctx) => {
-    const gradient = ctx.createLinearGradient(0, 0, size, size);
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    gradient.addColorStop(0.42, 'rgba(0, 0, 0, 0.28)');
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.56)');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, size, size);
-  });
+    const shadowCanvas = tintMaskCanvas(shadowMask, size, (ctx) => {
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      gradient.addColorStop(0.42, scaledRgba(0, 0, 0, 0.28, strength));
+      gradient.addColorStop(1, scaledRgba(0, 0, 0, 0.56, strength));
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, size, size);
+    });
 
-  composedCtx.drawImage(shadowCanvas, 0, 0);
-  composedCtx.drawImage(highlightCanvas, 0, 0);
+    composedCtx.drawImage(shadowCanvas, 0, 0);
+    composedCtx.drawImage(highlightCanvas, 0, 0);
+  }
 
-  setLruCacheEntry(BORDER_DEPTH_CACHE, cacheKey, composedCanvas, MAX_BORDER_DEPTH_CACHE_ENTRIES);
+  setLruCacheEntry(BORDER_DEPTH_CACHE, depthCacheKey, composedCanvas, MAX_BORDER_DEPTH_CACHE_ENTRIES);
   return composedCanvas;
 }
 
@@ -172,17 +185,22 @@ function drawDepthComposedBorder(
   ctx: CanvasRenderingContext2D,
   size: number,
   cacheKey: string,
-  renderBase: (ctx: CanvasRenderingContext2D) => void
+  renderBase: (ctx: CanvasRenderingContext2D) => void,
+  depthStrength: number = 1
 ) {
-  const depthCanvas = buildDepthComposedBorder(size, cacheKey, renderBase);
+  const strength = clampDepthStrength(depthStrength);
+  const depthCanvas = buildDepthComposedBorder(size, cacheKey, renderBase, strength);
 
-  ctx.save();
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.34)';
-  ctx.shadowBlur = Math.max(10, size * 0.03);
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = Math.max(3, size * 0.016);
-  ctx.drawImage(depthCanvas, 0, 0, size, size);
-  ctx.restore();
+  if (strength > 0) {
+    ctx.save();
+    ctx.globalAlpha *= strength;
+    ctx.shadowColor = scaledRgba(0, 0, 0, 0.34, strength);
+    ctx.shadowBlur = Math.max(4, size * 0.03 * strength);
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = Math.max(1, size * 0.016 * strength);
+    ctx.drawImage(depthCanvas, 0, 0, size, size);
+    ctx.restore();
+  }
 
   ctx.drawImage(depthCanvas, 0, 0, size, size);
 }
@@ -191,13 +209,14 @@ function drawImageBorderWithDepth(
   ctx: CanvasRenderingContext2D,
   image: CanvasImageSource,
   size: number,
-  cacheKey: string
+  cacheKey: string,
+  depthStrength: number = 1
 ) {
   drawDepthComposedBorder(ctx, size, cacheKey, (baseCtx) => {
     const inset = getBorderRenderInset(size, 'image');
     const drawSize = size - inset * 2;
     baseCtx.drawImage(image, inset, inset, drawSize, drawSize);
-  });
+  }, depthStrength);
 }
 
 /**
@@ -556,7 +575,8 @@ export function drawBorder(
         ctx,
         borderImage,
         size,
-        `${url}::${size}::${tint.toLowerCase()}::${tintImageBorder ? border.tintMode || 'original' : 'untinted'}`
+        `${url}::${size}::${tint.toLowerCase()}::${tintImageBorder ? border.tintMode || 'original' : 'untinted'}`,
+        border.depthStrength
       );
     }
     ctx.restore();

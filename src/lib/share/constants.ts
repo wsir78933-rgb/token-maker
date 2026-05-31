@@ -18,6 +18,7 @@ export const SHARE_SITE_URL_FALLBACK = 'https://www.tokenmaker.one';
 export const SHARE_SOCIAL_IMAGE_WIDTH = 1200;
 export const SHARE_SOCIAL_IMAGE_HEIGHT = 630;
 export const SHARE_SOCIAL_TOKEN_RENDER_SIZE = 1024;
+export const SHARE_DIALOG_TOKEN_PREVIEW_SIZE = SHARE_SOCIAL_TOKEN_RENDER_SIZE;
 
 export const SHARE_EXPORT_WIDTHS = [256, 512, 1024, 2048] as const;
 export type ShareExportWidth = (typeof SHARE_EXPORT_WIDTHS)[number];
