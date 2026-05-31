@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SHARE_MAX_IMAGE_BYTES } from './constants';
+import { SHARE_MAX_IMAGE_BYTES, SHARE_SOCIAL_IMAGE_WIDTH } from './constants';
 import { parseShareUploadPayload } from './server-validation';
 
 const pngBytes = Buffer.from([
@@ -20,6 +20,19 @@ describe('share upload payload validation', () => {
       expect(result.value.width).toBe(1024);
       expect(result.value.locale).toBe('zh');
       expect(result.value.imageBuffer.subarray(0, 8).equals(pngBytes.subarray(0, 8))).toBe(true);
+    }
+  });
+
+  it('accepts the fixed social share image width', () => {
+    const result = parseShareUploadPayload({
+      image: pngBytes.toString('base64'),
+      width: SHARE_SOCIAL_IMAGE_WIDTH,
+      locale: 'en',
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.width).toBe(SHARE_SOCIAL_IMAGE_WIDTH);
     }
   });
 

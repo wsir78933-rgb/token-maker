@@ -1,5 +1,5 @@
 import type { SiteLocale } from '@/lib/site-locale';
-import type { ShareExportWidth } from './constants';
+import type { ShareUploadWidth } from './constants';
 
 export interface ShareUploadResponse {
   id: string;
@@ -60,7 +60,7 @@ export async function uploadTokenForShare({
   locale,
 }: {
   blob: Blob;
-  width: ShareExportWidth;
+  width: ShareUploadWidth;
   locale: SiteLocale;
 }): Promise<ShareUploadResponse> {
   const image = await blobToBase64(blob);

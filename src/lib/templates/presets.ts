@@ -82,17 +82,6 @@ export const STYLE_PRESETS: StylePreset[] = [
     overlayOpacity: 0.1,
   },
   {
-    id: 'classic',
-    name: 'classic',
-    icon: '🎭',
-    borderId: 'steampunk',
-    maskId: 'circle',
-    borderTint: '#ffffff',
-    borderOpacity: 1,
-    overlayTint: '#000000',
-    overlayOpacity: 0,
-  },
-  {
     id: 'other',
     name: 'other',
     icon: '🔘',

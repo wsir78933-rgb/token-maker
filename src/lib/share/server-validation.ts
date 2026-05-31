@@ -1,7 +1,7 @@
 import {
   SHARE_MAX_IMAGE_BYTES,
-  isShareExportWidth,
-  type ShareExportWidth,
+  isShareUploadWidth,
+  type ShareUploadWidth,
 } from './constants';
 import type { SiteLocale } from '@/lib/site-locale';
 
@@ -10,7 +10,7 @@ export type ShareUploadError = 'invalid_image' | 'image_too_large';
 
 export interface ParsedShareUpload {
   imageBuffer: Buffer;
-  width: ShareExportWidth;
+  width: ShareUploadWidth;
   locale: SiteLocale;
 }
 
@@ -89,7 +89,7 @@ export function parseShareUploadPayload(payload: unknown): ShareUploadParseResul
     return { ok: false, error: 'invalid_image', status: 400 };
   }
 
-  if (!isShareExportWidth(normalizedPayload.width)) {
+  if (!isShareUploadWidth(normalizedPayload.width)) {
     return { ok: false, error: 'invalid_image', status: 400 };
   }
 

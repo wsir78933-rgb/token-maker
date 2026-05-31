@@ -32,7 +32,6 @@ const en = {
   ranger: 'Ranger',
   undead: 'Undead',
   monster: 'Monster',
-  classic: 'Classic',
   other: 'Other',
 
   templatePanel: 'Templates',

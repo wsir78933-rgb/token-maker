@@ -178,25 +178,25 @@ export function ShareDialog() {
       setShareData(null);
       setErrorCode(null);
       setCopied(false);
-      trackShareUploadStart(currentPayload.blob.size, currentPayload.exportSize);
+      trackShareUploadStart(currentPayload.shareBlob.size, currentPayload.exportSize);
 
       try {
         const result = await uploadTokenForShare({
-          blob: currentPayload.blob,
-          width: currentPayload.exportSize,
+          blob: currentPayload.shareBlob,
+          width: currentPayload.shareImageWidth,
           locale: currentPayload.locale,
         });
 
         if (isCancelled) return;
         setShareData(result);
         setStatus('ready');
-        trackShareUploadSuccess(currentPayload.blob.size, currentPayload.exportSize);
+        trackShareUploadSuccess(currentPayload.shareBlob.size, currentPayload.exportSize);
       } catch (error) {
         if (isCancelled) return;
         const code = getShareErrorCode(error);
         setErrorCode(code);
         setStatus('failed');
-        trackShareUploadFail(code, currentPayload.blob.size, currentPayload.exportSize);
+        trackShareUploadFail(code, currentPayload.shareBlob.size, currentPayload.exportSize);
       }
     }
 
@@ -223,22 +223,22 @@ export function ShareDialog() {
       if (!useShareDialogStore.getState().isOpen) return;
 
       setStatus('uploading');
-      trackShareUploadStart(currentPayload.blob.size, currentPayload.exportSize);
+      trackShareUploadStart(currentPayload.shareBlob.size, currentPayload.exportSize);
 
       try {
         const result = await uploadTokenForShare({
-          blob: currentPayload.blob,
-          width: currentPayload.exportSize,
+          blob: currentPayload.shareBlob,
+          width: currentPayload.shareImageWidth,
           locale: currentPayload.locale,
         });
         setShareData(result);
         setStatus('ready');
-        trackShareUploadSuccess(currentPayload.blob.size, currentPayload.exportSize);
+        trackShareUploadSuccess(currentPayload.shareBlob.size, currentPayload.exportSize);
       } catch (error) {
         const code = getShareErrorCode(error);
         setErrorCode(code);
         setStatus('failed');
-        trackShareUploadFail(code, currentPayload.blob.size, currentPayload.exportSize);
+        trackShareUploadFail(code, currentPayload.shareBlob.size, currentPayload.exportSize);
       }
     }, 0);
   };

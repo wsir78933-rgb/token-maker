@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import type { SiteLocale } from '@/lib/site-locale';
 import { getSiteUrl } from '@/lib/site-content';
 import {
+  SHARE_SOCIAL_IMAGE_HEIGHT,
+  SHARE_SOCIAL_IMAGE_WIDTH,
   getSharePagePath,
   getSharePageUrl,
   isShareId,
@@ -86,8 +88,8 @@ export function createSharePageMetadata(locale: SiteLocale, id: string): Metadat
       images: [
         {
           url: imageUrl,
-          width: 1200,
-          height: 1200,
+          width: SHARE_SOCIAL_IMAGE_WIDTH,
+          height: SHARE_SOCIAL_IMAGE_HEIGHT,
           alt: copy.imageAlt,
         },
       ],

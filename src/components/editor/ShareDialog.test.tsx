@@ -4,7 +4,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 
 import { useShareDialogStore } from '@/lib/store/share-dialog-store';
+import { SHARE_SOCIAL_IMAGE_WIDTH } from '@/lib/share/constants';
 import { ShareDialog } from './ShareDialog';
+
+const mocks = vi.hoisted(() => ({
+  uploadTokenForShare: vi.fn(() => new Promise(() => undefined)),
+}));
 
 vi.mock('@/lib/i18n', () => ({
   useI18n: () => ({
@@ -47,7 +52,7 @@ vi.mock('@/lib/share/client-upload', () => ({
       super(code);
     }
   },
-  uploadTokenForShare: vi.fn(() => new Promise(() => undefined)),
+  uploadTokenForShare: mocks.uploadTokenForShare,
 }));
 
 vi.mock('file-saver', () => ({
@@ -55,12 +60,21 @@ vi.mock('file-saver', () => ({
 }));
 
 function openDialog() {
+  const blob = new Blob([new Uint8Array([137, 80, 78, 71])], { type: 'image/png' });
+  const shareBlob = new Blob([new Uint8Array([137, 80, 78, 71, 1])], {
+    type: 'image/png',
+  });
+
   useShareDialogStore.getState().openShareDialog({
-    blob: new Blob([new Uint8Array([137, 80, 78, 71])], { type: 'image/png' }),
+    blob,
+    shareBlob,
+    shareImageWidth: SHARE_SOCIAL_IMAGE_WIDTH,
     fileName: 'token.png',
     exportSize: 1024,
     locale: 'en',
   });
+
+  return { blob, shareBlob };
 }
 
 describe('ShareDialog', () => {
@@ -69,6 +83,7 @@ describe('ShareDialog', () => {
       createObjectURL: vi.fn(() => 'blob:token-preview'),
       revokeObjectURL: vi.fn(),
     });
+    mocks.uploadTokenForShare.mockClear();
     useShareDialogStore.setState({ isOpen: false, payload: null });
   });
 
@@ -79,7 +94,7 @@ describe('ShareDialog', () => {
   });
 
   it('uses the final dark drawer design and keeps Download available while share link is preparing', async () => {
-    openDialog();
+    const { blob, shareBlob } = openDialog();
     render(<ShareDialog />);
 
     expect(screen.getByTestId('share-dialog-panel').getAttribute('data-visual-design')).toBe(
@@ -101,5 +116,11 @@ describe('ShareDialog', () => {
     expect(redditButton.disabled).toBe(true);
     expect(downloadButton.disabled).toBe(false);
     expect(downloadButton.getAttribute('data-highlighted')).toBe('true');
+    expect(URL.createObjectURL).toHaveBeenCalledWith(blob);
+    expect(mocks.uploadTokenForShare).toHaveBeenCalledWith({
+      blob: shareBlob,
+      width: SHARE_SOCIAL_IMAGE_WIDTH,
+      locale: 'en',
+    });
   });
 });

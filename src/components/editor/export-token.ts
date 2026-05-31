@@ -8,6 +8,8 @@ import { useEditorStore } from '@/lib/store/editor-store';
 import { useShareDialogStore } from '@/lib/store/share-dialog-store';
 import { BORDER_TEMPLATES } from '@/lib/templates/borders';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
+import { createShareSocialImageBlob } from '@/lib/share/social-image';
+import { SHARE_SOCIAL_IMAGE_WIDTH } from '@/lib/share/constants';
 import type { I18nKey } from '@/lib/i18n';
 import type { BorderTemplate } from '@/types/editor';
 import type { SiteLocale } from '@/lib/site-locale';
@@ -43,6 +45,15 @@ function saveTokenPng(
   trackDownloadPng(getSelectedFrameName(state.selectedBorderId, state.customBorders, t));
 }
 
+async function createShareSocialImageBlobSafely(state: ReturnType<typeof useEditorStore.getState>) {
+  try {
+    return await createShareSocialImageBlob(state);
+  } catch (error) {
+    console.warn('Failed to create social share image.', error);
+    return null;
+  }
+}
+
 export async function downloadCurrentToken(t: (key: I18nKey) => string) {
   const state = useEditorStore.getState();
   const blob = await exportTokenAsPNG(state, state.exportSize);
@@ -69,9 +80,13 @@ export async function downloadCurrentTokenWithSharePrompt(
     return;
   }
 
+  const shareBlob = await createShareSocialImageBlobSafely(state);
+
   trackShareDialogOpen(state.exportSize);
   useShareDialogStore.getState().openShareDialog({
     blob,
+    shareBlob: shareBlob ?? blob,
+    shareImageWidth: shareBlob ? SHARE_SOCIAL_IMAGE_WIDTH : state.exportSize,
     fileName,
     exportSize: state.exportSize,
     locale,

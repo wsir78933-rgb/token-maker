@@ -37,7 +37,6 @@ const zh = {
   ranger: '游侠',
   undead: '亡灵',
   monster: '怪物',
-  classic: '经典',
   other: '其他',
 
   // 模板面板

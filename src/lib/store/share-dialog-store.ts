@@ -1,9 +1,12 @@
 import { create } from 'zustand';
 import type { SiteLocale } from '@/lib/site-locale';
+import type { ShareUploadWidth } from '@/lib/share/constants';
 import type { ExportSize } from '@/types/editor';
 
 export interface ShareDialogPayload {
   blob: Blob;
+  shareBlob: Blob;
+  shareImageWidth: ShareUploadWidth;
   fileName: string;
   exportSize: ExportSize;
   locale: SiteLocale;
