@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import type { BorderTemplate, ExportSize } from '@/types/editor';
 import { DownloadCloud, Plus, Trash2 } from 'lucide-react';
 import { fileToBase64, preloadImageToCache } from '@/lib/utils/imageCache';
-import { downloadCurrentToken, getLocalizedName } from './export-token';
+import { downloadCurrentTokenWithSharePrompt, getLocalizedName } from './export-token';
 
 const SIZES: ExportSize[] = [256, 512, 1024, 2048];
 const MAX_CUSTOM_BORDERS = 8;
@@ -63,7 +63,7 @@ function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
 }
 
 export function TemplatePanel() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const activePresetId = useEditorStore((state) => state.activePresetId);
   const exportSize = useEditorStore((state) => state.exportSize);
   const imageElement = useEditorStore((state) => state.imageElement);
@@ -71,7 +71,7 @@ export function TemplatePanel() {
   const setExportSize = useEditorStore((state) => state.setExportSize);
 
   const handleExport = async () => {
-    await downloadCurrentToken(t);
+    await downloadCurrentTokenWithSharePrompt(t, locale);
   };
 
   return (

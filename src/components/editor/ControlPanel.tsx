@@ -11,14 +11,14 @@ import { DownloadCloud, Layers, RotateCcw, Trash2 } from 'lucide-react';
 import { useBatchStore } from '@/lib/store/batch-store';
 import { trackUseBatchMode } from '@/lib/analytics';
 import type { I18nKey } from '@/lib/i18n';
-import { downloadCurrentToken } from './export-token';
+import { downloadCurrentTokenWithSharePrompt } from './export-token';
 
 function getSliderValue(value: number | readonly number[]) {
   return Array.isArray(value) ? value[0] ?? 0 : value;
 }
 
 export function ControlPanel() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const imageScale = useEditorStore((state) => state.imageScale);
   const imageElement = useEditorStore((state) => state.imageElement);
   const selectedTextId = useEditorStore((state) => state.selectedTextId);
@@ -57,7 +57,7 @@ export function ControlPanel() {
   const overlayOpacityLabelId = useId();
 
   const handleExport = async () => {
-    await downloadCurrentToken(t);
+    await downloadCurrentTokenWithSharePrompt(t, locale);
   };
 
   return (

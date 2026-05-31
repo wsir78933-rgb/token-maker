@@ -38,6 +38,26 @@ CONTACT_SUBJECT_PREFIX="Token Maker contact"
 
 `RESEND_FROM_EMAIL` should use a domain verified in Resend. `CONTACT_TO_EMAIL` is the inbox that receives user messages. The user's submitted email is sent as the reply-to address.
 
+## Share Dialog Storage
+
+The download share dialog uploads the generated PNG token to Cloudflare R2 and returns a `/share/{id}` page URL. Configure these variables in `.env.local` for development and in production:
+
+```bash
+R2_ACCOUNT_ID=your_cloudflare_account_id
+R2_ACCESS_KEY_ID=your_r2_access_key_id
+R2_SECRET_ACCESS_KEY=your_r2_secret_access_key
+R2_BUCKET_NAME=tokenmaker-shares
+R2_PUBLIC_BASE_URL=https://r2.tokenmaker.one
+NEXT_PUBLIC_SITE_URL=https://www.tokenmaker.one
+```
+
+R2 setup requirements:
+
+- Create the `tokenmaker-shares` bucket.
+- Bind the public custom domain `r2.tokenmaker.one`.
+- Add a lifecycle rule that deletes `shares/*` objects after 30 days.
+- The app stores generated share images at `shares/{id}.png` and serves them with a 30-day immutable cache header.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

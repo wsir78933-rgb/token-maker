@@ -107,6 +107,80 @@ export function trackDownloadPng(frameName: string, fileCount = 1, outputFormat 
   });
 }
 
+export function trackShareDialogOpen(exportSize: number) {
+  trackGtagEvent('share_dialog_open', {
+    export_size: exportSize,
+    ...getPageParams(),
+  });
+}
+
+export function trackShareDialogSuppressed(exportSize: number) {
+  trackGtagEvent('share_dialog_suppressed_24h', {
+    export_size: exportSize,
+    ...getPageParams(),
+  });
+}
+
+export function trackShareUploadStart(sizeBytes: number, exportSize: number) {
+  trackGtagEvent('share_upload_start', {
+    size_bytes: sizeBytes,
+    export_size: exportSize,
+    ...getPageParams(),
+  });
+}
+
+export function trackShareUploadSuccess(sizeBytes: number, exportSize: number) {
+  trackGtagEvent('share_upload_success', {
+    size_bytes: sizeBytes,
+    export_size: exportSize,
+    ...getPageParams(),
+  });
+}
+
+export function trackShareUploadFail(error: string, sizeBytes: number, exportSize: number) {
+  trackGtagEvent('share_upload_fail', {
+    error,
+    size_bytes: sizeBytes,
+    export_size: exportSize,
+    ...getPageParams(),
+  });
+}
+
+export function trackShareCopyLink(id: string) {
+  trackGtagEvent('share_copy_link', {
+    id,
+    ...getPageParams(),
+  });
+}
+
+export function trackShareSocial(platform: string, id: string) {
+  trackGtagEvent('share_social', {
+    platform,
+    id,
+    ...getPageParams(),
+  });
+}
+
+export function trackShareRedownload(exportSize: number) {
+  trackGtagEvent('share_redownload', {
+    export_size: exportSize,
+    ...getPageParams(),
+  });
+}
+
+export function trackShareSuppress24h() {
+  trackGtagEvent('share_suppress_24h', {
+    ...getPageParams(),
+  });
+}
+
+export function trackSharePageCtaClick(id: string) {
+  trackGtagEvent('share_page_cta_click', {
+    id,
+    ...getPageParams(),
+  });
+}
+
 export function trackUseBatchMode(source: string, fileCount?: number) {
   trackGtagEvent('use_batch_mode', {
     source,

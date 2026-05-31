@@ -6,6 +6,7 @@ import { ControlPanel } from '@/components/editor/ControlPanel';
 import { MobileBorderTemplatesPanel, TemplatePanel } from '@/components/editor/TemplatePanel';
 import { Canvas } from '@/components/editor/Canvas';
 import { BatchPanel } from '@/components/editor/BatchPanel';
+import { ShareDialog } from '@/components/editor/ShareDialog';
 import { EditorSearchParamsSync } from '@/components/layout/EditorSearchParamsSync';
 import { useI18n } from '@/lib/i18n';
 import { useBatchStore } from '@/lib/store/batch-store';
@@ -55,6 +56,7 @@ export function EditorLayout() {
       <Suspense fallback={null}>
         <Header />
       </Suspense>
+      <ShareDialog />
       <section
         aria-labelledby={workspaceHeadingId}
         className="relative flex flex-1 flex-col overflow-visible xl:flex-row xl:overflow-hidden"
