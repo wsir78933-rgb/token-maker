@@ -63,6 +63,10 @@ const TFF_BORDER_TEMPLATES: BorderTemplate[] = TFF_BORDER_PACK.map((border) => (
 const PRESET_BORDER_COUNTS = {
   warrior: 28,
   mage: 30,
+  rogue: 30,
+  cleric: 30,
+  undead: 29,
+  monster: 31,
 } as const;
 const PRESET_BORDER_ASSET_VERSION = 'alpha-20260531';
 
@@ -72,6 +76,10 @@ function padPresetBorderIndex(index: number) {
 
 function getVersionedPresetBorderUrl(presetId: keyof typeof PRESET_BORDER_COUNTS, borderNumber: string) {
   return `/borders/${presetId}/${presetId}-${borderNumber}.webp?v=${PRESET_BORDER_ASSET_VERSION}`;
+}
+
+function getVersionedPresetBorderThumbUrl(presetId: keyof typeof PRESET_BORDER_COUNTS, borderNumber: string) {
+  return `/borders/thumbs/${presetId}/${presetId}-${borderNumber}.webp?v=${PRESET_BORDER_ASSET_VERSION}`;
 }
 
 function createPresetBorderTemplates(presetId: keyof typeof PRESET_BORDER_COUNTS): BorderTemplate[] {
@@ -85,7 +93,7 @@ function createPresetBorderTemplates(presetId: keyof typeof PRESET_BORDER_COUNTS
       presetId,
       linkedMaskId: 'circle',
       imageUrl: getVersionedPresetBorderUrl(presetId, borderNumber),
-      thumbSrc: getVersionedPresetBorderUrl(presetId, borderNumber),
+      thumbSrc: getVersionedPresetBorderThumbUrl(presetId, borderNumber),
       depthStrength: 0.35,
     };
   });
@@ -94,6 +102,10 @@ function createPresetBorderTemplates(presetId: keyof typeof PRESET_BORDER_COUNTS
 const PRESET_BORDER_TEMPLATES: BorderTemplate[] = [
   ...createPresetBorderTemplates('warrior'),
   ...createPresetBorderTemplates('mage'),
+  ...createPresetBorderTemplates('rogue'),
+  ...createPresetBorderTemplates('cleric'),
+  ...createPresetBorderTemplates('undead'),
+  ...createPresetBorderTemplates('monster'),
 ];
 
 export const BORDER_TEMPLATES: BorderTemplate[] = [
@@ -311,7 +323,7 @@ export const ORIGINAL_BORDER_TEMPLATES = [
 ];
 
 function hasPresetBorderTemplates(presetId: string | null | undefined) {
-  return presetId === 'warrior' || presetId === 'mage';
+  return Boolean(presetId && presetId in PRESET_BORDER_COUNTS);
 }
 
 export function getBorderById(id: string): BorderTemplate | undefined {

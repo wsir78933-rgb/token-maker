@@ -30,32 +30,37 @@ describe('border templates', () => {
     expect(getBorderById('fire')?.depthStrength).toBeLessThan(1);
   });
 
-  it('lists warrior and mage generated assets as preset border templates', () => {
-    const warriorBorders = getPresetBorderTemplates('warrior');
-    const mageBorders = getPresetBorderTemplates('mage');
+  it('lists generated assets as preset border templates', () => {
+    const expectedPresetCounts = {
+      warrior: 28,
+      mage: 30,
+      rogue: 30,
+      cleric: 30,
+      monster: 31,
+      undead: 29,
+    } as const;
 
-    expect(warriorBorders).toHaveLength(28);
-    expect(mageBorders).toHaveLength(30);
-    expect(warriorBorders[0]).toMatchObject({
-      id: 'warrior-border-01',
-      name: 'border.warrior.01',
-      type: 'image',
-      imageUrl: expect.stringMatching(/^\/borders\/warrior\/warrior-01\.webp\?v=/),
-      thumbSrc: expect.stringMatching(/^\/borders\/warrior\/warrior-01\.webp\?v=/),
-      linkedMaskId: 'circle',
-    });
-    expect(mageBorders[0]).toMatchObject({
-      id: 'mage-border-01',
-      name: 'border.mage.01',
-      type: 'image',
-      imageUrl: expect.stringMatching(/^\/borders\/mage\/mage-01\.webp\?v=/),
-      thumbSrc: expect.stringMatching(/^\/borders\/mage\/mage-01\.webp\?v=/),
-      linkedMaskId: 'circle',
-    });
+    for (const [presetId, count] of Object.entries(expectedPresetCounts)) {
+      const borders = getPresetBorderTemplates(presetId);
+
+      expect(borders).toHaveLength(count);
+      expect(borders[0]).toMatchObject({
+        id: `${presetId}-border-01`,
+        name: `border.${presetId}.01`,
+        type: 'image',
+        imageUrl: expect.stringMatching(
+          new RegExp(`^/borders/${presetId}/${presetId}-01\\.webp\\?v=`)
+        ),
+        thumbSrc: expect.stringMatching(
+          new RegExp(`^/borders/thumbs/${presetId}/${presetId}-01\\.webp\\?v=`)
+        ),
+        linkedMaskId: 'circle',
+      });
+    }
   });
 
   it('returns no preset border templates for presets without generated border assets', () => {
-    expect(getPresetBorderTemplates('rogue')).toEqual([]);
+    expect(getPresetBorderTemplates('ranger')).toEqual([]);
   });
 
   it('keeps generated preset border assets transparent', () => {
@@ -69,5 +74,38 @@ describe('border templates', () => {
       .filter((filePath) => !existsSync(filePath) || !hasWebpAlpha(filePath));
 
     expect(opaqueAssets).toEqual([]);
+  });
+
+  it('uses separate lightweight thumbnails for generated preset border assets', () => {
+    const presetImageBorders = BORDER_TEMPLATES.filter(
+      (border) => border.presetId && border.type === 'image' && border.imageUrl && border.thumbSrc
+    );
+    const invalidThumbnailAssets = presetImageBorders
+      .map((border) => {
+        const imagePath = path.join(
+          process.cwd(),
+          'public',
+          border.imageUrl!.replace(/^\//, '').replace(/\?.*$/, '')
+        );
+        const thumbPath = path.join(
+          process.cwd(),
+          'public',
+          border.thumbSrc!.replace(/^\//, '').replace(/\?.*$/, '')
+        );
+
+        return { border, imagePath, thumbPath };
+      })
+      .filter(({ border, imagePath, thumbPath }) => {
+        return (
+          border.thumbSrc === border.imageUrl ||
+          !border.thumbSrc?.startsWith(`/borders/thumbs/${border.presetId}/`) ||
+          !existsSync(thumbPath) ||
+          !hasWebpAlpha(thumbPath) ||
+          readFileSync(thumbPath).byteLength >= readFileSync(imagePath).byteLength
+        );
+      })
+      .map(({ border }) => border.id);
+
+    expect(invalidThumbnailAssets).toEqual([]);
   });
 });
