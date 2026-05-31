@@ -33,13 +33,22 @@ function getSelectedFrameName(
   return getLocalizedName(selectedBorder.name, t);
 }
 
+function saveTokenPng(
+  blob: Blob,
+  fileName: string,
+  state: ReturnType<typeof useEditorStore.getState>,
+  t: (key: I18nKey) => string
+) {
+  saveAs(blob, fileName);
+  trackDownloadPng(getSelectedFrameName(state.selectedBorderId, state.customBorders, t));
+}
+
 export async function downloadCurrentToken(t: (key: I18nKey) => string) {
   const state = useEditorStore.getState();
   const blob = await exportTokenAsPNG(state, state.exportSize);
 
   if (blob) {
-    saveAs(blob, `token_${Date.now()}.png`);
-    trackDownloadPng(getSelectedFrameName(state.selectedBorderId, state.customBorders, t));
+    saveTokenPng(blob, `token_${Date.now()}.png`, state, t);
   }
 }
 
@@ -53,10 +62,9 @@ export async function downloadCurrentTokenWithSharePrompt(
   if (!blob) return;
 
   const fileName = `token_${Date.now()}.png`;
-  saveAs(blob, fileName);
-  trackDownloadPng(getSelectedFrameName(state.selectedBorderId, state.customBorders, t));
 
   if (!shouldShowShareDialog()) {
+    saveTokenPng(blob, fileName, state, t);
     trackShareDialogSuppressed(state.exportSize);
     return;
   }
