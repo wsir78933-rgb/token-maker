@@ -52,7 +52,7 @@ export const STYLE_PRESETS: StylePreset[] = [
     id: 'ranger',
     name: 'ranger',
     icon: '🏹',
-    borderId: 'wood',
+    borderId: 'ranger-border-01',
     maskId: 'circle',
     borderTint: '#ffffff',
     borderOpacity: 1,

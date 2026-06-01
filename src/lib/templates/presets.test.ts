@@ -14,6 +14,7 @@ describe('STYLE_PRESETS', () => {
       mage: 'mage-border-01',
       rogue: 'rogue-border-01',
       cleric: 'cleric-border-01',
+      ranger: 'ranger-border-01',
       undead: 'undead-border-01',
       monster: 'monster-border-01',
     };

@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-import { BORDER_TEMPLATES, getBorderById, getPresetBorderTemplates } from './borders';
+import {
+  BORDER_TEMPLATES,
+  getBorderById,
+  getPresetBorderTemplates,
+  getVisibleBorderTemplates,
+} from './borders';
 
 function hasWebpAlpha(filePath: string): boolean {
   const data = readFileSync(filePath);
@@ -36,6 +41,7 @@ describe('border templates', () => {
       mage: 30,
       rogue: 30,
       cleric: 30,
+      ranger: 29,
       monster: 31,
       undead: 29,
     } as const;
@@ -60,7 +66,17 @@ describe('border templates', () => {
   });
 
   it('returns no preset border templates for presets without generated border assets', () => {
-    expect(getPresetBorderTemplates('ranger')).toEqual([]);
+    expect(getPresetBorderTemplates('other')).toEqual([]);
+  });
+
+  it('keeps the previous generic wood border available in the other category', () => {
+    const otherBorders = getVisibleBorderTemplates({
+      activePresetId: 'other',
+      selectedBorderId: 'ranger-border-01',
+      borderLibraryMode: 'default',
+    });
+
+    expect(otherBorders.map((border) => border.id)).toContain('wood');
   });
 
   it('keeps generated preset border assets transparent', () => {

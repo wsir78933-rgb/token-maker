@@ -65,6 +65,7 @@ const PRESET_BORDER_COUNTS = {
   mage: 30,
   rogue: 30,
   cleric: 30,
+  ranger: 29,
   undead: 29,
   monster: 31,
 } as const;
@@ -104,6 +105,7 @@ const PRESET_BORDER_TEMPLATES: BorderTemplate[] = [
   ...createPresetBorderTemplates('mage'),
   ...createPresetBorderTemplates('rogue'),
   ...createPresetBorderTemplates('cleric'),
+  ...createPresetBorderTemplates('ranger'),
   ...createPresetBorderTemplates('undead'),
   ...createPresetBorderTemplates('monster'),
 ];
