@@ -17,12 +17,20 @@ vi.mock('@/lib/renderer/borders', () => ({
   drawBorderThumbnail: vi.fn(),
 }));
 
+vi.mock('@/lib/utils/imageCache', () => ({
+  preloadImageToCache: vi.fn(async () => new Image()),
+}));
+
 vi.mock('./export-token', () => ({
   downloadCurrentTokenWithSharePrompt: vi.fn(),
   getLocalizedName: (key: string) => key,
 }));
 
 import { TemplatePanel } from './TemplatePanel';
+import { preloadImageToCache } from '@/lib/utils/imageCache';
+
+const preloadImageToCacheMock = vi.mocked(preloadImageToCache);
+const originalCreateObjectURL = URL.createObjectURL;
 
 function resetStore() {
   useEditorStore.getState().resetAll();
@@ -67,6 +75,10 @@ describe('TemplatePanel preset border assets', () => {
     cleanup();
     resetStore();
     vi.unstubAllGlobals();
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: originalCreateObjectURL,
+    });
     vi.clearAllMocks();
   });
 
@@ -115,5 +127,28 @@ describe('TemplatePanel preset border assets', () => {
     fireEvent.click(screen.getByTitle('warrior'));
 
     expect(screen.getByTestId('border-thumbnail-surface-warrior-border-01').className).toContain('bg-black');
+  });
+
+  it('accepts large custom borders as temporary browser object URLs', async () => {
+    const createObjectURL = vi.fn(() => 'blob:custom-border');
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: createObjectURL,
+    });
+    const customBorderFile = new File(['border'], 'large-border.webp', { type: 'image/webp' });
+    Object.defineProperty(customBorderFile, 'size', {
+      configurable: true,
+      value: 2 * 1024 * 1024,
+    });
+
+    render(<TemplatePanel />);
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [customBorderFile] } });
+
+    expect(await screen.findByRole('button', { name: 'Custom' })).toBeDefined();
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(createObjectURL).toHaveBeenCalledWith(customBorderFile);
+    expect(preloadImageToCacheMock).toHaveBeenCalledWith('blob:custom-border');
+    expect(useEditorStore.getState().customBorders[0]?.customImageUrl).toBe('blob:custom-border');
   });
 });

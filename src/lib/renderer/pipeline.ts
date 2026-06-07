@@ -53,6 +53,24 @@ function getDerivedBorderMaskImageUrl(border?: BorderTemplate): string | null {
   return border?.customImageUrl || border?.imageUrl || null;
 }
 
+export function getImageBorderInteriorMaskId(
+  state: Pick<EditorState, 'selectedMaskId'>,
+  border?: BorderTemplate
+): string | null {
+  if (!hasImageBasedBorder(border) || getExplicitMaskImageUrl(border)) {
+    return null;
+  }
+
+  return border?.linkedMaskId ?? state.selectedMaskId;
+}
+
+export function shouldApplyImageBorderInteriorFallback(
+  interiorMaskId: string | null,
+  centerPixelTouchesOutside: boolean
+): boolean {
+  return Boolean(interiorMaskId && centerPixelTouchesOutside);
+}
+
 function getSelectedBorder(state: EditorState) {
   return (
     getBorderById(state.selectedBorderId) ??
@@ -117,7 +135,8 @@ function applyMaskToCanvas(
 function buildImageBorderMask(
   borderImage: HTMLImageElement,
   cacheKey: string,
-  outputSize: number
+  outputSize: number,
+  interiorMaskId: string | null
 ): HTMLCanvasElement | null {
   const cachedMask = getLruCacheEntry(IMAGE_BORDER_MASK_CACHE, cacheKey);
   if (cachedMask) return cachedMask;
@@ -129,18 +148,18 @@ function buildImageBorderMask(
   if (!sourceCtx) return null;
 
   sourceCtx.clearRect(0, 0, outputSize, outputSize);
-  const inset = getBorderRenderInset(outputSize, { id: 'image-border', name: '', type: 'image' });
-  drawImageAssetWithInset(sourceCtx, borderImage, outputSize, inset);
+  const imageBorderRenderInset = getBorderRenderInset(outputSize, { id: 'image-border', name: '', type: 'image' });
+  drawImageAssetWithInset(sourceCtx, borderImage, outputSize, imageBorderRenderInset);
 
   const sourceImageData = sourceCtx.getImageData(0, 0, outputSize, outputSize);
-  const { data } = sourceImageData;
+  const sourcePixelValues = sourceImageData.data;
   const pixelCount = outputSize * outputSize;
   const outsidePixels = new Uint8Array(pixelCount);
   const queue = new Uint32Array(pixelCount);
   let head = 0;
   let tail = 0;
 
-  const isTransparent = (index: number) => data[index * 4 + 3] <= BORDER_ALPHA_THRESHOLD;
+  const isTransparent = (index: number) => sourcePixelValues[index * 4 + 3] <= BORDER_ALPHA_THRESHOLD;
   const tryEnqueue = (index: number) => {
     if (outsidePixels[index] || !isTransparent(index)) return;
     outsidePixels[index] = 1;
@@ -178,7 +197,7 @@ function buildImageBorderMask(
 
   for (let index = 0; index < pixelCount; index += 1) {
     const offset = index * 4;
-    const borderAlpha = data[offset + 3];
+    const borderAlpha = sourcePixelValues[offset + 3];
     const isEnclosedArea = outsidePixels[index] === 0;
 
     if (!isEnclosedArea && borderAlpha <= BORDER_ALPHA_THRESHOLD) {
@@ -192,6 +211,18 @@ function buildImageBorderMask(
   }
 
   maskCtx.putImageData(maskImageData, 0, 0);
+
+  const centerPixelIndex = Math.floor(outputSize / 2) * outputSize + Math.floor(outputSize / 2);
+  const centerPixelTouchesOutside = outsidePixels[centerPixelIndex] === 1;
+  if (interiorMaskId && shouldApplyImageBorderInteriorFallback(interiorMaskId, centerPixelTouchesOutside)) {
+    const interiorMask = getMaskById(interiorMaskId);
+    if (interiorMask) {
+      const interiorPath = createMaskPathWithInset(interiorMask, outputSize, imageBorderRenderInset);
+      maskCtx.fillStyle = '#ffffff';
+      maskCtx.fill(interiorPath);
+    }
+  }
+
   setLruCacheEntry(
     IMAGE_BORDER_MASK_CACHE,
     cacheKey,
@@ -227,10 +258,12 @@ function applyFinalMask(
     if (hasImageBasedBorder(border) && borderMaskImageUrl) {
       const borderImage = getCachedImage(borderMaskImageUrl, onAssetChange);
       if (borderImage) {
+        const interiorMaskId = getImageBorderInteriorMaskId(state, border);
         const maskCanvas = buildImageBorderMask(
           borderImage,
-          `${borderMaskImageUrl}::${outputSize}`,
-          outputSize
+          `${borderMaskImageUrl}::${outputSize}::${interiorMaskId ?? 'no-interior-mask'}`,
+          outputSize,
+          interiorMaskId
         );
 
         if (maskCanvas) {

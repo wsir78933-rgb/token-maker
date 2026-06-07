@@ -2,7 +2,12 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { getTokenRenderAssetUrls } from './pipeline';
+import { getBorderById } from '@/lib/templates/borders';
+import {
+  getImageBorderInteriorMaskId,
+  getTokenRenderAssetUrls,
+  shouldApplyImageBorderInteriorFallback,
+} from './pipeline';
 import type { EditorState } from '@/types/editor';
 
 function createState(overrides: Partial<EditorState>): EditorState {
@@ -62,5 +67,26 @@ describe('getTokenRenderAssetUrls', () => {
         })
       )
     ).toEqual([customImageUrl]);
+  });
+});
+
+describe('getImageBorderInteriorMaskId', () => {
+  it('uses the linked mask as the final interior clip for preset image borders', () => {
+    expect(
+      getImageBorderInteriorMaskId(
+        createState({ selectedMaskId: 'square' }),
+        getBorderById('rogue-border-07')
+      )
+    ).toBe('circle');
+  });
+});
+
+describe('shouldApplyImageBorderInteriorFallback', () => {
+  it('does not expand the final mask when the border already encloses the portrait area', () => {
+    expect(shouldApplyImageBorderInteriorFallback('circle', false)).toBe(false);
+  });
+
+  it('adds the interior fallback only when the border center is connected to the outside', () => {
+    expect(shouldApplyImageBorderInteriorFallback('circle', true)).toBe(true);
   });
 });

@@ -70,6 +70,9 @@ const PRESET_BORDER_COUNTS = {
   monster: 31,
 } as const;
 const PRESET_BORDER_ASSET_VERSION = 'alpha-20260531';
+const OMITTED_PRESET_BORDER_NUMBERS: Partial<Record<keyof typeof PRESET_BORDER_COUNTS, readonly string[]>> = {
+  rogue: ['06', '09'],
+};
 
 function padPresetBorderIndex(index: number) {
   return String(index).padStart(2, '0');
@@ -84,10 +87,12 @@ function getVersionedPresetBorderThumbUrl(presetId: keyof typeof PRESET_BORDER_C
 }
 
 function createPresetBorderTemplates(presetId: keyof typeof PRESET_BORDER_COUNTS): BorderTemplate[] {
+  const omittedBorderNumbers = new Set(OMITTED_PRESET_BORDER_NUMBERS[presetId] ?? []);
+
   return Array.from({ length: PRESET_BORDER_COUNTS[presetId] }, (_, index) => {
     const borderNumber = padPresetBorderIndex(index + 1);
 
-    return {
+    const presetBorder: BorderTemplate = {
       id: `${presetId}-border-${borderNumber}`,
       name: `border.${presetId}.${borderNumber}`,
       type: 'image',
@@ -97,6 +102,11 @@ function createPresetBorderTemplates(presetId: keyof typeof PRESET_BORDER_COUNTS
       thumbSrc: getVersionedPresetBorderThumbUrl(presetId, borderNumber),
       depthStrength: 0.35,
     };
+
+    return presetBorder;
+  }).filter((border) => {
+    const borderNumber = border.id.slice(-2);
+    return !omittedBorderNumbers.has(borderNumber);
   });
 }
 

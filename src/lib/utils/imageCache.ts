@@ -1,6 +1,6 @@
 // ============================================================
 // 图像缓存工具库
-// 用于全局缓存用户上传的自定义边框和 Mask Base64 图像
+// 用于全局缓存边框、Mask 和用户临时上传的图像 URL
 // 确保 Canvas 同步绘制时能够立即拿到解析好的 HTMLImageElement
 // ============================================================
 
@@ -67,20 +67,7 @@ export function getCachedImage(url: string, onChange?: () => void): HTMLImageEle
 }
 
 /**
- * 将 File (PNG/WEBP/SVG) 转换为 Base64
- * 用于持久化保存到自定义模板中
- */
-export async function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-/**
- * 直接将 base64 预热并放入缓存中
+ * 直接将图像 URL 预热并放入缓存中
  */
 export async function preloadImageToCache(url: string): Promise<HTMLImageElement> {
   const cachedImage = getLruCacheEntry(IMAGES_CACHE, url);

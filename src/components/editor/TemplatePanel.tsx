@@ -12,14 +12,12 @@ import { drawBorderThumbnail } from '@/lib/renderer/borders';
 import { Button } from '@/components/ui/button';
 import type { BorderTemplate, ExportSize } from '@/types/editor';
 import { DownloadCloud, Plus, Trash2 } from 'lucide-react';
-import { fileToBase64, preloadImageToCache } from '@/lib/utils/imageCache';
+import { preloadImageToCache } from '@/lib/utils/imageCache';
 import { downloadCurrentTokenWithSharePrompt, getLocalizedName } from './export-token';
 import { useBorderTemplatesState, useTemplatePanelState } from './editor-store-hooks';
 
 const SIZES: ExportSize[] = [256, 512, 1024, 2048];
 const MAX_CUSTOM_BORDERS = 8;
-const MAX_CUSTOM_BORDER_BYTES = 512 * 1024;
-const MAX_CUSTOM_BORDER_STORAGE_CHARS = 2 * 1024 * 1024;
 const SUPPORTED_CUSTOM_BORDER_NAME = /\.(png|jpe?g|webp|svg)$/i;
 const SUPPORTED_CUSTOM_BORDER_TYPES = new Set([
   'image/png',
@@ -32,8 +30,25 @@ function isSupportedCustomBorderFile(file: File) {
   return SUPPORTED_CUSTOM_BORDER_TYPES.has(file.type) || SUPPORTED_CUSTOM_BORDER_NAME.test(file.name);
 }
 
-function getCustomBorderStorageUsage(customBorders: BorderTemplate[]) {
-  return customBorders.reduce((total, border) => total + (border.customImageUrl?.length ?? 0), 0);
+function createTemporaryCustomBorderUrl(file: File) {
+  if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
+    throw new Error(`URL.createObjectURL is unavailable for custom border file: ${file.name}`);
+  }
+
+  return URL.createObjectURL(file);
+}
+
+function revokeTemporaryCustomBorderUrl(customBorderUrl: string | null) {
+  if (
+    !customBorderUrl ||
+    !customBorderUrl.startsWith('blob:') ||
+    typeof URL === 'undefined' ||
+    typeof URL.revokeObjectURL !== 'function'
+  ) {
+    return;
+  }
+
+  URL.revokeObjectURL(customBorderUrl);
 }
 
 function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
@@ -42,18 +57,10 @@ function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
       locale === 'zh'
         ? '请上传 PNG、JPG、WEBP 或 SVG 边框文件。'
         : 'Upload a PNG, JPG, WEBP, or SVG border file.',
-    tooLarge:
-      locale === 'zh'
-        ? '自定义边框不能超过 512KB，避免浏览器存储失效。'
-        : 'Custom borders must stay under 512KB to keep browser storage reliable.',
     tooMany:
       locale === 'zh'
         ? `最多保留 ${MAX_CUSTOM_BORDERS} 个自定义边框，请先删除旧边框。`
         : `Keep at most ${MAX_CUSTOM_BORDERS} custom borders. Remove one before adding more.`,
-    storageFull:
-      locale === 'zh'
-        ? '自定义边框存储空间已满，请先删除旧边框。'
-        : 'Custom border storage is full. Remove an older border first.',
     failed:
       locale === 'zh'
         ? '读取这个边框失败，请换一个文件再试。'
@@ -211,32 +218,25 @@ function BorderTemplatesSection({ className = '' }: { className?: string }) {
       return;
     }
 
-    if (file.size > MAX_CUSTOM_BORDER_BYTES) {
-      setCustomBorderError(errorCopy.tooLarge);
-      resetInput();
-      return;
-    }
-
+    let customBorderUrl: string | null = null;
     try {
-      const base64 = await fileToBase64(file);
-      if (getCustomBorderStorageUsage(customBorders) + base64.length > MAX_CUSTOM_BORDER_STORAGE_CHARS) {
-        setCustomBorderError(errorCopy.storageFull);
-        return;
-      }
-
-      await preloadImageToCache(base64);
+      customBorderUrl = createTemporaryCustomBorderUrl(file);
+      await preloadImageToCache(customBorderUrl);
       const newId = `custom-border-${Date.now()}`;
       addCustomBorder({
         id: newId,
         name: 'Custom',
         type: 'image',
         isCustom: true,
-        customImageUrl: base64
+        customImageUrl: customBorderUrl,
       });
+      customBorderUrl = null;
       setSelectedBorder(newId);
       setCustomBorderError(null);
       trackApplyBorder('Custom');
-    } catch {
+    } catch (error) {
+      revokeTemporaryCustomBorderUrl(customBorderUrl);
+      console.error(`Failed to upload custom border file: ${file.name}`, error);
       setCustomBorderError(errorCopy.failed);
     } finally {
       resetInput();

@@ -39,7 +39,7 @@ describe('border templates', () => {
     const expectedPresetCounts = {
       warrior: 28,
       mage: 30,
-      rogue: 30,
+      rogue: 28,
       cleric: 30,
       ranger: 29,
       monster: 31,
@@ -63,6 +63,14 @@ describe('border templates', () => {
         linkedMaskId: 'circle',
       });
     }
+  });
+
+  it('removes the two broken rogue border assets from the selectable templates', () => {
+    const rogueBorderIds = getPresetBorderTemplates('rogue').map((border) => border.id);
+
+    expect(rogueBorderIds).not.toContain('rogue-border-06');
+    expect(rogueBorderIds).not.toContain('rogue-border-09');
+    expect(rogueBorderIds).toContain('rogue-border-30');
   });
 
   it('returns no preset border templates for presets without generated border assets', () => {

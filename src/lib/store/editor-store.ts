@@ -1,8 +1,15 @@
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import {
+  createJSONStorage,
+  persist,
+  type PersistStorage,
+  type StorageValue,
+} from 'zustand/middleware';
 import { getBorderById } from '@/lib/templates/borders';
 import { STYLE_PRESETS } from '@/lib/templates/presets';
 import type { BorderLibraryMode, EditorStore, EditorState, StylePreset } from '@/types/editor';
+
+type PersistedEditorState = Partial<Omit<EditorState, 'imageElement'>>;
 
 function isImageBorderSelection(
   borderId: string,
@@ -25,7 +32,13 @@ function getBorderLibraryModeForPreset(preset: StylePreset): BorderLibraryMode {
 }
 
 function revokeOwnedObjectUrl(url: string | null, nextUrl?: string | null) {
-  if (!url || url === nextUrl || !url.startsWith('blob:') || typeof URL === 'undefined') {
+  if (
+    !url ||
+    url === nextUrl ||
+    !url.startsWith('blob:') ||
+    typeof URL === 'undefined' ||
+    typeof URL.revokeObjectURL !== 'function'
+  ) {
     return;
   }
 
@@ -47,6 +60,21 @@ function getBrowserStorage() {
   }
 
   return storage;
+}
+
+function isTemporaryCustomBorderId(borderId: string) {
+  return borderId.startsWith('custom-border-');
+}
+
+function isTemporaryCustomBorderSelection(
+  borderId: string,
+  customBorders: EditorState['customBorders']
+) {
+  return isTemporaryCustomBorderId(borderId) || customBorders.some((border) => border.id === borderId);
+}
+
+function revokeCustomBorderObjectUrls(customBorders: EditorState['customBorders']) {
+  customBorders.forEach((border) => revokeOwnedObjectUrl(border.customImageUrl ?? null));
 }
 
 const INITIAL_STATE: Omit<EditorState, 'imageElement'> = {
@@ -75,6 +103,134 @@ const INITIAL_STATE: Omit<EditorState, 'imageElement'> = {
   activePresetId: DEFAULT_PRESET.id,
   renderRevision: 0,
 };
+
+function getPersistedTemplateState(state: EditorState) {
+  if (!isTemporaryCustomBorderSelection(state.selectedBorderId, state.customBorders)) {
+    return {
+      selectedBorderId: state.selectedBorderId,
+      selectedMaskId: state.selectedMaskId,
+      borderLibraryMode: state.borderLibraryMode,
+      imageBorderTintEnabled: state.imageBorderTintEnabled,
+      activePresetId: state.activePresetId,
+    };
+  }
+
+  return {
+    selectedBorderId: DEFAULT_PRESET.borderId,
+    selectedMaskId: DEFAULT_PRESET.maskId,
+    borderLibraryMode: getBorderLibraryModeForPreset(DEFAULT_PRESET),
+    imageBorderTintEnabled: !isImageBorderSelection(DEFAULT_PRESET.borderId, []),
+    activePresetId: null,
+  };
+}
+
+function isObjectRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function hasPersistedCustomBorder(persistedState: Record<string, unknown>) {
+  const persistedSelectedBorderId = persistedState.selectedBorderId;
+  const persistedCustomBorders = persistedState.customBorders;
+
+  return (
+    (typeof persistedSelectedBorderId === 'string' &&
+      isTemporaryCustomBorderId(persistedSelectedBorderId)) ||
+    (Array.isArray(persistedCustomBorders) && persistedCustomBorders.length > 0)
+  );
+}
+
+function sanitizePersistedEditorState(persistedState: Record<string, unknown>): PersistedEditorState {
+  const sanitizedPersistedState = { ...persistedState };
+  delete sanitizedPersistedState.customBorders;
+
+  if (
+    typeof sanitizedPersistedState.selectedBorderId === 'string' &&
+    isTemporaryCustomBorderId(sanitizedPersistedState.selectedBorderId)
+  ) {
+    return {
+      ...sanitizedPersistedState,
+      selectedBorderId: DEFAULT_PRESET.borderId,
+      selectedMaskId: DEFAULT_PRESET.maskId,
+      borderLibraryMode: getBorderLibraryModeForPreset(DEFAULT_PRESET),
+      imageBorderTintEnabled: !isImageBorderSelection(DEFAULT_PRESET.borderId, []),
+      activePresetId: null,
+    };
+  }
+
+  return sanitizedPersistedState;
+}
+
+function sanitizeStoredEditorValue(
+  storedValue: StorageValue<PersistedEditorState> | null
+): StorageValue<PersistedEditorState> | null {
+  if (!storedValue || !isObjectRecord(storedValue.state)) {
+    return storedValue;
+  }
+
+  if (!hasPersistedCustomBorder(storedValue.state)) {
+    return storedValue;
+  }
+
+  return {
+    ...storedValue,
+    state: sanitizePersistedEditorState(storedValue.state),
+  };
+}
+
+function createEditorStorage(): PersistStorage<PersistedEditorState> | undefined {
+  const jsonStorage = createJSONStorage<PersistedEditorState>(getBrowserStorage);
+  if (!jsonStorage) {
+    return undefined;
+  }
+
+  return {
+    getItem: (name) => {
+      const storedValue = jsonStorage.getItem(name);
+      if (storedValue instanceof Promise) {
+        return storedValue.then((resolvedStoredValue) => {
+          const sanitizedStoredValue = sanitizeStoredEditorValue(resolvedStoredValue);
+          if (sanitizedStoredValue && sanitizedStoredValue !== resolvedStoredValue) {
+            jsonStorage.setItem(name, sanitizedStoredValue);
+          }
+          return sanitizedStoredValue;
+        });
+      }
+
+      const sanitizedStoredValue = sanitizeStoredEditorValue(storedValue);
+      if (sanitizedStoredValue && sanitizedStoredValue !== storedValue) {
+        jsonStorage.setItem(name, sanitizedStoredValue);
+      }
+      return sanitizedStoredValue;
+    },
+    setItem: jsonStorage.setItem,
+    removeItem: jsonStorage.removeItem,
+  };
+}
+
+function mergePersistedEditorState(persistedState: unknown, currentState: EditorStore): EditorStore {
+  if (!isObjectRecord(persistedState)) {
+    return currentState;
+  }
+
+  const mergedState = {
+    ...currentState,
+    ...persistedState,
+    imageElement: null,
+    customBorders: [],
+  } as EditorStore;
+
+  if (isTemporaryCustomBorderId(mergedState.selectedBorderId)) {
+    return {
+      ...mergedState,
+      ...getPersistedTemplateState({
+        ...mergedState,
+        customBorders: [{ id: mergedState.selectedBorderId, name: 'Custom', type: 'image' }],
+      }),
+    };
+  }
+
+  return mergedState;
+}
 
 export const useEditorStore = create<EditorStore>()(
   persist(
@@ -140,11 +296,16 @@ export const useEditorStore = create<EditorStore>()(
       addCustomBorder: (template) =>
         set((state) => ({ customBorders: [...state.customBorders, template] })),
       removeCustomBorder: (id) =>
-        set((state) => ({
-          customBorders: state.customBorders.filter((b) => b.id !== id),
-          selectedBorderId: state.selectedBorderId === id ? 'none' : state.selectedBorderId,
-          imageBorderTintEnabled: state.selectedBorderId === id ? true : state.imageBorderTintEnabled,
-        })),
+        set((state) => {
+          const removedBorder = state.customBorders.find((border) => border.id === id);
+          revokeOwnedObjectUrl(removedBorder?.customImageUrl ?? null);
+
+          return {
+            customBorders: state.customBorders.filter((border) => border.id !== id),
+            selectedBorderId: state.selectedBorderId === id ? 'none' : state.selectedBorderId,
+            imageBorderTintEnabled: state.selectedBorderId === id ? true : state.imageBorderTintEnabled,
+          };
+        }),
       setBorderLibraryMode: (mode) => set({ borderLibraryMode: mode }),
 
       // --- 样式 ---
@@ -210,6 +371,7 @@ export const useEditorStore = create<EditorStore>()(
       resetAll: () =>
         set((state) => {
           revokeOwnedObjectUrl(state.imageUrl);
+          revokeCustomBorderObjectUrls(state.customBorders);
 
           return {
             ...INITIAL_STATE,
@@ -220,27 +382,29 @@ export const useEditorStore = create<EditorStore>()(
     }),
     {
       name: 'token-maker-storage',
-      storage: createJSONStorage(getBrowserStorage),
+      storage: createEditorStorage(),
+      merge: mergePersistedEditorState,
       // 不持久化 imageElement (因为是 DOM 对象) 和 imageUrl (如果是 objectURL)
       partialize: (state) => {
+        const persistedTemplateState = getPersistedTemplateState(state);
+
         return {
           imageUrl: state.imageUrl?.startsWith('blob:') ? null : state.imageUrl,
           imageOffsetX: state.imageOffsetX,
           imageOffsetY: state.imageOffsetY,
           imageScale: state.imageScale,
-          selectedBorderId: state.selectedBorderId,
-          selectedMaskId: state.selectedMaskId,
-          customBorders: state.customBorders,
-          borderLibraryMode: state.borderLibraryMode,
+          selectedBorderId: persistedTemplateState.selectedBorderId,
+          selectedMaskId: persistedTemplateState.selectedMaskId,
+          borderLibraryMode: persistedTemplateState.borderLibraryMode,
           borderTint: state.borderTint,
-          imageBorderTintEnabled: state.imageBorderTintEnabled,
+          imageBorderTintEnabled: persistedTemplateState.imageBorderTintEnabled,
           textColor: state.textColor,
           overlayTint: state.overlayTint,
           borderOpacity: state.borderOpacity,
           overlayOpacity: state.overlayOpacity,
           textBoxes: state.textBoxes,
           selectedTextId: state.selectedTextId,
-          activePresetId: state.activePresetId,
+          activePresetId: persistedTemplateState.activePresetId,
         };
       },
     }
