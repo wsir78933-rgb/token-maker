@@ -51,6 +51,56 @@ function revokeTemporaryCustomBorderUrl(customBorderUrl: string | null) {
   URL.revokeObjectURL(customBorderUrl);
 }
 
+function getNearestScrollOffset(
+  containerScrollOffset: number,
+  containerVisibleSize: number,
+  itemOffset: number,
+  itemSize: number
+) {
+  if (itemOffset < containerScrollOffset) {
+    return itemOffset;
+  }
+
+  const itemEndOffset = itemOffset + itemSize;
+  const containerVisibleEndOffset = containerScrollOffset + containerVisibleSize;
+
+  if (itemEndOffset > containerVisibleEndOffset) {
+    return itemEndOffset - containerVisibleSize;
+  }
+
+  return containerScrollOffset;
+}
+
+function scrollBorderGridToActiveButton(
+  bordersGridElement: HTMLDivElement,
+  activeBorderButton: HTMLElement
+) {
+  const nextScrollLeft = getNearestScrollOffset(
+    bordersGridElement.scrollLeft,
+    bordersGridElement.clientWidth,
+    activeBorderButton.offsetLeft,
+    activeBorderButton.offsetWidth
+  );
+  const nextScrollTop = getNearestScrollOffset(
+    bordersGridElement.scrollTop,
+    bordersGridElement.clientHeight,
+    activeBorderButton.offsetTop,
+    activeBorderButton.offsetHeight
+  );
+
+  if (typeof bordersGridElement.scrollTo === 'function') {
+    bordersGridElement.scrollTo({
+      left: nextScrollLeft,
+      top: nextScrollTop,
+      behavior: 'smooth',
+    });
+    return;
+  }
+
+  bordersGridElement.scrollLeft = nextScrollLeft;
+  bordersGridElement.scrollTop = nextScrollTop;
+}
+
 function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
   return {
     unsupported:
@@ -190,11 +240,9 @@ function BorderTemplatesSection({ className = '' }: { className?: string }) {
       `[data-border-id="${CSS.escape(selectedBorderId)}"]`
     );
 
-    activeBorderButton?.scrollIntoView({
-      block: 'nearest',
-      inline: 'nearest',
-      behavior: 'smooth',
-    });
+    if (!activeBorderButton) return;
+
+    scrollBorderGridToActiveButton(grid, activeBorderButton);
   }, [selectedBorderId]);
 
   const handleUploadBorder = async (e: React.ChangeEvent<HTMLInputElement>) => {

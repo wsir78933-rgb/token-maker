@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { EditorLayout } from '@/components/layout/EditorLayout';
+import { DeferredEditorLayout } from '@/components/layout/DeferredEditorLayout';
 import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -72,7 +72,7 @@ export default function Home() {
       <StructuredData id="homepage-jsonld" data={structuredData} />
       <main lang="en" className="site-shell site-shell--home min-h-screen">
         <HomeHero locale="en" />
-        <EditorLayout />
+        <DeferredEditorLayout />
         <EditorShowcaseSection locale="en" />
         <HomeSeoContent locale="en" />
       </main>

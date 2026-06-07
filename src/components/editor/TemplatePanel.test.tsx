@@ -31,6 +31,7 @@ import { preloadImageToCache } from '@/lib/utils/imageCache';
 
 const preloadImageToCacheMock = vi.mocked(preloadImageToCache);
 const originalCreateObjectURL = URL.createObjectURL;
+let scrollIntoViewMock: ReturnType<typeof vi.fn>;
 
 function resetStore() {
   useEditorStore.getState().resetAll();
@@ -41,7 +42,8 @@ describe('TemplatePanel preset border assets', () => {
 
   beforeEach(() => {
     vi.stubGlobal('CSS', { escape: (value: string) => value });
-    Element.prototype.scrollIntoView = vi.fn();
+    scrollIntoViewMock = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoViewMock;
     HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
       clearRect: vi.fn(),
       beginPath: vi.fn(),
@@ -89,6 +91,12 @@ describe('TemplatePanel preset border assets', () => {
 
     expect(screen.getByRole('button', { name: 'border.warrior.01' })).toBeDefined();
     expect(screen.queryByRole('button', { name: 'border.tff-weathered-copper-ring' })).toBeNull();
+  });
+
+  it('does not scroll the page when the border templates mount', () => {
+    render(<TemplatePanel />);
+
+    expect(scrollIntoViewMock).not.toHaveBeenCalled();
   });
 
   it('switches preset border templates when mage is selected', () => {

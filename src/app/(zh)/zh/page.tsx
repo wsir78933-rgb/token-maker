@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { EditorLayout } from '@/components/layout/EditorLayout';
+import { DeferredEditorLayout } from '@/components/layout/DeferredEditorLayout';
 import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -66,7 +66,7 @@ export default function ChineseHomePage() {
       <StructuredData id="homepage-zh-jsonld" data={structuredData} />
       <main lang="zh-CN" className="site-shell site-shell--home min-h-screen">
         <HomeHero locale="zh" />
-        <EditorLayout />
+        <DeferredEditorLayout />
         <EditorShowcaseSection locale="zh" />
         <HomeSeoContent locale="zh" />
       </main>
