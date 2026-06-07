@@ -30,6 +30,25 @@ describe('DeferredEditorLayout', () => {
     expect(screen.queryByTestId('editor-layout')).toBeNull();
   });
 
+  it('does not preload the full editor while it is still far below the mobile viewport', async () => {
+    const observedRootMargins: string[] = [];
+    class CapturingIntersectionObserver extends IdleIntersectionObserver {
+      constructor(
+        _callback: IntersectionObserverCallback,
+        options?: IntersectionObserverInit,
+      ) {
+        super();
+        observedRootMargins.push(String(options?.rootMargin));
+      }
+    }
+    vi.stubGlobal('IntersectionObserver', CapturingIntersectionObserver);
+    const { DeferredEditorLayout } = await import('./DeferredEditorLayout');
+
+    render(<DeferredEditorLayout />);
+
+    expect(observedRootMargins).toEqual(['120px 0px']);
+  });
+
   it('loads the editor immediately for direct editor links', async () => {
     window.history.replaceState(null, '', '/#editor-workspace');
     const { DeferredEditorLayout } = await import('./DeferredEditorLayout');

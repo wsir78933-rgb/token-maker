@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { useEditorStore } from '@/lib/store/editor-store';
 
@@ -32,6 +32,36 @@ import { preloadImageToCache } from '@/lib/utils/imageCache';
 const preloadImageToCacheMock = vi.mocked(preloadImageToCache);
 const originalCreateObjectURL = URL.createObjectURL;
 let scrollIntoViewMock: ReturnType<typeof vi.fn>;
+
+function getBorderScrollRegion(borderButton: HTMLElement) {
+  const borderGridElement = borderButton.parentElement?.parentElement;
+  const borderScrollRegion = borderGridElement?.parentElement;
+
+  if (!(borderScrollRegion instanceof HTMLDivElement)) {
+    throw new Error(`Could not find border scroll region for: ${borderButton.getAttribute('aria-label')}`);
+  }
+
+  return borderScrollRegion;
+}
+
+function setElementNumberProperty(element: Element, propertyName: string, value: number) {
+  Object.defineProperty(element, propertyName, {
+    configurable: true,
+    value,
+  });
+}
+
+function setElementRect(
+  element: Element,
+  rect: Pick<DOMRect, 'top' | 'right' | 'bottom' | 'left' | 'width' | 'height'>
+) {
+  element.getBoundingClientRect = vi.fn(() => ({
+    ...rect,
+    x: rect.left,
+    y: rect.top,
+    toJSON: () => rect,
+  })) as unknown as typeof element.getBoundingClientRect;
+}
 
 function resetStore() {
   useEditorStore.getState().resetAll();
@@ -97,6 +127,52 @@ describe('TemplatePanel preset border assets', () => {
     render(<TemplatePanel />);
 
     expect(scrollIntoViewMock).not.toHaveBeenCalled();
+  });
+
+  it('keeps the border templates list position when a visible lower border is selected', async () => {
+    render(<TemplatePanel />);
+
+    const lowerBorderButton = screen.getByRole('button', { name: 'border.tff-arcane-lightning-ring' });
+    const borderScrollRegion = getBorderScrollRegion(lowerBorderButton);
+    const scrollToMock = vi.fn();
+
+    Object.defineProperty(borderScrollRegion, 'scrollTo', {
+      configurable: true,
+      value: scrollToMock,
+    });
+    borderScrollRegion.scrollTop = 300;
+    borderScrollRegion.scrollLeft = 0;
+    setElementNumberProperty(borderScrollRegion, 'clientHeight', 280);
+    setElementNumberProperty(borderScrollRegion, 'clientWidth', 240);
+    setElementNumberProperty(lowerBorderButton, 'offsetTop', 0);
+    setElementNumberProperty(lowerBorderButton, 'offsetLeft', 0);
+    setElementNumberProperty(lowerBorderButton, 'offsetHeight', 100);
+    setElementNumberProperty(lowerBorderButton, 'offsetWidth', 100);
+    setElementRect(borderScrollRegion, {
+      top: 100,
+      right: 340,
+      bottom: 380,
+      left: 100,
+      width: 240,
+      height: 280,
+    });
+    setElementRect(lowerBorderButton, {
+      top: 280,
+      right: 220,
+      bottom: 380,
+      left: 120,
+      width: 100,
+      height: 100,
+    });
+
+    fireEvent.click(lowerBorderButton);
+
+    await waitFor(() => expect(scrollToMock).toHaveBeenCalled());
+    expect(scrollToMock).toHaveBeenLastCalledWith({
+      left: 0,
+      top: 300,
+      behavior: 'smooth',
+    });
   });
 
   it('switches preset border templates when mage is selected', () => {

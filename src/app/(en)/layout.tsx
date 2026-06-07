@@ -22,10 +22,8 @@ export default function EnglishRootLayout({
       className="dark scroll-smooth"
       suppressHydrationWarning
     >
-      <head>
-        <MicrosoftClarity />
-      </head>
       <body className="antialiased">
+        <MicrosoftClarity />
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>

@@ -1,14 +1,18 @@
+import Script from 'next/script';
+
 const CLARITY_PROJECT_ID = 'wlcq64go88';
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
+const CLARITY_SCRIPT_STRATEGY = 'lazyOnload';
 
 export function MicrosoftClarity() {
-  if (!IS_PRODUCTION) {
+  if (IS_DEVELOPMENT) {
     return null;
   }
 
   return (
-    <script
+    <Script
       id="microsoft-clarity"
+      strategy={CLARITY_SCRIPT_STRATEGY}
       type="text/javascript"
       dangerouslySetInnerHTML={{
         __html: `

@@ -8,7 +8,7 @@ const DeferredEditor = dynamic(
   { ssr: false },
 );
 
-const EDITOR_PRELOAD_MARGIN = '720px 0px';
+const EDITOR_PRELOAD_MARGIN = '120px 0px';
 const EDITOR_SEARCH_PARAM_NAMES = ['preset', 'mask', 'border', 'size'] as const;
 
 function hasEditorSearchParam(searchParams: URLSearchParams) {

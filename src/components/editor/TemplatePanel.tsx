@@ -71,21 +71,47 @@ function getNearestScrollOffset(
   return containerScrollOffset;
 }
 
+function getElementOffsetInsideScrollContainer(
+  scrollContainer: HTMLElement,
+  targetElement: HTMLElement,
+  axis: 'horizontal' | 'vertical'
+) {
+  const scrollContainerRect = scrollContainer.getBoundingClientRect();
+  const targetElementRect = targetElement.getBoundingClientRect();
+
+  if (axis === 'horizontal') {
+    return scrollContainer.scrollLeft + targetElementRect.left - scrollContainerRect.left;
+  }
+
+  return scrollContainer.scrollTop + targetElementRect.top - scrollContainerRect.top;
+}
+
 function scrollBorderGridToActiveButton(
   bordersGridElement: HTMLDivElement,
   activeBorderButton: HTMLElement
 ) {
+  const activeBorderLeft = getElementOffsetInsideScrollContainer(
+    bordersGridElement,
+    activeBorderButton,
+    'horizontal'
+  );
+  const activeBorderTop = getElementOffsetInsideScrollContainer(
+    bordersGridElement,
+    activeBorderButton,
+    'vertical'
+  );
+  const activeBorderRect = activeBorderButton.getBoundingClientRect();
   const nextScrollLeft = getNearestScrollOffset(
     bordersGridElement.scrollLeft,
     bordersGridElement.clientWidth,
-    activeBorderButton.offsetLeft,
-    activeBorderButton.offsetWidth
+    activeBorderLeft,
+    activeBorderRect.width
   );
   const nextScrollTop = getNearestScrollOffset(
     bordersGridElement.scrollTop,
     bordersGridElement.clientHeight,
-    activeBorderButton.offsetTop,
-    activeBorderButton.offsetHeight
+    activeBorderTop,
+    activeBorderRect.height
   );
 
   if (typeof bordersGridElement.scrollTo === 'function') {
