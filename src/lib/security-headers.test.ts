@@ -18,13 +18,29 @@ async function getContentSecurityPolicyHeader() {
   return contentSecurityPolicyHeader.value;
 }
 
+function getContentSecurityPolicyDirective(contentSecurityPolicy: string, directiveName: string) {
+  const directive = contentSecurityPolicy
+    .split('; ')
+    .find((contentSecurityPolicyDirective) => contentSecurityPolicyDirective.startsWith(`${directiveName} `));
+
+  if (!directive) {
+    throw new Error(`Content-Security-Policy directive is missing: ${directiveName}`);
+  }
+
+  return directive;
+}
+
 describe('security headers', () => {
   it('allows production analytics resources that are injected on the live site', async () => {
     const contentSecurityPolicy = await getContentSecurityPolicyHeader();
+    const connectSrc = getContentSecurityPolicyDirective(contentSecurityPolicy, 'connect-src');
 
     expect(contentSecurityPolicy).toContain('https://scripts.clarity.ms');
     expect(contentSecurityPolicy).toContain('https://c.clarity.ms');
     expect(contentSecurityPolicy).toContain('https://static.cloudflareinsights.com');
-    expect(contentSecurityPolicy).toContain('https://cloudflareinsights.com');
+    expect(connectSrc).toContain('https://www.google-analytics.com');
+    expect(connectSrc).toContain('https://www.googletagmanager.com');
+    expect(connectSrc).toContain('https://cloudflareinsights.com');
+    expect(connectSrc).toContain('https://*.clarity.ms');
   });
 });
