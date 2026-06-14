@@ -7,9 +7,14 @@ import { useShareDialogStore } from '@/lib/store/share-dialog-store';
 import { SHARE_SOCIAL_IMAGE_WIDTH } from '@/lib/share/constants';
 import { ShareDialog } from './ShareDialog';
 
+const originalCreateObjectURL = URL.createObjectURL;
+const originalRevokeObjectURL = URL.revokeObjectURL;
+
 const mocks = vi.hoisted(() => ({
   uploadTokenForShare: vi.fn(() => new Promise(() => undefined)),
   saveAs: vi.fn(),
+  clipboardWriteText: vi.fn(),
+  windowOpen: vi.fn(),
 }));
 
 vi.mock('@/lib/i18n', () => ({
@@ -84,12 +89,23 @@ function openDialog() {
 
 describe('ShareDialog', () => {
   beforeEach(() => {
-    vi.stubGlobal('URL', {
-      createObjectURL: vi.fn(() => 'blob:token-preview'),
-      revokeObjectURL: vi.fn(),
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: vi.fn(() => 'blob:token-preview'),
     });
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      value: vi.fn(),
+    });
+    Object.defineProperty(window.navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: mocks.clipboardWriteText },
+    });
+    vi.stubGlobal('open', mocks.windowOpen);
     mocks.uploadTokenForShare.mockClear();
     mocks.saveAs.mockClear();
+    mocks.clipboardWriteText.mockClear();
+    mocks.windowOpen.mockClear();
     useShareDialogStore.setState({ isOpen: false, payload: null });
   });
 
@@ -97,10 +113,26 @@ describe('ShareDialog', () => {
     cleanup();
     useShareDialogStore.setState({ isOpen: false, payload: null });
     vi.unstubAllGlobals();
+    if (originalCreateObjectURL) {
+      Object.defineProperty(URL, 'createObjectURL', {
+        configurable: true,
+        value: originalCreateObjectURL,
+      });
+    } else {
+      delete (URL as Partial<typeof URL>).createObjectURL;
+    }
+    if (originalRevokeObjectURL) {
+      Object.defineProperty(URL, 'revokeObjectURL', {
+        configurable: true,
+        value: originalRevokeObjectURL,
+      });
+    } else {
+      delete (URL as Partial<typeof URL>).revokeObjectURL;
+    }
   });
 
-  it('uses the final dark drawer design and keeps Download available while share link is preparing', async () => {
-    const { blob, previewBlob, shareBlob } = openDialog();
+  it('uses the final dark drawer design and does not upload until the user chooses a share action', async () => {
+    const { blob, previewBlob } = openDialog();
     render(<ShareDialog />);
 
     expect(screen.getByTestId('share-dialog-panel').getAttribute('data-visual-design')).toBe(
@@ -114,23 +146,72 @@ describe('ShareDialog', () => {
     const redditButton = screen.getByRole('button', { name: 'Reddit' }) as HTMLButtonElement;
     const downloadButton = screen.getByRole('button', { name: 'Download' }) as HTMLButtonElement;
 
-    await waitFor(() => expect(copyButton.getAttribute('data-loading')).toBe('true'));
-
-    expect(copyButton.disabled).toBe(true);
-    expect(xButton.disabled).toBe(true);
-    expect(pinterestButton.disabled).toBe(true);
-    expect(redditButton.disabled).toBe(true);
+    expect(copyButton.disabled).toBe(false);
+    expect(xButton.disabled).toBe(false);
+    expect(pinterestButton.disabled).toBe(false);
+    expect(redditButton.disabled).toBe(false);
     expect(downloadButton.disabled).toBe(false);
     expect(downloadButton.getAttribute('data-highlighted')).toBe('true');
     expect(URL.createObjectURL).toHaveBeenCalledWith(previewBlob);
-    expect(mocks.uploadTokenForShare).toHaveBeenCalledWith({
-      blob: shareBlob,
-      width: SHARE_SOCIAL_IMAGE_WIDTH,
-      locale: 'en',
-    });
+    expect(mocks.uploadTokenForShare).not.toHaveBeenCalled();
 
     fireEvent.click(downloadButton);
 
     expect(mocks.saveAs).toHaveBeenCalledWith(blob, 'token.png');
+    expect(mocks.uploadTokenForShare).not.toHaveBeenCalled();
+  });
+
+  it('uploads to R2 when the user copies the share link', async () => {
+    const { shareBlob } = openDialog();
+    mocks.uploadTokenForShare.mockResolvedValue({
+      id: 'abc123def4',
+      shareUrl: 'https://www.tokenmaker.one/share/abc123def4',
+      imageUrl: 'https://r2.tokenmaker.one/shares/abc123def4.png',
+    });
+
+    render(<ShareDialog />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Copy link' }));
+
+    await waitFor(() =>
+      expect(mocks.uploadTokenForShare).toHaveBeenCalledWith({
+        blob: shareBlob,
+        width: SHARE_SOCIAL_IMAGE_WIDTH,
+        locale: 'en',
+      })
+    );
+    await waitFor(() =>
+      expect(mocks.clipboardWriteText).toHaveBeenCalledWith(
+        'https://www.tokenmaker.one/share/abc123def4'
+      )
+    );
+  });
+
+  it('uploads to R2 when the user shares to a social platform', async () => {
+    const { shareBlob } = openDialog();
+    mocks.uploadTokenForShare.mockResolvedValue({
+      id: 'abc123def4',
+      shareUrl: 'https://www.tokenmaker.one/share/abc123def4',
+      imageUrl: 'https://r2.tokenmaker.one/shares/abc123def4.png',
+    });
+
+    render(<ShareDialog />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Pinterest' }));
+
+    await waitFor(() =>
+      expect(mocks.uploadTokenForShare).toHaveBeenCalledWith({
+        blob: shareBlob,
+        width: SHARE_SOCIAL_IMAGE_WIDTH,
+        locale: 'en',
+      })
+    );
+    await waitFor(() =>
+      expect(mocks.windowOpen).toHaveBeenCalledWith(
+        expect.stringContaining('https://www.pinterest.com/pin/create/button/'),
+        '_blank',
+        'noopener,noreferrer'
+      )
+    );
   });
 });

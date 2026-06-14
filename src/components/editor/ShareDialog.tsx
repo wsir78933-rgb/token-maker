@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { saveAs } from 'file-saver';
 import {
@@ -29,13 +29,21 @@ import {
   trackShareUploadStart,
   trackShareUploadSuccess,
 } from '@/lib/analytics';
-import { useShareDialogStore } from '@/lib/store/share-dialog-store';
+import { useShareDialogStore, type ShareDialogPayload } from '@/lib/store/share-dialog-store';
 import { ShareUploadRequestError, uploadTokenForShare, type ShareUploadResponse } from '@/lib/share/client-upload';
 import { buildSharePlatformUrl } from '@/lib/share/platforms';
 import { suppressShareDialogFor24Hours } from '@/lib/share/local-frequency';
 import type { SharePlatform } from '@/lib/share/constants';
 
 type ShareStatus = 'idle' | 'uploading' | 'ready' | 'failed';
+
+interface ShareRequestState {
+  payload: ShareDialogPayload;
+  status: ShareStatus;
+  shareData: ShareUploadResponse | null;
+  copied: boolean;
+  errorCode: string | null;
+}
 
 const platformLabels: Array<{ platform: SharePlatform; key: I18nKey }> = [
   { platform: 'x', key: 'shareOnX' },
@@ -140,14 +148,19 @@ export function ShareDialog() {
   const isOpen = useShareDialogStore((state) => state.isOpen);
   const payload = useShareDialogStore((state) => state.payload);
   const closeShareDialog = useShareDialogStore((state) => state.closeShareDialog);
-  const [status, setStatus] = useState<ShareStatus>('idle');
-  const [shareData, setShareData] = useState<ShareUploadResponse | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [errorCode, setErrorCode] = useState<string | null>(null);
-
-  const isShareReady = status === 'ready' && Boolean(shareData);
-  const isShareBusy = status === 'uploading';
   const currentPayload = payload;
+  const [shareRequestState, setShareRequestState] = useState<ShareRequestState | null>(null);
+  const uploadPromiseRef = useRef<{
+    payload: ShareDialogPayload;
+    promise: Promise<ShareUploadResponse | null>;
+  } | null>(null);
+  const activeShareRequestState =
+    shareRequestState?.payload === currentPayload ? shareRequestState : null;
+  const status = activeShareRequestState?.status ?? 'idle';
+  const shareData = activeShareRequestState?.shareData ?? null;
+  const copied = activeShareRequestState?.copied ?? false;
+  const errorCode = activeShareRequestState?.errorCode ?? null;
+  const isShareBusy = status === 'uploading';
 
   const previewUrl = useMemo(() => {
     if (!isOpen || !currentPayload) return null;
@@ -157,7 +170,8 @@ export function ShareDialog() {
   const statusLabel = useMemo(() => {
     if (status === 'ready') return t('shareReady');
     if (status === 'failed') return t('shareFailed');
-    return t('sharePreparing');
+    if (status === 'uploading') return t('sharePreparing');
+    return '';
   }, [status, t]);
 
   useEffect(() => {
@@ -167,106 +181,114 @@ export function ShareDialog() {
   }, [previewUrl]);
 
   useEffect(() => {
-    if (!isOpen || !currentPayload) return;
+    if (!copied) return;
+    const copiedPayload = currentPayload;
+    const timeout = window.setTimeout(() => {
+      setShareRequestState((previousState) =>
+        previousState?.payload === copiedPayload
+          ? { ...previousState, copied: false }
+          : previousState
+      );
+    }, 1500);
+    return () => window.clearTimeout(timeout);
+  }, [copied, currentPayload]);
 
-    let isCancelled = false;
-
-    async function uploadShare() {
-      if (!currentPayload) return;
-
-      setStatus('uploading');
-      setShareData(null);
-      setErrorCode(null);
-      setCopied(false);
-      trackShareUploadStart(currentPayload.shareBlob.size, currentPayload.exportSize);
-
-      try {
-        const result = await uploadTokenForShare({
-          blob: currentPayload.shareBlob,
-          width: currentPayload.shareImageWidth,
-          locale: currentPayload.locale,
-        });
-
-        if (isCancelled) return;
-        setShareData(result);
-        setStatus('ready');
-        trackShareUploadSuccess(currentPayload.shareBlob.size, currentPayload.exportSize);
-      } catch (error) {
-        if (isCancelled) return;
-        const code = getShareErrorCode(error);
-        setErrorCode(code);
-        setStatus('failed');
-        trackShareUploadFail(code, currentPayload.shareBlob.size, currentPayload.exportSize);
-      }
+  const requestShareData = useCallback(async () => {
+    if (!currentPayload) return null;
+    if (shareData) return shareData;
+    if (uploadPromiseRef.current?.payload === currentPayload) {
+      return uploadPromiseRef.current.promise;
     }
 
-    uploadShare();
+    setShareRequestState({
+      payload: currentPayload,
+      status: 'uploading',
+      shareData: null,
+      copied: false,
+      errorCode: null,
+    });
+    trackShareUploadStart(currentPayload.shareBlob.size, currentPayload.exportSize);
 
-    return () => {
-      isCancelled = true;
+    const uploadPromise = uploadTokenForShare({
+      blob: currentPayload.shareBlob,
+      width: currentPayload.shareImageWidth,
+      locale: currentPayload.locale,
+    })
+      .then((result) => {
+        setShareRequestState({
+          payload: currentPayload,
+          status: 'ready',
+          shareData: result,
+          copied: false,
+          errorCode: null,
+        });
+        trackShareUploadSuccess(currentPayload.shareBlob.size, currentPayload.exportSize);
+        return result;
+      })
+      .catch((error) => {
+        const code = getShareErrorCode(error);
+        setShareRequestState({
+          payload: currentPayload,
+          status: 'failed',
+          shareData: null,
+          copied: false,
+          errorCode: code,
+        });
+        trackShareUploadFail(code, currentPayload.shareBlob.size, currentPayload.exportSize);
+        return null;
+      })
+      .finally(() => {
+        if (uploadPromiseRef.current?.payload === currentPayload) {
+          uploadPromiseRef.current = null;
+        }
+      });
+
+    uploadPromiseRef.current = {
+      payload: currentPayload,
+      promise: uploadPromise,
     };
-  }, [currentPayload, isOpen]);
-
-  useEffect(() => {
-    if (!copied) return;
-    const timeout = window.setTimeout(() => setCopied(false), 1500);
-    return () => window.clearTimeout(timeout);
-  }, [copied]);
+    return uploadPromise;
+  }, [currentPayload, shareData]);
 
   const handleRetry = () => {
-    if (!currentPayload) return;
-    setStatus('idle');
-    setShareData(null);
-    setErrorCode(null);
-
-    window.setTimeout(async () => {
-      if (!useShareDialogStore.getState().isOpen) return;
-
-      setStatus('uploading');
-      trackShareUploadStart(currentPayload.shareBlob.size, currentPayload.exportSize);
-
-      try {
-        const result = await uploadTokenForShare({
-          blob: currentPayload.shareBlob,
-          width: currentPayload.shareImageWidth,
-          locale: currentPayload.locale,
-        });
-        setShareData(result);
-        setStatus('ready');
-        trackShareUploadSuccess(currentPayload.shareBlob.size, currentPayload.exportSize);
-      } catch (error) {
-        const code = getShareErrorCode(error);
-        setErrorCode(code);
-        setStatus('failed');
-        trackShareUploadFail(code, currentPayload.shareBlob.size, currentPayload.exportSize);
-      }
-    }, 0);
+    void requestShareData();
   };
 
   const handleCopy = async () => {
-    if (!shareData) return;
+    if (!currentPayload) return;
+    const currentShareData = await requestShareData();
+    if (!currentShareData) return;
 
     try {
-      await navigator.clipboard.writeText(shareData.shareUrl);
-      setCopied(true);
-      trackShareCopyLink(shareData.id);
+      await navigator.clipboard.writeText(currentShareData.shareUrl);
+      setShareRequestState((previousState) =>
+        previousState?.payload === currentPayload
+          ? { ...previousState, copied: true }
+          : previousState
+      );
+      trackShareCopyLink(currentShareData.id);
     } catch {
-      setCopied(false);
+      setShareRequestState((previousState) =>
+        previousState?.payload === currentPayload
+          ? { ...previousState, copied: false }
+          : previousState
+      );
     }
   };
 
-  const handlePlatformShare = (platform: SharePlatform) => {
-    if (!shareData) return;
+  const handlePlatformShare = async (platform: SharePlatform) => {
+    const currentShareData = await requestShareData();
+    if (!currentShareData) return;
 
     const url = buildSharePlatformUrl(platform, {
-      shareUrl: shareData.shareUrl,
-      imageUrl: shareData.imageUrl,
+      shareUrl: currentShareData.shareUrl,
+      imageUrl: currentShareData.imageUrl,
       text: t('shareText'),
       title: t('sharePostTitle'),
     });
 
     window.open(url, '_blank', 'noopener,noreferrer');
-    trackShareSocial(platform, shareData.id);
+    trackShareSocial(platform, currentShareData.id);
   };
 
   const handleDownload = () => {
@@ -298,7 +320,7 @@ export function ShareDialog() {
           <DialogTitle className="font-serif text-[1.75rem] font-semibold leading-tight text-stone-100 sm:text-[2.55rem]">
             {t('shareTitle')}
           </DialogTitle>
-          <DialogDescription className="sr-only">{statusLabel}</DialogDescription>
+          <DialogDescription className="sr-only">{statusLabel || t('shareTitle')}</DialogDescription>
           <DialogClose className="right-6 top-6 border-none bg-transparent text-stone-300 hover:bg-transparent hover:text-white sm:right-9 sm:top-9">
             <CloseIcon className="h-8 w-8 stroke-[1.6]" />
           </DialogClose>
@@ -335,9 +357,9 @@ export function ShareDialog() {
                 <RotateCw className="h-4 w-4" />
                 {t('shareRetry')}
               </button>
-            ) : (
+            ) : statusLabel ? (
               <span>{statusLabel}</span>
-            )}
+            ) : null}
             {status === 'failed' && errorCode ? (
               <span className="text-xs text-stone-500">({errorCode})</span>
             ) : null}
@@ -346,7 +368,7 @@ export function ShareDialog() {
           <div className="mt-5 grid grid-cols-5 gap-2 sm:mt-6 sm:gap-4">
             <ShareCircleButton
               label={copied ? t('shareCopied') : t('shareCopyLink')}
-              disabled={!isShareReady || isShareBusy}
+              disabled={!currentPayload || isShareBusy}
               loading={isShareBusy}
               onClick={handleCopy}
             >
@@ -357,7 +379,7 @@ export function ShareDialog() {
               <ShareCircleButton
                 key={platform}
                 label={t(key)}
-                disabled={!isShareReady || isShareBusy}
+                disabled={!currentPayload || isShareBusy}
                 loading={isShareBusy}
                 onClick={() => handlePlatformShare(platform)}
               >

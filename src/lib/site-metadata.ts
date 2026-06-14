@@ -51,6 +51,9 @@ export function createLocaleLayoutMetadata(locale: SiteLocale): Metadata {
       index: true,
       follow: true,
     },
+    verification: {
+      yandex: 'f252fddaf29fc1be',
+    },
   };
 }
 
