@@ -281,6 +281,13 @@ export interface StaticPageSection {
   body: string;
 }
 
+export interface ChangelogEntry {
+  date: string;
+  title: string;
+  body: string;
+  affectedLinks: Array<{ label: string; path: string }>;
+}
+
 export interface DiceRollerPreset {
   label: string;
   description: string;
@@ -564,6 +571,8 @@ export const collectionPageCopyByLocale: Record<
     templates: CollectionPageCopy;
     faq: CollectionPageCopy;
     privacy: CollectionPageCopy;
+    about: CollectionPageCopy;
+    changelog: CollectionPageCopy;
   }
 > = {
   en: {
@@ -580,8 +589,18 @@ export const collectionPageCopyByLocale: Record<
     },
     privacy: {
       eyebrow: 'Privacy',
-      title: 'Local-first privacy for Token Maker',
-      description: 'Learn how the default browser workflow handles images and what future remote features would need to explain.',
+      title: 'Privacy facts for Token Maker',
+      description: 'Learn how local downloads, public share links, R2 storage, Clarity, and Google Analytics work today.',
+    },
+    about: {
+      eyebrow: 'About',
+      title: 'About Token Maker',
+      description: 'Learn what Token Maker does, who it is for, and how the default browser workflow handles tabletop art.',
+    },
+    changelog: {
+      eyebrow: 'Changelog',
+      title: 'Token Maker Changelog',
+      description: 'Follow recent product updates, support pages, and tabletop workflow improvements for Token Maker.',
     },
   },
   zh: {
@@ -598,55 +617,197 @@ export const collectionPageCopyByLocale: Record<
     },
     privacy: {
       eyebrow: '隐私',
-      title: 'Token Maker 的本地优先隐私说明',
-      description: '说明默认浏览器工作流怎样处理图片，以及未来远程能力会如何披露。',
+      title: 'Token Maker 隐私事实说明',
+      description: '说明本地下载、公开分享链接、R2 存储、Clarity 和 Google Analytics 当前如何工作。',
+    },
+    about: {
+      eyebrow: '关于',
+      title: '关于 Token Maker',
+      description: '了解 Token Maker 做什么、适合谁，以及默认浏览器工作流如何处理桌面素材。',
+    },
+    changelog: {
+      eyebrow: '更新记录',
+      title: 'Token Maker 更新记录',
+      description: '查看 Token Maker 最近的产品更新、支持页面和桌面工作流改进。',
     },
   },
+};
+
+export const aboutSectionsByLocale: Record<SiteLocale, StaticPageSection[]> = {
+  en: [
+    {
+      title: 'A token tool, not a graphics suite',
+      body:
+        'Token Maker is for the narrow job that comes up before a session: turn character art, monster portraits, or NPC images into map-ready VTT tokens without opening a full image editor.',
+    },
+    {
+      title: 'Private campaign art needs a plain answer',
+      body:
+        'The normal crop, frame, and PNG export path is designed so portrait art can stay in the browser. If a feature sends an image to remote storage, it should say that before the user chooses it.',
+    },
+    {
+      title: 'Small fixes beat vague promises',
+      body:
+        'The useful requests are usually concrete: a transparent edge looks wrong, a Roll20 import needs resizing, or a border style is missing. Those reports belong on the contact page so they can become specific fixes.',
+    },
+  ],
+  zh: [
+    {
+      title: '这是 Token 工具，不是通用修图软件',
+      body:
+        'Token Maker 只处理开团前经常出现的那个窄任务：把角色图、怪物头像或 NPC 图片快速做成能放进地图的 VTT Token，而不是代替完整修图软件。',
+    },
+    {
+      title: '私有战役素材需要说清楚',
+      body:
+        '正常裁切、加框和 PNG 导出流程按本地优先设计，让角色图可以留在浏览器里。如果某个功能会把图片发到远程存储，它应该在用户选择之前说清楚。',
+    },
+    {
+      title: '具体修复比空泛承诺更有用',
+      body:
+        '真正有用的反馈通常很具体：透明边缘不对、导入 Roll20 后还要改尺寸、缺某种边框样式。这类问题可以通过联系页反馈，再变成明确的小修复。',
+    },
+  ],
+};
+
+export const changelogEntriesByLocale: Record<SiteLocale, ChangelogEntry[]> = {
+  en: [
+    {
+      date: '2026-06-24',
+      title: 'Added trust pages',
+      body:
+        'Added About and Changelog pages so users can understand the project, maintenance model, and recent visible site updates.',
+      affectedLinks: [
+        { label: 'About', path: '/about' },
+        { label: 'Changelog', path: '/changelog' },
+      ],
+    },
+    {
+      date: '2026-05-06',
+      title: 'Expanded tabletop support pages',
+      body:
+        'Updated the homepage and square token workflow so users can compare token formats, export sizes, and VTT fit before opening the editor.',
+      affectedLinks: [
+        { label: 'Home', path: '/' },
+        { label: 'Square token maker', path: '/templates/square-token-maker' },
+      ],
+    },
+    {
+      date: '2026-05-02',
+      title: 'Opened the contact path',
+      body:
+        'Added a focused contact page for bug reports, export issues, missing styles, and practical workflow feedback.',
+      affectedLinks: [{ label: 'Contact', path: '/contact' }],
+    },
+    {
+      date: '2026-03-30',
+      title: 'Added the DnD dice roller page',
+      body:
+        'Published a separate dice roller utility so token editing and dice rolling stay split into clear, single-purpose tools.',
+      affectedLinks: [{ label: 'Dice Roller', path: '/dice-roller-dnd' }],
+    },
+    {
+      date: '2026-03-17',
+      title: 'Published FAQ and privacy notes',
+      body:
+        'Added support pages that explain common export questions and the default local-first image handling model.',
+      affectedLinks: [
+        { label: 'FAQ', path: '/faq' },
+        { label: 'Privacy', path: '/privacy' },
+      ],
+    },
+  ],
+  zh: [
+    {
+      date: '2026-06-24',
+      title: '新增信任信息页面',
+      body:
+        '新增关于页和更新记录页，让用户更容易了解项目用途、维护方式和近期可见站点更新。',
+      affectedLinks: [
+        { label: '关于', path: '/about' },
+        { label: '更新记录', path: '/changelog' },
+      ],
+    },
+    {
+      date: '2026-05-06',
+      title: '扩展桌面工作流说明',
+      body:
+        '更新首页和方形 Token 工作流说明，帮助用户在进入编辑器前判断格式、导出尺寸和 VTT 适配方式。',
+      affectedLinks: [
+        { label: '首页', path: '/' },
+        { label: '方形 Token 制作器', path: '/templates/square-token-maker' },
+      ],
+    },
+    {
+      date: '2026-05-02',
+      title: '开放联系入口',
+      body:
+        '新增联系页，用于反馈 bug、导出问题、缺少的样式，以及实际桌面工作流里的适配建议。',
+      affectedLinks: [{ label: '联系', path: '/contact' }],
+    },
+    {
+      date: '2026-03-30',
+      title: '新增 DnD 骰子工具页',
+      body:
+        '发布独立 dice roller 页面，让 Token 编辑和掷骰工具保持清晰分工。',
+      affectedLinks: [{ label: '骰子工具', path: '/dice-roller-dnd' }],
+    },
+    {
+      date: '2026-03-17',
+      title: '发布 FAQ 与隐私说明',
+      body:
+        '新增支持页面，说明常见导出问题和默认本地优先的图片处理方式。',
+      affectedLinks: [
+        { label: '常见问题', path: '/faq' },
+        { label: '隐私', path: '/privacy' },
+      ],
+    },
+  ],
 };
 
 export const privacySectionsByLocale: Record<SiteLocale, StaticPageSection[]> = {
   en: [
     {
-      title: 'Local-first image handling',
+      title: 'Default local editing',
       body:
-        'The main editor is designed so portrait images can stay in the browser while you crop, frame, and export them. That keeps the default experience simple and better suited for campaign art, client commissions, and private homebrew material.',
+        'The main editor is designed so portrait images can stay in the browser while you crop and frame them. Ordinary PNG downloads are generated locally in your browser.',
     },
     {
-      title: 'Export behavior',
+      title: 'Public share links',
       body:
-        'PNG export is generated from the editor state on the client side. If you are only using the local workflow, the normal download action does not require the site to store your portrait image on a server.',
+        'Copying a share link or sharing to a social platform sends a generated PNG through /api/share. That share action uploads the PNG to R2 object storage and creates a public share link.',
     },
     {
-      title: 'Optional remote upload model',
+      title: 'Public access boundary',
       body:
-        'The product requirements already describe upload as an adapter layer. If you later enable remote storage, document the storage provider, retention policy, and share-link behavior before turning it on in production.',
+        'Anyone with a public share link can view the generated token image. Token Maker does not provide a self-service deletion or retention promise on this page.',
     },
     {
       title: 'Analytics and operations',
       body:
-        'If you add analytics, error tracking, or rate limiting in production, keep those disclosures in this page so the operational detail stays easy to find when users need it.',
+        'Microsoft Clarity is included on the live site outside development. Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured.',
     },
   ],
   zh: [
     {
       title: '本地优先的图片处理方式',
       body:
-        '主编辑器默认按本地优先设计。你在裁切、加框和导出时，角色立绘可以一直停留在浏览器里，这对私有战役素材、委托稿和自制设定都更合适。',
+        '主编辑器默认按本地优先设计。你在裁切和加框时，角色立绘可以留在浏览器里。普通 PNG 下载会在你的浏览器本地生成。',
     },
     {
-      title: '导出行为',
+      title: '公开分享链接',
       body:
-        'PNG 导出是基于当前编辑器状态在客户端生成的。如果你只使用默认本地流程，普通下载动作不需要网站把你的原图存到服务器。',
+        '复制分享链接或分享到社媒时，会通过 /api/share 发送生成后的 PNG。这个分享动作会把 PNG 上传到 R2 对象存储，并生成公开分享链接。',
     },
     {
-      title: '可选的远程上传模式',
+      title: '公开访问边界',
       body:
-        '需求里已经把上传设计成适配层。如果你以后要接对象存储或分享链接，最好在正式启用前把存储位置、保留期限和分享方式说明清楚。',
+        '拥有公开分享链接的人可以查看生成后的 Token 图片。这个页面没有提供自助删除入口，也没有提供保留承诺。',
     },
     {
       title: '分析与运维',
       body:
-        '如果后面会上线统计、错误追踪或限流，这些内容应该持续更新在这里，让真正需要查看的人能快速找到运维细节。',
+        'Microsoft Clarity 会在非开发环境的站点加载。只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用。',
     },
   ],
 };
@@ -930,6 +1091,14 @@ export function getCollectionPageCopy(locale: SiteLocale) {
 
 export function getPrivacySections(locale: SiteLocale) {
   return privacySectionsByLocale[locale];
+}
+
+export function getAboutSections(locale: SiteLocale) {
+  return aboutSectionsByLocale[locale];
+}
+
+export function getChangelogEntries(locale: SiteLocale) {
+  return changelogEntriesByLocale[locale];
 }
 
 export function getDiceRollerPageCopy(locale: SiteLocale) {

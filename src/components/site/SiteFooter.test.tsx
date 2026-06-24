@@ -1,0 +1,83 @@
+// @vitest-environment jsdom
+
+import { cleanup, render, screen, within } from '@testing-library/react';
+import { afterEach, describe, expect, it } from 'vitest';
+import { HomeSeoContent } from './HomeSeoContent';
+import { InnerPageChrome } from './InnerPageChrome';
+import { SiteFooter } from './SiteFooter';
+import { SharePageView } from './views/SharePageView';
+
+describe('SiteFooter', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('renders localized English links using current Token Maker pages', () => {
+    render(<SiteFooter locale="en" currentPath="/privacy" />);
+
+    expect(screen.getByRole('contentinfo')).toBeDefined();
+    expect(screen.getByRole('link', { name: /token maker home/i }).getAttribute('href')).toBe('/');
+    expect(screen.getByRole('link', { name: 'Editor' }).getAttribute('href')).toBe('/#editor-workspace');
+    expect(screen.getByRole('link', { name: 'Square Token Maker' }).getAttribute('href')).toBe(
+      '/templates/square-token-maker',
+    );
+    expect(screen.getByRole('link', { name: 'Dice Roller' }).getAttribute('href')).toBe('/dice-roller-dnd');
+    expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('href')).toBe('/blog');
+    expect(screen.getByRole('link', { name: 'About' }).getAttribute('href')).toBe('/about');
+    expect(screen.getByRole('link', { name: 'Changelog' }).getAttribute('href')).toBe('/changelog');
+    expect(screen.getByRole('link', { name: 'FAQ' }).getAttribute('href')).toBe('/faq');
+    expect(screen.getByRole('link', { name: 'Privacy' }).getAttribute('href')).toBe('/privacy');
+    expect(screen.getByRole('link', { name: 'Contact' }).getAttribute('href')).toBe('/contact');
+  });
+
+  it('renders localized Chinese links without adding dependencies', () => {
+    render(<SiteFooter locale="zh" currentPath="/about" />);
+
+    expect(screen.getByRole('link', { name: /token maker 首页/i }).getAttribute('href')).toBe('/zh');
+    expect(screen.getByRole('link', { name: '编辑器' }).getAttribute('href')).toBe('/zh#editor-workspace');
+    expect(screen.getByRole('link', { name: '方形 Token 制作器' }).getAttribute('href')).toBe(
+      '/zh/templates/square-token-maker',
+    );
+    expect(screen.getByRole('link', { name: '骰子工具' }).getAttribute('href')).toBe('/zh/dice-roller-dnd');
+    expect(screen.getByRole('link', { name: '博客' }).getAttribute('href')).toBe('/zh/blog');
+    expect(screen.getByRole('link', { name: '关于' }).getAttribute('href')).toBe('/zh/about');
+    expect(screen.getByRole('link', { name: '更新记录' }).getAttribute('href')).toBe('/zh/changelog');
+    expect(screen.getByRole('link', { name: '常见问题' }).getAttribute('href')).toBe('/zh/faq');
+    expect(screen.getByRole('link', { name: '隐私' }).getAttribute('href')).toBe('/zh/privacy');
+    expect(screen.getByRole('link', { name: '联系' }).getAttribute('href')).toBe('/zh/contact');
+  });
+
+  it('marks the current footer link for assistive technology', () => {
+    render(<SiteFooter locale="en" currentPath="/blog/dnd-counterspell" />);
+
+    expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('aria-current')).toBe('page');
+    expect(screen.getByRole('link', { name: 'Editor' }).hasAttribute('aria-current')).toBe(false);
+  });
+
+  it('renders the shared footer on content shells, not on share pages', () => {
+    render(<HomeSeoContent locale="en" />);
+
+    expect(screen.getByRole('navigation', { name: 'Footer navigation' })).toBeDefined();
+    expect(within(screen.getByRole('contentinfo')).getByRole('link', { name: 'Square Token Maker' })).toBeDefined();
+
+    cleanup();
+
+    render(
+      <InnerPageChrome locale="en" currentPath="/blog/dnd-counterspell">
+        <section>Blog detail content</section>
+      </InnerPageChrome>,
+    );
+
+    const innerFooter = screen.getByRole('contentinfo');
+
+    expect(screen.getByText('Blog detail content')).toBeDefined();
+    expect(within(innerFooter).getByRole('link', { name: 'Blog' }).getAttribute('aria-current')).toBe('page');
+
+    cleanup();
+
+    render(<SharePageView locale="en" imageUrl="https://example.com/token.png" />);
+
+    expect(screen.queryByRole('navigation', { name: 'Footer navigation' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Square Token Maker' })).toBeNull();
+  });
+});

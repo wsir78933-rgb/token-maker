@@ -10,6 +10,7 @@ import {
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import { SiteMark } from '@/components/site/SiteMark';
 import { SiteSupportStrip } from '@/components/site/SiteSupportStrip';
+import { SiteFooter } from '@/components/site/SiteFooter';
 
 function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
   const copy = {
@@ -289,6 +290,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
       <HomeFeedbackSection locale={locale} />
 
       <SiteSupportStrip locale={locale} currentPath="/" className="pt-0" hideContact />
+      <SiteFooter locale={locale} currentPath="/" />
     </div>
   );
 }

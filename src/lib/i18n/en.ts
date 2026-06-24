@@ -163,6 +163,8 @@ const en = {
   shareOnPinterest: 'Pinterest',
   shareOnReddit: 'Reddit',
   shareDownload: 'Download',
+  shareUploadDisclosure:
+    'Copying a link or sharing to social media uploads a generated PNG to R2 and creates a public share link. Download stays local.',
   shareImageAlt: 'Generated VTT token preview',
   shareText: 'Check out this VTT token I made with Token Maker.',
   sharePostTitle: 'Check out this VTT token I made with Token Maker',

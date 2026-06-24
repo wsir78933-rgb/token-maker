@@ -174,6 +174,7 @@ const zh = {
   shareOnPinterest: 'Pinterest',
   shareOnReddit: 'Reddit',
   shareDownload: '下载',
+  shareUploadDisclosure: '复制链接或分享到社媒会把生成后的 PNG 上传到 R2，并生成公开分享链接。下载仍然在本地完成。',
   shareImageAlt: '生成的 VTT Token 预览图',
   shareText: '看看我用 Token Maker 做的 VTT Token',
   sharePostTitle: '看看我用 Token Maker 做的 VTT Token',

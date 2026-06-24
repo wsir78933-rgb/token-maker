@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import {
   absoluteUrl,
+  getAboutSections,
+  getChangelogEntries,
   getCollectionPageCopy,
   getFaqItems,
   getPrivacySections,
@@ -12,6 +14,10 @@ import {
 import { getLanguageAlternates, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import { getSeoImageUrl } from '@/lib/site-seo';
 
+export type StaticSupportPage = 'faq' | 'privacy' | 'about' | 'changelog';
+
+type StaticSupportPath = `/${StaticSupportPage}`;
+type SupportEvidenceLink = { label: string; path: StaticSupportPath };
 
 export interface FaqDocGroup {
   id: string;
@@ -40,6 +46,24 @@ export interface PrivacyDocModel {
   commitments: string[];
 }
 
+export interface AboutDocModel {
+  updatedAt: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  intro: string;
+  principles: Array<{ title: string; description: string; evidenceLink?: SupportEvidenceLink }>;
+  sections: ReturnType<typeof getAboutSections>;
+}
+
+export interface ChangelogDocModel {
+  updatedAt: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  intro: string;
+  entries: ReturnType<typeof getChangelogEntries>;
+}
 
 const faqDocModels: Record<SiteLocale, FaqDocModel> = {
   en: {
@@ -130,72 +154,156 @@ const faqDocModels: Record<SiteLocale, FaqDocModel> = {
 
 const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
   en: {
-    updatedAt: '2026-03-17',
+    updatedAt: '2026-06-24',
     eyebrow: 'Privacy',
-    title: 'How Token Maker handles images by default',
-    description: 'Learn how the default local-first workflow handles image editing, PNG export, and any future remote features.',
+    title: 'How Token Maker handles images, sharing, and analytics',
+    description: 'Current facts about local PNG downloads, public share links, R2 storage, Clarity, and Google Analytics.',
     intro:
-      'In the normal browser workflow, portrait images do not need to be uploaded just to crop or export a token.',
+      'Ordinary PNG downloads are generated locally in your browser. Copy-link and social-share actions use /api/share to upload a generated PNG to R2 and create a public share link.',
     principles: [
       {
-        title: 'Default editing stays local',
-        description: 'If a portrait can stay in the browser for the normal workflow, the product should say so clearly and behave that way.',
+        title: 'Default editing and download stay local',
+        description: 'Cropping, framing, and the regular Download action use the browser workflow without requiring remote object storage.',
       },
       {
-        title: 'Remote features need upfront disclosure',
-        description: 'If uploads, share links, or hosted storage are added later, the provider, retention window, and deletion behavior should be explained before launch.',
+        title: 'Share links are public remote uploads',
+        description: 'Copy link, X, Pinterest, and Reddit sharing upload a generated PNG through /api/share before opening or copying a public link.',
       },
       {
-        title: 'Operational details belong here',
-        description: 'Analytics, error tracking, and abuse controls should stay on this page so the editor can stay focused on making tokens.',
+        title: 'Analytics are disclosed by current loading behavior',
+        description: 'Microsoft Clarity is included on the live site outside development. Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured.',
       },
     ],
     commitments: [
-      'Image-handling expectations change.',
-      'Remote upload or hosted storage is introduced.',
-      'Analytics or other operational tooling changes.',
+      'Token Maker does not provide a self-service deletion or retention promise on this page.',
+      'Public share links are viewable by anyone who has the link.',
+      'The regular Download action stays separate from copy-link and social-share uploads.',
     ],
   },
   zh: {
-    updatedAt: '2026-03-17',
+    updatedAt: '2026-06-24',
     eyebrow: '隐私',
-    title: 'Token Maker 默认如何处理图片',
-    description: '这里说明默认本地优先工作流如何处理图片、PNG 导出，以及未来如果加入远程能力会怎样披露。',
+    title: 'Token Maker 如何处理图片、分享和统计',
+    description: '说明本地 PNG 下载、公开分享链接、R2 存储、Clarity 和 Google Analytics 的当前事实。',
     intro:
-      '在正常的浏览器工作流里，裁切和导出 token 不需要先把角色图上传到远程存储。',
+      '普通 PNG 下载会在你的浏览器本地生成。复制链接和社媒分享会通过 /api/share 上传生成后的 PNG 到 R2，并生成公开分享链接。',
     principles: [
       {
-        title: '默认编辑流程留在本地浏览器',
-        description: '如果日常工作流可以让图片一直停留在浏览器里，就应该直接说清楚，并让实现和说明保持一致。',
+        title: '默认编辑和下载留在本地',
+        description: '裁切、加框和普通下载使用浏览器流程，不要求远程对象存储参与。',
       },
       {
-        title: '新增远程能力会先说明',
-        description: '如果以后加入上传、分享链接或托管存储，会在正式启用前说明服务商、保留时间和删除方式。',
+        title: '分享链接是公开远程上传',
+        description: '复制链接、X、Pinterest 和 Reddit 分享会先通过 /api/share 上传生成后的 PNG，再打开或复制公开链接。',
       },
       {
-        title: '运维相关信息集中写在这里',
-        description: '统计、错误追踪和限流这类说明会留在这页，不会混进制作 token 的主界面里。',
+        title: '统计加载行为按当前实现披露',
+        description: 'Microsoft Clarity 会在非开发环境的站点加载。只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用。',
       },
     ],
     commitments: [
-      '图片处理方式发生变化时。',
-      '加入远程上传或托管存储时。',
-      '统计或其他运维方案调整时。',
+      '这个页面没有提供自助删除入口，也没有提供保留承诺。',
+      '拥有公开分享链接的人可以查看生成后的 Token 图片。',
+      '普通下载动作和复制链接、社媒分享上传是分开的。',
     ],
+  },
+};
+
+const aboutDocModels: Record<
+  SiteLocale,
+  Omit<AboutDocModel, 'sections'>
+> = {
+  en: {
+    updatedAt: '2026-06-24',
+    eyebrow: 'About',
+    title: 'About Token Maker',
+    description:
+      'Token Maker is a browser-based VTT token editor for DnD, Roll20, Foundry VTT, Owlbear, and similar tabletop workflows.',
+    intro:
+      'The project focuses on one job: make tabletop tokens quickly from artwork you already have, while keeping the default editing workflow local-first.',
+    principles: [
+      {
+        title: 'Narrow product scope',
+        description: 'The editor is for token creation. Campaign management, asset hosting, and full image editing are kept outside the main workflow.',
+      },
+      {
+        title: 'Clear image handling',
+        description: 'A user should know what happens to private campaign art before dropping it into the editor.',
+        evidenceLink: { label: 'Privacy', path: '/privacy' },
+      },
+      {
+        title: 'Visible maintenance',
+        description: 'Feedback can be sent through the contact page. Visible fixes may be recorded in changelog entries.',
+        evidenceLink: { label: 'Changelog', path: '/changelog' },
+      },
+    ],
+  },
+  zh: {
+    updatedAt: '2026-06-24',
+    eyebrow: '关于',
+    title: '关于 Token Maker',
+    description:
+      'Token Maker 是面向 DnD、Roll20、Foundry VTT、Owlbear 和类似桌面工作流的浏览器 VTT Token 编辑器。',
+    intro:
+      '这个项目只专注一件事：把你已经有的角色图快速做成桌面 Token，同时让默认编辑流程保持本地优先。',
+    principles: [
+      {
+        title: '产品边界要窄',
+        description: '编辑器只负责 Token 制作。战役管理、素材托管和完整修图功能不塞进主工作流。',
+      },
+      {
+        title: '图片处理边界清楚',
+        description: '用户在放入私有战役素材前，应该先知道默认裁切和导出流程会怎样处理图片。',
+        evidenceLink: { label: '隐私', path: '/privacy' },
+      },
+      {
+        title: '维护记录要看得见',
+        description: '反馈可以通过联系页发送；可见修复可能记录在更新记录里。',
+        evidenceLink: { label: '更新记录', path: '/changelog' },
+      },
+    ],
+  },
+};
+
+const changelogDocModels: Record<
+  SiteLocale,
+  Omit<ChangelogDocModel, 'entries'>
+> = {
+  en: {
+    updatedAt: '2026-06-24',
+    eyebrow: 'Changelog',
+    title: 'Token Maker Changelog',
+    description:
+      'Recent visible updates to the Token Maker site, support pages, and tabletop token workflow.',
+    intro:
+      'This page tracks product-facing changes that matter to users. Internal maintenance and minor copy edits are only listed when they affect the public workflow.',
+  },
+  zh: {
+    updatedAt: '2026-06-24',
+    eyebrow: '更新记录',
+    title: 'Token Maker 更新记录',
+    description:
+      '记录 Token Maker 站点、支持页面和桌面 Token 工作流的近期可见更新。',
+    intro:
+      '这页只记录对用户有实际影响的产品变化。内部维护和小文案调整，只有影响公开工作流时才会列出。',
   },
 };
 
 const staticPageLastModifiedByLocale: Record<
   SiteLocale,
-  Record<'faq' | 'privacy', string>
+  Record<StaticSupportPage, string>
 > = {
   en: {
     faq: faqDocModels.en.updatedAt,
     privacy: privacyDocModels.en.updatedAt,
+    about: aboutDocModels.en.updatedAt,
+    changelog: changelogDocModels.en.updatedAt,
   },
   zh: {
     faq: faqDocModels.zh.updatedAt,
     privacy: privacyDocModels.zh.updatedAt,
+    about: aboutDocModels.zh.updatedAt,
+    changelog: changelogDocModels.zh.updatedAt,
   },
 };
 
@@ -215,17 +323,37 @@ export function getPrivacyDocModel(locale: SiteLocale): PrivacyDocModel & {
   };
 }
 
+export function getAboutDocModel(locale: SiteLocale): AboutDocModel {
+  return {
+    ...aboutDocModels[locale],
+    sections: getAboutSections(locale),
+  };
+}
+
+export function getChangelogDocModel(locale: SiteLocale): ChangelogDocModel {
+  return {
+    ...changelogDocModels[locale],
+    entries: getChangelogEntries(locale),
+  };
+}
+
 export function getStaticPageLastModified(
   locale: SiteLocale,
-  page: 'faq' | 'privacy',
+  page: StaticSupportPage,
 ) {
   return staticPageLastModifiedByLocale[locale][page];
 }
 
-export function createCollectionMetadata(locale: SiteLocale, page: 'faq' | 'privacy'): Metadata {
+function getStaticSupportPath(page: StaticSupportPage): StaticSupportPath {
+  return `/${page}`;
+}
+
+export function createCollectionMetadata(locale: SiteLocale, page: StaticSupportPage): Metadata {
   const copy = getCollectionPageCopy(locale)[page];
-  const path = getLocalizedPath(locale, page === 'faq' ? '/faq' : '/privacy');
+  const basePath = getStaticSupportPath(page);
+  const path = getLocalizedPath(locale, basePath);
   const siteConfig = getSiteConfig(locale);
+  const seoImageKind = page === 'faq' || page === 'privacy' ? page : 'home';
 
   return {
     metadataBase: new URL(getSiteUrl()),
@@ -233,7 +361,7 @@ export function createCollectionMetadata(locale: SiteLocale, page: 'faq' | 'priv
     description: copy.description,
     alternates: {
       canonical: path,
-      languages: getLanguageAlternates(page === 'faq' ? '/faq' : '/privacy'),
+      languages: getLanguageAlternates(basePath),
     },
     openGraph: {
       title: `${copy.title} | ${siteConfig.name}`,
@@ -244,7 +372,7 @@ export function createCollectionMetadata(locale: SiteLocale, page: 'faq' | 'priv
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
       images: [
         {
-          url: getSeoImageUrl(locale, page),
+          url: getSeoImageUrl(locale, seoImageKind),
           width: 1200,
           height: 630,
           alt: copy.title,
@@ -255,7 +383,7 @@ export function createCollectionMetadata(locale: SiteLocale, page: 'faq' | 'priv
       card: 'summary_large_image',
       title: `${copy.title} | ${siteConfig.name}`,
       description: copy.description,
-      images: [getSeoImageUrl(locale, page)],
+      images: [getSeoImageUrl(locale, seoImageKind)],
     },
   };
 }
@@ -278,18 +406,20 @@ export function buildBreadcrumbStructuredData(
 
 export function buildCollectionStructuredData(
   locale: SiteLocale,
-  path: '/faq' | '/privacy',
+  path: StaticSupportPath,
   name: string,
   description: string,
+  dateModified?: string,
 ) {
   const siteConfig = getSiteConfig(locale);
 
   return {
     '@context': 'https://schema.org',
-    '@type': path === '/privacy' ? 'WebPage' : 'CollectionPage',
+    '@type': path === '/faq' ? 'CollectionPage' : path === '/about' ? 'AboutPage' : 'WebPage',
     name,
     url: absoluteUrl(getLocalizedPath(locale, path)),
     description,
+    ...(dateModified ? { dateModified } : {}),
     inLanguage: locale === 'zh' ? 'zh-CN' : 'en-US',
     isPartOf: {
       '@type': 'WebSite',

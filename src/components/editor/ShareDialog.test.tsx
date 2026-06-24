@@ -33,6 +33,8 @@ vi.mock('@/lib/i18n', () => ({
         shareOnPinterest: 'Pinterest',
         shareOnReddit: 'Reddit',
         shareDownload: 'Download',
+        shareUploadDisclosure:
+          'Copying a link or sharing to social media uploads a generated PNG to R2 and creates a public share link. Download stays local.',
         shareSuppressFor24Hours: 'Do not show again for 24 hours',
         shareImageAlt: 'Generated VTT token preview',
       };
@@ -146,6 +148,11 @@ describe('ShareDialog', () => {
     const redditButton = screen.getByRole('button', { name: 'Reddit' }) as HTMLButtonElement;
     const downloadButton = screen.getByRole('button', { name: 'Download' }) as HTMLButtonElement;
 
+    expect(
+      screen.getByText(
+        'Copying a link or sharing to social media uploads a generated PNG to R2 and creates a public share link. Download stays local.'
+      )
+    ).toBeDefined();
     expect(copyButton.disabled).toBe(false);
     expect(xButton.disabled).toBe(false);
     expect(pinterestButton.disabled).toBe(false);

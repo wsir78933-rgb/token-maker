@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { SiteMark } from '@/components/site/SiteMark';
+import { SiteFooter } from '@/components/site/SiteFooter';
 import { SiteSupportStrip } from '@/components/site/SiteSupportStrip';
 import { TrackedEditorLink } from '@/components/site/TrackedEditorLink';
 import { getNavLabels, getSiteConfig } from '@/lib/site-content';
@@ -106,6 +107,7 @@ export function InnerPageChrome({
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
         {children}
         {showSupportStrip ? <SiteSupportStrip locale={locale} currentPath={currentPath} /> : null}
+        <SiteFooter locale={locale} currentPath={currentPath} />
       </div>
     </main>
   );

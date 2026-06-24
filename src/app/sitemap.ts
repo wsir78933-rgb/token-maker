@@ -5,7 +5,7 @@ import {
   getBlogPosts,
 } from '@/lib/blog-content';
 import { getSiteUrl, getTemplatePages } from '@/lib/site-content';
-import { getStaticPageLastModified } from '@/lib/site-page-models';
+import { getStaticPageLastModified, type StaticSupportPage } from '@/lib/site-page-models';
 import { LOCALES, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
 const DEFAULT_LAST_MODIFIED = '2026-03-12';
@@ -31,6 +31,9 @@ function getHomepageLastModified(locale: SiteLocale) {
   return pickLatestIsoDate([
     HOME_LAST_MODIFIED,
     getStaticPageLastModified(locale, 'faq'),
+    getStaticPageLastModified(locale, 'privacy'),
+    getStaticPageLastModified(locale, 'about'),
+    getStaticPageLastModified(locale, 'changelog'),
   ]);
 }
 
@@ -48,18 +51,21 @@ function buildAlternates(path: string, siteUrl: string) {
   };
 }
 
+function getStaticSupportPageFromPath(path: string): StaticSupportPage | null {
+  if (path === '/faq') return 'faq';
+  if (path === '/privacy') return 'privacy';
+  if (path === '/about') return 'about';
+  if (path === '/changelog') return 'changelog';
+  return null;
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const staticPaths = ['/', '/faq', '/privacy', '/dice-roller-dnd', '/contact'] as const;
+  const staticPaths = ['/', '/faq', '/privacy', '/about', '/changelog', '/dice-roller-dnd', '/contact'] as const;
 
   const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     staticPaths.map((path) => {
-      const pageKey =
-        path === '/faq'
-          ? 'faq'
-          : path === '/privacy'
-            ? 'privacy'
-            : null;
+      const supportPage = getStaticSupportPageFromPath(path);
 
       return {
         url: `${siteUrl}${getLocalizedPath(locale, path)}`,
@@ -68,16 +74,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(DICE_ROLLER_LAST_MODIFIED)
             : path === '/contact'
             ? new Date(CONTACT_LAST_MODIFIED)
-            : pageKey
-            ? new Date(getStaticPageLastModified(locale, pageKey))
+            : supportPage
+            ? new Date(getStaticPageLastModified(locale, supportPage))
             : new Date(getHomepageLastModified(locale)),
-        changeFrequency: path === '/' ? 'weekly' : path === '/privacy' ? 'monthly' : 'weekly',
+        changeFrequency:
+          path === '/'
+            ? 'weekly'
+            : supportPage === 'privacy' || supportPage === 'about' || supportPage === 'changelog'
+            ? 'monthly'
+            : 'weekly',
         priority:
           path === '/'
             ? 1
-            : path === '/privacy'
+            : supportPage === 'privacy'
             ? 0.4
-            : path === '/faq'
+            : supportPage === 'about'
+            ? 0.5
+            : supportPage === 'changelog'
+            ? 0.48
+            : supportPage === 'faq'
             ? 0.6
             : path === '/contact'
             ? 0.55
