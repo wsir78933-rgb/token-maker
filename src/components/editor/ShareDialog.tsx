@@ -365,6 +365,10 @@ export function ShareDialog() {
             ) : null}
           </div>
 
+          <p className="mt-4 text-center text-xs leading-6 text-stone-400 sm:text-sm">
+            {t('shareUploadDisclosure')}
+          </p>
+
           <div className="mt-5 grid grid-cols-5 gap-2 sm:mt-6 sm:gap-4">
             <ShareCircleButton
               label={copied ? t('shareCopied') : t('shareCopyLink')}

@@ -153,7 +153,6 @@ export function BlogDetailPageView({
         locale={locale}
         currentPath={currentPath}
         tone="doc"
-        showSupportStrip={false}
         localeSwitchPath={localeSwitchPath}
       >
         <section className="border-b border-white/10">

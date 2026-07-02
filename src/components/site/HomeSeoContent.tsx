@@ -8,8 +8,8 @@ import {
   getSiteConfig,
 } from '@/lib/site-content';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
-import { SiteMark } from '@/components/site/SiteMark';
-import { SiteSupportStrip } from '@/components/site/SiteSupportStrip';
+import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
+import { SiteFooter } from '@/components/site/SiteFooter';
 
 function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
   const copy = {
@@ -199,49 +199,25 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
   const nextLocale = locale === 'zh' ? 'en' : 'zh';
   const homeHref = getLocalizedPath(locale, '/');
   const navLinks = [
-    { href: `${homeHref}#editor-workspace`, label: navLabels.editor },
-    { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller },
-    { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog },
+    { href: `${homeHref}#editor-workspace`, label: navLabels.editor, isActive: true },
+    { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller, isActive: false },
+    { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog, isActive: false },
   ];
 
   return (
     <>
-      <div className="site-topbar z-50 md:sticky md:top-0">
-        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <Link
-              href={homeHref}
-              prefetch={false}
-              className="site-brand-link inline-flex items-center gap-3 text-sm transition-colors"
-            >
-              <SiteMark />
-              <span className="flex flex-col">
-                <span className="site-brand-title text-base font-semibold">{siteConfig.name}</span>
-                <span className="site-brand-subtitle text-xs">{copy.heroEyebrow}</span>
-              </span>
-            </Link>
-            <div className="flex items-center">
-              <Link href={getLocalizedPath(nextLocale, '/')} prefetch={false} className="site-switch-chip">
-                {navLabels.switchLocale}
-              </Link>
-            </div>
-          </div>
-
-          <nav className="mt-3 flex flex-wrap items-center gap-2 sm:mt-4">
-            {navLinks.map((link, index) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                prefetch={false}
-                data-active={index === 0}
-                className="site-nav-pill inline-flex shrink-0 items-center"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </div>
+      <ContentSiteTopbar
+        brandHref={homeHref}
+        brandName={siteConfig.name}
+        brandSubtitle={copy.heroEyebrow}
+        brandTitleClassName="text-base"
+        contentClassName="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8"
+        localeSwitchHref={getLocalizedPath(nextLocale, '/')}
+        localeSwitchLabel={navLabels.switchLocale}
+        navClassName="mt-3 flex flex-wrap items-center gap-2 sm:mt-4"
+        navLinks={navLinks}
+        topbarClassName="z-50 md:sticky md:top-0"
+      />
       <section className="site-hero-section">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.9fr)] lg:px-8 lg:py-20">
           <div className="space-y-6">
@@ -287,8 +263,7 @@ export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
   return (
     <div className="site-shell__content relative overflow-hidden text-stone-100">
       <HomeFeedbackSection locale={locale} />
-
-      <SiteSupportStrip locale={locale} currentPath="/" className="pt-0" hideContact />
+      <SiteFooter locale={locale} currentPath="/" contentWidth="nearFull" />
     </div>
   );
 }

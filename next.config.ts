@@ -13,7 +13,7 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://static.cloudflareinsights.com`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://r2.tokenmaker.one https://www.google-analytics.com https://www.googletagmanager.com https://c.clarity.ms",
+  "img-src 'self' data: blob: https://r2.tokenmaker.one https://i.ytimg.com https://www.google-analytics.com https://www.googletagmanager.com https://c.clarity.ms",
   "font-src 'self'",
   "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://cloudflareinsights.com",
   "frame-src https://www.youtube.com https://www.youtube-nocookie.com",

@@ -166,7 +166,7 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
     <>
       <StructuredData
         id={`faq-doc-${locale}-collection-jsonld`}
-        data={buildCollectionStructuredData(locale, '/faq', model.title, model.description)}
+        data={buildCollectionStructuredData(locale, '/faq', model.title, model.description, model.updatedAt)}
       />
       <StructuredData id={`faq-doc-${locale}-faq-jsonld`} data={faqStructuredData} />
       <StructuredData

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, CircleHelp, Mail, ShieldCheck } from 'lucide-react';
+import { ArrowRight, CircleHelp, History, Info, Mail, ShieldCheck } from 'lucide-react';
 
 import { getLocalizedPath, stripLocalePrefix, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
@@ -7,7 +7,13 @@ import { cn } from '@/lib/utils';
 const copyByLocale = {
   en: {
     eyebrow: 'Help',
+    supportNavigationLabel: 'Support pages',
     links: [
+      {
+        href: '/about',
+        label: 'About',
+        icon: Info,
+      },
       {
         href: '/faq',
         label: 'FAQ',
@@ -23,11 +29,22 @@ const copyByLocale = {
         label: 'Contact',
         icon: Mail,
       },
+      {
+        href: '/changelog',
+        label: 'Changelog',
+        icon: History,
+      },
     ],
   },
   zh: {
     eyebrow: '更多说明',
+    supportNavigationLabel: '支持页面导航',
     links: [
+      {
+        href: '/about',
+        label: '关于',
+        icon: Info,
+      },
       {
         href: '/faq',
         label: '常见问题',
@@ -43,6 +60,11 @@ const copyByLocale = {
         label: '联系',
         icon: Mail,
       },
+      {
+        href: '/changelog',
+        label: '更新记录',
+        icon: History,
+      },
     ],
   },
 } as const;
@@ -54,10 +76,23 @@ interface SiteSupportStripProps {
   hideContact?: boolean;
 }
 
+function getSupportGridColumnsClass(linkCount: number) {
+  if (linkCount === 2) {
+    return 'md:grid-cols-2';
+  }
+
+  if (linkCount === 4) {
+    return 'md:grid-cols-2 lg:grid-cols-4';
+  }
+
+  return 'md:grid-cols-3 xl:grid-cols-5';
+}
+
 export function SiteSupportStrip({ locale, currentPath, className, hideContact = false }: SiteSupportStripProps) {
   const copy = copyByLocale[locale];
   const links = hideContact ? copy.links.filter((link) => link.href !== '/contact') : copy.links;
   const normalizedCurrentPath = currentPath ? stripLocalePrefix(currentPath) : undefined;
+  const supportGridColumnsClass = getSupportGridColumnsClass(links.length);
 
   return (
     <section className={cn('mx-auto max-w-6xl px-6 py-6 lg:px-8 lg:py-7', className)}>
@@ -65,43 +100,44 @@ export function SiteSupportStrip({ locale, currentPath, className, hideContact =
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <p className="text-[11px] uppercase tracking-[0.34em] text-stone-500">{copy.eyebrow}</p>
 
-          <div className={cn('grid gap-2 md:gap-3', links.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3')}>
-          {links.map((link) => {
-            const Icon = link.icon;
-            const href = getLocalizedPath(locale, link.href);
-            const isActive = normalizedCurrentPath === link.href;
+          <nav aria-label={copy.supportNavigationLabel} className={cn('grid gap-2 md:gap-3', supportGridColumnsClass)}>
+            {links.map((link) => {
+              const Icon = link.icon;
+              const href = getLocalizedPath(locale, link.href);
+              const isActive = normalizedCurrentPath === link.href;
 
-            return (
-              <Link
-                key={href}
-                href={href}
-                prefetch={false}
-                className={cn(
-                  'group min-w-0 rounded-[18px] border px-4 py-3 transition hover:border-white/20 hover:bg-white/[0.04]',
-                  isActive
-                    ? 'border-[#d7b46a]/35 bg-[#d7b46a]/10'
-                    : 'border-white/10 bg-black/20',
-                )}
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={cn(
-                      'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border',
-                      isActive
-                        ? 'border-[#d7b46a]/30 bg-[#d7b46a]/12 text-[#f1d492]'
-                        : 'border-white/10 bg-white/[0.04] text-stone-300',
-                    )}
-                  >
-                    <Icon className="h-4 w-4" />
-                  </span>
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  prefetch={false}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={cn(
+                    'group min-w-0 rounded-[18px] border px-4 py-3 transition hover:border-white/20 hover:bg-white/[0.04]',
+                    isActive
+                      ? 'border-[#d7b46a]/35 bg-[#d7b46a]/10'
+                      : 'border-white/10 bg-black/20',
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={cn(
+                        'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border',
+                        isActive
+                          ? 'border-[#d7b46a]/30 bg-[#d7b46a]/12 text-[#f1d492]'
+                          : 'border-white/10 bg-white/[0.04] text-stone-300',
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </span>
 
-                  <p className="min-w-0 flex-1 text-sm font-medium text-stone-50">{link.label}</p>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-stone-500 transition group-hover:text-stone-200" />
-                </div>
-              </Link>
-            );
-          })}
-          </div>
+                    <p className="min-w-0 flex-1 text-sm font-medium text-stone-50">{link.label}</p>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-stone-500 transition group-hover:text-stone-200" />
+                  </div>
+                </Link>
+              );
+            })}
+          </nav>
         </div>
       </div>
     </section>
