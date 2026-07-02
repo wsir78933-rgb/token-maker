@@ -43,4 +43,11 @@ describe('security headers', () => {
     expect(connectSrc).toContain('https://cloudflareinsights.com');
     expect(connectSrc).toContain('https://*.clarity.ms');
   });
+
+  it('allows YouTube thumbnail images for lite video embeds', async () => {
+    const contentSecurityPolicy = await getContentSecurityPolicyHeader();
+    const imgSrc = getContentSecurityPolicyDirective(contentSecurityPolicy, 'img-src');
+
+    expect(imgSrc).toContain('https://i.ytimg.com');
+  });
 });

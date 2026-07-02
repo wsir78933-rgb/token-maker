@@ -7,6 +7,16 @@ import { InnerPageChrome } from './InnerPageChrome';
 import { SiteFooter } from './SiteFooter';
 import { SharePageView } from './views/SharePageView';
 
+function getFooterContentShellClassList() {
+  const footerContentShell = screen.getByRole('contentinfo').firstElementChild;
+
+  if (!footerContentShell) {
+    throw new Error('Footer content shell was not found in the rendered footer');
+  }
+
+  return Array.from(footerContentShell.classList);
+}
+
 describe('SiteFooter', () => {
   afterEach(() => {
     cleanup();
@@ -54,11 +64,37 @@ describe('SiteFooter', () => {
     expect(screen.getByRole('link', { name: 'Editor' }).hasAttribute('aria-current')).toBe(false);
   });
 
+  it('uses a bounded wide footer content shell', () => {
+    render(<SiteFooter locale="en" currentPath="/" />);
+
+    const footerContentShellClassList = getFooterContentShellClassList();
+
+    expect(footerContentShellClassList).toContain('mx-auto');
+    expect(footerContentShellClassList).toContain('w-full');
+    expect(footerContentShellClassList).toContain('max-w-[92rem]');
+    expect(footerContentShellClassList).not.toContain('max-w-6xl');
+  });
+
+  it('keeps the same bounded desktop shell when near full width is requested', () => {
+    render(<SiteFooter locale="en" currentPath="/" contentWidth="nearFull" />);
+
+    const footerContentShellClassList = getFooterContentShellClassList();
+
+    expect(footerContentShellClassList).toContain('mx-auto');
+    expect(footerContentShellClassList).toContain('w-full');
+    expect(footerContentShellClassList).toContain('max-w-[92rem]');
+    expect(footerContentShellClassList).toContain('lg:px-8');
+    expect(footerContentShellClassList).not.toContain('max-w-6xl');
+  });
+
   it('renders the shared footer on content shells, not on share pages', () => {
     render(<HomeSeoContent locale="en" />);
 
     expect(screen.getByRole('navigation', { name: 'Footer navigation' })).toBeDefined();
     expect(within(screen.getByRole('contentinfo')).getByRole('link', { name: 'Square Token Maker' })).toBeDefined();
+    const homeFooterContentShellClassList = getFooterContentShellClassList();
+
+    expect(homeFooterContentShellClassList).toContain('max-w-[92rem]');
 
     cleanup();
 
@@ -71,7 +107,14 @@ describe('SiteFooter', () => {
     const innerFooter = screen.getByRole('contentinfo');
 
     expect(screen.getByText('Blog detail content')).toBeDefined();
+    expect(screen.queryByRole('navigation', { name: 'Support pages' })).toBeNull();
     expect(within(innerFooter).getByRole('link', { name: 'Blog' }).getAttribute('aria-current')).toBe('page');
+    const innerFooterContentShellClassList = getFooterContentShellClassList();
+
+    expect(innerFooterContentShellClassList).toContain('max-w-[92rem]');
+    expect(innerFooterContentShellClassList).toContain('lg:px-8');
+    expect(innerFooterContentShellClassList).not.toContain('max-w-6xl');
+    expect(homeFooterContentShellClassList).toContain('lg:px-8');
 
     cleanup();
 
@@ -79,5 +122,19 @@ describe('SiteFooter', () => {
 
     expect(screen.queryByRole('navigation', { name: 'Footer navigation' })).toBeNull();
     expect(screen.queryByRole('link', { name: 'Square Token Maker' })).toBeNull();
+  });
+
+  it('does not render the support strip above the homepage footer in either locale', () => {
+    render(<HomeSeoContent locale="en" />);
+
+    expect(screen.getByRole('navigation', { name: 'Footer navigation' })).toBeDefined();
+    expect(screen.queryByRole('navigation', { name: 'Support pages' })).toBeNull();
+
+    cleanup();
+
+    render(<HomeSeoContent locale="zh" />);
+
+    expect(screen.getByRole('navigation', { name: '页脚导航' })).toBeDefined();
+    expect(screen.queryByRole('navigation', { name: '支持页面导航' })).toBeNull();
   });
 });

@@ -339,7 +339,7 @@ export function BlogHubPageView({
         ])}
       />
 
-      <InnerPageChrome locale={locale} currentPath={currentPath} tone="hub" showSupportStrip={false}>
+      <InnerPageChrome locale={locale} currentPath={currentPath} tone="hub">
         <div className="mx-auto max-w-[92rem] space-y-10 px-4 py-10 sm:px-5 lg:px-6 lg:py-14 xl:px-8">
 
           {page === 1 ? (

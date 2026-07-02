@@ -30,8 +30,11 @@ interface FooterCopy {
 interface SiteFooterProps {
   locale: SiteLocale;
   currentPath?: string;
+  contentWidth?: SiteFooterContentWidth;
   className?: string;
 }
+
+type SiteFooterContentWidth = 'contained' | 'nearFull';
 
 const editorPath = '/';
 const squareTokenMakerPath = '/templates/square-token-maker';
@@ -126,6 +129,13 @@ const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
   },
 };
 
+const footerContentShellClassName = 'mx-auto w-full max-w-[92rem] px-6 py-10 lg:px-8 lg:py-12';
+
+const footerContentShellClassByWidth: Record<SiteFooterContentWidth, string> = {
+  contained: footerContentShellClassName,
+  nearFull: footerContentShellClassName,
+};
+
 function getFooterLinkHref(locale: SiteLocale, path: string) {
   const localizedPath = getLocalizedPath(locale, path);
 
@@ -195,14 +205,14 @@ function FooterSectionColumn({
   );
 }
 
-export function SiteFooter({ locale, currentPath, className }: SiteFooterProps) {
+export function SiteFooter({ locale, currentPath, contentWidth = 'contained', className }: SiteFooterProps) {
   const footerCopy = footerCopyByLocale[locale];
   const siteConfig = getSiteConfig(locale);
   const homeHref = getLocalizedPath(locale, editorPath);
 
   return (
     <footer className={cn('border-t border-white/10 bg-black/24 text-stone-100', className)}>
-      <div className="mx-auto max-w-6xl px-6 py-10 lg:px-8 lg:py-12">
+      <div className={footerContentShellClassByWidth[contentWidth]}>
         <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.35fr)] lg:items-start">
           <div className="max-w-xl">
             <Link
