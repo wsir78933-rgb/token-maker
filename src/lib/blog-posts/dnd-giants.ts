@@ -63,7 +63,7 @@ export const dndGiantsArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>Page type note: this is an encyclopedia-style guide for <strong>dnd giants</strong>. That is why the reference table comes before the lore essay.</p>
+<p>If you need a fast comparison of <strong>dnd giants</strong>, start with the reference table above, then use the lore and encounter notes below to decide how each giant should feel at the table.</p>
 
 <h2>What Are DND Giants?</h2>
 <p><strong>DND giants are Huge humanoid monsters in Dungeons &amp; Dragons, usually organized into distinct types such as hill, stone, frost, fire, cloud, and storm giants.</strong></p>

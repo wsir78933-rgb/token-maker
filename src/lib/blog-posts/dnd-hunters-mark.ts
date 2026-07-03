@@ -23,7 +23,7 @@ import {
 export const dndHuntersMarkArticleHtml = String.raw`
 <p><strong>dnd hunter's mark</strong> is a 1st-level Divination spell that marks one creature, adds <strong>1d6 damage when you hit that target</strong>, and helps you track it. This guide gives you the fast rules, the 2014 vs 2024 differences, the concentration trap, and a practical way to show the mark on VTT tokens.</p>
 
-<p>I am treating this as a spell encyclopedia page for Rangers, not a hype piece. The short version from my tables: Hunter's Mark is good when the target lives long enough for repeated attacks, and mediocre when it steals concentration or bonus actions from better plays.</p>
+<p>For Rangers, Hunter's Mark is not an automatic hype pick. The short version from my tables: Hunter's Mark is good when the target lives long enough for repeated attacks, and mediocre when it steals concentration or bonus actions from better plays.</p>
 
 <table>
   <thead>
@@ -277,7 +277,7 @@ ${liteVideoEmbed('JwINRY1eD7M', 'Hex is a trap in D&D 5E - Advanced guide to Hex
 export const dndHuntersMarkArticleHtmlZh = String.raw`
 <p><strong>dnd hunter's mark</strong> 是一个 1 环 Divination 法术：标记一个生物，命中它时追加 <strong>1d6 伤害</strong>，并让你更容易追踪它。这篇会先给速查规则，再讲 2014/2024 差异、专注陷阱，以及怎样在 Roll20、Foundry 这类 VTT 里把标记显示清楚。</p>
 
-<p>我会把它当作游侠法术百科来写，不把它吹成必放神技。按我桌上的经验，Hunter's Mark 在目标够硬、你能持续命中时很好；但如果它抢走了更强的专注法术或附赠动作，就会变成看起来赚、实际拖节奏的选择。</p>
+<p>不要把它当作游侠必放神技。按我桌上的经验，Hunter's Mark 在目标够硬、你能持续命中时很好；但如果它抢走了更强的专注法术或附赠动作，就会变成看起来赚、实际拖节奏的选择。</p>
 
 <table>
   <thead>

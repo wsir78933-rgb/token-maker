@@ -17,6 +17,27 @@ function getFooterContentShellClassList() {
   return Array.from(footerContentShell.classList);
 }
 
+function getFooterNavigation() {
+  return within(screen.getByRole('contentinfo')).getByRole('navigation', { name: 'Footer navigation' });
+}
+
+function getFooterSectionHeaderClassList(sectionTitle: string) {
+  const sectionHeading = screen.getByRole('heading', { name: sectionTitle });
+  const sectionHeader = sectionHeading.parentElement;
+
+  if (!sectionHeader) {
+    throw new Error(`Footer section header was not found for "${sectionTitle}"`);
+  }
+
+  return Array.from(sectionHeader.classList);
+}
+
+function getFooterNavigationTextOrder() {
+  return Array.from(getFooterNavigation().querySelectorAll('h2, a'))
+    .map((footerNavigationElement) => footerNavigationElement.textContent?.trim())
+    .filter((textContent): textContent is string => Boolean(textContent));
+}
+
 describe('SiteFooter', () => {
   afterEach(() => {
     cleanup();
@@ -85,6 +106,31 @@ describe('SiteFooter', () => {
     expect(footerContentShellClassList).toContain('max-w-[92rem]');
     expect(footerContentShellClassList).toContain('lg:px-8');
     expect(footerContentShellClassList).not.toContain('max-w-6xl');
+  });
+
+  it('keeps footer sections in a three-column icon grid on mobile', () => {
+    render(<SiteFooter locale="en" currentPath="/" />);
+
+    const footerNavigationClassList = Array.from(getFooterNavigation().classList);
+    const footerNavigationTextOrder = getFooterNavigationTextOrder();
+    const firstFooterLinkIndex = footerNavigationTextOrder.indexOf('Editor');
+
+    expect(footerNavigationClassList).toContain('grid-cols-3');
+    expect(footerNavigationClassList).toContain('gap-x-3');
+    expect(footerNavigationClassList).toContain('gap-y-4');
+    expect(footerNavigationClassList).toContain('sm:gap-x-8');
+    expect(firstFooterLinkIndex).toBeGreaterThan(-1);
+
+    for (const sectionTitle of ['Create', 'Learn', 'Support']) {
+      const sectionHeaderClassList = getFooterSectionHeaderClassList(sectionTitle);
+
+      expect(sectionHeaderClassList).toContain('flex-col');
+      expect(sectionHeaderClassList).toContain('items-center');
+      expect(sectionHeaderClassList).toContain('text-center');
+      expect(sectionHeaderClassList).toContain('sm:flex-row');
+      expect(sectionHeaderClassList).toContain('sm:text-left');
+      expect(footerNavigationTextOrder.indexOf(sectionTitle)).toBeLessThan(firstFooterLinkIndex);
+    }
   });
 
   it('renders the shared footer on content shells, not on share pages', () => {

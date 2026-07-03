@@ -505,7 +505,7 @@ ${liteVideoEmbed('WMo_gCRMSfA', 'A Crap Guide to D&D [5th Edition] - Druid')}
 export const dndDruidSpellsArticleHtmlZh = String.raw`
 <p><strong>DND 德鲁伊法术 (DND Druid Spells)</strong> 最强的地方，不是把德鲁伊玩成一个弱化牧师，也不是玩成自然风味的法师，而是把它当成一个战场控制者。好的德鲁伊法术列表会拖慢敌人、改变地形、用高效率治疗救急，并且在战斗外给队伍提供探索答案。</p>
 
-<p>这次把原来的短评级表扩成完整 5e 实战指南：最强戏法、1 环必备法术、2 环控场法术、3 环核心法术、专注陷阱、每日准备模板、德鲁伊结社差异和 FAQ。重点不是把所有法术名字堆一遍，而是判断哪些 <strong>DND 德鲁伊法术</strong> 在真实跑团里经常有用。</p>
+<p>下面按完整 5e 实战需求整理：最强戏法、1 环必备法术、2 环控场法术、3 环核心法术、专注陷阱、每日准备模板、德鲁伊结社差异和 FAQ。重点不是把所有法术名字堆一遍，而是判断哪些 <strong>DND 德鲁伊法术</strong> 在真实跑团里经常有用。</p>
 
 <p>如果你只要快速答案，先看第一张表。如果你要长期玩德鲁伊，后面的段落更重要，因为德鲁伊每天准备什么法术，要根据队伍缺治疗、缺潜行、缺输出、缺控场还是缺探索工具来调整。涉及具体规则文本时，建议对照官方 <a href="${DND_DRUID_2014_RULES_URL}" rel="noreferrer noopener">2014 版 Druid 规则</a> 和 <a href="${DND_DRUID_2024_RULES_URL}" rel="noreferrer noopener">2024 版 Druid 规则</a>，以你们桌采用的版本为准。</p>
 

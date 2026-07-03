@@ -19,7 +19,7 @@ import {
 } from './shared';
 
 export const dndDaggerArticleHtml = String.raw`
-<p><strong>dnd dagger</strong> is a simple melee weapon that deals <strong>1d4 piercing damage</strong>, costs 2 gp, weighs 1 lb, and carries the Finesse, Light, and Thrown properties. This is an equipment encyclopedia page with practical table advice: you get the stat block first, then the rulings that decide whether a dagger is a backup tool, a Rogue delivery system, or part of a 2024 Nick build.</p>
+<p><strong>dnd dagger</strong> is a simple melee weapon that deals <strong>1d4 piercing damage</strong>, costs 2 gp, weighs 1 lb, and carries the Finesse, Light, and Thrown properties. Start with the stat block, then use the rulings below to decide whether a dagger is a backup tool, a Rogue delivery system, or part of a 2024 Nick build.</p>
 
 <table>
   <thead>
@@ -317,7 +317,7 @@ ${liteVideoEmbed('RCnwjLK_ZuQ', 'dnd dagger companion video', {
 `;
 
 export const dndDaggerArticleHtmlZh = String.raw`
-<p><strong>dnd dagger</strong> 是一种 simple melee weapon，基础伤害是 <strong>1d4 piercing</strong>，价格 2 gp，重量 1 lb，并带有 Finesse、Light、Thrown 属性。这篇是装备百科页，不是泛泛介绍：先给速查表，再讲它到底适合 Rogue、双持、投掷、2024 Nick 构筑，还是只适合作为备用刀。</p>
+<p><strong>dnd dagger</strong> 是一种 simple melee weapon，基础伤害是 <strong>1d4 piercing</strong>，价格 2 gp，重量 1 lb，并带有 Finesse、Light、Thrown 属性。先看速查表，再判断它到底适合 Rogue、双持、投掷、2024 Nick 构筑，还是只适合作为备用刀。</p>
 
 <table>
   <thead>

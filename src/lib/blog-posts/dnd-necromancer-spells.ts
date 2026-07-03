@@ -21,7 +21,7 @@ import {
 export const dndNecromancerSpellsArticleHtml = String.raw`
 <p><strong>dnd necromancer spells</strong> are best judged by table job, not by spooky flavor. This guide gives you the fast spell picks, the Animate Dead math that actually matters, and the minion habits I use so a necromancer adds pressure without turning every combat round into paperwork.</p>
 
-<p>I am treating this as a spell encyclopedia plus play guide. If you only need the short answer, start with the table. If you are building a Necromancy Wizard, Death Cleric, villain caster, or undead-heavy NPC, the later sections explain which spells carry the fantasy and which ones only look good on paper.</p>
+<p>If you only need the short answer, start with the table. If you are building a Necromancy Wizard, Death Cleric, villain caster, or undead-heavy NPC, the later sections explain which spells carry the fantasy and which ones only look good on paper.</p>
 
 <table>
   <thead>
@@ -369,7 +369,7 @@ ${liteVideoEmbed('wYBEbNbirkA', 'D&D 5E Animate Dead', {
 export const dndNecromancerSpellsArticleHtmlZh = String.raw`
 <p><strong>dnd necromancer spells</strong> 真正该看的不是“够不够邪门”，而是它在桌上负责什么工作。本文先给你死灵法术速查表，再讲 Animate Dead 的 24 小时控制循环、骷髅和僵尸怎么选，以及我自己跑团时用来避免拖慢战斗的亡灵小队流程。</p>
 
-<p>我会把这篇写成法术百科 + 实战构筑指南。你只想查答案，看第一张表就够；如果你正在做 Necromancy Wizard、Death Cleric、死灵反派或亡灵 NPC，后面会讲哪些法术真的撑起玩法，哪些只是看起来很有味道。</p>
+<p>你只想查答案，看第一张表就够；如果你正在做 Necromancy Wizard、Death Cleric、死灵反派或亡灵 NPC，后面会讲哪些法术真的撑起玩法，哪些只是看起来很有味道。</p>
 
 <table>
   <thead>

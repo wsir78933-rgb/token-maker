@@ -19,7 +19,7 @@ import {
 } from './shared';
 
 export const dndGhostArticleHtml = String.raw`
-<p><strong>dnd ghost</strong> is an undead monster built for fear, possession, unfinished business, and movement through the Ethereal Plane. This is an encyclopedia-style guide: you get the fast stat-and-table-use answer first, then the encounter advice that keeps a ghost from becoming just another low-AC hit point bag.</p>
+<p><strong>dnd ghost</strong> is an undead monster built for fear, possession, unfinished business, and movement through the Ethereal Plane. Start with the fast stat-and-table-use answer, then use the encounter advice to keep a ghost from becoming just another low-AC hit point bag.</p>
 
 <table>
   <thead>
@@ -42,7 +42,7 @@ export const dndGhostArticleHtml = String.raw`
       <td>Incorporeal movement, Etherealness, Horrifying Visage, Withering Touch, and Possession.</td>
     </tr>
     <tr>
-      <td><strong>Best search-intent answer</strong></td>
+      <td><strong>Best table-use answer</strong></td>
       <td>Use it as a haunted-location problem with a fight attached, not as a random undead brawler.</td>
     </tr>
     <tr>

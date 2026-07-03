@@ -590,7 +590,8 @@ export const collectionPageCopyByLocale: Record<
     privacy: {
       eyebrow: 'Privacy',
       title: 'Privacy facts for Token Maker',
-      description: 'Learn how local downloads, public share links, R2 storage, Clarity, and Google Analytics work today.',
+      description:
+        'Learn how local downloads, public share links, R2 storage, analytics, Google advertising cookies, and contact messages work today.',
     },
     about: {
       eyebrow: 'About',
@@ -618,7 +619,7 @@ export const collectionPageCopyByLocale: Record<
     privacy: {
       eyebrow: '隐私',
       title: 'Token Maker 隐私事实说明',
-      description: '说明本地下载、公开分享链接、R2 存储、Clarity 和 Google Analytics 当前如何工作。',
+      description: '说明本地下载、公开分享链接、R2 存储、统计、Google 广告 Cookie 和联系消息当前如何工作。',
     },
     about: {
       eyebrow: '关于',
@@ -787,6 +788,16 @@ export const privacySectionsByLocale: Record<SiteLocale, StaticPageSection[]> = 
       body:
         'Microsoft Clarity is included on the live site outside development. Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured.',
     },
+    {
+      title: 'Google advertising cookies',
+      body:
+        'Token Maker may display Google AdSense or other Google advertising products. Google and third-party advertising vendors may use Google advertising cookies, web beacons, IP addresses, device identifiers, or similar technologies to serve, measure, and improve ads. Google and its partners may use advertising cookies to serve personalized ads based on visits to Token Maker and other sites. You can use Google Ads Settings to opt out of personalized ads from Google, and aboutads.info provides choices for some third-party advertising vendors.',
+    },
+    {
+      title: 'Contact form and Resend',
+      body:
+        'The contact form sends your name, email address, message, and locale through Resend to the site inbox so I can reply. Token Maker may use connection details or hashed identifiers for rate limiting and abuse prevention. Do not send passwords, private keys, payment data, or private campaign art through the form. You can send a deletion request through the contact page for messages associated with your address.',
+    },
   ],
   zh: [
     {
@@ -808,6 +819,16 @@ export const privacySectionsByLocale: Record<SiteLocale, StaticPageSection[]> = 
       title: '分析与运维',
       body:
         'Microsoft Clarity 会在非开发环境的站点加载。只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用。',
+    },
+    {
+      title: 'Google 广告 Cookie',
+      body:
+        'Token Maker 可能会展示 Google AdSense 或其他 Google 广告产品。Google 和第三方广告供应商可能会使用 Google 广告 Cookie、网络信标、IP 地址、设备标识符或类似技术来投放、衡量和改进广告。Google 及其合作伙伴可能会根据你访问 Token Maker 和其他网站的记录投放个性化广告。你可以通过 Google 广告设置关闭 Google 的个性化广告，也可以通过 aboutads.info 了解部分第三方广告供应商的退出选择。',
+    },
+    {
+      title: '联系表单和 Resend',
+      body:
+        '联系表单会发送你的称呼、邮箱、消息内容和语言环境，并通过 Resend 发送到站点收件箱，方便我回复。Token Maker 可能会使用连接信息或哈希后的标识做限流和滥用防护。不要通过表单发送密码、私钥、付款信息或私密战役素材。你可以通过联系页面发送删除请求，要求删除与该邮箱相关的联系消息。',
     },
   ],
 };

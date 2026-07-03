@@ -64,7 +64,7 @@ export const dndCounterspellArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>I am treating this as a spell encyclopedia page, not a hype piece. In our games, <strong>dnd counterspell</strong> is at its best when the table knows three things before initiative starts: which rule version is active, whether characters know the spell name before reacting, and how hard the DM wants enemy casters to push back.</p>
+<p>In our games, <strong>dnd counterspell</strong> is at its best when the table knows three things before initiative starts: which rule version is active, whether characters know the spell name before reacting, and how hard the DM wants enemy casters to push back.</p>
 
 <nav aria-label="Article table of contents">
   <p><strong>On this page:</strong></p>

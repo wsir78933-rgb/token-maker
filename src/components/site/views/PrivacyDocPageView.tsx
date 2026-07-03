@@ -19,8 +19,8 @@ const copyByLocale = {
     openEditor: 'Return to the editor',
     promises: 'Key points',
     commitments: 'Current boundaries',
-    sectionEyebrow: 'How image handling works',
-    heroBadges: ['Local downloads', 'Public share links', 'Analytics disclosed'],
+    sectionEyebrow: 'How data handling works',
+    heroBadges: ['Local downloads', 'Public share links', 'Ad disclosures', 'Contact messages'],
   },
   zh: {
     editor: '编辑器',
@@ -29,8 +29,8 @@ const copyByLocale = {
     openEditor: '回到编辑器',
     promises: '核心说明',
     commitments: '当前边界',
-    sectionEyebrow: '图片处理方式',
-    heroBadges: ['本地下载', '公开分享链接', '统计已说明'],
+    sectionEyebrow: '数据处理方式',
+    heroBadges: ['本地下载', '公开分享链接', '广告披露', '联系消息'],
   },
 } as const;
 

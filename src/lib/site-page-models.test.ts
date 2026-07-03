@@ -105,8 +105,8 @@ describe('static site support pages', () => {
     const englishHomepage = sitemap().find((entry) => entry.url === 'https://www.tokenmaker.one/');
     const chineseHomepage = sitemap().find((entry) => entry.url === 'https://www.tokenmaker.one/zh');
 
-    expect(englishHomepage?.lastModified).toEqual(new Date('2026-06-24'));
-    expect(chineseHomepage?.lastModified).toEqual(new Date('2026-06-24'));
+    expect(englishHomepage?.lastModified).toEqual(new Date('2026-07-03'));
+    expect(chineseHomepage?.lastModified).toEqual(new Date('2026-07-03'));
   });
 
   it.each([
@@ -208,7 +208,18 @@ describe('static site support pages', () => {
     expect(englishPrivacyText).toContain(
       'Token Maker does not provide a self-service deletion or retention promise on this page.'
     );
-    expect(englishPrivacyText).not.toMatch(/If you add analytics|future remote|added later|retention policy/i);
+    expect(englishPrivacyText).toContain('Google advertising cookies');
+    expect(englishPrivacyText).toContain('third-party advertising vendors');
+    expect(englishPrivacyText).toContain('web beacons');
+    expect(englishPrivacyText).toContain('IP addresses');
+    expect(englishPrivacyText).toContain('personalized ads');
+    expect(englishPrivacyText).toContain('Google Ads Settings');
+    expect(englishPrivacyText).toContain('aboutads.info');
+    expect(englishPrivacyText).toContain('contact form sends your name, email address, message, and locale');
+    expect(englishPrivacyText).toContain('Resend');
+    expect(englishPrivacyText).toContain('rate limiting');
+    expect(englishPrivacyText).toContain('deletion request');
+    expect(englishPrivacyText).not.toMatch(/If you add analytics|future remote|added later/i);
 
     expect(chinesePrivacyText).toContain('普通 PNG 下载会在你的浏览器本地生成。');
     expect(chinesePrivacyText).toContain('/api/share');
@@ -216,7 +227,18 @@ describe('static site support pages', () => {
     expect(chinesePrivacyText).toContain('公开分享链接');
     expect(chinesePrivacyText).toContain('Microsoft Clarity 会在非开发环境的站点加载。');
     expect(chinesePrivacyText).toContain('只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用。');
-    expect(chinesePrivacyText).not.toMatch(/以后|未来|如果后面|保留期限/);
+    expect(chinesePrivacyText).toContain('Google 广告 Cookie');
+    expect(chinesePrivacyText).toContain('第三方广告供应商');
+    expect(chinesePrivacyText).toContain('网络信标');
+    expect(chinesePrivacyText).toContain('IP 地址');
+    expect(chinesePrivacyText).toContain('个性化广告');
+    expect(chinesePrivacyText).toContain('Google 广告设置');
+    expect(chinesePrivacyText).toContain('aboutads.info');
+    expect(chinesePrivacyText).toContain('联系表单会发送你的称呼、邮箱、消息内容和语言环境');
+    expect(chinesePrivacyText).toContain('Resend');
+    expect(chinesePrivacyText).toContain('限流');
+    expect(chinesePrivacyText).toContain('删除请求');
+    expect(chinesePrivacyText).not.toMatch(/以后|未来|如果后面/);
   });
 
   it('keeps About evidence links and Changelog affected links in the page models', () => {

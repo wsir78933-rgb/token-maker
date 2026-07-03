@@ -139,13 +139,13 @@ export const dndMephistophelesArticleHtml = String.raw`
 <p>If the player mostly wants mechanics, point them to the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> first. If they want table drama, Mephistopheles can carry that drama, but the player and DM should agree on boundaries before the pact becomes a campaign tax.</p>
 
 <h2>Mephistopheles Tiefling vs Mephistopheles the Archdevil</h2>
-<p><strong>A Mephistopheles tiefling is a character ancestry flavor, while Mephistopheles the archdevil is the infernal power behind that flavor.</strong> Mixing those up is one reason this keyword gets messy.</p>
+<p><strong>A Mephistopheles tiefling is a character ancestry flavor, while Mephistopheles the archdevil is the infernal power behind that flavor.</strong> Mixing those up is one reason the topic gets messy.</p>
 
 <table>
   <thead>
     <tr>
-      <th>Search intent</th>
-      <th>What the user probably wants</th>
+      <th>Mephistopheles angle</th>
+      <th>Common table need</th>
       <th>Practical answer</th>
     </tr>
   </thead>
@@ -407,7 +407,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
 <p>如果玩家还没想清职业底盘，先看 <a href="${ZH_DND_CLASSES_PATH}">DND 职业详解</a>。如果只是想要强度，Mephistopheles 不是重点；如果想要长期戏剧冲突，他很好用，但要先和 DM 对齐边界。</p>
 
 <h2>Mephistopheles Tiefling 和 Archdevil 本尊有什么区别？</h2>
-<p><strong>Mephistopheles tiefling 是角色血脉/风味概念，Mephistopheles archdevil 则是这个风味背后的地狱权力源头。</strong>很多搜索这个关键词的人，其实是在这两件事之间来回跳。</p>
+<p><strong>Mephistopheles tiefling 是角色血脉/风味概念，Mephistopheles archdevil 则是这个风味背后的地狱权力源头。</strong>很多玩家其实是在这两件事之间来回跳。</p>
 
 <table>
   <thead>

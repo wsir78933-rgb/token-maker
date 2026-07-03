@@ -75,7 +75,7 @@ export const dndDemonsArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>Page type note: this is an encyclopedia-style guide for <strong>dnd demons</strong>. The search intent is usually "what are the demons, which one should I use, and how are they different from devils?" so the quick reference comes before the lore.</p>
+<p>If you need to compare <strong>dnd demons</strong> fast, start with the quick reference above: it shows what each demon is, when to use it, and how it differs from devils before the deeper lore begins.</p>
 
 <h2>What Are DND Demons?</h2>
 <p><strong>DND demons are chaotic evil fiends tied to the Abyss, usually built around destruction, corruption, hunger, and unstable violence.</strong></p>
@@ -274,7 +274,7 @@ export const dndDemonsArticleHtml = String.raw`
 </ul>
 
 <h2>Video: DND Demons Companion Watch</h2>
-<p>The companion video from the keyword sheet is this <a href="${DND_DEMONS_VIDEO_URL}" rel="noreferrer noopener">DND demons video on YouTube</a>. I use it as a practical follow-up to the article: watch for the same prep lens used here, which is to identify what each demon changes at the table before worrying about every last lore footnote.</p>
+<p>The companion video is this <a href="${DND_DEMONS_VIDEO_URL}" rel="noreferrer noopener">DND demons video on YouTube</a>. Use it as a practical follow-up: watch for the same prep lens used here, which is to identify what each demon changes at the table before worrying about every last lore footnote.</p>
 
 ${liteVideoEmbed('54sGxOW26fM', 'DND demons companion video', {
   src: DND_DEMONS_VIDEO_PLACEHOLDER_PATH,
@@ -358,7 +358,7 @@ export const dndDemonsArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>页面类型说明：这是一篇围绕 <strong>dnd demons</strong> 的百科型指南。搜索这个词的人通常想快速知道“有哪些 demon、和 dnd devils 有什么区别、DM 应该怎么用”，所以先给速查，再讲设定。</p>
+<p>如果你想快速比较 <strong>dnd demons</strong>，先看上面的速查表：它会先说明有哪些 demon、各自适合什么场景，以及它们和 dnd devils 的核心区别，然后再进入更细的设定。</p>
 
 <h2>DND Demons 是什么？</h2>
 <p><strong>DND demons 是和 Abyss 相关的混乱邪恶 fiend，通常代表破坏、污染、饥饿和失控暴力。</strong></p>
@@ -557,7 +557,7 @@ export const dndDemonsArticleHtmlZh = String.raw`
 </ul>
 
 <h2>视频：DND Demons Companion Watch</h2>
-<p>表格里的配套视频是这支 <a href="${DND_DEMONS_VIDEO_URL}" rel="noreferrer noopener">DND demons YouTube 视频</a>。我把它当成文章后的补充观看：重点不是背完每一个设定脚注，而是像本文一样，先判断每只 demon 会让桌面局势发生什么变化。</p>
+<p>这支 <a href="${DND_DEMONS_VIDEO_URL}" rel="noreferrer noopener">DND demons YouTube 视频</a> 适合作为补充观看。重点不是背完每一个设定脚注，而是先判断每只 demon 会让桌面局势发生什么变化。</p>
 
 ${liteVideoEmbed('54sGxOW26fM', 'DND demons companion video', {
   src: DND_DEMONS_VIDEO_PLACEHOLDER_PATH,

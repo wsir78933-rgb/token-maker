@@ -154,10 +154,11 @@ const faqDocModels: Record<SiteLocale, FaqDocModel> = {
 
 const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
   en: {
-    updatedAt: '2026-06-24',
+    updatedAt: '2026-07-03',
     eyebrow: 'Privacy',
-    title: 'How Token Maker handles images, sharing, and analytics',
-    description: 'Current facts about local PNG downloads, public share links, R2 storage, Clarity, and Google Analytics.',
+    title: 'How Token Maker handles images, sharing, analytics, ads, and contact messages',
+    description:
+      'Current facts about local PNG downloads, public share links, R2 storage, Clarity, Google Analytics, Google advertising cookies, and contact messages.',
     intro:
       'Ordinary PNG downloads are generated locally in your browser. Copy-link and social-share actions use /api/share to upload a generated PNG to R2 and create a public share link.',
     principles: [
@@ -173,18 +174,28 @@ const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
         title: 'Analytics are disclosed by current loading behavior',
         description: 'Microsoft Clarity is included on the live site outside development. Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured.',
       },
+      {
+        title: 'Google advertising cookies',
+        description: 'Google and third-party advertising vendors may use cookies, web beacons, IP addresses, device identifiers, or similar technologies to serve and measure ads.',
+      },
+      {
+        title: 'Contact messages go through Resend',
+        description: 'The contact form sends your name, email address, message, and locale through Resend so I can reply and handle abuse reports.',
+      },
     ],
     commitments: [
       'Token Maker does not provide a self-service deletion or retention promise on this page.',
       'Public share links are viewable by anyone who has the link.',
       'The regular Download action stays separate from copy-link and social-share uploads.',
+      'Google Ads Settings and aboutads.info provide controls for some personalized ads.',
+      'Contact message deletion requests can be sent through the contact page.',
     ],
   },
   zh: {
-    updatedAt: '2026-06-24',
+    updatedAt: '2026-07-03',
     eyebrow: '隐私',
-    title: 'Token Maker 如何处理图片、分享和统计',
-    description: '说明本地 PNG 下载、公开分享链接、R2 存储、Clarity 和 Google Analytics 的当前事实。',
+    title: 'Token Maker 如何处理图片、分享、统计、广告和联系消息',
+    description: '说明本地 PNG 下载、公开分享链接、R2 存储、Clarity、Google Analytics、Google 广告 Cookie 和联系消息的当前事实。',
     intro:
       '普通 PNG 下载会在你的浏览器本地生成。复制链接和社媒分享会通过 /api/share 上传生成后的 PNG 到 R2，并生成公开分享链接。',
     principles: [
@@ -200,11 +211,21 @@ const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
         title: '统计加载行为按当前实现披露',
         description: 'Microsoft Clarity 会在非开发环境的站点加载。只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用。',
       },
+      {
+        title: 'Google 广告 Cookie',
+        description: 'Google 和第三方广告供应商可能会使用 Cookie、网络信标、IP 地址、设备标识符或类似技术来投放和衡量广告。',
+      },
+      {
+        title: '联系消息通过 Resend 发送',
+        description: '联系表单会发送你的称呼、邮箱、消息内容和语言环境，并通过 Resend 发送到站点收件箱，方便回复和处理滥用反馈。',
+      },
     ],
     commitments: [
       '这个页面没有提供自助删除入口，也没有提供保留承诺。',
       '拥有公开分享链接的人可以查看生成后的 Token 图片。',
       '普通下载动作和复制链接、社媒分享上传是分开的。',
+      'Google 广告设置和 aboutads.info 提供部分个性化广告控制方式。',
+      '联系消息的删除请求可以通过联系页面发送。',
     ],
   },
 };

@@ -21,7 +21,7 @@ import {
 export const dndMageArmorArticleHtml = String.raw`
 <p><strong>dnd mage armor</strong> is a 1st-level Abjuration spell that sets an unarmored willing creature&rsquo;s base AC to <strong>13 + Dexterity modifier</strong> for 8 hours. This guide gives you the fast AC math, the 2014 vs 2024 wording, the stacking rulings that cause arguments, and the one use many players miss: it is <strong>touch range, not self-only</strong>.</p>
 
-<p>I am treating this as a spell encyclopedia page with table advice. If you only need the answer, use the first table. If you are choosing spells for a Wizard, Sorcerer, or Armor of Shadows Warlock, keep reading before you spend a known spell on a defense that your build may already replace.</p>
+<p>If you only need the answer, use the first table. If you are choosing spells for a Wizard, Sorcerer, or Armor of Shadows Warlock, keep reading before you spend a known spell on a defense that your build may already replace.</p>
 
 <table>
   <thead>
@@ -305,7 +305,7 @@ ${liteVideoEmbed('ZBbhI8Mp8fE', 'It took me 10 years to realize i could do this'
 export const dndMageArmorArticleHtmlZh = String.raw`
 <p><strong>dnd mage armor</strong> 是一个 1 环 Abjuration 法术，可以让一个未穿护甲、且自愿的生物在 8 小时内使用 <strong>13 + Dexterity 调整值</strong> 作为基础 AC。本文先给速查表，再讲 AC 计算、2014/2024 规则差异、最容易吵起来的叠加问题，以及很多玩家会忽略的一点：它是 <strong>Touch 法术，不是只能给自己放</strong>。</p>
 
-<p>我会把这篇写成法术百科 + 实战指南。你只想查答案，看第一张表就够；如果你正在给 Wizard、Sorcerer 或 Armor of Shadows Warlock 选法术，就继续往下看，别把一个已被职业或护甲解决的问题又用法术位买一遍。</p>
+<p>你只想查答案，看第一张表就够；如果你正在给 Wizard、Sorcerer 或 Armor of Shadows Warlock 选法术，就继续往下看，别把一个已被职业或护甲解决的问题又用法术位买一遍。</p>
 
 <table>
   <thead>

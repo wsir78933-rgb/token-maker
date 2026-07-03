@@ -160,7 +160,20 @@ function isFooterLinkActive(currentPath: string | undefined, path: string) {
   return normalizedCurrentPath === path || normalizedCurrentPath.startsWith(`${path}/`);
 }
 
-function FooterSectionColumn({
+function FooterSectionHeader({ footerSection }: { footerSection: FooterSection }) {
+  const SectionIcon = footerSection.icon;
+
+  return (
+    <div className="flex min-w-0 flex-col items-center gap-2 text-center sm:flex-row sm:gap-3 sm:text-left">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.045] text-[#f1d492] sm:h-9 sm:w-9">
+        <SectionIcon className="h-4 w-4" />
+      </span>
+      <h2 className="text-xs font-semibold text-stone-50 sm:text-sm">{footerSection.title}</h2>
+    </div>
+  );
+}
+
+function FooterSectionLinks({
   locale,
   currentPath,
   footerSection,
@@ -169,39 +182,29 @@ function FooterSectionColumn({
   currentPath?: string;
   footerSection: FooterSection;
 }) {
-  const SectionIcon = footerSection.icon;
-
   return (
-    <div>
-      <div className="mb-4 flex items-center gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.045] text-[#f1d492]">
-          <SectionIcon className="h-4 w-4" />
-        </span>
-        <h2 className="text-sm font-semibold text-stone-50">{footerSection.title}</h2>
-      </div>
-      <ul className="space-y-3 text-sm">
-        {footerSection.links.map((footerLink) => {
-          const localizedHref = getFooterLinkHref(locale, footerLink.path);
-          const isActive = isFooterLinkActive(currentPath, footerLink.path);
+    <ul className="min-w-0 space-y-2 text-center text-xs sm:space-y-3 sm:text-left sm:text-sm">
+      {footerSection.links.map((footerLink) => {
+        const localizedHref = getFooterLinkHref(locale, footerLink.path);
+        const isActive = isFooterLinkActive(currentPath, footerLink.path);
 
-          return (
-            <li key={footerLink.path}>
-              <Link
-                href={localizedHref}
-                prefetch={false}
-                aria-current={isActive ? 'page' : undefined}
-                className={cn(
-                  'inline-flex text-stone-400 transition hover:text-[#f1d492]',
-                  isActive && 'text-[#f1d492]',
-                )}
-              >
-                {footerLink.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+        return (
+          <li key={footerLink.path}>
+            <Link
+              href={localizedHref}
+              prefetch={false}
+              aria-current={isActive ? 'page' : undefined}
+              className={cn(
+                'inline-flex max-w-full justify-center break-words leading-5 text-stone-400 transition hover:text-[#f1d492] sm:justify-start',
+                isActive && 'text-[#f1d492]',
+              )}
+            >
+              {footerLink.label}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -245,10 +248,13 @@ export function SiteFooter({ locale, currentPath, contentWidth = 'contained', cl
             </div>
           </div>
 
-          <nav aria-label={footerCopy.navigationLabel} className="grid gap-8 sm:grid-cols-3">
+          <nav aria-label={footerCopy.navigationLabel} className="grid grid-cols-3 gap-x-3 gap-y-4 sm:gap-x-8">
             {footerCopy.sections.map((footerSection) => (
-              <FooterSectionColumn
-                key={footerSection.title}
+              <FooterSectionHeader key={`header-${footerSection.title}`} footerSection={footerSection} />
+            ))}
+            {footerCopy.sections.map((footerSection) => (
+              <FooterSectionLinks
+                key={`links-${footerSection.title}`}
                 locale={locale}
                 currentPath={currentPath}
                 footerSection={footerSection}
