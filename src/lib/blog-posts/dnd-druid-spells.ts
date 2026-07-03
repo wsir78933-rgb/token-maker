@@ -20,9 +20,9 @@ import {
 export const dndDruidSpellsArticleHtml = String.raw`
 <p><strong>DND druid spells</strong> are strongest when you treat the Druid as a battlefield controller first, not as a weaker Cleric or a nature-flavored Wizard. A good Druid spell list slows enemies, changes terrain, keeps allies alive with efficient healing, and gives the party answers outside combat.</p>
 
-<p>This guide expands the short tier list into a full 5e play guide: best cantrips, 1st-level staples, 2nd-level control magic, 3rd-level power picks, concentration traps, prepared-spell examples, Circle notes, and FAQ answers. I am focusing on the spells that repeatedly matter at real tables, not just the ones that sound impressive in isolation.</p>
+<p>The useful version starts with the short tier list, then moves into cantrips, 1st-level staples, 2nd-level control magic, 3rd-level power picks, concentration traps, prepared-spell examples, Circle notes, and FAQ answers. I care most about spells that keep paying off at real tables, not the ones that only sound impressive in isolation.</p>
 
-<p>If you only need the fast answer, start with the table. If you are building a long campaign Druid, read the sections after it before locking your prepared list. Druid spell choice changes dramatically depending on whether your party needs scouting, healing, damage, stealth, or emergency control. For exact rules text, compare the official <a href="${DND_DRUID_2014_RULES_URL}" rel="noreferrer noopener">2014 Druid rules</a> and <a href="${DND_DRUID_2024_RULES_URL}" rel="noreferrer noopener">2024 Druid rules</a> your table is using.</p>
+<p>For a quick pick, start with the table. For a long campaign Druid, read the sections after it before locking your prepared list. Druid spell choice changes dramatically depending on whether your party needs scouting, healing, damage, stealth, or emergency control. For exact rules text, compare the official <a href="${DND_DRUID_2014_RULES_URL}" rel="noreferrer noopener">2014 Druid rules</a> and <a href="${DND_DRUID_2024_RULES_URL}" rel="noreferrer noopener">2024 Druid rules</a> your table is using.</p>
 
 <h2>DND Druid Spells Quick Tier List</h2>
 
@@ -394,7 +394,7 @@ export const dndDruidSpellsArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>The point is not to copy the table blindly. The point is to keep a core that covers survival, control, stealth, and anti-magic while leaving room for the adventure. A swamp crawl, city heist, undead crypt, mountain climb, and political session should not all use the same prepared list.</p>
+<p>Do not copy the table blindly. Keep a core that covers survival, control, stealth, and anti-magic, then leave room for tomorrow's adventure. A swamp crawl, city heist, undead crypt, mountain climb, and political session should not all use the same prepared list.</p>
 
 <h2>Best DND Druid Spells by Party Role</h2>
 
@@ -497,7 +497,7 @@ export const dndDruidSpellsArticleHtml = String.raw`
 
 <h2>Video Summary: Druid Class Breakdown</h2>
 
-<p>The video below is a light companion watch for the class fantasy. Use it for tone and table energy, then come back to the spell tables above when you need a practical prepared list. The actual power of a Druid is not just "nature magic"; it is the ability to change what kind of problem the enemies are standing inside.</p>
+<p>The embedded breakdown is strongest for class fantasy and table energy; the spell tables handle prepared-list decisions. Druid power comes from changing the problem the enemies are standing inside.</p>
 
 ${liteVideoEmbed('WMo_gCRMSfA', 'A Crap Guide to D&D [5th Edition] - Druid')}
 `;
@@ -505,9 +505,9 @@ ${liteVideoEmbed('WMo_gCRMSfA', 'A Crap Guide to D&D [5th Edition] - Druid')}
 export const dndDruidSpellsArticleHtmlZh = String.raw`
 <p><strong>DND 德鲁伊法术 (DND Druid Spells)</strong> 最强的地方，不是把德鲁伊玩成一个弱化牧师，也不是玩成自然风味的法师，而是把它当成一个战场控制者。好的德鲁伊法术列表会拖慢敌人、改变地形、用高效率治疗救急，并且在战斗外给队伍提供探索答案。</p>
 
-<p>下面按完整 5e 实战需求整理：最强戏法、1 环必备法术、2 环控场法术、3 环核心法术、专注陷阱、每日准备模板、德鲁伊结社差异和 FAQ。重点不是把所有法术名字堆一遍，而是判断哪些 <strong>DND 德鲁伊法术</strong> 在真实跑团里经常有用。</p>
+<p>先从短评级表看起，再往下看戏法、1 环必备法术、2 环控场、3 环核心法术、专注陷阱、每日准备模板、德鲁伊结社差异和 FAQ。不要把所有法术名字堆成清单，先找那些在真实跑团里经常派上用场的 <strong>DND 德鲁伊法术</strong>。</p>
 
-<p>如果你只要快速答案，先看第一张表。如果你要长期玩德鲁伊，后面的段落更重要，因为德鲁伊每天准备什么法术，要根据队伍缺治疗、缺潜行、缺输出、缺控场还是缺探索工具来调整。涉及具体规则文本时，建议对照官方 <a href="${DND_DRUID_2014_RULES_URL}" rel="noreferrer noopener">2014 版 Druid 规则</a> 和 <a href="${DND_DRUID_2024_RULES_URL}" rel="noreferrer noopener">2024 版 Druid 规则</a>，以你们桌采用的版本为准。</p>
+<p>只想快速选法术，先看第一张表。要长期玩德鲁伊，就别只停在评级上；德鲁伊每天准备什么法术，取决于队伍缺治疗、缺潜行、缺输出、缺控场还是缺探索工具。涉及具体规则文本时，建议对照官方 <a href="${DND_DRUID_2014_RULES_URL}" rel="noreferrer noopener">2014 版 Druid 规则</a> 和 <a href="${DND_DRUID_2024_RULES_URL}" rel="noreferrer noopener">2024 版 Druid 规则</a>，以你们桌采用的版本为准。</p>
 
 <h2>DND 德鲁伊法术快速评级表</h2>
 
@@ -711,7 +711,7 @@ export const dndDruidSpellsArticleHtmlZh = String.raw`
 
 <h2>最好用的 2 环 DND 德鲁伊法术</h2>
 
-<p>2 环开始，德鲁伊会从“会治疗的自然施法者”变成真正的地形引擎。这一档法术能决定队伍是主动潜入、主动伏击，还是被拖进一场不利战斗。</p>
+<p>2 环开始，德鲁伊会从“会治疗的自然施法者”变成地形引擎。这一档法术能决定队伍是主动潜入、主动伏击，还是被拖进一场不利战斗。</p>
 
 <table>
   <thead>
@@ -759,7 +759,7 @@ export const dndDruidSpellsArticleHtmlZh = String.raw`
 
 <h2>最好用的 3 环 DND 德鲁伊法术</h2>
 
-<p>3 环法术会让德鲁伊真正进入强势期：大范围区域、天气、无专注地形封锁、召唤。强度很高，但也更考验玩家和 DM 的桌面管理。</p>
+<p>3 环法术会把德鲁伊推到强势期：大范围区域、天气、无专注地形封锁、召唤。强度很高，但也更考验玩家和 DM 的桌面管理。</p>
 
 <table>
   <thead>
@@ -805,7 +805,7 @@ export const dndDruidSpellsArticleHtmlZh = String.raw`
 
 <p>一个均衡的 5 级德鲁伊，可以优先考虑 <strong>雪雨暴</strong>、<strong>植物滋长</strong> 和 <strong>解除魔法</strong>。召唤动物只有在桌上已经说好召唤物由谁选、怎么行动、回合耗时多少时，才适合作为核心法术。</p>
 
-<h2>德鲁伊专注：真正隐藏的法术位成本</h2>
+<h2>德鲁伊专注：隐藏的法术位成本</h2>
 
 <p>很多最强 <strong>DND 德鲁伊法术</strong> 都需要专注。这意味着你不是在比较所有法术，而是在问：下一场战斗里，哪一个专注法术最值得定义接下来的几轮？</p>
 
@@ -850,7 +850,7 @@ export const dndDruidSpellsArticleHtmlZh = String.raw`
 
 <h2>按德鲁伊等级准备法术示例</h2>
 
-<p>具体能准备多少法术，取决于你的德鲁伊等级、感知修正值和使用的规则版本。在常见 <a href="${DND_DRUID_2014_RULES_URL}" rel="noreferrer noopener">2014 版 5e Druid 规则</a> 下，德鲁伊长休后可准备的法术数量 = 德鲁伊等级 + 感知修正值；戏法另算。<a href="${DND_DRUID_2024_RULES_URL}" rel="noreferrer noopener">2024 版 Druid 规则</a> 有自己的职业进度，所以抄准备表前要先确认你们桌采用哪一版。下面只是实战默认模板，要按战役调整。</p>
+<p>具体能准备多少法术，取决于你的德鲁伊等级、感知修正值和使用的规则版本。在常见 <a href="${DND_DRUID_2014_RULES_URL}" rel="noreferrer noopener">2014 版 5e Druid 规则</a> 下，德鲁伊长休后可准备的法术数量 = 德鲁伊等级 + 感知修正值；戏法另算。<a href="${DND_DRUID_2024_RULES_URL}" rel="noreferrer noopener">2024 版 Druid 规则</a> 有自己的职业进度，所以抄准备表前要先确认你们桌采用哪一版。这张表只是实战默认起点，要按战役调整。</p>
 
 <table>
   <thead>
@@ -879,7 +879,7 @@ export const dndDruidSpellsArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>不要盲抄这张表。它的意义是保留一套覆盖生存、控场、潜行和反魔法的核心，同时给明天的冒险留空间。沼泽探索、城市潜入、亡灵墓穴、雪山旅行和政治谈判，不应该使用完全一样的准备列表。</p>
+<p>不要盲抄这张表。它只是帮你保留一套覆盖生存、控场、潜行和反魔法的核心，同时给明天的冒险留空间。沼泽探索、城市潜入、亡灵墓穴、雪山旅行和政治谈判，不应该使用完全一样的准备列表。</p>
 
 <h2>按队伍职责选择 DND 德鲁伊法术</h2>
 
@@ -982,7 +982,7 @@ export const dndDruidSpellsArticleHtmlZh = String.raw`
 
 <h2>视频吐槽：德鲁伊到底是个什么职业？</h2>
 
-<p>下面的视频适合作为轻量补充，用来看德鲁伊的职业气质和桌面风格。真正决定德鲁伊强度的，不只是“自然魔法”这个主题，而是你能不能用 <strong>DND 德鲁伊法术</strong> 改变敌人正在面对的问题。</p>
+<p>这支视频可以用来看德鲁伊的职业气质和桌面风格。德鲁伊强不强，通常不取决于“自然魔法”这个主题，而取决于你能不能用 <strong>DND 德鲁伊法术</strong> 改变敌人正在面对的问题。</p>
 
 ${liteVideoEmbed('WMo_gCRMSfA', 'A Crap Guide to D&D [5th Edition] - Druid')}
 `;

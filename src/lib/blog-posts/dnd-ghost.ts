@@ -19,7 +19,7 @@ import {
 } from './shared';
 
 export const dndGhostArticleHtml = String.raw`
-<p><strong>dnd ghost</strong> is an undead monster built for fear, possession, unfinished business, and movement through the Ethereal Plane. Start with the fast stat-and-table-use answer, then use the encounter advice to keep a ghost from becoming just another low-AC hit point bag.</p>
+<p><strong>dnd ghost</strong> is an undead monster built for fear, possession, unfinished business, and movement through the Ethereal Plane. Use the fast stat-and-table answer first, then lean on the encounter advice so a ghost does not collapse into a low-AC hit point bag.</p>
 
 <table>
   <thead>
@@ -43,7 +43,7 @@ export const dndGhostArticleHtml = String.raw`
     </tr>
     <tr>
       <td><strong>Best table-use answer</strong></td>
-      <td>Use it as a haunted-location problem with a fight attached, not as a random undead brawler.</td>
+      <td>Use it as a haunted-location problem with a fight attached; a straight undead brawl wastes the monster.</td>
     </tr>
     <tr>
       <td><strong>Best VTT prep</strong></td>
@@ -183,7 +183,7 @@ export const dndGhostArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>If your ghost plot is drifting into necromancer territory, pair this guide with the <a href="${EN_DND_NECROMANCER_SPELLS_PATH}">DND necromancer spells guide</a>. If the haunting is actually a fiendish corruption problem, the <a href="${EN_DND_DEMONS_PATH}">dnd demons guide</a> is the better reference.</p>
+<p>If your ghost plot is drifting into necromancer territory, the <a href="${EN_DND_NECROMANCER_SPELLS_PATH}">DND necromancer spells guide</a> fits that turn better. If the haunting is actually a fiendish corruption problem, the <a href="${EN_DND_DEMONS_PATH}">dnd demons guide</a> is the better reference.</p>
 
 <h2 id="vtt-token">How to Make a dnd ghost Token Readable on VTT Maps</h2>
 <p><strong>A dnd ghost token needs a bright silhouette, strong rim light, and a clear circular or square frame because transparent spirits disappear on dark dungeon maps.</strong></p>
@@ -217,7 +217,7 @@ export const dndGhostArticleHtml = String.raw`
 <p><strong>Make the ghost scary through clues, possession pressure, movement, and consequences before relying on damage.</strong> Give warning signs and response options so fear comes from choices, not surprise punishment.</p>
 
 <h2 id="video">Watch the dnd ghost Video</h2>
-<p>The companion video is about dice ghosts and table-haunting energy. I would treat it as inspiration for the first two minutes of a ghost scene: strange dice behavior, unreliable signals, and a spirit that feels present before the stat block enters initiative.</p>
+<p>Dice ghosts and table-haunting energy work best as the first two minutes of a ghost scene: strange dice behavior, unreliable signals, and a spirit that feels present before the stat block enters initiative.</p>
 
 ${liteVideoEmbed('XXy2awzR-mM', 'dnd ghost companion video', {
   src: DND_GHOST_VIDEO_PLACEHOLDER_PATH,
@@ -228,7 +228,7 @@ ${liteVideoEmbed('XXy2awzR-mM', 'dnd ghost companion video', {
 `;
 
 export const dndGhostArticleHtmlZh = String.raw`
-<p><strong>dnd ghost</strong> 是 D&amp;D 里最适合鬼屋、旧宅、墓园和诅咒剧情的 undead 怪物。它的重点不是站在原地和玩家对砍，而是穿墙、恐惧、附身，以及那个“为什么它还不肯离开”的谜题。</p>
+<p><strong>dnd ghost</strong> 是 D&amp;D 里最适合鬼屋、旧宅、墓园和诅咒剧情的 undead 怪物。它的重点放在穿墙、恐惧、附身，以及那个“为什么它还不肯离开”的谜题上，不适合站在原地和玩家对砍。</p>
 
 <table>
   <thead>
@@ -273,7 +273,7 @@ export const dndGhostArticleHtmlZh = String.raw`
 <p>它和 skeleton、zombie、demon 的区别很明显：ghost 更私人。它记得生前的事，也会被某个房间、某件遗物或某个谎言困住。它想借活人的身体行动，是因为身体正是它失去的东西。</p>
 
 <h2 id="quick-stats">dnd ghost 速查数据与桌面定位</h2>
-<p><strong>经典 dnd ghost 看起来脆，但真正危险来自移动、恐惧、抗性和附身。</strong>不要把它跑成普通站桩战。</p>
+<p><strong>经典 dnd ghost 看起来脆，但危险主要来自移动、恐惧、抗性和附身。</strong>不要把它跑成普通站桩战。</p>
 
 <table>
   <thead>
@@ -330,7 +330,7 @@ export const dndGhostArticleHtmlZh = String.raw`
 <h2 id="possession">dnd ghost 的 Possession 怎么跑？</h2>
 <p><strong>dnd ghost 的 Possession 会在目标豁免失败后控制一个类人生物，让队友变成遭遇的核心问题。</strong>具体限制取决于你使用的规则版本，所以开团前要核对规则数据。</p>
 
-<p>桌面上真正难的不是读能力文本，而是让被影响的玩家仍然觉得自己在参与游戏。</p>
+<p>桌面上的难点不在读能力文本，而在让被影响的玩家仍然觉得自己在参与游戏。</p>
 
 <ul>
   <li><strong>告诉玩家角色感受到了什么。</strong>冰冷的手、借来的记忆、喉咙里不是自己的声音。给他一点可以表演的东西。</li>
@@ -372,7 +372,7 @@ export const dndGhostArticleHtmlZh = String.raw`
     <tr>
       <td><strong>Ghost</strong></td>
       <td>Haunting、记忆、附身、未解决故事</td>
-      <td>地点藏着秘密，或者队伍需要判断什么才算真正的正义。</td>
+      <td>地点藏着秘密，或者队伍需要判断怎样收束才算公正。</td>
     </tr>
     <tr>
       <td><strong>Specter</strong></td>
@@ -392,7 +392,7 @@ export const dndGhostArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>如果你的 ghost 剧情开始偏向 necromancer，可以配合 <a href="${ZH_DND_NECROMANCER_SPELLS_PATH}">DND necromancer spells 指南</a>。如果这场闹鬼其实来自 fiend 腐化，<a href="${ZH_DND_DEMONS_PATH}">dnd demons 指南</a>会更贴合。</p>
+<p>如果你的 ghost 剧情开始偏向 necromancer，可以配合 <a href="${ZH_DND_NECROMANCER_SPELLS_PATH}">DND necromancer spells 指南</a>。如果这场闹鬼其实来自 fiend 腐化，<a href="${ZH_DND_DEMONS_PATH}">dnd demons 指南</a>更贴合。</p>
 
 <h2 id="vtt-token">怎样让 dnd ghost Token 在地图上清楚可读？</h2>
 <p><strong>dnd ghost Token 需要明亮轮廓、强边缘光和清楚的圆形或方形边框，因为透明幽灵很容易消失在暗色地牢图上。</strong></p>
@@ -426,7 +426,7 @@ export const dndGhostArticleHtmlZh = String.raw`
 <p><strong>用线索、附身压力、移动和后果制造恐惧，不要只靠伤害。</strong>给玩家预警和反应选项，恐怖感才来自选择，而不是突然惩罚。</p>
 
 <h2 id="video">观看 dnd ghost 视频</h2>
-<p>这支配套视频讲的是 dice ghosts 和桌面闹鬼感。它很适合作为 ghost 场景开场灵感：异常骰子、错误信号，以及怪物正式现身前就已经存在的灵体压力。</p>
+<p>这条视频讲的是 dice ghosts 和桌面闹鬼感。可以拿它给 ghost 场景开场找灵感：异常骰子、错误信号，以及怪物正式现身前就已经存在的灵体压力。</p>
 
 ${liteVideoEmbed('XXy2awzR-mM', 'dnd ghost companion video', {
   src: DND_GHOST_VIDEO_PLACEHOLDER_PATH,

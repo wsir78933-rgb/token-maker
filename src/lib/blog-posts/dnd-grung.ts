@@ -17,7 +17,7 @@ import {
 } from './shared';
 
 export const dndGrungArticleHtml = String.raw`
-<p>Before you bring a <strong>dnd grung</strong> to the table, it helps to answer the practical questions first: is this frogfolk race worth asking your DM about, what makes it strong in play, and what makes some tables hesitate? This guide answers those questions up front, then gets practical. In my experience, a <strong>dnd grung</strong> is fun when you treat it like a mobility-and-pressure pick, not a novelty costume with poison skin.</p>
+<p>Before you bring a <strong>dnd grung</strong> to the table, it helps to answer the practical questions first: is this frogfolk race worth asking your DM about, what makes it strong in play, and what makes some tables hesitate? I answer those questions up front, then get practical. In my experience, a <strong>dnd grung</strong> is fun when you treat it like a mobility-and-pressure pick rather than a novelty costume with poison skin.</p>
 
 <p>The quick reference comes first so you can judge whether the race fits your campaign. After that, I break down the rules, the DM approval issues, the best classes, and the roleplay choices that make a <strong>dnd grung</strong> character memorable instead of exhausting.</p>
 
@@ -138,7 +138,7 @@ export const dndGrungArticleHtml = String.raw`
 <h3>Amphibious movement is nice, but Water Dependency changes the campaign more</h3>
 <p><strong>Amphibious</strong> is great. Breathing air and water opens up some very fun scenes. But the trait that actually changes day-to-day play is <strong>Water Dependency</strong>.</p>
 
-<p>If your <strong>dnd grung</strong> does not immerse in water for at least one hour during the day, the race takes a level of exhaustion at day&rsquo;s end. That means the question is never "does this matter?" The real question is "how often will the campaign make this inconvenient?"</p>
+<p>If your <strong>dnd grung</strong> does not immerse in water for at least one hour during the day, the race takes a level of exhaustion at day&rsquo;s end. At the table, the useful question is "how often will the campaign make this inconvenient?"</p>
 
 <ul>
   <li><strong>In jungle or river campaigns:</strong> Water Dependency is often flavor with a little planning.</li>
@@ -270,7 +270,7 @@ export const dndGrungArticleHtml = String.raw`
 </section>
 
 <h2>Watch: Why DND Grung Gets Such a Strong DM Reaction</h2>
-<p>If you want a lighter follow-up after the guide, this video is the right kind of companion watch. It approaches race choice from the DM-reaction angle, which fits <strong>dnd grung</strong> better than a pure optimization lens. That is exactly the conversation a <strong>dnd grung</strong> usually triggers at real tables: not "is it possible?" but "what kind of energy does this bring into the campaign?" You can watch the <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">DND grung companion video on YouTube</a>, or use the embed below.</p>
+<p>For a lighter angle, use the linked race-reaction video as a DM-read check. That fits <strong>dnd grung</strong> better than a pure optimization lens. At real tables, a <strong>dnd grung</strong> usually shifts the conversation from "is it possible?" to "what kind of energy does this bring into the campaign?" You can watch <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">the DND grung video on YouTube</a>, or use the embed here.</p>
 
 ${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons", {
   src: DND_GRUNG_VIDEO_PLACEHOLDER_PATH,
@@ -279,7 +279,7 @@ ${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeon
 `;
 
 export const dndGrungArticleHtmlZh = String.raw`
-<p>选 <strong>dnd grung</strong> 前，最好先确认三件事：这个青蛙人种族到底值不值得玩，它在实战里强在哪里，以及为什么不少 DM 会先犹豫一下。本文会先把这些问题讲清楚，再往下拆规则。按我的实际跑团体验，Grung 好玩不是因为它“很怪”，而是因为它把机动、毒素压迫和地形利用绑在了一起。</p>
+<p>选 <strong>dnd grung</strong> 前，最好先确认三件事：这个青蛙人种族到底值不值得玩，它在实战里强在哪里，以及为什么不少 DM 会先犹豫一下。这里先把这些问题讲清楚，再拆规则。按我的实际跑团体验，Grung 好玩的点不在“很怪”；更在于它把机动、毒素压迫和地形利用绑在了一起。</p>
 
 <p>前面先放速查表，方便你快速判断能不能带上桌。后面再分别解决四个核心问题：<strong>dnd grung</strong> 到底是什么、DM 最在意什么、哪些职业最顺手、以及这个角色该怎么演才不会只剩下搞笑梗。</p>
 
@@ -370,7 +370,7 @@ export const dndGrungArticleHtmlZh = String.raw`
 </section>
 
 <h2>哪些 DND Grung 特性在实战里最值钱？</h2>
-<p>判断一个 <strong>dnd grung</strong> 强不强，最好的方式不是把种族特性念一遍，而是看这些能力在第三轮战斗后、在旅行途中、以及在非平地地图上还剩多少价值。</p>
+<p>判断一个 <strong>dnd grung</strong> 强不强，别只把种族特性念一遍；要看这些能力在第三轮战斗后、在旅行途中、以及在非平地地图上还剩多少价值。</p>
 
 <h3>Poisonous Skin 和毒素免疫，是最抓眼球的两条</h3>
 <p><strong>Poisonous Skin</strong> 是 Grung 最容易让人记住的地方。简单说，就是别人碰你会吃豁免，你自己也能把毒素挂到穿刺武器攻击上，补额外毒伤。</p>
@@ -387,18 +387,18 @@ export const dndGrungArticleHtmlZh = String.raw`
     loading="lazy"
     decoding="async"
   />
-  <figcaption>Grung 最花哨的是毒，但真正会让桌面停下来讨论的，是这些接触豁免到底要多频繁地结算。</figcaption>
+  <figcaption>Grung 最花哨的是毒，但最容易让桌面停下来讨论的，是这些接触豁免到底要多频繁地结算。</figcaption>
 </figure>
 
-<h3>Standing Leap 和攀爬速度，才是 Grung 真正有辨识度的地方</h3>
+<h3>Standing Leap 和攀爬速度，是 Grung 最有辨识度的地方</h3>
 <p><strong>Standing Leap</strong> 让 Grung 不需要助跑，就能完成最长 25 尺远跳和最高 15 尺高跳。再叠上 25 尺攀爬速度，它就根本不像一个正常的小体型角色在移动。</p>
 
 <p>按我的实测，这才是它最强的部分。一个 <strong>dnd grung</strong> 一旦遇到平台、树根、断桥、阳台、脚手架或者废墟石柱，整张地图的走法都会变得不一样。放在平地上，它只是有趣；放在垂直地形里，它就会开始恶心人。</p>
 
-<h3>两栖能力很舒服，但真正改变战役体验的是 Water Dependency</h3>
-<p><strong>Amphibious</strong> 当然很好用。能同时在空气和水里呼吸，意味着很多场景天然更有发挥空间。但真正在日常里改变体验的，反而是 <strong>Water Dependency</strong>。</p>
+<h3>两栖能力很舒服，但 Water Dependency 更影响战役体验</h3>
+<p><strong>Amphibious</strong> 当然很好用。能同时在空气和水里呼吸，意味着很多场景天然更有发挥空间。但日常里更影响体验的，反而是 <strong>Water Dependency</strong>。</p>
 
-<p>如果 Grung 一天里没有至少泡水 1 小时，那么当天结束时就会吃 1 级 exhaustion。也就是说，问题从来不是“这条会不会触发”，而是“这个战役会不会让它一直不方便”。</p>
+<p>如果 Grung 一天里没有至少泡水 1 小时，那么当天结束时就会吃 1 级 exhaustion。也就是说，问题会落到“这个战役会不会让它一直不方便”。</p>
 
 <ul>
   <li><strong>在丛林、河道、沼泽团里：</strong>Water Dependency 通常只是有点味道的日常管理。</li>
@@ -477,7 +477,7 @@ export const dndGrungArticleHtmlZh = String.raw`
 <h2>我会怎么演 DND Grung，才不会只剩下一个梗</h2>
 <p>玩 <strong>dnd grung</strong> 最容易翻车的方式，就是把它当成一个 meme 先玩，再把角色本身往后放。青蛙感可以好笑十分钟，但一个只有梗没有核心的人物，撑不了整段战役。</p>
 
-<p>更好用的做法，是先选一个真正的角色锚点，再把 Grung 的异质感挂上去。按我的经验，最好用的三种切口分别是：阶层流亡者、务实猎手，以及那种过度守规矩、把别人的社交习惯全都理解错的外来者。</p>
+<p>更好用的做法，是先选一个可靠的角色锚点，再把 Grung 的异质感挂上去。按我的经验，最好用的三种切口分别是：阶层流亡者、务实猎手，以及那种过度守规矩、把别人的社交习惯全都理解错的外来者。</p>
 
 <ul>
   <li><strong>先决定你和阶层制度的关系：</strong>拥护者、逃离者、怀疑者，还是干脆被放逐的人。</li>
@@ -514,7 +514,7 @@ export const dndGrungArticleHtmlZh = String.raw`
 
     <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
       <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Grung 的毒是不是太超模了？</h3>
-      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">在某些桌上会显得超模，尤其是低等级或者接触、抱摔很多的环境里。但实战里更常见的问题其实不是纯数值，而是它会制造很多额外结算和 saving throw。</p>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">在某些桌上会显得超模，尤其是低等级或者接触、抱摔很多的环境里。但实战里更常见的问题不止是纯数值；它会制造很多额外结算和 saving throw。</p>
     </article>
 
     <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
@@ -529,8 +529,8 @@ export const dndGrungArticleHtmlZh = String.raw`
   </div>
 </section>
 
-<h2>延伸观看：为什么 Grung 总会让 DM 先皱一下眉</h2>
-<p>如果你看完正文还想用更轻松的方式再补一层，这条视频很适合作为收尾。它用的是“DM 会怎么理解你带来的种族气质”这个角度，而不是纯堆数值，这和 <strong>dnd grung</strong> 的真实桌面处境非常贴合。Grung 真正引发讨论的点，往往不是“能不能玩”，而是“它会把整张桌的节奏和氛围往哪里带”。你可以直接去 <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">YouTube 查看</a>，也可以直接看下面的嵌入版本。</p>
+<h2>视频补充：为什么 Grung 总会让 DM 先皱一下眉</h2>
+<p>想换个轻一点的角度，可以把这条视频当成 DM 视角补充。它关注“DM 会怎么理解你带来的种族气质”，比纯堆数值更贴近 <strong>dnd grung</strong> 的桌面处境。Grung 引发的讨论，往往会从“能不能玩”转向“它会把整张桌的节奏和氛围往哪里带”。你可以直接去 <a href="${DND_GRUNG_VIDEO_URL}" rel="noreferrer noopener">YouTube 查看</a>，也可以看这里的嵌入版本。</p>
 
 ${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeons and Dragons", {
   src: DND_GRUNG_VIDEO_PLACEHOLDER_PATH,

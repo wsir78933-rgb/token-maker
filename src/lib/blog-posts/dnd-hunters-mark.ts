@@ -21,7 +21,7 @@ import {
 } from './shared';
 
 export const dndHuntersMarkArticleHtml = String.raw`
-<p><strong>dnd hunter's mark</strong> is a 1st-level Divination spell that marks one creature, adds <strong>1d6 damage when you hit that target</strong>, and helps you track it. This guide gives you the fast rules, the 2014 vs 2024 differences, the concentration trap, and a practical way to show the mark on VTT tokens.</p>
+<p><strong>dnd hunter's mark</strong> is a 1st-level Divination spell that marks one creature, adds <strong>1d6 damage when you hit that target</strong>, and helps you track it. Start with the fast rules, then check the 2014 vs 2024 differences, the concentration trap, and a practical way to show the mark on VTT tokens.</p>
 
 <p>For Rangers, Hunter's Mark is not an automatic hype pick. The short version from my tables: Hunter's Mark is good when the target lives long enough for repeated attacks, and mediocre when it steals concentration or bonus actions from better plays.</p>
 
@@ -169,7 +169,7 @@ export const dndHuntersMarkArticleHtml = String.raw`
   <li><strong>Getting hit matters.</strong> Before level 13 in 2024, damage can still break concentration on Hunter's Mark.</li>
 </ul>
 
-<p>If concentration checks are the weak point in your build, pair this article with the <a href="${EN_DND_CONSTITUTION_PATH}">D&amp;D Constitution guide</a>. If you are comparing Ranger concentration options, the <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells guide</a> is also useful because many nature-control spells compete for the same mental slot.</p>
+<p>If concentration checks are the weak point in your build, the <a href="${EN_DND_CONSTITUTION_PATH}">D&amp;D Constitution guide</a> is the next useful stop. If you are comparing Ranger concentration options, the <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells guide</a> is also useful because many nature-control spells compete for the same mental slot.</p>
 
 <h2 id="common-rulings">Common DND Hunter's Mark Rulings</h2>
 <p><strong>Most Hunter's Mark arguments come from trigger wording, range assumptions, and whether the mark is a tracking tool or a reveal spell.</strong> Set these rulings once and the spell becomes much easier to run.</p>
@@ -275,7 +275,7 @@ ${liteVideoEmbed('JwINRY1eD7M', 'Hex is a trap in D&D 5E - Advanced guide to Hex
 `;
 
 export const dndHuntersMarkArticleHtmlZh = String.raw`
-<p><strong>dnd hunter's mark</strong> 是一个 1 环 Divination 法术：标记一个生物，命中它时追加 <strong>1d6 伤害</strong>，并让你更容易追踪它。这篇会先给速查规则，再讲 2014/2024 差异、专注陷阱，以及怎样在 Roll20、Foundry 这类 VTT 里把标记显示清楚。</p>
+<p><strong>dnd hunter's mark</strong> 是一个 1 环 Divination 法术：标记一个生物，命中它时追加 <strong>1d6 伤害</strong>，并让你更容易追踪它。先看速查规则，再看 2014/2024 差异、专注陷阱，以及怎样在 Roll20、Foundry 这类 VTT 里把标记显示清楚。</p>
 
 <p>不要把它当作游侠必放神技。按我桌上的经验，Hunter's Mark 在目标够硬、你能持续命中时很好；但如果它抢走了更强的专注法术或附赠动作，就会变成看起来赚、实际拖节奏的选择。</p>
 
@@ -411,7 +411,7 @@ export const dndHuntersMarkArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>粗算一下就很清楚：一次命中的 Hunter's Mark 只有平均 3.5 伤害，还没算命中率。每轮能命中两次时它开始像样，但真正成本不是法术位，而是专注、Bonus Action，以及你没法同时维持的另一个 Ranger 法术。</p>
+<p>粗算一下就很清楚：一次命中的 Hunter's Mark 只有平均 3.5 伤害，还没算命中率。每轮能命中两次时它开始像样，但最大成本落在专注、Bonus Action，以及你没法同时维持的另一个 Ranger 法术上。</p>
 
 <h2 id="action-economy">为什么 Hunter's Mark 会变成陷阱？</h2>
 <p><strong>当你只是因为习惯而施放 Hunter's Mark，却没有检查专注和 Bonus Action 压力时，它就会变成陷阱。</strong>Hex 的同一套思路可以直接借过来：看似便宜的 1d6 伤害，可能正在偷偷吃掉你最关键的资源。</p>
@@ -438,7 +438,7 @@ export const dndHuntersMarkArticleHtmlZh = String.raw`
 <p><strong>不能。转移 Hunter's Mark 需要 Bonus Action，而且原来的标记目标必须在法术结束前降到 0 HP。</strong>你不需要花新的法术位，但你确实花了附赠动作。</p>
 
 <h3>目标离开 90 尺，Hunter's Mark 会结束吗？</h3>
-<p><strong>不会。90 尺是你选择或转移标记时的距离。</strong>标记生效后，目标离开 90 尺不会自动终止法术。真正关键的是专注、持续时间和转移条件。</p>
+<p><strong>不会。90 尺是你选择或转移标记时的距离。</strong>标记生效后，目标离开 90 尺不会自动终止法术。关键仍是专注、持续时间和转移条件。</p>
 
 <h3>Hunter's Mark 会显形隐形或隐藏目标吗？</h3>
 <p><strong>不会。Hunter's Mark 帮你找目标，但不会自动揭示目标。</strong>你在相关 Perception 或 Survival 检定上有 Advantage；隐藏、隐形、掩护、足迹和场景信息仍由 DM 裁定。</p>
@@ -461,7 +461,7 @@ export const dndHuntersMarkArticleHtmlZh = String.raw`
 
 <ul>
   <li><strong>用高对比目标环。</strong>琥珀色、青绿色或白色，比暗地图上的小图标更清楚。</li>
-  <li><strong>把专注提醒放在 Ranger token 上。</strong>只标目标不够，因为真正会断的是施法者的专注。</li>
+  <li><strong>把专注提醒放在 Ranger token 上。</strong>只标目标不够，因为先出问题的通常是施法者的专注。</li>
   <li><strong>做成可复用标记。</strong>一个 quarry ring 或角标，可以反复用于怪物、Boss 和追逐场景。</li>
   <li><strong>不要挡住怪物主体。</strong>标记放在头像或底座周围，别盖住关键轮廓。</li>
   <li><strong>整场战役统一标记语言。</strong>Hunter's Mark、Hex 和诅咒如果长得太像，玩家很快会搞不清是哪一个 1d6。</li>

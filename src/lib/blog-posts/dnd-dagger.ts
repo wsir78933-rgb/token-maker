@@ -19,7 +19,7 @@ import {
 } from './shared';
 
 export const dndDaggerArticleHtml = String.raw`
-<p><strong>dnd dagger</strong> is a simple melee weapon that deals <strong>1d4 piercing damage</strong>, costs 2 gp, weighs 1 lb, and carries the Finesse, Light, and Thrown properties. Start with the stat block, then use the rulings below to decide whether a dagger is a backup tool, a Rogue delivery system, or part of a 2024 Nick build.</p>
+<p><strong>dnd dagger</strong> is a simple melee weapon that deals <strong>1d4 piercing damage</strong>, costs 2 gp, weighs 1 lb, and carries the Finesse, Light, and Thrown properties. The stat block gives the baseline; the rulings decide whether a dagger is a backup tool, a Rogue delivery system, or part of a 2024 Nick build.</p>
 
 <table>
   <thead>
@@ -317,7 +317,7 @@ ${liteVideoEmbed('RCnwjLK_ZuQ', 'dnd dagger companion video', {
 `;
 
 export const dndDaggerArticleHtmlZh = String.raw`
-<p><strong>dnd dagger</strong> 是一种 simple melee weapon，基础伤害是 <strong>1d4 piercing</strong>，价格 2 gp，重量 1 lb，并带有 Finesse、Light、Thrown 属性。先看速查表，再判断它到底适合 Rogue、双持、投掷、2024 Nick 构筑，还是只适合作为备用刀。</p>
+<p><strong>dnd dagger</strong> 是一种 simple melee weapon，基础伤害是 <strong>1d4 piercing</strong>，价格 2 gp，重量 1 lb，并带有 Finesse、Light、Thrown 属性。用速查表确认基础数据后，再判断它到底适合 Rogue、双持、投掷、2024 Nick 构筑，还是只适合作为备用刀。</p>
 
 <table>
   <thead>
@@ -368,7 +368,7 @@ export const dndDaggerArticleHtmlZh = String.raw`
   <li><strong>Light：</strong>可以参与双武器战斗规则，前提是另一把武器也符合要求。</li>
   <li><strong>Thrown：</strong>可以把 dagger 投出去，并使用同一套属性选择。</li>
   <li><strong>Simple weapon：</strong>很多职业不需要特别投资武器熟练就能用。</li>
-  <li><strong>体积小：</strong>很适合作为靴刀、袖刀、腰间工具或最后保命武器。</li>
+  <li><strong>体积小：</strong>可以当靴刀、袖刀、腰间工具或最后保命武器。</li>
 </ul>
 
 <figure class="inline-figure inline-figure--four-three-crop">
@@ -381,11 +381,11 @@ export const dndDaggerArticleHtmlZh = String.raw`
     loading="lazy"
     decoding="async"
   />
-  <figcaption>Dagger 的价值不是大伤害，而是它能解决很多小问题：近战备用、短距投掷、隐藏武器和 Dex 攻击。</figcaption>
+  <figcaption>Dagger 的价值不靠大伤害，靠的是解决很多小问题：近战备用、短距投掷、隐藏武器和 Dex 攻击。</figcaption>
 </figure>
 
 <h2 id="damage-math">dnd dagger 能造成多少伤害？</h2>
-<p><strong>dnd dagger 的基础伤害是 1d4 piercing，并在规则允许时加上对应属性调整值。</strong>它的武器骰很小，所以真正价值通常来自职业特性、额外攻击、双持时机、毒素、Sneak Attack，或者主武器失效时还有东西能打。</p>
+<p><strong>dnd dagger 的基础伤害是 1d4 piercing，并在规则允许时加上对应属性调整值。</strong>它的武器骰很小，所以更常见的价值来自职业特性、额外攻击、双持时机、毒素、Sneak Attack，或者主武器失效时还有东西能打。</p>
 
 <table>
   <thead>
@@ -442,7 +442,7 @@ export const dndDaggerArticleHtmlZh = String.raw`
 <p>我的习惯是：Rogue 正常战斗用 rapier 或 shortsword，再带两到四把 dagger 处理脏活。Dagger 是计划变乱时最好用的工具。</p>
 
 <h2 id="rules-versions">2024 规则里的 dnd dagger 有什么变化？</h2>
-<p><strong>2024 版 dagger 最大变化不是伤害骰，而是符合条件的角色可以围绕 Nick weapon mastery 使用它。</strong>Dagger 仍然是低伤害、高灵活性的 simple weapon，但 Light 武器的动作经济变化足够影响老攻略的判断。</p>
+<p><strong>2024 版 dagger 的最大变化在动作经济：符合条件的角色可以围绕 Nick weapon mastery 使用它。</strong>Dagger 仍然是低伤害、高灵活性的 simple weapon，但 Light 武器的动作经济变化足够影响老攻略的判断。</p>
 
 <table>
   <thead>
@@ -599,10 +599,10 @@ export const dndDaggerArticleHtmlZh = String.raw`
 <p><strong>可以，因为 dagger 有 Finesse，投掷时也可以使用 Dexterity。</strong>它沿用你用这把 dagger 近战攻击时可选择的属性。</p>
 
 <h3>Dagger 比 shortsword 更好吗？</h3>
-<p><strong>只看伤害不是；看灵活性则可能是。</strong>Shortsword 伤害更高，但 dagger 更便宜、可投、好藏，也更适合作备用工具。</p>
+<p><strong>按伤害看不占优；按灵活性看则可能胜出。</strong>Shortsword 伤害更高，但 dagger 更便宜、可投、好藏，也更适合作备用工具。</p>
 
 <h3>2024 Nick mastery 会让 dagger 变强吗？</h3>
-<p><strong>Nick 会让合适角色的动作经济更顺，但不会改变 dagger 的 1d4 伤害骰。</strong>它是构筑启动器，不是人人通用的伤害升级。</p>
+<p><strong>Nick 会让合适角色的动作经济更顺，但不会改变 dagger 的 1d4 伤害骰。</strong>它是构筑启动器，属于特定角色的升级路线。</p>
 
 <h2 id="video">观看 dnd dagger 视频</h2>
 

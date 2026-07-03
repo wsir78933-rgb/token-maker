@@ -19,9 +19,9 @@ import {
 } from './shared';
 
 export const dndMageArmorArticleHtml = String.raw`
-<p><strong>dnd mage armor</strong> is a 1st-level Abjuration spell that sets an unarmored willing creature&rsquo;s base AC to <strong>13 + Dexterity modifier</strong> for 8 hours. This guide gives you the fast AC math, the 2014 vs 2024 wording, the stacking rulings that cause arguments, and the one use many players miss: it is <strong>touch range, not self-only</strong>.</p>
+<p><strong>dnd mage armor</strong> is a 1st-level Abjuration spell that sets an unarmored willing creature&rsquo;s base AC to <strong>13 + Dexterity modifier</strong> for 8 hours. Start with the fast AC math, then check the 2014 vs 2024 wording, the stacking rulings that cause arguments, and the one use many players miss: it is <strong>touch range, not self-only</strong>.</p>
 
-<p>If you only need the answer, use the first table. If you are choosing spells for a Wizard, Sorcerer, or Armor of Shadows Warlock, keep reading before you spend a known spell on a defense that your build may already replace.</p>
+<p>For the table answer, use the first table. If you are choosing spells for a Wizard, Sorcerer, or Armor of Shadows Warlock, keep reading before you spend a known spell on a defense that your build may already replace.</p>
 
 <table>
   <thead>
@@ -196,9 +196,9 @@ export const dndMageArmorArticleHtml = String.raw`
 <p>For class planning, use the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a> to check whether your character really needs a spell-known tax for defense. If you are worried about concentration and survival, the <a href="${EN_DND_CONSTITUTION_PATH}">D&amp;D Constitution guide</a> is the better companion read.</p>
 
 <h2 id="overlooked-use">What Is the Overlooked Trick with Mage Armor?</h2>
-<p><strong>The overlooked trick is that Mage Armor can target another willing unarmored creature, not only the caster.</strong> That is the part many players miss for years because the spell feels like a personal wizard tax.</p>
+<p><strong>The overlooked trick is that Mage Armor can target another willing unarmored creature instead of being self-only.</strong> That is the part many players miss for years because the spell feels like a personal wizard tax.</p>
 
-<p>The companion video points at the same practical habit: stop reading Mage Armor as "I cast it on myself after initiative." It is a touch spell with an 8-hour duration, which means you can use it before a dangerous scene starts.</p>
+<p>The video points at the same practical habit: stop reading Mage Armor as "I cast it on myself after initiative." It is a touch spell with an 8-hour duration, which means you can use it before a dangerous scene starts.</p>
 
 <ul>
   <li><strong>Protect a familiar or scout</strong> before it risks a trap corridor or enemy lookout.</li>
@@ -254,7 +254,7 @@ export const dndMageArmorArticleHtml = String.raw`
 
 <ul>
   <li><strong>Use a tight crop:</strong> face, hands, and the magical armor effect should be visible at 512 px.</li>
-  <li><strong>Keep the glow outside the face:</strong> players need to read the character, not just the spell effect.</li>
+  <li><strong>Keep the glow outside the face:</strong> players need to read the character before they read the spell effect.</li>
   <li><strong>Use blue or violet sparingly:</strong> one clear ward color is better than noisy magic everywhere.</li>
   <li><strong>Pick a clean border:</strong> a thin arcane frame works better than a heavy metal border for an unarmored caster.</li>
   <li><strong>Export a transparent PNG:</strong> it layers more cleanly over dark dungeon maps.</li>
@@ -294,7 +294,7 @@ export const dndMageArmorArticleHtml = String.raw`
 </section>
 
 <h2 id="video">Watch: The Mage Armor Trick People Miss</h2>
-<p><a href="${DND_MAGE_ARMOR_VIDEO_URL}" rel="noreferrer noopener">It took me 10 years to realize i could do this</a> points at a table habit worth fixing: <strong>Mage Armor is not just a self-buff you remember after combat starts</strong>. Treat it as an 8-hour touch spell, decide who actually needs it, and cast it before the arrows start flying.</p>
+<p><a href="${DND_MAGE_ARMOR_VIDEO_URL}" rel="noreferrer noopener">It took me 10 years to realize i could do this</a> points at a table habit worth fixing: <strong>Mage Armor is easy to misplay as a self-buff you remember after combat starts</strong>. Treat it as an 8-hour touch spell, decide who actually needs it, and cast it before the arrows start flying.</p>
 
 ${liteVideoEmbed('ZBbhI8Mp8fE', 'It took me 10 years to realize i could do this', {
   src: DND_MAGE_ARMOR_VIDEO_PLACEHOLDER_PATH,
@@ -303,7 +303,7 @@ ${liteVideoEmbed('ZBbhI8Mp8fE', 'It took me 10 years to realize i could do this'
 `;
 
 export const dndMageArmorArticleHtmlZh = String.raw`
-<p><strong>dnd mage armor</strong> 是一个 1 环 Abjuration 法术，可以让一个未穿护甲、且自愿的生物在 8 小时内使用 <strong>13 + Dexterity 调整值</strong> 作为基础 AC。本文先给速查表，再讲 AC 计算、2014/2024 规则差异、最容易吵起来的叠加问题，以及很多玩家会忽略的一点：它是 <strong>Touch 法术，不是只能给自己放</strong>。</p>
+<p><strong>dnd mage armor</strong> 是一个 1 环 Abjuration 法术，可以让一个未穿护甲、且自愿的生物在 8 小时内使用 <strong>13 + Dexterity 调整值</strong> 作为基础 AC。先看速查表，再看 AC 计算、2014/2024 规则差异、最容易吵起来的叠加问题，以及很多玩家会忽略的一点：它是 <strong>Touch 法术，不是只能给自己放</strong>。</p>
 
 <p>你只想查答案，看第一张表就够；如果你正在给 Wizard、Sorcerer 或 Armor of Shadows Warlock 选法术，就继续往下看，别把一个已被职业或护甲解决的问题又用法术位买一遍。</p>
 
@@ -347,13 +347,13 @@ export const dndMageArmorArticleHtmlZh = String.raw`
 </table>
 
 <h2 id="quick-rules">DND Mage Armor 规则速查</h2>
-<p><strong>dnd mage armor</strong> 会给一个自愿且未穿护甲的生物一套新的基础 AC 公式：13 + Dexterity 调整值。<a href="${DND_MAGE_ARMOR_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules</a> 和 <a href="${DND_MAGE_ARMOR_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules</a> 的核心写法非常接近，所以桌上真正容易吵的通常不是法术本体，而是“能不能叠”。</p>
+<p><strong>dnd mage armor</strong> 会给一个自愿且未穿护甲的生物一套新的基础 AC 公式：13 + Dexterity 调整值。<a href="${DND_MAGE_ARMOR_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules</a> 和 <a href="${DND_MAGE_ARMOR_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules</a> 的核心写法非常接近，所以桌上的争议通常集中在“能不能叠”。</p>
 
 <ul>
   <li><strong>它不需要 Concentration。</strong> Mage Armor 存在时，你仍然可以维持另一个专注法术。</li>
   <li><strong>它能覆盖大半个冒险日。</strong>8 小时足够你进地城前先放好。</li>
   <li><strong>它不是简单 +3 AC。</strong>它是把基础 AC 公式换成 13 + Dex。</li>
-  <li><strong>它不等于真正穿了护甲。</strong>名字是风味，规则上是魔法防护力场。</li>
+  <li><strong>它不等于实际穿了护甲。</strong>名字是风味，规则上是魔法防护力场。</li>
   <li><strong>它是 Touch。</strong>只要目标自愿且没穿护甲，你就能给别人施放。</li>
 </ul>
 
@@ -427,7 +427,7 @@ export const dndMageArmorArticleHtmlZh = String.raw`
 <h2 id="stacking">Mage Armor 能和护甲、盾牌、Unarmored Defense 叠加吗？</h2>
 <p><strong>Mage Armor 不能和穿戴护甲或其他基础 AC 公式叠加，但 2014 版官方 Sage Advice 明确说过 Mage Armor 可以和 shield 一起用。</strong>这句话基本能解决大部分争议。</p>
 
-<p>真正好用的判断方式是：<strong>先选一个基础 AC 计算方式，再叠加兼容的额外加值</strong>。Mage Armor 是一种计算方式。Unarmored Defense 是另一种。很多 Natural Armor 也是另一种。你不能把这些公式全加在一起。</p>
+<p>更好用的判断方式是：<strong>先选一个基础 AC 计算方式，再叠加兼容的额外加值</strong>。Mage Armor 是一种计算方式。Unarmored Defense 是另一种。很多 Natural Armor 也是另一种。你不能把这些公式全加在一起。</p>
 
 <table>
   <thead>
@@ -578,7 +578,7 @@ export const dndMageArmorArticleHtmlZh = String.raw`
 </section>
 
 <h2 id="video">延伸观看：很多人漏掉的 Mage Armor 用法</h2>
-<p><a href="${DND_MAGE_ARMOR_VIDEO_URL}" rel="noreferrer noopener">It took me 10 years to realize i could do this</a> 指向一个很容易漏掉的桌面习惯：<strong>Mage Armor 不只是开战后给自己补的自保法术</strong>。把它当成一个持续 8 小时的 Touch 法术，先判断谁真的需要，再在箭飞过来之前放好。</p>
+<p><a href="${DND_MAGE_ARMOR_VIDEO_URL}" rel="noreferrer noopener">It took me 10 years to realize i could do this</a> 指向一个很容易漏掉的桌面习惯：<strong>Mage Armor 很容易被误当成开战后才给自己补的自保法术</strong>。把它当成一个持续 8 小时的 Touch 法术，先判断谁需要，再在箭飞过来之前放好。</p>
 
 ${liteVideoEmbed('ZBbhI8Mp8fE', 'It took me 10 years to realize i could do this', {
   src: DND_MAGE_ARMOR_VIDEO_PLACEHOLDER_PATH,

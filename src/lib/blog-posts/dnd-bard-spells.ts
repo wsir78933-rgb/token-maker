@@ -22,7 +22,7 @@ import {
 export const dndBardSpellsArticleHtml = String.raw`
 <p><strong>dnd bard spells</strong> are best picked by job, not by how flashy the spell name sounds. A good Bard list covers four things: control, support, social pressure, and one reliable way to save the party when the plan breaks.</p>
 
-<p>This guide gives you the fast picks first, then shows how I would build a Bard spell list for real table play. If you are choosing spells before a campaign, start with the table and then tighten the list around your party.</p>
+<p>Before a campaign, start with the fast picks and then tighten the list around your party. A Bard spell list gets much better when every spell has a job before the first session starts.</p>
 
 <table>
   <thead>
@@ -67,7 +67,7 @@ export const dndBardSpellsArticleHtml = String.raw`
 </table>
 
 <h2>What Are the Best DND Bard Spells?</h2>
-<p><strong>The best dnd bard spells are the ones that give your party more actions, better positioning, or a way out of a failed plan.</strong> Bard is not just a "singing Wizard." The class is strongest when it turns messy scenes into scenes the party can control.</p>
+<p><strong>The best dnd bard spells are the ones that give your party more actions, better positioning, or a way out of a failed plan.</strong> Bard plays less like a "singing Wizard" and more like the person who turns messy scenes into scenes the party can control.</p>
 
 <p>The official Bard class rules are available in the <a href="${DND_BARD_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules Bard entry</a>, and older tables may still use the <a href="${DND_BARD_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules Bard entry</a>. Check which rules your table uses before you lock in spell preparation or known-spell assumptions.</p>
 
@@ -85,7 +85,7 @@ export const dndBardSpellsArticleHtml = String.raw`
 </figure>
 
 <h2>DND Bard Spells by Role</h2>
-<p><strong>The easiest way to choose Bard spells is to assign each spell a table role: control, support, healing, social, utility, or escape.</strong> If a spell does not clearly do a job, it has to be extremely fun to justify the slot.</p>
+<p><strong>I choose Bard spells by giving each one a table role: control, support, healing, social, utility, or escape.</strong> If a spell does not clearly do a job, it has to be extremely fun to justify the slot.</p>
 
 <table>
   <thead>
@@ -142,10 +142,10 @@ export const dndBardSpellsArticleHtml = String.raw`
   <li><strong>Tasha's Hideous Laughter:</strong> swingy, but brutal when it removes one dangerous creature from the fight.</li>
 </ul>
 
-<p>If you are new to Bard, do not overload on damage spells. A Bard who keeps one ally alive and makes the monster waste a turn often contributes more than a Bard chasing mediocre blast damage.</p>
+<p>New Bard players should not overload on damage spells. A Bard who keeps one ally alive and makes the monster waste a turn often contributes more than a Bard chasing mediocre blast damage.</p>
 
 <h2>Best 2nd- and 3rd-Level Bard Spells</h2>
-<p><strong>The Bard's biggest jump comes at 2nd and 3rd level spells, where the list gains stronger utility, better control, and campaign-changing social tools.</strong> This is where the class starts feeling like a real problem-solver.</p>
+<p><strong>The Bard's biggest jump comes at 2nd and 3rd level spells, where the list gains stronger utility, better control, and campaign-changing social tools.</strong> Around this point, the Bard stops feeling like a light support caster and starts solving scenes the party would otherwise have to brute-force.</p>
 
 <table>
   <thead>
@@ -172,7 +172,7 @@ export const dndBardSpellsArticleHtml = String.raw`
 <p>For campaign play, I would rather have one clean control spell and one answer spell than three flashy concentration options. You can only concentrate on one spell at a time, so do not build a list that fights itself.</p>
 
 <h2>How Should You Choose Bard Spells for Your Party?</h2>
-<p><strong>Choose Bard spells by filling the gaps your party actually has.</strong> Bard is flexible enough to cover social play, control, healing, and utility, but it cannot do all of that perfectly with every spell slot.</p>
+<p><strong>Start with the gaps your party actually has.</strong> Bard is flexible enough to cover social play, control, healing, and utility, but it cannot do all of that perfectly with every spell slot.</p>
 
 <ol>
   <li><strong>If your party lacks healing:</strong> take Healing Word first, then condition removal later.</li>
@@ -182,12 +182,12 @@ export const dndBardSpellsArticleHtml = String.raw`
   <li><strong>If your party already has everything:</strong> choose spells that fit your Bard's personality and campaign scenes.</li>
 </ol>
 
-<p>If you are still deciding whether Bard is the right class, pair this with the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a>. If your Bard relies on concentration, the <a href="${EN_DND_CONSTITUTION_PATH}">Constitution guide</a> is worth reading before you dump Constitution for one more social stat.</p>
+<p>Still unsure about Bard as a class? Pair this with the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a>. For concentration-heavy Bard builds, the <a href="${EN_DND_CONSTITUTION_PATH}">Constitution guide</a> is worth reading before you dump Constitution for one more social stat.</p>
 
-<p>For comparison, the <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells guide</a> shows a prepared-caster approach to control and utility. If your campaign has enemy casters, the <a href="${EN_DND_COUNTERSPELL_PATH}">DND Counterspell guide</a> is useful even when your Bard only gets Counterspell through a specific build or table option.</p>
+<p>For another angle on control and utility, the <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells guide</a> shows how a prepared caster handles the same problem. Enemy casters change the equation too, so the <a href="${EN_DND_COUNTERSPELL_PATH}">DND Counterspell guide</a> is useful even when your Bard only gets Counterspell through a specific build or table option.</p>
 
 <h2>Bardic Inspiration, Concentration, and Spell Timing</h2>
-<p><strong>Bard spells get much better when you think about action economy before the fight starts.</strong> The Bard often wants to cast a control spell, maintain concentration, hand out Bardic Inspiration, and keep Healing Word ready. Those choices compete.</p>
+<p><strong>Action economy is where Bard spell lists either click or get crowded.</strong> The Bard often wants to cast a control spell, maintain concentration, hand out Bardic Inspiration, and keep Healing Word ready. Those choices compete.</p>
 
 <ul>
   <li><strong>Do not take only concentration spells.</strong> You need useful turns after your main spell is already running.</li>
@@ -215,7 +215,7 @@ export const dndBardSpellsArticleHtml = String.raw`
 <p>Suggestion, Disguise Self, Enhance Ability, Detect Thoughts, and Zone of Truth are strong roleplay picks when your campaign has negotiations, deception, investigations, or courts.</p>
 
 <h2 id="video">Watch the Bard Spells Companion Video</h2>
-<p>This <a href="${DND_BARD_SPELLS_VIDEO_URL}" rel="noreferrer noopener">Bard D&amp;D video</a> is useful as a tone check after the spell list. The best takeaway is that Bard is a table-shaping class: it wins by making everyone else's turn better, making enemies waste turns, and keeping enough charm to change scenes outside initiative.</p>
+<p>This <a href="${DND_BARD_SPELLS_VIDEO_URL}" rel="noreferrer noopener">Bard D&amp;D video</a> is worth watching for the class feel. Bard wins by making everyone else's turn better, making enemies waste turns, and keeping enough charm to change scenes outside initiative.</p>
 
 <ul>
   <li><strong>Build for jobs:</strong> pick spells that clearly solve control, rescue, social, or utility problems.</li>
@@ -232,7 +232,7 @@ ${liteVideoEmbed('qiHXxrCB5yk', 'DND Bard spells companion video', {
 export const dndBardSpellsArticleHtmlZh = String.raw`
 <p><strong>dnd bard spells</strong> 不应该按“名字听起来多炫”来选，而应该按桌面职责来选。一个好用的 Bard 法术表，至少要覆盖控场、支援、社交压力，以及计划崩掉时救场的办法。</p>
 
-<p>这篇先给速查表，再讲我会怎样给真实跑团里的 Bard 选法术。如果你正在开团前准备角色，先看第一张表，然后根据队伍短板收紧法术表。</p>
+<p>如果你正在开团前准备角色，先看速查表，再根据队伍短板收紧法术表。Bard 法术最怕一堆都“可能有用”，但开局后没有一个负责解决关键问题。</p>
 
 <table>
   <thead>
@@ -261,7 +261,7 @@ export const dndBardSpellsArticleHtmlZh = String.raw`
     <tr>
       <td><strong>社交场景</strong></td>
       <td>Charm Person, Disguise Self, Suggestion, Enhance Ability</td>
-      <td>这些法术让 Bard 在战斗外真正和其他职业拉开差异。</td>
+      <td>这些法术让 Bard 在战斗外和其他职业拉开差异。</td>
     </tr>
     <tr>
       <td><strong>中期控场</strong></td>
@@ -295,7 +295,7 @@ export const dndBardSpellsArticleHtmlZh = String.raw`
 </figure>
 
 <h2>按职责选择 DND Bard Spells</h2>
-<p><strong>选择 Bard 法术最简单的方法，是先给每个法术分配职责：控场、支援、治疗、社交、工具或脱身。</strong>如果一个法术没有清楚职责，那它就必须特别有趣才值得占位置。</p>
+<p><strong>先给每个 Bard 法术安排一个职责：控场、支援、治疗、社交、工具或脱身。</strong>如果一个法术没有清楚职责，那它就必须特别有趣才值得占位置。</p>
 
 <table>
   <thead>
@@ -345,7 +345,7 @@ export const dndBardSpellsArticleHtmlZh = String.raw`
 <p><strong>早期最实用的 Bard 法术是 Vicious Mockery、Healing Word、Faerie Fire、Dissonant Whispers 和 Tasha's Hideous Laughter。</strong>它们不一定伤害最高，但能改变敌人和队友的行动。</p>
 
 <ul>
-  <li><strong>Vicious Mockery：</strong>重点不是伤害，而是攻击劣势可能挡掉更多伤害。</li>
+  <li><strong>Vicious Mockery：</strong>价值不在伤害，而在攻击劣势可能挡掉更多伤害。</li>
   <li><strong>Healing Word：</strong>远程、Bonus Action、能拉起倒地队友，是 Bard 早期最稳的救场法术。</li>
   <li><strong>Faerie Fire：</strong>如果队伍攻击检定多，而且敌人 Dex 豁免一般，很值得拿。</li>
   <li><strong>Dissonant Whispers：</strong>强在逼迫移动，可能触发借机攻击并打乱敌人计划。</li>
@@ -355,7 +355,7 @@ export const dndBardSpellsArticleHtmlZh = String.raw`
 <p>新手 Bard 不要过度追求伤害法术。一个能救队友、能让怪物浪费回合的 Bard，通常比追求普通爆发伤害的 Bard 更有贡献。</p>
 
 <h2>2 环和 3 环 Bard 法术怎么选？</h2>
-<p><strong>Bard 在 2 环和 3 环法术时会迎来明显提升，因为这时拿到更强工具、更好控场和能改变剧情的社交法术。</strong>这个阶段开始，Bard 会真正像一个万能解题角色。</p>
+<p><strong>Bard 在 2 环和 3 环法术时会迎来明显提升，因为这时拿到更强工具、更好控场和能改变剧情的社交法术。</strong>到了这个阶段，Bard 不再只是轻支援，而是能把很多硬闯的场面改成可谈、可控、可撤退。</p>
 
 <table>
   <thead>
@@ -374,7 +374,7 @@ export const dndBardSpellsArticleHtmlZh = String.raw`
     <tr>
       <td>3 环</td>
       <td>Hypnotic Pattern, Dispel Magic, Fear, Slow, Leomund's Tiny Hut</td>
-      <td>Hypnotic Pattern 是经典强项，但真正缺 Dispel Magic 时你会非常想念它。</td>
+      <td>Hypnotic Pattern 是经典强项，但没有 Dispel Magic 时你会非常想念它。</td>
     </tr>
   </tbody>
 </table>
@@ -382,7 +382,7 @@ export const dndBardSpellsArticleHtmlZh = String.raw`
 <p>长期战役里，我更愿意带一个清晰控场法术和一个回答问题的法术，而不是三个看起来都很酷的专注法术。你一次只能维持一个 concentration，不要让法术表自己打架。</p>
 
 <h2>怎样按队伍选择 Bard 法术？</h2>
-<p><strong>按队伍短板选择 Bard 法术。</strong>Bard 很灵活，可以补社交、控场、治疗和工具位，但它不可能每一项都完美覆盖。</p>
+<p><strong>先看队伍短板，再选 Bard 法术。</strong>Bard 很灵活，可以补社交、控场、治疗和工具位，但它不可能每一项都完美覆盖。</p>
 
 <ol>
   <li><strong>队伍缺治疗：</strong>先拿 Healing Word，之后再补解除状态的法术。</li>
@@ -392,12 +392,12 @@ export const dndBardSpellsArticleHtmlZh = String.raw`
   <li><strong>队伍什么都不缺：</strong>按你的 Bard 性格和战役场景选法术。</li>
 </ol>
 
-<p>如果你还在判断 Bard 适不适合你，可以先看 <a href="${ZH_DND_CLASSES_PATH}">DND 职业详解</a>。如果你的 Bard 很依赖 concentration，开团前也建议看 <a href="${ZH_DND_CONSTITUTION_PATH}">Constitution 指南</a>，别为了多一点社交数值把体质压得太低。</p>
+<p>还在犹豫要不要玩 Bard 的话，可以先看 <a href="${ZH_DND_CLASSES_PATH}">DND 职业详解</a>。依赖 concentration 的 Bard，开团前也建议看 <a href="${ZH_DND_CONSTITUTION_PATH}">Constitution 指南</a>，别为了多一点社交数值把体质压得太低。</p>
 
-<p>如果想对比另一种法术准备思路，可以看 <a href="${ZH_DND_DRUID_SPELLS_PATH}">DND 德鲁伊法术指南</a>。如果战役里敌方法师很多，<a href="${ZH_DND_COUNTERSPELL_PATH}">DND Counterspell 指南</a>也值得顺手读一下，即使 Bard 通常要靠特定构筑或桌面选项才会拿到 Counterspell。</p>
+<p>想看另一种控场和工具位思路，可以对照 <a href="${ZH_DND_DRUID_SPELLS_PATH}">DND 德鲁伊法术指南</a>。战役里敌方法师很多时，<a href="${ZH_DND_COUNTERSPELL_PATH}">DND Counterspell 指南</a>也值得顺手读一下，即使 Bard 通常要靠特定构筑或桌面选项才会拿到 Counterspell。</p>
 
 <h2>Bardic Inspiration、Concentration 和施法时机</h2>
-<p><strong>Bard 法术是否好用，很大程度取决于你有没有提前想清 action economy。</strong>Bard 经常想开控场、维持 concentration、给 Bardic Inspiration，还要留 Healing Word 救人。这些都会互相竞争。</p>
+<p><strong>Bard 法术表最容易挤在 action economy 上。</strong>Bard 经常想开控场、维持 concentration、给 Bardic Inspiration，还要留 Healing Word 救人。这些都会互相竞争。</p>
 
 <ul>
   <li><strong>不要只拿 concentration 法术。</strong>主法术已经维持后，你还需要有用的回合。</li>

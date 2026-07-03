@@ -19,7 +19,7 @@ import {
 } from './shared';
 
 export const dndCounterspellArticleHtml = String.raw`
-<p>For <strong>dnd counterspell</strong>, the useful answer usually starts with the ruling, not the debate: Counterspell is a 3rd-level Abjuration reaction that interrupts another creature while it is casting a spell within 60 feet. This guide gives you the fast table, the 2014 vs 2024 rules split, and the table calls that stop a rules argument from eating the best round of combat.</p>
+<p>For <strong>dnd counterspell</strong>, the useful answer usually starts with the ruling, not the debate: Counterspell is a 3rd-level Abjuration reaction that interrupts another creature while it is casting a spell within 60 feet. Start with the fast table, the 2014 vs 2024 rules split, and the table calls that stop a rules argument from eating the best round of combat.</p>
 
 <table>
   <thead>
@@ -235,7 +235,7 @@ export const dndCounterspellArticleHtml = String.raw`
 <p><strong>Sometimes, but not always.</strong> The key question is whether a creature is actually casting a spell and whether that casting is perceivable. If the item simply creates a magical effect without spellcasting, Counterspell is the wrong tool; <em>Dispel Magic</em> or another answer may matter more.</p>
 
 <h2 id="dm-policy">My DM Policy for Counterspell</h2>
-<p>I like <strong>dnd counterspell</strong> when it creates a hard choice. I dislike it when it becomes a reflex tax. A memorable Counterspell scene is not just "the spell was stopped." It is the cost, the timing, and the table realizing that one reaction mattered.</p>
+<p>I like <strong>dnd counterspell</strong> when it creates a hard choice. I dislike it when it becomes a reflex tax. A memorable Counterspell scene is more than "the spell was stopped." It is the cost, the timing, and the table realizing that one reaction mattered.</p>
 
 <p>For DMs, my practical policy is:</p>
 <ol>
@@ -246,7 +246,7 @@ export const dndCounterspellArticleHtml = String.raw`
 </ol>
 
 <h2 id="vtt-prep">Using Counterspell with VTT Prep</h2>
-<p>If you are building a spellcaster villain, archmage NPC, or abjurer PC for a virtual tabletop, make the Counterspell-ready character easy to read on the map. A clear hand pose, arcane focus, or blue-gold warding effect helps everyone remember that this token is not just another ranged attacker.</p>
+<p>If you are building a spellcaster villain, archmage NPC, or abjurer PC for a virtual tabletop, make the Counterspell-ready character easy to read on the map. A clear hand pose, arcane focus, or blue-gold warding effect helps everyone remember that this token has a job beyond ranged attacks.</p>
 
 <p>You can prep that portrait in the <a href="${EN_EDITOR_PATH}">VTT token maker</a>, then keep the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> open for the 2014 ability check or the 2024 Constitution save. If you are still choosing the caster chassis, the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a>, <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells list</a>, and <a href="${EN_DND_CONSTITUTION_PATH}">Constitution guide</a> are the closest related reads on this site.</p>
 
@@ -267,7 +267,7 @@ export const dndCounterspellArticleHtml = String.raw`
 <p><strong>Counterspell is powerful, but the table procedure matters more than the spell alone.</strong> The 2014 version can feel oppressive if every enemy caster has it. The 2024 version is softer because it gives the target a save and preserves spell slots.</p>
 
 <h2 id="video">Watch the Counterspell Video</h2>
-<p>The video below is <a href="${DND_COUNTERSPELL_VIDEO_URL}" rel="noreferrer noopener">Critical Role - Sam the Wide Deceiver - Spoilers Ep 114</a>. I would not treat it as a rules tutorial. Treat it as a design lesson: Counterspell hits hardest when it is a meaningful sacrifice, not a button everyone presses every round.</p>
+<p><a href="${DND_COUNTERSPELL_VIDEO_URL}" rel="noreferrer noopener">Critical Role - Sam the Wide Deceiver - Spoilers Ep 114</a> works better as a design lesson than as a rules tutorial. Counterspell hits hardest when it is a meaningful sacrifice, not a button everyone presses every round.</p>
 
 ${liteVideoEmbed('VQ1rmjrX4K0', 'Critical Role - Sam the Wide Deceiver - Spoilers Ep 114', {
   src: DND_COUNTERSPELL_VIDEO_PLACEHOLDER_PATH,
@@ -276,7 +276,7 @@ ${liteVideoEmbed('VQ1rmjrX4K0', 'Critical Role - Sam the Wide Deceiver - Spoiler
 `;
 
 export const dndCounterspellArticleHtmlZh = String.raw`
-<p><strong>dnd counterspell</strong> 最容易在桌上引发争论的不是法术名字，而是时机、版本和裁定：什么时候能反制、2014 和 2024 规则到底差在哪、能不能反制别人的 Counterspell。这篇会先给速查表，再把实战里最容易吵起来的点拆开讲清楚。</p>
+<p><strong>dnd counterspell</strong> 在桌上最容易引发争论的点，通常集中在时机、版本和裁定：什么时候能反制、2014 和 2024 规则到底差在哪、能不能反制别人的 Counterspell。先看速查表，再把实战里最容易吵起来的点拆开讲清楚。</p>
 
 <table>
   <thead>
@@ -316,15 +316,15 @@ export const dndCounterspellArticleHtmlZh = String.raw`
     </tr>
     <tr>
       <td><strong>最佳用途</strong></td>
-      <td>反制会改变战局的法术，而不是看到什么法术都立刻按下去。</td>
+      <td>反制会改变战局的法术；别看到什么法术都立刻按下去。</td>
     </tr>
   </tbody>
 </table>
 
-<p>Counterspell 不能只看强度。按我自己的跑团经验，<strong>dnd counterspell</strong> 真正决定体验的不是法术本身，而是三件事：你们桌用哪个版本、DM 会不会在反应前报出法术名、敌方法师会不会频繁拿它来反制玩家。</p>
+<p>Counterspell 单看强度不够。按我自己的跑团经验，<strong>dnd counterspell</strong> 的体验主要由三件事决定：你们桌用哪个版本、DM 会不会在反应前报出法术名、敌方法师会不会频繁拿它来反制玩家。</p>
 
 <h2 id="quick-rules">DND Counterspell 速查规则</h2>
-<p><strong>dnd counterspell</strong> 是一个用反应打断对方施法的法术。关键是，<a href="${DND_COUNTERSPELL_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules 的 Counterspell</a> 和 <a href="${DND_COUNTERSPELL_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules 的 Counterspell</a> 差异很大，所以开团前最该问的不是“它强不强”，而是“我们今天用哪一版”。</p>
+<p><strong>dnd counterspell</strong> 是一个用反应打断对方施法的法术。关键是，<a href="${DND_COUNTERSPELL_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules 的 Counterspell</a> 和 <a href="${DND_COUNTERSPELL_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules 的 Counterspell</a> 差异很大，所以开团前先确认“我们今天用哪一版”，再讨论它强不强。</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
   <img
@@ -435,7 +435,7 @@ export const dndCounterspellArticleHtmlZh = String.raw`
 <p>如果你的团同时混用 2014 人物卡和 2024 新规则，千万不要默认所有人脑子里是同一个 Counterspell。直接写进团规或角色卡备注里，最省时间。</p>
 
 <h2 id="when-to-cast">什么时候值得施放 DND Counterspell？</h2>
-<p><strong>当敌方法术对战局的影响大于你这次反应和法术位的价值时，就值得施放 dnd counterspell。</strong> 这句话听起来简单，但很多人会犯的错是：看见第一个法术就反，而不是等真正会改写战斗的法术。</p>
+<p><strong>当敌方法术对战局的影响大于你这次反应和法术位的价值时，就值得施放 dnd counterspell。</strong> 这句话听起来简单，但很多人会犯的错是：看见第一个法术就反，而不是等足以改写战斗的法术。</p>
 
 <ul>
   <li><strong>优先反制能改变遭遇的法术。</strong>强控、放逐、逃跑、超高爆发范围伤害，通常都值得。</li>
@@ -448,7 +448,7 @@ export const dndCounterspellArticleHtmlZh = String.raw`
 <p>我的个人判断很粗暴：如果这个法术只是造成一点可以治疗回来的伤害，我通常不交 Counterspell；如果它会夺走玩家回合、切开队伍、打掉关键专注，或者让反派带着任务目标逃走，我才会认真考虑。</p>
 
 <h2 id="rulings">最容易吵起来的 Counterspell 裁定</h2>
-<p><strong>大多数 dnd counterspell 争议不是强度争议，而是时机、信息量和反应经济争议。</strong> 这些点提前讲清楚，法师对决会顺很多。</p>
+<p><strong>大多数 dnd counterspell 争议集中在时机、信息量和反应经济上，强度通常排在后面。</strong> 这些点提前讲清楚，法师对决会顺很多。</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
   <img
@@ -478,7 +478,7 @@ export const dndCounterspellArticleHtmlZh = String.raw`
 <p><strong>有时可以，但不是永远可以。</strong> 核心问题是：是否有一个生物正在施放法术，以及这个施法过程是否能被感知。如果物品只是制造魔法效果，而不是让生物施法，那 Counterspell 往往不是正确答案。</p>
 
 <h2 id="dm-policy">我给 DM 的 Counterspell 处理建议</h2>
-<p>我喜欢 <strong>dnd counterspell</strong> 制造艰难选择，但不喜欢它变成每个法师都要交的“反应税”。一个经典 Counterspell 场面之所以好，不只是因为法术被反掉，而是因为时机、代价和角色选择都很明确。</p>
+<p>我喜欢 <strong>dnd counterspell</strong> 制造艰难选择，但不喜欢它变成每个法师都要交的“反应税”。一个经典 Counterspell 场面的好看点在于清楚的时机、代价和角色选择，法术被反掉只是结果。</p>
 
 <p>如果我是 DM，我会这么处理：</p>
 <ol>
@@ -507,10 +507,10 @@ export const dndCounterspellArticleHtmlZh = String.raw`
 <p><strong>可以，只要你们桌只要求看见施法触发。</strong>有些 DM 会在反应前报法术名，有些只描述施法动作，有些允许另一个角色辨识法术。关键是提前统一规则。</p>
 
 <h3>DND Counterspell 超模吗？</h3>
-<p><strong>Counterspell 很强，但真正影响体验的是桌面流程。</strong>2014 版如果给太多敌方法师使用，会很压迫；2024 版因为给目标豁免且保留法术位，压力会小很多。</p>
+<p><strong>Counterspell 很强，但更影响体验的是桌面流程。</strong>2014 版如果给太多敌方法师使用，会很压迫；2024 版因为给目标豁免且保留法术位，压力会小很多。</p>
 
 <h2 id="video">观看 Counterspell 视频</h2>
-<p>下面这段视频是 <a href="${DND_COUNTERSPELL_VIDEO_URL}" rel="noreferrer noopener">Critical Role - Sam the Wide Deceiver - Spoilers Ep 114</a>。我不建议把它当纯规则教程看，更适合当成一个设计提醒：Counterspell 最有力的时候，是它代表一次明确的代价和选择，而不是每轮都按的取消键。</p>
+<p>这段视频是 <a href="${DND_COUNTERSPELL_VIDEO_URL}" rel="noreferrer noopener">Critical Role - Sam the Wide Deceiver - Spoilers Ep 114</a>。我不建议把它当纯规则教程看，更适合当成一个设计提醒：Counterspell 最有力的时候，是它代表一次明确的代价和选择，而不是每轮都按的取消键。</p>
 
 ${liteVideoEmbed('VQ1rmjrX4K0', 'Critical Role - Sam the Wide Deceiver - Spoilers Ep 114', {
   src: DND_COUNTERSPELL_VIDEO_PLACEHOLDER_PATH,

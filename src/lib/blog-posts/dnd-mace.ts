@@ -208,12 +208,12 @@ export const dndMaceArticleHtml = String.raw`
 <h2 id="video">Watch the dnd mace Video</h2>
 <p>For a mace scene, keep the table moment short: one clear target, one blunt impact, and one result everyone understands. If the table gets chaotic, make the token, target, and damage roll easy to read before the joke runs away with the turn.</p>
 
-${liteVideoEmbed('gsl83xofiUw', 'dnd mace companion video', {
+${liteVideoEmbed('gsl83xofiUw', 'dnd mace video guide', {
   src: DND_MACE_VIDEO_PLACEHOLDER_PATH,
   alt: 'Clickable webp video cover for a dnd mace guide showing a mace over a VTT token frame with a play button',
 })}
 
-<p><a href="${DND_MACE_VIDEO_URL}" rel="noreferrer noopener">Open the companion video on YouTube</a>.</p>
+<p><a href="${DND_MACE_VIDEO_URL}" rel="noreferrer noopener">Open the mace video on YouTube</a>.</p>
 `;
 
 export const dndMaceArticleHtmlZh = String.raw`
@@ -406,7 +406,7 @@ export const dndMaceArticleHtmlZh = String.raw`
 <h2 id="video">观看 dnd mace 视频</h2>
 <p>描述 mace 场景时，不要讲太久：一个清楚目标、一次钝击、一个所有人都听懂的结果就够了。桌边开始混乱时，先把 Token、目标和伤害骰讲清楚，再让笑点继续。</p>
 
-${liteVideoEmbed('gsl83xofiUw', 'dnd mace companion video', {
+${liteVideoEmbed('gsl83xofiUw', 'dnd mace video guide', {
   src: DND_MACE_VIDEO_PLACEHOLDER_PATH,
   alt: 'dnd mace 指南的视频封面占位图，画面是 VTT Token 圆框上的 mace 和播放按钮',
 })}

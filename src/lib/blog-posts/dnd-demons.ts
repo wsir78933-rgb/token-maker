@@ -17,7 +17,7 @@ import {
 } from './shared';
 
 export const dndDemonsArticleHtml = String.raw`
-<p><strong>dnd demons</strong> are chaotic evil fiends from the Abyss, and the fastest way to use them well is to stop treating every demon as "a scary monster with claws." This guide gives you the demon list, the demon vs devil difference, table roles, encounter mistakes, VTT token advice, and the companion video at the bottom.</p>
+<p><strong>dnd demons</strong> are chaotic evil fiends from the Abyss. The fastest way to use them well is to stop treating every demon as "a scary monster with claws." Start with the list, keep the demon vs devil split clear, and decide what each creature does to the scene before you worry about lore.</p>
 
 <p><strong>Short version:</strong> demons in DND are best when they feel unstable, hungry, and hard to negotiate with. Use devils for contracts and hierarchy. Use demons when the scene should feel like violence, corruption, and bad decisions are spreading faster than the party can contain them.</p>
 
@@ -75,14 +75,14 @@ export const dndDemonsArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>If you need to compare <strong>dnd demons</strong> fast, start with the quick reference above: it shows what each demon is, when to use it, and how it differs from devils before the deeper lore begins.</p>
+<p>Need a fast comparison? Start with the quick reference above. It keeps the demon types, table jobs, and demon vs devil split in one place before the lore gets heavier.</p>
 
 <h2>What Are DND Demons?</h2>
 <p><strong>DND demons are chaotic evil fiends tied to the Abyss, usually built around destruction, corruption, hunger, and unstable violence.</strong></p>
 
-<p>The official monster list is the best place to check exact stat blocks, so I link out to the <a href="${DND_DEMONS_MONSTER_FILTER_URL}" rel="noreferrer noopener">D&amp;D Beyond demon monster listing</a> and the <a href="${DND_DEMONS_BASIC_RULES_URL}" rel="noreferrer noopener">D&amp;D Basic Rules monster section</a>. For publication history and older edition context, the <a href="${DND_DEMONS_WIKIPEDIA_URL}" rel="noreferrer noopener">Dungeons &amp; Dragons demon overview on Wikipedia</a> is useful background.</p>
+<p>For exact stat blocks, use the <a href="${DND_DEMONS_MONSTER_FILTER_URL}" rel="noreferrer noopener">D&amp;D Beyond demon monster listing</a> and the <a href="${DND_DEMONS_BASIC_RULES_URL}" rel="noreferrer noopener">D&amp;D Basic Rules monster section</a>. For publication history and older edition context, the <a href="${DND_DEMONS_WIKIPEDIA_URL}" rel="noreferrer noopener">Dungeons &amp; Dragons demon overview on Wikipedia</a> is useful background.</p>
 
-<p>At the table, I treat <strong>dnd demons</strong> as pressure, not just enemies. A demon should make the room worse: heat rises, shadows move, cultists panic, a portal widens, or the barbarian realizes killing one creature may not end the problem.</p>
+<p>At the table, I treat <strong>dnd demons</strong> as pressure first and enemies second. A demon should make the room worse: heat rises, shadows move, cultists panic, a portal widens, or the barbarian realizes killing one creature may not end the problem.</p>
 
 <h2>Are DND Demons the Same as Devils?</h2>
 <p><strong>No. DND demons and DND devils are both fiends, but demons are chaotic evil Abyssal threats while devils are lawful evil infernal dealmakers.</strong></p>
@@ -119,10 +119,10 @@ export const dndDemonsArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>If your campaign needs infernal contracts, a patron, or a cold long-game villain, use the <a href="${EN_DND_MEPHISTOPHELES_PATH}">Mephistopheles DND guide</a> as the better companion. If you want a shrine door to break open and the map to start bleeding problems, use demons.</p>
+<p>If your campaign needs infernal contracts, a patron, or a cold long-game villain, the <a href="${EN_DND_MEPHISTOPHELES_PATH}">Mephistopheles DND guide</a> is the better reference. If you want a shrine door to break open and the map to start bleeding problems, use demons.</p>
 
 <h2>List of Demons in DND by Table Role</h2>
-<p>A useful <strong>list of demons in dnd</strong> should group monsters by how they play at the table, not just by challenge rating.</p>
+<p>A good <strong>list of demons in dnd</strong> groups monsters by what they do at the table rather than challenge rating alone.</p>
 
 <figure class="inline-figure inline-figure--four-three-crop">
   <img
@@ -235,7 +235,7 @@ export const dndDemonsArticleHtml = String.raw`
 </table>
 
 <h2>How to Make DND Demons Feel Different from Ordinary Monsters</h2>
-<p><strong>DND demons feel different when their presence changes the environment, not just the initiative order.</strong></p>
+<p><strong>DND demons feel different when their presence changes the environment as much as the initiative order.</strong></p>
 
 <p>My practical rule is simple: before I add a demon, I write one sentence that starts with "Because this demon is here..." If the sentence only says "the party takes damage," I redesign the scene.</p>
 
@@ -273,8 +273,8 @@ export const dndDemonsArticleHtml = String.raw`
   <li><strong>Mistake 5:</strong> forgetting that demons are often best as a crisis, not a faction with tidy meeting minutes.</li>
 </ul>
 
-<h2>Video: DND Demons Companion Watch</h2>
-<p>The companion video is this <a href="${DND_DEMONS_VIDEO_URL}" rel="noreferrer noopener">DND demons video on YouTube</a>. Use it as a practical follow-up: watch for the same prep lens used here, which is to identify what each demon changes at the table before worrying about every last lore footnote.</p>
+<h2>Video: DND Demons in Play</h2>
+<p>For another angle, watch this <a href="${DND_DEMONS_VIDEO_URL}" rel="noreferrer noopener">DND demons video on YouTube</a>. It works best if you look for the same prep question used here: what does this demon change at the table?</p>
 
 ${liteVideoEmbed('54sGxOW26fM', 'DND demons companion video', {
   src: DND_DEMONS_VIDEO_PLACEHOLDER_PATH,
@@ -296,11 +296,11 @@ ${liteVideoEmbed('54sGxOW26fM', 'DND demons companion video', {
 <p>The balor is one of the most iconic high-end common demons in DND. It works best as a major set-piece threat, not as a casual random encounter.</p>
 
 <h3>How do I make demons feel scary without killing the party?</h3>
-<p>Use environmental consequences, visible corruption, escape pressure, and clear warning signs before raw damage. The party should feel the Abyss spreading, not just see bigger attack numbers.</p>
+<p>Use environmental consequences, visible corruption, escape pressure, and clear warning signs before raw damage. The party should feel the Abyss spreading instead of only seeing bigger attack numbers.</p>
 `;
 
 export const dndDemonsArticleHtmlZh = String.raw`
-<p><strong>dnd demons</strong> 指的是来自 Abyss 的混乱邪恶 fiend。真正好用的写法不是把所有恶魔都当成“长角、有爪子的怪”，而是先判断它在桌上负责什么：低级污染、侦察诱骗、暗处伏击、正面冲阵、交易陷阱，还是终局灾难。</p>
+<p><strong>dnd demons</strong> 指的是来自 Abyss 的混乱邪恶 fiend。跑好它们的关键，不是把所有恶魔都当成“长角、有爪子的怪”，而是先判断它在桌上负责什么：低级污染、侦察诱骗、暗处伏击、正面冲阵、交易陷阱，还是终局灾难。</p>
 
 <p><strong>一句话结论：</strong><strong>dnd demons</strong> 适合表现失控、饥饿、污染和暴力扩散。想写契约和等级秩序，用 devils；想让场景变得越来越糟，用 demons。</p>
 
@@ -358,7 +358,7 @@ export const dndDemonsArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>如果你想快速比较 <strong>dnd demons</strong>，先看上面的速查表：它会先说明有哪些 demon、各自适合什么场景，以及它们和 dnd devils 的核心区别，然后再进入更细的设定。</p>
+<p>想快速比较 <strong>dnd demons</strong>，先看上面的速查表。它把 demon 类型、桌面用途，以及和 dnd devils 的区别放在一起，读后面的设定时会轻松很多。</p>
 
 <h2>DND Demons 是什么？</h2>
 <p><strong>DND demons 是和 Abyss 相关的混乱邪恶 fiend，通常代表破坏、污染、饥饿和失控暴力。</strong></p>
@@ -405,7 +405,7 @@ export const dndDemonsArticleHtmlZh = String.raw`
 <p>如果你的战役要写契约、patron 或冷冰冰的长线反派，<a href="${ZH_DND_MEPHISTOPHELES_PATH}">mephistopheles dnd 指南</a> 会更贴近需求。如果你想让神殿门一破，整个地图开始失控，那就用 demons。</p>
 
 <h2>List of Demons in DND：按桌面职责分类</h2>
-<p>实用的 <strong>list of demons in dnd</strong> 不应该只按 CR 排列，更应该按“它在桌上负责制造什么问题”分类。</p>
+<p>实用的 <strong>list of demons in dnd</strong> 先看它在桌上制造什么问题，再看 CR。这样选怪时不会只剩“高低等级”这一条线。</p>
 
 <figure class="inline-figure inline-figure--four-three-crop">
   <img
@@ -556,8 +556,8 @@ export const dndDemonsArticleHtmlZh = String.raw`
   <li><strong>错误 5：</strong>忘记 demons 很适合当危机源，而不是会议纪要整齐的政治派系。</li>
 </ul>
 
-<h2>视频：DND Demons Companion Watch</h2>
-<p>这支 <a href="${DND_DEMONS_VIDEO_URL}" rel="noreferrer noopener">DND demons YouTube 视频</a> 适合作为补充观看。重点不是背完每一个设定脚注，而是先判断每只 demon 会让桌面局势发生什么变化。</p>
+<h2>视频：DND Demons 桌面用法</h2>
+<p>看完正文后，可以再看这支 <a href="${DND_DEMONS_VIDEO_URL}" rel="noreferrer noopener">DND demons YouTube 视频</a>。不要急着背所有设定脚注，先观察每只 demon 会怎样改变桌面局势。</p>
 
 ${liteVideoEmbed('54sGxOW26fM', 'DND demons companion video', {
   src: DND_DEMONS_VIDEO_PLACEHOLDER_PATH,

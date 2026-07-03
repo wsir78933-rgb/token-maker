@@ -13,7 +13,7 @@ import {
 export const dndConstitutionArticleHtml = String.raw`
 <p>In D&amp;D, <strong>dnd constitution</strong> is the ability score that decides how much punishment your character can survive before the plan falls apart. It affects hit points, Constitution saving throws, concentration checks, poison resistance moments, exhaustion pressure, and the small survival rolls that rarely look exciting until they save the session.</p>
 
-<p>This guide gives you the practical version first: what Constitution changes on your sheet, how much HP different scores are worth, and why many characters should treat 14 Constitution as the baseline rather than a luxury. If you are turning the build into a VTT-ready character, pair the sheet math with a sturdy portrait from the <a href="${EN_EDITOR_PATH}">free DnD token maker</a> so the token looks as durable as the numbers suggest.</p>
+<p>Start with the practical version: what Constitution changes on your sheet, how much HP different scores are worth, and why many characters should treat 14 Constitution as the baseline rather than a luxury. If you are turning the build into a VTT-ready character, pair the sheet math with a sturdy portrait from the <a href="${EN_EDITOR_PATH}">free DnD token maker</a> so the token looks as durable as the numbers suggest.</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
   <img
@@ -31,7 +31,7 @@ export const dndConstitutionArticleHtml = String.raw`
 <h2>What Does Constitution Do in DND?</h2>
 <p>Constitution mainly affects your maximum hit points, Constitution saving throws, and concentration checks after taking damage.</p>
 
-<p>That sounds simple, but it touches almost every dangerous part of play. A low Constitution character is not just easier to knock out. They are also worse at resisting poison, surviving harsh environments, holding important spells, and staying useful after repeated damage.</p>
+<p>That sounds simple, but it touches almost every dangerous part of play. A low Constitution character is easier to knock out, worse at resisting poison, less reliable in harsh environments, and more likely to lose important spells after repeated damage.</p>
 
 <table>
   <thead>
@@ -79,7 +79,7 @@ export const dndConstitutionArticleHtml = String.raw`
 <h2>How Constitution Affects Hit Points</h2>
 <p>Your Constitution modifier is added to your hit points at level 1 and again every time you gain a level.</p>
 
-<p>This is why Constitution scales better than it first appears. A +2 modifier is not just two extra hit points once. It is two extra hit points per level. By level 5, that is 10 extra HP. By level 10, it is 20 extra HP. On a fragile caster, that can be the difference between maintaining the fight and spending the round unconscious.</p>
+<p>This is why Constitution scales better than it first appears. A +2 modifier adds two extra hit points per level, not two hit points once. By level 5, that is 10 extra HP. By level 10, it is 20 extra HP. On a fragile caster, that can be the difference between maintaining the fight and spending the round unconscious.</p>
 
 <ul>
   <li><strong>8 Constitution:</strong> risky unless your table is very forgiving.</li>
@@ -92,7 +92,7 @@ export const dndConstitutionArticleHtml = String.raw`
 <h2>Why Constitution Saves Matter</h2>
 <p>Constitution saving throws usually show up when your body is being tested directly: poison, disease, exhaustion, extreme weather, monster breath, and other survival pressure.</p>
 
-<p>In my games, failed Constitution saves often hurt more than failed skill checks because they do not just block progress. They drain resources. A failed save can mean poisoned attacks, lost time, healing spent too early, or exhaustion that follows the party into the next encounter.</p>
+<p>In my games, failed Constitution saves often hurt more than failed skill checks because they block progress and drain resources at the same time. A failed save can mean poisoned attacks, lost time, healing spent too early, or exhaustion that follows the party into the next encounter.</p>
 
 <section class="mt-10 rounded-[30px] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
   <h3 class="font-display text-2xl text-stone-50" style="margin-top: 0;">Quick Tool Tip</h3>
@@ -176,13 +176,13 @@ export const dndConstitutionArticleHtml = String.raw`
 </section>
 
 <h2>Watch: Constitution Rules and Survival Pressure</h2>
-<p>The video below is included as a companion watch for players who want a faster table explanation after reading the guide. Use it as a refresher, then come back to the tables above when you are deciding how much Constitution your next character actually needs.</p>
+<p>The embedded video works as a quick table-side refresher on Constitution rules before you choose the score your next character can survive with.</p>
 
 ${liteVideoEmbed('WoV5iM7peOg', 'DND constitution rules and mechanics video')}
 `;
 
 export const dndConstitutionArticleHtmlZh = String.raw`
-<p>在 D&amp;D 跑团中，<strong>dnd constitution</strong>（体质）代表了角色的生存底线和忍耐极限。无论是遭遇怪物的毒气喷吐、在危险水域憋气潜水，还是纯粹叠加生命上限，体质都发挥着绝对核心的作用。这篇指南将带你用最直观的方式，彻底搞懂体质如何影响你的生命池（HP）与专注判定。如果你正在规划新角色，本文能帮你避开“因为没点体质而被一刀击杀”的毁灭性误区。</p>
+<p>在 D&amp;D 跑团中，<strong>dnd constitution</strong>（体质）代表了角色的生存底线和忍耐极限。无论是遭遇怪物的毒气喷吐、在危险水域憋气潜水，还是纯粹叠加生命上限，体质都发挥着绝对核心的作用。想先把规则吃透，可以从生命池（HP）与专注判定这两个最常出事的地方看起。如果你正在规划新角色，这里也能帮你避开“因为没点体质而被一刀击杀”的毁灭性误区。</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
   <img
@@ -198,7 +198,7 @@ export const dndConstitutionArticleHtmlZh = String.raw`
 </figure>
 
 <h2>核心机制：Constitution DND 检定中到底影响什么？</h2>
-<p>在建卡时，许多追求初级爆发伤害的新玩家会把点数全押在力量或智力上，留下可悲的 8 点体质。这不仅极度危险，而且拖累了医疗位队友。基于规则核心逻辑，下面这张属性收益表直观地展示了 <strong>constitution dnd</strong> 在抗压维度上的巨大差距：</p>
+<p>在建卡时，许多追求初级爆发伤害的新玩家会把点数全押在力量或智力上，留下可悲的 8 点体质。这种做法极度危险，也会拖累医疗位队友。基于规则核心逻辑，这张属性收益表直观地展示了 <strong>constitution dnd</strong> 在抗压维度上的巨大差距：</p>
 
 <table>
   <thead>
@@ -243,7 +243,7 @@ export const dndConstitutionArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>当你需要长途跨越冰原、在水底脱困、或是对抗毒气，角色必须被动进行体质豁免检定。如果该判定失败，轻则进入“中毒”或“力竭”等严重损伤轮次，重则直接陷入倒地昏迷。这意味着体质修正值（Modifier）不仅仅是每一次级别跃升时强制附带加倍的安全血点基数，更是所有“非战斗高危场景”的刚需保命符。</p>
+<p>当你需要长途跨越冰原、在水底脱困、或是对抗毒气，角色必须被动进行体质豁免检定。如果该判定失败，轻则进入“中毒”或“力竭”等严重损伤轮次，重则直接陷入倒地昏迷。这意味着体质修正值（Modifier）既是每一次级别跃升时附带的安全血点基数，也是所有“非战斗高危场景”的刚需保命符。</p>
 
 <div class="mt-8 rounded-[24px] border border-white/8 bg-black/20 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
   <div class="flex-1">

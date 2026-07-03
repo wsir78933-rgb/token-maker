@@ -14,9 +14,9 @@ export const dndClassesRankedArticleHtml = String.raw`
 
 <p>The problem is that most class rankings are either too complicated or too opinion-based. Some lists only care about raw power. Others only care about roleplay flavor. And some rankings ignore the simple fact that a class can be strong on paper but still frustrating for real players at the table.</p>
 
-<p>That is why this guide uses a simpler system.</p>
+<p>So I use a simpler system.</p>
 
-<p>This <strong>D&amp;D classes ranked</strong> list is based on four practical factors:</p>
+<p>The <strong>D&amp;D classes ranked</strong> list uses four practical factors:</p>
 
 <ul>
   <li><strong>Power:</strong> how effective the class is in combat and problem-solving.</li>
@@ -25,10 +25,10 @@ export const dndClassesRankedArticleHtml = String.raw`
   <li><strong>Fun factor:</strong> how satisfying the class feels in actual play.</li>
 </ul>
 
-<p>So this is not just a "highest damage wins" list. It is a ranking of the classes that tend to perform best for real groups over a full campaign.</p>
+<p>So this goes beyond a "highest damage wins" list. It ranks the classes that tend to perform best for real groups over a full campaign.</p>
 
 <h2>DnD Classes Ranked Tier List</h2>
-<p>If you want the short version first, here it is.</p>
+<p>If you want the short version first, start with the tier list.</p>
 
 <h3>S Tier</h3>
 <ul>
@@ -79,7 +79,7 @@ export const dndClassesRankedArticleHtml = String.raw`
   <li>Harder to play than the reward justifies.</li>
 </ul>
 
-<p>That means this is not a ranking for one-shots only, and it is not based only on level 20 theorycrafting. It is built around the classes people actually enjoy and succeed with across normal campaigns. Once you narrow the list to one or two picks, build a quick portrait in the <a href="${EN_EDITOR_PATH}">VTT token maker</a> and use the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> to test the attack rolls, saves, or one-shot checks that class will make most often.</p>
+<p>That means the ranking is not built for one-shots alone, and it is not based only on level 20 theorycrafting. It is built around the classes people actually enjoy and succeed with across normal campaigns. Once you narrow the list to one or two picks, build a quick portrait in the <a href="${EN_EDITOR_PATH}">VTT token maker</a> and use the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> to test the attack rolls, saves, or one-shot checks that class will make most often.</p>
 
 <h2>1. Wizard</h2>
 <p>If you look at almost any serious <strong>dnd classes ranked</strong> discussion, Wizard ends up near the top. That is because no class matches its overall magical flexibility.</p>
@@ -411,9 +411,9 @@ export const dndClassesRankedArticleHtml = String.raw`
 <p>These classes reward creativity and planning.</p>
 
 <h2>What This Ranking Gets Right About D&amp;D Classes</h2>
-<p>A good ranking should not just say which classes are strongest. It should explain why some classes feel better over time.</p>
+<p>A good ranking should do more than name the strongest classes. It should explain why some classes feel better over time.</p>
 
-<p>That is why the top of this list is full of classes like Wizard, Cleric, and Paladin. They do not just win in one area. They keep showing value in combat, support, utility, and real campaign play.</p>
+<p>That is why the top of this list is full of classes like Wizard, Cleric, and Paladin. They win in more than one area, showing value in combat, support, utility, and real campaign play.</p>
 
 <p>At the same time, lower-ranked classes like Barbarian and Monk are not bad in a useless sense. They are simply more limited. They can still be great fun at the right table, but they usually rely more on taste than on broad mechanical strength.</p>
 
@@ -425,7 +425,7 @@ export const dndClassesRankedArticleHtml = String.raw`
 <p>If you want the best balance between strength, simplicity, and fun, pick Paladin.</p>
 <p>And if you are completely new and just want a safe first choice, pick Fighter.</p>
 
-<p>That is the biggest takeaway from this <strong>dnd classes ranked</strong> guide: the best class is not always the one with the highest ceiling. It is the one that gives you the best experience over a full campaign.</p>
+<p>The biggest takeaway from a practical <strong>dnd classes ranked</strong> list is this: the best class is not always the one with the highest ceiling. It is the one that gives you the best experience over a full campaign.</p>
 
 <p>In other words:</p>
 <ul>
@@ -444,11 +444,11 @@ ${liteVideoEmbed('K2Qs8q2JBRY', 'DnD classes ranked video recap')}
 `;
 
 export const dndClassesRankedArticleHtmlZh = String.raw`
-<p>看 <strong>DND 职业排名</strong> 时，真正值得先问的往往只有一件事：在《龙与地下城》里，到底哪个职业最值得玩？</p>
+<p>看 <strong>DND 职业排名</strong> 时，最该先问的往往只有一件事：在《龙与地下城》里，到底哪个职业最值得玩？</p>
 
 <p>问题在于，大多数职业榜单不是太复杂，就是太看个人口味。有些只盯着纸面强度，有些只在乎角色风格，还有些忽略了一个很现实的事实：一个职业理论上很强，不代表它在真实桌面上就一定玩得舒服。</p>
 
-<p>所以这篇文章用的是一套更实用的判断标准。</p>
+<p>所以这里采用一套更实用的判断标准。</p>
 
 <p>这份 <strong>D&amp;D 职业排名</strong> 主要看四个维度：</p>
 
@@ -456,10 +456,10 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
   <li><strong>强度：</strong>这个职业在战斗和解场时到底有多有效。</li>
   <li><strong>泛用性：</strong>面对不同队伍配置和场景时，它是不是都能发挥作用。</li>
   <li><strong>上手难度：</strong>新手和轻度玩家玩起来是否顺手。</li>
-  <li><strong>实际乐趣：</strong>这个职业在真正跑团时到底爽不爽。</li>
+  <li><strong>实际乐趣：</strong>这个职业在实际跑团时到底爽不爽。</li>
 </ul>
 
-<p>所以这不是一份“谁伤害最高谁就赢”的清单，而是一份更接近真实战役体验的职业排序。</p>
+<p>所以别把它当成“谁伤害最高谁就赢”的清单；它更接近真实战役体验里的职业排序。</p>
 
 <h2>DND 职业排名总览</h2>
 <p>如果你想先看短结论，可以直接看这里。</p>
@@ -497,7 +497,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
 <h2>这份 DND 职业排名是怎么排出来的</h2>
 <p>在进入完整排名之前，先把判断逻辑讲清楚会更有帮助。</p>
 
-<p>一个职业在这里能排得更高，通常是因为它至少满足了下面的一条或几条：</p>
+<p>一个职业在这里能排得更高，通常是因为它至少满足了以下一条或几条：</p>
 <ul>
   <li>有能力靠关键技能或法术扛起整个遭遇。</li>
   <li>在不同队伍配置里都能持续保持价值。</li>
@@ -513,10 +513,10 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
   <li>操作成本偏高，但收益并没有高到值得。</li>
 </ul>
 
-<p>也就是说，这份排名不是只看一次性团本，也不是只看满级理论构筑，而是围绕“普通玩家在正常战役里真正会觉得好用、好玩、好带队”的标准来排。等你把候选职业缩到一两个时，可以先在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里做一个临时头像，再用 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 测一下这个职业最常用的攻击、豁免或一次性团检定。</p>
+<p>也就是说，这份排名避开了一次性团本和满级理论构筑，核心标准是“普通玩家在正常战役里实际会觉得好用、好玩、好带队”。等你把候选职业缩到一两个时，可以先在 <a href="${ZH_EDITOR_PATH}">VTT Token 制作工具</a> 里做一个临时头像，再用 <a href="${ZH_DICE_ROLLER_PATH}">D&amp;D 骰子工具</a> 测一下这个职业最常用的攻击、豁免或一次性团检定。</p>
 
 <h2>1. 法师 Wizard</h2>
-<p>几乎所有严肃一点的 <strong>DND 职业排名</strong> 讨论里，法师最后都会靠近榜首。原因很简单，没有哪个职业能真正匹配它的整体法术灵活度。</p>
+<p>几乎所有严肃一点的 <strong>DND 职业排名</strong> 讨论里，法师最后都会靠近榜首。原因很简单，没有哪个职业能稳定匹配它的整体法术灵活度。</p>
 
 <h3>为什么法师是 S 级</h3>
 <p>法师是全游戏最像“工具箱”的职业。它可以打伤害、控场、保护队友、侦查信息、脱离危险，还能靠正确的法术准备改变整场遭遇的走向。</p>
@@ -543,7 +543,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
 <p>牧师是游戏里最完整的职业之一。很多新手会以为牧师只是“奶妈”，这其实大大低估了它。</p>
 
 <h3>为什么牧师是 S 级</h3>
-<p>牧师强在几乎所有核心维度都不差。它能支援、能治疗、前排生存能力也比很多施法者更稳，同时还能打出真正有分量的伤害和控制。</p>
+<p>牧师强在几乎所有核心维度都不差。它能支援、能治疗，前排生存能力也比很多施法者更稳，同时还能打出实打实有分量的伤害和控制。</p>
 <p>一个优秀的牧师在几乎每个团里都不会没事做，这种稳定性本身就是巨大优势。</p>
 
 <h3>牧师最强的地方</h3>
@@ -682,7 +682,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
 
 <h3>为什么游荡者是 B 级</h3>
 <p>游荡者在技能、潜行和机动方面都很优秀，在探索、调查和社交诡计比较多的战役里尤其好用。</p>
-<p>它之所以落在 B 级，并不是因为弱，而是因为排在它前面的职业往往能在更多场景里提供更全面的价值。</p>
+<p>它落在 B 级，不代表弱；排在它前面的职业往往能在更多场景里提供更全面的价值。</p>
 
 <h3>游荡者最强的地方</h3>
 <ul>
@@ -747,7 +747,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
 <p>野蛮人是最容易理解、也最容易在正面战斗里打出爽感的职业之一。</p>
 
 <h3>为什么野蛮人是 C 级</h3>
-<p>野蛮人排名靠后，不是因为它不会打，而是因为它的功能太窄。它有一件事做得非常好，但其他很多职业能在保持不错战斗力的同时，提供更多桌面价值。</p>
+<p>野蛮人排名靠后，主要原因是功能太窄。它有一件事做得非常好，但其他很多职业能在保持不错战斗力的同时，提供更多桌面价值。</p>
 <p>在短而硬的战斗战役里，野蛮人会非常爽；在更宽的长期战役里，它的短板就会逐渐变明显。</p>
 
 <h3>野蛮人最强的地方</h3>
@@ -771,7 +771,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
 
 <h3>为什么武僧是 C 级</h3>
 <p>武僧有速度、有风格，也有很鲜明的职业幻想，但它经常要求玩家投入更多精力，才能拿到别的职业更轻松就能拿到的结果。</p>
-<p>这不是说武僧不能玩，而是说如果你要给大多数玩家做推荐，它往往不是最划算的那个选择。</p>
+<p>这并不代表武僧不能玩；只是给大多数玩家做推荐时，它往往不是最划算的那个选择。</p>
 
 <h3>武僧最强的地方</h3>
 <ul>
@@ -805,7 +805,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
 <p>很多排名文章的问题在于，它们只给你一个榜单，却没有告诉你“什么样的玩家更适合什么职业”。这显然不够，因为最好的职业，往往取决于你最想要的体验。</p>
 
 <h3>最适合新手的 D&amp;D 职业</h3>
-<p>如果你是第一次接触 D&amp;D，最推荐从下面这些职业开始：</p>
+<p>如果你是第一次接触 D&amp;D，最推荐从这些职业开始：</p>
 <ul>
   <li>战士 Fighter</li>
   <li>圣武士 Paladin</li>
@@ -843,14 +843,14 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
 </ul>
 <p>这些职业都会奖励创造力和提前规划。</p>
 
-<h2>这份排名真正说对了什么</h2>
+<h2>这份排名说中了什么</h2>
 <p>一份好的职业排名，不应该只告诉你谁伤害高，而应该告诉你为什么某些职业在长期游玩里更耐打、更稳定、更容易让玩家持续获得成就感。</p>
 
-<p>这也是为什么榜单最前面的，通常会是法师、牧师和圣武士。它们不是只在某一个点上赢，而是在战斗、支援、功能性和真实战役体验里都持续展现优势。</p>
+<p>这也是为什么榜单最前面的，通常会是法师、牧师和圣武士。它们赢的地方不止一个：战斗、支援、功能性和真实战役体验里都能持续展现优势。</p>
 
 <p>而像野蛮人和武僧这种排得更后的职业，也不是“废”。它们只是限制更明显，更吃玩家口味或具体环境，而不是那种放进大多数队伍里都能稳定强势的职业。</p>
 
-<p>这也是职业排名最容易误导人的地方：大多数玩家真正想要的不是一个只停留在纸面的答案，而是一个在实际桌面上也成立的结论。</p>
+<p>这也是职业排名最容易误导人的地方：大多数玩家想要的答案，不能只停留在纸面上，还要在实际桌面上成立。</p>
 
 <h2>最终结论：你该选哪个 D&amp;D 职业？</h2>
 <p>如果你想要综合强度最高的职业，选法师。</p>
@@ -871,7 +871,7 @@ export const dndClassesRankedArticleHtmlZh = String.raw`
 <p>这也是为什么这份排名比纯理论榜单更有用，因为它更接近真实玩家在长期战役里的体验，而不是只看纸面最优解。</p>
 
 <h2>看一段视频快速回顾</h2>
-<p>如果你读完之后还想用更轻松、更口语化的方式再回顾一遍，这段视频很适合作为收尾补充。它讨论的也是“哪个 D&amp;D 职业玩起来最舒服、最值得选”这个问题。你可以直接在 <a href="https://www.youtube.com/watch?v=K2Qs8q2JBRY" target="_blank" rel="noreferrer">YouTube 查看</a>，也可以直接看下面的嵌入版本。</p>
+<p>如果你读完之后还想用更轻松、更口语化的方式再回顾一遍，可以看这段视频。它讨论的也是“哪个 D&amp;D 职业玩起来最舒服、最值得选”这个问题。你可以直接在 <a href="https://www.youtube.com/watch?v=K2Qs8q2JBRY" target="_blank" rel="noreferrer">YouTube 查看</a>，也可以直接看嵌入版本。</p>
 
 ${liteVideoEmbed('K2Qs8q2JBRY', 'DND 职业排名视频回顾')}
 `;

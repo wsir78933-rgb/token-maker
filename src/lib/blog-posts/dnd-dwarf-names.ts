@@ -15,7 +15,7 @@ import {
 } from './shared';
 
 export const dndDwarfNamesArticleHtml = String.raw`
-<p><strong>dnd dwarf names</strong> are easiest to use when they sound sturdy, short enough to say at the table, and tied to a clan, craft, oath, or visible flaw. Start with the table below: pick a first name, add a clan name, then give the dwarf one detail players can remember.</p>
+<p><strong>dnd dwarf names</strong> are easiest to use when they sound sturdy, short enough to say at the table, and tied to a clan, craft, oath, or visible flaw. Use the table as a fast pick list: choose a first name, add a clan name, then give the dwarf one detail players can remember.</p>
 
 <table>
   <thead>
@@ -355,18 +355,18 @@ export const dndDwarfNamesArticleHtml = String.raw`
 <p><strong>The best dwarf token label is usually one short name under 12-14 characters.</strong> Put the full clan name and title in the sheet, journal, or GM notes.</p>
 
 <h2 id="video">Watch the dnd dwarf names Video</h2>
-<p>Use the video below as a quick persona check, then come back to the names. A dwarf called Brakka Stonevow should have a readable silhouette, a clear nickname, and one attitude the table can understand before anyone reads the backstory.</p>
+<p>A dwarf called Brakka Stonevow should have a readable silhouette, a clear nickname, and one attitude the table can understand before anyone reads the backstory. The video angle works best as a quick persona check for that table-read clarity.</p>
 
 ${liteVideoEmbed('C3I4wpHshuw', 'dnd dwarf names companion video', {
   src: DND_DWARF_NAMES_VIDEO_PLACEHOLDER_PATH,
   alt: 'Clickable webp video cover for a dnd dwarf names guide showing a dwarf portrait token with a play button in a forge-lit stone hall',
 })}
 
-<p><a href="${DND_DWARF_NAMES_VIDEO_URL}" rel="noreferrer noopener">Open the companion video on YouTube</a>.</p>
+<p><a href="${DND_DWARF_NAMES_VIDEO_URL}" rel="noreferrer noopener">Open the dwarf-naming video on YouTube</a>.</p>
 `;
 
 export const dndDwarfNamesArticleHtmlZh = String.raw`
-<p>需要 <strong>dnd dwarf names</strong> 给今晚的 NPC、玩家角色或酒馆名单用？先从下面表格挑一个名、一个氏族姓，再补一个职业、誓言、伤疤或欠债。可用名字放前面，后面再讲怎么改成适合自己战役的版本。</p>
+<p>需要 <strong>dnd dwarf names</strong> 给今晚的 NPC、玩家角色或酒馆名单用？从速查表里挑一个名、一个氏族姓，再补一个职业、誓言、伤疤或欠债。可用名字放前面，后面再讲怎么改成适合自己战役的版本。</p>
 
 <table>
   <thead>
@@ -411,7 +411,7 @@ export const dndDwarfNamesArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p><strong>使用说明：</strong>下面这些是按桌面可读性整理的原创名字。可以直接拿来用，也可以只保留名，把氏族词、绰号或职业线索换成你战役里的版本。</p>
+<p><strong>使用说明：</strong>这批名字按桌面可读性整理，都是原创组合。可以直接拿来用，也可以只保留名，把氏族词、绰号或职业线索换成你战役里的版本。</p>
 
 <p>我准备矮人 NPC 时不会先写长背景。先写三件事：<strong>名字、氏族压力、Token 在 70px 左右能不能看懂</strong>。这三点定下来，头像、台词和任务钩子会顺很多。</p>
 
@@ -650,7 +650,7 @@ export const dndDwarfNamesArticleHtmlZh = String.raw`
     <tr>
       <td>Bimble Brassmug</td>
       <td>热心酒馆熟人</td>
-      <td>给他一条真正有用的线索。</td>
+      <td>给他一条有用的线索。</td>
     </tr>
     <tr>
       <td>Durnik Wrong-Tunnel</td>
@@ -660,7 +660,7 @@ export const dndDwarfNamesArticleHtmlZh = String.raw`
     <tr>
       <td>Helga Keglogic</td>
       <td>酿酒师、商人或酒馆打手</td>
-      <td>让名字下面藏着一个精明谈判者。</td>
+      <td>让名字背后藏着一个精明谈判者。</td>
     </tr>
     <tr>
       <td>Norvi No-Map</td>
@@ -675,7 +675,7 @@ export const dndDwarfNamesArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>同样的规则也适用于名字：让人记住的不是完美音节，而是清楚的人设。一个矮人 NPC 的头像、姿态、绰号和第一句台词如果方向一致，名字会更容易被玩家记住。</p>
+<p>同样的规则也适用于名字：玩家更容易记住清楚的人设；完美音节反而没那么重要。一个矮人 NPC 的头像、姿态、绰号和第一句台词如果方向一致，名字会更容易被玩家记住。</p>
 
 <h2 id="vtt-token-labels">dnd dwarf names 放在 VTT Token 上该怎么写？</h2>
 <p><strong>Token 上写短名，完整 dnd dwarf name 放进角色卡、手册或 GM 笔记。</strong> 氏族全名放在设定里很好看，但缩到地图 Token 上经常看不清。</p>
@@ -700,7 +700,7 @@ export const dndDwarfNamesArticleHtmlZh = String.raw`
 <p><strong>不一定，但北欧感的音节可以帮助营造矮人语感。</strong> 把它当调味，不要让所有矮人都变成同一种声音。</p>
 
 <h3>严肃战役可以用搞笑矮人名字吗？</h3>
-<p><strong>可以，但笑点下面要有一个可信的人。</strong> Durnik Wrong-Tunnel 这种名字也需要技能、恐惧、债务或秘密，否则只会变成一次性笑话。</p>
+<p><strong>可以，但笑点背后要有一个可信的人。</strong> Durnik Wrong-Tunnel 这种名字也需要技能、恐惧、债务或秘密，否则只会变成一次性笑话。</p>
 
 <h3>矮人 Token 标签多长合适？</h3>
 <p><strong>矮人 Token 标签最好是 12-14 个字符以内的短名。</strong> 完整氏族姓和头衔放在角色卡、日志或 GM 笔记里更合适。</p>

@@ -13,9 +13,9 @@ import {
 } from './shared';
 
 export const dndMephistophelesArticleHtml = String.raw`
-<p><strong>mephistopheles dnd</strong> is best understood as a campaign-level archdevil: ruler of Cania, master of hellfire, and the kind of patron who should make a table nervous before anyone rolls initiative. This guide gives you the quick lore answer first, then shows how I would actually use him in a D&amp;D campaign without turning the session into a lore lecture.</p>
+<p><strong>mephistopheles dnd</strong> is best understood as a campaign-level archdevil: ruler of Cania, master of hellfire, and the kind of patron who should make a table nervous before anyone rolls initiative. Start with the quick lore answer, then use the campaign notes to bring him into play without turning the session into a lore lecture.</p>
 
-<p>If you only need the table answer: do not start with a full Mephistopheles boss fight. Start with a bargain, a proxy, a frozen room, or a contract that costs more than the party expected. That is where he becomes useful instead of just famous.</p>
+<p>For the table answer: do not start with a full Mephistopheles boss fight. Start with a bargain, a proxy, a frozen room, or a contract that costs more than the party expected. That is where he becomes useful instead of merely famous.</p>
 
 <table>
   <thead>
@@ -35,7 +35,7 @@ export const dndMephistophelesArticleHtml = String.raw`
     </tr>
     <tr>
       <td><strong>What makes him different?</strong></td>
-      <td>He is not just "a bigger devil." His hook is cold intelligence plus forbidden fire magic.</td>
+      <td>He is more than "a bigger devil." His hook is cold intelligence plus forbidden fire magic.</td>
     </tr>
     <tr>
       <td><strong>Can players connect to him?</strong></td>
@@ -80,15 +80,15 @@ export const dndMephistophelesArticleHtml = String.raw`
 <ul>
   <li><strong>Start with the offer.</strong> A spell, cure, resurrection, title, or battlefield advantage arrives with one sentence of fine print.</li>
   <li><strong>Make the price non-obvious.</strong> Do not ask for "your soul" immediately. Ask for a memory, a future favor, the right to define one word in a contract, or a harmless-looking signature.</li>
-  <li><strong>Use cold imagery, not just fire.</strong> Cania should feel precise, silent, and hostile.</li>
+  <li><strong>Use cold imagery alongside fire.</strong> Cania should feel precise, silent, and hostile.</li>
   <li><strong>Let agents fail upward.</strong> A cultist, chain devil, imp lawyer, or ambitious mage can lose a fight and still advance the contract.</li>
   <li><strong>Keep the rules readable.</strong> If the bargain is too vague, players feel tricked by the DM. If it is clear but painful, players blame the devil.</li>
 </ul>
 
-<p>The useful companion lens is this: Mephistopheles is more interesting as a scheme than as a stat block. Build the situation first, then decide whether dice are needed.</p>
+<p>Mephistopheles is more interesting as a scheme than as a stat block. Build the situation first, then decide whether dice are needed.</p>
 
 <h2>Mephistopheles vs Other Archdevils</h2>
-<p><strong>Mephistopheles stands out because he feels like a magical researcher and contract predator, not only a ruler with armies.</strong> That makes him especially good for Wizard, Warlock, and forbidden-knowledge plots.</p>
+<p><strong>Mephistopheles stands out because he feels like a magical researcher and contract predator rather than merely a ruler with armies.</strong> That makes him especially good for Wizard, Warlock, and forbidden-knowledge plots.</p>
 
 <table>
   <thead>
@@ -232,7 +232,7 @@ export const dndMephistophelesArticleHtml = String.raw`
 <p>At the table, I would keep the handout short. Two clauses, one signature line, one weird witness. Long legal props are fun to write but slow to play.</p>
 
 <h2>VTT Token Notes for Mephistopheles and His Agents</h2>
-<p><strong>A Mephistopheles VTT token should read as infernal authority at 512 px, not as a pile of red effects.</strong> In the <a href="${EN_EDITOR_PATH}">VTT token maker</a>, I would use a controlled palette: black glass, cold blue highlights, gold contract lines, and one sharp ember color.</p>
+<p><strong>A Mephistopheles VTT token should read as infernal authority at 512 px, with controlled color instead of a heap of red effects.</strong> In the <a href="${EN_EDITOR_PATH}">VTT token maker</a>, I would use a controlled palette: black glass, cold blue highlights, gold contract lines, and one sharp ember color.</p>
 
 <ul>
   <li><strong>For Mephistopheles:</strong> keep the face readable and put the magic in the border or sigil.</li>
@@ -276,7 +276,7 @@ export const dndMephistophelesArticleHtml = String.raw`
 
 <ul>
   <li><strong>Cold authority:</strong> Cania and frozen pressure make Mephistopheles feel different from generic fire-devil imagery.</li>
-  <li><strong>Contracts before combat:</strong> the strongest Mephistopheles scene should threaten the party through terms, not only damage.</li>
+  <li><strong>Contracts before combat:</strong> the strongest Mephistopheles scene should threaten the party through terms before damage.</li>
   <li><strong>Table usability:</strong> turn that mood into encounter, patron, and token decisions instead of stopping at lore trivia.</li>
 </ul>
 
@@ -289,7 +289,7 @@ ${liteVideoEmbed('Xdu_5_ZL7pQ', 'Mephistopheles D&D lore video', {
 export const dndMephistophelesArticleHtmlZh = String.raw`
 <p><strong>mephistopheles dnd</strong> 指南先回答一个实际问题：Mephistopheles 到底是谁，能不能当反派或 patron，怎么放进团里才不突兀。下面先给速查结论，再讲 Cania、契约、Warlock/Tiefling 关联，以及我会怎样在跑团里使用他。</p>
 
-<p>重点不是背完所有 lore 名词，而是让 DM 和玩家马上知道：这个角色有什么用、什么时候该用、什么时候别直接丢上战斗地图。</p>
+<p>这里先解决桌面问题：这个角色有什么用、什么时候该用、什么时候别直接丢上战斗地图。</p>
 
 <table>
   <thead>
@@ -309,7 +309,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
     </tr>
     <tr>
       <td><strong>他的核心辨识度是什么？</strong></td>
-      <td>不是“更大的红色恶魔”，而是冷静、契约、冰狱和危险的地狱火研究。</td>
+      <td>他的辨识度来自冷静、契约、冰狱和危险的地狱火研究，而不是单纯放大版红色恶魔。</td>
     </tr>
     <tr>
       <td><strong>玩家角色能关联他吗？</strong></td>
@@ -355,10 +355,10 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
   <li><strong>条款必须可读。</strong>如果契约太模糊，玩家会觉得是 DM 阴人；如果清楚但痛，玩家会怪魔鬼。</li>
 </ul>
 
-<p>这里最重要的提醒是同一件事：Mephistopheles 的重点不是“我有多强”，而是“我怎样让你在动手前就已经输了半步”。</p>
+<p>这里最有用的提醒仍是同一件事：Mephistopheles 的压迫感来自“我怎样让你在动手前就已经输了半步”。单纯强调“我有多强”，反而会让他变得普通。</p>
 
 <h2>Mephistopheles 和其他 Archdevils 有什么不同？</h2>
-<p><strong>Mephistopheles 的差异在于他像一个研究禁忌魔法的契约猎手，而不只是有军队的统治者。</strong>所以他特别适合 Wizard、Warlock、禁忌知识和高风险交易主题。</p>
+<p><strong>Mephistopheles 的差异在于他像一个研究禁忌魔法的契约猎手，军队和地位只是背景压力。</strong>所以他特别适合 Wizard、Warlock、禁忌知识和高风险交易主题。</p>
 
 <table>
   <thead>
@@ -372,7 +372,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
     <tr>
       <td><strong>Asmodeus</strong></td>
       <td>最终权威、宇宙级律法、最高统治。</td>
-      <td>剧情不是挑战王座，而是王座之下的野心和研究。</td>
+      <td>剧情集中在王座之下的野心和研究，而非挑战王座本身。</td>
     </tr>
     <tr>
       <td><strong>Dispater</strong></td>
@@ -395,7 +395,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
 <h2>玩家角色可以和 Mephistopheles 有关联吗？</h2>
 <p><strong>可以，玩家角色可以通过 Fiend Warlock 契约、地狱血脉、家族债务或旧版 tiefling 设定和 Mephistopheles 关联。</strong>如果你们使用 2024 规则，先以官方 <a href="${DND_2024_TIEFLING_URL}" rel="noreferrer noopener">D&amp;D Beyond Tiefling 页面</a> 为准，再把具体祖源当作剧情风味处理。</p>
 
-<p>我的建议是让关联存在，但不要让 archdevil 每场戏都出来抢镜。3 级 Warlock 不需要每天和 Mephistopheles 直接通话。更好用的是：一个可见印记、一个反复出现的代理人、一笔玩家真正理解的债。</p>
+<p>我的建议是让关联存在，但不要让 archdevil 每场戏都出来抢镜。3 级 Warlock 不需要每天和 Mephistopheles 直接通话。更好用的是：一个可见印记、一个反复出现的代理人、一笔玩家已经理解的债。</p>
 
 <ul>
   <li><strong>Warlock pact：</strong>力量来自层层代理，而不是“我和大魔鬼很熟”。</li>
@@ -444,7 +444,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
 <p>角色卡上最干净的说法是：<strong>“我的 tiefling 血脉被 Mephistopheles 标记，但机械规则按本桌允许的 tiefling 规则来。”</strong>这样 lore 有味道，也不会偷偷塞进未确认机制。</p>
 
 <h2>你的战役需要 Mephistopheles Stat Block 吗？</h2>
-<p><strong>大多数战役不需要 Mephistopheles 的完整 stat block，除非队伍已经进入真正的终局高等级尺度。</strong>更省力、更好玩的方式，是跑代理人、化身、契约危害、地形效果和债务倒计时。</p>
+<p><strong>大多数战役不需要 Mephistopheles 的完整 stat block，除非队伍已经进入终局高等级尺度。</strong>更省力、更好玩的方式，是跑代理人、化身、契约危害、地形效果和债务倒计时。</p>
 
 <table>
   <thead>
@@ -484,7 +484,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
 <p>这样处理会让反派更像 archdevil。只会打人的强敌很容易被玩家当成大号怪物；能修改胜利条件的反派才难忘。</p>
 
 <h2>我会怎样设计一场 Mephistopheles 跑团场景？</h2>
-<p><strong>我会围绕一个“能解决眼前问题、但会制造后续代价”的契约来设计 Mephistopheles 场景。</strong>关键不是让交易看起来邪恶，而是让它看起来真的有用。</p>
+<p><strong>我会围绕一个“能解决眼前问题、但会制造后续代价”的契约来设计 Mephistopheles 场景。</strong>交易要先显得真的有用，邪恶感再从后续代价里慢慢浮出来。</p>
 
 <ol>
   <li><strong>先给迫切问题。</strong>玩家需要复活、情报、坐标、安全通行或稀有材料。</li>
@@ -540,7 +540,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
 
 <ul>
   <li><strong>冰冷权威：</strong>Cania 和寒冷压迫能把 Mephistopheles 和普通火焰 devil 区分开。</li>
-  <li><strong>先契约，后战斗：</strong>真正好用的 Mephistopheles 场景，应该先用条款威胁玩家，而不是只靠伤害。</li>
+  <li><strong>先契约，后战斗：</strong>最有用的 Mephistopheles 场景，应该先用条款威胁玩家，而不是只靠伤害。</li>
   <li><strong>落到桌面：</strong>把这些氛围转成遭遇、patron 和 Token 设计建议，而不是只停留在设定名词。</li>
 </ul>
 

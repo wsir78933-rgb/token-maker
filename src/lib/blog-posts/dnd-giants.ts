@@ -17,7 +17,7 @@ import {
 } from './shared';
 
 export const dndGiantsArticleHtml = String.raw`
-<p>When you are preparing <strong>dnd giants</strong>, the most useful starting point is usually practical: which giants exist, how dangerous they feel at the table, and how to run them without turning combat into a slow bag of hit points. This guide gives you the quick table up front, then moves into encounter use, lore, VTT token advice, and a video follow-up.</p>
+<p>When you are preparing <strong>dnd giants</strong>, the useful questions are usually practical: which giants exist, how dangerous they feel at the table, and how to run them without turning combat into a slow bag of hit points. The quick table comes first; after that I move through encounter use, lore, VTT token advice, and a video follow-up.</p>
 
 <p><strong>Short version:</strong> <strong>dnd giants</strong> work best when you treat them as terrain-changing bosses, not oversized humanoids. The fun comes from thrown rocks, reach, social rank, huge environments, and the panic players feel when the battlefield itself stops feeling human-sized.</p>
 
@@ -156,7 +156,7 @@ export const dndGiantsArticleHtml = String.raw`
 <p>When I run stone giants, I mark two or three elevated rock positions before the fight starts. That one prep step makes their ranged pressure feel intentional instead of improvised.</p>
 
 <h3>Frost giants: make the raid feel organized</h3>
-<p>Frost giants are at their best when they arrive with a purpose. They are not just cold-themed bags of damage; they are raiders, trophy-takers, and leaders of brutal expeditions.</p>
+<p>Frost giants are at their best when they arrive with a purpose. Treat them as raiders, trophy-takers, and leaders of brutal expeditions, not as cold-themed bags of damage.</p>
 
 <p>Give them scouts, a captured guide, sledges, winter wolves, or a visible prize they are trying to steal. Now the encounter has direction.</p>
 
@@ -224,8 +224,8 @@ export const dndGiantsArticleHtml = String.raw`
   <li><strong>Mistake 5:</strong> treating giant lore as trivia instead of using it to create conflict.</li>
 </ul>
 
-<h2>Video: DND Giants Companion Watch</h2>
-<p>The companion video is the <a href="${DND_GIANTS_VIDEO_URL}" rel="noreferrer noopener">DND giants companion video on YouTube</a>. I use it as a tone companion rather than a replacement for rules text: watch for the way giants are framed as scale, personality, and table spectacle. That is the right lens for building better <strong>dnd giants</strong> encounters.</p>
+<h2>Video: DND Giants Table Tone</h2>
+<p>The linked YouTube follow-up is useful for tone: <a href="${DND_GIANTS_VIDEO_URL}" rel="noreferrer noopener">DND giants on YouTube</a>. I use it for mood and staging rather than as a replacement for rules text; watch how giants are framed through scale, personality, and table spectacle. That lens helps build better <strong>dnd giants</strong> encounters.</p>
 
 ${liteVideoEmbed('aM0s_ZFsNr4', 'DND giants video companion', {
   src: DND_GIANTS_VIDEO_PLACEHOLDER_PATH,
@@ -253,16 +253,16 @@ ${liteVideoEmbed('aM0s_ZFsNr4', 'DND giants video companion', {
 
     <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
       <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">How do you make DND giants feel bigger in combat?</h3>
-      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">Use scale cues, vertical terrain, thrown objects, destructible cover, and objectives beyond damage. A giant should change the room, not just occupy more squares.</p>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">Use scale cues, vertical terrain, thrown objects, destructible cover, and objectives beyond damage. A giant should change the room instead of merely occupying more squares.</p>
     </article>
   </div>
 </section>
 `;
 
 export const dndGiantsArticleHtmlZh = String.raw`
-<p>跑 <strong>dnd giants</strong> 时，真正需要先想清楚的不是设定史，而是：DND 里有哪些巨人、它们在桌上分别怎么用、怎样才能把巨人战斗跑得有压迫感而不是单纯磨血。这篇会先给速查表，再讲遭遇设计、设定用法、VTT Token 和视频补充。</p>
+<p>跑 <strong>dnd giants</strong> 时，先把它们的桌面职责定清楚：它们属于哪一类威胁、会怎样改变战场、能制造什么社会压力，以及 VTT Token 需要传达怎样的尺度感。</p>
 
-<p><strong>一句话结论：</strong><strong>dnd giants</strong> 最好不要当成“放大版人形怪”来跑。它们真正好玩的地方，是投石、触及、巨型场景、社会等级，以及玩家突然意识到“这个地图不是按人类尺寸设计的”。</p>
+<p><strong>一句话结论：</strong><strong>dnd giants</strong> 最好不要当成“放大版人形怪”来跑。好玩的地方在投石、触及、巨型场景、社会等级，以及玩家突然意识到“这个地图不是按人类尺寸设计的”。</p>
 
 <table>
   <thead>
@@ -306,7 +306,7 @@ export const dndGiantsArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>先看表格可以快速选怪；等确定了桌面定位，再往下读设定和遭遇设计，会更容易把巨人放进一场真正有重量的战斗里。</p>
+<p>先看表格可以快速选怪；等确定了桌面定位，再读设定和遭遇设计，会更容易把巨人放进一场有重量的战斗里。</p>
 
 <h2>DND Giants 是什么？</h2>
 <p><strong>DND giants 是《龙与地下城》中的巨型怪物类别，常见类型包括 hill、stone、frost、fire、cloud 和 storm giants。</strong></p>
@@ -316,7 +316,7 @@ export const dndGiantsArticleHtmlZh = String.raw`
 <p>在我的跑团经验里，巨人最忌讳被当成“大号兽人”。那样会很扁。更好用的理解是：<strong>dnd giants</strong> 是会移动的遭遇地形。它们改变掩体、距离、门、桥、天花板、补给和谈判筹码。</p>
 
 <h2>DND Giants 按桌面体验怎么选？</h2>
-<p>选择哪种 <strong>dnd giants</strong>，重点不是只看 CR，而是看你想给玩家什么压力。</p>
+<p>选择哪种 <strong>dnd giants</strong>，别只按 CR 排序；先想清楚你想给玩家什么压力。</p>
 
 <table>
   <thead>
@@ -363,7 +363,7 @@ export const dndGiantsArticleHtmlZh = String.raw`
 <h2>DND Giants 在 5e 里强在哪里？</h2>
 <p><strong>DND giants 的危险来自高伤害、长触及、投石能力，以及足够惩罚错误站位的生命值。</strong></p>
 
-<p>真正的坑，是让它们站在原地和玩家互相平 A。这样巨人会变得很无聊。我更喜欢让巨人持续改变物理问题：砸断楼梯、扔马车、推倒树、越过路障攻击，或者逼远程角色换位置。</p>
+<p>最容易浪费它们的做法，是让它们站在原地和玩家互相平 A。这样巨人会变得很无聊。我更喜欢让巨人持续改变物理问题：砸断楼梯、扔马车、推倒树、越过路障攻击，或者逼远程角色换位置。</p>
 
 <ul>
   <li><strong>触及很重要：</strong>习惯普通近战距离的玩家，会突然误判危险范围。</li>
@@ -391,7 +391,7 @@ export const dndGiantsArticleHtmlZh = String.raw`
 <h3>Hill giants：简单，但不要把遭遇跑得无聊</h3>
 <p>Hill giant 最适合制造直接威胁。它们饥饿、吵闹、破坏力强，玩家一眼就懂。</p>
 
-<p>我更喜欢的开场不是“一只巨人在空地上”。而是一条农场路、受惊牲畜、被砸碎的货车、快塌的谷仓，以及巨人随手抓东西当武器。怪物简单，但场面不单调。</p>
+<p>我更喜欢把开场从“一只巨人在空地上”换成一条农场路、受惊牲畜、被砸碎的货车、快塌的谷仓，以及巨人随手抓东西当武器。怪物简单，但场面不单调。</p>
 
 <h3>Stone giants：一定要用高度、黑暗和投石</h3>
 <p>Stone giant 应该让玩家感觉“这里是它的主场”。洞穴、悬崖、回音大厅和断裂平台都很好用。</p>
@@ -399,7 +399,7 @@ export const dndGiantsArticleHtmlZh = String.raw`
 <p>我跑 stone giant 前会先标出两三个高处投石点。这个准备很小，但会让巨人的远程压迫显得有设计，而不是临场乱扔。</p>
 
 <h3>Frost giants：让掠夺行动有目标</h3>
-<p>Frost giant 最好带着明确目的出现。它们不是冰皮肤伤害包，而是袭击者、战利品收集者和粗暴远征队的核心。</p>
+<p>Frost giant 最好带着明确目的出现。把它们写成袭击者、战利品收集者和粗暴远征队的核心，会比“冰皮肤伤害包”更有桌面味道。</p>
 
 <p>给它们侦察兵、被抓向导、雪橇、冬狼，或者一个正在抢夺的奖品。遭遇马上就有方向。</p>
 
@@ -437,7 +437,7 @@ export const dndGiantsArticleHtmlZh = String.raw`
 <h2>DND Giants 设定：Ordning 是什么？</h2>
 <p><strong>Ordning 是巨人的传统社会等级秩序，会按照地位、力量、工艺、预兆、财富或其他价值来区分巨人。</strong></p>
 
-<p>你不需要在桌上讲一大段巨人政治课。Ordning 真正好用的地方，是给巨人制造竞争、服从、怨恨和阴谋的理由。Hill giant 可能害怕 frost giant；fire giant 可能看不起两者；cloud giant 可能一边微笑一边把所有人当成棋子。</p>
+<p>你不需要在桌上讲一大段巨人政治课。Ordning 最有用的地方，是给巨人制造竞争、服从、怨恨和阴谋的理由。Hill giant 可能害怕 frost giant；fire giant 可能看不起两者；cloud giant 可能一边微笑一边把所有人当成棋子。</p>
 
 <p>如果你要查当下官方资料，可以从 <a href="${DND_GIANTS_2024_RULES_URL}" rel="noreferrer noopener">D&amp;D Beyond 2024 规则入口</a> 开始，再结合你使用的战役书处理具体设定。</p>
 

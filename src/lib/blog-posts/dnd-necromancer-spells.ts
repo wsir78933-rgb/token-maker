@@ -19,9 +19,9 @@ import {
 } from './shared';
 
 export const dndNecromancerSpellsArticleHtml = String.raw`
-<p><strong>dnd necromancer spells</strong> are best judged by table job, not by spooky flavor. This guide gives you the fast spell picks, the Animate Dead math that actually matters, and the minion habits I use so a necromancer adds pressure without turning every combat round into paperwork.</p>
+<p><strong>dnd necromancer spells</strong> are best judged by table job, not by spooky flavor. Start with the fast spell picks, then check the Animate Dead math that actually matters and the minion habits I use so a necromancer adds pressure without turning every combat round into paperwork.</p>
 
-<p>If you only need the short answer, start with the table. If you are building a Necromancy Wizard, Death Cleric, villain caster, or undead-heavy NPC, the later sections explain which spells carry the fantasy and which ones only look good on paper.</p>
+<p>For the short answer, start with the table. Necromancy Wizard, Death Cleric, villain caster, and undead-heavy NPC builds need spells that carry the fantasy without only looking good on paper.</p>
 
 <table>
   <thead>
@@ -82,7 +82,7 @@ export const dndNecromancerSpellsArticleHtml = String.raw`
     loading="lazy"
     decoding="async"
   />
-  <figcaption>The best necromancer spell list is not just a list of skull icons. It is an action economy plan: damage, control, minions, survival, and table speed.</figcaption>
+  <figcaption>The best necromancer spell list is more than a row of skull icons. It is an action economy plan: damage, control, minions, survival, and table speed.</figcaption>
 </figure>
 
 <h2 id="all-spells">All Common DND Necromancy Spells by Level</h2>
@@ -223,7 +223,7 @@ export const dndNecromancerSpellsArticleHtml = String.raw`
   <li><strong>Upcasting:</strong> higher slots animate or reassert control over two extra undead per slot level above 3.</li>
 </ul>
 
-<p>The companion video is useful because it frames <em>Animate Dead</em> as a spell about teammates, not just a creepy animation button. That framing only works at the table if you have a clear procedure before the army appears.</p>
+<p>The video is useful because it frames <em>Animate Dead</em> as a spell about teammates rather than a creepy animation button. That framing only works at the table if you have a clear procedure before the army appears.</p>
 
 <h2 id="skeletons-zombies">Are Skeletons or Zombies Better for Animate Dead?</h2>
 <p><strong>Skeletons are usually better for damage and ranged pressure, while zombies are better as slow blockers that can absorb ugly hits.</strong> The right pick depends on what job your undead servant has this session.</p>
@@ -367,9 +367,9 @@ ${liteVideoEmbed('wYBEbNbirkA', 'D&D 5E Animate Dead', {
 `;
 
 export const dndNecromancerSpellsArticleHtmlZh = String.raw`
-<p><strong>dnd necromancer spells</strong> 真正该看的不是“够不够邪门”，而是它在桌上负责什么工作。本文先给你死灵法术速查表，再讲 Animate Dead 的 24 小时控制循环、骷髅和僵尸怎么选，以及我自己跑团时用来避免拖慢战斗的亡灵小队流程。</p>
+<p><strong>dnd necromancer spells</strong> 先别只看“够不够邪门”，更该看它在桌上负责什么工作。先给你死灵法术速查表，再讲 Animate Dead 的 24 小时控制循环、骷髅和僵尸怎么选，以及我自己跑团时用来避免拖慢战斗的亡灵小队流程。</p>
 
-<p>你只想查答案，看第一张表就够；如果你正在做 Necromancy Wizard、Death Cleric、死灵反派或亡灵 NPC，后面会讲哪些法术真的撑起玩法，哪些只是看起来很有味道。</p>
+<p>你只想查答案，看第一张表就够；Necromancy Wizard、Death Cleric、死灵反派或亡灵 NPC 更需要分清哪些法术真的撑得起玩法，哪些只是看起来很有味道。</p>
 
 <table>
   <thead>
@@ -430,11 +430,11 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
     loading="lazy"
     decoding="async"
   />
-  <figcaption>好的死灵法术清单不是一排骷髅图标，而是一套动作经济计划：伤害、控制、亡灵、自保和桌面效率。</figcaption>
+  <figcaption>好的死灵法术清单要能撑起一套动作经济计划：伤害、控制、亡灵、自保和桌面效率，不能只是一排骷髅图标。</figcaption>
 </figure>
 
 <h2 id="all-spells">常见 DND Necromancy Spells 按环级清单</h2>
-<p><strong>这是很多人搜索 dnd necromancer spells 时真正想先看到的内容：把常见 Necromancy 学派法术按环级放在一张表里。</strong>不同战役、职业法术表和扩展书可用性会不一样，所以先把它当成选法术前的检查清单，再和 DM 确认来源。</p>
+<p><strong>很多人搜索 dnd necromancer spells 时，先想看到的就是这张按环级整理的 Necromancy 学派法术表。</strong>不同战役、职业法术表和扩展书可用性会不一样，所以先把它当成选法术前的检查清单，再和 DM 确认来源。</p>
 
 <table>
   <thead>
@@ -530,7 +530,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
     <tr>
       <td>3 环</td>
       <td><strong>Animate Dead</strong>、Bestow Curse、Speak with Dead、Vampiric Touch</td>
-      <td>死灵玩法从这里真正启动。Animate Dead 是核心；Speak with Dead 是调查工具。</td>
+      <td>死灵玩法从这里开始成型。Animate Dead 是核心；Speak with Dead 是调查工具。</td>
     </tr>
     <tr>
       <td>4 环</td>
@@ -545,7 +545,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
     <tr>
       <td>6 环</td>
       <td><strong>Create Undead</strong>、Circle of Death、Eyebite、Magic Jar</td>
-      <td>Create Undead 是经典升级；但如果 DM 允许，Magic Jar 才是真正会改变战役的法术。</td>
+      <td>Create Undead 是经典升级；但如果 DM 允许，Magic Jar 才是会改写战役的法术。</td>
     </tr>
     <tr>
       <td>7-9 环</td>
@@ -560,7 +560,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
 <h2 id="animate-dead">Animate Dead 对 DND 死灵法师到底怎么运作？</h2>
 <p><strong>Animate Dead 是 3 环 Necromancy 法术，可以把 Medium 或 Small 的 humanoid 尸体变成 zombie，或把骨堆变成 skeleton，并让你控制它 24 小时。</strong>这是每个死灵玩家在追逐更花哨法术之前必须吃透的核心。</p>
 
-<p>官方文本可以看 <a href="${DND_ANIMATE_DEAD_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules</a> 和 <a href="${DND_ANIMATE_DEAD_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules</a>。两个版本在实战关键点上接近，所以大多数桌真正关心的是这些问题：</p>
+<p>官方文本可以看 <a href="${DND_ANIMATE_DEAD_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules</a> 和 <a href="${DND_ANIMATE_DEAD_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules</a>。两个版本在实战关键点上接近，所以大多数桌最关心的是这些问题：</p>
 
 <ul>
   <li><strong>施法时间：</strong>1 分钟，所以它不是战斗中临时救场按钮。</li>
@@ -615,7 +615,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
     <tr>
       <td>1-4 级</td>
       <td>False Life、Chill Touch、Mage Armor、Shield、Web</td>
-      <td>你还不是真正的亡灵指挥官。先活下来、控住空间，并保留一点死亡风味。</td>
+      <td>你还算不上亡灵指挥官。先活下来、控住空间，并保留一点死亡风味。</td>
     </tr>
     <tr>
       <td>5-8 级</td>
@@ -625,7 +625,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
     <tr>
       <td>9-12 级</td>
       <td>Danse Macabre、Enervation、Wall of Force、Create Undead</td>
-      <td>可以加入更强亡灵选项，但别丢掉真正保护队伍的控场工具。</td>
+      <td>可以加入更强亡灵选项，但别丢掉最能保护队伍的控场工具。</td>
     </tr>
     <tr>
       <td>13 级以上</td>
@@ -690,7 +690,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
 
     <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">
       <h3 class="text-[1.15rem] font-medium text-stone-50" style="margin-top: 0;">Animate Dead 需要 Concentration 吗？</h3>
-      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">不需要。Animate Dead 不吃 Concentration。真正要管理的是 24 小时控制时限，你需要在控制结束前重施法来维持命令权。</p>
+      <p class="mt-3 max-w-3xl text-[0.95rem] leading-8 text-stone-300" style="margin-bottom: 0;">不需要。Animate Dead 不吃 Concentration。要管理的是 24 小时控制时限，你需要在控制结束前重施法来维持命令权。</p>
     </article>
 
     <article class="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6">

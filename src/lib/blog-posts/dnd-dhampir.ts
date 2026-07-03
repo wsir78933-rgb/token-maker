@@ -17,7 +17,7 @@ import {
 } from './shared';
 
 export const dndDhampirArticleHtml = String.raw`
-<p>Before you build a <strong>dnd dhampir</strong>, the short answer matters first: is the lineage actually good, how does <em>Vampiric Bite</em> work, and which classes make it feel strong instead of gimmicky? This guide answers those three questions fast, then goes deeper. In our campaigns, Dhampir performs best as a mobile predator chassis, not as a fake-vampire damage meme.</p>
+<p>Before you build a <strong>dnd dhampir</strong>, the short answer matters first: is the lineage actually good, how does <em>Vampiric Bite</em> work, and which classes make it feel strong instead of gimmicky? I keep those three answers up front, then go deeper. In our campaigns, Dhampir performs best as a mobile predator chassis rather than a fake-vampire damage meme.</p>
 
 <p>If you only need the practical answer, start with the quick table below. The sections after it are there to help you decide three things fast: whether <strong>dnd dhampir</strong> fits your class, whether your campaign gives it enough vertical space to matter, and whether you actually want the hunger-driven roleplay that comes with it.</p>
 
@@ -55,7 +55,7 @@ export const dndDhampirArticleHtml = String.raw`
 <h2>What Is a DND Dhampir?</h2>
 <p>A <strong>dnd dhampir</strong> is a vampire-marked lineage in D&amp;D 5e that gives you eerie movement, dark fantasy flavor, and a built-in survival tool without turning your character into a full monster.</p>
 
-<p>Mechanically, Dhampir matters because it is a <strong>lineage</strong>, not just a static race pick. That means it carries the gothic identity of a half-vampiric adventurer while still fitting ordinary party play. If you want the official framing, <a href="${DND_DHAMPIR_LINEAGE_URL}" rel="noreferrer noopener">D&amp;D Beyond&rsquo;s lineage overview</a> explains how Dhampir sits alongside Hexblood and Reborn, while <a href="${DHAMPIR_WIKIPEDIA_URL}" rel="noreferrer noopener">Wikipedia&rsquo;s dhampir entry</a> is useful if you want the older folklore roots behind the word itself.</p>
+<p>Mechanically, Dhampir matters because it is a <strong>lineage</strong> with more flexibility than a static race pick. That means it carries the gothic identity of a half-vampiric adventurer while still fitting ordinary party play. If you want the official framing, <a href="${DND_DHAMPIR_LINEAGE_URL}" rel="noreferrer noopener">D&amp;D Beyond&rsquo;s lineage overview</a> explains how Dhampir sits alongside Hexblood and Reborn, while <a href="${DHAMPIR_WIKIPEDIA_URL}" rel="noreferrer noopener">Wikipedia&rsquo;s dhampir entry</a> is useful if you want the older folklore roots behind the word itself.</p>
 
 <ul>
   <li><strong>Creature type:</strong> Humanoid, which matters because you are not treated as Undead by default.</li>
@@ -237,15 +237,15 @@ export const dndDhampirArticleHtml = String.raw`
 </section>
 
 <h2>Extra D&amp;D Watch</h2>
-<p>If you want one more light D&amp;D video after this guide, the one below works well as a casual follow-up. It leans more toward class vibe and table energy than rules detail: <a href="${DND_DHAMPIR_VIDEO_URL}" rel="noreferrer noopener">How DM&rsquo;s react to what Class you play in Dungeons and Dragons</a>.</p>
+<p>Use the linked video for class vibe and table energy, especially when deciding how a Dhampir changes party tone beyond the rules text: <a href="${DND_DHAMPIR_VIDEO_URL}" rel="noreferrer noopener">How DM&rsquo;s react to what Class you play in Dungeons and Dragons</a>.</p>
 
 ${liteVideoEmbed('ZXcwHPW3GR8', "How DM's react to what Class you play in Dungeons and Dragons")}
 `;
 
 export const dndDhampirArticleHtmlZh = String.raw`
-<p>选 <strong>dnd dhampir</strong> 前，最该先弄清楚三件事：这个谱系到底强不强，<em>Vampiric Bite</em> 到底怎么用，什么职业最适合它。本文会先把速查结论摆在前面，再展开讲机制和构筑。按我们跑团的经验，Dhampir 最强的从来不是“吸血鬼噱头”，而是它把机动、残局续航和角色张力绑到了一起。</p>
+<p>选 <strong>dnd dhampir</strong> 前，最该先弄清楚三件事：这个谱系到底强不强，<em>Vampiric Bite</em> 到底怎么用，什么职业最适合它。这里先把速查结论摆在前面，再展开讲机制和构筑。按我们跑团的经验，Dhampir 最强的点不在“吸血鬼噱头”；它把机动、残局续航和角色张力绑到了一起。</p>
 
-<p>如果你只想先拿到实用结论，直接看下面的速查表就够了。后面的内容再分别解决三个问题：<strong>dnd dhampir</strong> 适不适合你的职业、它在什么样的地图和战役里最值、以及这个角色该怎么演才有张力又不惹人烦。</p>
+<p>如果你只想先拿到实用结论，直接看速查表就够了。后面的内容再分别解决三个问题：<strong>dnd dhampir</strong> 适不适合你的职业、它在什么样的地图和战役里最值、以及这个角色该怎么演才有张力又不惹人烦。</p>
 
 <table>
   <thead>
@@ -279,9 +279,9 @@ export const dndDhampirArticleHtmlZh = String.raw`
 </table>
 
 <h2>DND Dhampir 是什么？</h2>
-<p><strong>dnd dhampir</strong> 是 D&amp;D 5e 里一个带吸血鬼烙印的谱系，它给你的不是完整怪物化，而是一套更像“半步越线”的角色体验：诡异、灵活、能活、而且很容易写出人物冲突。</p>
+<p><strong>dnd dhampir</strong> 是 D&amp;D 5e 里一个带吸血鬼烙印的谱系，它不会把你完整怪物化，给你的是一套更像“半步越线”的角色体验：诡异、灵活、能活、而且很容易写出人物冲突。</p>
 
-<p>机制上，Dhampir 的价值在于它属于 <strong>lineage</strong>，不只是传统静态种族。也就是说，它既保留了半吸血鬼身份的强烈叙事感，又不会把角色推到“不方便正常组队”的位置。想看官方解释，可以直接看 <a href="${DND_DHAMPIR_LINEAGE_URL}" rel="noreferrer noopener">D&amp;D Beyond 对 lineage 的介绍</a>；如果你想追一下这个词本身的民俗来源，<a href="${DHAMPIR_WIKIPEDIA_URL}" rel="noreferrer noopener">Wikipedia 的 dhampir 条目</a> 也值得顺手点开。</p>
+<p>机制上，Dhampir 的价值在于它属于 <strong>lineage</strong>，比传统静态种族更有弹性。也就是说，它既保留了半吸血鬼身份的强烈叙事感，又不会把角色推到“不方便正常组队”的位置。想看官方解释，可以直接看 <a href="${DND_DHAMPIR_LINEAGE_URL}" rel="noreferrer noopener">D&amp;D Beyond 对 lineage 的介绍</a>；如果你想追一下这个词本身的民俗来源，<a href="${DHAMPIR_WIKIPEDIA_URL}" rel="noreferrer noopener">Wikipedia 的 dhampir 条目</a> 也值得顺手点开。</p>
 
 <ul>
   <li><strong>生物类型：</strong>Humanoid，不是默认的 Undead。</li>
@@ -301,11 +301,11 @@ export const dndDhampirArticleHtmlZh = String.raw`
     loading="lazy"
     decoding="async"
   />
-  <figcaption>按我的实测，Dhampir 真正离谱的地方不是咬人，而是它把天花板也变成了可用地形。</figcaption>
+  <figcaption>按我的实测，Dhampir 最离谱的地方是它把天花板也变成了可用地形。</figcaption>
 </figure>
 
 <h2>DND Dhampir 在 5e 里强吗？</h2>
-<p>强。<strong>dnd dhampir</strong> 在 5e 里是一个很实用的谱系，前提是你看重机动、生存和角色身份，而不是单纯想拿一手爆炸输出。</p>
+<p>强。<strong>dnd dhampir</strong> 在 5e 里是一个很实用的谱系，前提是你看重机动、生存和角色身份，而非单纯想拿一手爆炸输出。</p>
 
 <p>它不是“闭着眼都强”的万能答案。它最吃香的环境，是地牢、追逐、屋顶、山壁、洞穴、伏击和社交压迫感都很多的战役。如果地图长期是平地对砍，那它的一部分上限会被浪费掉。</p>
 
@@ -317,9 +317,9 @@ export const dndDhampirArticleHtmlZh = String.raw`
 </ul>
 
 <h2>Vampiric Bite 到底怎么用？</h2>
-<p><strong>Vampiric Bite</strong> 是一个基于 Constitution 的自然武器，它真正的价值在于把一次命中的咬击，转成 <strong>回血</strong> 或 <strong>下一次关键检定/攻击的加成</strong>。</p>
+<p><strong>Vampiric Bite</strong> 是一个基于 Constitution 的自然武器，它的主要价值在于把一次命中的咬击，转成 <strong>回血</strong> 或 <strong>下一次关键检定/攻击的加成</strong>。</p>
 
-<p>很多构筑文章会把这条讲得很玄，结果反而误导人。说白了，咬击最适合拿来做“转场工具”而不是“回合主菜”。你在残血、攀墙、缴械、卡位、或者准备下一次关键动作时，它才会突然变得很赚。</p>
+<p>很多构筑文章会把这条讲得很玄，结果反而误导人。说白了，咬击最适合拿来做“转场工具”，不要把它当成“回合主菜”。你在残血、攀墙、缴械、卡位、或者准备下一次关键动作时，它才会突然变得很赚。</p>
 
 <table>
   <thead>
@@ -358,7 +358,7 @@ export const dndDhampirArticleHtmlZh = String.raw`
     loading="lazy"
     decoding="async"
   />
-  <figcaption>真正要想的是：这一口要不要换成立刻回血，还是拿去垫下一次更重要的出手。</figcaption>
+  <figcaption>关键选择是：这一口要不要换成立刻回血，还是拿去垫下一次更重要的出手。</figcaption>
 </figure>
 
 <h2>最适合 DND Dhampir 的属性与职业</h2>
@@ -463,7 +463,7 @@ export const dndDhampirArticleHtmlZh = String.raw`
 </section>
 
 <h2>延伸观看</h2>
-<p>如果你看完这篇，还想顺手再看一条更轻松一点的 D&amp;D 视频，下面这条可以当作补充。它更偏职业气质和桌面氛围，适合看完正文后放松一下继续看：<a href="${DND_DHAMPIR_VIDEO_URL}" rel="noreferrer noopener">How DM&rsquo;s react to what Class you play in Dungeons and Dragons</a>。</p>
+<p>如果你看完这篇，还想顺手再看一条更轻松一点的 D&amp;D 视频，这条可以当作补充。它更偏职业气质和桌面氛围，适合看完正文后放松一下继续看：<a href="${DND_DHAMPIR_VIDEO_URL}" rel="noreferrer noopener">How DM&rsquo;s react to what Class you play in Dungeons and Dragons</a>。</p>
 
 ${liteVideoEmbed('ZXcwHPW3GR8', "How DM's react to what Class you play in Dungeons and Dragons")}
 `;

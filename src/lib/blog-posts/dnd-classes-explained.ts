@@ -11,14 +11,14 @@ import {
 } from './shared';
 
 export const dndClassesArticleHtml = String.raw`
-<p>If you are new to tabletop RPGs, learning the major <strong>DND classes</strong> is one of the fastest ways to understand how Dungeons &amp; Dragons actually feels at the table. Different class choices change your combat role, your decision-making speed, the kind of fantasy you bring to the party, and even how comfortable your first few sessions feel.</p>
+<p>New to tabletop RPGs? The major <strong>DND classes</strong> are the quickest clue to how Dungeons &amp; Dragons will feel once dice hit the table. Different class choices change your combat role, your decision-making speed, the kind of fantasy you bring to the party, and even how comfortable your first few sessions feel.</p>
 
-<p>This guide breaks down the main <strong>DND classes</strong> in simple language. Instead of repeating rulebook text, it focuses on what the most popular options feel like in real play, which ones are easiest for new players, and how to match the right class to the fantasy you already have in mind.</p>
+<p>The main <strong>DND classes</strong> become much easier to compare once you stop reading them as rulebook entries and start asking how they feel in play. Some give clean turns, some ask you to manage spells, and some are best when you already know the fantasy you want.</p>
 
 <h2>What Are DND Classes?</h2>
-<p>In Dungeons &amp; Dragons, your class defines the way your character interacts with the game. The reason new players spend so much time comparing <strong>DND classes</strong> is simple: your class shapes how you attack, how much magic you manage, how complex your turns feel, and what role you naturally fill inside a group.</p>
+<p>In Dungeons &amp; Dragons, your class defines the way your character interacts with the game. New players spend so much time comparing <strong>DND classes</strong> because the choice shapes how you attack, how much magic you manage, how complex your turns feel, and what role you naturally fill inside a group.</p>
 
-<p>In practical terms, <strong>DND classes</strong> are the core gameplay identities in D&amp;D. A Barbarian solves problems very differently from a Wizard. A Rogue approaches danger differently from a Cleric. A Bard creates a different tone at the table than a Fighter. That is why choosing between class options matters so much for beginners.</p>
+<p><strong>DND classes</strong> are the core gameplay identities in D&amp;D. A Barbarian solves problems very differently from a Wizard. A Rogue approaches danger differently from a Cleric. A Bard creates a different tone at the table than a Fighter. That gap is why the class choice matters so much for beginners.</p>
 
 <ul>
   <li><strong>Combat identity:</strong> some classes want to stand in front, while others thrive from the back line.</li>
@@ -39,7 +39,7 @@ export const dndClassesArticleHtml = String.raw`
     decoding="async"
   />
 </figure>
-<p>If you want the short version before reading the full breakdown, the most beginner-friendly <strong>DND classes</strong> are usually Fighter, Barbarian, Rogue, and sometimes Paladin. These options are popular because they teach core D&amp;D habits without forcing you to juggle the largest spell lists in the game.</p>
+<p>For a first character, the most beginner-friendly <strong>DND classes</strong> are usually Fighter, Barbarian, Rogue, and sometimes Paladin. These options teach core D&amp;D habits without forcing you to juggle the largest spell lists in the game.</p>
 
 <ul>
   <li><strong>Barbarian:</strong> simple power, high durability, and very direct turns.</li>
@@ -50,7 +50,7 @@ export const dndClassesArticleHtml = String.raw`
 </ul>
 
 <h2>DND Classes Explained from a Player Perspective</h2>
-<p>Most lists of <strong>DND classes</strong> stop at mechanics. For beginners, that is usually not enough. The more useful question is what each option actually feels like once initiative starts, the party gets in trouble, and you need to make decisions under pressure.</p>
+<p>Mechanics matter, but beginners usually need a more practical question: what does each class feel like once initiative starts, the party gets in trouble, and you have to make decisions under pressure?</p>
 
 <h3>Simple martial DND classes for beginners</h3>
 <figure class="inline-figure inline-figure--square-crop">
@@ -64,9 +64,9 @@ export const dndClassesArticleHtml = String.raw`
     decoding="async"
   />
 </figure>
-<p>The easiest <strong>DND classes</strong> for new players are usually martial classes that give clear turns, solid durability, and very little spell management. If you want beginner-friendly options that make immediate sense, start here.</p>
+<p>The easiest <strong>DND classes</strong> for new players are usually martial classes that give clear turns, solid durability, and very little spell management. They let you learn positioning, attack rolls, and teamwork before a spell list starts asking for homework.</p>
 
-<p><strong>Barbarian</strong> feels like raw commitment. You get angry, move forward, and hit hard. Among all <strong>DND classes</strong>, Barbarian is one of the best choices for players who want simple combat decisions, big weapon hits, and a clear power fantasy from round one. The tradeoff is that Barbarian can feel more limited outside combat if you love utility tricks and flexible problem-solving.</p>
+<p><strong>Barbarian</strong> feels like raw commitment. You get angry, move forward, and hit hard. Among all <strong>DND classes</strong>, Barbarian suits players who want simple combat decisions, big weapon hits, and a clear power fantasy from round one. The tradeoff is that Barbarian can feel more limited outside combat if you love utility tricks and flexible problem-solving.</p>
 
 <p><strong>Fighter</strong> is often the safest recommendation in beginner conversations about <strong>DND classes</strong>. Fighter feels reliable in almost every session because your character always has something useful to do. If you want weapon flexibility, clean positioning lessons, and room to keep learning the rules over time, Fighter remains one of the most dependable class choices in the game.</p>
 
@@ -75,20 +75,20 @@ export const dndClassesArticleHtml = String.raw`
 <p><strong>Ranger</strong> appeals to players who picture a hunter, tracker, or fantasy archer. Compared with other <strong>DND classes</strong>, Ranger gives you a clean blend of ranged combat, exploration themes, and light magic. If your ideal hero is a monster hunter or survival expert, Ranger usually lands that fantasy without feeling too complicated.</p>
 
 <h3>Magic-focused DND classes in Dungeons &amp; Dragons</h3>
-<p>Spellcasting creates some of the most memorable moments in the game, but magical <strong>DND classes</strong> also ask for more reading, more planning, and better resource awareness. These spell-focused options are excellent when you want flexibility, but they are not equally friendly to first-time players.</p>
+<p>Spellcasting creates the moments people retell after the session, but magical <strong>DND classes</strong> also ask for more reading, more planning, and better resource awareness. These spell-focused options are excellent when you want flexibility, but they are not equally friendly to first-time players.</p>
 
 <p><strong>Wizard</strong> is the classic answer for players who want maximum options. Out of all <strong>DND classes</strong>, Wizard offers some of the broadest problem-solving power because a prepared spell list can reshape entire encounters. The downside is that Wizard can overwhelm new players who do not enjoy comparing many spells and planning ahead.</p>
 
 <p><strong>Sorcerer</strong> offers a more instinctive magical identity. When players compare magical <strong>DND classes</strong>, Sorcerer often feels more approachable than Wizard because the class fantasy is immediate and the spell list usually feels easier to own. If you want strong magic without the heaviest preparation burden, Sorcerer is a strong option.</p>
 
-<p><strong>Warlock</strong> stands out because it mixes mechanics with built-in story tension. Among roleplay-rich <strong>DND classes</strong>, Warlock is one of the best if you want mysterious power, strong flavor, and a class choice that instantly says something about your backstory. It is especially effective for players who care about story hooks as much as damage output.</p>
+<p><strong>Warlock</strong> stands out because it mixes mechanics with built-in story tension. Among roleplay-rich <strong>DND classes</strong>, Warlock gives you mysterious power, strong flavor, and a class choice that instantly says something about your backstory. It is especially effective for players who care about story hooks as much as damage output.</p>
 
 <p><strong>Cleric</strong> is often underestimated by beginners who assume support means passive play. In reality, Cleric is one of the most consistently useful <strong>DND classes</strong> because it can heal, protect, fight, and solve problems with divine magic. If you want to help the party without feeling sidelined, Cleric is a smart choice.</p>
 
-<p><strong>Druid</strong> is one of the most flexible <strong>DND classes</strong>, but it can also demand more effort to learn. Wild Shape, control spells, and utility tools give Druid tremendous range, yet that same flexibility can feel heavy if you are still learning the rhythm of the game. For players who love unusual solutions, Druid is fantastic; if you choose it, read the <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells guide</a> before your first long campaign.</p>
+<p><strong>Druid</strong> has a huge tool belt, but it can also demand more effort to learn. Wild Shape, control spells, and utility tools give Druid tremendous range, yet that same flexibility can feel heavy if you are still learning the rhythm of the game. For players who love unusual solutions, Druid is fantastic; if you choose it, read the <a href="${EN_DND_DRUID_SPELLS_PATH}">DND druid spells guide</a> before your first long campaign.</p>
 
 <h3>Roleplay-heavy and identity-driven DND classes</h3>
-<p>Some <strong>DND classes</strong> are easy to connect with because the fantasy is emotionally clear from the start. If you want options with strong personality, values, or performance energy, these are usually the first ones people fall in love with.</p>
+<p>Some <strong>DND classes</strong> click because the fantasy is clear before you read many rules. Paladin, Bard, Warlock, and Monk tend to work that way: you can picture the attitude first, then learn the mechanics around it.</p>
 
 <p><strong>Paladin</strong> feels powerful, heroic, and purpose-driven. Compared with other melee-focused <strong>DND classes</strong>, Paladin gives you a great balance of durability, strong hits, and a little magic without the full complexity of a dedicated caster. It is also one of the easiest classes to roleplay because vows, ideals, and duty naturally create character direction.</p>
 
@@ -97,7 +97,7 @@ export const dndClassesArticleHtml = String.raw`
 <p><strong>Monk</strong> is built around mobility, rhythm, and style. Among fast-moving <strong>DND classes</strong>, Monk is perfect for players who want to cross the battlefield, reposition constantly, and feel physically expressive in combat. It is fun and distinctive, though sometimes a little less intuitive for total beginners than Fighter or Barbarian.</p>
 
 <h2>Which DND Classes Are Best for Beginners?</h2>
-<p>If you want the practical answer, the most beginner-friendly <strong>DND classes</strong> are usually Fighter, Barbarian, Rogue, and Paladin. These classes work so well for first characters because they give you clear jobs, understandable turns, and enough power to feel effective without drowning you in spell text.</p>
+<p>For a first character, the safest beginner-friendly <strong>DND classes</strong> are usually Fighter, Barbarian, Rogue, and Paladin. These classes work so well because they give you clear jobs, understandable turns, and enough power to feel effective without drowning you in spell text.</p>
 
 <ul>
   <li><strong>Fighter:</strong> the best all-around starting point if you feel unsure.</li>
@@ -109,7 +109,7 @@ export const dndClassesArticleHtml = String.raw`
 <p>The harder beginner options among <strong>DND classes</strong> are usually Wizard, Druid, and sometimes Bard. These classes are excellent, but they shine most when you already enjoy reading abilities carefully and managing more tools at once.</p>
 
 <h2>How to Choose Between DND Classes</h2>
-<p>The best way to compare <strong>DND classes</strong> is not to ask which one is strongest in theory. The better question is which of these <strong>DND classes</strong> matches the way you want your turns to feel. If you choose from that angle, your first character is much more likely to stay fun after the novelty wears off.</p>
+<p>When you compare <strong>DND classes</strong>, raw theory only gets you so far. Pick the class that matches how you want your turns to feel, and your first character is much more likely to stay fun after the novelty wears off.</p>
 
 <ul>
   <li><strong>If you want simple turns:</strong> start with Barbarian, Fighter, or Rogue.</li>
@@ -123,7 +123,7 @@ export const dndClassesArticleHtml = String.raw`
 
 <h2>FAQ About DND Classes</h2>
 <h3>What are DND classes in simple terms?</h3>
-<p><strong>DND classes</strong> are the gameplay roles that shape how your character fights, what powers you use, and how your turns feel. The easiest way to understand <strong>DND classes</strong> is to think of them as the main playstyles of D&amp;D.</p>
+<p><strong>DND classes</strong> are the gameplay roles that shape how your character fights, what powers you use, and how your turns feel. Think of them as the main playstyles of D&amp;D.</p>
 
 <h3>Which DND classes are easiest for beginners?</h3>
 <p>The easiest <strong>DND classes</strong> for beginners are usually Fighter, Barbarian, Rogue, and Paladin. These <strong>DND classes</strong> give you strong early value without the heaviest spell-management burden.</p>
@@ -138,23 +138,23 @@ export const dndClassesArticleHtml = String.raw`
 <p>If you feel stuck between several <strong>DND classes</strong>, choose the one whose fantasy feels immediately exciting. When two <strong>DND classes</strong> seem equally fun, start with the simpler one so your first campaign teaches the game without overwhelming you.</p>
 
 <h2>Final Thoughts on DND Classes</h2>
-<p>The best <strong>DND classes</strong> are not always the strongest on paper. The best <strong>DND classes</strong> are the ones that make you excited to take your turn, talk in character, and come back next week. If you are still undecided after comparing all these <strong>DND classes</strong>, start with Fighter or Rogue, learn the rhythm of the game, and let your next character become more complex once you know what parts of D&amp;D you enjoy most.</p>
+<p>Paper strength only matters if you still enjoy the character after three sessions. The best <strong>DND classes</strong> make you excited to take your turn, talk in character, and come back next week. If you are still undecided after comparing all these <strong>DND classes</strong>, start with Fighter or Rogue, learn the rhythm of the game, and let your next character become more complex once you know what parts of D&amp;D you enjoy most.</p>
 
 <h2>Video Overview of DND Classes</h2>
-<p>If you want a fast visual recap after reading, this video works well as a companion summary of the main <strong>DND classes</strong> and the playstyles they support.</p>
+<p>This video is a quick way to hear the main <strong>DND classes</strong> described by playstyle, which can help if the names still blur together after reading.</p>
 
 ${liteVideoEmbed('K4YtOhYzOfo', 'DND classes overview video')}
 `;
 
 export const dndClassesArticleHtmlZh = String.raw`
-<p>如果你刚接触桌面角色扮演游戏，那么先搞懂 <strong>DND 职业</strong> 往往是理解《龙与地下城》玩法最快的一步。不同的职业选择会直接影响你的战斗定位、每回合决策压力、角色幻想风格，甚至影响你第一次跑团时会不会觉得轻松顺手。</p>
+<p>刚接触桌面角色扮演游戏时，先搞懂 <strong>DND 职业</strong>，通常比硬啃一堆规则更快进入状态。不同的职业选择会直接影响你的战斗定位、每回合决策压力、角色幻想风格，甚至影响你第一次跑团时会不会觉得轻松顺手。</p>
 
-<p>这篇指南会用尽量直白的语言解释主要的 <strong>DND 职业</strong>。它不会只是重复规则书上的描述，而是更关注一件对新手更有帮助的事：这些职业在真实游戏里玩起来到底是什么感觉，哪些更适合第一次开卡，哪些更适合已经知道自己想玩什么的玩家。</p>
+<p>主要的 <strong>DND 职业</strong> 放在规则书里看会有点像一堆名词，一到桌上差异就很明显：有的回合干净，有的要管法术，有的更适合已经知道自己想演什么的玩家。</p>
 
 <h2>什么是 DND 职业？</h2>
-<p>在《龙与地下城》里，职业决定了你的角色会如何参与游戏。很多新手会花很久比较不同的 <strong>DND 职业</strong>，原因很简单：职业会影响你怎么攻击、你要不要管理法术、你的回合会不会很复杂，以及你在队伍里自然承担什么位置。</p>
+<p>在《龙与地下城》里，职业决定了你的角色会如何参与游戏。很多新手会花很久比较不同的 <strong>DND 职业</strong>，因为职业会影响你怎么攻击、你要不要管理法术、你的回合会不会很复杂，以及你在队伍里自然承担什么位置。</p>
 
-<p>从更实际的角度看，<strong>DND 职业</strong>就是 D&amp;D 里最核心的玩法身份。野蛮人和法师解决问题的方式完全不同；游荡者与牧师面对危险的处理思路也不一样；吟游诗人带来的桌面气质，又和战士完全不是一回事。所以对新手来说，选职业绝不是小事。</p>
+<p><strong>DND 职业</strong>就是 D&amp;D 里最核心的玩法身份。野蛮人和法师解决问题的方式完全不同；游荡者与牧师面对危险的处理思路也不一样；吟游诗人带来的桌面气质，又和战士完全不是一回事。所以对新手来说，选职业绝不是小事。</p>
 
 <ul>
   <li><strong>战斗定位：</strong>有些职业天然适合站前排，有些则更适合后排输出或支援。</li>
@@ -175,7 +175,7 @@ export const dndClassesArticleHtmlZh = String.raw`
     decoding="async"
   />
 </figure>
-<p>如果你想先看结论，再决定要不要往下细读，那么对新手最友好的 <strong>DND 职业</strong> 通常是战士、野蛮人、游荡者，有时也包括圣武士。它们之所以常被推荐，是因为这些职业能帮你先学会 D&amp;D 的基本节奏，而不会一上来就让你管理庞大的法术系统。</p>
+<p>第一次开卡时，对新手最友好的 <strong>DND 职业</strong> 通常是战士、野蛮人、游荡者，有时也包括圣武士。它们能帮你先学会 D&amp;D 的基本节奏，而不会一上来就让你管理庞大的法术系统。</p>
 
 <ul>
   <li><strong>野蛮人：</strong>直接、耐打、每回合决策很清晰。</li>
@@ -200,11 +200,11 @@ export const dndClassesArticleHtmlZh = String.raw`
     decoding="async"
   />
 </figure>
-<p>对第一次接触 D&amp;D 的玩家来说，最好上手的 <strong>DND 职业</strong> 通常是那些回合清晰、耐久不错、几乎不用管理法术的职业。如果你希望第一次开卡就能迅速进入状态，这一组最值得优先考虑。</p>
+<p>对第一次接触 D&amp;D 的玩家来说，最好上手的 <strong>DND 职业</strong> 通常是那些回合清晰、耐久不错、几乎不用管理法术的职业。这一组能让你先学站位、攻击骰和团队配合，不会一上来就被法术表压住。</p>
 
 <p><strong>野蛮人</strong> 的核心体验非常直接：你愤怒、冲锋、狠狠干下去。放在所有 <strong>DND 职业</strong> 里，野蛮人几乎是最容易立刻理解的职业之一。如果你喜欢简单的战斗决策、重武器打击感和非常明确的力量幻想，它会很适合你。需要注意的是，它在战斗外的花活通常比较少。</p>
 
-<p><strong>战士</strong> 是大多数人推荐给新手时最稳的答案。在许多 <strong>DND 职业</strong> 里，战士最大的优势就是“几乎不会后悔”。它让你专注学习站位、团队配合和战斗节奏，而不用同时承担太重的规则负担。如果你想先把基础打扎实，战士依然是最安全的起点。</p>
+<p><strong>战士</strong> 是大多数人推荐给新手时最稳的答案。在许多 <strong>DND 职业</strong> 里，战士最大的优势就是“几乎不会后悔”。它让你专注学习站位、团队配合和战斗节奏，而不用同时承担太重的规则负担。想先把基础打扎实，战士依然是最安全的起点。</p>
 
 <p><strong>游荡者</strong> 更强调时机感而不是硬换伤害。相比其他 <strong>DND 职业</strong>，它特别适合喜欢聪明操作、潜行侦察和精确打击的玩家。游荡者在战斗内外都常常有存在感，因为你不仅能找破绽输出，还能在探索、调查和潜入环节持续贡献。</p>
 
@@ -224,7 +224,7 @@ export const dndClassesArticleHtmlZh = String.raw`
 <p><strong>德鲁伊</strong> 是最灵活的职业之一，但这份灵活同时也会带来学习成本。在很多 <strong>DND 职业</strong> 中，德鲁伊最适合那些喜欢非常规解法的玩家。变形、控场、自然系工具都很强，但如果你还在熟悉 D&amp;D 的基本节奏，它可能会显得有点忙。决定选德鲁伊后，建议先看 <a href="${ZH_DND_DRUID_SPELLS_PATH}">DND 德鲁伊法术指南</a>，再准备长期战役的法术表。</p>
 
 <h3>角色感最强的 DND 职业</h3>
-<p>有些 <strong>DND 职业</strong> 天然更容易让人投入，因为它们的幻想方向从一开始就很鲜明。如果你在选职业时最看重的是角色气质、信念、戏剧张力或表现空间，那么下面这些职业通常会更有吸引力。</p>
+<p>有些 <strong>DND 职业</strong> 很容易让人投入，因为幻想方向从一开始就很鲜明。圣武士、吟游诗人、契术师和武僧经常是这种类型：先能想象角色气质，再慢慢把机制补上。</p>
 
 <p><strong>圣武士</strong> 是最容易在情感上建立连接的职业之一。和其他前排型 <strong>DND 职业</strong> 相比，圣武士兼顾力量、正义感与一点施法，不会像全施法职业那样规则负担很重，却能提供很强的英雄体验。誓言、信条和使命感，也让它在扮演上天然有抓手。</p>
 
@@ -233,7 +233,7 @@ export const dndClassesArticleHtmlZh = String.raw`
 <p><strong>武僧</strong> 的关键词是移动、节奏与风格。相比其他强调站桩输出的 <strong>DND 职业</strong>，武僧更适合喜欢高机动、高操作感的玩家。它很酷，但对完全没接触过 D&amp;D 的人来说，通常不会像战士或野蛮人那样直观。</p>
 
 <h2>哪些 DND 职业最适合新手？</h2>
-<p>如果你只想要一个最实用的答案，那么最适合新手的 <strong>DND 职业</strong> 通常还是战士、野蛮人、游荡者和圣武士。它们的共同点是：职责清晰、回合好理解、强度足够、规则负担相对可控。</p>
+<p>第一次开卡，最适合新手的 <strong>DND 职业</strong> 通常还是战士、野蛮人、游荡者和圣武士。它们的共同点是：职责清晰、回合好理解、强度足够、规则负担相对可控。</p>
 
 <ul>
   <li><strong>战士：</strong>最稳妥的全能新手选择，如果你完全拿不准，先选它通常不会错。</li>
@@ -274,10 +274,10 @@ export const dndClassesArticleHtmlZh = String.raw`
 <p>如果你在多个 <strong>DND 职业</strong> 之间卡住了，优先选那个让你“最想马上开玩”的职业；如果还是拿不准，就先选更简单的那个。这样你的第一张卡会更容易上手，也更容易建立信心。</p>
 
 <h2>关于 DND 职业的最后建议</h2>
-<p>最好的 <strong>DND 职业</strong> 不一定是纸面强度最高的那个，而是那个能让你每轮都期待自己行动、愿意开口扮演、并且还想继续把这个角色玩下去的职业。如果你看完后还是不确定，不妨先从战士或游荡者开始，等真正熟悉了 D&amp;D 的节奏，再去尝试更复杂、更重资源管理的职业。</p>
+<p>纸面强度最高，不等于你三场之后还想继续玩。最好的 <strong>DND 职业</strong> 是那个能让你每轮都期待自己行动、愿意开口扮演、并且还想继续把这个角色玩下去的职业。如果你看完后还是不确定，不妨先从战士或游荡者开始，等熟悉了 D&amp;D 的节奏，再去尝试更复杂、更重资源管理的职业。</p>
 
 <h2>DND 职业视频总览</h2>
-<p>如果你读完后想再用更直观的方式快速回顾一遍，这段视频很适合作为收尾补充，帮你重新梳理主要 <strong>DND 职业</strong> 的差异和定位。</p>
+<p>这段视频适合用来快速回顾主要 <strong>DND 职业</strong> 的差异和定位，尤其是你还在战士、游荡者、法师和德鲁伊之间摇摆时。</p>
 
 ${liteVideoEmbed('K4YtOhYzOfo', 'DND 职业视频总览')}
 `;
