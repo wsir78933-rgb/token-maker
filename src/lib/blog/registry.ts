@@ -19,6 +19,7 @@ import {
   DND_GHOST_COVER_PATH,
   DND_DWARF_NAMES_COVER_PATH,
   DND_MACE_COVER_PATH,
+  DND_RANGER_SPELLS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -39,6 +40,7 @@ import { dndDaggerArticleHtml, dndDaggerArticleHtmlZh } from '@/lib/blog-posts/d
 import { dndGhostArticleHtml, dndGhostArticleHtmlZh } from '@/lib/blog-posts/dnd-ghost';
 import { dndDwarfNamesArticleHtml, dndDwarfNamesArticleHtmlZh } from '@/lib/blog-posts/dnd-dwarf-names';
 import { dndMaceArticleHtml, dndMaceArticleHtmlZh } from '@/lib/blog-posts/dnd-mace';
+import { dndRangerSpellsArticleHtml, dndRangerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-ranger-spells';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -77,6 +79,7 @@ const DND_DAGGER_UPDATED_AT = '2026-05-09';
 const DND_GHOST_UPDATED_AT = '2026-05-10';
 const DND_DWARF_NAMES_UPDATED_AT = '2026-05-11';
 const DND_MACE_UPDATED_AT = '2026-05-12';
+const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1301,6 +1304,52 @@ const dndMaceArticle: BlogPost = {
   relatedSlugs: ['dnd-dagger', 'dnd-armor-guide', 'dnd-classes-explained', 'dnd-constitution-guide'],
 };
 
+const dndRangerSpellsArticle: BlogPost = {
+  slug: 'dnd-ranger-spells',
+  title: "DND Ranger Spells Guide: Best Picks, Prepared Lists, and Hunter's Mark Choices",
+  seoTitle: 'DND Ranger Spells Guide: Best Picks and Prepared Lists',
+  metaDescription:
+    "Pick dnd ranger spells faster with best spell choices by role, 2014 vs 2024 rules, Hunter's Mark tradeoffs, prepared lists, VTT token tips, and FAQ.",
+  excerpt:
+    "A practical dnd ranger spells guide covering best picks by role, 2014/2024 spellcasting differences, concentration choices, prepared examples, VTT token prep, and Hunter's Mark tradeoffs.",
+  publishedAt: DND_RANGER_SPELLS_UPDATED_AT,
+  updatedAt: DND_RANGER_SPELLS_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_RANGER_SPELLS_COVER_PATH,
+  coverAlt:
+    'dnd ranger spells guide cover showing a hooded Ranger with spell cards, a marked quarry token, dice, and forest magic on a VTT battle map',
+  bodyHtml: dndRangerSpellsArticleHtml,
+  faqItems: [
+    {
+      question: 'What are the best dnd ranger spells?',
+      answer:
+        "The best dnd ranger spells for most tables are Hunter's Mark, Goodberry, Pass without Trace, Spike Growth, Ensnaring Strike, Entangle, Cure Wounds, Summon Beast, Freedom of Movement, and Swift Quiver.",
+    },
+    {
+      question: 'Do Rangers prepare spells in DND?',
+      answer:
+        'It depends on the rules version. The 2014 Ranger knows a limited number of spells, while the 2024 Ranger prepares Ranger spells from the class list.',
+    },
+    {
+      question: "Is Hunter's Mark always the best Ranger spell?",
+      answer:
+        "No. Hunter's Mark is strong against durable targets, but Pass without Trace, Spike Growth, Entangle, Silence, or a summon can be better when the encounter rewards stealth, terrain control, or board presence.",
+    },
+    {
+      question: 'What Ranger spell should I take first?',
+      answer:
+        "For many tables, start with Hunter's Mark or Goodberry, then add a control or exploration spell such as Entangle, Fog Cloud, Longstrider, or Speak with Animals.",
+    },
+    {
+      question: 'What is the best 2nd-level Ranger spell?',
+      answer:
+        'Pass without Trace is often the strongest 2nd-level Ranger spell for party stealth, while Spike Growth is one of the best combat control picks.',
+    },
+  ],
+  relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
+};
+
 const dndGhostArticleZh: BlogPost = {
   slug: 'dnd-ghost',
   title: 'dnd ghost 指南：幽灵机制、附身跑法与遭遇设计',
@@ -1621,11 +1670,57 @@ const dndMaceArticleZh: BlogPost = {
   relatedSlugs: ['dnd-dagger', 'dnd-armor-guide', 'dnd-classes-explained', 'dnd-constitution-guide'],
 };
 
+const dndRangerSpellsArticleZh: BlogPost = {
+  slug: 'dnd-ranger-spells',
+  title: 'DND 游侠法术指南：最佳选择、准备清单与猎人印记取舍',
+  seoTitle: 'DND 游侠法术指南：最佳选择与准备清单',
+  metaDescription:
+    '这篇 DND 游侠法术指南保留 dnd ranger spells 搜索意图，整理按职责选法术、2014/2024 规则差异、猎人印记（Hunter\'s Mark）取舍、准备清单、虚拟桌面素材建议和常见问题。',
+  excerpt:
+    '一篇实用 DND 游侠法术指南，覆盖按职责选法术、2014/2024 施法差异、专注选择、准备示例、虚拟桌面素材准备和猎人印记取舍。',
+  publishedAt: DND_RANGER_SPELLS_UPDATED_AT,
+  updatedAt: DND_RANGER_SPELLS_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '法术指南',
+  coverImage: DND_RANGER_SPELLS_COVER_PATH,
+  coverAlt:
+    'DND 游侠法术指南封面图，兜帽游侠旁边摆着法术卡、被标记猎物素材、骰子和森林虚拟桌面战斗地图',
+  bodyHtml: dndRangerSpellsArticleHtmlZh,
+  faqItems: [
+    {
+      question: '最好的 DND 游侠法术是哪些？',
+      answer:
+        '多数桌上最实用的 DND 游侠法术包括猎人印记、神莓术、无踪潜行、荆棘丛生、诱捕打击、纠缠术、疗伤术、召唤野兽、行动自如和迅捷箭袋。',
+    },
+    {
+      question: 'DND 里游侠是准备法术吗？',
+      answer:
+        '取决于规则版本。2014 版游侠知道有限数量的法术；2024 版游侠从游侠职业法术列表中准备法术。',
+    },
+    {
+      question: '猎人印记永远是最好的游侠法术吗？',
+      answer:
+        '不是。猎人印记适合高血量目标，但如果遭遇更看重潜行、地形控制或战场单位，无踪潜行、荆棘丛生、纠缠术、沉默术或召唤法术可能更强。',
+    },
+    {
+      question: '游侠第一个法术应该拿什么？',
+      answer:
+        '很多桌可以从猎人印记或神莓术开始，再补一个控制或探索法术，例如纠缠术、云雾术、大步奔行或动物交谈。',
+    },
+    {
+      question: '最好的 2 环游侠法术是什么？',
+      answer:
+        '无踪潜行通常是最强的 2 环游侠潜行法术；荆棘丛生则是非常强的战斗控制选择。',
+    },
+  ],
+  relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
+};
+
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

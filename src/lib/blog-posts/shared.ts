@@ -20,6 +20,7 @@ export const DND_DAGGER_COVER_PATH = '/blog/covers/en/dnd-dagger-guide-v2.webp';
 export const DND_GHOST_COVER_PATH = '/blog/covers/en/dnd-ghost-guide.webp';
 export const DND_DWARF_NAMES_COVER_PATH = '/blog/covers/en/dnd-dwarf-names-guide.webp';
 export const DND_MACE_COVER_PATH = '/blog/covers/en/dnd-mace-guide.webp';
+export const DND_RANGER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-ranger-spells-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -60,6 +61,8 @@ export const DND_DWARF_NAMES_TABLE_IMAGE_PATH = '/blog/inline/dnd-dwarf-names/dw
 export const DND_DWARF_NAMES_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-dwarf-names/dwarf-names-video-placeholder.webp';
 export const DND_MACE_COMPARISON_IMAGE_PATH = '/blog/inline/dnd-mace/mace-weapon-comparison.webp';
 export const DND_MACE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mace/mace-video-placeholder.webp';
+export const DND_RANGER_SPELLS_PREP_IMAGE_PATH = '/blog/inline/dnd-ranger-spells/ranger-spell-prep-table.webp';
+export const DND_RANGER_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-ranger-spells/ranger-spells-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -92,6 +95,7 @@ export const NECROMANCY_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Necromanc
 export const DND_NECROMANCER_SPELLS_VIDEO_URL = 'https://www.youtube.com/watch?v=wYBEbNbirkA';
 export const DND_HUNTERS_MARK_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#HuntersMark';
 export const DND_HUNTERS_MARK_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#HuntersMark';
+export const DND_RANGER_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Ranger';
 export const DND_RANGER_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Ranger';
 export const DND_HUNTERS_MARK_VIDEO_URL = 'https://www.youtube.com/watch?v=JwINRY1eD7M';
 export const DND_2024_TIEFLING_URL = 'https://www.dndbeyond.com/species/1751443-tiefling';
@@ -118,6 +122,7 @@ export const DND_MACE_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/ba
 export const DND_MACE_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
 export const DND_MACE_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Mace_(bludgeon)';
 export const DND_MACE_VIDEO_URL = 'https://www.youtube.com/watch?v=gsl83xofiUw';
+export const DND_RANGER_SPELLS_VIDEO_URL = 'https://www.youtube.com/watch?v=P_qzyTFSrTE';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -132,6 +137,8 @@ export const EN_DND_ARMOR_PATH = getLocalizedPath('en', '/blog/dnd-armor-guide')
 export const ZH_DND_ARMOR_PATH = getLocalizedPath('zh', '/blog/dnd-armor-guide');
 export const EN_DND_MAGE_ARMOR_PATH = getLocalizedPath('en', '/blog/dnd-mage-armor');
 export const ZH_DND_MAGE_ARMOR_PATH = getLocalizedPath('zh', '/blog/dnd-mage-armor');
+export const EN_DND_HUNTERS_MARK_PATH = getLocalizedPath('en', '/blog/dnd-hunters-mark');
+export const ZH_DND_HUNTERS_MARK_PATH = getLocalizedPath('zh', '/blog/dnd-hunters-mark');
 export const EN_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-necromancer-spells');
 export const ZH_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-necromancer-spells');
 export const EN_DND_MEPHISTOPHELES_PATH = getLocalizedPath('en', '/blog/mephistopheles-dnd');

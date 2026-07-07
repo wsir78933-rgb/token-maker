@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DND Ranger Spells Guide](https://www.tokenmaker.one/blog/dnd-ranger-spells): Ranger spell picks by role, 2014/2024 rules, prepared lists, Hunter's Mark tradeoffs, VTT token tips, FAQ, and companion video.
 - [DND Classes Explained](https://www.tokenmaker.one/blog/dnd-classes-explained): Guide to choosing DnD classes.
 - [DND Armor Guide](https://www.tokenmaker.one/blog/dnd-armor-guide): Armor types, AC values, and class picks.
 - [DND Counterspell Guide](https://www.tokenmaker.one/blog/dnd-counterspell): Counterspell timing, 2014/2024 rules, and FAQ.
@@ -43,6 +44,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 游侠法术指南：最佳选择、准备清单与猎人印记取舍](https://www.tokenmaker.one/zh/blog/dnd-ranger-spells)
 - [Chinese DND Classes Explained](https://www.tokenmaker.one/zh/blog/dnd-classes-explained)
 - [Chinese DND Armor Guide](https://www.tokenmaker.one/zh/blog/dnd-armor-guide)
 - [Chinese DND Counterspell Guide](https://www.tokenmaker.one/zh/blog/dnd-counterspell)
