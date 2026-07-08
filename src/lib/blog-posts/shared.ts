@@ -20,6 +20,7 @@ export const DND_DAGGER_COVER_PATH = '/blog/covers/en/dnd-dagger-guide-v2.webp';
 export const DND_GHOST_COVER_PATH = '/blog/covers/en/dnd-ghost-guide.webp';
 export const DND_DWARF_NAMES_COVER_PATH = '/blog/covers/en/dnd-dwarf-names-guide.webp';
 export const DND_MACE_COVER_PATH = '/blog/covers/en/dnd-mace-guide.webp';
+export const DND_RAPIER_COVER_PATH = '/blog/covers/en/dnd-rapier-guide.webp';
 export const DND_RANGER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-ranger-spells-guide.webp';
 
 // Inline images
@@ -122,6 +123,12 @@ export const DND_MACE_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/ba
 export const DND_MACE_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
 export const DND_MACE_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Mace_(bludgeon)';
 export const DND_MACE_VIDEO_URL = 'https://www.youtube.com/watch?v=gsl83xofiUw';
+export const DND_RAPIER_2014_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#Weapons';
+export const DND_RAPIER_2024_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
+export const DND_RAPIER_2014_COMBAT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/combat#TwoWeaponFighting';
+export const DND_RAPIER_2014_CLASSES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Rogue';
+export const DND_RAPIER_2024_ROGUE_URL = 'https://www.dndbeyond.com/classes/2190883-rogue';
+export const DND_RAPIER_VIDEO_URL = 'https://www.youtube.com/watch?v=JiNIb5KzNz0';
 export const DND_RANGER_SPELLS_VIDEO_URL = 'https://www.youtube.com/watch?v=P_qzyTFSrTE';
 
 // Localized paths

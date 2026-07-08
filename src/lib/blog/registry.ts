@@ -19,6 +19,7 @@ import {
   DND_GHOST_COVER_PATH,
   DND_DWARF_NAMES_COVER_PATH,
   DND_MACE_COVER_PATH,
+  DND_RAPIER_COVER_PATH,
   DND_RANGER_SPELLS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
@@ -41,6 +42,7 @@ import { dndGhostArticleHtml, dndGhostArticleHtmlZh } from '@/lib/blog-posts/dnd
 import { dndDwarfNamesArticleHtml, dndDwarfNamesArticleHtmlZh } from '@/lib/blog-posts/dnd-dwarf-names';
 import { dndMaceArticleHtml, dndMaceArticleHtmlZh } from '@/lib/blog-posts/dnd-mace';
 import { dndRangerSpellsArticleHtml, dndRangerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-ranger-spells';
+import { rapierDndArticleHtml, rapierDndArticleHtmlZh } from '@/lib/blog-posts/rapier-dnd';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -80,6 +82,7 @@ const DND_GHOST_UPDATED_AT = '2026-05-10';
 const DND_DWARF_NAMES_UPDATED_AT = '2026-05-11';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
+const DND_RAPIER_UPDATED_AT = '2026-07-08';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1350,6 +1353,57 @@ const dndRangerSpellsArticle: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const rapierDndArticle: BlogPost = {
+  slug: 'rapier-dnd',
+  title: 'Rapier DnD Guide: Stats, 2014 vs 2024 Rules, Best Users, and VTT Token Tips',
+  seoTitle: 'Rapier DnD Guide: 5e Stats, Vex, Best Users, and VTT Tips',
+  metaDescription:
+    'Check rapier DnD stats, 2014 vs 2024 rules, Finesse, Vex, Sneak Attack fit, dual-wielding limits, FAQ, and VTT token tips.',
+  excerpt:
+    'A table-ready rapier DnD guide for 1d8 Finesse stats, 2014/2024 Vex rules, Sneak Attack, dual-wielding mistakes, and VTT token tips.',
+  publishedAt: DND_RAPIER_UPDATED_AT,
+  updatedAt: DND_RAPIER_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Equipment Guide',
+  coverImage: DND_RAPIER_COVER_PATH,
+  coverAlt:
+    'rapier dnd guide cover showing a duelist token, rapier, dice, character sheet notes, and VTT token frames on a dungeon tabletop',
+  bodyHtml: rapierDndArticleHtml,
+  faqItems: [
+    {
+      question: 'Is a rapier a Finesse weapon in DnD?',
+      answer:
+        'The rapier has Finesse, so you can use Strength or Dexterity for attack and damage rolls as long as the same ability is used for both rolls on that attack.',
+    },
+    {
+      question: 'Can a Rogue Sneak Attack with a rapier?',
+      answer:
+        'A rapier qualifies for Sneak Attack because it is a Finesse weapon, but the Rogue still needs the normal Sneak Attack conditions.',
+    },
+    {
+      question: 'Is a rapier a Light weapon?',
+      answer:
+        'No. A rapier has Finesse, but it does not have Light. Basic two-weapon fighting does not treat it like a shortsword, scimitar, or dagger.',
+    },
+    {
+      question: 'Does rapier have Vex in DnD 2024?',
+      answer:
+        'The 2024 rapier has the Vex weapon mastery property, but a character still needs a feature or option that lets them use that mastery.',
+    },
+    {
+      question: 'Does Vex give Advantage on the same rapier attack?',
+      answer:
+        'Vex applies after you hit and deal damage, setting up Advantage on your next attack roll against that creature before the end of your next turn.',
+    },
+    {
+      question: 'Does rapier + dagger automatically give a bonus attack?',
+      answer:
+        'No. Under the basic two-weapon rules, both weapons need the required Light setup. The dagger is Light, but the rapier is not.',
+    },
+  ],
+  relatedSlugs: ['dnd-dagger', 'dnd-mace', 'dnd-classes-explained', 'dnd-armor-guide'],
+};
+
 const dndGhostArticleZh: BlogPost = {
   slug: 'dnd-ghost',
   title: 'dnd ghost 指南：幽灵机制、附身跑法与遭遇设计',
@@ -1716,11 +1770,62 @@ const dndRangerSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const rapierDndArticleZh: BlogPost = {
+  slug: 'rapier-dnd',
+  title: 'DND 细剑（Rapier）指南：5e 数据、Vex、最佳使用者与 VTT Token 建议',
+  seoTitle: 'DND 细剑指南：5e 数据、Vex、最佳使用者与 VTT 建议',
+  metaDescription:
+    '核对 DND 细剑数据、1d8 穿刺、灵巧、2014/2024 规则、Vex、偷袭适配、双持误区、FAQ 和 VTT Token 建议。',
+  excerpt:
+    '一篇适合桌边核对的 DND 细剑指南，讲清 1d8 灵巧数据、2014/2024 Vex、偷袭条件、双持误区和 VTT Token 建议。',
+  publishedAt: DND_RAPIER_UPDATED_AT,
+  updatedAt: DND_RAPIER_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '装备百科',
+  coverImage: DND_RAPIER_COVER_PATH,
+  coverAlt:
+    'DND 细剑（Rapier）指南封面图，地城桌面上有决斗者 Token、细剑、骰子、角色卡笔记和 VTT Token 边框',
+  bodyHtml: rapierDndArticleHtmlZh,
+  faqItems: [
+    {
+      question: '细剑是 DnD 里的灵巧（Finesse）武器吗？',
+      answer:
+        '细剑有灵巧（Finesse）属性。你可以用力量或敏捷进行攻击和伤害掷骰，但同一次攻击必须两者都用同一个属性。',
+    },
+    {
+      question: '游荡者（Rogue）可以用细剑偷袭（Sneak Attack）吗？',
+      answer:
+        '细剑因为有灵巧（Finesse）而符合偷袭武器要求，但游荡者（Rogue）仍然必须满足正常 Sneak Attack 条件。',
+    },
+    {
+      question: '细剑是轻型（Light）武器吗？',
+      answer:
+        '不是。细剑有灵巧（Finesse），但没有轻型（Light）。基础双武器战斗不会把它当成短剑、弯刀或匕首处理。',
+    },
+    {
+      question: '2024 DnD 里细剑有 Vex 吗？',
+      answer:
+        '2024 规则中的细剑有 Vex 武器掌握属性，但角色仍然需要能使用该武器掌握的特性或选项。',
+    },
+    {
+      question: 'Vex 会让触发它的同一次细剑攻击获得优势吗？',
+      answer:
+        'Vex 在你命中并造成伤害后生效，让你在下回合结束前对同一生物的下一次攻击检定获得优势。',
+    },
+    {
+      question: '细剑 + 匕首会自动给副手攻击吗？',
+      answer:
+        '不会。基础双武器规则需要满足对应的轻型武器条件。匕首是轻型，但细剑不是。',
+    },
+  ],
+  relatedSlugs: ['dnd-dagger', 'dnd-mace', 'dnd-classes-explained', 'dnd-armor-guide'],
+};
+
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };
