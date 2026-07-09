@@ -8,14 +8,23 @@ interface RichTextHtmlProps {
   as?: 'article' | 'div' | 'section';
   className?: string;
   html: string;
+  videoFallbackTitle: string;
+  youtubeFallbackLabel: string;
 }
 
-function activateLiteVideo(container: HTMLElement) {
+interface RichTextVideoCopy {
+  videoFallbackTitle: string;
+  youtubeFallbackLabel: string;
+}
+
+function activateLiteVideo(container: HTMLElement, videoCopy: RichTextVideoCopy) {
   const videoId = container.dataset.videoId;
-  const title = container.dataset.videoTitle ?? 'Video';
-  const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
   if (!videoId) return;
+
+  const title = container.dataset.videoTitle ?? videoCopy.videoFallbackTitle;
+  const fallbackLabel = container.dataset.youtubeFallbackLabel ?? videoCopy.youtubeFallbackLabel;
+  const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
   const wrapper = document.createElement('div');
   wrapper.className = 'inline-embed inline-embed--video video-embed-shell';
@@ -32,7 +41,7 @@ function activateLiteVideo(container: HTMLElement) {
   fallback.target = '_blank';
   fallback.rel = 'noreferrer noopener';
   fallback.className = 'video-embed-shell__fallback';
-  fallback.textContent = 'Open on YouTube / 在 YouTube 打开';
+  fallback.textContent = fallbackLabel;
 
   wrapper.append(iframe, fallback);
   container.replaceWith(wrapper);
@@ -46,6 +55,8 @@ export function RichTextHtml({
   as = 'div',
   className,
   html,
+  videoFallbackTitle,
+  youtubeFallbackLabel,
 }: RichTextHtmlProps) {
   const router = useRouter();
   const Component = as;
@@ -61,7 +72,7 @@ export function RichTextHtml({
     const liteVideo = target.closest<HTMLElement>('.lite-video');
     if (liteVideo) {
       event.preventDefault();
-      activateLiteVideo(liteVideo);
+      activateLiteVideo(liteVideo, { videoFallbackTitle, youtubeFallbackLabel });
       return;
     }
 
@@ -96,7 +107,7 @@ export function RichTextHtml({
     const liteVideo = target.closest<HTMLElement>('.lite-video');
     if (liteVideo) {
       event.preventDefault();
-      activateLiteVideo(liteVideo);
+      activateLiteVideo(liteVideo, { videoFallbackTitle, youtubeFallbackLabel });
     }
   };
 

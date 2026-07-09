@@ -7,8 +7,16 @@ import { render, screen, fireEvent, act, waitFor, cleanup } from '@testing-libra
 import { useEditorStore } from '@/lib/store/editor-store';
 import { renderToken } from '@/lib/renderer/pipeline';
 
+const i18nMockState = vi.hoisted(() => ({
+  locale: 'en' as 'en' | 'zh',
+  messages: {} as Record<string, string>,
+}));
+
 vi.mock('@/lib/i18n', () => ({
-  useI18n: () => ({ t: (key: string) => key, locale: 'en' }),
+  useI18n: () => ({
+    t: (key: string) => i18nMockState.messages[key] ?? key,
+    locale: i18nMockState.locale,
+  }),
 }));
 
 vi.mock('@/lib/renderer/pipeline', () => ({
@@ -42,6 +50,8 @@ describe('Canvas', () => {
   let localStorageMock: Storage;
 
   beforeEach(() => {
+    i18nMockState.locale = 'en';
+    i18nMockState.messages = {};
     vi.stubGlobal('ResizeObserver', MockResizeObserver);
     HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
       clearRect: vi.fn(),
@@ -99,6 +109,18 @@ describe('Canvas', () => {
 
     render(<Canvas />);
     expect(screen.getAllByText('150%').length).toBeGreaterThan(0);
+  });
+
+  it('uses the localized image scale label in the canvas overlay', () => {
+    i18nMockState.locale = 'zh';
+    i18nMockState.messages = { imageScale: '缩放' };
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1.5 });
+
+    render(<Canvas />);
+
+    expect(screen.getByText('缩放')).toBeDefined();
+    expect(screen.queryByText('Scale')).toBeNull();
   });
 
   it('starts drag on pointer down and updates offset on move', () => {

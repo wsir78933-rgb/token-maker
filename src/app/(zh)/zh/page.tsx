@@ -3,12 +3,13 @@ import { DeferredEditorLayout } from '@/components/layout/DeferredEditorLayout';
 import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
-import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
+import { absoluteUrl, getHomeCopy, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates } from '@/lib/site-locale';
 
 const locale = 'zh';
 const siteConfig = getSiteConfig(locale);
+const homeCopy = getHomeCopy(locale);
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -58,7 +59,7 @@ export default function ChineseHomePage() {
     },
     url: absoluteUrl('/zh'),
     description: siteConfig.description,
-    featureList: ['浏览器 VTT Token 制作器', '圆形、方形和多边形遮罩', '边框与配色控制', '文字叠加与透明 PNG Token 导出', '本地优先图片流程'],
+    featureList: homeCopy.structuredDataFeatures,
   };
 
   return (

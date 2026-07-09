@@ -5,8 +5,16 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import { useEditorStore } from '@/lib/store/editor-store';
 
+const i18nMockState = vi.hoisted(() => ({
+  locale: 'en' as 'en' | 'zh',
+  messages: {} as Record<string, string>,
+}));
+
 vi.mock('@/lib/i18n', () => ({
-  useI18n: () => ({ t: (key: string) => key, locale: 'en' }),
+  useI18n: () => ({
+    t: (key: string) => i18nMockState.messages[key] ?? key,
+    locale: i18nMockState.locale,
+  }),
 }));
 
 vi.mock('@/lib/analytics', () => ({
@@ -14,7 +22,7 @@ vi.mock('@/lib/analytics', () => ({
 }));
 
 vi.mock('./export-token', () => ({
-  downloadCurrentToken: vi.fn(),
+  downloadCurrentTokenWithSharePrompt: vi.fn(),
 }));
 
 import { ControlPanel } from './ControlPanel';
@@ -27,6 +35,8 @@ describe('ControlPanel', () => {
   let localStorageMock: Storage;
 
   beforeEach(() => {
+    i18nMockState.locale = 'en';
+    i18nMockState.messages = {};
     localStorageMock = {
       getItem: vi.fn(() => null),
       setItem: vi.fn(),
@@ -69,6 +79,22 @@ describe('ControlPanel', () => {
     render(<ControlPanel />);
     const addTextBtns = screen.getAllByText(/addText/);
     expect(addTextBtns[0].closest('button')?.disabled).toBe(false);
+  });
+
+  it('adds Chinese default text content from the control panel copy', () => {
+    i18nMockState.locale = 'zh';
+    i18nMockState.messages = {
+      addText: '添加文字',
+      defaultTextContent: '新文本',
+    };
+    const img = new Image();
+    useEditorStore.setState({ imageElement: img, imageUrl: 'blob:test' });
+
+    render(<ControlPanel />);
+    const addTextButtons = screen.getAllByRole('button', { name: /\+ 添加文字/ });
+    fireEvent.click(addTextButtons.at(-1)!);
+
+    expect(useEditorStore.getState().textBoxes[0]?.content).toBe('新文本');
   });
 
   it('shows text editing controls when a text box is selected', () => {

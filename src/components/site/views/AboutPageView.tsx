@@ -61,7 +61,7 @@ export function AboutPageView({ locale }: { locale: SiteLocale }) {
       <InnerPageChrome locale={locale} currentPath="/about" tone="doc">
         <section className="border-b border-white/10">
           <div className="mx-auto max-w-6xl px-6 py-16 lg:px-8 lg:py-18">
-            <PageBreadcrumbs items={breadcrumbs} />
+            <PageBreadcrumbs items={breadcrumbs} locale={locale} />
             <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.12fr)_320px]">
               <div className="space-y-6">
                 <p className="text-xs uppercase tracking-[0.34em] text-stone-500">{model.eyebrow}</p>

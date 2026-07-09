@@ -6,7 +6,7 @@ import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { LiteYouTubeEmbed } from '@/components/site/LiteYouTubeEmbed';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
-import { absoluteUrl, getSiteConfig, getTemplatePage } from '@/lib/site-content';
+import { absoluteUrl, getSiteConfig, getSiteUiCopy, getTemplatePage } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
@@ -69,6 +69,7 @@ export function TemplatePageView({
   const copy = copyByLocale[locale];
   const page = getTemplatePage(locale, slug);
   const siteConfig = getSiteConfig(locale);
+  const siteUiCopy = getSiteUiCopy(locale);
 
   if (!page) {
     return null;
@@ -93,12 +94,7 @@ export function TemplatePageView({
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
         url: absoluteUrl(localizedPath),
         description: page.metadataDescription,
-        featureList: [
-          'Square token crop',
-          'Token border selection',
-          'Transparent PNG export',
-          'Roll20 and Foundry VTT workflow support',
-        ],
+        featureList: page.structuredDataFeatures,
       },
       {
         '@type': 'HowTo',
@@ -150,7 +146,7 @@ export function TemplatePageView({
       <InnerPageChrome locale={locale} currentPath={path} tone="template">
         <section className="border-b border-white/10">
           <div className="mx-auto max-w-[92rem] px-4 py-12 sm:px-5 lg:px-6 lg:py-16 xl:px-8">
-            <PageBreadcrumbs items={breadcrumbs} />
+            <PageBreadcrumbs items={breadcrumbs} locale={locale} />
 
             <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.62fr)] lg:items-start xl:gap-10">
               <div className="space-y-6">
@@ -221,6 +217,7 @@ export function TemplatePageView({
               description={page.video.description}
               thumbnailAlt={page.video.thumbnailAlt}
               playLabel={copy.playVideo}
+              youtubeFallbackLabel={siteUiCopy.youtubeFallbackLabel}
             />
           </section>
 

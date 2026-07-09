@@ -1,14 +1,25 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 
+import { getSiteUiCopy } from '@/lib/site-content';
+import type { SiteLocale } from '@/lib/site-locale';
+
 interface BreadcrumbItem {
   label: string;
   href?: string;
 }
 
-export function PageBreadcrumbs({ items }: { items: BreadcrumbItem[] }) {
+export function PageBreadcrumbs({
+  items,
+  locale,
+}: {
+  items: BreadcrumbItem[];
+  locale: SiteLocale;
+}) {
+  const siteUiCopy = getSiteUiCopy(locale);
+
   return (
-    <nav aria-label="Breadcrumb">
+    <nav aria-label={siteUiCopy.breadcrumbAriaLabel}>
       <ol className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.24em] text-stone-500">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;

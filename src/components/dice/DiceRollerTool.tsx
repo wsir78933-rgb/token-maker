@@ -45,6 +45,15 @@ const toolCopyByLocale = {
     copyButton: 'Copy',
     copyButtonAria: 'Copy Result',
     copiedButton: 'Copied',
+    clipboardRollsLabel: 'Rolls',
+    clipboardNoneLabel: 'None',
+    addDieAria: (sides: number) => `Add d${sides} die`,
+    addDieAlt: (sides: number) => `Add a ${sides}-sided die (d${sides}) to your dice pool`,
+    decreaseDieAria: (sides: number) => `Decrease d${sides} count`,
+    dieCountAria: (sides: number) => `d${sides} count`,
+    increaseDieAria: (sides: number) => `Increase d${sides} count`,
+    stagedDieAlt: (sides: number) => `${sides}-sided die (d${sides}) ready to roll`,
+    resultDieAlt: (sides: number) => `${sides}-sided die (d${sides}) showing result`,
     trayBadges: ['Custom Pools', 'd4 · d6 · d20', 'Modifiers'],
   },
   zh: {
@@ -66,6 +75,15 @@ const toolCopyByLocale = {
     copyButton: '复制',
     copyButtonAria: '复制结果',
     copiedButton: '已复制',
+    clipboardRollsLabel: '掷骰',
+    clipboardNoneLabel: '无',
+    addDieAria: (sides: number) => `添加 d${sides} 骰子`,
+    addDieAlt: (sides: number) => `将一个 ${sides} 面骰 (d${sides}) 加入骰池`,
+    decreaseDieAria: (sides: number) => `减少 d${sides} 数量`,
+    dieCountAria: (sides: number) => `d${sides} 数量`,
+    increaseDieAria: (sides: number) => `增加 d${sides} 数量`,
+    stagedDieAlt: (sides: number) => `${sides} 面骰 (d${sides}) 准备投掷`,
+    resultDieAlt: (sides: number) => `${sides} 面骰 (d${sides}) 显示投掷结果`,
     trayBadges: ['自由搭配', 'd12 · d20 · d100', '加值修正'],
   },
 } as const;
@@ -225,9 +243,14 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
     if (!activePlayback) return;
     try {
       const rolls = activePlayback.result.allRolls.map(r => r.value).join(', ');
-      await navigator.clipboard.writeText(`${activePlayback.headline}\nRolls: ${rolls || 'None'}`);
+      await navigator.clipboard.writeText(
+        `${activePlayback.headline}\n${copy.clipboardRollsLabel}: ${rolls || copy.clipboardNoneLabel}`
+      );
       setCopied(true);
-    } catch { setCopied(false); }
+    } catch (error) {
+      console.error('Failed to copy dice roll result', error);
+      setCopied(false);
+    }
   };
 
   return (
@@ -263,7 +286,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                   {/* Clickable die icon — always +1 */}
                   <button
                     type="button"
-                    aria-label={`Add d${sides} die`}
+                    aria-label={copy.addDieAria(sides)}
                     onClick={() => updateDieCount(sides, count + 1)}
                     className={cn(
                       "flex flex-col items-center gap-2 sm:gap-3 transition duration-200 outline-none cursor-pointer",
@@ -273,7 +296,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                     <div className="relative w-11 h-11 sm:w-14 sm:h-14 drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
                       <Image
                         src={`/dice/d${sides}.svg`}
-                        alt={`Add a ${sides}-sided die (d${sides}) to your dice pool`}
+                        alt={copy.addDieAlt(sides)}
                         fill
                         className="object-contain"
                         unoptimized
@@ -292,7 +315,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                     <div className="flex items-center gap-1">
                       <button
                         type="button"
-                        aria-label={`Decrease d${sides} count`}
+                        aria-label={copy.decreaseDieAria(sides)}
                         onClick={() => updateDieCount(sides, count - 1)}
                         className="flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-xs text-stone-400 transition hover:bg-white/[0.08] hover:text-stone-200 cursor-pointer"
                       >
@@ -300,7 +323,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                       </button>
                       <input
                         type="text"
-                        aria-label={`d${sides} count`}
+                        aria-label={copy.dieCountAria(sides)}
                         inputMode="numeric"
                         value={count}
                         onChange={(e) => {
@@ -311,7 +334,7 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
                       />
                       <button
                         type="button"
-                        aria-label={`Increase d${sides} count`}
+                        aria-label={copy.increaseDieAria(sides)}
                         onClick={() => updateDieCount(sides, count + 1)}
                         className="flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-xs text-stone-400 transition hover:bg-white/[0.08] hover:text-stone-200 cursor-pointer"
                       >
@@ -370,6 +393,8 @@ export function DiceRollerTool({ locale }: { locale: SiteLocale }) {
           stagedExpr={stagedGroups.length > 0 ? formatMixedDiceRequest({ groups: stagedGroups, modifier: parseInt(bonusInput, 10) || 0 }) : undefined}
           locale={locale}
           title={copy.trayTitle}
+          getStagedDieAlt={copy.stagedDieAlt}
+          getResultDieAlt={copy.resultDieAlt}
         />
 
         <button

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { renderToken, drawCheckerboard } from '@/lib/renderer/pipeline';
+import { useI18n } from '@/lib/i18n';
 import { ImageUploader } from './ImageUploader';
 import { TextCanvasOverlay } from './TextCanvasOverlay';
 import type { EditorState } from '@/types/editor';
@@ -21,6 +22,7 @@ interface CanvasProps {
 }
 
 export function Canvas({ previewMode = 'default' }: CanvasProps) {
+  const { t } = useI18n();
   const isBatchPreview = previewMode === 'batch';
   const {
     imageUrl,
@@ -275,7 +277,7 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
       
       {imageElement ? (
         <div className="absolute bottom-3 flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5 text-xs font-medium tabular-nums text-foreground/80 shadow-sm backdrop-blur-md pointer-events-none sm:bottom-6">
-          <span className="opacity-50">Scale</span>
+          <span className="opacity-50">{t('imageScale')}</span>
           {Math.round(imageScale * 100)}%
         </div>
       ) : null}

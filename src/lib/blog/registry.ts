@@ -19,6 +19,7 @@ import {
   DND_GHOST_COVER_PATH,
   DND_DWARF_NAMES_COVER_PATH,
   DND_MACE_COVER_PATH,
+  DND_BLESS_COVER_PATH,
   DND_RAPIER_COVER_PATH,
   DND_RANGER_SPELLS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
@@ -42,6 +43,7 @@ import { dndGhostArticleHtml, dndGhostArticleHtmlZh } from '@/lib/blog-posts/dnd
 import { dndDwarfNamesArticleHtml, dndDwarfNamesArticleHtmlZh } from '@/lib/blog-posts/dnd-dwarf-names';
 import { dndMaceArticleHtml, dndMaceArticleHtmlZh } from '@/lib/blog-posts/dnd-mace';
 import { dndRangerSpellsArticleHtml, dndRangerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-ranger-spells';
+import { dndBlessArticleHtml, dndBlessArticleHtmlZh } from '@/lib/blog-posts/dnd-bless';
 import { rapierDndArticleHtml, rapierDndArticleHtmlZh } from '@/lib/blog-posts/rapier-dnd';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
@@ -83,6 +85,7 @@ const DND_DWARF_NAMES_UPDATED_AT = '2026-05-11';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
+const DND_BLESS_UPDATED_AT = '2026-07-09';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1353,6 +1356,57 @@ const dndRangerSpellsArticle: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndBlessArticle: BlogPost = {
+  slug: 'dnd-bless',
+  title: 'Bless DnD Guide: 2014 vs 2024 Rules, Best Targets, and VTT Tips',
+  seoTitle: 'Bless DnD Guide: 2014 vs 2024 Rules and Best Uses',
+  metaDescription:
+    'Learn dnd bless rules fast: 2014 vs 2024 components, who to target, what the d4 applies to, common mistakes, FAQ, dice roller, and VTT token tips.',
+  excerpt:
+    'A practical dnd bless guide covering 2014/2024 spell rules, the 2024 holy symbol component, target priority, common mistakes, FAQ, dice roller use, and VTT token markers.',
+  publishedAt: DND_BLESS_UPDATED_AT,
+  updatedAt: DND_BLESS_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_BLESS_COVER_PATH,
+  coverAlt:
+    'dnd bless guide cover showing golden Bless magic over three ally tokens, a d4, a holy symbol, and VTT token frames on a tabletop battle map',
+  bodyHtml: dndBlessArticleHtml,
+  faqItems: [
+    {
+      question: 'Does Bless add to damage in DnD?',
+      answer:
+        'No. Bless adds 1d4 to attack rolls and saving throws. It does not add to damage rolls, Armor Class, initiative, or ability checks.',
+    },
+    {
+      question: 'Does Bless work on every attack roll?',
+      answer:
+        'Yes. While the spell lasts and concentration holds, a blessed target can add 1d4 whenever that target makes an attack roll or saving throw.',
+    },
+    {
+      question: 'What changed for Bless in DnD 2024?',
+      answer:
+        'The visible 2024 change is the material component: Bless uses a holy symbol worth 5+ GP instead of a sprinkling of holy water.',
+    },
+    {
+      question: 'Is the 2024 holy symbol consumed by Bless?',
+      answer:
+        'No. Bless does not say it consumes the holy symbol, so the component is not consumed by the spell.',
+    },
+    {
+      question: 'Does Bless stack with another Bless?',
+      answer:
+        'No. Multiple castings of the same spell do not give the same target multiple Bless d4s.',
+    },
+    {
+      question: 'Who should receive Bless first?',
+      answer:
+        'Prioritize characters who make repeated attack rolls, characters likely to face dangerous saving throws, and allies who are already maintaining concentration.',
+    },
+  ],
+  relatedSlugs: ['dnd-ranger-spells', 'dnd-bard-spells', 'dnd-counterspell', 'dnd-constitution-guide'],
+};
+
 const rapierDndArticle: BlogPost = {
   slug: 'rapier-dnd',
   title: 'Rapier DnD Guide: Stats, 2014 vs 2024 Rules, Best Users, and VTT Token Tips',
@@ -1770,6 +1824,57 @@ const dndRangerSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndBlessArticleZh: BlogPost = {
+  slug: 'dnd-bless',
+  title: '祝福术（DND Bless）指南：2014/2024 规则、最佳目标与 VTT Token 建议',
+  seoTitle: '祝福术（DND Bless）指南：2014/2024 规则与最佳用法',
+  metaDescription:
+    '快速看懂祝福术（DND Bless）：2014/2024 组件差异、该给谁、d4 加在哪些掷骰、常见误区、FAQ、骰子和 VTT Token 标记建议。',
+  excerpt:
+    '一篇实用祝福术（DND Bless）指南，讲清 2014/2024 法术规则、2024 Holy Symbol 组件、目标优先级、常见误区、FAQ、骰子和 VTT Token 标记。',
+  publishedAt: DND_BLESS_UPDATED_AT,
+  updatedAt: DND_BLESS_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '法术指南',
+  coverImage: DND_BLESS_COVER_PATH,
+  coverAlt:
+    '祝福术（DND Bless）指南封面图，金色祝福魔法覆盖三个盟友 Token、d4、Holy Symbol 和 VTT 战斗地图',
+  bodyHtml: dndBlessArticleHtmlZh,
+  faqItems: [
+    {
+      question: '祝福术会加伤害吗？',
+      answer:
+        '不会。祝福术只把 1d4 加到攻击检定和豁免上，不加伤害、AC、先攻或属性检定。',
+    },
+    {
+      question: '祝福术每次攻击检定都能用吗？',
+      answer:
+        '可以。只要法术还在持续、施法者仍在专注，受祝福术影响的目标每次进行攻击检定或豁免时都可以加 1d4。',
+    },
+    {
+      question: '2024 版 Bless 改了什么？',
+      answer:
+        '最明显的 2024 变化是材料组件：祝福术从一点 holy water 改成价值 5+ GP 的 Holy Symbol。',
+    },
+    {
+      question: '2024 版祝福术会消耗 Holy Symbol 吗？',
+      answer:
+        '不会。祝福术没有写会消耗 Holy Symbol，所以这个材料组件不会因为施放祝福术被消耗。',
+    },
+    {
+      question: '两个祝福术可以叠加吗？',
+      answer:
+        '不能。同一个法术的多次施放不会让同一个目标拿到多个 Bless d4。',
+    },
+    {
+      question: '祝福术应该先给谁？',
+      answer:
+        '优先给会反复做攻击检定的角色、即将吃危险豁免的角色，以及已经在保持专注的盟友。',
+    },
+  ],
+  relatedSlugs: ['dnd-ranger-spells', 'dnd-bard-spells', 'dnd-counterspell', 'dnd-constitution-guide'],
+};
+
 const rapierDndArticleZh: BlogPost = {
   slug: 'rapier-dnd',
   title: 'DND 细剑（Rapier）指南：5e 数据、Vex、最佳使用者与 VTT Token 建议',
@@ -1822,10 +1927,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

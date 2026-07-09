@@ -8,16 +8,32 @@ import { DiceRollerTool } from '@/components/dice/DiceRollerTool';
 vi.mock('@/components/dice/DiceTray', () => ({
   DiceTray: ({
     playback,
+    stagedGroups,
     stagedExpr,
+    getStagedDieAlt,
     locale,
     title,
   }: {
     playback: { headline: string; result: { total: number } } | null;
+    stagedGroups?: Array<{ sides: number; count: number }>;
     stagedExpr?: string;
+    getStagedDieAlt?: (sides: number) => string;
     locale: string;
     title: string;
   }) => (
     <div data-testid="dice-tray">
+      {stagedGroups?.map((group) =>
+        Array.from({ length: group.count }, (_, index) => (
+          <span
+            key={`${group.sides}-${index}`}
+            role="img"
+            aria-label={
+              getStagedDieAlt?.(group.sides) ??
+              `${group.sides}-sided die (d${group.sides}) ready to roll`
+            }
+          />
+        ))
+      )}
       {title}:{playback ? playback.headline : stagedExpr ?? 'idle'}:{locale}:
       {playback ? playback.result.total : 'idle'}
     </div>
@@ -130,5 +146,33 @@ describe('DiceRollerTool', () => {
     });
 
     expect(screen.queryByText('还没有掷骰记录。')).toBeNull();
+  });
+
+  it('中文路由会使用中文骰子 aria、alt 和复制标签', async () => {
+    window.history.pushState({}, '', '/zh/dice-roller-dnd');
+
+    render(<DiceRollerTool locale="zh" />);
+
+    const addD4Button = screen.getByRole('button', { name: '添加 d4 骰子' });
+    expect(screen.getByAltText('将一个 4 面骰 (d4) 加入骰池')).toBeDefined();
+
+    fireEvent.click(addD4Button);
+
+    expect(await screen.findByRole('img', { name: '4 面骰 (d4) 准备投掷' })).toBeDefined();
+
+    fireEvent.click(screen.getByRole('button', { name: '开始掷骰' }));
+
+    await waitFor(() => {
+      expect((screen.getByRole('button', { name: '复制结果' }) as HTMLButtonElement).disabled).toBe(false);
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: '复制结果' }));
+
+    await waitFor(() => {
+      expect(navigator.clipboard.writeText).toHaveBeenCalled();
+    });
+    const clipboardText = vi.mocked(navigator.clipboard.writeText).mock.calls.at(-1)?.[0] ?? '';
+    expect(clipboardText).toContain('掷骰: ');
+    expect(clipboardText).not.toContain('Rolls:');
   });
 });

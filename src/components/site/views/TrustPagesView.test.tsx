@@ -64,6 +64,7 @@ describe('trust page views', () => {
   it('renders the Chinese About page content with localized JSON-LD', () => {
     render(<AboutPageView locale="zh" />);
 
+    expect(screen.getByRole('navigation', { name: '面包屑' })).not.toBeNull();
     expect(screen.getByRole('heading', { level: 1, name: '关于 Token Maker' })).not.toBeNull();
     expect(screen.getByText('维护原则')).not.toBeNull();
     expect(screen.getByText('这是 Token 工具，不是通用修图软件')).not.toBeNull();

@@ -168,7 +168,7 @@ export interface EditorActions {
   setOverlayOpacity: (opacity: number) => void;
 
   // 文字
-  addTextBox: () => void;
+  addTextBox: (defaultContent: string) => void;
   removeTextBox: (id: string) => void;
   updateTextBox: (id: string, updates: Partial<TextBox>) => void;
   setSelectedText: (id: string | null) => void;

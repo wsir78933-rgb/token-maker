@@ -1,11 +1,13 @@
 import type { MetadataRoute } from 'next';
+import { getSiteManifestCopy } from '@/lib/site-content';
 
 export default function manifest(): MetadataRoute.Manifest {
+  const manifestCopy = getSiteManifestCopy();
+
   return {
     name: 'Token Maker',
     short_name: 'Token Maker',
-    description:
-      'Free browser VTT token maker for DnD, Roll20, and Foundry VTT. Upload character art, add borders and masks, export transparent PNG tokens.',
+    description: manifestCopy.description,
     start_url: '/',
     display: 'standalone',
     background_color: '#09090b',

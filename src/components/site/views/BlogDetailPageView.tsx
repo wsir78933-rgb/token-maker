@@ -17,6 +17,7 @@ import {
   getRelatedBlogPosts,
   type BlogPost,
 } from '@/lib/blog-content';
+import { getSiteUiCopy } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
@@ -122,6 +123,7 @@ export function BlogDetailPageView({
   }
 
   const copy = copyByLocale[locale];
+  const siteUiCopy = getSiteUiCopy(locale);
   const placeholderCopy = getBlogPlaceholderCopy(locale);
   const currentPath = `/blog/${slug}`;
   const isPlaceholder = !post.bodyHtml;
@@ -158,6 +160,7 @@ export function BlogDetailPageView({
         <section className="border-b border-white/10">
           <div className="mx-auto max-w-[92rem] px-4 py-16 sm:px-5 lg:px-6 lg:py-18 xl:px-8">
             <PageBreadcrumbs
+              locale={locale}
               items={[
                 { label: locale === 'zh' ? '编辑器' : 'Editor', href: getLocalizedPath(locale, '/') },
                 { label: copy.blog, href: getLocalizedPath(locale, '/blog') },
@@ -256,6 +259,8 @@ export function BlogDetailPageView({
                   as="section"
                   className="site-rich-text site-rich-text--detail mt-4 text-stone-200"
                   html={post.bodyHtml}
+                  videoFallbackTitle={siteUiCopy.videoFallbackTitle}
+                  youtubeFallbackLabel={siteUiCopy.youtubeFallbackLabel}
                 />
               ) : (
                 <>

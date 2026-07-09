@@ -4,10 +4,12 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 import { DICE_THEME, type DiceTrayDie } from '@/lib/dice/tray-css';
+import type { SupportedDieSides } from '@/lib/dice/roller';
 import { cn } from '@/lib/utils';
 
 interface DiceAnimatedDieProps {
   die: DiceTrayDie;
+  getResultDieAlt: (sides: SupportedDieSides) => string;
 }
 
 /** Total spin time in ms */
@@ -29,7 +31,7 @@ function createScatterLayout(): ScatterLayout {
   };
 }
 
-export function DiceAnimatedDie({ die }: DiceAnimatedDieProps) {
+export function DiceAnimatedDie({ die, getResultDieAlt }: DiceAnimatedDieProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLDivElement>(null);
   const [settled, setSettled] = useState(false);
@@ -104,7 +106,7 @@ export function DiceAnimatedDie({ die }: DiceAnimatedDieProps) {
       >
         <Image
           src={`/dice/d${die.sides}.svg`}
-          alt={`${die.sides}-sided die (d${die.sides}) showing result`}
+          alt={getResultDieAlt(die.sides)}
           fill
           className="object-contain"
           unoptimized

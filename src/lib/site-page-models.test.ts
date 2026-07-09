@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Metadata } from 'next';
 import sitemap from '@/app/sitemap';
-import { getCollectionPageCopy } from '@/lib/site-content';
+import { getCollectionPageCopy, getHomeCopy } from '@/lib/site-content';
 import {
   buildCollectionStructuredData,
   createCollectionMetadata,
@@ -46,6 +46,30 @@ describe('static site support pages', () => {
     expect(englishCopy.changelog.title).toContain('Changelog');
     expect(chineseCopy.about.title).toContain('关于');
     expect(chineseCopy.changelog.title).toContain('更新');
+  });
+
+  it('keeps homepage JSON-LD feature copy in the localized home copy source', () => {
+    const englishCopy = getHomeCopy('en') as ReturnType<typeof getHomeCopy> & {
+      structuredDataFeatures?: string[];
+    };
+    const chineseCopy = getHomeCopy('zh') as ReturnType<typeof getHomeCopy> & {
+      structuredDataFeatures?: string[];
+    };
+
+    expect(englishCopy.structuredDataFeatures).toEqual([
+      'Browser-based VTT token maker',
+      'Circle, square, and polygon masks',
+      'Border and tint controls',
+      'Text overlays and transparent PNG export',
+      'Local-first tabletop image workflow',
+    ]);
+    expect(chineseCopy.structuredDataFeatures).toEqual([
+      '浏览器 VTT Token 制作器',
+      '圆形、方形和多边形遮罩',
+      '边框与配色控制',
+      '文字叠加与透明 PNG Token 导出',
+      '本地优先图片流程',
+    ]);
   });
 
   it('tracks About and Changelog last modified dates', () => {

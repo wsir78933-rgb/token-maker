@@ -20,6 +20,7 @@ export const DND_DAGGER_COVER_PATH = '/blog/covers/en/dnd-dagger-guide-v2.webp';
 export const DND_GHOST_COVER_PATH = '/blog/covers/en/dnd-ghost-guide.webp';
 export const DND_DWARF_NAMES_COVER_PATH = '/blog/covers/en/dnd-dwarf-names-guide.webp';
 export const DND_MACE_COVER_PATH = '/blog/covers/en/dnd-mace-guide.webp';
+export const DND_BLESS_COVER_PATH = '/blog/covers/en/dnd-bless-guide.webp';
 export const DND_RAPIER_COVER_PATH = '/blog/covers/en/dnd-rapier-guide.webp';
 export const DND_RANGER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-ranger-spells-guide.webp';
 
@@ -64,6 +65,7 @@ export const DND_MACE_COMPARISON_IMAGE_PATH = '/blog/inline/dnd-mace/mace-weapon
 export const DND_MACE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mace/mace-video-placeholder.webp';
 export const DND_RANGER_SPELLS_PREP_IMAGE_PATH = '/blog/inline/dnd-ranger-spells/ranger-spell-prep-table.webp';
 export const DND_RANGER_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-ranger-spells/ranger-spells-video-placeholder.webp';
+export const DND_BLESS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-bless/dnd-bless-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -130,6 +132,12 @@ export const DND_RAPIER_2014_CLASSES_URL = 'https://www.dndbeyond.com/sources/dn
 export const DND_RAPIER_2024_ROGUE_URL = 'https://www.dndbeyond.com/classes/2190883-rogue';
 export const DND_RAPIER_VIDEO_URL = 'https://www.youtube.com/watch?v=JiNIb5KzNz0';
 export const DND_RANGER_SPELLS_VIDEO_URL = 'https://www.youtube.com/watch?v=P_qzyTFSrTE';
+export const DND_BLESS_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#Bless';
+export const DND_BLESS_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Bless';
+export const DND_2014_SPELLCASTING_COMPONENTS_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spellcasting#Components';
+export const DND_2024_SPELLCASTING_COMPONENTS_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spells#Components';
+export const DND_HOLY_SYMBOL_2024_URL = 'https://www.dndbeyond.com/equipment/514-holy-symbol';
+export const DND_BLESS_VIDEO_URL = 'https://www.youtube.com/watch?v=IPOddAMdy5k';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -150,6 +158,8 @@ export const EN_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-
 export const ZH_DND_NECROMANCER_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-necromancer-spells');
 export const EN_DND_MEPHISTOPHELES_PATH = getLocalizedPath('en', '/blog/mephistopheles-dnd');
 export const ZH_DND_MEPHISTOPHELES_PATH = getLocalizedPath('zh', '/blog/mephistopheles-dnd');
+export const EN_DND_BARD_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-bard-spells');
+export const ZH_DND_BARD_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-bard-spells');
 export const EN_DND_DEMONS_PATH = getLocalizedPath('en', '/blog/dnd-demons');
 export const ZH_DND_DEMONS_PATH = getLocalizedPath('zh', '/blog/dnd-demons');
 export const EN_DND_DAGGER_PATH = getLocalizedPath('en', '/blog/dnd-dagger');
@@ -160,6 +170,8 @@ export const EN_DND_DWARF_NAMES_PATH = getLocalizedPath('en', '/blog/dnd-dwarf-n
 export const ZH_DND_DWARF_NAMES_PATH = getLocalizedPath('zh', '/blog/dnd-dwarf-names');
 export const EN_DND_MACE_PATH = getLocalizedPath('en', '/blog/dnd-mace');
 export const ZH_DND_MACE_PATH = getLocalizedPath('zh', '/blog/dnd-mace');
+export const EN_DND_RANGER_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-ranger-spells');
+export const ZH_DND_RANGER_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-ranger-spells');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');
@@ -172,7 +184,7 @@ export function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src
   const thumbAlt = thumbnail?.alt ?? title;
 
   return `<div class="inline-embed inline-embed--video lite-video" data-video-id="${videoId}" data-video-title="${title}" role="button" tabindex="0" aria-label="Play video: ${title}">
-  <img class="lite-video__thumb" src="${thumb}" alt="${thumbAlt}" loading="eager" decoding="async" fetchpriority="low" width="480" height="360" />
+  <img class="lite-video__thumb" src="${thumb}" alt="${thumbAlt}" loading="lazy" decoding="async" fetchpriority="low" width="480" height="360" />
   <div class="lite-video__overlay" aria-hidden="true"></div>
   <button class="lite-video__play" type="button" aria-label="Play: ${title}">
     <svg class="lite-video__play-icon" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

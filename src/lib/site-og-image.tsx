@@ -15,6 +15,8 @@ interface SeoImageOptions {
   eyebrow: string;
   title: string;
   description: string;
+  footerKicker: string;
+  footerMeta: string;
   chips?: string[];
   tone?: SeoImageTone;
 }
@@ -37,6 +39,8 @@ export function createSeoImage({
   eyebrow,
   title,
   description,
+  footerKicker,
+  footerMeta,
   chips = [],
   tone = 'home',
 }: SeoImageOptions) {
@@ -269,7 +273,7 @@ export function createSeoImage({
                   color: palette.secondary,
                 }}
               >
-                Browser token workshop
+                {footerKicker}
               </div>
               <div
                 style={{
@@ -277,7 +281,7 @@ export function createSeoImage({
                   color: '#a8a29e',
                 }}
               >
-                DnD • Roll20 • Foundry VTT
+                {footerMeta}
               </div>
             </div>
           </div>

@@ -52,6 +52,10 @@ export function ControlPanel() {
     await downloadCurrentTokenWithSharePrompt(t, locale);
   };
 
+  const handleAddText = () => {
+    addTextBox(t('defaultTextContent'));
+  };
+
   return (
     <div className="order-3 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-80 xl:overflow-hidden xl:border-y-0 xl:border-r">
 
@@ -98,7 +102,7 @@ export function ControlPanel() {
             <Button
               variant="outline"
               size="sm"
-              onClick={addTextBox}
+              onClick={handleAddText}
               className="h-7 text-xs"
               disabled={!imageElement}
             >

@@ -3,12 +3,13 @@ import { DeferredEditorLayout } from '@/components/layout/DeferredEditorLayout';
 import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
-import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
+import { absoluteUrl, getHomeCopy, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates } from '@/lib/site-locale';
 
 const locale = 'en';
 const siteConfig = getSiteConfig(locale);
+const homeCopy = getHomeCopy(locale);
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -58,13 +59,7 @@ export default function Home() {
     },
     url: absoluteUrl('/'),
     description: siteConfig.description,
-    featureList: [
-      'Browser-based VTT token maker',
-      'Circle, square, and polygon masks',
-      'Border and tint controls',
-      'Text overlays and transparent PNG export',
-      'Local-first tabletop image workflow',
-    ],
+    featureList: homeCopy.structuredDataFeatures,
   };
 
   return (

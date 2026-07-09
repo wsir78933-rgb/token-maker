@@ -5,8 +5,16 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 
 import { useEditorStore } from '@/lib/store/editor-store';
 
+const i18nMockState = vi.hoisted(() => ({
+  locale: 'en' as 'en' | 'zh',
+  messages: {} as Record<string, string>,
+}));
+
 vi.mock('@/lib/i18n', () => ({
-  useI18n: () => ({ t: (key: string) => key, locale: 'en' }),
+  useI18n: () => ({
+    t: (key: string) => i18nMockState.messages[key] ?? key,
+    locale: i18nMockState.locale,
+  }),
 }));
 
 vi.mock('@/lib/analytics', () => ({
@@ -23,7 +31,7 @@ vi.mock('@/lib/utils/imageCache', () => ({
 
 vi.mock('./export-token', () => ({
   downloadCurrentTokenWithSharePrompt: vi.fn(),
-  getLocalizedName: (key: string) => key,
+  getLocalizedName: (key: string, t: (key: string) => string) => t(key),
 }));
 
 import { TemplatePanel } from './TemplatePanel';
@@ -71,9 +79,14 @@ describe('TemplatePanel preset border assets', () => {
   let localStorageMock: Storage;
 
   beforeEach(() => {
+    i18nMockState.locale = 'en';
+    i18nMockState.messages = {
+      customBorderName: 'Custom',
+    };
     vi.stubGlobal('CSS', { escape: (value: string) => value });
     scrollIntoViewMock = vi.fn();
-    Element.prototype.scrollIntoView = scrollIntoViewMock;
+    Element.prototype.scrollIntoView =
+      scrollIntoViewMock as typeof Element.prototype.scrollIntoView;
     HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
       clearRect: vi.fn(),
       beginPath: vi.fn(),
@@ -213,6 +226,20 @@ describe('TemplatePanel preset border assets', () => {
     expect(screen.getByTestId('border-thumbnail-surface-warrior-border-01').className).toContain('bg-black');
   });
 
+  it('uses Chinese alt text for image border thumbnails', () => {
+    i18nMockState.locale = 'zh';
+    i18nMockState.messages = {
+      ...i18nMockState.messages,
+      other: '其他',
+      'border.metalbarbarian': '野蛮金属',
+    };
+
+    render(<TemplatePanel />);
+
+    expect(screen.getByAltText(/野蛮金属.*Token 边框/)).toBeDefined();
+    expect(screen.queryByAltText(/Spiked barbarian metal token frame/)).toBeNull();
+  });
+
   it('accepts large custom borders as temporary browser object URLs', async () => {
     const createObjectURL = vi.fn(() => 'blob:custom-border');
     Object.defineProperty(URL, 'createObjectURL', {
@@ -234,5 +261,26 @@ describe('TemplatePanel preset border assets', () => {
     expect(createObjectURL).toHaveBeenCalledWith(customBorderFile);
     expect(preloadImageToCacheMock).toHaveBeenCalledWith('blob:custom-border');
     expect(useEditorStore.getState().customBorders[0]?.customImageUrl).toBe('blob:custom-border');
+  });
+
+  it('uses a Chinese default name for uploaded custom borders', async () => {
+    i18nMockState.locale = 'zh';
+    i18nMockState.messages = {
+      ...i18nMockState.messages,
+      customBorderName: '自定义边框',
+    };
+    const createObjectURL = vi.fn(() => 'blob:custom-border');
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: createObjectURL,
+    });
+    const customBorderFile = new File(['border'], 'custom-border.webp', { type: 'image/webp' });
+
+    render(<TemplatePanel />);
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [customBorderFile] } });
+
+    expect(await screen.findByRole('button', { name: '自定义边框' })).toBeDefined();
+    expect(useEditorStore.getState().customBorders[0]?.name).toBe('自定义边框');
   });
 });

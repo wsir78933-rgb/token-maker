@@ -224,7 +224,7 @@ function mergePersistedEditorState(persistedState: unknown, currentState: Editor
       ...mergedState,
       ...getPersistedTemplateState({
         ...mergedState,
-        customBorders: [{ id: mergedState.selectedBorderId, name: 'Custom', type: 'image' }],
+        customBorders: [],
       }),
     };
   }
@@ -318,7 +318,7 @@ export const useEditorStore = create<EditorStore>()(
 
       // --- 文字 ---
       setSelectedText: (id) => set({ selectedTextId: id, isImageSelected: id === null }),
-      addTextBox: () =>
+      addTextBox: (defaultContent) =>
         set((state) => {
           const newId = Date.now().toString();
           return {
@@ -326,7 +326,7 @@ export const useEditorStore = create<EditorStore>()(
               ...state.textBoxes,
               {
                 id: newId,
-                content: 'New Text',
+                content: defaultContent,
                 x: 256, // 默认居中 (基于 512 预览尺寸)
                 y: 450,
                 fontSize: 48,

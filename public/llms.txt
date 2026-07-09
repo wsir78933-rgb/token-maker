@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [Bless DnD Guide](https://www.tokenmaker.one/blog/dnd-bless): Bless 2014/2024 rules, holy symbol component, target priority, common mistakes, FAQ, dice roller, and VTT token tips.
 - [Rapier DnD Guide](https://www.tokenmaker.one/blog/rapier-dnd): Rapier stats, 2014/2024 rules, Finesse, Vex, best users, dual-wielding limits, FAQ, and VTT token tips.
 - [DND Ranger Spells Guide](https://www.tokenmaker.one/blog/dnd-ranger-spells): Ranger spell picks by role, 2014/2024 rules, prepared lists, Hunter's Mark tradeoffs, VTT token tips, FAQ, and companion video.
 - [DND Classes Explained](https://www.tokenmaker.one/blog/dnd-classes-explained): Guide to choosing DnD classes.
@@ -45,6 +46,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [祝福术（DND Bless）指南：2014/2024 规则、最佳目标与 VTT Token 建议](https://www.tokenmaker.one/zh/blog/dnd-bless)
 - [DND 细剑指南：5e 数据、Vex、最佳使用者与 VTT Token 建议](https://www.tokenmaker.one/zh/blog/rapier-dnd)
 - [DND 游侠法术指南：最佳选择、准备清单与猎人印记取舍](https://www.tokenmaker.one/zh/blog/dnd-ranger-spells)
 - [Chinese DND Classes Explained](https://www.tokenmaker.one/zh/blog/dnd-classes-explained)

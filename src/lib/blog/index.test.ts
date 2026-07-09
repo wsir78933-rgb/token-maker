@@ -9,7 +9,121 @@ import {
   getBlogPostPath,
 } from '@/lib/blog-content';
 
+const DND_BLESS_SLUG = 'dnd-bless';
 const RAPIER_DND_SLUG = 'rapier-dnd';
+
+describe('dnd bless blog post', () => {
+  test('publishes the dnd bless article in English and Chinese', () => {
+    const englishPost = getBlogPost('en', DND_BLESS_SLUG);
+    const chinesePost = getBlogPost('zh', DND_BLESS_SLUG);
+
+    expect(englishPost?.title).toContain('Bless DnD');
+    expect(englishPost?.bodyHtml).toContain('dnd bless');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-bless-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(6);
+
+    expect(chinesePost?.title).toContain('祝福术（DND Bless）');
+    expect(chinesePost?.bodyHtml).toContain('祝福术（Bless）');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-bless-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(6);
+  });
+
+  test('keeps high-risk Bless rules accurate in both locales', () => {
+    const englishPost = getBlogPost('en', DND_BLESS_SLUG);
+    const chinesePost = getBlogPost('zh', DND_BLESS_SLUG);
+
+    expect(englishPost?.bodyHtml).toContain('add 1d4 to attack rolls and saving throws');
+    expect(englishPost?.bodyHtml).toContain('Bless does not add 1d4 to damage rolls');
+    expect(englishPost?.bodyHtml).toContain('Bless does not add to ability checks');
+    expect(englishPost?.bodyHtml).toContain('The Cleric should not need a pile of disposable holy symbols');
+    expect(englishPost?.bodyHtml).toContain('Bless does not stack with another Bless on the same target');
+    expect(englishPost?.bodyHtml).toContain('It is not once per turn');
+
+    expect(chinesePost?.bodyHtml).toContain('攻击检定（attack roll）和豁免（saving throw）');
+    expect(chinesePost?.bodyHtml).toContain('祝福术不会把 1d4 加到伤害上');
+    expect(chinesePost?.bodyHtml).toContain('祝福术不加属性检定');
+    expect(chinesePost?.bodyHtml).toContain('不应该因为每次施放祝福术就损失一个');
+    expect(chinesePost?.bodyHtml).toContain('祝福术不和另一个祝福术叠加');
+    expect(chinesePost?.bodyHtml).toContain('不是每回合一次');
+  });
+
+  test('keeps the Chinese Bless article Chinese-first', () => {
+    const chinesePost = getBlogPost('zh', DND_BLESS_SLUG);
+    const chineseBodyHtml = chinesePost?.bodyHtml ?? '';
+
+    expect(chineseBodyHtml).toContain('祝福术');
+    expect(chineseBodyHtml).toContain('专注（Concentration）');
+    expect(chineseBodyHtml).toContain('攻击检定');
+    expect(chineseBodyHtml).toContain('豁免');
+    expect(chineseBodyHtml).toContain('祝福术（DND Bless）常见问题');
+    expect(chineseBodyHtml).toContain('祝福术（DND Bless）配套视频');
+
+    expect(chineseBodyHtml).not.toContain('<h2 id="quick-answer">Quick answer');
+    expect(chineseBodyHtml).not.toContain('Bless DnD FAQ');
+    expect(chineseBodyHtml).not.toContain('Does Bless add to damage?');
+  });
+
+  test('uses localized paths for the dnd bless article', () => {
+    expect(getBlogPostPath('en', DND_BLESS_SLUG)).toBe('/blog/dnd-bless');
+    expect(getBlogPostPath('zh', DND_BLESS_SLUG)).toBe('/zh/blog/dnd-bless');
+  });
+
+  test('builds bilingual metadata alternates for the dnd bless article', () => {
+    const metadata = createBlogPostMetadata('en', DND_BLESS_SLUG);
+
+    expect(metadata.title).toBe('Bless DnD Guide: 2014 vs 2024 Rules and Best Uses');
+    expect(metadata.alternates?.canonical).toBe('/blog/dnd-bless');
+    expect(metadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-bless',
+      'en-US': '/blog/dnd-bless',
+      'zh-CN': '/zh/blog/dnd-bless',
+    });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        url: 'https://www.tokenmaker.one/blog/covers/en/dnd-bless-guide.webp',
+        alt: 'dnd bless guide cover showing golden Bless magic over three ally tokens, a d4, a holy symbol, and VTT token frames on a tabletop battle map',
+      },
+    ]);
+  });
+
+  test('builds article and FAQ structured data for the dnd bless article', () => {
+    const chinesePost = getBlogPost('zh', DND_BLESS_SLUG);
+
+    expect(buildBlogPostStructuredData('en', DND_BLESS_SLUG)).toMatchObject({
+      '@type': 'Article',
+      headline: 'Bless DnD Guide: 2014 vs 2024 Rules and Best Uses',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-bless',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-bless-guide.webp'],
+    });
+
+    expect(buildBlogPostFaqStructuredData('zh', DND_BLESS_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+
+    expect(chinesePost?.coverAlt).toContain('祝福术（DND Bless）指南封面图');
+    expect(chinesePost?.faqItems?.[3]?.question).toBe('2024 版祝福术会消耗 Holy Symbol 吗？');
+    expect(chinesePost?.faqItems?.[3]?.answer).toContain('不会');
+  });
+
+  test('keeps the Bless video as a lazy lite YouTube embed', () => {
+    const englishPost = getBlogPost('en', DND_BLESS_SLUG);
+    const englishBodyHtml = englishPost?.bodyHtml ?? '';
+
+    expect(englishBodyHtml).toContain('data-video-id="IPOddAMdy5k"');
+    expect(englishBodyHtml).toContain('src="/blog/inline/dnd-bless/dnd-bless-video-placeholder.webp"');
+    expect(englishBodyHtml).toContain('loading="lazy"');
+    expect(englishBodyHtml).not.toContain('<iframe');
+  });
+
+  test('lists the dnd bless article in llms.txt for both locales', () => {
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-bless');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-bless');
+  });
+});
 
 describe('rapier dnd blog post', () => {
   test('publishes the rapier dnd article in English and Chinese', () => {

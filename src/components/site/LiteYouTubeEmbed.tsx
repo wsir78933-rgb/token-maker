@@ -11,6 +11,7 @@ interface LiteYouTubeEmbedProps {
   description?: string;
   thumbnailAlt: string;
   playLabel: string;
+  youtubeFallbackLabel: string;
 }
 
 export function LiteYouTubeEmbed({
@@ -19,6 +20,7 @@ export function LiteYouTubeEmbed({
   description,
   thumbnailAlt,
   playLabel,
+  youtubeFallbackLabel,
 }: LiteYouTubeEmbedProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const thumbnailSrc = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
@@ -40,7 +42,7 @@ export function LiteYouTubeEmbed({
           rel="noreferrer noopener"
           className="video-embed-shell__fallback"
         >
-          Open on YouTube / 在 YouTube 打开
+          {youtubeFallbackLabel}
         </a>
       </div>
     );

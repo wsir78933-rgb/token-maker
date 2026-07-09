@@ -29,6 +29,7 @@ const zh = {
   // 文字
   textSettings: '文字设置',
   addText: '添加文字',
+  defaultTextContent: '新文本',
   fontSize: '字号',
   delete: '删除',
   selectTextHint: '点击画布上的文本以在此处编辑',
@@ -60,6 +61,7 @@ const zh = {
   maskTemplates: '遮罩形状',
   uploadCustomBorder: '上传自定义边框',
   uploadCustomMask: '上传自定义遮罩',
+  customBorderName: '自定义边框',
 
   // 边框名称
   'border.none': '无边框',
@@ -155,6 +157,8 @@ const zh = {
   batchItemCount: '张图片',
   batchClearAll: '全部清除',
   batchNoItems: '还没有添加图片',
+  batchTokenFileSuffix: '令牌',
+  batchZipFileBaseName: '批量令牌',
 
   // 导出
   exportSection: '导出',
@@ -174,7 +178,7 @@ const zh = {
   shareOnPinterest: 'Pinterest',
   shareOnReddit: 'Reddit',
   shareDownload: '下载',
-  shareUploadDisclosure: '复制链接或分享到社媒会把生成后的 PNG 上传到 R2，并生成公开分享链接。下载仍然在本地完成。',
+  shareUploadDisclosure: '复制链接或分享到社媒即可生成公开分享页。',
   shareImageAlt: '生成的 VTT Token 预览图',
   shareText: '看看我用 Token Maker 做的 VTT Token',
   sharePostTitle: '看看我用 Token Maker 做的 VTT Token',

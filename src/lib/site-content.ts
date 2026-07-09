@@ -29,6 +29,7 @@ export interface TemplatePageData {
   bestFor: string[];
   settings: string[];
   tips: string[];
+  structuredDataFeatures: string[];
   workflowTitle: string;
   workflowDescription: string;
   workflowSteps: StaticPageSection[];
@@ -56,6 +57,11 @@ export const siteConfig = {
   description:
     'Create DnD and VTT tokens online for Roll20, Foundry VTT, and Owlbear. Upload character art, add circular or square masks, token borders, text, and export transparent PNG tokens.',
 } as const;
+
+export const siteManifestCopy: SiteManifestCopy = {
+  description:
+    'Free browser VTT token maker for DnD, Roll20, and Foundry VTT. 免费浏览器 VTT Token 制作器，适合 DnD、Roll20 与 Foundry VTT。',
+};
 
 export function getSiteUrl() {
   const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tokenmaker.one';
@@ -164,6 +170,12 @@ export const templatePages: TemplatePageData[] = [
       'A square token works well with thin borders when the art already has a decorative frame.',
       'Use text only when the token needs a call sign, rank, or room code.',
     ],
+    structuredDataFeatures: [
+      'Square token crop',
+      'Token border selection',
+      'Transparent PNG export',
+      'Roll20 and Foundry VTT workflow support',
+    ],
     workflowTitle: 'How to make a square token',
     workflowDescription:
       'The goal is a clean square image that survives small map zoom levels. Start with the subject, then tune the crop, border, and export size.',
@@ -261,11 +273,24 @@ export interface ShellCopy {
   whyPageBullets: string[];
 }
 
+export interface SiteUiCopy {
+  breadcrumbAriaLabel: string;
+  videoFallbackTitle: string;
+  youtubeFallbackLabel: string;
+  ogFooterKicker: string;
+  ogFooterMeta: string;
+}
+
+export interface SiteManifestCopy {
+  description: string;
+}
+
 export interface HomeCopy {
   heroEyebrow: string;
   heroTitle: string;
   heroDescription: string;
   heroHighlights: string[];
+  structuredDataFeatures: string[];
   heroPrimaryCta: string;
 }
 
@@ -417,6 +442,12 @@ export const templatePagesZh: TemplatePageData[] = [
       '如果原图自带装饰边缘，方形 token 反而更适合薄边框。',
       '只有在需要代号、军衔或房间编号时再加文字，避免画面过满。',
     ],
+    structuredDataFeatures: [
+      '方形 Token 裁切',
+      'Token 边框选择',
+      '透明 PNG 导出',
+      '支持 Roll20 与 Foundry VTT 工作流',
+    ],
     workflowTitle: '如何制作方形 Token',
     workflowDescription:
       '目标不是把图片塞进正方形，而是导出一个在小尺寸地图上仍然清楚的 1:1 Token。先处理主体，再处理边框和导出尺寸。',
@@ -538,6 +569,23 @@ export const shellCopyByLocale: Record<SiteLocale, ShellCopy> = {
   },
 };
 
+export const siteUiCopyByLocale: Record<SiteLocale, SiteUiCopy> = {
+  en: {
+    breadcrumbAriaLabel: 'Breadcrumb',
+    videoFallbackTitle: 'Video',
+    youtubeFallbackLabel: 'Open on YouTube',
+    ogFooterKicker: 'Browser token workshop',
+    ogFooterMeta: 'DnD • Roll20 • Foundry VTT',
+  },
+  zh: {
+    breadcrumbAriaLabel: '面包屑',
+    videoFallbackTitle: '视频',
+    youtubeFallbackLabel: '在 YouTube 打开',
+    ogFooterKicker: '浏览器 Token 工作台',
+    ogFooterMeta: 'DnD • Roll20 • Foundry VTT',
+  },
+};
+
 export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
   en: {
     heroEyebrow: 'VTT token maker',
@@ -548,6 +596,13 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
       'Circular, square, and polygon token maker',
       'Transparent PNG export up to 2048',
       'Token borders for DnD, Roll20, Foundry VTT, and Owlbear',
+    ],
+    structuredDataFeatures: [
+      'Browser-based VTT token maker',
+      'Circle, square, and polygon masks',
+      'Border and tint controls',
+      'Text overlays and transparent PNG export',
+      'Local-first tabletop image workflow',
     ],
     heroPrimaryCta: 'Start making tokens',
   },
@@ -560,6 +615,13 @@ export const homeCopyByLocale: Record<SiteLocale, HomeCopy> = {
       '圆形、方形和多边形 Token',
       '透明 PNG 导出最高 2048',
       '适合 DnD、Roll20、Foundry VTT 和 Owlbear',
+    ],
+    structuredDataFeatures: [
+      '浏览器 VTT Token 制作器',
+      '圆形、方形和多边形遮罩',
+      '边框与配色控制',
+      '文字叠加与透明 PNG Token 导出',
+      '本地优先图片流程',
     ],
     heroPrimaryCta: '开始制作 Token',
   },
@@ -1072,6 +1134,14 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
 
 export function getSiteConfig(locale: SiteLocale) {
   return locale === 'zh' ? siteConfigZh : siteConfig;
+}
+
+export function getSiteManifestCopy() {
+  return siteManifestCopy;
+}
+
+export function getSiteUiCopy(locale: SiteLocale) {
+  return siteUiCopyByLocale[locale];
 }
 
 export function getHomeSignals(locale: SiteLocale) {

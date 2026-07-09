@@ -16,6 +16,8 @@ interface DiceTrayProps {
   stagedExpr?: string;
   locale: SiteLocale;
   title: string;
+  getStagedDieAlt: (sides: SupportedDieSides) => string;
+  getResultDieAlt: (sides: SupportedDieSides) => string;
   className?: string;
 }
 
@@ -36,7 +38,16 @@ const breakdownLabelByLocale = {
  * │  ROLL BREAKDOWN  │  OUTCOME                   │
  * └────────────────────────────────────────────────┘
  */
-export function DiceTray({ playback, stagedGroups, stagedExpr, locale, title, className }: DiceTrayProps) {
+export function DiceTray({
+  playback,
+  stagedGroups,
+  stagedExpr,
+  locale,
+  title,
+  getStagedDieAlt,
+  getResultDieAlt,
+  className,
+}: DiceTrayProps) {
   const copy = breakdownLabelByLocale[locale];
 
   // Expand stagedGroups into individual dice for preview
@@ -98,7 +109,7 @@ export function DiceTray({ playback, stagedGroups, stagedExpr, locale, title, cl
           /* Rolled dice — animated scatter */
           <div className="absolute inset-0">
             {playback.dice.map((die) => (
-              <DiceAnimatedDie key={die.id} die={die} />
+              <DiceAnimatedDie key={die.id} die={die} getResultDieAlt={getResultDieAlt} />
             ))}
           </div>
         ) : (
@@ -118,7 +129,7 @@ export function DiceTray({ playback, stagedGroups, stagedExpr, locale, title, cl
                     >
                       <Image
                         src={`/dice/d${d.sides}.svg`}
-                        alt={`${d.sides}-sided die (d${d.sides}) ready to roll`}
+                        alt={getStagedDieAlt(d.sides)}
                         fill
                         className="object-contain opacity-60"
                         unoptimized

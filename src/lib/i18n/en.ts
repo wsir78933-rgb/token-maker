@@ -26,6 +26,7 @@ const en = {
 
   textSettings: 'Text Settings',
   addText: 'Add Text',
+  defaultTextContent: 'New Text',
   fontSize: 'Font Size',
   delete: 'Delete',
   selectTextHint: 'Select a text on canvas to edit',
@@ -54,6 +55,7 @@ const en = {
   maskTemplates: 'Masks',
   uploadCustomBorder: 'Upload Custom Border',
   uploadCustomMask: 'Upload Custom Mask',
+  customBorderName: 'Custom',
 
   'border.none': 'None',
   'border.metalbarbarian': 'Barbarian Metal',
@@ -145,6 +147,8 @@ const en = {
   batchItemCount: 'images',
   batchClearAll: 'Clear All',
   batchNoItems: 'No images added yet',
+  batchTokenFileSuffix: 'token',
+  batchZipFileBaseName: 'tokens_batch',
 
   exportSection: 'Export',
   exportSize: 'Export Size',
@@ -163,8 +167,7 @@ const en = {
   shareOnPinterest: 'Pinterest',
   shareOnReddit: 'Reddit',
   shareDownload: 'Download',
-  shareUploadDisclosure:
-    'Copying a link or sharing to social media uploads a generated PNG to R2 and creates a public share link. Download stays local.',
+  shareUploadDisclosure: 'Copy a link or share on social media to create a public share page.',
   shareImageAlt: 'Generated VTT token preview',
   shareText: 'Check out this VTT token I made with Token Maker.',
   sharePostTitle: 'Check out this VTT token I made with Token Maker',

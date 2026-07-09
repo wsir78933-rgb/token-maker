@@ -297,9 +297,10 @@ function BorderTemplatesSection({ className = '' }: { className?: string }) {
       customBorderUrl = createTemporaryCustomBorderUrl(file);
       await preloadImageToCache(customBorderUrl);
       const newId = `custom-border-${Date.now()}`;
+      const customBorderName = t('customBorderName');
       addCustomBorder({
         id: newId,
-        name: 'Custom',
+        name: customBorderName,
         type: 'image',
         isCustom: true,
         customImageUrl: customBorderUrl,
@@ -307,7 +308,7 @@ function BorderTemplatesSection({ className = '' }: { className?: string }) {
       customBorderUrl = null;
       setSelectedBorder(newId);
       setCustomBorderError(null);
-      trackApplyBorder('Custom');
+      trackApplyBorder(customBorderName);
     } catch (error) {
       revokeTemporaryCustomBorderUrl(customBorderUrl);
       console.error(`Failed to upload custom border file: ${file.name}`, error);
@@ -413,7 +414,7 @@ function getBorderAlt(id: string, defaultLabel: string, locale: 'en' | 'zh'): st
     'plain-decagon': 'Minimal decagon token border inspired by classic virtual tabletop portrait markers.',
     'plain-dodecagon': 'Minimal dodecagon token border inspired by classic virtual tabletop portrait markers.',
   };
-  if (altMap[id]) return altMap[id];
+  if (locale === 'en' && altMap[id]) return altMap[id];
 
   return locale === 'zh'
     ? `${defaultLabel}，适合 DnD、Roll20 和 Foundry 的 Token 边框模板`

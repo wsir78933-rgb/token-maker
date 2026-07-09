@@ -121,6 +121,13 @@ export function BatchPanel() {
     retryItem(id, snapshot, exportSize);
   };
 
+  const handleDownloadZip = async () => {
+    await downloadZip({
+      tokenFileSuffix: t('batchTokenFileSuffix'),
+      zipFileBaseName: t('batchZipFileBaseName'),
+    });
+  };
+
   return (
     <div className="flex h-full flex-col bg-background/10 p-4 sm:p-6">
 
@@ -278,7 +285,7 @@ export function BatchPanel() {
               <Button
                 variant="outline"
                 className="flex-1 gap-2 font-medium"
-                onClick={downloadZip}
+                onClick={handleDownloadZip}
                 disabled={doneCount === 0}
               >
                 <Download className="h-4 w-4" />

@@ -9,7 +9,7 @@ import {
   revokeObjectUrl,
 } from '@/lib/batch/image-files';
 import { renderBatchItem } from '@/lib/batch/rendering';
-import { downloadBatchZip } from '@/lib/batch/zip-export';
+import { downloadBatchZip, type BatchZipExportCopy } from '@/lib/batch/zip-export';
 
 // ============================================================
 // 批处理 Store — 独立于编辑器主 Store
@@ -36,7 +36,7 @@ interface BatchActions {
   clearAll: () => void;
   processAll: (editorState: EditorState, exportSize: number) => Promise<void>;
   retryItem: (id: string, editorState: EditorState, exportSize: number) => Promise<void>;
-  downloadZip: () => Promise<void>;
+  downloadZip: (copy: BatchZipExportCopy) => Promise<void>;
 }
 
 export type BatchStore = BatchState & BatchActions;
@@ -263,7 +263,7 @@ export const useBatchStore = create<BatchStore>()((set, get) => ({
     }
   },
 
-  downloadZip: async () => {
-    await downloadBatchZip(get().items);
+  downloadZip: async (copy) => {
+    await downloadBatchZip(get().items, copy);
   },
 }));
