@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 
 import {
@@ -10,7 +10,155 @@ import {
 } from '@/lib/blog-content';
 
 const DND_BLESS_SLUG = 'dnd-bless';
+const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
+
+describe('dnd shortsword blog post', () => {
+  test('publishes the dnd shortsword article in English and Chinese', () => {
+    const englishPost = getBlogPost('en', DND_SHORTSWORD_SLUG);
+    const chinesePost = getBlogPost('zh', DND_SHORTSWORD_SLUG);
+
+    expect(englishPost?.title).toContain('DnD Shortsword');
+    expect(englishPost?.bodyHtml).toContain('dnd shortsword');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-shortsword-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(6);
+
+    expect(chinesePost?.title).toContain('DND 短剑（Shortsword）');
+    expect(chinesePost?.bodyHtml).toContain('短剑（Shortsword）');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-shortsword-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(6);
+  });
+
+  test('keeps high-risk shortsword rules accurate in both locales', () => {
+    const englishPost = getBlogPost('en', DND_SHORTSWORD_SLUG);
+    const chinesePost = getBlogPost('zh', DND_SHORTSWORD_SLUG);
+
+    expect(englishPost?.bodyHtml).toContain(
+      'A shortsword is a martial melee weapon that deals 1d6 piercing damage, costs 10 gp, weighs 2 lb, and has the Finesse and Light properties.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Vex matters only for a character who has a feature that lets them use that weapon mastery.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Vex does not give Advantage to the attack that triggered it.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'A shortsword qualifies for Sneak Attack because it has Finesse, but the Rogue still needs the normal Sneak Attack conditions.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'The extra Light attack does not add your ability modifier to its damage unless that modifier is negative.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'In 2014, taking the Attack action and attacking with a Light melee weapon in one hand lets you spend a Bonus Action',
+    );
+    expect(englishPost?.bodyHtml).toContain('The shortsword has Vex, not Nick.');
+
+    expect(chinesePost?.bodyHtml).toContain(
+      '短剑是一把军用近战武器，造成 1d6 穿刺伤害，价格 10 GP，重量 2 磅，并有灵巧（Finesse）和轻型（Light）属性。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      'Vex 只有在角色拥有能使用该武器掌握的特性或选项时才生效。',
+    );
+    expect(chinesePost?.bodyHtml).toContain('Vex 不会让触发它的同一次攻击获得优势。');
+    expect(chinesePost?.bodyHtml).toContain(
+      '短剑因为有灵巧属性而符合偷袭的武器要求，但游荡者（Rogue）仍然必须满足正常的 Sneak Attack 条件。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '轻型武器的额外攻击通常不把属性调整值加到伤害上，除非该调整值为负数。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '2014 规则里，你采取攻击动作，并用一手持有的轻型近战武器攻击后，可以用附赠动作',
+    );
+    expect(chinesePost?.bodyHtml).toContain('短剑的武器掌握是 Vex，不是 Nick。');
+  });
+
+  test('keeps visible shortsword FAQ answers aligned with structured data', () => {
+    for (const locale of ['en', 'zh'] as const) {
+      const post = getBlogPost(locale, DND_SHORTSWORD_SLUG);
+
+      for (const faqItem of post?.faqItems ?? []) {
+        expect(post?.bodyHtml).toContain(faqItem.question);
+        expect(post?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+      }
+    }
+  });
+
+  test('keeps the Chinese shortsword article Chinese-first', () => {
+    const chineseBodyHtml = getBlogPost('zh', DND_SHORTSWORD_SLUG)?.bodyHtml ?? '';
+
+    expect(chineseBodyHtml).toContain('短剑（Shortsword）');
+    expect(chineseBodyHtml).toContain('灵巧（Finesse）');
+    expect(chineseBodyHtml).toContain('轻型（Light）');
+    expect(chineseBodyHtml).toContain('武器掌握（Weapon Mastery）');
+    expect(chineseBodyHtml).toContain('偷袭（Sneak Attack）');
+    expect(chineseBodyHtml).toContain('DND 短剑常见问题');
+
+    expect(chineseBodyHtml).not.toContain('<h2 id="quick-answer">Quick answer');
+    expect(chineseBodyHtml).not.toContain('Shortsword DnD FAQ');
+    expect(chineseBodyHtml).not.toContain('<h2 id="best-users">Best users');
+  });
+
+  test('uses localized paths for the dnd shortsword article', () => {
+    expect(getBlogPostPath('en', DND_SHORTSWORD_SLUG)).toBe('/blog/dnd-shortsword');
+    expect(getBlogPostPath('zh', DND_SHORTSWORD_SLUG)).toBe('/zh/blog/dnd-shortsword');
+  });
+
+  test('builds bilingual metadata alternates for the dnd shortsword article', () => {
+    const metadata = createBlogPostMetadata('en', DND_SHORTSWORD_SLUG);
+
+    expect(metadata.title).toBe('Shortsword DnD Guide: 2014 vs 2024 Rules and Vex');
+    expect(metadata.alternates?.canonical).toBe('/blog/dnd-shortsword');
+    expect(metadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-shortsword',
+      'en-US': '/blog/dnd-shortsword',
+      'zh-CN': '/zh/blog/dnd-shortsword',
+    });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        url: 'https://www.tokenmaker.one/blog/covers/en/dnd-shortsword-guide.webp',
+        alt: 'dnd shortsword guide cover showing a rogue token with a shortsword, dice, character sheet notes, and VTT token frames on a dungeon tabletop',
+      },
+    ]);
+  });
+
+  test('builds article and FAQ structured data for the dnd shortsword article', () => {
+    expect(buildBlogPostStructuredData('en', DND_SHORTSWORD_SLUG)).toMatchObject({
+      '@type': 'Article',
+      headline: 'Shortsword DnD Guide: 2014 vs 2024 Rules and Vex',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-shortsword',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-shortsword-guide.webp'],
+    });
+
+    expect(buildBlogPostFaqStructuredData('zh', DND_SHORTSWORD_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+  });
+
+  test('uses an existing WebP cover for the dnd shortsword article', () => {
+    expect(existsSync('public/blog/covers/en/dnd-shortsword-guide.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-shortsword/dnd-shortsword-video-placeholder.webp')).toBe(true);
+  });
+
+  test('keeps the shortsword video as a lazy lite YouTube embed', () => {
+    const englishBodyHtml = getBlogPost('en', DND_SHORTSWORD_SLUG)?.bodyHtml ?? '';
+
+    expect(englishBodyHtml).toContain('data-video-id="-nu-JmZ4joo"');
+    expect(englishBodyHtml).toContain(
+      'src="/blog/inline/dnd-shortsword/dnd-shortsword-video-placeholder.webp"',
+    );
+    expect(englishBodyHtml).toContain('loading="lazy"');
+    expect(englishBodyHtml).not.toContain('<iframe');
+  });
+
+  test('lists the dnd shortsword article in llms.txt for both locales', () => {
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-shortsword');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-shortsword');
+  });
+});
 
 describe('dnd bless blog post', () => {
   test('publishes the dnd bless article in English and Chinese', () => {

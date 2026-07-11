@@ -23,6 +23,7 @@ export const DND_MACE_COVER_PATH = '/blog/covers/en/dnd-mace-guide.webp';
 export const DND_BLESS_COVER_PATH = '/blog/covers/en/dnd-bless-guide.webp';
 export const DND_RAPIER_COVER_PATH = '/blog/covers/en/dnd-rapier-guide.webp';
 export const DND_RANGER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-ranger-spells-guide.webp';
+export const DND_SHORTSWORD_COVER_PATH = '/blog/covers/en/dnd-shortsword-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -66,6 +67,7 @@ export const DND_MACE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mace/mace-video
 export const DND_RANGER_SPELLS_PREP_IMAGE_PATH = '/blog/inline/dnd-ranger-spells/ranger-spell-prep-table.webp';
 export const DND_RANGER_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-ranger-spells/ranger-spells-video-placeholder.webp';
 export const DND_BLESS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-bless/dnd-bless-video-placeholder.webp';
+export const DND_SHORTSWORD_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-shortsword/dnd-shortsword-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -138,6 +140,13 @@ export const DND_2014_SPELLCASTING_COMPONENTS_URL = 'https://www.dndbeyond.com/s
 export const DND_2024_SPELLCASTING_COMPONENTS_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spells#Components';
 export const DND_HOLY_SYMBOL_2024_URL = 'https://www.dndbeyond.com/equipment/514-holy-symbol';
 export const DND_BLESS_VIDEO_URL = 'https://www.youtube.com/watch?v=IPOddAMdy5k';
+export const DND_SHORTSWORD_2014_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#Weapons';
+export const DND_SHORTSWORD_2014_ROGUE_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Rogue';
+export const DND_SHORTSWORD_2014_COMBAT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/combat#TwoWeaponFighting';
+export const DND_SHORTSWORD_2024_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
+export const DND_SHORTSWORD_2024_ROGUE_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Rogue';
+export const DND_SHORTSWORD_WEAPON_MASTERY_URL = 'https://www.dndbeyond.com/posts/1742-your-guide-to-weapon-mastery-in-the-2024-players';
+export const DND_SHORTSWORD_VIDEO_URL = 'https://www.youtube.com/watch?v=-nu-JmZ4joo';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -170,6 +179,8 @@ export const EN_DND_DWARF_NAMES_PATH = getLocalizedPath('en', '/blog/dnd-dwarf-n
 export const ZH_DND_DWARF_NAMES_PATH = getLocalizedPath('zh', '/blog/dnd-dwarf-names');
 export const EN_DND_MACE_PATH = getLocalizedPath('en', '/blog/dnd-mace');
 export const ZH_DND_MACE_PATH = getLocalizedPath('zh', '/blog/dnd-mace');
+export const EN_RAPIER_DND_PATH = getLocalizedPath('en', '/blog/rapier-dnd');
+export const ZH_RAPIER_DND_PATH = getLocalizedPath('zh', '/blog/rapier-dnd');
 export const EN_DND_RANGER_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-ranger-spells');
 export const ZH_DND_RANGER_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-ranger-spells');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;

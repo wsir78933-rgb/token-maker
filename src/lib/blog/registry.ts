@@ -22,6 +22,7 @@ import {
   DND_BLESS_COVER_PATH,
   DND_RAPIER_COVER_PATH,
   DND_RANGER_SPELLS_COVER_PATH,
+  DND_SHORTSWORD_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -45,6 +46,7 @@ import { dndMaceArticleHtml, dndMaceArticleHtmlZh } from '@/lib/blog-posts/dnd-m
 import { dndRangerSpellsArticleHtml, dndRangerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-ranger-spells';
 import { dndBlessArticleHtml, dndBlessArticleHtmlZh } from '@/lib/blog-posts/dnd-bless';
 import { rapierDndArticleHtml, rapierDndArticleHtmlZh } from '@/lib/blog-posts/rapier-dnd';
+import { dndShortswordArticleHtml, dndShortswordArticleHtmlZh } from '@/lib/blog-posts/dnd-shortsword';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -86,6 +88,7 @@ const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
 const DND_BLESS_UPDATED_AT = '2026-07-09';
+const DND_SHORTSWORD_UPDATED_AT = '2026-07-10';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1356,6 +1359,62 @@ const dndRangerSpellsArticle: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndShortswordArticle: BlogPost = {
+  slug: 'dnd-shortsword',
+  title: 'DnD Shortsword Guide: 2014 vs 2024 Stats, Vex, Nick, and Sneak Attack',
+  seoTitle: 'Shortsword DnD Guide: 2014 vs 2024 Rules and Vex',
+  metaDescription:
+    'Check DnD shortsword stats for 2014 and 2024, then learn Finesse, Light, Vex, Nick pairings, Sneak Attack, weapon comparisons, and attack timing.',
+  excerpt:
+    'A table-ready dnd shortsword guide covering 1d6 Finesse and Light stats, 2014/2024 Vex rules, Sneak Attack, dual-wielding choices, and VTT token tracking.',
+  publishedAt: DND_SHORTSWORD_UPDATED_AT,
+  updatedAt: DND_SHORTSWORD_UPDATED_AT,
+  readTime: '13 min read',
+  coverLabel: 'Equipment Guide',
+  coverImage: DND_SHORTSWORD_COVER_PATH,
+  coverAlt:
+    'dnd shortsword guide cover showing a rogue token with a shortsword, dice, character sheet notes, and VTT token frames on a dungeon tabletop',
+  bodyHtml: dndShortswordArticleHtml,
+  faqItems: [
+    {
+      question: 'Is a shortsword a simple or martial weapon?',
+      answer:
+        'A shortsword is a martial melee weapon in both 2014 and 2024. A character still needs the right proficiency to add their Proficiency Bonus to attack rolls with it.',
+    },
+    {
+      question: 'Can you use Dexterity with a shortsword?',
+      answer:
+        'Yes. Finesse lets you choose Dexterity or Strength for the attack, and you use the same ability for the damage roll on that attack.',
+    },
+    {
+      question: 'Can a shortsword trigger Sneak Attack?',
+      answer:
+        'Yes. A shortsword qualifies for Sneak Attack because it has Finesse, but the Rogue still needs the normal Sneak Attack conditions.',
+    },
+    {
+      question: 'Does a shortsword have Nick in 2024?',
+      answer:
+        'No. The shortsword has Vex, not Nick. Daggers and scimitars are the common Nick partners in a 2024 Light-weapon setup.',
+    },
+    {
+      question: 'Does Vex give Advantage on the same shortsword attack that hits?',
+      answer:
+        'No. Vex does not give Advantage to the attack that triggered it. It waits for the next attack against the same target before the end of your next turn.',
+    },
+    {
+      question: 'Can you dual-wield a shortsword and rapier under the basic rules?',
+      answer:
+        'Not through the normal Light extra-attack rule. The rapier is not Light, so the pair does not qualify unless another rule changes the requirements.',
+    },
+    {
+      question: 'Is a shortsword better than a rapier?',
+      answer:
+        'It depends on the turn. A rapier is better for one stronger Finesse hit. A shortsword is better when Light weapon sequencing, Vex timing, or a dagger/scimitar follow-up matters.',
+    },
+  ],
+  relatedSlugs: ['rapier-dnd', 'dnd-dagger', 'dnd-mace', 'dnd-classes-explained'],
+};
+
 const dndBlessArticle: BlogPost = {
   slug: 'dnd-bless',
   title: 'Bless DnD Guide: 2014 vs 2024 Rules, Best Targets, and VTT Tips',
@@ -1824,6 +1883,62 @@ const dndRangerSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndShortswordArticleZh: BlogPost = {
+  slug: 'dnd-shortsword',
+  title: 'DND 短剑（Shortsword）指南：2014/2024 规则、Vex、Nick 与偷袭',
+  seoTitle: 'DND 短剑指南：2014/2024 规则、Vex 与 Nick',
+  metaDescription:
+    '对比 DND 短剑 2014 与 2024 数据，说清灵巧、轻型、Vex/Nick 顺序、游荡者偷袭、武器选择与 VTT 标记。',
+  excerpt:
+    '一篇适合桌边核对的 DND 短剑指南，讲清 1d6 灵巧与轻型数据、2014/2024 Vex、偷袭条件、双持选择和 VTT Token 标记。',
+  publishedAt: DND_SHORTSWORD_UPDATED_AT,
+  updatedAt: DND_SHORTSWORD_UPDATED_AT,
+  readTime: '13 分钟阅读',
+  coverLabel: '装备百科',
+  coverImage: DND_SHORTSWORD_COVER_PATH,
+  coverAlt:
+    'DND 短剑（Shortsword）指南封面图，地城桌面上有游荡者 Token、短剑、骰子、角色卡笔记和 VTT Token 边框',
+  bodyHtml: dndShortswordArticleHtmlZh,
+  faqItems: [
+    {
+      question: '短剑是简易武器还是军用武器？',
+      answer:
+        '短剑在 2014 和 2024 规则里都是军用近战武器。角色仍然需要相应熟练，才能把熟练加值加到攻击掷骰上。',
+    },
+    {
+      question: '短剑可以用敏捷攻击吗？',
+      answer:
+        '可以。灵巧（Finesse）允许你选择力量或敏捷，并把同一个属性同时用于这次攻击的攻击掷骰和伤害掷骰。',
+    },
+    {
+      question: '短剑能触发偷袭吗？',
+      answer:
+        '可以。短剑因为有灵巧属性而符合偷袭的武器要求，但游荡者（Rogue）仍然必须满足正常的 Sneak Attack 条件。',
+    },
+    {
+      question: '2024 短剑有 Nick 吗？',
+      answer:
+        '没有。短剑的武器掌握是 Vex，不是 Nick。匕首和弯刀才是常见的 Nick 搭配。',
+    },
+    {
+      question: 'Vex 会让刚才命中的短剑攻击获得优势吗？',
+      answer:
+        '不会。Vex 不会让触发它的同一次攻击获得优势。它帮助的是你在时限内对同一目标做出的下一次攻击。',
+    },
+    {
+      question: '短剑和细剑可以走普通双持顺序吗？',
+      answer:
+        '通常不行。短剑是轻型（Light），细剑不是，所以这组武器不满足基础的轻型额外攻击要求，除非其他规则明确改变条件。',
+    },
+    {
+      question: '短剑一定比细剑好吗？',
+      answer:
+        '不一定。细剑适合单武器灵巧近战，短剑更适合需要轻型顺序、Vex 或匕首/弯刀后续攻击的回合。',
+    },
+  ],
+  relatedSlugs: ['rapier-dnd', 'dnd-dagger', 'dnd-mace', 'dnd-classes-explained'],
+};
+
 const dndBlessArticleZh: BlogPost = {
   slug: 'dnd-bless',
   title: '祝福术（DND Bless）指南：2014/2024 规则、最佳目标与 VTT Token 建议',
@@ -1927,10 +2042,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

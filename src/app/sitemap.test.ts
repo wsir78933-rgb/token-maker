@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest';
 import sitemap from '@/app/sitemap';
 
 const DND_BLESS_SLUG = 'dnd-bless';
+const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
 
 function findSitemapEntry(url: string) {
@@ -16,6 +17,27 @@ function findSitemapEntry(url: string) {
 }
 
 describe('blog sitemap entries', () => {
+  test('includes bilingual dnd shortsword blog routes with alternates', () => {
+    const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_SHORTSWORD_SLUG}`);
+    const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_SHORTSWORD_SLUG}`);
+
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_SHORTSWORD_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_SHORTSWORD_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_SHORTSWORD_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-07-10'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-07-10'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes bilingual dnd bless blog routes with alternates', () => {
     const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_BLESS_SLUG}`);
     const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_BLESS_SLUG}`);
