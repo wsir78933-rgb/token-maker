@@ -47,6 +47,7 @@ describe('SiteFooter', () => {
     render(<SiteFooter locale="en" currentPath="/privacy" />);
 
     expect(screen.getByRole('contentinfo')).toBeDefined();
+    expect(screen.getByRole('heading', { name: 'Tools' })).toBeDefined();
     expect(screen.getByRole('link', { name: /token maker home/i }).getAttribute('href')).toBe('/');
     expect(screen.getByRole('link', { name: 'Editor' }).getAttribute('href')).toBe('/#editor-workspace');
     expect(screen.getByRole('link', { name: 'Square Token Maker' }).getAttribute('href')).toBe(
@@ -64,6 +65,7 @@ describe('SiteFooter', () => {
   it('renders localized Chinese links without adding dependencies', () => {
     render(<SiteFooter locale="zh" currentPath="/about" />);
 
+    expect(screen.getByRole('heading', { name: '工具' })).toBeDefined();
     expect(screen.getByRole('link', { name: /token maker 首页/i }).getAttribute('href')).toBe('/zh');
     expect(screen.getByRole('link', { name: '编辑器' }).getAttribute('href')).toBe('/zh#editor-workspace');
     expect(screen.getByRole('link', { name: '方形 Token 制作器' }).getAttribute('href')).toBe(
@@ -121,7 +123,7 @@ describe('SiteFooter', () => {
     expect(footerNavigationClassList).toContain('sm:gap-x-8');
     expect(firstFooterLinkIndex).toBeGreaterThan(-1);
 
-    for (const sectionTitle of ['Create', 'Learn', 'Support']) {
+    for (const sectionTitle of ['Tools', 'Learn', 'Support']) {
       const sectionHeaderClassList = getFooterSectionHeaderClassList(sectionTitle);
 
       expect(sectionHeaderClassList).toContain('flex-col');

@@ -154,34 +154,34 @@ export function TemplatePanel() {
   };
 
   return (
-    <div className="order-4 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-80 xl:overflow-hidden xl:border-y-0 xl:border-l">
+    <div className="order-4 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-[var(--editor-side-panel-width)] xl:overflow-hidden xl:border-y-0 xl:border-l">
 
       {/* ── 顶部固定标题栏 ── */}
       <div className="shrink-0 border-b border-border/50 px-4 py-3 sm:py-4">
         <h3 className="text-sm font-semibold text-foreground/90">{t('templatePanel')}</h3>
       </div>
 
-      <div className="flex-none space-y-6 overflow-visible px-4 py-4 sm:space-y-8 sm:py-6 xl:flex-1 xl:overflow-y-auto">
+      <div className="flex-none space-y-6 overflow-visible px-4 py-4 sm:space-y-8 sm:py-6 xl:flex-1 xl:space-y-4 xl:overflow-y-auto">
         
         {/* 风格预设 */}
-        <div className="space-y-4">
+        <div className="space-y-4 xl:space-y-2">
           <h3 className="text-sm font-semibold text-foreground/90">{t('presets')}</h3>
-          <div className="grid grid-cols-3 gap-2 min-[480px]:grid-cols-4 md:grid-cols-6 xl:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2 min-[480px]:grid-cols-4 md:grid-cols-6 xl:grid-cols-4">
             {STYLE_PRESETS.map((preset) => {
               const isActive = activePresetId === preset.id;
               return (
                 <button
                   key={preset.id}
                   onClick={() => applyPreset(preset)}
-                  className={`flex aspect-square flex-col items-center justify-center rounded-lg border p-2 transition-all ${
+                  className={`flex aspect-square flex-col items-center justify-center rounded-lg border p-2 transition-all xl:aspect-auto xl:h-16 xl:p-1.5 ${
                     isActive
                       ? 'border-primary bg-primary/10 text-primary shadow-[0_12px_28px_-18px_color-mix(in_oklab,var(--color-primary)_75%,transparent)]'
                       : 'border-border/50 hover:border-primary/50 hover:bg-accent text-muted-foreground hover:text-foreground'
                   }`}
                   title={t(preset.name as I18nKey)}
                 >
-                  <span className="mb-1 text-xl">{preset.icon}</span>
-                  <span className="text-[10px] whitespace-nowrap">{t(preset.name as I18nKey)}</span>
+                  <span className="mb-1 text-xl xl:mb-0.5 xl:text-lg">{preset.icon}</span>
+                  <span className="text-[10px] leading-tight whitespace-nowrap xl:text-[9px]">{t(preset.name as I18nKey)}</span>
                 </button>
               );
             })}

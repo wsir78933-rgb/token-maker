@@ -6,14 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import { ImageUploader } from './ImageUploader';
 import { TextCanvasOverlay } from './TextCanvasOverlay';
 import type { EditorState } from '@/types/editor';
-import { getCurrentImageScaleControls, useCanvasEditorState } from './editor-store-hooks';
-
-function getNextImageScale(currentScale: number, deltaY: number) {
-  const scaleFactor = 0.05;
-  const direction = deltaY < 0 ? 1 : -1;
-
-  return Math.max(0.1, Math.min(currentScale + direction * scaleFactor, 5));
-}
+import { useCanvasEditorState } from './editor-store-hooks';
 
 const EDITOR_REFERENCE_SIZE = 512;
 
@@ -38,7 +31,6 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     overlayTint,
     borderOpacity,
     overlayOpacity,
-    textBoxes,
     isImageSelected,
     renderRevision,
     setImageOffset,
@@ -112,7 +104,7 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
       overlayTint,
       borderOpacity,
       overlayOpacity,
-      textBoxes,
+      textBoxes: [],
       selectedTextId: null,
       isImageSelected: false,
       exportSize: 512,
@@ -139,7 +131,6 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     overlayTint,
     borderOpacity,
     overlayOpacity,
-    textBoxes,
     renderRevision,
     assetRevision,
     canvasSize,
@@ -182,31 +173,6 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
       setImageOffset(nextOffset.x, nextOffset.y);
     }
   };
-
-  useEffect(() => {
-    const workspaceElement = workspaceRef.current;
-    if (!workspaceElement) return;
-
-    // 使用原生非被动 wheel 监听，避免缩放时触发外层滚动容器滚动。
-    const handleWheel = (event: WheelEvent) => {
-      const { imageElement, imageScale, setImageScale } = getCurrentImageScaleControls();
-      if (!imageElement) return;
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      const nextScale = getNextImageScale(imageScale, event.deltaY);
-      if (nextScale !== imageScale) {
-        setImageScale(nextScale);
-      }
-    };
-
-    workspaceElement.addEventListener('wheel', handleWheel, { passive: false });
-
-    return () => {
-      workspaceElement.removeEventListener('wheel', handleWheel);
-    };
-  }, []);
 
   // ======== 交互事件 ========
   const handlePointerDown = (e: React.PointerEvent) => {

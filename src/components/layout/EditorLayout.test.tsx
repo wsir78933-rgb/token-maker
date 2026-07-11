@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { cleanup, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/i18n', () => ({
   useI18n: () => ({ t: (key: string) => key }),
@@ -54,6 +54,21 @@ vi.mock('@/components/layout/EditorSearchParamsSync', () => ({
 import { EditorLayout } from './EditorLayout';
 
 describe('EditorLayout', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('defines a responsive side panel width for the desktop editor layout', () => {
+    const { container } = render(<EditorLayout />);
+
+    const editorWorkspace = container.querySelector('#editor-workspace');
+
+    expect(editorWorkspace?.className).toContain('[--editor-side-panel-width:20rem]');
+    expect(editorWorkspace?.className).toContain(
+      'xl:[--editor-side-panel-width:min(calc(25vw+2rem),34rem)]'
+    );
+  });
+
   it('uses a compact batch preview so the image list remains visible', () => {
     render(<EditorLayout />);
 

@@ -22,17 +22,11 @@ export function useCanvasEditorState() {
     overlayTint: useEditorStore((state) => state.overlayTint),
     borderOpacity: useEditorStore((state) => state.borderOpacity),
     overlayOpacity: useEditorStore((state) => state.overlayOpacity),
-    textBoxes: useEditorStore((state) => state.textBoxes),
     isImageSelected: useEditorStore((state) => state.isImageSelected),
     renderRevision: useEditorStore((state) => state.renderRevision),
     setImageOffset: useEditorStore((state) => state.setImageOffset),
     setSelectedText: useEditorStore((state) => state.setSelectedText),
   };
-}
-
-export function getCurrentImageScaleControls() {
-  const { imageElement, imageScale, setImageScale } = useEditorStore.getState();
-  return { imageElement, imageScale, setImageScale };
 }
 
 export function useControlPanelState() {

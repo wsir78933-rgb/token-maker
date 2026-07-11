@@ -127,6 +127,28 @@ describe('TemplatePanel preset border assets', () => {
     vi.clearAllMocks();
   });
 
+  it('uses the editor layout side panel width on desktop', () => {
+    const { container } = render(<TemplatePanel />);
+
+    const templatePanelRoot = container.firstElementChild;
+
+    expect(templatePanelRoot?.className).toContain('xl:w-[var(--editor-side-panel-width)]');
+    expect(templatePanelRoot?.className).not.toContain('xl:w-80');
+  });
+
+  it('uses compact desktop preset buttons to leave more room for border templates', () => {
+    render(<TemplatePanel />);
+
+    const warriorPresetButton = screen.getByTitle('warrior');
+    const presetGrid = warriorPresetButton.parentElement;
+
+    expect(presetGrid?.className).toContain('xl:grid-cols-4');
+    expect(presetGrid?.className).not.toContain('xl:grid-cols-3');
+    expect(warriorPresetButton.className).toContain('xl:h-16');
+    expect(warriorPresetButton.className).toContain('xl:aspect-auto');
+    expect(warriorPresetButton.className).not.toContain('xl:aspect-square');
+  });
+
   it('shows warrior borders inside the border templates after the warrior preset is selected', () => {
     render(<TemplatePanel />);
 

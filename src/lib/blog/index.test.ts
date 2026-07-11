@@ -10,8 +10,150 @@ import {
 } from '@/lib/blog-content';
 
 const DND_BLESS_SLUG = 'dnd-bless';
+const DND_SILVERY_BARBS_SLUG = 'dnd-silvery-barbs';
 const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
+
+describe('dnd silvery barbs blog post', () => {
+  test('publishes the dnd silvery barbs article in English and Chinese', () => {
+    const englishPost = getBlogPost('en', DND_SILVERY_BARBS_SLUG);
+    const chinesePost = getBlogPost('zh', DND_SILVERY_BARBS_SLUG);
+
+    expect(englishPost?.title).toContain('Silvery Barbs DnD');
+    expect(englishPost?.bodyHtml).toContain('dnd silvery barbs');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-silvery-barbs-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(7);
+
+    expect(chinesePost?.title).toContain('银光倒刺（Silvery Barbs）');
+    expect(chinesePost?.bodyHtml).toContain('银光倒刺（Silvery Barbs）');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-silvery-barbs-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(7);
+  });
+
+  test('keeps high-risk Silvery Barbs rules accurate in both locales', () => {
+    const englishPost = getBlogPost('en', DND_SILVERY_BARBS_SLUG);
+    const chinesePost = getBlogPost('zh', DND_SILVERY_BARBS_SLUG);
+
+    expect(englishPost?.bodyHtml).toContain(
+      "Silvery Barbs was introduced in Strixhaven: A Curriculum of Chaos, not the 2014 Player's Handbook.",
+    );
+    expect(englishPost?.bodyHtml).toContain('It is not printed in the 2024 Free Rules spell list.');
+    expect(englishPost?.bodyHtml).toContain('Ask the DM before building a character around it.');
+    expect(englishPost?.bodyHtml).toContain('Silvery Barbs cannot negate Legendary Resistance.');
+    expect(englishPost?.bodyHtml).toContain('Silvery Barbs does not require concentration.');
+    expect(englishPost?.bodyHtml).toContain('It is a reroll effect, not the Disadvantage condition.');
+    expect(englishPost?.bodyHtml).toContain(
+      'The 2024 one-spell-slot-per-turn rule applies to the whole turn',
+    );
+
+    expect(chinesePost?.bodyHtml).toContain(
+      '银光倒刺（Silvery Barbs）出自《斯翠海文：混沌课程》（Strixhaven: A Curriculum of Chaos），不是 2014 版《玩家手册》（Player’s Handbook）的法术。',
+    );
+    expect(chinesePost?.bodyHtml).toContain('它没有收录在 2024 免费规则（Free Rules）的法术列表里。');
+    expect(chinesePost?.bodyHtml).toContain('围绕它建角色前，先问 DM。');
+    expect(chinesePost?.bodyHtml).toContain('银光倒刺不能取消传奇抗力（Legendary Resistance）。');
+    expect(chinesePost?.bodyHtml).toContain('银光倒刺不需要专注（Concentration）。');
+    expect(chinesePost?.bodyHtml).toContain('它是重掷效果，不是劣势（Disadvantage）状态。');
+    expect(chinesePost?.bodyHtml).toContain(
+      '2024 版规则看整个回合：如果银光倒刺在该回合消耗了法术位，同一施法者本回合不能再用另一个法术位施放其他法术；反过来也一样。',
+    );
+  });
+
+  test('keeps visible Silvery Barbs FAQ answers aligned with structured data', () => {
+    for (const locale of ['en', 'zh'] as const) {
+      const post = getBlogPost(locale, DND_SILVERY_BARBS_SLUG);
+
+      for (const faqItem of post?.faqItems ?? []) {
+        expect(post?.bodyHtml).toContain(faqItem.question);
+        expect(post?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+      }
+    }
+  });
+
+  test('keeps the Chinese Silvery Barbs article Chinese-first', () => {
+    const chineseBodyHtml = getBlogPost('zh', DND_SILVERY_BARBS_SLUG)?.bodyHtml ?? '';
+
+    expect(chineseBodyHtml).toContain('银光倒刺（Silvery Barbs）');
+    expect(chineseBodyHtml).toContain('反应（Reaction）');
+    expect(chineseBodyHtml).toContain('优势（Advantage）');
+    expect(chineseBodyHtml).toContain('劣势（Disadvantage）');
+    expect(chineseBodyHtml).toContain('传奇抗力（Legendary Resistance）');
+    expect(chineseBodyHtml).toContain('DND 银光倒刺（Silvery Barbs）常见问题');
+
+    expect(chineseBodyHtml).not.toContain('<h2 id="quick-answer">Quick answer');
+    expect(chineseBodyHtml).not.toContain('Silvery Barbs DnD FAQ');
+    expect(chineseBodyHtml).not.toContain('What is Silvery Barbs?');
+  });
+
+  test('uses localized paths for the dnd silvery barbs article', () => {
+    expect(getBlogPostPath('en', DND_SILVERY_BARBS_SLUG)).toBe('/blog/dnd-silvery-barbs');
+    expect(getBlogPostPath('zh', DND_SILVERY_BARBS_SLUG)).toBe('/zh/blog/dnd-silvery-barbs');
+  });
+
+  test('builds bilingual metadata alternates for the dnd silvery barbs article', () => {
+    const metadata = createBlogPostMetadata('en', DND_SILVERY_BARBS_SLUG);
+
+    expect(metadata.title).toBe('Silvery Barbs DnD Guide: 2014 vs 2024 Rules and VTT Tips');
+    expect(metadata.alternates?.canonical).toBe('/blog/dnd-silvery-barbs');
+    expect(metadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-silvery-barbs',
+      'en-US': '/blog/dnd-silvery-barbs',
+      'zh-CN': '/zh/blog/dnd-silvery-barbs',
+    });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        url: 'https://www.tokenmaker.one/blog/covers/en/dnd-silvery-barbs-guide.webp',
+        alt: 'dnd silvery barbs guide cover showing silver reaction magic between VTT tokens, d20 dice, spell notes, and an advantage marker on a tabletop battle map',
+      },
+    ]);
+  });
+
+  test('builds article and FAQ structured data for the dnd silvery barbs article', () => {
+    const chinesePost = getBlogPost('zh', DND_SILVERY_BARBS_SLUG);
+
+    expect(buildBlogPostStructuredData('en', DND_SILVERY_BARBS_SLUG)).toMatchObject({
+      '@type': 'Article',
+      headline: 'Silvery Barbs DnD Guide: 2014 vs 2024 Rules and VTT Tips',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-silvery-barbs',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-silvery-barbs-guide.webp'],
+    });
+
+    expect(buildBlogPostFaqStructuredData('zh', DND_SILVERY_BARBS_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+
+    expect(chinesePost?.coverAlt).toContain('银光倒刺（Silvery Barbs）指南封面图');
+    expect(chinesePost?.faqItems?.[1]?.question).toBe('银光倒刺在 2024 免费规则里吗？');
+    expect(chinesePost?.faqItems?.[1]?.answer).toContain('没有');
+  });
+
+  test('uses existing WebP assets for the dnd silvery barbs article', () => {
+    expect(existsSync('public/blog/covers/en/dnd-silvery-barbs-guide.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-silvery-barbs/dnd-silvery-barbs-video-placeholder.webp')).toBe(
+      true,
+    );
+  });
+
+  test('keeps the Silvery Barbs video as a lazy lite YouTube embed', () => {
+    const englishBodyHtml = getBlogPost('en', DND_SILVERY_BARBS_SLUG)?.bodyHtml ?? '';
+
+    expect(englishBodyHtml).toContain('data-video-id="Iywz0U5Zwl0"');
+    expect(englishBodyHtml).toContain(
+      'src="/blog/inline/dnd-silvery-barbs/dnd-silvery-barbs-video-placeholder.webp"',
+    );
+    expect(englishBodyHtml).toContain('loading="lazy"');
+    expect(englishBodyHtml).not.toContain('<iframe');
+  });
+
+  test('lists the dnd silvery barbs article in llms.txt for both locales', () => {
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-silvery-barbs');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-silvery-barbs');
+  });
+});
 
 describe('dnd shortsword blog post', () => {
   test('publishes the dnd shortsword article in English and Chinese', () => {

@@ -2,14 +2,9 @@
 
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { useEffect, useRef, useState, type FocusEvent } from 'react';
 import { SiteMark } from '@/components/site/SiteMark';
 import { TrackedEditorLink } from '@/components/site/TrackedEditorLink';
 import { cn } from '@/lib/utils';
-
-const desktopNavigationMinWidth = 768;
-const topVisibleScrollY = 8;
-const scrollDirectionThreshold = 8;
 
 export interface ContentSiteTopbarLink {
   href: string;
@@ -32,74 +27,6 @@ interface ContentSiteTopbarProps {
   siteMarkClassName?: string;
 }
 
-function getCurrentScrollY() {
-  return Math.max(window.scrollY, 0);
-}
-
-function isDesktopNavigationViewport() {
-  return window.innerWidth >= desktopNavigationMinWidth;
-}
-
-function shouldIgnoreScrollDelta(scrollDelta: number) {
-  return Math.abs(scrollDelta) < scrollDirectionThreshold;
-}
-
-function useDesktopScrollHiddenTopbar() {
-  const [isScrollHidden, setIsScrollHidden] = useState(false);
-  const previousScrollYRef = useRef(0);
-
-  useEffect(() => {
-    const updateTopbarVisibility = () => {
-      const currentScrollY = getCurrentScrollY();
-
-      if (!isDesktopNavigationViewport() || currentScrollY <= topVisibleScrollY) {
-        previousScrollYRef.current = currentScrollY;
-        setIsScrollHidden(false);
-        return;
-      }
-
-      const scrollDelta = currentScrollY - previousScrollYRef.current;
-
-      if (shouldIgnoreScrollDelta(scrollDelta)) {
-        return;
-      }
-
-      previousScrollYRef.current = currentScrollY;
-      setIsScrollHidden(scrollDelta > 0);
-    };
-
-    let pendingAnimationFrameId: number | null = null;
-
-    const scheduleTopbarVisibilityUpdate = () => {
-      if (pendingAnimationFrameId !== null) {
-        return;
-      }
-
-      pendingAnimationFrameId = window.requestAnimationFrame(() => {
-        pendingAnimationFrameId = null;
-        updateTopbarVisibility();
-      });
-    };
-
-    previousScrollYRef.current = getCurrentScrollY();
-    updateTopbarVisibility();
-
-    window.addEventListener('scroll', scheduleTopbarVisibilityUpdate, { passive: true });
-    window.addEventListener('resize', scheduleTopbarVisibilityUpdate);
-
-    return () => {
-      window.removeEventListener('scroll', scheduleTopbarVisibilityUpdate);
-      window.removeEventListener('resize', scheduleTopbarVisibilityUpdate);
-
-      if (pendingAnimationFrameId !== null) {
-        window.cancelAnimationFrame(pendingAnimationFrameId);
-      }
-    };
-  }, []);
-
-  return isScrollHidden;
-}
-
 export function ContentSiteTopbar({
   brandHref,
   brandName,
@@ -114,30 +41,10 @@ export function ContentSiteTopbar({
   showBackIcon = false,
   siteMarkClassName,
 }: ContentSiteTopbarProps) {
-  const isScrollHidden = useDesktopScrollHiddenTopbar();
-  const [hasTopbarFocus, setHasTopbarFocus] = useState(false);
-  const isTopbarHidden = isScrollHidden && !hasTopbarFocus;
-
-  const handleTopbarBlur = (event: FocusEvent<HTMLDivElement>) => {
-    const nextFocusedElement = event.relatedTarget;
-
-    if (nextFocusedElement instanceof Node && event.currentTarget.contains(nextFocusedElement)) {
-      return;
-    }
-
-    setHasTopbarFocus(false);
-  };
-
   return (
     <div
-      className={cn(
-        'site-topbar transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none',
-        isTopbarHidden && 'md:-translate-y-full',
-        topbarClassName,
-      )}
-      data-scroll-hidden={isTopbarHidden ? 'true' : 'false'}
-      onBlurCapture={handleTopbarBlur}
-      onFocusCapture={() => setHasTopbarFocus(true)}
+      className={cn('site-topbar', topbarClassName)}
+      data-scroll-hidden="false"
     >
       <div className={contentClassName}>
         <div className="flex flex-wrap items-center justify-between gap-3">

@@ -14,11 +14,17 @@ import {
 function ShowcasePresetLink({
   locale,
   presetId,
+  borderId,
+  maskId,
+  borderTint,
   compact = false,
   className,
 }: {
   locale: SiteLocale;
   presetId: string;
+  borderId?: string;
+  maskId?: string;
+  borderTint?: string;
   compact?: boolean;
   className?: string;
 }) {
@@ -26,7 +32,11 @@ function ShowcasePresetLink({
 
   return (
     <EditorLaunchButton
-      href={getPresetHref(locale, presetId)}
+      href={getPresetHref(locale, presetId, {
+        borderId,
+        maskId,
+        borderTint,
+      })}
       aria-label={`${getShowcaseText(locale, 'showcaseApplyPreset')} ${presetLabel}`}
       className={cn(
         'inline-flex items-center gap-2 rounded-[min(var(--radius-md),12px)] border text-sm font-medium transition',
@@ -134,6 +144,9 @@ function ShowcaseCard({
           <ShowcasePresetLink
             locale={locale}
             presetId={item.presetId}
+            borderId={item.borderId}
+            maskId={item.maskId}
+            borderTint={item.borderTint}
             className="mt-4 w-full"
           />
         </div>

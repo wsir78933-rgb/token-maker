@@ -70,7 +70,7 @@ export function InnerPageChrome({
         navLinks={contentTopbarNavLinks}
         showBackIcon
         siteMarkClassName="h-8 w-8 rounded-lg"
-        topbarClassName="sticky top-0 z-50"
+        topbarClassName="z-50"
       />
 
       <div className="relative">

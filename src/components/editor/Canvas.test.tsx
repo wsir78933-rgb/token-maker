@@ -123,6 +123,31 @@ describe('Canvas', () => {
     expect(screen.queryByText('Scale')).toBeNull();
   });
 
+  it('keeps editable text out of the base preview canvas render state', () => {
+    const img = new Image();
+    useEditorStore.setState({
+      imageUrl: 'blob:test',
+      imageElement: img,
+      textBoxes: [
+        {
+          id: 'txt-1',
+          content: 'Hero',
+          x: 256,
+          y: 256,
+          fontSize: 48,
+          fontWeight: 700,
+          color: '#ffffff',
+          align: 'center',
+        },
+      ],
+    });
+
+    render(<Canvas />);
+
+    const previewRenderState = renderTokenMock.mock.calls.at(-1)?.[1];
+    expect(previewRenderState?.textBoxes).toEqual([]);
+  });
+
   it('starts drag on pointer down and updates offset on move', () => {
     const img = new Image();
     useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageOffsetX: 0, imageOffsetY: 0 });
@@ -139,16 +164,24 @@ describe('Canvas', () => {
     fireEvent.pointerUp(canvas, { clientX: 150, clientY: 120 });
   });
 
-  it('zooms the image when the wheel is used over the canvas workspace', () => {
+  it('does not zoom the image when the wheel is used over the canvas workspace', () => {
     const img = new Image();
     useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1 });
 
     render(<Canvas />);
-    const workspace = screen.getByTestId('canvas-workspace');
+    const canvas = document.querySelector('canvas.cursor-move') as HTMLCanvasElement;
+    expect(canvas).not.toBeNull();
 
-    fireEvent.wheel(workspace, { deltaY: -100 });
+    const wheelEvent = new WheelEvent('wheel', {
+      bubbles: true,
+      cancelable: true,
+      deltaY: -100,
+    });
+    const wasNotPrevented = canvas.dispatchEvent(wheelEvent);
 
-    expect(useEditorStore.getState().imageScale).toBeCloseTo(1.05);
+    expect(wasNotPrevented).toBe(true);
+    expect(wheelEvent.defaultPrevented).toBe(false);
+    expect(useEditorStore.getState().imageScale).toBe(1);
   });
 
   it('keeps async asset refresh active after StrictMode effect replay', async () => {

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { cleanup, render, screen, fireEvent } from '@testing-library/react';
 
 import { useEditorStore } from '@/lib/store/editor-store';
 
@@ -50,8 +50,18 @@ describe('ControlPanel', () => {
   });
 
   afterEach(() => {
+    cleanup();
     resetStore();
     vi.unstubAllGlobals();
+  });
+
+  it('uses the editor layout side panel width on desktop', () => {
+    const { container } = render(<ControlPanel />);
+
+    const controlPanelRoot = container.firstElementChild;
+
+    expect(controlPanelRoot?.className).toContain('xl:w-[var(--editor-side-panel-width)]');
+    expect(controlPanelRoot?.className).not.toContain('xl:w-80');
   });
 
   it('renders section headings', () => {

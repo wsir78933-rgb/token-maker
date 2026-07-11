@@ -23,6 +23,7 @@ import {
   DND_RAPIER_COVER_PATH,
   DND_RANGER_SPELLS_COVER_PATH,
   DND_SHORTSWORD_COVER_PATH,
+  DND_SILVERY_BARBS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -47,6 +48,10 @@ import { dndRangerSpellsArticleHtml, dndRangerSpellsArticleHtmlZh } from '@/lib/
 import { dndBlessArticleHtml, dndBlessArticleHtmlZh } from '@/lib/blog-posts/dnd-bless';
 import { rapierDndArticleHtml, rapierDndArticleHtmlZh } from '@/lib/blog-posts/rapier-dnd';
 import { dndShortswordArticleHtml, dndShortswordArticleHtmlZh } from '@/lib/blog-posts/dnd-shortsword';
+import {
+  dndSilveryBarbsArticleHtml,
+  dndSilveryBarbsArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-silvery-barbs';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -89,6 +94,7 @@ const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
 const DND_BLESS_UPDATED_AT = '2026-07-09';
 const DND_SHORTSWORD_UPDATED_AT = '2026-07-10';
+const DND_SILVERY_BARBS_UPDATED_AT = '2026-07-11';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1359,6 +1365,67 @@ const dndRangerSpellsArticle: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndSilveryBarbsArticle: BlogPost = {
+  slug: 'dnd-silvery-barbs',
+  title: 'Silvery Barbs DnD Guide: 2014 vs 2024 Rules, Source, and VTT Tips',
+  seoTitle: 'Silvery Barbs DnD Guide: 2014 vs 2024 Rules and VTT Tips',
+  metaDescription:
+    'Check dnd silvery barbs rules, Strixhaven source, 2014 vs 2024 table handling, Legendary Resistance, advantage timing, FAQ, and VTT token tips.',
+  excerpt:
+    'A practical dnd silvery barbs guide covering Strixhaven source access, 2014/2024 table handling, Legendary Resistance, reroll timing, DM approval, FAQ, and VTT token markers.',
+  publishedAt: DND_SILVERY_BARBS_UPDATED_AT,
+  updatedAt: DND_SILVERY_BARBS_UPDATED_AT,
+  readTime: '13 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_SILVERY_BARBS_COVER_PATH,
+  coverAlt:
+    'dnd silvery barbs guide cover showing silver reaction magic between VTT tokens, d20 dice, spell notes, and an advantage marker on a tabletop battle map',
+  bodyHtml: dndSilveryBarbsArticleHtml,
+  faqItems: [
+    {
+      question: 'Is Silvery Barbs official DnD content?',
+      answer:
+        'Yes. Silvery Barbs is official DnD content from Strixhaven: A Curriculum of Chaos, but it is setting-expanded content, so the DM decides whether it is available.',
+    },
+    {
+      question: 'Is Silvery Barbs in the 2024 Free Rules?',
+      answer:
+        'No. Silvery Barbs is not printed in the 2024 Free Rules spell list. Use it only if your DM allows Strixhaven or expanded source content.',
+    },
+    {
+      question: "Is Silvery Barbs in the 2014 Player's Handbook?",
+      answer:
+        "No. Silvery Barbs was introduced in Strixhaven: A Curriculum of Chaos, not the 2014 Player's Handbook.",
+    },
+    {
+      question: 'Does Silvery Barbs require concentration?',
+      answer:
+        'No. Silvery Barbs does not require concentration, so it can be used while the caster is maintaining another concentration spell.',
+    },
+    {
+      question: 'Can Silvery Barbs cancel a critical hit?',
+      answer:
+        'It can force the creature to reroll the successful attack roll and use the lower result. If the lower result is no longer a critical hit or no longer hits, the outcome changes.',
+    },
+    {
+      question: 'Does Silvery Barbs work on Legendary Resistance?',
+      answer:
+        'No. Silvery Barbs cannot negate Legendary Resistance because Legendary Resistance turns a failed save into a success after the roll has already failed.',
+    },
+    {
+      question: 'Is Silvery Barbs the same as disadvantage?',
+      answer:
+        'No. It is a reroll effect, not the Disadvantage condition. That difference matters for rules that care about advantage or disadvantage.',
+    },
+    {
+      question: 'Should DMs ban Silvery Barbs?',
+      answer:
+        'Not automatically. DMs should decide before play whether Strixhaven content fits the campaign and whether this reaction makes the table more fun or more frustrating.',
+    },
+  ],
+  relatedSlugs: ['dnd-counterspell', 'dnd-bard-spells', 'dnd-ranger-spells', 'dnd-bless'],
+};
+
 const dndShortswordArticle: BlogPost = {
   slug: 'dnd-shortsword',
   title: 'DnD Shortsword Guide: 2014 vs 2024 Stats, Vex, Nick, and Sneak Attack',
@@ -1883,6 +1950,67 @@ const dndRangerSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndSilveryBarbsArticleZh: BlogPost = {
+  slug: 'dnd-silvery-barbs',
+  title: '银光倒刺（Silvery Barbs）DND 指南：2014/2024 规则、来源与 VTT 标记',
+  seoTitle: '银光倒刺（Silvery Barbs）DND 指南：2014/2024 规则',
+  metaDescription:
+    '快速看懂银光倒刺（Silvery Barbs）：斯翠海文来源、2014/2024 规则差异、传奇抗力、优势时机、DM 许可、FAQ 与 VTT Token 标记。',
+  excerpt:
+    '一篇适合桌边核对的银光倒刺（Silvery Barbs）DND 指南，讲清斯翠海文来源、2014/2024 桌面处理、传奇抗力、重掷时机、DM 许可和 VTT Token 标记。',
+  publishedAt: DND_SILVERY_BARBS_UPDATED_AT,
+  updatedAt: DND_SILVERY_BARBS_UPDATED_AT,
+  readTime: '13 分钟阅读',
+  coverLabel: '法术指南',
+  coverImage: DND_SILVERY_BARBS_COVER_PATH,
+  coverAlt:
+    '银光倒刺（Silvery Barbs）指南封面图，桌面战斗地图上有银色反应法术、VTT Token、d20 骰子和优势标记',
+  bodyHtml: dndSilveryBarbsArticleHtmlZh,
+  faqItems: [
+    {
+      question: '银光倒刺是官方 DND 内容吗？',
+      answer:
+        '是。银光倒刺是《斯翠海文：混沌课程》中的官方 DND 内容，但它属于扩展设定内容，是否可用由 DM 决定。',
+    },
+    {
+      question: '银光倒刺在 2024 免费规则里吗？',
+      answer:
+        '没有。银光倒刺没有收录在 2024 免费规则的法术列表里；只有在 DM 允许斯翠海文或扩展来源时才使用。',
+    },
+    {
+      question: '银光倒刺在 2014 版玩家手册里吗？',
+      answer:
+        '没有。银光倒刺出自《斯翠海文：混沌课程》，不是 2014 版《玩家手册》的法术。',
+    },
+    {
+      question: '银光倒刺需要专注吗？',
+      answer:
+        '不需要。银光倒刺不需要专注，所以施法者可以在维持另一个专注法术时使用它。',
+    },
+    {
+      question: '银光倒刺能取消重击吗？',
+      answer:
+        '它可以迫使触发生物重掷那次成功的攻击检定，并使用较低结果。如果较低结果不再是重击，甚至不再命中，结果就会改变。',
+    },
+    {
+      question: '银光倒刺能影响传奇抗力吗？',
+      answer:
+        '不能。银光倒刺不能取消传奇抗力，因为传奇抗力是在豁免已经失败后把失败变成成功。',
+    },
+    {
+      question: '银光倒刺等同于劣势吗？',
+      answer:
+        '不等同。它是重掷效果，不是劣势（Disadvantage）状态；涉及优势或劣势的规则互动时，这个差别很重要。',
+    },
+    {
+      question: 'DM 应该禁用银光倒刺吗？',
+      answer:
+        '不需要自动禁用。DM 应该在开跑前决定斯翠海文内容是否适合战役，以及这个反应会让桌子更好玩还是更烦。',
+    },
+  ],
+  relatedSlugs: ['dnd-counterspell', 'dnd-bard-spells', 'dnd-ranger-spells', 'dnd-bless'],
+};
+
 const dndShortswordArticleZh: BlogPost = {
   slug: 'dnd-shortsword',
   title: 'DND 短剑（Shortsword）指南：2014/2024 规则、Vex、Nick 与偷袭',
@@ -2042,10 +2170,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

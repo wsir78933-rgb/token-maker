@@ -48,7 +48,7 @@ export function EditorLayout() {
       ref={workspaceRef}
       id="editor-workspace"
       tabIndex={-1}
-      className="editor-shell scroll-mt-0 flex min-h-[100svh] w-full flex-col overflow-visible bg-background text-foreground selection:bg-primary/30 md:scroll-mt-24 xl:h-screen xl:overflow-hidden"
+      className="editor-shell scroll-mt-0 flex min-h-[100svh] w-full flex-col overflow-visible bg-background text-foreground [--editor-side-panel-width:20rem] selection:bg-primary/30 md:scroll-mt-24 xl:h-screen xl:overflow-hidden xl:[--editor-side-panel-width:min(calc(25vw+2rem),34rem)]"
     >
       <Suspense fallback={null}>
         <EditorSearchParamsSync />

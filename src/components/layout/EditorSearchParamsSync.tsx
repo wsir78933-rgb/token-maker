@@ -9,6 +9,14 @@ import { STYLE_PRESETS } from '@/lib/templates/presets';
 import type { ExportSize } from '@/types/editor';
 
 const EXPORT_SIZES: ExportSize[] = [256, 512, 1024, 2048];
+const HEX_COLOR_PARAM_PATTERN = /^#[0-9a-fA-F]{6}$/;
+
+function getValidHexColorParam(paramName: string, searchParams: URLSearchParams) {
+  const colorParam = searchParams.get(paramName);
+  if (!colorParam) return null;
+
+  return HEX_COLOR_PARAM_PATTERN.test(colorParam) ? colorParam.toUpperCase() : null;
+}
 
 export function EditorSearchParamsSync() {
   const searchParams = useSearchParams();
@@ -17,9 +25,10 @@ export function EditorSearchParamsSync() {
     const preset = searchParams.get('preset');
     const mask = searchParams.get('mask');
     const border = searchParams.get('border');
+    const borderTint = getValidHexColorParam('borderTint', searchParams);
     const size = searchParams.get('size');
 
-    if (!preset && !mask && !border && !size) {
+    if (!preset && !mask && !border && !borderTint && !size) {
       return;
     }
 
@@ -45,6 +54,10 @@ export function EditorSearchParamsSync() {
         store.setBorderLibraryMode(isCompetitorBorderId(matchedBorder.id) ? 'competitor' : 'default');
         store.setSelectedBorder(matchedBorder.id);
       }
+    }
+
+    if (borderTint) {
+      store.setBorderTint(borderTint);
     }
 
     if (size) {

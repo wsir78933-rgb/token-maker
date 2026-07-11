@@ -216,7 +216,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
         localeSwitchLabel={navLabels.switchLocale}
         navClassName="mt-3 flex flex-wrap items-center gap-2 sm:mt-4"
         navLinks={navLinks}
-        topbarClassName="z-50 md:sticky md:top-0"
+        topbarClassName="z-50"
       />
       <section className="site-hero-section">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.9fr)] lg:px-8 lg:py-20">

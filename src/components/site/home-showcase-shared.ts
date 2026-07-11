@@ -46,12 +46,36 @@ export const toneClasses: Record<HomeShowcaseTone, { shell: string; chip: string
 export const QUICK_START_IMAGE_SIZES =
   '(min-width: 1280px) 112px, (min-width: 768px) 96px, 20vw';
 
+interface PresetHrefSelection {
+  borderId?: string;
+  maskId?: string;
+  borderTint?: string;
+}
+
 export function getShowcaseText(locale: SiteLocale, key: string) {
   return dictionaries[locale][key] ?? key;
 }
 
-export function getPresetHref(locale: SiteLocale, presetId: string) {
-  return `${getLocalizedPath(locale, '/')}?preset=${encodeURIComponent(presetId)}#editor-workspace`;
+export function getPresetHref(
+  locale: SiteLocale,
+  presetId: string,
+  selection: PresetHrefSelection = {}
+) {
+  const editorSearchParams = new URLSearchParams({ preset: presetId });
+
+  if (selection.maskId) {
+    editorSearchParams.set('mask', selection.maskId);
+  }
+
+  if (selection.borderId) {
+    editorSearchParams.set('border', selection.borderId);
+  }
+
+  if (selection.borderTint) {
+    editorSearchParams.set('borderTint', selection.borderTint);
+  }
+
+  return `${getLocalizedPath(locale, '/')}?${editorSearchParams.toString()}#editor-workspace`;
 }
 
 export function getShowcaseCardImageSizes(featured: boolean) {

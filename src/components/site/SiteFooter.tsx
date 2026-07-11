@@ -59,7 +59,7 @@ const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
     ],
     sections: [
       {
-        title: 'Create',
+        title: 'Tools',
         icon: Sparkles,
         links: [
           { label: 'Editor', path: editorPath },
@@ -99,7 +99,7 @@ const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
     ],
     sections: [
       {
-        title: '制作',
+        title: '工具',
         icon: PencilRuler,
         links: [
           { label: '编辑器', path: editorPath },

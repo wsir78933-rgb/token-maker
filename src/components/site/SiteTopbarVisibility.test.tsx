@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { act } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HomeHero } from './HomeSeoContent';
@@ -31,19 +31,21 @@ function installAnimationFrameHarness() {
   );
 }
 
-function flushAnimationFrame() {
-  const nextPendingFrame = pendingAnimationFrames.entries().next();
+function flushPendingAnimationFrames() {
+  while (pendingAnimationFrames.size > 0) {
+    const nextPendingFrame = pendingAnimationFrames.entries().next();
 
-  if (nextPendingFrame.done) {
-    throw new Error('No pending animation frame to flush');
+    if (nextPendingFrame.done) {
+      return;
+    }
+
+    const [animationFrameId, callback] = nextPendingFrame.value;
+    pendingAnimationFrames.delete(animationFrameId);
+
+    act(() => {
+      callback(performance.now());
+    });
   }
-
-  const [animationFrameId, callback] = nextPendingFrame.value;
-  pendingAnimationFrames.delete(animationFrameId);
-
-  act(() => {
-    callback(performance.now());
-  });
 }
 
 function setViewportWidth(viewportWidth: number) {
@@ -81,6 +83,12 @@ function getContentSiteTopbar() {
   return contentSiteTopbar;
 }
 
+function expectTopbarNotToUseStickyPositioning(contentSiteTopbar: HTMLElement) {
+  for (const stickyPositionClassName of ['sticky', 'top-0', 'md:sticky', 'md:top-0']) {
+    expect(contentSiteTopbar.classList).not.toContain(stickyPositionClassName);
+  }
+}
+
 describe('content site topbar visibility', () => {
   beforeEach(() => {
     installAnimationFrameHarness();
@@ -93,81 +101,26 @@ describe('content site topbar visibility', () => {
     setWindowScrollY(0);
   });
 
-  it('defers desktop content navigation visibility updates until the next animation frame', () => {
+  it('keeps the homepage content navigation visible on desktop scroll', () => {
     setViewportWidth(1280);
     setWindowScrollY(0);
 
     render(<HomeHero locale="en" />);
 
     const contentSiteTopbar = getContentSiteTopbar();
+
+    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
+    expectTopbarNotToUseStickyPositioning(contentSiteTopbar);
 
     dispatchScroll(180);
-
-    expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
+    flushPendingAnimationFrames();
     expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
-
-    flushAnimationFrame();
-
-    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('true');
-  });
-
-  it('coalesces scroll and resize event bursts into one animation frame', () => {
-    setViewportWidth(1280);
-    setWindowScrollY(0);
-
-    render(<HomeHero locale="en" />);
-
-    const contentSiteTopbar = getContentSiteTopbar();
+    expect(contentSiteTopbar.className).not.toContain('md:-translate-y-full');
 
     dispatchScroll(120);
-    dispatchScroll(180);
-    act(() => {
-      window.dispatchEvent(new Event('resize'));
-    });
-
-    expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
+    flushPendingAnimationFrames();
     expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
-
-    flushAnimationFrame();
-
-    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('true');
-  });
-
-  it('cancels a pending visibility animation frame when unmounted', () => {
-    setViewportWidth(1280);
-    setWindowScrollY(0);
-
-    const { unmount } = render(<HomeHero locale="en" />);
-
-    dispatchScroll(180);
-
-    expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
-
-    unmount();
-
-    expect(cancelAnimationFrame).toHaveBeenCalledTimes(1);
-    expect(cancelAnimationFrame).toHaveBeenCalledWith(1);
-  });
-
-  it('hides the homepage content navigation on desktop downward scroll and shows it on upward scroll', () => {
-    setViewportWidth(1280);
-    setWindowScrollY(0);
-
-    render(<HomeHero locale="en" />);
-
-    const contentSiteTopbar = getContentSiteTopbar();
-
-    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
-
-    dispatchScroll(180);
-    flushAnimationFrame();
-
-    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('true');
-
-    dispatchScroll(120);
-    flushAnimationFrame();
-
-    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
+    expect(contentSiteTopbar.className).not.toContain('md:-translate-y-full');
   });
 
   it('keeps inner content navigation visible on mobile downward scroll', () => {
@@ -184,12 +137,13 @@ describe('content site topbar visibility', () => {
 
     dispatchScroll(180);
     dispatchScroll(360);
-    flushAnimationFrame();
+    flushPendingAnimationFrames();
 
     expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
+    expectTopbarNotToUseStickyPositioning(contentSiteTopbar);
   });
 
-  it('hides inner content navigation on desktop downward scroll and restores it on upward scroll or at the top', () => {
+  it('keeps inner content navigation visible on desktop scroll', () => {
     setViewportWidth(1280);
     setWindowScrollY(0);
 
@@ -202,47 +156,24 @@ describe('content site topbar visibility', () => {
     const contentSiteTopbar = getContentSiteTopbar();
 
     expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
+    expectTopbarNotToUseStickyPositioning(contentSiteTopbar);
 
     dispatchScroll(180);
-    flushAnimationFrame();
-
-    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('true');
-
-    dispatchScroll(120);
-    flushAnimationFrame();
-
+    flushPendingAnimationFrames();
     expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
+    expect(contentSiteTopbar.className).not.toContain('md:-translate-y-full');
 
     dispatchScroll(260);
-    flushAnimationFrame();
-
-    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('true');
+    flushPendingAnimationFrames();
+    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
+    expect(contentSiteTopbar.className).not.toContain('md:-translate-y-full');
 
     dispatchScroll(0);
-    flushAnimationFrame();
-
+    flushPendingAnimationFrames();
     expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
   });
 
-  it('shows a hidden desktop content navigation when a topbar link receives focus', () => {
-    setViewportWidth(1280);
-    setWindowScrollY(0);
-
-    render(<HomeHero locale="en" />);
-
-    const contentSiteTopbar = getContentSiteTopbar();
-
-    dispatchScroll(180);
-    flushAnimationFrame();
-
-    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('true');
-
-    fireEvent.focus(screen.getByRole('link', { name: 'Blog' }));
-
-    expect(contentSiteTopbar.getAttribute('data-scroll-hidden')).toBe('false');
-  });
-
-  it('keeps hub content shells compatible with sticky topbars', () => {
+  it('keeps hub content shells scrollable with regular topbars', () => {
     render(
       <InnerPageChrome locale="en" currentPath="/dice-roller-dnd">
         <section>Dice roller content</section>
@@ -250,8 +181,9 @@ describe('content site topbar visibility', () => {
     );
 
     const siteShell = screen.getByText('Dice roller content').closest('main');
+    const contentSiteTopbar = getContentSiteTopbar();
 
-    expect(siteShell?.className).toContain('site-shell--allow-sticky');
+    expectTopbarNotToUseStickyPositioning(contentSiteTopbar);
     expect(siteShell?.className).not.toContain('overflow-hidden');
   });
 

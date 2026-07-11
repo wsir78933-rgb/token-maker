@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [Silvery Barbs DnD Guide](https://www.tokenmaker.one/blog/dnd-silvery-barbs): Strixhaven source, 2014/2024 table handling, Legendary Resistance, reroll timing, DM approval, FAQ, and VTT token markers.
 - [Shortsword DnD Guide](https://www.tokenmaker.one/blog/dnd-shortsword): Shortsword stats, 2014/2024 rules, Finesse, Light, Vex, Sneak Attack, two-weapon choices, FAQ, and VTT token tips.
 - [Bless DnD Guide](https://www.tokenmaker.one/blog/dnd-bless): Bless 2014/2024 rules, holy symbol component, target priority, common mistakes, FAQ, dice roller, and VTT token tips.
 - [Rapier DnD Guide](https://www.tokenmaker.one/blog/rapier-dnd): Rapier stats, 2014/2024 rules, Finesse, Vex, best users, dual-wielding limits, FAQ, and VTT token tips.
@@ -47,6 +48,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [银光倒刺（Silvery Barbs）DND 指南：2014/2024 规则、来源与 VTT 标记](https://www.tokenmaker.one/zh/blog/dnd-silvery-barbs)
 - [DND 短剑（Shortsword）指南：2014/2024 规则、Vex、Nick 与偷袭](https://www.tokenmaker.one/zh/blog/dnd-shortsword)
 - [祝福术（DND Bless）指南：2014/2024 规则、最佳目标与 VTT Token 建议](https://www.tokenmaker.one/zh/blog/dnd-bless)
 - [DND 细剑指南：5e 数据、Vex、最佳使用者与 VTT Token 建议](https://www.tokenmaker.one/zh/blog/rapier-dnd)
