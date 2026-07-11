@@ -68,15 +68,32 @@ function useDesktopScrollHiddenTopbar() {
       setIsScrollHidden(scrollDelta > 0);
     };
 
+    let pendingAnimationFrameId: number | null = null;
+
+    const scheduleTopbarVisibilityUpdate = () => {
+      if (pendingAnimationFrameId !== null) {
+        return;
+      }
+
+      pendingAnimationFrameId = window.requestAnimationFrame(() => {
+        pendingAnimationFrameId = null;
+        updateTopbarVisibility();
+      });
+    };
+
     previousScrollYRef.current = getCurrentScrollY();
     updateTopbarVisibility();
 
-    window.addEventListener('scroll', updateTopbarVisibility, { passive: true });
-    window.addEventListener('resize', updateTopbarVisibility);
+    window.addEventListener('scroll', scheduleTopbarVisibilityUpdate, { passive: true });
+    window.addEventListener('resize', scheduleTopbarVisibilityUpdate);
 
     return () => {
-      window.removeEventListener('scroll', updateTopbarVisibility);
-      window.removeEventListener('resize', updateTopbarVisibility);
+      window.removeEventListener('scroll', scheduleTopbarVisibilityUpdate);
+      window.removeEventListener('resize', scheduleTopbarVisibilityUpdate);
+
+      if (pendingAnimationFrameId !== null) {
+        window.cancelAnimationFrame(pendingAnimationFrameId);
+      }
     };
   }, []);
 
