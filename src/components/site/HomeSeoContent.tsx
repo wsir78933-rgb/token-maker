@@ -120,7 +120,11 @@ function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
               </div>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link href={getLocalizedPath(locale, '/contact')} prefetch={false} className="site-cta-primary">
+                <Link
+                  href={getLocalizedPath(locale, '/contact')}
+                  prefetch={false}
+                  className="site-cta-primary site-feedback-cta"
+                >
                   {copy.cta}
                   <ArrowRight className="h-4 w-4" />
                 </Link>

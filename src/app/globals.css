@@ -1044,6 +1044,61 @@
   transform: translateY(-1px);
 }
 
+@property --site-feedback-border-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.site-feedback-cta {
+  --site-feedback-border-angle: 0deg;
+  border-color: transparent;
+  background:
+    linear-gradient(var(--site-accent-bg), var(--site-accent-bg)) padding-box,
+    conic-gradient(
+        from var(--site-feedback-border-angle),
+        rgba(215, 180, 106, 0.18) 0deg,
+        rgba(247, 218, 143, 0.95) 48deg,
+        rgba(143, 183, 255, 0.38) 96deg,
+        rgba(215, 180, 106, 0.18) 160deg,
+        rgba(215, 180, 106, 0.18) 360deg
+      )
+      border-box;
+  box-shadow:
+    0 0 0 1px rgba(215, 180, 106, 0.16),
+    0 18px 46px -32px rgba(247, 218, 143, 0.82);
+  animation: site-feedback-border-spin 3.8s linear infinite;
+}
+
+.site-feedback-cta:hover,
+.site-feedback-cta:focus-visible {
+  border-color: transparent;
+  background:
+    linear-gradient(color-mix(in oklab, var(--site-accent-bg) 92%, white 8%), color-mix(in oklab, var(--site-accent-bg) 92%, white 8%)) padding-box,
+    conic-gradient(
+        from var(--site-feedback-border-angle),
+        rgba(215, 180, 106, 0.22) 0deg,
+        rgba(255, 232, 158, 1) 48deg,
+        rgba(143, 183, 255, 0.5) 96deg,
+        rgba(215, 180, 106, 0.22) 160deg,
+        rgba(215, 180, 106, 0.22) 360deg
+      )
+      border-box;
+}
+
+@keyframes site-feedback-border-spin {
+  to {
+    --site-feedback-border-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-feedback-cta {
+    --site-feedback-border-angle: 48deg;
+    animation: none;
+  }
+}
+
 .site-hero-section {
   border-bottom: 1px solid color-mix(in oklab, var(--site-border-strong) 72%, transparent);
   background: var(--site-hero-bg);
