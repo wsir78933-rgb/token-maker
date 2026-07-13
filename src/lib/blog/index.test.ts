@@ -10,9 +10,183 @@ import {
 } from '@/lib/blog-content';
 
 const DND_BLESS_SLUG = 'dnd-bless';
+const DND_GLAIVE_SLUG = 'dnd-glaive';
 const DND_SILVERY_BARBS_SLUG = 'dnd-silvery-barbs';
 const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
+
+describe('dnd glaive blog post', () => {
+  test('publishes the dnd glaive article in English and Chinese', () => {
+    const englishPost = getBlogPost('en', DND_GLAIVE_SLUG);
+    const chinesePost = getBlogPost('zh', DND_GLAIVE_SLUG);
+
+    expect(englishPost?.title).toContain('Glaive DnD');
+    expect(englishPost?.bodyHtml).toContain('dnd glaive');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-glaive-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(6);
+
+    expect(chinesePost?.title).toContain('DND 长柄刀（Glaive）');
+    expect(chinesePost?.bodyHtml).toContain('长柄刀（Glaive）');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-glaive-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(6);
+  });
+
+  test('keeps high-risk glaive rules accurate in both locales', () => {
+    const englishPost = getBlogPost('en', DND_GLAIVE_SLUG);
+    const chinesePost = getBlogPost('zh', DND_GLAIVE_SLUG);
+
+    expect(englishPost?.bodyHtml).toContain(
+      'A glaive is a martial melee weapon that deals 1d10 slashing damage, costs 20 GP, weighs 6 lb, and has the Heavy, Reach, and Two-Handed properties.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'In 2024 rules, the glaive has Graze as its weapon mastery property.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Graze matters only for a character who has a feature that lets them use that weapon mastery.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'In 2014 rules, the glaive does not have a weapon mastery property.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Reach adds 5 feet to your reach for attacks with the glaive and for opportunity attacks with it.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'The glaive and halberd share the same core 2014 stat line, so the difference is mostly visual unless your table uses source-specific magic items or house rules.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'No for normal attacks. The glaive has the Two-Handed property, so it requires two hands when you attack with it.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Usually no. A glaive is not a finesse or ranged weapon, so it does not fit normal Sneak Attack weapon requirements.',
+    );
+
+    expect(chinesePost?.bodyHtml).toContain(
+      '长柄刀（Glaive）是一把军用近战武器，造成 1d10 挥砍伤害，价格 20 GP，重量 6 磅，并有重型（Heavy）、触及（Reach）和双手（Two-Handed）属性。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '2024 规则里，长柄刀（Glaive）的武器掌握（Weapon Mastery）是擦伤（Graze）。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '擦伤（Graze）只有在角色拥有能使用该武器掌握的特性或选项时才生效。',
+    );
+    expect(chinesePost?.bodyHtml).toContain('2014 规则里的长柄刀没有武器掌握属性。');
+    expect(chinesePost?.bodyHtml).toContain(
+      '触及（Reach）让你用长柄刀攻击时的触及距离增加 5 英尺，也影响你用它进行借机攻击时的触及距离。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '长柄刀和戟（Halberd）在 2014 核心数据上相同，所以差异主要是视觉和角色概念，除非你的桌子使用特定来源的魔法物品或房规。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '正常攻击时不行。长柄刀有双手（Two-Handed）属性，攻击时需要两只手。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '通常不适合。长柄刀不是灵巧武器，也不是远程武器，所以不符合普通偷袭（Sneak Attack）武器要求。',
+    );
+  });
+
+  test('keeps visible glaive FAQ answers aligned with structured data', () => {
+    for (const locale of ['en', 'zh'] as const) {
+      const post = getBlogPost(locale, DND_GLAIVE_SLUG);
+
+      for (const faqItem of post?.faqItems ?? []) {
+        expect(post?.bodyHtml).toContain(faqItem.question);
+        expect(post?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+      }
+    }
+  });
+
+  test('keeps the Chinese glaive article Chinese-first', () => {
+    const chineseBodyHtml = getBlogPost('zh', DND_GLAIVE_SLUG)?.bodyHtml ?? '';
+
+    expect(chineseBodyHtml).toContain('长柄刀（Glaive）');
+    expect(chineseBodyHtml).toContain('重型（Heavy）');
+    expect(chineseBodyHtml).toContain('触及（Reach）');
+    expect(chineseBodyHtml).toContain('双手（Two-Handed）');
+    expect(chineseBodyHtml).toContain('擦伤（Graze）');
+    expect(chineseBodyHtml).toContain('游荡者（Rogue）适合用长柄刀吗？');
+    expect(chineseBodyHtml).toContain('DND 长柄刀常见问题');
+
+    expect(chineseBodyHtml).not.toContain('<h2 id="quick-answer">Quick answer');
+    expect(chineseBodyHtml).not.toContain('Glaive DnD FAQ');
+    expect(chineseBodyHtml).not.toContain('What is a glaive?');
+  });
+
+  test('uses localized paths for the dnd glaive article', () => {
+    expect(getBlogPostPath('en', DND_GLAIVE_SLUG)).toBe('/blog/dnd-glaive');
+    expect(getBlogPostPath('zh', DND_GLAIVE_SLUG)).toBe('/zh/blog/dnd-glaive');
+  });
+
+  test('builds bilingual metadata alternates for the dnd glaive article', () => {
+    const metadata = createBlogPostMetadata('en', DND_GLAIVE_SLUG);
+
+    expect(metadata.title).toBe('Glaive DnD Guide: 5e Stats, Reach, Graze, and VTT Tips');
+    expect(metadata.alternates?.canonical).toBe('/blog/dnd-glaive');
+    expect(metadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-glaive',
+      'en-US': '/blog/dnd-glaive',
+      'zh-CN': '/zh/blog/dnd-glaive',
+    });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        url: 'https://www.tokenmaker.one/blog/covers/en/dnd-glaive-guide.webp',
+        alt: 'dnd glaive guide cover showing a polearm fighter token, a glaive, dice, reach markers, and VTT token frames on a tabletop battle map',
+      },
+    ]);
+
+    const chineseMetadata = createBlogPostMetadata('zh', DND_GLAIVE_SLUG);
+
+    expect(chineseMetadata.title).toBe(
+      'DND 长柄刀（Glaive）指南：5e 数据、触及（Reach）、擦伤（Graze）与 VTT 建议',
+    );
+    expect(chineseMetadata.description).toContain('重型（Heavy）');
+    expect(chineseMetadata.description).toContain('触及（Reach）');
+    expect(chineseMetadata.description).toContain('双手（Two-Handed）');
+    expect(chineseMetadata.description).toContain('擦伤（Graze）');
+  });
+
+  test('builds article and FAQ structured data for the dnd glaive article', () => {
+    const chinesePost = getBlogPost('zh', DND_GLAIVE_SLUG);
+
+    expect(buildBlogPostStructuredData('en', DND_GLAIVE_SLUG)).toMatchObject({
+      '@type': 'Article',
+      headline: 'Glaive DnD Guide: 5e Stats, Reach, Graze, and VTT Tips',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-glaive',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-glaive-guide.webp'],
+    });
+
+    expect(buildBlogPostFaqStructuredData('zh', DND_GLAIVE_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+
+    expect(chinesePost?.coverAlt).toContain('DND 长柄刀（Glaive）指南封面图');
+    expect(chinesePost?.faqItems?.[2]?.question).toBe('2024 DnD 里长柄刀有 Graze 吗？');
+    expect(chinesePost?.faqItems?.[2]?.answer).toContain('有');
+    expect(chinesePost?.faqItems?.[6]?.question).toBe('游荡者（Rogue）适合用长柄刀吗？');
+  });
+
+  test('uses existing WebP assets for the dnd glaive article', () => {
+    expect(existsSync('public/blog/covers/en/dnd-glaive-guide.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-glaive/glaive-video-placeholder.webp')).toBe(true);
+  });
+
+  test('keeps the glaive video as a lazy lite YouTube embed', () => {
+    const englishBodyHtml = getBlogPost('en', DND_GLAIVE_SLUG)?.bodyHtml ?? '';
+
+    expect(englishBodyHtml).toContain('data-video-id="zAJmvbQXm1c"');
+    expect(englishBodyHtml).toContain('src="/blog/inline/dnd-glaive/glaive-video-placeholder.webp"');
+    expect(englishBodyHtml).toContain('loading="lazy"');
+    expect(englishBodyHtml).not.toContain('<iframe');
+  });
+
+  test('lists the dnd glaive article in llms.txt for both locales', () => {
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-glaive');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-glaive');
+  });
+});
 
 describe('dnd silvery barbs blog post', () => {
   test('publishes the dnd silvery barbs article in English and Chinese', () => {

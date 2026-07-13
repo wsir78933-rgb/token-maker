@@ -18,6 +18,7 @@ import {
   DND_DAGGER_COVER_PATH,
   DND_GHOST_COVER_PATH,
   DND_DWARF_NAMES_COVER_PATH,
+  DND_GLAIVE_COVER_PATH,
   DND_MACE_COVER_PATH,
   DND_BLESS_COVER_PATH,
   DND_RAPIER_COVER_PATH,
@@ -43,6 +44,7 @@ import { dndDemonsArticleHtml, dndDemonsArticleHtmlZh } from '@/lib/blog-posts/d
 import { dndDaggerArticleHtml, dndDaggerArticleHtmlZh } from '@/lib/blog-posts/dnd-dagger';
 import { dndGhostArticleHtml, dndGhostArticleHtmlZh } from '@/lib/blog-posts/dnd-ghost';
 import { dndDwarfNamesArticleHtml, dndDwarfNamesArticleHtmlZh } from '@/lib/blog-posts/dnd-dwarf-names';
+import { dndGlaiveArticleHtml, dndGlaiveArticleHtmlZh } from '@/lib/blog-posts/dnd-glaive';
 import { dndMaceArticleHtml, dndMaceArticleHtmlZh } from '@/lib/blog-posts/dnd-mace';
 import { dndRangerSpellsArticleHtml, dndRangerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-ranger-spells';
 import { dndBlessArticleHtml, dndBlessArticleHtmlZh } from '@/lib/blog-posts/dnd-bless';
@@ -89,6 +91,7 @@ const DND_DEMONS_UPDATED_AT = '2026-05-07';
 const DND_DAGGER_UPDATED_AT = '2026-05-09';
 const DND_GHOST_UPDATED_AT = '2026-05-10';
 const DND_DWARF_NAMES_UPDATED_AT = '2026-05-11';
+const DND_GLAIVE_UPDATED_AT = '2026-07-14';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
@@ -1365,6 +1368,116 @@ const dndRangerSpellsArticle: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndGlaiveArticle: BlogPost = {
+  slug: 'dnd-glaive',
+  title: 'Glaive DnD Guide: 5e Stats, Reach, Graze, and VTT Tips',
+  seoTitle: 'Glaive DnD Guide: 5e Stats, Reach, Graze, and VTT Tips',
+  metaDescription:
+    'Check the DnD glaive stats, 2014 vs 2024 rules, Reach, Graze, best users, glaive vs halberd notes, FAQ, and VTT token tips for Roll20 and Foundry.',
+  excerpt:
+    'A practical dnd glaive weapon guide covering 5e stats, 2014/2024 rules, Reach, Graze, polearm comparisons, best users, FAQ, and VTT token tips.',
+  publishedAt: DND_GLAIVE_UPDATED_AT,
+  updatedAt: DND_GLAIVE_UPDATED_AT,
+  readTime: '11 min read',
+  coverLabel: 'Weapon Guide',
+  coverImage: DND_GLAIVE_COVER_PATH,
+  coverAlt:
+    'dnd glaive guide cover showing a polearm fighter token, a glaive, dice, reach markers, and VTT token frames on a tabletop battle map',
+  bodyHtml: dndGlaiveArticleHtml,
+  faqItems: [
+    {
+      question: 'How much damage does a glaive do in DnD?',
+      answer: 'A glaive deals 1d10 slashing damage.',
+    },
+    {
+      question: 'Is a glaive a martial weapon?',
+      answer:
+        'Yes. A glaive is a martial melee weapon, so your character needs martial weapon proficiency or another feature that grants proficiency with it.',
+    },
+    {
+      question: 'Does a glaive have Graze in 2024 DnD?',
+      answer:
+        'Yes. In 2024 rules, the glaive has Graze as its weapon mastery property. The character still needs weapon mastery access to use it.',
+    },
+    {
+      question: 'Does a glaive have Reach?',
+      answer:
+        'Yes. Reach adds 5 feet to your reach for attacks with the glaive and for opportunity attacks with it.',
+    },
+    {
+      question: 'Is a glaive better than a halberd?',
+      answer:
+        'In 2014 rules, the glaive and halberd have the same core stats. In 2024 rules, the glaive has Graze while the halberd has Cleave, so the better choice depends on whether you want miss damage or extra-target pressure.',
+    },
+    {
+      question: 'Can you use a shield with a glaive?',
+      answer:
+        'No for normal attacks. The glaive has the Two-Handed property, so it requires two hands when you attack with it.',
+    },
+    {
+      question: 'Is a glaive good for a Rogue?',
+      answer:
+        'Usually no. A glaive is not a finesse or ranged weapon, so it does not fit normal Sneak Attack weapon requirements.',
+    },
+  ],
+  relatedSlugs: ['dnd-mace', 'rapier-dnd', 'dnd-shortsword', 'dnd-armor-guide'],
+};
+
+const dndGlaiveArticleZh: BlogPost = {
+  slug: 'dnd-glaive',
+  title: 'DND 长柄刀（Glaive）指南：5e 数据、触及（Reach）、擦伤（Graze）与 VTT Token 建议',
+  seoTitle: 'DND 长柄刀（Glaive）指南：5e 数据、触及（Reach）、擦伤（Graze）与 VTT 建议',
+  metaDescription:
+    '快速核对 DND 长柄刀（Glaive）：1d10 挥砍、重型（Heavy）、触及（Reach）、双手（Two-Handed）、2024 擦伤（Graze）、FAQ 和 VTT Token 建议。',
+  excerpt:
+    '一篇实用 DND 长柄刀（Glaive）指南，讲清 5e 数据、2014/2024 差异、触及（Reach）、擦伤（Graze）、武器对比、FAQ 和 VTT Token 建议。',
+  publishedAt: DND_GLAIVE_UPDATED_AT,
+  updatedAt: DND_GLAIVE_UPDATED_AT,
+  readTime: '11 分钟阅读',
+  coverLabel: '武器指南',
+  coverImage: DND_GLAIVE_COVER_PATH,
+  coverAlt:
+    'DND 长柄刀（Glaive）指南封面图，桌面战斗地图上有长柄武器战士 Token、长柄刀、骰子、触及范围标记和 VTT Token 边框',
+  bodyHtml: dndGlaiveArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND 长柄刀造成多少伤害？',
+      answer: '长柄刀造成 1d10 挥砍伤害。',
+    },
+    {
+      question: '长柄刀是军用武器吗？',
+      answer:
+        '是。长柄刀是军用近战武器，角色需要军用武器熟练，或通过其他特性获得对应熟练。',
+    },
+    {
+      question: '2024 DnD 里长柄刀有 Graze 吗？',
+      answer:
+        '有。2024 规则里，长柄刀的武器掌握是擦伤（Graze），但角色仍然需要能使用该武器掌握的特性或选项。',
+    },
+    {
+      question: '长柄刀有 Reach 吗？',
+      answer:
+        '有。触及（Reach）让你用长柄刀攻击时的触及距离增加 5 英尺，也影响你用它进行借机攻击时的触及距离。',
+    },
+    {
+      question: '长柄刀比戟更好吗？',
+      answer:
+        '2014 规则里两者核心数据相同。2024 规则里，长柄刀是 Graze，戟是 Cleave，选择取决于你更想要未命中擦伤，还是第二目标压力。',
+    },
+    {
+      question: '长柄刀可以配盾吗？',
+      answer:
+        '正常攻击时不行。长柄刀有双手（Two-Handed）属性，攻击时需要两只手。',
+    },
+    {
+      question: '游荡者（Rogue）适合用长柄刀吗？',
+      answer:
+        '通常不适合。长柄刀不是灵巧武器，也不是远程武器，所以不符合普通偷袭（Sneak Attack）武器要求。',
+    },
+  ],
+  relatedSlugs: ['dnd-mace', 'rapier-dnd', 'dnd-shortsword', 'dnd-armor-guide'],
+};
+
 const dndSilveryBarbsArticle: BlogPost = {
   slug: 'dnd-silvery-barbs',
   title: 'Silvery Barbs DnD Guide: 2014 vs 2024 Rules, Source, and VTT Tips',
@@ -2170,10 +2283,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

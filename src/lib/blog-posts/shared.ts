@@ -19,6 +19,7 @@ export const DND_DEMONS_COVER_PATH = '/blog/covers/en/dnd-demons-guide.webp';
 export const DND_DAGGER_COVER_PATH = '/blog/covers/en/dnd-dagger-guide-v2.webp';
 export const DND_GHOST_COVER_PATH = '/blog/covers/en/dnd-ghost-guide.webp';
 export const DND_DWARF_NAMES_COVER_PATH = '/blog/covers/en/dnd-dwarf-names-guide.webp';
+export const DND_GLAIVE_COVER_PATH = '/blog/covers/en/dnd-glaive-guide.webp';
 export const DND_MACE_COVER_PATH = '/blog/covers/en/dnd-mace-guide.webp';
 export const DND_BLESS_COVER_PATH = '/blog/covers/en/dnd-bless-guide.webp';
 export const DND_RAPIER_COVER_PATH = '/blog/covers/en/dnd-rapier-guide.webp';
@@ -63,6 +64,7 @@ export const DND_GHOST_MANOR_IMAGE_PATH = '/blog/inline/dnd-ghost/ghost-haunted-
 export const DND_GHOST_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-ghost/ghost-video-placeholder.webp';
 export const DND_DWARF_NAMES_TABLE_IMAGE_PATH = '/blog/inline/dnd-dwarf-names/dwarf-name-table.webp';
 export const DND_DWARF_NAMES_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-dwarf-names/dwarf-names-video-placeholder.webp';
+export const DND_GLAIVE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-glaive/glaive-video-placeholder.webp';
 export const DND_MACE_COMPARISON_IMAGE_PATH = '/blog/inline/dnd-mace/mace-weapon-comparison.webp';
 export const DND_MACE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mace/mace-video-placeholder.webp';
 export const DND_RANGER_SPELLS_PREP_IMAGE_PATH = '/blog/inline/dnd-ranger-spells/ranger-spell-prep-table.webp';
@@ -130,6 +132,9 @@ export const DND_MACE_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/ba
 export const DND_MACE_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
 export const DND_MACE_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Mace_(bludgeon)';
 export const DND_MACE_VIDEO_URL = 'https://www.youtube.com/watch?v=gsl83xofiUw';
+export const DND_GLAIVE_2014_RULES_URL = 'https://roll20.net/compendium/dnd5e/Glaive';
+export const DND_GLAIVE_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
+export const DND_GLAIVE_VIDEO_URL = 'https://www.youtube.com/watch?v=zAJmvbQXm1c';
 export const DND_RAPIER_2014_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#Weapons';
 export const DND_RAPIER_2024_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
 export const DND_RAPIER_2014_COMBAT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/combat#TwoWeaponFighting';
