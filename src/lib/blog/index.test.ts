@@ -5,15 +5,613 @@ import {
   buildBlogPostFaqStructuredData,
   buildBlogPostStructuredData,
   createBlogPostMetadata,
+  getBlogPageCount,
   getBlogPost,
   getBlogPostPath,
+  getBlogPostsForPage,
 } from '@/lib/blog-content';
 
 const DND_BLESS_SLUG = 'dnd-bless';
+const DND_FIND_FAMILIAR_SLUG = 'dnd-find-familiar';
+const DND_HEX_SLUG = 'dnd-hex';
 const DND_GLAIVE_SLUG = 'dnd-glaive';
+const PALADIN_2024_SPELLS_DND_SLUG = 'paladin-2024-spells-dnd';
 const DND_SILVERY_BARBS_SLUG = 'dnd-silvery-barbs';
 const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
+
+describe('dnd find familiar blog post', () => {
+  test('keeps the newest find familiar article first on the blog page without changing page count', () => {
+    expect(getBlogPageCount('en')).toBe(3);
+    expect(getBlogPageCount('zh')).toBe(3);
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
+      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
+    ]);
+
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
+      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
+    ]);
+  });
+
+  test('publishes the dnd find familiar article in English and Chinese', () => {
+    const englishPost = getBlogPost('en', DND_FIND_FAMILIAR_SLUG);
+    const chinesePost = getBlogPost('zh', DND_FIND_FAMILIAR_SLUG);
+
+    expect(englishPost?.title).toContain('Find Familiar');
+    expect(englishPost?.bodyHtml).toContain('dnd find familiar');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-find-familiar-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(8);
+
+    expect(chinesePost?.title).toContain('DND 找寻魔宠（Find Familiar）');
+    expect(chinesePost?.bodyHtml).toContain('找寻魔宠（Find Familiar）');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-find-familiar-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(8);
+  });
+
+  test('keeps high-risk Find Familiar rules accurate in both locales', () => {
+    const englishPost = getBlogPost('en', DND_FIND_FAMILIAR_SLUG);
+    const chinesePost = getBlogPost('zh', DND_FIND_FAMILIAR_SLUG);
+
+    expect(englishPost?.bodyHtml).toContain(
+      'Find Familiar is a 1st-level Conjuration ritual spell that summons a familiar spirit in an animal-style form.',
+    );
+    expect(englishPost?.bodyHtml).toContain('Ritual casting adds 10 minutes to the casting time.');
+    expect(englishPost?.bodyHtml).toContain(
+      '2024 long-casting rule</a> means you also need concentration during the casting, even though the familiar does not require concentration after it appears.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'In 2024, the sight-sharing text uses a Bonus Action and lasts until the start of your next turn.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'In 2014, it uses an Action and includes the old own-senses penalty.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'When you cast a touch spell while the familiar is within 100 feet, the familiar can take its Reaction to deliver the touch.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'A familiar cannot attack unless a separate feature says otherwise.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      '2024 text uses a shorter named list plus another Beast that has Challenge Rating 0.',
+    );
+
+    expect(chinesePost?.bodyHtml).toContain(
+      '找寻魔宠（Find Familiar）是 1 环咒法（Conjuration）仪式法术，会召唤一个以动物形态出现的魔宠灵体。',
+    );
+    expect(chinesePost?.bodyHtml).toContain('若按仪式施放，施法时间再增加 10 分钟。');
+    expect(chinesePost?.bodyHtml).toContain('施法期间要保持专注，但魔宠出现后不需要专注维持。');
+    expect(chinesePost?.bodyHtml).toContain(
+      '2024 文本里，借用感官使用附赠动作（Bonus Action），持续到你下回合开始。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '2014 文本里，它使用动作（Action），并包含旧版自身感官限制。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '当你施放接触法术且魔宠在 100 英尺内时，魔宠可以用反应（Reaction）传递接触。',
+    );
+    expect(chinesePost?.bodyHtml).toContain('魔法动作（Magic action）');
+    expect(chinesePost?.bodyHtml).toContain('价值 10+ GP 的燃烧熏香');
+  });
+
+  test('keeps visible find familiar FAQ answers aligned with structured data', () => {
+    for (const locale of ['en', 'zh'] as const) {
+      const post = getBlogPost(locale, DND_FIND_FAMILIAR_SLUG);
+
+      for (const faqItem of post?.faqItems ?? []) {
+        expect(post?.bodyHtml).toContain(faqItem.question);
+        expect(post?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+      }
+    }
+  });
+
+  test('keeps the Chinese find familiar article Chinese-first', () => {
+    const chineseBodyHtml = getBlogPost('zh', DND_FIND_FAMILIAR_SLUG)?.bodyHtml ?? '';
+
+    expect(chineseBodyHtml).toContain('找寻魔宠（Find Familiar）');
+    expect(chineseBodyHtml).toContain('咒法（Conjuration）');
+    expect(chineseBodyHtml).toContain('附赠动作（Bonus Action）');
+    expect(chineseBodyHtml).toContain('反应（Reaction）');
+    expect(chineseBodyHtml).toContain('搜索（Search）');
+    expect(chineseBodyHtml).toContain('协助（Help）');
+    expect(chineseBodyHtml).toContain('法师（Wizard）');
+    expect(chineseBodyHtml).toContain('天界（Celestial）');
+    expect(chineseBodyHtml).toContain('DND 找寻魔宠（Find Familiar）常见问题');
+
+    expect(chineseBodyHtml).not.toContain('<h2 id="quick-answer">Quick answer');
+    expect(chineseBodyHtml).not.toContain('Find Familiar FAQ');
+    expect(chineseBodyHtml).not.toContain('Can a familiar attack in DnD?');
+  });
+
+  test('uses localized paths and metadata for the dnd find familiar article', () => {
+    expect(getBlogPostPath('en', DND_FIND_FAMILIAR_SLUG)).toBe('/blog/dnd-find-familiar');
+    expect(getBlogPostPath('zh', DND_FIND_FAMILIAR_SLUG)).toBe('/zh/blog/dnd-find-familiar');
+
+    const metadata = createBlogPostMetadata('en', DND_FIND_FAMILIAR_SLUG);
+
+    expect(metadata.title).toBe('Find Familiar 5e / 2024 Guide: Rules, Uses, and VTT Tokens');
+    expect(metadata.alternates?.canonical).toBe('/blog/dnd-find-familiar');
+    expect(metadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-find-familiar',
+      'en-US': '/blog/dnd-find-familiar',
+      'zh-CN': '/zh/blog/dnd-find-familiar',
+    });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        url: 'https://www.tokenmaker.one/blog/covers/en/dnd-find-familiar-guide.webp',
+        alt: 'dnd find familiar guide cover showing a Wizard token, familiar token, spellbook, d20 dice, and VTT scouting markers on a tabletop battle map',
+      },
+    ]);
+
+    const chineseMetadata = createBlogPostMetadata('zh', DND_FIND_FAMILIAR_SLUG);
+
+    expect(chineseMetadata.title).toBe('DND 找寻魔宠（Find Familiar）指南：规则、用法与 VTT Token');
+    expect(chineseMetadata.description).toContain('2014/2024 差异');
+    expect(chineseMetadata.description).toContain('协助（Help）');
+    expect(chineseMetadata.description).toContain('VTT Token');
+    expect(chineseMetadata.alternates?.canonical).toBe('/zh/blog/dnd-find-familiar');
+    expect(chineseMetadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-find-familiar',
+      'en-US': '/blog/dnd-find-familiar',
+      'zh-CN': '/zh/blog/dnd-find-familiar',
+    });
+  });
+
+  test('builds article and FAQ structured data for the dnd find familiar article', () => {
+    const chinesePost = getBlogPost('zh', DND_FIND_FAMILIAR_SLUG);
+
+    expect(buildBlogPostStructuredData('en', DND_FIND_FAMILIAR_SLUG)).toMatchObject({
+      '@type': 'Article',
+      headline: 'Find Familiar 5e / 2024 Guide: Rules, Uses, and VTT Tokens',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-find-familiar',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-find-familiar-guide.webp'],
+    });
+
+    expect(buildBlogPostFaqStructuredData('zh', DND_FIND_FAMILIAR_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+
+    expect(chinesePost?.coverAlt).toContain('DND 找寻魔宠（Find Familiar）指南封面图');
+    expect(chinesePost?.faqItems?.[0]?.question).toBe('找寻魔宠（Find Familiar）是法师（Wizard）法术吗？');
+    expect(chinesePost?.faqItems?.[1]?.question).toBe('魔宠能攻击吗？');
+    expect(chinesePost?.faqItems?.[2]?.answer).toContain('协助（Help）属于常见动作');
+  });
+
+  test('uses WebP assets for the dnd find familiar article', () => {
+    expect(existsSync('public/blog/covers/en/dnd-find-familiar-guide.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-find-familiar/familiar-token-setup.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-find-familiar/find-familiar-video-placeholder.webp')).toBe(true);
+  });
+
+  test('keeps the find familiar video as a lazy lite YouTube embed', () => {
+    const englishBodyHtml = getBlogPost('en', DND_FIND_FAMILIAR_SLUG)?.bodyHtml ?? '';
+    const chineseBodyHtml = getBlogPost('zh', DND_FIND_FAMILIAR_SLUG)?.bodyHtml ?? '';
+
+    expect(englishBodyHtml).toContain('data-video-id="EOgSooXEBK0"');
+    expect(englishBodyHtml).toContain('src="/blog/inline/dnd-find-familiar/find-familiar-video-placeholder.webp"');
+    expect(englishBodyHtml).toContain('loading="lazy"');
+    expect(englishBodyHtml).toContain('decoding="async"');
+    expect(englishBodyHtml).toContain('fetchpriority="low"');
+    expect(englishBodyHtml).toContain('width="480"');
+    expect(englishBodyHtml).toContain('height="360"');
+    expect(englishBodyHtml).not.toContain('<iframe');
+    expect(chineseBodyHtml).toContain('data-video-id="EOgSooXEBK0"');
+    expect(chineseBodyHtml).toContain('fetchpriority="low"');
+    expect(chineseBodyHtml).not.toContain('<iframe');
+  });
+
+  test('keeps the find familiar inline article image lazy and dimensioned', () => {
+    const englishBodyHtml = getBlogPost('en', DND_FIND_FAMILIAR_SLUG)?.bodyHtml ?? '';
+    const chineseBodyHtml = getBlogPost('zh', DND_FIND_FAMILIAR_SLUG)?.bodyHtml ?? '';
+
+    for (const bodyHtml of [englishBodyHtml, chineseBodyHtml]) {
+      expect(bodyHtml).toContain('src="/blog/inline/dnd-find-familiar/familiar-token-setup.webp"');
+      expect(bodyHtml).toContain('width="1400"');
+      expect(bodyHtml).toContain('height="933"');
+      expect(bodyHtml).toContain('loading="lazy"');
+      expect(bodyHtml).toContain('decoding="async"');
+    }
+  });
+
+  test('lists the dnd find familiar article in llms.txt for both locales', () => {
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-find-familiar');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-find-familiar');
+  });
+});
+
+describe('dnd hex blog post', () => {
+  test('keeps the newest hex article first on the blog page without changing page count', () => {
+    expect(getBlogPageCount('en')).toBe(3);
+    expect(getBlogPageCount('zh')).toBe(3);
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
+      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
+    ]);
+
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
+      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
+    ]);
+  });
+
+  test('publishes the dnd hex article in English and Chinese', () => {
+    const englishPost = getBlogPost('en', DND_HEX_SLUG);
+    const chinesePost = getBlogPost('zh', DND_HEX_SLUG);
+
+    expect(englishPost?.title).toContain('Hex DnD');
+    expect(englishPost?.bodyHtml).toContain('dnd hex');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-hex-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(7);
+
+    expect(chinesePost?.title).toContain('DND 巫术印记（Hex）');
+    expect(chinesePost?.bodyHtml).toContain('巫术印记（Hex）');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-hex-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(7);
+  });
+
+  test('keeps high-risk Hex rules accurate in both locales', () => {
+    const englishPost = getBlogPost('en', DND_HEX_SLUG);
+    const chinesePost = getBlogPost('zh', DND_HEX_SLUG);
+
+    expect(englishPost?.bodyHtml).toContain(
+      'Hex is a 1st-level Enchantment Warlock spell with a Bonus Action casting time, 90-foot range, verbal, somatic, and material components, and concentration up to 1 hour.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'The 2024 wording adds 1d6 Necrotic damage whenever you hit the cursed target with an attack roll.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'The disadvantage rider affects ability checks only, not saving throws and not attack rolls.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'If the cursed target drops to 0 Hit Points before Hex ends, you can use a Bonus Action on a later turn to curse a new creature.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'In 2024, a level 2 slot can extend Hex to 4 hours, level 3-4 slots to 8 hours, and level 5+ slots to 24 hours.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'In 2014, Remove Curse cast on the target ends Hex early; the 2024 public Hex text no longer carries that spell-specific line, while current Remove Curse still broadly ends curses affecting a creature or object.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Eldritch Blast can add the Hex die once per beam that hits because each beam uses its own attack roll.',
+    );
+
+    expect(chinesePost?.bodyHtml).toContain(
+      '巫术印记（Hex）是 1 环惑控（Enchantment）契术师（Warlock）法术，施放时间是附赠动作（Bonus Action），距离 90 英尺，需要语言、姿势和材料成分，并且需要专注（Concentration），最长 1 小时。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '2024 文本写法是：当你用攻击检定（attack roll）命中被诅咒目标时，额外造成 1d6 黯蚀伤害（Necrotic damage）。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      'Hex 的劣势只影响属性检定（ability checks），不影响豁免（saving throws），也不影响攻击检定（attack rolls）。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '如果被诅咒目标在 Hex 结束前降到 0 HP，你可以在之后的回合花附赠动作，把诅咒转移到另一个生物身上。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '2024 规则里，2 环法术位能把巫术印记（Hex）延长到 4 小时，3-4 环延长到 8 小时，5 环或更高延长到 24 小时。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '但当前解除诅咒仍能结束影响生物或物体的诅咒，所以 2024 桌面最好先由 DM 统一裁定。',
+    );
+  });
+
+  test('keeps visible hex FAQ answers aligned with structured data', () => {
+    for (const locale of ['en', 'zh'] as const) {
+      const post = getBlogPost(locale, DND_HEX_SLUG);
+
+      for (const faqItem of post?.faqItems ?? []) {
+        expect(post?.bodyHtml).toContain(faqItem.question);
+        expect(post?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+      }
+    }
+  });
+
+  test('keeps the Chinese hex article Chinese-first', () => {
+    const chineseBodyHtml = getBlogPost('zh', DND_HEX_SLUG)?.bodyHtml ?? '';
+
+    expect(chineseBodyHtml).toContain('巫术印记（Hex）');
+    expect(chineseBodyHtml).toContain('专注（Concentration）');
+    expect(chineseBodyHtml).toContain('附赠动作（Bonus Action）');
+    expect(chineseBodyHtml).toContain('属性检定（ability checks）');
+    expect(chineseBodyHtml).toContain('黯蚀伤害（Necrotic damage）');
+    expect(chineseBodyHtml).toContain('DND 巫术印记（Hex）常见问题');
+
+    expect(chineseBodyHtml).not.toContain('<h2 id="quick-answer">Quick answer');
+    expect(chineseBodyHtml).not.toContain('Hex DnD FAQ');
+    expect(chineseBodyHtml).not.toContain('What does Hex do?');
+  });
+
+  test('uses localized paths and metadata for the dnd hex article', () => {
+    expect(getBlogPostPath('en', DND_HEX_SLUG)).toBe('/blog/dnd-hex');
+    expect(getBlogPostPath('zh', DND_HEX_SLUG)).toBe('/zh/blog/dnd-hex');
+
+    const metadata = createBlogPostMetadata('en', DND_HEX_SLUG);
+
+    expect(metadata.title).toBe('Hex DnD Guide: 2014/2024 Rules, Damage, and VTT Tips');
+    expect(metadata.alternates?.canonical).toBe('/blog/dnd-hex');
+    expect(metadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-hex',
+      'en-US': '/blog/dnd-hex',
+      'zh-CN': '/zh/blog/dnd-hex',
+    });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        url: 'https://www.tokenmaker.one/blog/covers/en/dnd-hex-guide.webp',
+        alt: 'dnd hex guide cover showing a Warlock token, a violet curse sigil, d20 dice, and VTT condition markers on a dark tabletop battle map',
+      },
+    ]);
+
+    const chineseMetadata = createBlogPostMetadata('zh', DND_HEX_SLUG);
+
+    expect(chineseMetadata.title).toBe('DND 巫术印记（Hex）指南：2014/2024 规则、伤害与 VTT 标记');
+    expect(chineseMetadata.description).toContain('1d6 黯蚀伤害');
+    expect(chineseMetadata.description).toContain('常见问题');
+    expect(chineseMetadata.description).toContain('专注');
+    expect(chineseMetadata.description).toContain('属性检定劣势');
+    expect(chineseMetadata.alternates?.canonical).toBe('/zh/blog/dnd-hex');
+    expect(chineseMetadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-hex',
+      'en-US': '/blog/dnd-hex',
+      'zh-CN': '/zh/blog/dnd-hex',
+    });
+  });
+
+  test('builds article and FAQ structured data for the dnd hex article', () => {
+    const chinesePost = getBlogPost('zh', DND_HEX_SLUG);
+
+    expect(buildBlogPostStructuredData('en', DND_HEX_SLUG)).toMatchObject({
+      '@type': 'Article',
+      headline: 'Hex DnD Guide: 2014/2024 Rules, Damage, and VTT Tips',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-hex',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-hex-guide.webp'],
+    });
+
+    expect(buildBlogPostFaqStructuredData('zh', DND_HEX_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+
+    expect(chinesePost?.coverAlt).toContain('DND 巫术印记（Hex）指南封面图');
+    expect(chinesePost?.faqItems?.[0]?.question).toBe('巫术印记（Hex）是契术师（Warlock）专属法术吗？');
+    expect(chinesePost?.faqItems?.[1]?.question).toContain('魔能爆（Eldritch Blast）');
+    expect(chinesePost?.faqItems?.[2]?.answer).toContain('只影响属性检定');
+    expect(chinesePost?.faqItems?.[7]?.question).toBe('解除诅咒（Remove Curse）能结束巫术印记（Hex）吗？');
+  });
+
+  test('uses WebP assets for the dnd hex article', () => {
+    expect(existsSync('public/blog/covers/en/dnd-hex-guide.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-hex/hex-vtt-markers.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-hex/hex-video-placeholder.webp')).toBe(true);
+  });
+
+  test('keeps the hex video as a lazy lite YouTube embed', () => {
+    const englishBodyHtml = getBlogPost('en', DND_HEX_SLUG)?.bodyHtml ?? '';
+    const chineseBodyHtml = getBlogPost('zh', DND_HEX_SLUG)?.bodyHtml ?? '';
+
+    expect(englishBodyHtml).toContain('data-video-id="JwINRY1eD7M"');
+    expect(englishBodyHtml).toContain('src="/blog/inline/dnd-hex/hex-video-placeholder.webp"');
+    expect(englishBodyHtml).toContain('loading="lazy"');
+    expect(englishBodyHtml).toContain('decoding="async"');
+    expect(englishBodyHtml).toContain('fetchpriority="low"');
+    expect(englishBodyHtml).toContain('width="480"');
+    expect(englishBodyHtml).toContain('height="360"');
+    expect(englishBodyHtml).not.toContain('<iframe');
+    expect(chineseBodyHtml).toContain('data-video-id="JwINRY1eD7M"');
+    expect(chineseBodyHtml).toContain('fetchpriority="low"');
+    expect(chineseBodyHtml).not.toContain('<iframe');
+  });
+
+  test('keeps the dnd hex inline article image lazy and dimensioned', () => {
+    const englishBodyHtml = getBlogPost('en', DND_HEX_SLUG)?.bodyHtml ?? '';
+    const chineseBodyHtml = getBlogPost('zh', DND_HEX_SLUG)?.bodyHtml ?? '';
+
+    for (const bodyHtml of [englishBodyHtml, chineseBodyHtml]) {
+      expect(bodyHtml).toContain('src="/blog/inline/dnd-hex/hex-vtt-markers.webp"');
+      expect(bodyHtml).toContain('width="1400"');
+      expect(bodyHtml).toContain('height="933"');
+      expect(bodyHtml).toContain('loading="lazy"');
+      expect(bodyHtml).toContain('decoding="async"');
+    }
+  });
+
+  test('lists the dnd hex article in llms.txt for both locales', () => {
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-hex');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-hex');
+  });
+});
+
+describe('paladin 2024 spells dnd blog post', () => {
+  test('keeps the paladin article near the top on the blog page without changing page count', () => {
+    expect(getBlogPageCount('en')).toBe(3);
+    expect(getBlogPageCount('zh')).toBe(3);
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(2, 6)).toEqual([
+      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
+      DND_SILVERY_BARBS_SLUG,
+      DND_SHORTSWORD_SLUG,
+    ]);
+
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(2, 6)).toEqual([
+      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
+      DND_SILVERY_BARBS_SLUG,
+      DND_SHORTSWORD_SLUG,
+    ]);
+  });
+
+  test('publishes the paladin 2024 spells article in English and Chinese', () => {
+    const englishPost = getBlogPost('en', PALADIN_2024_SPELLS_DND_SLUG);
+    const chinesePost = getBlogPost('zh', PALADIN_2024_SPELLS_DND_SLUG);
+
+    expect(englishPost?.title).toContain('Paladin 2024 Spells DnD');
+    expect(englishPost?.bodyHtml).toContain('paladin 2024 spells dnd');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/paladin-2024-spells-dnd-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(7);
+
+    expect(chinesePost?.title).toContain('圣武士（Paladin）2024 法术指南');
+    expect(chinesePost?.bodyHtml).toContain('Paladin 2024 法术');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/paladin-2024-spells-dnd-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(7);
+  });
+
+  test('keeps high-risk 2024 Paladin spell rules accurate in both locales', () => {
+    const englishPost = getBlogPost('en', PALADIN_2024_SPELLS_DND_SLUG);
+    const chinesePost = getBlogPost('zh', PALADIN_2024_SPELLS_DND_SLUG);
+
+    expect(englishPost?.bodyHtml).toContain(
+      'Under the 2024 rules, Paladins get Spellcasting at level 1.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'After a Long Rest, you can replace one prepared Paladin spell with another Paladin spell you can cast.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Charisma is your spellcasting ability, and you can use a Holy Symbol as your spellcasting focus.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      "At level 2, Paladin's Smite means you always have Divine Smite prepared.",
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'The 2024 casting rules also limit your turn to one spell slot spent to cast a spell.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Find Steed and Shining Smite are 2nd-level Paladin spells in the 2024 list.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Aura of Vitality and Blinding Smite are 3rd-level Paladin spells.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Banishing Smite, Circle of Power, and Summon Celestial appear on the 5th-level Paladin list.',
+    );
+
+    expect(chinesePost?.bodyHtml).toContain(
+      '2024 规则下，Paladin 从 1 级开始获得施法（Spellcasting）。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '完成长休（Long Rest）后，你可以把 1 个已准备的 Paladin 法术替换成另一个你能施放的 Paladin 法术。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      'Charisma 是你的施法关键属性，Holy Symbol 可以作为 Paladin 法术的施法法器。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '2 级的 Paladin&apos;s Smite 让你始终准备 Divine Smite。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '2024 施法规则还限制你在一个回合里只能花费一个法术位来施放法术。',
+    );
+  });
+
+  test('keeps visible paladin FAQ answers aligned with structured data', () => {
+    for (const locale of ['en', 'zh'] as const) {
+      const post = getBlogPost(locale, PALADIN_2024_SPELLS_DND_SLUG);
+
+      for (const faqItem of post?.faqItems ?? []) {
+        expect(post?.bodyHtml).toContain(faqItem.question);
+        expect(post?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+      }
+    }
+  });
+
+  test('keeps the Chinese paladin 2024 spells article Chinese-first', () => {
+    const chinesePost = getBlogPost('zh', PALADIN_2024_SPELLS_DND_SLUG);
+    const chineseBodyHtml = chinesePost?.bodyHtml ?? '';
+
+    expect(chinesePost?.title).toContain('圣武士（Paladin）2024 法术指南');
+    expect(chineseBodyHtml).toContain('Paladin 2024 法术（paladin 2024 spells dnd）');
+    expect(chineseBodyHtml).toContain('Paladin 2024 法术常见问题');
+    expect(chineseBodyHtml).toContain('Paladin 法术配套视频');
+    expect(chineseBodyHtml).toContain('附赠动作 smite（Bonus Action smite）');
+    expect(chineseBodyHtml).toContain('魔法动作（Magic action）');
+    expect(chineseBodyHtml).toContain('光耀 smite 光效');
+    expect(chineseBodyHtml).toContain('<td><strong>Magic Weapon</strong></td>');
+
+    expect(chineseBodyHtml).not.toContain('<h2>Paladin 2024 Spells DnD 常见问题</h2>');
+    expect(chineseBodyHtml).not.toContain('Paladin 法术 companion video');
+    expect(chineseBodyHtml).not.toContain('radiant smite 光效');
+  });
+
+  test('uses localized paths and metadata for the paladin 2024 spells article', () => {
+    expect(getBlogPostPath('en', PALADIN_2024_SPELLS_DND_SLUG)).toBe('/blog/paladin-2024-spells-dnd');
+    expect(getBlogPostPath('zh', PALADIN_2024_SPELLS_DND_SLUG)).toBe('/zh/blog/paladin-2024-spells-dnd');
+
+    const metadata = createBlogPostMetadata('en', PALADIN_2024_SPELLS_DND_SLUG);
+
+    expect(metadata.title).toBe('Paladin 2024 Spells DnD Guide: Best Picks, Smites, and VTT Tips');
+    expect(metadata.alternates?.canonical).toBe('/blog/paladin-2024-spells-dnd');
+    expect(metadata.alternates?.languages).toEqual({
+      'x-default': '/blog/paladin-2024-spells-dnd',
+      'en-US': '/blog/paladin-2024-spells-dnd',
+      'zh-CN': '/zh/blog/paladin-2024-spells-dnd',
+    });
+
+    const chineseMetadata = createBlogPostMetadata('zh', PALADIN_2024_SPELLS_DND_SLUG);
+
+    expect(chineseMetadata.description).toContain('Divine Smite');
+    expect(chineseMetadata.description).toContain('Find Steed');
+    expect(chineseMetadata.description).toContain('准备法术');
+  });
+
+  test('builds article and FAQ structured data for the paladin 2024 spells article', () => {
+    expect(buildBlogPostStructuredData('en', PALADIN_2024_SPELLS_DND_SLUG)).toMatchObject({
+      '@type': 'Article',
+      headline: 'Paladin 2024 Spells DnD Guide: Best Picks, Smites, and VTT Tips',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/paladin-2024-spells-dnd',
+      image: ['https://www.tokenmaker.one/blog/covers/en/paladin-2024-spells-dnd-guide.webp'],
+    });
+
+    expect(buildBlogPostFaqStructuredData('zh', PALADIN_2024_SPELLS_DND_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+  });
+
+  test('uses WebP assets for the paladin 2024 spells article', () => {
+    expect(existsSync('public/blog/covers/en/paladin-2024-spells-dnd-guide.webp')).toBe(true);
+    expect(
+      existsSync('public/blog/inline/paladin-2024-spells-dnd/paladin-spell-prep-table.webp'),
+    ).toBe(true);
+    expect(
+      existsSync('public/blog/inline/paladin-2024-spells-dnd/paladin-spells-video-placeholder.webp'),
+    ).toBe(true);
+  });
+
+  test('keeps the paladin video as a lazy lite YouTube embed', () => {
+    const englishBodyHtml = getBlogPost('en', PALADIN_2024_SPELLS_DND_SLUG)?.bodyHtml ?? '';
+
+    expect(englishBodyHtml).toContain('data-video-id="_vx-oqXOabw"');
+    expect(englishBodyHtml).toContain(
+      'src="/blog/inline/paladin-2024-spells-dnd/paladin-spells-video-placeholder.webp"',
+    );
+    expect(englishBodyHtml).toContain('loading="lazy"');
+    expect(englishBodyHtml).not.toContain('<iframe');
+  });
+
+  test('lists the paladin 2024 spells article in llms.txt for both locales', () => {
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/paladin-2024-spells-dnd');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/paladin-2024-spells-dnd');
+  });
+});
 
 describe('dnd glaive blog post', () => {
   test('publishes the dnd glaive article in English and Chinese', () => {

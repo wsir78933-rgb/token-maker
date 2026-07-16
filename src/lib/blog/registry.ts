@@ -19,6 +19,9 @@ import {
   DND_GHOST_COVER_PATH,
   DND_DWARF_NAMES_COVER_PATH,
   DND_GLAIVE_COVER_PATH,
+  PALADIN_2024_SPELLS_DND_COVER_PATH,
+  DND_HEX_COVER_PATH,
+  DND_FIND_FAMILIAR_COVER_PATH,
   DND_MACE_COVER_PATH,
   DND_BLESS_COVER_PATH,
   DND_RAPIER_COVER_PATH,
@@ -45,6 +48,15 @@ import { dndDaggerArticleHtml, dndDaggerArticleHtmlZh } from '@/lib/blog-posts/d
 import { dndGhostArticleHtml, dndGhostArticleHtmlZh } from '@/lib/blog-posts/dnd-ghost';
 import { dndDwarfNamesArticleHtml, dndDwarfNamesArticleHtmlZh } from '@/lib/blog-posts/dnd-dwarf-names';
 import { dndGlaiveArticleHtml, dndGlaiveArticleHtmlZh } from '@/lib/blog-posts/dnd-glaive';
+import { dndHexArticleHtml, dndHexArticleHtmlZh } from '@/lib/blog-posts/dnd-hex';
+import {
+  dndFindFamiliarArticleHtml,
+  dndFindFamiliarArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-find-familiar';
+import {
+  paladin2024SpellsDndArticleHtml,
+  paladin2024SpellsDndArticleHtmlZh,
+} from '@/lib/blog-posts/paladin-2024-spells-dnd';
 import { dndMaceArticleHtml, dndMaceArticleHtmlZh } from '@/lib/blog-posts/dnd-mace';
 import { dndRangerSpellsArticleHtml, dndRangerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-ranger-spells';
 import { dndBlessArticleHtml, dndBlessArticleHtmlZh } from '@/lib/blog-posts/dnd-bless';
@@ -92,6 +104,9 @@ const DND_DAGGER_UPDATED_AT = '2026-05-09';
 const DND_GHOST_UPDATED_AT = '2026-05-10';
 const DND_DWARF_NAMES_UPDATED_AT = '2026-05-11';
 const DND_GLAIVE_UPDATED_AT = '2026-07-14';
+const PALADIN_2024_SPELLS_DND_UPDATED_AT = '2026-07-14';
+const DND_HEX_UPDATED_AT = '2026-07-15';
+const DND_FIND_FAMILIAR_UPDATED_AT = '2026-07-16';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
@@ -1368,6 +1383,137 @@ const dndRangerSpellsArticle: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndFindFamiliarArticle: BlogPost = {
+  slug: 'dnd-find-familiar',
+  title: 'Find Familiar 5e / 2024 Guide: Rules, Best Uses, and VTT Tokens',
+  seoTitle: 'Find Familiar 5e / 2024 Guide: Rules, Uses, and VTT Tokens',
+  metaDescription:
+    'Learn dnd find familiar rules, 2014 vs 2024 changes, best familiar forms, Help action, touch spells, scouting, FAQ, and VTT token setup.',
+  excerpt:
+    'A practical dnd find familiar guide covering 2014/2024 rules, familiar forms, Help action, touch spells, scouting, FAQ, and VTT token setup.',
+  publishedAt: DND_FIND_FAMILIAR_UPDATED_AT,
+  updatedAt: DND_FIND_FAMILIAR_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_FIND_FAMILIAR_COVER_PATH,
+  coverAlt:
+    'dnd find familiar guide cover showing a Wizard token, familiar token, spellbook, d20 dice, and VTT scouting markers on a tabletop battle map',
+  bodyHtml: dndFindFamiliarArticleHtml,
+  faqItems: [
+    {
+      question: 'Is Find Familiar a Wizard spell?',
+      answer:
+        'Yes. Find Familiar is normally a Wizard spell. Other characters can get it through specific features, feats, subclasses, magic items, or table options.',
+    },
+    {
+      question: 'Can a familiar attack in DnD?',
+      answer:
+        'No. A normal familiar from Find Familiar cannot attack, but it can take other actions as normal. Separate class features can change this for some characters.',
+    },
+    {
+      question: 'Can a familiar use the Help action?',
+      answer:
+        'Yes, a familiar can take actions other than Attack, and Help is one of the normal actions. The table still needs a believable target, position, and timing.',
+    },
+    {
+      question: 'How far can a familiar be from you?',
+      answer:
+        'The important range is 100 feet for telepathy, sight sharing, and touch-spell delivery. A familiar can physically move farther, but you lose those linked benefits outside that range.',
+    },
+    {
+      question: 'Does Find Familiar require concentration?',
+      answer:
+        'No after the familiar appears. Find Familiar has an instantaneous duration, but the 2024 long-casting rule still requires concentration during the casting.',
+    },
+    {
+      question: 'What happens when a familiar drops to 0 HP?',
+      answer:
+        'It disappears and leaves behind what it was wearing or carrying. To get it back after that, cast Find Familiar again.',
+    },
+    {
+      question: 'Can you have more than one familiar?',
+      answer:
+        'No. Find Familiar allows one familiar at a time. Recasting the spell while you already have one changes or replaces the existing familiar according to the spell text.',
+    },
+    {
+      question: 'What is the best familiar form?',
+      answer:
+        'For many tables, a flying scout such as an owl is the easiest all-purpose pick. The best form changes when the scene needs climbing, underwater movement, social stealth, or a specific sense.',
+    },
+    {
+      question: 'Should my familiar have its own VTT token?',
+      answer:
+        'Yes, if it is active on the map. A separate token prevents arguments about range, Help position, touch delivery, and whether enemies can see or target it.',
+    },
+  ],
+  relatedSlugs: ['dnd-mage-armor', 'dnd-counterspell', 'dnd-classes-explained', 'dnd-constitution-guide'],
+};
+
+const dndFindFamiliarArticleZh: BlogPost = {
+  slug: 'dnd-find-familiar',
+  title: 'DND 找寻魔宠（Find Familiar）指南：规则、用法与 VTT Token',
+  seoTitle: 'DND 找寻魔宠（Find Familiar）指南：规则、用法与 VTT Token',
+  metaDescription:
+    '快速看懂 DND 找寻魔宠（Find Familiar）：2014/2024 差异、魔宠形态、协助（Help）动作、接触法术、侦察、FAQ 和 VTT Token 设置。',
+  excerpt:
+    '一篇实用 DND 找寻魔宠（Find Familiar）指南，讲清 2014/2024 规则差异、魔宠形态、协助（Help）、接触法术、侦察、FAQ 和 VTT Token 设置。',
+  publishedAt: DND_FIND_FAMILIAR_UPDATED_AT,
+  updatedAt: DND_FIND_FAMILIAR_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '法术指南',
+  coverImage: DND_FIND_FAMILIAR_COVER_PATH,
+  coverAlt:
+    'DND 找寻魔宠（Find Familiar）指南封面图，桌面战斗地图上有法师（Wizard）Token、魔宠 Token、法术书、d20 骰子和 VTT 侦察标记',
+  bodyHtml: dndFindFamiliarArticleHtmlZh,
+  faqItems: [
+    {
+      question: '找寻魔宠（Find Familiar）是法师（Wizard）法术吗？',
+      answer:
+        '通常是。找寻魔宠（Find Familiar）在常规列表里主要属于法师（Wizard）。其他角色可能通过特性、专长、子职业、魔法物品或桌面选项取得。',
+    },
+    {
+      question: '魔宠能攻击吗？',
+      answer:
+        '不能。普通找寻魔宠（Find Familiar）魔宠不能攻击，但可以执行其他普通动作。某些职业特性可能改变这一点。',
+    },
+    {
+      question: '魔宠能使用协助（Help）动作吗？',
+      answer:
+        '可以。魔宠不能攻击，但可以采取其他动作，协助（Help）属于常见动作。桌面仍然需要合理的位置、目标和时机。',
+    },
+    {
+      question: '魔宠能离你多远？',
+      answer:
+        '先记住 100 英尺。心灵感应、借用感官和接触法术传递都围绕这个距离。魔宠可以物理上走得更远，但超出后你会失去这些连接收益。',
+    },
+    {
+      question: '找寻魔宠（Find Familiar）需要专注吗？',
+      answer: '魔宠出现后不需要。找寻魔宠的持续时间是瞬时，但 2024 长时间施法规则仍要求你在施法期间保持专注。',
+    },
+    {
+      question: '魔宠降到 0 HP 会怎样？',
+      answer:
+        '它会消失，并把穿戴或携带的东西留在原地。之后想让它回来，需要再次施放 Find Familiar。',
+    },
+    {
+      question: '可以同时有多个魔宠吗？',
+      answer:
+        '不可以。同一时间只能有一个魔宠。已有魔宠时再次施放，会按法术文本改变或替换当前魔宠。',
+    },
+    {
+      question: '最好的魔宠形态是什么？',
+      answer:
+        '很多桌面里，飞行侦察型魔宠最通用，比如猫头鹰（owl）。但如果场景需要攀爬、水下移动、城市隐蔽或特殊感官，最佳形态会变。',
+    },
+    {
+      question: '魔宠需要自己的 VTT Token 吗？',
+      answer:
+        '只要它在地图上活动，就应该有。独立 Token 能减少距离、协助（Help）、接触传递和敌人能否看见它的争论。',
+    },
+  ],
+  relatedSlugs: ['dnd-mage-armor', 'dnd-counterspell', 'dnd-classes-explained', 'dnd-constitution-guide'],
+};
+
 const dndGlaiveArticle: BlogPost = {
   slug: 'dnd-glaive',
   title: 'Glaive DnD Guide: 5e Stats, Reach, Graze, and VTT Tips',
@@ -2017,6 +2163,236 @@ const dndMaceArticleZh: BlogPost = {
   relatedSlugs: ['dnd-dagger', 'dnd-armor-guide', 'dnd-classes-explained', 'dnd-constitution-guide'],
 };
 
+const dndHexArticle: BlogPost = {
+  slug: 'dnd-hex',
+  title: 'Hex DnD Guide: 2014/2024 Rules, Damage, and VTT Tips',
+  seoTitle: 'Hex DnD Guide: 2014/2024 Rules, Damage, and VTT Tips',
+  metaDescription:
+    'A practical dnd hex guide covering 2014/2024 rules, 1d6 Necrotic damage, Eldritch Blast, ability-check disadvantage, concentration, FAQ, and VTT token markers.',
+  excerpt:
+    'A practical dnd hex spell guide covering 2014/2024 rules, 1d6 Necrotic damage, Eldritch Blast, ability-check disadvantage, concentration, FAQ, and VTT token tips.',
+  publishedAt: DND_HEX_UPDATED_AT,
+  updatedAt: DND_HEX_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_HEX_COVER_PATH,
+  coverAlt:
+    'dnd hex guide cover showing a Warlock token, a violet curse sigil, d20 dice, and VTT condition markers on a dark tabletop battle map',
+  bodyHtml: dndHexArticleHtml,
+  faqItems: [
+    {
+      question: 'Is Hex a Warlock-only spell?',
+      answer:
+        'Hex is a Warlock spell in the normal spell list, and 2024 Warlock rules recommend Hex as an early prepared spell. Other characters can sometimes get it through feats, subclasses, or table options.',
+    },
+    {
+      question: 'Does Hex trigger on every Eldritch Blast beam?',
+      answer:
+        'Yes, if each beam hits the cursed target. Eldritch Blast makes separate attack rolls as it scales, so each hit can add the 1d6 Necrotic damage.',
+    },
+    {
+      question: 'Does Hex give disadvantage on saving throws?',
+      answer:
+        'No. Hex only affects ability checks for the chosen ability. It does not affect saving throws or attack rolls.',
+    },
+    {
+      question: 'Does Hex help break enemy concentration?',
+      answer:
+        'No. Concentration checks after damage are Constitution saving throws, and Hex does not penalize saving throws.',
+    },
+    {
+      question: 'Can you move Hex to another target?',
+      answer:
+        'Yes, but only after the cursed target drops to 0 HP before Hex ends. Moving the curse uses a Bonus Action on a later turn.',
+    },
+    {
+      question: 'Is Hex still good in 2024 DnD?',
+      answer:
+        'Hex is still good when you make repeated attack rolls into a durable target. It is weaker when concentration, Bonus Action pressure, or stronger control spells matter more.',
+    },
+    {
+      question: 'Does upcasting Hex increase the damage?',
+      answer: 'No. Upcasting Hex extends the duration. It does not increase the 1d6 damage die.',
+    },
+    {
+      question: 'Does Remove Curse end Hex?',
+      answer:
+        'In 2014 text, yes: Remove Curse cast on the target ends Hex early. The public 2024 Hex text no longer includes that spell-specific sentence, but current Remove Curse still broadly ends curses affecting a creature or object. Confirm the 2024 interaction with your DM before treating it as automatic at every table.',
+    },
+  ],
+  relatedSlugs: ['dnd-hunters-mark', 'dnd-ranger-spells', 'dnd-constitution-guide', 'dnd-counterspell'],
+};
+
+const dndHexArticleZh: BlogPost = {
+  slug: 'dnd-hex',
+  title: 'DND 巫术印记（Hex）指南：2014/2024 规则、伤害与 VTT 标记',
+  seoTitle: 'DND 巫术印记（Hex）指南：2014/2024 规则、伤害与 VTT 标记',
+  metaDescription:
+    '一篇适合桌边核对的 DND 巫术印记（Hex）指南，讲清 2014/2024 规则、1d6 黯蚀伤害、魔能爆（Eldritch Blast）、属性检定劣势、专注、常见问题和 VTT 标记。',
+  excerpt:
+    '一篇实用 DND 巫术印记（Hex）法术指南，覆盖 2014/2024 规则、1d6 黯蚀伤害、魔能爆（Eldritch Blast）、属性检定劣势、专注、常见问题和 VTT 标记。',
+  publishedAt: DND_HEX_UPDATED_AT,
+  updatedAt: DND_HEX_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '法术指南',
+  coverImage: DND_HEX_COVER_PATH,
+  coverAlt:
+    'DND 巫术印记（Hex）指南封面图，深色桌面战斗地图上有契术师（Warlock）Token、紫色诅咒符文、d20 骰子和 VTT 状态标记',
+  bodyHtml: dndHexArticleHtmlZh,
+  faqItems: [
+    {
+      question: '巫术印记（Hex）是契术师（Warlock）专属法术吗？',
+      answer:
+        '巫术印记（Hex）是常规法术列表里的契术师（Warlock）法术，2024 Warlock 规则也把它列为早期推荐法术。其他角色有时可以通过专长、子职业或桌面选项取得它。',
+    },
+    {
+      question: '巫术印记（Hex）会在每束魔能爆（Eldritch Blast）上触发吗？',
+      answer:
+        '会，只要每束光线都命中被诅咒目标。魔能爆（Eldritch Blast）随等级成长时会做多次独立攻击检定，所以每次命中都能加 1d6 黯蚀伤害。',
+    },
+    {
+      question: '巫术印记（Hex）会让豁免具有劣势吗？',
+      answer: '不会。Hex 只影响属性检定，具体是被选属性的属性检定；它不影响豁免，也不影响攻击检定。',
+    },
+    {
+      question: '巫术印记（Hex）能帮助打断敌人专注吗？',
+      answer: '不能。受伤后的专注检定是 Constitution 豁免，而 Hex 不会惩罚豁免。',
+    },
+    {
+      question: '巫术印记（Hex）能转移到另一个目标吗？',
+      answer:
+        '可以，但必须先等被诅咒目标在 Hex 结束前降到 0 HP。转移诅咒要在之后的回合花附赠动作。',
+    },
+    {
+      question: '2024 DnD 里 Hex 还好吗？',
+      answer:
+        '当你会对一个耐打目标反复做攻击检定时，Hex 仍然好用。若专注、附赠动作或更强控场法术更重要，它就会变弱。',
+    },
+    {
+      question: '巫术印记（Hex）升环会提高伤害吗？',
+      answer: '不会。Hex 升环只延长持续时间，不提高 1d6 伤害骰。',
+    },
+    {
+      question: '解除诅咒（Remove Curse）能结束巫术印记（Hex）吗？',
+      answer:
+        '2014 文本里可以：对目标施放解除诅咒（Remove Curse）会提前结束 Hex。公开 2024 Hex 法术文本已经没有这条专门句子，但当前解除诅咒仍会结束影响生物或物体的诅咒，所以 2024 桌面请先按 DM 对版本互动的裁定处理。',
+    },
+  ],
+  relatedSlugs: ['dnd-hunters-mark', 'dnd-ranger-spells', 'dnd-constitution-guide', 'dnd-counterspell'],
+};
+
+const paladin2024SpellsDndArticle: BlogPost = {
+  slug: 'paladin-2024-spells-dnd',
+  title: 'Paladin 2024 Spells DnD Guide: Best Picks, Smites, and Prepared Lists',
+  seoTitle: 'Paladin 2024 Spells DnD Guide: Best Picks, Smites, and VTT Tips',
+  metaDescription:
+    'Choose the best Paladin 2024 spells in DnD. Compare Divine Smite, Bless, Find Steed, Shining Smite, prepared lists, concentration, and VTT token tips.',
+  excerpt:
+    'A practical paladin 2024 spells dnd guide covering prepared lists, Divine Smite, Bless, Find Steed, Shining Smite, concentration, VTT token markers, and FAQ.',
+  publishedAt: PALADIN_2024_SPELLS_DND_UPDATED_AT,
+  updatedAt: PALADIN_2024_SPELLS_DND_UPDATED_AT,
+  readTime: '13 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: PALADIN_2024_SPELLS_DND_COVER_PATH,
+  coverAlt:
+    'paladin 2024 spells dnd guide cover showing a radiant Paladin token, holy symbol, spell cards, aura marker, smite glow, d20 dice, and VTT token frames',
+  bodyHtml: paladin2024SpellsDndArticleHtml,
+  faqItems: [
+    {
+      question: 'What are the best Paladin 2024 spells in DnD?',
+      answer:
+        'The best all-purpose Paladin 2024 spells are Bless, Divine Favor, Divine Smite, Shield of Faith, Find Steed, Aid, Lesser Restoration, Shining Smite, Aura of Vitality, Dispel Magic, Revivify, Death Ward, Banishment, Circle of Power, and Banishing Smite.',
+    },
+    {
+      question: 'Do 2024 Paladins prepare spells?',
+      answer:
+        'Yes. 2024 Paladins prepare level 1+ Paladin spells from the Paladin list. They start with two prepared level 1 spells and can replace one prepared Paladin spell after a Long Rest.',
+    },
+    {
+      question: 'Is Divine Smite a spell in 2024 DnD?',
+      answer:
+        'Yes. Divine Smite is a level 1 Paladin spell in the 2024 rules. At Paladin level 2, you always have it prepared and can cast it once without spending a spell slot per Long Rest.',
+    },
+    {
+      question: 'Should a Paladin use every spell slot on Divine Smite?',
+      answer:
+        'No. Divine Smite is strong, but Bless, Divine Favor, Find Steed, Aura of Vitality, Dispel Magic, Revivify, and Circle of Power can matter more than one burst of damage.',
+    },
+    {
+      question: 'Which 2024 Paladin spells need concentration?',
+      answer:
+        'Common concentration Paladin spells include Bless, Shield of Faith, Heroism, Protection from Evil and Good, Shining Smite, Aura of Vitality, Aura of Life, Aura of Purity, Banishment, Banishing Smite, Circle of Power, and Summon Celestial.',
+    },
+    {
+      question: 'Does Find Steed count as a good Paladin spell?',
+      answer:
+        'Yes. Find Steed is one of the most identity-defining Paladin spells because it changes movement, travel, and table presence. In VTT games, it works best when the steed has its own readable token.',
+    },
+    {
+      question: 'What should a new Paladin prepare at level 1?',
+      answer:
+        'A simple level 1 start is Bless plus Cure Wounds. If another character already covers healing or Bless, use Divine Favor, Shield of Faith, Heroism, or Searing Smite instead.',
+    },
+  ],
+  relatedSlugs: ['dnd-bless', 'dnd-ranger-spells', 'dnd-bard-spells', 'dnd-constitution-guide'],
+};
+
+const paladin2024SpellsDndArticleZh: BlogPost = {
+  slug: 'paladin-2024-spells-dnd',
+  title: '圣武士（Paladin）2024 法术指南：最佳法术、Smite 与 VTT 建议',
+  seoTitle: '圣武士（Paladin）2024 法术指南：最佳法术、Smite 与 VTT 建议',
+  metaDescription:
+    '整理 DnD 2024 Paladin 法术选择：Divine Smite、Bless、Find Steed、Shining Smite、准备法术、专注与 VTT Token 标记。',
+  excerpt:
+    '一篇实用 Paladin 2024 法术指南，整理准备法术、Divine Smite、Bless、Find Steed、Shining Smite、专注、VTT Token 标记和常见问题。',
+  publishedAt: PALADIN_2024_SPELLS_DND_UPDATED_AT,
+  updatedAt: PALADIN_2024_SPELLS_DND_UPDATED_AT,
+  readTime: '13 分钟阅读',
+  coverLabel: '法术指南',
+  coverImage: PALADIN_2024_SPELLS_DND_COVER_PATH,
+  coverAlt:
+    'Paladin 2024 Spells DnD 指南封面图，radiant Paladin Token、Holy Symbol、法术卡、aura 标记、smite 光效、d20 骰子和 VTT Token 边框',
+  bodyHtml: paladin2024SpellsDndArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DnD 里最好的 Paladin 2024 法术有哪些？',
+      answer:
+        '泛用性最高的 Paladin 2024 法术包括 Bless、Divine Favor、Divine Smite、Shield of Faith、Find Steed、Aid、Lesser Restoration、Shining Smite、Aura of Vitality、Dispel Magic、Revivify、Death Ward、Banishment、Circle of Power 和 Banishing Smite。',
+    },
+    {
+      question: '2024 Paladin 是准备法术吗？',
+      answer:
+        '是。2024 Paladin 从 Paladin 法术表里准备 1 环及以上法术。1 级开始准备两个 1 环法术，长休后可以替换一个已准备的 Paladin 法术。',
+    },
+    {
+      question: 'Divine Smite 在 2024 DnD 里是法术吗？',
+      answer:
+        '是。Divine Smite 在 2024 规则里是 1 环 Paladin 法术。Paladin 2 级后始终准备它，并且每次长休可以不消耗法术位施放一次。',
+    },
+    {
+      question: 'Paladin 应该把所有法术位都用在 Divine Smite 上吗？',
+      answer:
+        '不应该。Divine Smite 很强，但 Bless、Divine Favor、Find Steed、Aura of Vitality、Dispel Magic、Revivify 和 Circle of Power 经常比一次爆发伤害更重要。',
+    },
+    {
+      question: '哪些 2024 Paladin 法术需要专注？',
+      answer:
+        '常见需要专注的 Paladin 法术包括 Bless、Shield of Faith、Heroism、Protection from Evil and Good、Shining Smite、Aura of Vitality、Aura of Life、Aura of Purity、Banishment、Banishing Smite、Circle of Power 和 Summon Celestial。',
+    },
+    {
+      question: 'Find Steed 是好用的 Paladin 法术吗？',
+      answer:
+        '是。Find Steed 很能体现 Paladin 的角色身份，因为它会改变移动、旅行和桌面存在感。线上跑团时，坐骑最好有自己的清晰 Token。',
+    },
+    {
+      question: '新手 Paladin 1 级应该准备什么？',
+      answer:
+        '简单稳妥的 1 级准备是 Bless 加 Cure Wounds。如果队友已经覆盖治疗或 Bless，可以改用 Divine Favor、Shield of Faith、Heroism 或 Searing Smite。',
+    },
+  ],
+  relatedSlugs: ['dnd-bless', 'dnd-ranger-spells', 'dnd-bard-spells', 'dnd-constitution-guide'],
+};
+
 const dndRangerSpellsArticleZh: BlogPost = {
   slug: 'dnd-ranger-spells',
   title: 'DND 游侠法术指南：最佳选择、准备清单与猎人印记取舍',
@@ -2283,10 +2659,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

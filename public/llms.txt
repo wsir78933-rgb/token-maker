@@ -23,6 +23,9 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [Find Familiar DnD Guide](https://www.tokenmaker.one/blog/dnd-find-familiar): Find Familiar 2014/2024 rules, familiar forms, Help action, touch spells, scouting, FAQ, and VTT token setup.
+- [Hex DnD Guide](https://www.tokenmaker.one/blog/dnd-hex): Hex 2014/2024 rules, 1d6 Necrotic damage, Eldritch Blast, ability-check disadvantage, concentration, FAQ, and VTT token markers.
+- [Paladin 2024 Spells DnD Guide](https://www.tokenmaker.one/blog/paladin-2024-spells-dnd): Paladin 2024 spell picks, prepared lists, Divine Smite, Find Steed, concentration, FAQ, and VTT token tips.
 - [Glaive DnD Guide](https://www.tokenmaker.one/blog/dnd-glaive): Glaive weapon stats, 2014/2024 rules, Reach, Graze, polearm comparisons, FAQ, and VTT token tips.
 - [Silvery Barbs DnD Guide](https://www.tokenmaker.one/blog/dnd-silvery-barbs): Strixhaven source, 2014/2024 table handling, Legendary Resistance, reroll timing, DM approval, FAQ, and VTT token markers.
 - [Shortsword DnD Guide](https://www.tokenmaker.one/blog/dnd-shortsword): Shortsword stats, 2014/2024 rules, Finesse, Light, Vex, Sneak Attack, two-weapon choices, FAQ, and VTT token tips.
@@ -49,6 +52,9 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 找寻魔宠（Find Familiar）指南：规则、用法与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-find-familiar)
+- [DND 巫术印记（Hex）指南：2014/2024 规则、伤害与 VTT 标记](https://www.tokenmaker.one/zh/blog/dnd-hex)
+- [圣武士（Paladin）2024 法术指南：最佳法术、Smite 与 VTT 建议](https://www.tokenmaker.one/zh/blog/paladin-2024-spells-dnd)
 - [DND 长柄刀（Glaive）指南：5e 数据、Reach、Graze 与 VTT Token 建议](https://www.tokenmaker.one/zh/blog/dnd-glaive)
 - [银光倒刺（Silvery Barbs）DND 指南：2014/2024 规则、来源与 VTT 标记](https://www.tokenmaker.one/zh/blog/dnd-silvery-barbs)
 - [DND 短剑（Shortsword）指南：2014/2024 规则、Vex、Nick 与偷袭](https://www.tokenmaker.one/zh/blog/dnd-shortsword)

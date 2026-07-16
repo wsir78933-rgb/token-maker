@@ -20,6 +20,9 @@ export const DND_DAGGER_COVER_PATH = '/blog/covers/en/dnd-dagger-guide-v2.webp';
 export const DND_GHOST_COVER_PATH = '/blog/covers/en/dnd-ghost-guide.webp';
 export const DND_DWARF_NAMES_COVER_PATH = '/blog/covers/en/dnd-dwarf-names-guide.webp';
 export const DND_GLAIVE_COVER_PATH = '/blog/covers/en/dnd-glaive-guide.webp';
+export const PALADIN_2024_SPELLS_DND_COVER_PATH = '/blog/covers/en/paladin-2024-spells-dnd-guide.webp';
+export const DND_HEX_COVER_PATH = '/blog/covers/en/dnd-hex-guide.webp';
+export const DND_FIND_FAMILIAR_COVER_PATH = '/blog/covers/en/dnd-find-familiar-guide.webp';
 export const DND_MACE_COVER_PATH = '/blog/covers/en/dnd-mace-guide.webp';
 export const DND_BLESS_COVER_PATH = '/blog/covers/en/dnd-bless-guide.webp';
 export const DND_RAPIER_COVER_PATH = '/blog/covers/en/dnd-rapier-guide.webp';
@@ -65,6 +68,16 @@ export const DND_GHOST_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-ghost/ghost-vi
 export const DND_DWARF_NAMES_TABLE_IMAGE_PATH = '/blog/inline/dnd-dwarf-names/dwarf-name-table.webp';
 export const DND_DWARF_NAMES_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-dwarf-names/dwarf-names-video-placeholder.webp';
 export const DND_GLAIVE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-glaive/glaive-video-placeholder.webp';
+export const PALADIN_2024_SPELLS_DND_PREP_IMAGE_PATH =
+  '/blog/inline/paladin-2024-spells-dnd/paladin-spell-prep-table.webp';
+export const PALADIN_2024_SPELLS_DND_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/paladin-2024-spells-dnd/paladin-spells-video-placeholder.webp';
+export const DND_HEX_MARKERS_IMAGE_PATH = '/blog/inline/dnd-hex/hex-vtt-markers.webp';
+export const DND_HEX_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-hex/hex-video-placeholder.webp';
+export const DND_FIND_FAMILIAR_TOKEN_IMAGE_PATH =
+  '/blog/inline/dnd-find-familiar/familiar-token-setup.webp';
+export const DND_FIND_FAMILIAR_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-find-familiar/find-familiar-video-placeholder.webp';
 export const DND_MACE_COMPARISON_IMAGE_PATH = '/blog/inline/dnd-mace/mace-weapon-comparison.webp';
 export const DND_MACE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mace/mace-video-placeholder.webp';
 export const DND_RANGER_SPELLS_PREP_IMAGE_PATH = '/blog/inline/dnd-ranger-spells/ranger-spell-prep-table.webp';
@@ -135,6 +148,21 @@ export const DND_MACE_VIDEO_URL = 'https://www.youtube.com/watch?v=gsl83xofiUw';
 export const DND_GLAIVE_2014_RULES_URL = 'https://roll20.net/compendium/dnd5e/Glaive';
 export const DND_GLAIVE_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
 export const DND_GLAIVE_VIDEO_URL = 'https://www.youtube.com/watch?v=zAJmvbQXm1c';
+export const PALADIN_2024_CLASS_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Paladin';
+export const PALADIN_2024_SPELL_DESCRIPTIONS_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions';
+export const DND_2024_CASTING_SPELLS_RULES_URL = 'https://roll20.net/compendium/dnd5e/Rules%3ACasting%20Spells';
+export const PALADIN_2024_SPELLS_DND_VIDEO_URL = 'https://www.youtube.com/watch?v=_vx-oqXOabw';
+export const DND_HEX_2024_RULES_URL = 'https://www.dndbeyond.com/spells/2618988-hex';
+export const DND_HEX_2014_RULES_URL = 'https://dnd5e.wikidot.com/spell:hex';
+export const DND_HEX_2024_ROLL20_URL = 'https://roll20.net/compendium/dnd5e/Spells%3AHex';
+export const DND_HEX_WARLOCK_2024_URL = 'https://roll20.net/compendium/dnd5e/Classes%3AWarlock?expansion=33335';
+export const DND_REMOVE_CURSE_RULES_URL = 'https://roll20.net/compendium/dnd5e/Remove%20Curse';
+export const DND_HEX_VIDEO_URL = 'https://www.youtube.com/watch?v=JwINRY1eD7M';
+export const DND_FIND_FAMILIAR_2024_RULES_URL = 'https://www.dndbeyond.com/spells/2618877-find-familiar';
+export const DND_FIND_FAMILIAR_2014_RULES_URL = 'https://www.dndbeyond.com/spells/2097-find-familiar';
+export const DND_FIND_FAMILIAR_2024_ROLL20_URL =
+  'https://roll20.net/compendium/dnd5e/Spells%3AFind%20Familiar?expansion=33335';
+export const DND_FIND_FAMILIAR_2014_ROLL20_URL = 'https://roll20.net/compendium/dnd5e/Find%20Familiar';
 export const DND_RAPIER_2014_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#Weapons';
 export const DND_RAPIER_2024_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
 export const DND_RAPIER_2014_COMBAT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/combat#TwoWeaponFighting';
@@ -200,6 +228,12 @@ export const EN_RAPIER_DND_PATH = getLocalizedPath('en', '/blog/rapier-dnd');
 export const ZH_RAPIER_DND_PATH = getLocalizedPath('zh', '/blog/rapier-dnd');
 export const EN_DND_RANGER_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-ranger-spells');
 export const ZH_DND_RANGER_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-ranger-spells');
+export const EN_DND_GLAIVE_PATH = getLocalizedPath('en', '/blog/dnd-glaive');
+export const ZH_DND_GLAIVE_PATH = getLocalizedPath('zh', '/blog/dnd-glaive');
+export const EN_DND_FIND_FAMILIAR_PATH = getLocalizedPath('en', '/blog/dnd-find-familiar');
+export const ZH_DND_FIND_FAMILIAR_PATH = getLocalizedPath('zh', '/blog/dnd-find-familiar');
+export const EN_DND_BLESS_PATH = getLocalizedPath('en', '/blog/dnd-bless');
+export const ZH_DND_BLESS_PATH = getLocalizedPath('zh', '/blog/dnd-bless');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');
