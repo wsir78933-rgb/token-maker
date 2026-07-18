@@ -22,6 +22,7 @@ import {
   PALADIN_2024_SPELLS_DND_COVER_PATH,
   DND_HEX_COVER_PATH,
   DND_FIND_FAMILIAR_COVER_PATH,
+  DND_THUNDERCLAP_COVER_PATH,
   DND_MACE_COVER_PATH,
   DND_BLESS_COVER_PATH,
   DND_RAPIER_COVER_PATH,
@@ -53,6 +54,10 @@ import {
   dndFindFamiliarArticleHtml,
   dndFindFamiliarArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-find-familiar';
+import {
+  dndThunderclapArticleHtml,
+  dndThunderclapArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-thunderclap';
 import {
   paladin2024SpellsDndArticleHtml,
   paladin2024SpellsDndArticleHtmlZh,
@@ -107,6 +112,7 @@ const DND_GLAIVE_UPDATED_AT = '2026-07-14';
 const PALADIN_2024_SPELLS_DND_UPDATED_AT = '2026-07-14';
 const DND_HEX_UPDATED_AT = '2026-07-15';
 const DND_FIND_FAMILIAR_UPDATED_AT = '2026-07-16';
+const DND_THUNDERCLAP_UPDATED_AT = '2026-07-17';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
@@ -1383,6 +1389,71 @@ const dndRangerSpellsArticle: BlogPost = {
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
 };
 
+const dndThunderclapArticle: BlogPost = {
+  slug: 'dnd-thunderclap',
+  title: 'Thunderclap DnD Guide: 2014/2024 Rules, Range, and VTT Tips',
+  seoTitle: 'Thunderclap DnD Guide: 2014/2024 Rules, Range, and VTT Tips',
+  metaDescription:
+    'A practical dnd thunderclap guide covering 2014/2024 rules, 5-foot Emanation range, 100-foot sound, ally risk, scaling, FAQ, and VTT token tips.',
+  excerpt:
+    'A practical dnd thunderclap guide for the 5-foot burst, 100-foot sound line, ally risk, 2014/2024 wording, FAQ, and VTT token setup.',
+  publishedAt: DND_THUNDERCLAP_UPDATED_AT,
+  updatedAt: DND_THUNDERCLAP_UPDATED_AT,
+  readTime: '11 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_THUNDERCLAP_COVER_PATH,
+  coverAlt:
+    'dnd thunderclap guide cover showing a storm caster token releasing a blue thunder burst into adjacent enemy tokens on a VTT battle map',
+  bodyHtml: dndThunderclapArticleHtml,
+  faqItems: [
+    {
+      question: 'Is Thunderclap good in DnD?',
+      answer:
+        'Thunderclap is good when several enemies are already next to you and the table can tolerate the 100-foot noise. It is weak when allies are in the burst, when you need silence, or when you can safely use a ranged cantrip instead.',
+    },
+    {
+      question: 'Does Thunderclap hit the caster?',
+      answer:
+        'Normally no. In 2024, the Emanation origin is excluded unless the caster chooses to include it. The 2014 wording also says each creature other than you.',
+    },
+    {
+      question: 'Does Thunderclap hit allies?',
+      answer:
+        'Yes. Thunderclap can hit allies, familiars, summons, mounts, and NPCs caught in the 5-foot area, so mark the burst before rolling.',
+    },
+    {
+      question: 'Is Thunderclap a 100-foot damage spell?',
+      answer:
+        'No. The 100-foot line describes how far away the sound can be heard. The damage area is still the small burst around the caster.',
+    },
+    {
+      question: 'What saving throw does Thunderclap use?',
+      answer:
+        'Thunderclap uses a Constitution saving throw. On a failed save, the creature takes Thunder damage; on a successful save, it takes no damage.',
+    },
+    {
+      question: 'How does Thunderclap scale?',
+      answer:
+        'Thunderclap deals 1d6 Thunder damage at first, then 2d6 at level 5, 3d6 at level 11, and 4d6 at level 17.',
+    },
+    {
+      question: 'Does Thunderclap need concentration?',
+      answer: 'No. Thunderclap has an Instantaneous duration and does not require concentration.',
+    },
+    {
+      question: 'Which classes get Thunderclap?',
+      answer:
+        "The common spell lists for Thunderclap include Bard, Druid, Sorcerer, Warlock, and Wizard, with Artificer appearing in widely used 5e references. Always use the list your table's rules source provides.",
+    },
+    {
+      question: 'How should I show Thunderclap on a VTT?',
+      answer:
+        'Use a 5-foot burst marker around the caster token, check every creature inside the marker, call out allies before the roll, then roll Constitution saves.',
+    },
+  ],
+  relatedSlugs: ['dnd-find-familiar', 'dnd-bless', 'dnd-counterspell', 'dnd-classes-explained'],
+};
+
 const dndFindFamiliarArticle: BlogPost = {
   slug: 'dnd-find-familiar',
   title: 'Find Familiar 5e / 2024 Guide: Rules, Best Uses, and VTT Tokens',
@@ -1447,6 +1518,70 @@ const dndFindFamiliarArticle: BlogPost = {
     },
   ],
   relatedSlugs: ['dnd-mage-armor', 'dnd-counterspell', 'dnd-classes-explained', 'dnd-constitution-guide'],
+};
+
+const dndThunderclapArticleZh: BlogPost = {
+  slug: 'dnd-thunderclap',
+  title: 'DND 雷鸣拍击（Thunderclap）指南：2014/2024 规则、范围与 VTT 标记',
+  seoTitle: 'DND 雷鸣拍击（Thunderclap）指南：2014/2024 规则、范围与 VTT 标记',
+  metaDescription:
+    '一篇适合桌边核对的 DND 雷鸣拍击（Thunderclap）指南，讲清 2014/2024 规则、5 英尺散发、100 英尺声音、盟友风险、伤害成长、FAQ 和 VTT Token 标记。',
+  excerpt:
+    '一篇实用 DND 雷鸣拍击（Thunderclap）指南，说明 5 英尺散发、100 英尺声音、盟友风险、2014/2024 差异、FAQ 和 VTT Token 标记。',
+  publishedAt: DND_THUNDERCLAP_UPDATED_AT,
+  updatedAt: DND_THUNDERCLAP_UPDATED_AT,
+  readTime: '11 分钟阅读',
+  coverLabel: '法术指南',
+  coverImage: DND_THUNDERCLAP_COVER_PATH,
+  coverAlt:
+    'DND 雷鸣拍击（Thunderclap）指南封面图，VTT 战斗地图上的风暴施法者（storm caster）Token 向邻近敌人 Token 释放蓝色雷鸣爆发',
+  bodyHtml: dndThunderclapArticleHtmlZh,
+  faqItems: [
+    {
+      question: '雷鸣拍击（Thunderclap）好用吗？',
+      answer:
+        '当多个敌人已经贴近你，并且 100 英尺声音不会破坏潜入时，雷鸣拍击（Thunderclap）好用。若盟友也在范围里，或者你需要安静，它就不是好选择。',
+    },
+    {
+      question: '雷鸣拍击会打到施法者吗？',
+      answer:
+        '通常不会。2024 散发（Emanation）源点默认被排除，除非施法者选择包含源点；2014 文本也写的是除你之外的生物。',
+    },
+    {
+      question: '雷鸣拍击会打到盟友吗？',
+      answer:
+        '会。雷鸣拍击会影响区域内的盟友、魔宠、召唤物、坐骑和 NPC，所以在 VTT 上先画出 5 英尺散发再掷骰更清楚。',
+    },
+    {
+      question: '雷鸣拍击是 100 英尺伤害法术吗？',
+      answer:
+        '不是。100 英尺描述的是声音能传到多远。真正造成伤害的是施法者周围的短距离爆发。',
+    },
+    {
+      question: '雷鸣拍击使用什么豁免？',
+      answer:
+        '雷鸣拍击使用体质豁免（Constitution saving throw）。豁免失败时受到雷鸣伤害（Thunder damage），豁免成功时不受伤害。',
+    },
+    {
+      question: '雷鸣拍击如何随等级成长？',
+      answer: '雷鸣拍击起始造成 1d6 雷鸣伤害，5 级 2d6、11 级 3d6、17 级 4d6。',
+    },
+    {
+      question: '雷鸣拍击需要专注吗？',
+      answer: '不需要。雷鸣拍击持续时间是瞬时（Instantaneous），不需要专注。',
+    },
+    {
+      question: '哪些职业能获得雷鸣拍击？',
+      answer:
+        '常见法术列表里，吟游诗人（Bard）、德鲁伊（Druid）、术士（Sorcerer）、契术师（Warlock）和法师（Wizard）可以取得 Thunderclap，魔械师（Artificer）也出现在常用 5e 参考资料中。最终以你桌面采用的规则来源为准。',
+    },
+    {
+      question: 'VTT 上应该怎样显示雷鸣拍击？',
+      answer:
+        '在施法者 Token 周围放一个 5 英尺爆发标记，确认标记内每个生物，掷骰前先点名可能被误伤的盟友，再进行体质豁免。',
+    },
+  ],
+  relatedSlugs: ['dnd-find-familiar', 'dnd-bless', 'dnd-counterspell', 'dnd-classes-explained'],
 };
 
 const dndFindFamiliarArticleZh: BlogPost = {
@@ -2659,10 +2794,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

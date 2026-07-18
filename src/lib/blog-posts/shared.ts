@@ -23,6 +23,7 @@ export const DND_GLAIVE_COVER_PATH = '/blog/covers/en/dnd-glaive-guide.webp';
 export const PALADIN_2024_SPELLS_DND_COVER_PATH = '/blog/covers/en/paladin-2024-spells-dnd-guide.webp';
 export const DND_HEX_COVER_PATH = '/blog/covers/en/dnd-hex-guide.webp';
 export const DND_FIND_FAMILIAR_COVER_PATH = '/blog/covers/en/dnd-find-familiar-guide.webp';
+export const DND_THUNDERCLAP_COVER_PATH = '/blog/covers/en/dnd-thunderclap-guide.webp';
 export const DND_MACE_COVER_PATH = '/blog/covers/en/dnd-mace-guide.webp';
 export const DND_BLESS_COVER_PATH = '/blog/covers/en/dnd-bless-guide.webp';
 export const DND_RAPIER_COVER_PATH = '/blog/covers/en/dnd-rapier-guide.webp';
@@ -78,6 +79,10 @@ export const DND_FIND_FAMILIAR_TOKEN_IMAGE_PATH =
   '/blog/inline/dnd-find-familiar/familiar-token-setup.webp';
 export const DND_FIND_FAMILIAR_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-find-familiar/find-familiar-video-placeholder.webp';
+export const DND_THUNDERCLAP_RADIUS_IMAGE_PATH =
+  '/blog/inline/dnd-thunderclap/thunderclap-vtt-radius.webp';
+export const DND_THUNDERCLAP_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-thunderclap/thunderclap-video-placeholder.webp';
 export const DND_MACE_COMPARISON_IMAGE_PATH = '/blog/inline/dnd-mace/mace-weapon-comparison.webp';
 export const DND_MACE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mace/mace-video-placeholder.webp';
 export const DND_RANGER_SPELLS_PREP_IMAGE_PATH = '/blog/inline/dnd-ranger-spells/ranger-spell-prep-table.webp';
@@ -163,6 +168,13 @@ export const DND_FIND_FAMILIAR_2014_RULES_URL = 'https://www.dndbeyond.com/spell
 export const DND_FIND_FAMILIAR_2024_ROLL20_URL =
   'https://roll20.net/compendium/dnd5e/Spells%3AFind%20Familiar?expansion=33335';
 export const DND_FIND_FAMILIAR_2014_ROLL20_URL = 'https://roll20.net/compendium/dnd5e/Find%20Familiar';
+export const DND_THUNDERCLAP_2024_ROLL20_URL =
+  'https://roll20.net/compendium/dnd5e/Spells%3AThunderclap?expansion=32231&iframe=true';
+export const DND_THUNDERCLAP_2014_RULES_URL = 'https://www.dndbeyond.com/spells/2401-thunderclap';
+export const DND_THUNDERCLAP_2014_WIKIDOT_URL = 'https://dnd5e.wikidot.com/spell:thunderclap';
+export const DND_EMANATION_2024_ROLL20_URL =
+  'https://roll20.net/compendium/dnd5e/Rules%3ARules%20Definitions?expansion=32231';
+export const DND_THUNDERCLAP_VIDEO_URL = 'https://www.youtube.com/watch?v=2pDcp2JS3ac';
 export const DND_RAPIER_2014_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#Weapons';
 export const DND_RAPIER_2024_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment#Weapons';
 export const DND_RAPIER_2014_COMBAT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/combat#TwoWeaponFighting';
@@ -232,6 +244,8 @@ export const EN_DND_GLAIVE_PATH = getLocalizedPath('en', '/blog/dnd-glaive');
 export const ZH_DND_GLAIVE_PATH = getLocalizedPath('zh', '/blog/dnd-glaive');
 export const EN_DND_FIND_FAMILIAR_PATH = getLocalizedPath('en', '/blog/dnd-find-familiar');
 export const ZH_DND_FIND_FAMILIAR_PATH = getLocalizedPath('zh', '/blog/dnd-find-familiar');
+export const EN_DND_THUNDERCLAP_PATH = getLocalizedPath('en', '/blog/dnd-thunderclap');
+export const ZH_DND_THUNDERCLAP_PATH = getLocalizedPath('zh', '/blog/dnd-thunderclap');
 export const EN_DND_BLESS_PATH = getLocalizedPath('en', '/blog/dnd-bless');
 export const ZH_DND_BLESS_PATH = getLocalizedPath('zh', '/blog/dnd-bless');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;

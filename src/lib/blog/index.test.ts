@@ -12,6 +12,7 @@ import {
 } from '@/lib/blog-content';
 
 const DND_BLESS_SLUG = 'dnd-bless';
+const DND_THUNDERCLAP_SLUG = 'dnd-thunderclap';
 const DND_FIND_FAMILIAR_SLUG = 'dnd-find-familiar';
 const DND_HEX_SLUG = 'dnd-hex';
 const DND_GLAIVE_SLUG = 'dnd-glaive';
@@ -20,23 +21,220 @@ const DND_SILVERY_BARBS_SLUG = 'dnd-silvery-barbs';
 const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
 
-describe('dnd find familiar blog post', () => {
-  test('keeps the newest find familiar article first on the blog page without changing page count', () => {
-    expect(getBlogPageCount('en')).toBe(3);
-    expect(getBlogPageCount('zh')).toBe(3);
+describe('dnd thunderclap blog post', () => {
+  test('keeps the newest thunderclap article first on the blog page and opens a fourth page', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
       PALADIN_2024_SPELLS_DND_SLUG,
-      DND_GLAIVE_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
       PALADIN_2024_SPELLS_DND_SLUG,
-      DND_GLAIVE_SLUG,
+    ]);
+  });
+
+  test('publishes the dnd thunderclap article in English and Chinese', () => {
+    const englishPost = getBlogPost('en', DND_THUNDERCLAP_SLUG);
+    const chinesePost = getBlogPost('zh', DND_THUNDERCLAP_SLUG);
+
+    expect(englishPost?.title).toContain('Thunderclap DnD');
+    expect(englishPost?.bodyHtml).toContain('dnd thunderclap');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-thunderclap-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(8);
+
+    expect(chinesePost?.title).toContain('DND 雷鸣拍击（Thunderclap）');
+    expect(chinesePost?.bodyHtml).toContain('雷鸣拍击（Thunderclap）');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-thunderclap-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(8);
+  });
+
+  test('keeps high-risk Thunderclap rules accurate in both locales', () => {
+    const englishPost = getBlogPost('en', DND_THUNDERCLAP_SLUG);
+    const chinesePost = getBlogPost('zh', DND_THUNDERCLAP_SLUG);
+
+    expect(englishPost?.bodyHtml).toContain(
+      'Thunderclap is an Evocation cantrip with an Action casting time, a Somatic component, and an Instantaneous duration.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'In 2024, each creature in a 5-foot Emanation originating from you must succeed on a Constitution saving throw or take 1d6 Thunder damage.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'The 100-foot line is audible distance, not damage distance.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Thunderclap normally does not damage the caster in 2024 unless the caster chooses to include the Emanation origin; it can still hit allies, familiars, summons, mounts, and NPCs caught in the area.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'The damage increases to 2d6 at level 5, 3d6 at level 11, and 4d6 at level 17.',
+    );
+
+    expect(chinesePost?.bodyHtml).toContain(
+      '雷鸣拍击（Thunderclap）是塑能（Evocation）戏法，施放时间是动作（Action），只需要姿势成分（Somatic），持续时间是瞬时（Instantaneous）。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '2024 文本里，每个处在以你为源点的 5 英尺散发（Emanation）内的生物，都必须进行一次体质豁免（Constitution saving throw）。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '100 英尺描述的是声音能被听见的距离，不是伤害范围。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '2024 规则下，雷鸣拍击通常不会伤害施法者，除非施法者选择把散发（Emanation）源点包含进去；但它仍会影响区域内的盟友、魔宠、召唤物、坐骑和 NPC。',
+    );
+    expect(chinesePost?.bodyHtml).toContain('5 级 2d6、11 级 3d6、17 级 4d6');
+  });
+
+  test('keeps visible thunderclap FAQ answers aligned with structured data', () => {
+    for (const locale of ['en', 'zh'] as const) {
+      const post = getBlogPost(locale, DND_THUNDERCLAP_SLUG);
+
+      for (const faqItem of post?.faqItems ?? []) {
+        expect(post?.bodyHtml).toContain(faqItem.question);
+        expect(post?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+      }
+    }
+  });
+
+  test('keeps the Chinese thunderclap article Chinese-first', () => {
+    const chineseBodyHtml = getBlogPost('zh', DND_THUNDERCLAP_SLUG)?.bodyHtml ?? '';
+
+    expect(chineseBodyHtml).toContain('雷鸣拍击（Thunderclap）');
+    expect(chineseBodyHtml).toContain('散发（Emanation）');
+    expect(chineseBodyHtml).toContain('体质豁免（Constitution saving throw）');
+    expect(chineseBodyHtml).toContain('雷鸣伤害（Thunder damage）');
+    expect(chineseBodyHtml).toContain('姿势成分（Somatic）');
+    expect(chineseBodyHtml).toContain('雷鸣拍击（Thunderclap）常见问题');
+
+    expect(chineseBodyHtml).not.toContain('<h2 id="quick-answer">Quick answer');
+    expect(chineseBodyHtml).not.toContain('Thunderclap DnD FAQ');
+    expect(chineseBodyHtml).not.toContain('Does Thunderclap hit allies?');
+  });
+
+  test('uses localized paths and metadata for the dnd thunderclap article', () => {
+    expect(getBlogPostPath('en', DND_THUNDERCLAP_SLUG)).toBe('/blog/dnd-thunderclap');
+    expect(getBlogPostPath('zh', DND_THUNDERCLAP_SLUG)).toBe('/zh/blog/dnd-thunderclap');
+
+    const metadata = createBlogPostMetadata('en', DND_THUNDERCLAP_SLUG);
+
+    expect(metadata.title).toBe('Thunderclap DnD Guide: 2014/2024 Rules, Range, and VTT Tips');
+    expect(metadata.alternates?.canonical).toBe('/blog/dnd-thunderclap');
+    expect(metadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-thunderclap',
+      'en-US': '/blog/dnd-thunderclap',
+      'zh-CN': '/zh/blog/dnd-thunderclap',
+    });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        url: 'https://www.tokenmaker.one/blog/covers/en/dnd-thunderclap-guide.webp',
+        alt: 'dnd thunderclap guide cover showing a storm caster token releasing a blue thunder burst into adjacent enemy tokens on a VTT battle map',
+      },
+    ]);
+
+    const chineseMetadata = createBlogPostMetadata('zh', DND_THUNDERCLAP_SLUG);
+
+    expect(chineseMetadata.title).toBe('DND 雷鸣拍击（Thunderclap）指南：2014/2024 规则、范围与 VTT 标记');
+    expect(chineseMetadata.description).toContain('5 英尺散发');
+    expect(chineseMetadata.description).toContain('100 英尺声音');
+    expect(chineseMetadata.description).toContain('盟友风险');
+    expect(chineseMetadata.description).toContain('VTT Token');
+    expect(chineseMetadata.alternates?.canonical).toBe('/zh/blog/dnd-thunderclap');
+    expect(chineseMetadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-thunderclap',
+      'en-US': '/blog/dnd-thunderclap',
+      'zh-CN': '/zh/blog/dnd-thunderclap',
+    });
+  });
+
+  test('builds article and FAQ structured data for the dnd thunderclap article', () => {
+    const chinesePost = getBlogPost('zh', DND_THUNDERCLAP_SLUG);
+
+    expect(buildBlogPostStructuredData('en', DND_THUNDERCLAP_SLUG)).toMatchObject({
+      '@type': 'Article',
+      headline: 'Thunderclap DnD Guide: 2014/2024 Rules, Range, and VTT Tips',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-thunderclap',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-thunderclap-guide.webp'],
+    });
+
+    expect(buildBlogPostFaqStructuredData('zh', DND_THUNDERCLAP_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+
+    expect(chinesePost?.coverAlt).toContain('DND 雷鸣拍击（Thunderclap）指南封面图');
+    expect(chinesePost?.faqItems?.[0]?.question).toBe('雷鸣拍击（Thunderclap）好用吗？');
+    expect(chinesePost?.faqItems?.[1]?.question).toBe('雷鸣拍击会打到施法者吗？');
+    expect(chinesePost?.faqItems?.[2]?.answer).toContain('会影响区域内的盟友');
+  });
+
+  test('uses WebP assets for the dnd thunderclap article', () => {
+    expect(existsSync('public/blog/covers/en/dnd-thunderclap-guide.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-thunderclap/thunderclap-vtt-radius.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-thunderclap/thunderclap-video-placeholder.webp')).toBe(true);
+  });
+
+  test('keeps the thunderclap video as a lazy lite YouTube embed', () => {
+    const englishBodyHtml = getBlogPost('en', DND_THUNDERCLAP_SLUG)?.bodyHtml ?? '';
+    const chineseBodyHtml = getBlogPost('zh', DND_THUNDERCLAP_SLUG)?.bodyHtml ?? '';
+
+    expect(englishBodyHtml).toContain('data-video-id="2pDcp2JS3ac"');
+    expect(englishBodyHtml).toContain('src="/blog/inline/dnd-thunderclap/thunderclap-video-placeholder.webp"');
+    expect(englishBodyHtml).toContain('loading="lazy"');
+    expect(englishBodyHtml).toContain('decoding="async"');
+    expect(englishBodyHtml).toContain('fetchpriority="low"');
+    expect(englishBodyHtml).toContain('width="480"');
+    expect(englishBodyHtml).toContain('height="360"');
+    expect(englishBodyHtml).not.toContain('<iframe');
+    expect(chineseBodyHtml).toContain('data-video-id="2pDcp2JS3ac"');
+    expect(chineseBodyHtml).toContain('fetchpriority="low"');
+    expect(chineseBodyHtml).not.toContain('<iframe');
+  });
+
+  test('keeps the thunderclap inline article image lazy and dimensioned', () => {
+    const englishBodyHtml = getBlogPost('en', DND_THUNDERCLAP_SLUG)?.bodyHtml ?? '';
+    const chineseBodyHtml = getBlogPost('zh', DND_THUNDERCLAP_SLUG)?.bodyHtml ?? '';
+
+    for (const bodyHtml of [englishBodyHtml, chineseBodyHtml]) {
+      expect(bodyHtml).toContain('src="/blog/inline/dnd-thunderclap/thunderclap-vtt-radius.webp"');
+      expect(bodyHtml).toContain('width="1400"');
+      expect(bodyHtml).toContain('height="933"');
+      expect(bodyHtml).toContain('loading="lazy"');
+      expect(bodyHtml).toContain('decoding="async"');
+    }
+  });
+
+  test('lists the dnd thunderclap article in llms.txt for both locales', () => {
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-thunderclap');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-thunderclap');
+  });
+});
+
+describe('dnd find familiar blog post', () => {
+  test('keeps the newest find familiar article first on the blog page without changing page count', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_THUNDERCLAP_SLUG,
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
+      PALADIN_2024_SPELLS_DND_SLUG,
+    ]);
+
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_THUNDERCLAP_SLUG,
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
+      PALADIN_2024_SPELLS_DND_SLUG,
     ]);
   });
 
@@ -231,21 +429,21 @@ describe('dnd find familiar blog post', () => {
 
 describe('dnd hex blog post', () => {
   test('keeps the newest hex article first on the blog page without changing page count', () => {
-    expect(getBlogPageCount('en')).toBe(3);
-    expect(getBlogPageCount('zh')).toBe(3);
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
       PALADIN_2024_SPELLS_DND_SLUG,
-      DND_GLAIVE_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
       PALADIN_2024_SPELLS_DND_SLUG,
-      DND_GLAIVE_SLUG,
     ]);
   });
 
@@ -440,17 +638,17 @@ describe('dnd hex blog post', () => {
 
 describe('paladin 2024 spells dnd blog post', () => {
   test('keeps the paladin article near the top on the blog page without changing page count', () => {
-    expect(getBlogPageCount('en')).toBe(3);
-    expect(getBlogPageCount('zh')).toBe(3);
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(2, 6)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(3, 7)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
       DND_SILVERY_BARBS_SLUG,
       DND_SHORTSWORD_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(2, 6)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(3, 7)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
       DND_SILVERY_BARBS_SLUG,

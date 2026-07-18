@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [Thunderclap DnD Guide](https://www.tokenmaker.one/blog/dnd-thunderclap): Thunderclap 2014/2024 rules, 5-foot Emanation range, 100-foot sound, ally risk, damage scaling, FAQ, and VTT token tips.
 - [Find Familiar DnD Guide](https://www.tokenmaker.one/blog/dnd-find-familiar): Find Familiar 2014/2024 rules, familiar forms, Help action, touch spells, scouting, FAQ, and VTT token setup.
 - [Hex DnD Guide](https://www.tokenmaker.one/blog/dnd-hex): Hex 2014/2024 rules, 1d6 Necrotic damage, Eldritch Blast, ability-check disadvantage, concentration, FAQ, and VTT token markers.
 - [Paladin 2024 Spells DnD Guide](https://www.tokenmaker.one/blog/paladin-2024-spells-dnd): Paladin 2024 spell picks, prepared lists, Divine Smite, Find Steed, concentration, FAQ, and VTT token tips.
@@ -52,6 +53,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 雷鸣拍击（Thunderclap）指南：2014/2024 规则、范围与 VTT 标记](https://www.tokenmaker.one/zh/blog/dnd-thunderclap)
 - [DND 找寻魔宠（Find Familiar）指南：规则、用法与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-find-familiar)
 - [DND 巫术印记（Hex）指南：2014/2024 规则、伤害与 VTT 标记](https://www.tokenmaker.one/zh/blog/dnd-hex)
 - [圣武士（Paladin）2024 法术指南：最佳法术、Smite 与 VTT 建议](https://www.tokenmaker.one/zh/blog/paladin-2024-spells-dnd)

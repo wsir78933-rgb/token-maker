@@ -9,6 +9,20 @@ import ChineseAboutPage, { metadata as chineseAboutMetadata } from './(zh)/zh/ab
 import ChineseChangelogPage, {
   metadata as chineseChangelogMetadata,
 } from './(zh)/zh/changelog/page';
+import {
+  generateStaticParams as generateEnglishBlogPostStaticParams,
+} from './(en)/blog/[slug]/page';
+import {
+  generateStaticParams as generateChineseBlogPostStaticParams,
+} from './(zh)/zh/blog/[slug]/page';
+import {
+  generateStaticParams as generateEnglishBlogPaginationStaticParams,
+} from './(en)/blog/page/[page]/page';
+import {
+  generateStaticParams as generateChineseBlogPaginationStaticParams,
+} from './(zh)/zh/blog/page/[page]/page';
+
+const DND_THUNDERCLAP_SLUG = 'dnd-thunderclap';
 
 describe('trust page routes', () => {
   afterEach(() => {
@@ -55,5 +69,17 @@ describe('trust page routes', () => {
     render(<PageComponent />);
 
     expect(screen.getByRole('heading', { level: 1, name: h1 })).not.toBeNull();
+  });
+});
+
+describe('blog static routes', () => {
+  it('emits bilingual Thunderclap detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_THUNDERCLAP_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_THUNDERCLAP_SLUG });
+  });
+
+  it('emits bilingual fourth-page pagination params', () => {
+    expect(generateEnglishBlogPaginationStaticParams()).toContainEqual({ page: '4' });
+    expect(generateChineseBlogPaginationStaticParams()).toContainEqual({ page: '4' });
   });
 });
