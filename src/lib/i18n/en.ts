@@ -17,6 +17,8 @@ const en = {
   appSubtitle: 'TRPG Token Creation Tool',
   workspaceLabel: 'Editor Workspace',
   localMode: 'Local-first',
+  mobileEditorLaunch: 'Open editor',
+  mobileEditorLoading: 'Opening editor...',
 
   controlPanel: 'Controls',
   imageSettings: 'Image',

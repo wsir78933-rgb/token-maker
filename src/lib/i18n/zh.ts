@@ -18,6 +18,8 @@ const zh = {
   appSubtitle: 'TRPG Token 制作工具',
   workspaceLabel: '编辑工作区',
   localMode: '本地优先',
+  mobileEditorLaunch: '打开编辑器',
+  mobileEditorLoading: '正在打开编辑器…',
 
   // 控制面板
   controlPanel: '控制面板',

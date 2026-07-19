@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { readFile } from 'node:fs/promises';
 import { cleanup, render, screen } from '@testing-library/react';
 import { act } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -99,6 +100,13 @@ describe('content site topbar visibility', () => {
     vi.unstubAllGlobals();
     setViewportWidth(1024);
     setWindowScrollY(0);
+  });
+
+  it('keeps the topbar shell server-renderable', async () => {
+    const source = await readFile('src/components/site/ContentSiteTopbar.tsx', 'utf8');
+
+    expect(source.startsWith("'use client'")).toBe(false);
+    expect(source).toContain("from '@/components/site/TrackedEditorLink'");
   });
 
   it('keeps the homepage content navigation visible on desktop scroll', () => {

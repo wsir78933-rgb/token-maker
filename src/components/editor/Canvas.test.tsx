@@ -32,10 +32,68 @@ vi.mock('./ImageUploader', () => ({
   ImageUploader: () => <div data-testid="image-uploader" />,
 }));
 
+const resizeObserverInstances: MockResizeObserver[] = [];
+const viewportMediaQueryChangeListeners = new Set<(event: MediaQueryListEvent) => void>();
+let isDesktopViewport = true;
+
 class MockResizeObserver {
+  constructor(private readonly callback: ResizeObserverCallback) {
+    resizeObserverInstances.push(this);
+  }
+
   observe() {}
   unobserve() {}
   disconnect() {}
+
+  triggerWidth(width: number) {
+    this.callback(
+      [{ contentRect: { width } } as ResizeObserverEntry],
+      this as unknown as ResizeObserver,
+    );
+  }
+}
+
+function installViewportMatchMedia(isDesktop: boolean) {
+  isDesktopViewport = isDesktop;
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn().mockImplementation((media: string) => ({
+      get matches() {
+        return media === '(min-width: 1280px)' && isDesktopViewport;
+      },
+      media,
+      onchange: null,
+      addEventListener: (
+        eventName: string,
+        listener: EventListenerOrEventListenerObject | null,
+      ) => {
+        if (eventName === 'change' && typeof listener === 'function') {
+          viewportMediaQueryChangeListeners.add(listener as (event: MediaQueryListEvent) => void);
+        }
+      },
+      removeEventListener: (
+        eventName: string,
+        listener: EventListenerOrEventListenerObject | null,
+      ) => {
+        if (eventName === 'change' && typeof listener === 'function') {
+          viewportMediaQueryChangeListeners.delete(listener as (event: MediaQueryListEvent) => void);
+        }
+      },
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  );
+}
+
+function changeViewport(isDesktop: boolean) {
+  isDesktopViewport = isDesktop;
+  const event = {
+    matches: isDesktop,
+    media: '(min-width: 1280px)',
+  } as MediaQueryListEvent;
+
+  viewportMediaQueryChangeListeners.forEach((listener) => listener(event));
 }
 
 import { Canvas } from './Canvas';
@@ -52,7 +110,14 @@ describe('Canvas', () => {
   beforeEach(() => {
     i18nMockState.locale = 'en';
     i18nMockState.messages = {};
+    resizeObserverInstances.length = 0;
+    viewportMediaQueryChangeListeners.clear();
     vi.stubGlobal('ResizeObserver', MockResizeObserver);
+    installViewportMatchMedia(true);
+    Object.defineProperty(window, 'devicePixelRatio', {
+      configurable: true,
+      value: 3,
+    });
     HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
       clearRect: vi.fn(),
       drawImage: vi.fn(),
@@ -147,6 +212,75 @@ describe('Canvas', () => {
     const previewRenderState = renderTokenMock.mock.calls.at(-1)?.[1];
     expect(previewRenderState?.textBoxes).toEqual([]);
   });
+
+  it.each([
+    {
+      description: 'caps the mobile editor preview backing canvas',
+      isDesktopEditorLayout: false,
+      expectedBackingSize: 1024,
+    },
+    {
+      description: 'keeps the full desktop preview backing canvas resolution',
+      isDesktopEditorLayout: true,
+      expectedBackingSize: 1536,
+    },
+  ])('$description', async ({ isDesktopEditorLayout, expectedBackingSize }) => {
+    installViewportMatchMedia(isDesktopEditorLayout);
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img });
+
+    render(<Canvas />);
+
+    act(() => {
+      resizeObserverInstances[0]?.triggerWidth(512);
+    });
+
+    await waitFor(() => {
+      expect(renderTokenMock.mock.calls.at(-1)?.[2]).toBe(expectedBackingSize);
+    });
+  });
+
+  it.each([
+    {
+      description: 'caps a fixed-size preview after changing from desktop to mobile',
+      initialDesktopLayout: true,
+      initialBackingSize: 1536,
+      nextDesktopLayout: false,
+      nextBackingSize: 1024,
+    },
+    {
+      description: 'restores the full backing resolution after changing from mobile to desktop',
+      initialDesktopLayout: false,
+      initialBackingSize: 1024,
+      nextDesktopLayout: true,
+      nextBackingSize: 1536,
+    },
+  ])(
+    '$description',
+    async ({ initialDesktopLayout, initialBackingSize, nextDesktopLayout, nextBackingSize }) => {
+      installViewportMatchMedia(initialDesktopLayout);
+      const img = new Image();
+      useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img });
+
+      render(<Canvas />);
+
+      act(() => {
+        resizeObserverInstances[0]?.triggerWidth(512);
+      });
+
+      await waitFor(() => {
+        expect(renderTokenMock.mock.calls.at(-1)?.[2]).toBe(initialBackingSize);
+      });
+
+      act(() => {
+        changeViewport(nextDesktopLayout);
+      });
+
+      await waitFor(() => {
+        expect(renderTokenMock.mock.calls.at(-1)?.[2]).toBe(nextBackingSize);
+      });
+    },
+  );
 
   it('starts drag on pointer down and updates offset on move', () => {
     const img = new Image();

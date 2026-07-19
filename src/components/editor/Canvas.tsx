@@ -5,10 +5,12 @@ import { renderToken, drawCheckerboard } from '@/lib/renderer/pipeline';
 import { useI18n } from '@/lib/i18n';
 import { ImageUploader } from './ImageUploader';
 import { TextCanvasOverlay } from './TextCanvasOverlay';
+import { getPreviewBackingSize } from './preview-rendering';
 import type { EditorState } from '@/types/editor';
 import { useCanvasEditorState } from './editor-store-hooks';
 
 const EDITOR_REFERENCE_SIZE = 512;
+const DESKTOP_EDITOR_MEDIA_QUERY = '(min-width: 1280px)';
 
 interface CanvasProps {
   previewMode?: 'default' | 'batch';
@@ -41,6 +43,7 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
   const workspaceRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const isMountedRef = useRef(true);
+  const lastObservedPreviewCssSizeRef = useRef<number | null>(null);
 
   const [canvasSize, setCanvasSize] = useState(512);
   const [previewCssSize, setPreviewCssSize] = useState(512);
@@ -61,14 +64,37 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
   useEffect(() => {
     const el = previewRef.current;
     if (!el) return;
+    const desktopEditorLayoutQuery = window.matchMedia(DESKTOP_EDITOR_MEDIA_QUERY);
+    const updatePreviewBackingSize = (previewCssSize: number, isMobileEditorLayout: boolean) => {
+      const previewBackingSize = getPreviewBackingSize(
+        previewCssSize,
+        window.devicePixelRatio,
+        isMobileEditorLayout,
+      );
+      setCanvasSize(previewBackingSize > 0 ? previewBackingSize : EDITOR_REFERENCE_SIZE);
+    };
     const ro = new ResizeObserver((entries) => {
       const { width } = entries[0].contentRect;
       setPreviewCssSize(width > 0 ? width : EDITOR_REFERENCE_SIZE);
-      const px = Math.round(width * window.devicePixelRatio);
-      setCanvasSize(px > 0 ? px : EDITOR_REFERENCE_SIZE);
+      lastObservedPreviewCssSizeRef.current = width > 0 ? width : null;
+      updatePreviewBackingSize(width, !desktopEditorLayoutQuery.matches);
     });
+    const handleEditorLayoutChange = (event: MediaQueryListEvent) => {
+      const lastObservedPreviewCssSize = lastObservedPreviewCssSizeRef.current;
+      if (lastObservedPreviewCssSize === null) {
+        setCanvasSize(EDITOR_REFERENCE_SIZE);
+        return;
+      }
+
+      updatePreviewBackingSize(lastObservedPreviewCssSize, !event.matches);
+    };
+
+    desktopEditorLayoutQuery.addEventListener('change', handleEditorLayoutChange);
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      desktopEditorLayoutQuery.removeEventListener('change', handleEditorLayoutChange);
+    };
   }, []);
 
   // 1. 初始化背景棋盘格 (canvasSize 变化时重绘)
