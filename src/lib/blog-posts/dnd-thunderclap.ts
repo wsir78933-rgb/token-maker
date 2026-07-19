@@ -21,7 +21,7 @@ import {
 const DND_THUNDERCLAP_VIDEO_ID = '2pDcp2JS3ac';
 
 export const dndThunderclapArticleHtml = String.raw`
-<p>If you searched for <strong>dnd thunderclap</strong>, you probably want the table answer first: it is a close-range noise cantrip, not a hidden ranged blast. Thunderclap is strongest when you are already surrounded and weakest when an ally, familiar, or stealth plan is standing next to you.</p>
+<p><strong>dnd thunderclap</strong> is a close-range noise cantrip, not a hidden ranged blast. It is strongest when you are already surrounded and weakest when an ally, familiar, or stealth plan is standing next to you.</p>
 
 <p><strong>Thunderclap is an Evocation cantrip with an Action casting time, a Somatic component, and an Instantaneous duration.</strong> <strong>In 2024, each creature in a 5-foot Emanation originating from you must succeed on a Constitution saving throw or take 1d6 Thunder damage.</strong> The blast is loud, simple, and easy to misread because one line says the sound can be heard up to 100 feet away.</p>
 
@@ -177,7 +177,7 @@ export const dndThunderclapArticleHtml = String.raw`
 <p>Do not pick Thunderclap only because it sounds dramatic. Pick it because you expect adjacent enemies, you can survive being that close, and your party can read the area before dice hit the table.</p>
 
 <h2 id="video-guide">Video: Thunderclap table habits</h2>
-<p>Use the video as a quick visual check after the rules table. Keep the written article open for the exact 2014/2024 wording, Emanation note, and VTT checklist.</p>
+<p>Use the video as a quick visual check after the rules table. Keep the exact 2014/2024 wording, Emanation note, and VTT checklist nearby while you watch.</p>
 
 ${liteVideoEmbed(DND_THUNDERCLAP_VIDEO_ID, 'Thunderclap DnD guide video', {
   src: DND_THUNDERCLAP_VIDEO_PLACEHOLDER_PATH,
@@ -223,7 +223,7 @@ ${liteVideoEmbed(DND_THUNDERCLAP_VIDEO_ID, 'Thunderclap DnD guide video', {
 `;
 
 export const dndThunderclapArticleHtmlZh = String.raw`
-<p>如果你搜索 <strong>dnd thunderclap</strong> 或“雷鸣拍击”，最容易踩坑的地方不是伤害骰，而是范围。雷鸣拍击（Thunderclap）不是 100 英尺伤害法术。它是贴身爆开的响亮戏法，适合你被敌人围住时使用，也很容易误伤旁边的队友。</p>
+<p><strong>dnd thunderclap</strong> 最容易踩坑的地方不是伤害骰，而是范围。雷鸣拍击（Thunderclap）不是 100 英尺伤害法术。它是贴身爆开的响亮戏法，适合你被敌人围住时使用，也很容易误伤旁边的队友。</p>
 
 <p><strong>雷鸣拍击（Thunderclap）是塑能（Evocation）戏法，施放时间是动作（Action），只需要姿势成分（Somatic），持续时间是瞬时（Instantaneous）。</strong> <strong>2024 文本里，每个处在以你为源点的 5 英尺散发（Emanation）内的生物，都必须进行一次体质豁免（Constitution saving throw）。</strong> 豁免失败时承受 1d6 雷鸣伤害（Thunder damage）。</p>
 

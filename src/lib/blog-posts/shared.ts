@@ -30,6 +30,7 @@ export const DND_RAPIER_COVER_PATH = '/blog/covers/en/dnd-rapier-guide.webp';
 export const DND_RANGER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-ranger-spells-guide.webp';
 export const DND_SHORTSWORD_COVER_PATH = '/blog/covers/en/dnd-shortsword-guide.webp';
 export const DND_SILVERY_BARBS_COVER_PATH = '/blog/covers/en/dnd-silvery-barbs-guide.webp';
+export const DND_SWORD_SHEATHS_COVER_PATH = '/blog/covers/en/dnd-sword-sheaths-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -204,6 +205,8 @@ export const DND_SILVERY_BARBS_2024_FREE_RULES_URL =
 export const DND_SILVERY_BARBS_2024_CASTING_RULES_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/spells#CastingSpells';
 export const DND_SILVERY_BARBS_VIDEO_URL = 'https://www.youtube.com/watch?v=Iywz0U5Zwl0';
+export const DND_2024_ATTACK_ACTION_RULES_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary#AttackAction';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');

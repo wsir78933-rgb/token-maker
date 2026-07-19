@@ -122,7 +122,7 @@ export const dndMephistophelesArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>This comparison is where many lore pages lose practical value. The useful DM question is not "which archdevil is strongest?" It is <strong>which archdevil makes this adventure easier to run and easier for players to understand</strong>.</p>
+<p>The useful DM question is not "which archdevil is strongest?" It is <strong>which archdevil makes this adventure easier to run and easier for players to understand</strong>.</p>
 
 <h2>Can a Player Character Be Connected to Mephistopheles?</h2>
 <p><strong>Yes, a player character can be connected to Mephistopheles through a Fiend Warlock pact, infernal ancestry, a family bargain, or a legacy tiefling concept.</strong> If your table uses older tiefling variants, Mephistopheles flavor often leans into Intelligence and fire magic. If your table is using the current 2024 species framing, start from the official <a href="${DND_2024_TIEFLING_URL}" rel="noreferrer noopener">D&amp;D Beyond Tiefling page</a> and treat the exact ancestor as story flavor.</p>
@@ -181,7 +181,7 @@ export const dndMephistophelesArticleHtml = String.raw`
 <table>
   <thead>
     <tr>
-      <th>If you searched for...</th>
+      <th>Question</th>
       <th>Fast answer</th>
       <th>What I would run</th>
     </tr>
@@ -194,7 +194,7 @@ export const dndMephistophelesArticleHtml = String.raw`
     </tr>
     <tr>
       <td><strong>Mephistopheles 5e</strong></td>
-      <td>You probably want either a 5e-compatible boss profile or a 5e lore hook.</td>
+      <td>Use a 5e-compatible boss profile for combat prep, or a 5e lore hook for story prep.</td>
       <td>An avatar with clear objectives and fewer moving parts.</td>
     </tr>
     <tr>
@@ -287,9 +287,9 @@ ${liteVideoEmbed('Xdu_5_ZL7pQ', 'Mephistopheles D&D lore video', {
 `;
 
 export const dndMephistophelesArticleHtmlZh = String.raw`
-<p><strong>mephistopheles dnd</strong> 指南先回答一个实际问题：Mephistopheles 到底是谁，能不能当反派或 patron，怎么放进团里才不突兀。下面先给速查结论，再讲 Cania、契约、Warlock/Tiefling 关联，以及我会怎样在跑团里使用他。</p>
+<p><strong>mephistopheles dnd</strong> 可以作为反派或 patron 使用。先确认他是谁、怎样放进团里才不突兀，再看 Cania、契约、Warlock/Tiefling 关联和具体跑团用法。</p>
 
-<p>这里先解决桌面问题：这个角色有什么用、什么时候该用、什么时候别直接丢上战斗地图。</p>
+<p>把 Mephistopheles 用作反派、patron 或长期压力源时，先决定他的作用、出场时机，以及是否该直接放上战斗地图。</p>
 
 <table>
   <thead>
@@ -449,7 +449,7 @@ export const dndMephistophelesArticleHtmlZh = String.raw`
 <table>
   <thead>
     <tr>
-      <th>如果你搜的是...</th>
+      <th>准备目标</th>
       <th>直接答案</th>
       <th>我会怎么跑</th>
     </tr>

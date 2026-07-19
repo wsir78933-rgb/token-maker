@@ -21,7 +21,7 @@ import {
 } from './shared';
 
 export const paladin2024SpellsDndArticleHtml = String.raw`
-<p><strong>paladin 2024 spells dnd</strong> is a deceptively practical search. The spell list looks short next to Wizard or Cleric, but Paladin turns get crowded quickly: one Bonus Action, one concentration slot, a limited prepared list, and the constant temptation to spend every slot on damage.</p>
+<p><strong>paladin 2024 spells dnd</strong> choices are deceptively practical. The spell list looks short next to Wizard or Cleric, but Paladin turns get crowded quickly: one Bonus Action, one concentration slot, a limited prepared list, and the constant temptation to spend every slot on damage.</p>
 
 <p>I would build the list by job, not by drama. Prepare one opener, one rescue spell, one defense spell, one smite plan, and one non-combat answer. That gives the character a real plan before the first initiative roll.</p>
 
@@ -296,7 +296,7 @@ ${liteVideoEmbed('_vx-oqXOabw', 'Paladin 2024 法术配套视频', {
 `;
 
 export const paladin2024SpellsDndArticleHtmlZh = String.raw`
-<p><strong>Paladin 2024 法术（paladin 2024 spells dnd）</strong>这个搜索词看起来像单纯找法术排名，但真正的问题是：Paladin 2024 法术该怎样准备，才不会每个法术位都被 Divine Smite 吃掉。</p>
+<p><strong>Paladin 2024 法术（paladin 2024 spells dnd）</strong>的难点不只是排名：该怎样准备，才不会每个法术位都被 Divine Smite 吃掉。</p>
 
 <p>我会按职责选法术。一个开场法术，一个救场法术，一个防御法术，一个 smite 计划，再留一个非战斗答案。这样 Paladin 在战斗外也有用，战斗里也不会每次命中都停下来纠结。</p>
 

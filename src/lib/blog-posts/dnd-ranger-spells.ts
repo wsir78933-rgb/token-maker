@@ -429,7 +429,7 @@ ${liteVideoEmbed('P_qzyTFSrTE', 'DND Ranger spells companion video', {
 `;
 
 export const dndRangerSpellsArticleHtmlZh = String.raw`
-<p><strong>DND 游侠法术</strong>容易让人纠结，英文里玩家常搜的说法是 dnd ranger spells。游侠（Ranger）的法术位不多，却要同时管侦察、伤害、旅行、控制和救场。我的建议不是先问“哪个最强”，而是先问这个法术在你这张桌上到底负责什么。</p>
+<p><strong>DND 游侠法术</strong>容易让人纠结。游侠（Ranger）的法术位不多，却要同时管侦察、伤害、旅行、控制和救场。我的建议不是先问“哪个最强”，而是先问这个法术在你这张桌上到底负责什么。</p>
 
 <p>下面这张表先给你一个能马上用的短名单。看完之后，再回头确认规则版本。2014 版游侠和 2024 版游侠管理法术的方式不一样，猎人印记（Hunter's Mark）也变到值得单独判断，别把它当成每场战斗的默认开关。</p>
 

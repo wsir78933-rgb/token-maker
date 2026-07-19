@@ -29,7 +29,7 @@ import {
 const DND_HEX_VIDEO_ID = 'JwINRY1eD7M';
 
 export const dndHexArticleHtml = String.raw`
-<p>If you searched for <strong>dnd hex</strong>, you probably want the rule that matters at the table: Hex curses one creature, adds a 1d6 Necrotic damage rider when your attacks hit that creature, and gives that creature disadvantage on checks for one chosen ability.</p>
+<p><strong>dnd hex</strong> curses one creature, adds a 1d6 Necrotic damage rider when your attacks hit that creature, and gives that creature disadvantage on checks for one chosen ability.</p>
 
 <p>Hex is good when you keep landing repeated attack rolls into one target. It is not free damage. It asks for concentration, it spends your Bonus Action to cast or move, and its ability penalty is narrower than many players remember.</p>
 
@@ -316,7 +316,7 @@ ${liteVideoEmbed(DND_HEX_VIDEO_ID, 'Hex is a trap in D&D 5E - Advanced guide to 
 `;
 
 export const dndHexArticleHtmlZh = String.raw`
-<p>如果你在搜 <strong>dnd hex</strong>，真正需要的是桌边答案：巫术印记（Hex）诅咒一个生物；你用攻击命中它时，额外造成 1d6 黯蚀伤害；施放时还要指定一个属性，让目标在该属性的属性检定上具有劣势。</p>
+<p><strong>dnd hex</strong> 的桌边答案很直接：巫术印记（Hex）诅咒一个生物；你用攻击命中它时，额外造成 1d6 黯蚀伤害；施放时还要指定一个属性，让目标在该属性的属性检定上具有劣势。</p>
 
 <p>Hex 很适合反复打同一个耐打目标。它不是白送伤害。它占专注（Concentration），施放和转移都吃附赠动作（Bonus Action），而且属性劣势比很多玩家记忆里窄得多。</p>
 

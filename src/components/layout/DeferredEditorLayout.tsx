@@ -4,18 +4,41 @@ import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useI18n } from '@/lib/i18n';
 
-const DeferredEditor = dynamic(
-  () => import('@/components/layout/EditorLayout').then((module) => module.EditorLayout),
-  { ssr: false },
-);
+function loadEditorLayout() {
+  return import('@/components/layout/EditorLayout').then((module) => module.EditorLayout);
+}
+
+function EditorWorkspaceSkeleton() {
+  return (
+    <div
+      aria-hidden="true"
+      className="grid w-full max-w-[32rem] gap-4 rounded-2xl border border-border/50 bg-card/45 p-4 shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)]"
+    >
+      <div className="h-56 rounded-xl border-2 border-dashed border-border bg-muted/20" />
+      <div className="grid grid-cols-3 gap-3">
+        <div className="h-16 rounded-lg border border-border/50 bg-muted/20" />
+        <div className="h-16 rounded-lg border border-border/50 bg-muted/20" />
+        <div className="h-16 rounded-lg border border-border/50 bg-muted/20" />
+      </div>
+    </div>
+  );
+}
+
+function DesktopEditorLoadingFallback() {
+  return (
+    <div
+      data-testid="desktop-editor-loading-fallback"
+      aria-busy="true"
+      className="editor-shell flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-background px-4 py-10 text-foreground xl:h-screen xl:overflow-hidden"
+    >
+      <EditorWorkspaceSkeleton />
+    </div>
+  );
+}
 
 const EDITOR_PRELOAD_MARGIN = '120px 0px';
 const DESKTOP_EDITOR_MEDIA_QUERY = '(min-width: 1280px)';
 const EDITOR_SEARCH_PARAM_NAMES = ['preset', 'mask', 'border', 'borderTint', 'size'] as const;
-
-function hasEditorSearchParam(searchParams: URLSearchParams) {
-  return EDITOR_SEARCH_PARAM_NAMES.some((paramName) => searchParams.has(paramName));
-}
 
 function getDesktopEditorLayoutSnapshot() {
   return window.matchMedia(DESKTOP_EDITOR_MEDIA_QUERY).matches;
@@ -31,6 +54,27 @@ function subscribeToDesktopEditorLayout(onStoreChange: () => void) {
   mediaQueryList.addEventListener('change', onStoreChange);
 
   return () => mediaQueryList.removeEventListener('change', onStoreChange);
+}
+
+function EditorLoadingFallback() {
+  const isDesktopEditorLayout = useSyncExternalStore(
+    subscribeToDesktopEditorLayout,
+    getDesktopEditorLayoutSnapshot,
+    getServerDesktopEditorLayoutSnapshot,
+  );
+
+  if (isDesktopEditorLayout !== true) return null;
+
+  return <DesktopEditorLoadingFallback />;
+}
+
+const DeferredEditor = dynamic(loadEditorLayout, {
+  ssr: false,
+  loading: () => <EditorLoadingFallback />,
+});
+
+function hasEditorSearchParam(searchParams: URLSearchParams) {
+  return EDITOR_SEARCH_PARAM_NAMES.some((paramName) => searchParams.has(paramName));
 }
 
 function hasEditorWorkspaceHash() {
@@ -143,17 +187,7 @@ export function DeferredEditorLayout() {
           {isMobileEditorLoading ? t('mobileEditorLoading') : t('mobileEditorLaunch')}
         </button>
       ) : (
-        <div
-          aria-hidden="true"
-          className="grid w-full max-w-[32rem] gap-4 rounded-2xl border border-border/50 bg-card/45 p-4 shadow-[0_28px_90px_-48px_var(--workspace-shadow-color)]"
-        >
-          <div className="h-56 rounded-xl border-2 border-dashed border-border bg-muted/20" />
-          <div className="grid grid-cols-3 gap-3">
-            <div className="h-16 rounded-lg border border-border/50 bg-muted/20" />
-            <div className="h-16 rounded-lg border border-border/50 bg-muted/20" />
-            <div className="h-16 rounded-lg border border-border/50 bg-muted/20" />
-          </div>
-        </div>
+        <EditorWorkspaceSkeleton />
       )}
     </div>
   );

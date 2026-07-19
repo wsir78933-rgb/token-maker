@@ -29,6 +29,7 @@ import {
   DND_RANGER_SPELLS_COVER_PATH,
   DND_SHORTSWORD_COVER_PATH,
   DND_SILVERY_BARBS_COVER_PATH,
+  DND_SWORD_SHEATHS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -71,6 +72,10 @@ import {
   dndSilveryBarbsArticleHtml,
   dndSilveryBarbsArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-silvery-barbs';
+import {
+  dndSwordSheathsArticleHtml,
+  dndSwordSheathsArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-sword-sheaths';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -113,6 +118,7 @@ const PALADIN_2024_SPELLS_DND_UPDATED_AT = '2026-07-14';
 const DND_HEX_UPDATED_AT = '2026-07-15';
 const DND_FIND_FAMILIAR_UPDATED_AT = '2026-07-16';
 const DND_THUNDERCLAP_UPDATED_AT = '2026-07-17';
+const DND_SWORD_SHEATHS_UPDATED_AT = '2026-07-19';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
@@ -1387,6 +1393,108 @@ const dndRangerSpellsArticle: BlogPost = {
     },
   ],
   relatedSlugs: ['dnd-hunters-mark', 'dnd-druid-spells', 'dnd-constitution-guide', 'dnd-classes-explained'],
+};
+
+const dndSwordSheathsArticle: BlogPost = {
+  slug: 'dnd-sword-sheaths',
+  title: 'DnD Sword Sheaths: Rules, Scabbard Ideas, and VTT Visuals',
+  seoTitle: 'DnD Sword Sheaths: Rules, Scabbard Ideas, and VTT Visuals',
+  metaDescription:
+    'A practical dnd sword sheaths guide covering 2024 draw and stow rules, scabbard story ideas, DM-safe homebrew prompts, and VTT token visuals.',
+  excerpt:
+    'Use dnd sword sheaths for more than a weapon holder: check the current draw-and-stow rule, build character story, and make the scabbard read on a VTT token.',
+  publishedAt: DND_SWORD_SHEATHS_UPDATED_AT,
+  updatedAt: DND_SWORD_SHEATHS_UPDATED_AT,
+  readTime: '9 min read',
+  coverLabel: 'Character Gear',
+  coverImage: DND_SWORD_SHEATHS_COVER_PATH,
+  coverAlt:
+    'dnd sword sheaths guide cover showing a leather scabbard, a partially drawn sword, a VTT token, and a d20 on a tabletop map',
+  bodyHtml: dndSwordSheathsArticleHtml,
+  faqItems: [
+    {
+      question: 'Can you draw a sword from a sheath as part of an attack in 2024 DnD?',
+      answer:
+        'Yes. When you make an attack as part of the Attack action, the current rules let you equip one weapon before or after that attack. Drawing it from a sheath counts as equipping it.',
+    },
+    {
+      question: 'Can you sheathe a sword as part of an attack in 2024 DnD?',
+      answer:
+        'Yes. The current rules list sheathing, stowing, and dropping a weapon as ways to unequip it before or after an attack in the Attack action.',
+    },
+    {
+      question: 'Does a back scabbard make drawing a sword faster in DnD?',
+      answer:
+        'No official combat bonus comes from a mundane back scabbard. Treat it as character art unless your DM gives that setup a specific ruling or item effect.',
+    },
+    {
+      question: 'Is a scabbard different from a sheath in DnD?',
+      answer:
+        'At most DnD tables, both words communicate the same practical idea: a cover or holder for a bladed weapon. Use the term your group finds clearest, then describe the object in a way that fits the character.',
+    },
+    {
+      question: 'Can a magic scabbard make any sword magical?',
+      answer:
+        'Only if the item\'s text or your DM says it can. The four examples above are homebrew story prompts, not official magic-item effects.',
+    },
+    {
+      question: 'How should a sword sheath appear on a VTT token?',
+      answer:
+        'Show one clear identifier, such as a pommel, diagonal strap, colored throat, or metal chape. Keep the face readable and avoid treating a visual detail as a rules bonus unless the table has agreed on one.',
+    },
+  ],
+  relatedSlugs: ['rapier-dnd', 'dnd-dagger', 'dnd-shortsword', 'dnd-classes-explained'],
+};
+
+const dndSwordSheathsArticleZh: BlogPost = {
+  slug: 'dnd-sword-sheaths',
+  title: 'DND 剑鞘指南：收剑规则、角色设定与 VTT 视觉',
+  seoTitle: 'DND 剑鞘指南：收剑规则、角色设定与 VTT 视觉',
+  metaDescription:
+    '一篇实用的 DND 剑鞘指南，讲清 2024 抽剑与收剑规则、剑鞘角色设定、DM 可选自制灵感和 VTT Token 视觉处理。',
+  excerpt:
+    'DND 剑鞘不只是武器收纳物：这篇用当前抽收剑规则、角色背景细节和 VTT Token 轮廓，帮你把它变成桌边能用的信息。',
+  publishedAt: DND_SWORD_SHEATHS_UPDATED_AT,
+  updatedAt: DND_SWORD_SHEATHS_UPDATED_AT,
+  readTime: '9 分钟阅读',
+  coverLabel: '角色装备',
+  coverImage: DND_SWORD_SHEATHS_COVER_PATH,
+  coverAlt:
+    'DND 剑鞘指南封面图，桌面地图上有皮革剑鞘、局部出鞘的长剑、VTT Token 和 d20 骰子',
+  bodyHtml: dndSwordSheathsArticleHtmlZh,
+  faqItems: [
+    {
+      question: '2024 DnD 里能在攻击时从剑鞘抽剑吗？',
+      answer:
+        '可以。你在攻击动作里进行一次攻击时，当前规则允许你在该次攻击前或后装备一件武器；从剑鞘抽出它属于装备。',
+    },
+    {
+      question: '2024 DnD 里能在攻击时把剑插回鞘吗？',
+      answer:
+        '可以。当前规则把插回剑鞘、收起和丢下武器都列为解除装备，它们可以发生在攻击动作中的一次攻击前或后。',
+    },
+    {
+      question: '背鞘会让 DnD 角色抽剑更快吗？',
+      answer:
+        '不会。普通背鞘没有官方战斗加值。除非 DM 对该设定或物品效果作出明确裁定，否则把它当作角色美术即可。',
+    },
+    {
+      question: 'DnD 里的 scabbard 和 sheath 有区别吗？',
+      answer:
+        '在多数 DnD 桌上，这两个词传达的实用意思相同，都是刃器的外套或收纳物。选全桌听得懂的说法，再按角色去描述它即可。',
+    },
+    {
+      question: '魔法剑鞘能让任何剑都变成魔法武器吗？',
+      answer:
+        '只有物品文本或 DM 明确说可以时才行。上面四个例子都是自制剧情提示，不是官方魔法物品效果。',
+    },
+    {
+      question: '剑鞘应该怎样出现在 VTT Token 上？',
+      answer:
+        '保留一个清晰识别点就够了，例如剑柄、斜背带、彩色鞘口或金属鞘尾。让脸仍然看得清楚，也不要把视觉细节当成规则加值，除非全桌已经约定。',
+    },
+  ],
+  relatedSlugs: ['rapier-dnd', 'dnd-dagger', 'dnd-shortsword', 'dnd-classes-explained'],
 };
 
 const dndThunderclapArticle: BlogPost = {
@@ -2794,10 +2902,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

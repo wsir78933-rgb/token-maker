@@ -3,11 +3,42 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
+import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+let shouldRenderDynamicLoadingFallback = false;
+let shouldRenderStatefulEditor = false;
+
 vi.mock('next/dynamic', () => ({
-  default: () => function MockEditorLayout() {
-    return <div data-testid="editor-layout" />;
+  default: (_loadComponent: unknown, options?: { loading?: () => React.ReactNode }) => {
+    function StatefulEditorContents() {
+      const [draftTokenName, setDraftTokenName] = useState('');
+
+      return (
+        <input
+          data-testid="stateful-editor-input"
+          value={draftTokenName}
+          onChange={(event) => setDraftTokenName(event.target.value)}
+        />
+      );
+    }
+
+    return function MockEditorLayout() {
+      const loadingFallback = options?.loading?.();
+      if (
+        shouldRenderDynamicLoadingFallback
+        && loadingFallback !== null
+        && loadingFallback !== undefined
+      ) {
+        return loadingFallback;
+      }
+
+      if (shouldRenderStatefulEditor) {
+        return <StatefulEditorContents />;
+      }
+
+      return <div data-testid="editor-layout" />;
+    };
   },
 }));
 
@@ -100,6 +131,8 @@ describe('DeferredEditorLayout', () => {
 
   beforeEach(() => {
     vi.resetModules();
+    shouldRenderDynamicLoadingFallback = false;
+    shouldRenderStatefulEditor = false;
     intersectionObserverInstances.length = 0;
     observedRootMargins.length = 0;
     viewportMediaQueryChangeListeners.clear();
@@ -156,6 +189,41 @@ describe('DeferredEditorLayout', () => {
     }
   });
 
+  it('keeps the desktop loading fallback for a hydrated direct editor link while the module resolves', async () => {
+    vi.useFakeTimers();
+    installViewportMatchMedia(true);
+    shouldRenderDynamicLoadingFallback = true;
+    window.history.replaceState(null, '', '/#editor-workspace');
+    const { DeferredEditorLayout } = await import('./DeferredEditorLayout');
+    const container = document.createElement('div');
+    container.innerHTML = renderToString(<DeferredEditorLayout />);
+    document.body.append(container);
+
+    let hydratedRoot: ReturnType<typeof hydrateRoot> | null = null;
+    try {
+      hydratedRoot = await act(async () => {
+        const root = hydrateRoot(container, <DeferredEditorLayout />);
+        await Promise.resolve();
+        return root;
+      });
+
+      await act(async () => {
+        await vi.runAllTimersAsync();
+      });
+
+      expect(screen.getByTestId('desktop-editor-loading-fallback')).toBeDefined();
+      expect(screen.queryByTestId('editor-layout')).toBeNull();
+    } finally {
+      const rootToUnmount = hydratedRoot;
+      if (rootToUnmount !== null) {
+        await act(async () => {
+          rootToUnmount.unmount();
+        });
+      }
+      container.remove();
+    }
+  });
+
   it('keeps the desktop near-viewport preload contract', async () => {
     installViewportMatchMedia(true);
     const { DeferredEditorLayout } = await import('./DeferredEditorLayout');
@@ -163,6 +231,24 @@ describe('DeferredEditorLayout', () => {
     render(<DeferredEditorLayout />);
 
     expect(observedRootMargins).toEqual(['120px 0px']);
+  });
+
+  it('keeps desktop workspace geometry while the editor module resolves', async () => {
+    installViewportMatchMedia(true);
+    shouldRenderDynamicLoadingFallback = true;
+    const { DeferredEditorLayout } = await import('./DeferredEditorLayout');
+
+    render(<DeferredEditorLayout />);
+    const desktopObserver = intersectionObserverInstances[0];
+    if (!desktopObserver) {
+      throw new Error('Expected a desktop IntersectionObserver');
+    }
+    desktopObserver.triggerIntersection(true);
+
+    const loadingFallback = await screen.findByTestId('desktop-editor-loading-fallback');
+    expect(loadingFallback.className).toContain('xl:h-screen');
+    expect(loadingFallback.className).toContain('xl:overflow-hidden');
+    expect(screen.queryByTestId('editor-layout')).toBeNull();
   });
 
   it('switches observer ownership when the viewport crosses the desktop breakpoint', async () => {
@@ -191,6 +277,28 @@ describe('DeferredEditorLayout', () => {
     expect(screen.queryByTestId('mobile-editor-launch')).toBeNull();
     expect(intersectionObserverInstances).toHaveLength(2);
     expect(observedRootMargins).toEqual(['120px 0px', '120px 0px']);
+  });
+
+  it('keeps loaded editor state when the viewport crosses the desktop breakpoint', async () => {
+    installViewportMatchMedia(true);
+    shouldRenderStatefulEditor = true;
+    const { DeferredEditorLayout } = await import('./DeferredEditorLayout');
+
+    render(<DeferredEditorLayout />);
+    const desktopObserver = intersectionObserverInstances[0];
+    if (!desktopObserver) {
+      throw new Error('Expected a desktop IntersectionObserver');
+    }
+    desktopObserver.triggerIntersection(true);
+
+    const statefulEditorInput = await screen.findByTestId('stateful-editor-input');
+    fireEvent.change(statefulEditorInput, { target: { value: 'draft-token' } });
+
+    act(() => {
+      changeViewport(false);
+    });
+
+    expect((screen.getByTestId('stateful-editor-input') as HTMLInputElement).value).toBe('draft-token');
   });
 
   it('loads the editor after a mobile same-document editor hash navigation', async () => {
@@ -276,6 +384,23 @@ describe('DeferredEditorLayout', () => {
     await waitFor(() => {
       expect(screen.getByTestId('editor-layout')).toBeDefined();
     });
+  });
+
+  it('keeps mobile loading visually empty after explicit launch', async () => {
+    vi.useFakeTimers();
+    installViewportMatchMedia(false);
+    shouldRenderDynamicLoadingFallback = true;
+    const { DeferredEditorLayout } = await import('./DeferredEditorLayout');
+
+    render(<DeferredEditorLayout />);
+    fireEvent.click(screen.getByTestId('mobile-editor-launch'));
+
+    await act(async () => {
+      await vi.runAllTimersAsync();
+    });
+
+    expect(screen.queryByTestId('editor-layout')).toBeNull();
+    expect(screen.queryByTestId('desktop-editor-loading-fallback')).toBeNull();
   });
 
   it('cancels the mobile launch timer when unmounted', async () => {

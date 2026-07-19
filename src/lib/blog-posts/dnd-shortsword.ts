@@ -23,7 +23,7 @@ import {
 } from './shared';
 
 export const dndShortswordArticleHtml = String.raw`
-<p>If you searched for <strong>dnd shortsword</strong>, you probably want the version that clears up the table arguments fast: what the shortsword does in 2014, what changed in 2024, and whether Vex, Nick, and Sneak Attack actually work the way people claim. The shortsword is still one of the easiest Dexterity melee weapons to misunderstand because the core stats barely changed while the timing rules around it got busier.</p>
+<p>The <strong>dnd shortsword</strong> keeps its core Dexterity-melee role in 2014 and 2024 rules, but Vex, Nick, and Sneak Attack can still create table arguments. Check the version your table uses before relying on a weapon mastery or dual-wielding interaction.</p>
 
 <p><strong>A shortsword is a martial melee weapon that deals 1d6 piercing damage, costs 10 gp, weighs 2 lb, and has the Finesse and Light properties.</strong> In the 2024 rules, the weapon keeps those basics and adds Vex as its mastery property.</p>
 
@@ -273,7 +273,7 @@ ${liteVideoEmbed('-nu-JmZ4joo', 'Official DnD 2024 Weapon Mastery video', {
 `;
 
 export const dndShortswordArticleHtmlZh = String.raw`
-<p>如果你在查 <strong>dnd shortsword</strong>，通常不是想看一堆空话，而是想尽快确认短剑（Shortsword）在 2014 和 2024 规则里到底怎么用，Vex 和 Nick 怎么排顺序，偷袭（Sneak Attack）又是不是想触发就触发。短剑的数据看起来没怎么变，但真正让人混淆的，恰好是这些看似只差一行的小规则。</p>
+<p><strong>dnd shortsword</strong> 要先确认短剑（Shortsword）在 2014 和 2024 规则里到底怎么用，Vex 和 Nick 怎么排顺序，偷袭（Sneak Attack）又是不是想触发就触发。短剑的数据看起来没怎么变，但真正让人混淆的，恰好是这些看似只差一行的小规则。</p>
 
 <p><strong>短剑是一把军用近战武器，造成 1d6 穿刺伤害，价格 10 GP，重量 2 磅，并有灵巧（Finesse）和轻型（Light）属性。</strong> 2024 版在这些基础上，再加入武器掌握（Weapon Mastery）属性 Vex。</p>
 

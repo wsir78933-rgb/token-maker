@@ -243,9 +243,9 @@ ${liteVideoEmbed('ZXcwHPW3GR8', "How DM's react to what Class you play in Dungeo
 `;
 
 export const dndDhampirArticleHtmlZh = String.raw`
-<p>选 <strong>dnd dhampir</strong> 前，最该先弄清楚三件事：这个谱系到底强不强，<em>Vampiric Bite</em> 到底怎么用，什么职业最适合它。这里先把速查结论摆在前面，再展开讲机制和构筑。按我们跑团的经验，Dhampir 最强的点不在“吸血鬼噱头”；它把机动、残局续航和角色张力绑到了一起。</p>
+<p>选 <strong>dnd dhampir</strong> 前，先弄清三件事：这个谱系到底强不强，<em>Vampiric Bite</em> 到底怎么用，什么职业最适合它。Dhampir 最强的点不在“吸血鬼噱头”；它把机动、残局续航和角色张力绑到了一起。</p>
 
-<p>如果你只想先拿到实用结论，直接看速查表就够了。后面的内容再分别解决三个问题：<strong>dnd dhampir</strong> 适不适合你的职业、它在什么样的地图和战役里最值、以及这个角色该怎么演才有张力又不惹人烦。</p>
+<p>速查表能快速确认 <strong>dnd dhampir</strong> 适不适合你的职业、它在哪些地图和战役里最值，以及这个角色该怎么演才有张力又不惹人烦。</p>
 
 <table>
   <thead>
@@ -319,7 +319,7 @@ export const dndDhampirArticleHtmlZh = String.raw`
 <h2>Vampiric Bite 到底怎么用？</h2>
 <p><strong>Vampiric Bite</strong> 是一个基于 Constitution 的自然武器，它的主要价值在于把一次命中的咬击，转成 <strong>回血</strong> 或 <strong>下一次关键检定/攻击的加成</strong>。</p>
 
-<p>很多构筑文章会把这条讲得很玄，结果反而误导人。说白了，咬击最适合拿来做“转场工具”，不要把它当成“回合主菜”。你在残血、攀墙、缴械、卡位、或者准备下一次关键动作时，它才会突然变得很赚。</p>
+<p><em>Vampiric Bite</em> 最适合拿来做“转场工具”，不要把它当成“回合主菜”。你在残血、攀墙、缴械、卡位，或者准备下一次关键动作时，它才会突然变得很赚。</p>
 
 <table>
   <thead>

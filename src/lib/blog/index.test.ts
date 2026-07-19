@@ -8,6 +8,7 @@ import {
   getBlogPageCount,
   getBlogPost,
   getBlogPostPath,
+  getBlogPosts,
   getBlogPostsForPage,
 } from '@/lib/blog-content';
 
@@ -20,24 +21,181 @@ const PALADIN_2024_SPELLS_DND_SLUG = 'paladin-2024-spells-dnd';
 const DND_SILVERY_BARBS_SLUG = 'dnd-silvery-barbs';
 const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
+const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
 
-describe('dnd thunderclap blog post', () => {
-  test('keeps the newest thunderclap article first on the blog page and opens a fourth page', () => {
+describe('published blog body voice', () => {
+  test('does not use author-facing search-intent or content-planning narration', () => {
+    const thirdPersonSearchIntentPatterns = [
+      /\b(?:If you searched for|Most searches for)\b/i,
+      /\bIf you are searching for\b/i,
+      /\bis a deceptively practical search\b/i,
+      /\bThis is the quick .* most players are looking for\b/i,
+      /\bbecause that is how most players search for\b/i,
+      /\bKeep the (?:written )?article open\b/i,
+      /\bA useful .* guide should answer\b/i,
+      /\bThe problem is that most class rankings\b/i,
+      /\bOne weakness of many ranking articles\b/i,
+      /\bThis comparison is where many lore pages\b/i,
+      /\bYou probably want either\b/i,
+      /\bmany quick guides admit\b/i,
+      /(?:搜|搜索)\s*<strong>[\s\S]*?<\/strong>\s*的人(?:，|,)\s*通常/,
+      /(?:英文里)?(?:玩家|很多人|大多数玩家)\s*(?:常搜|搜索|实际搜索)/,
+      /这个搜索词看起来/,
+      /如果你(?:搜索|在查|在搜)\s*<strong>[\s\S]*?<\/strong>(?:\s*或[^，。]*?)?(?:，|,)\s*(?:你\s*)?(?:通常不是|大概率(?:不是|是)|真正需要的是|最容易踩坑的地方不是)/,
+      /<th>如果你搜的是/,
+    ];
+    const authorFacingContentPlanningPhrases = [
+      'This ranking is aimed at general D&amp;D play',
+      'Before jumping into the full ranking, it helps to explain the logic.',
+      'If you look at almost any serious',
+      'What This Ranking Gets Right About D&amp;D Classes',
+      'A good ranking should do more than name the strongest classes.',
+      'That makes this ranking more useful than a pure theorycraft tier list',
+      '很多关于 <strong>DND 职业</strong> 的文章只会告诉你机制差异',
+      '大多数职业榜单不是太复杂',
+      '所以这里采用一套更实用的判断标准。',
+      '这份排序面向的是一般 D&amp;D 战役体验',
+      '在进入完整排名之前，先把判断逻辑讲清楚会更有帮助。',
+      '很多排名文章的问题在于',
+      '一份好的职业排名，不应该只告诉你谁伤害高',
+      '这也是职业排名最容易误导人的地方',
+      '这也是为什么这份排名比纯理论榜单更有用',
+      '这里先把速查结论摆在前面，再展开讲机制和构筑。',
+      '后面的内容再分别解决三个问题：',
+      '很多构筑文章会把这条讲得很玄',
+      '这里先把这些问题讲清楚，再拆规则。',
+      '前面先放速查表，方便你快速判断能不能带上桌。',
+      '先给你死灵法术速查表，再讲 Animate Dead',
+      '可用名字放前面，后面再讲怎么改成适合自己战役的版本。',
+      '指南先回答一个实际问题',
+      '这里先解决桌面问题：',
+    ];
+
+    for (const locale of ['en', 'zh'] as const) {
+      for (const post of getBlogPosts(locale)) {
+        for (const pattern of thirdPersonSearchIntentPatterns) {
+          expect(post.bodyHtml).not.toMatch(pattern);
+        }
+        for (const phrase of authorFacingContentPlanningPhrases) {
+          expect(post.bodyHtml).not.toContain(phrase);
+        }
+      }
+    }
+  });
+});
+
+describe('dnd sword sheaths blog post', () => {
+  test('publishes a new bilingual article first without opening a fifth blog page', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
+    ]);
+  });
+
+  test('keeps rules, story prompts, and VTT visuals distinct in both locales', () => {
+    const englishPost = getBlogPost('en', DND_SWORD_SHEATHS_SLUG);
+    const chinesePost = getBlogPost('zh', DND_SWORD_SHEATHS_SLUG);
+
+    expect(englishPost?.title).toContain('DnD Sword Sheaths');
+    expect(englishPost?.bodyHtml).toContain('dnd sword sheaths');
+    expect(englishPost?.bodyHtml).toContain(
+      'each attack made as part of the Attack action lets you equip or unequip one weapon before or after that attack',
+    );
+    expect(englishPost?.bodyHtml).toContain('These are homebrew prompts, not official magic-item rules.');
+    expect(englishPost?.bodyHtml).not.toContain('2014 vs 2024');
+    expect(englishPost?.bodyHtml).not.toContain('Quick answer');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-sword-sheaths-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(6);
+
+    expect(chinesePost?.title).toContain('DND 剑鞘');
+    expect(chinesePost?.bodyHtml).toContain('剑鞘（scabbard）');
+    expect(chinesePost?.bodyHtml).toContain('攻击动作（Attack action）中的每次攻击前后');
+    expect(chinesePost?.bodyHtml).toContain('以下都是自制内容提示，不是官方魔法物品规则。');
+    expect(chinesePost?.bodyHtml).not.toContain('2014/2024 对比');
+    expect(chinesePost?.bodyHtml).not.toContain('快速结论');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-sword-sheaths-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(6);
+  });
+
+  test('keeps visible sword-sheath FAQ answers aligned with structured data', () => {
+    for (const locale of ['en', 'zh'] as const) {
+      const post = getBlogPost(locale, DND_SWORD_SHEATHS_SLUG);
+
+      for (const faqItem of post?.faqItems ?? []) {
+        expect(post?.bodyHtml).toContain(faqItem.question);
+        expect(post?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+      }
+    }
+  });
+
+  test('builds localized metadata and structured data for the sword-sheath article', () => {
+    expect(getBlogPostPath('en', DND_SWORD_SHEATHS_SLUG)).toBe('/blog/dnd-sword-sheaths');
+    expect(getBlogPostPath('zh', DND_SWORD_SHEATHS_SLUG)).toBe('/zh/blog/dnd-sword-sheaths');
+
+    const englishMetadata = createBlogPostMetadata('en', DND_SWORD_SHEATHS_SLUG);
+    const chineseMetadata = createBlogPostMetadata('zh', DND_SWORD_SHEATHS_SLUG);
+
+    expect(englishMetadata.title).toBe('DnD Sword Sheaths: Rules, Scabbard Ideas, and VTT Visuals');
+    expect(englishMetadata.alternates?.canonical).toBe('/blog/dnd-sword-sheaths');
+    expect(englishMetadata.openGraph?.images).toEqual([
+      {
+        url: 'https://www.tokenmaker.one/blog/covers/en/dnd-sword-sheaths-guide.webp',
+        alt: 'dnd sword sheaths guide cover showing a leather scabbard, a partially drawn sword, a VTT token, and a d20 on a tabletop map',
+      },
+    ]);
+    expect(chineseMetadata.title).toBe('DND 剑鞘指南：收剑规则、角色设定与 VTT 视觉');
+    expect(chineseMetadata.description).toContain('剑鞘');
+
+    expect(buildBlogPostStructuredData('en', DND_SWORD_SHEATHS_SLUG)).toMatchObject({
+      '@type': 'Article',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-sword-sheaths',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-sword-sheaths-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('zh', DND_SWORD_SHEATHS_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+  });
+
+  test('uses a WebP cover and lists both localized article URLs in llms.txt', () => {
+    expect(existsSync('public/blog/covers/en/dnd-sword-sheaths-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-sword-sheaths');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-sword-sheaths');
+  });
+});
+
+describe('dnd thunderclap blog post', () => {
+  test('keeps thunderclap near the top after the newer sword-sheath article is published', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
+      DND_THUNDERCLAP_SLUG,
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
+    ]);
+
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
+      DND_THUNDERCLAP_SLUG,
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
     ]);
   });
 
@@ -219,22 +377,22 @@ describe('dnd thunderclap blog post', () => {
 });
 
 describe('dnd find familiar blog post', () => {
-  test('keeps the newest find familiar article first on the blog page without changing page count', () => {
+  test('keeps find familiar near the top after the newer sword-sheath article is published', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
     ]);
   });
 
@@ -428,22 +586,22 @@ describe('dnd find familiar blog post', () => {
 });
 
 describe('dnd hex blog post', () => {
-  test('keeps the newest hex article first on the blog page without changing page count', () => {
+  test('keeps hex near the top after the newer sword-sheath article is published', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
     ]);
   });
 
@@ -641,14 +799,14 @@ describe('paladin 2024 spells dnd blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(3, 7)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(4, 8)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
       DND_SILVERY_BARBS_SLUG,
       DND_SHORTSWORD_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(3, 7)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(4, 8)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
       DND_SILVERY_BARBS_SLUG,

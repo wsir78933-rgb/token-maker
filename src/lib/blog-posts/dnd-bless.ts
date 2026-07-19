@@ -22,7 +22,7 @@ import {
 } from './shared';
 
 export const dndBlessArticleHtml = String.raw`
-<p>If you are searching for <strong>dnd bless</strong>, you probably want one of two things: the exact rule text, or a quick answer to a table argument. Does the d4 apply once? Does it add to damage? Did the 2024 rules make the holy symbol disappear every time you cast it?</p>
+<p><strong>dnd bless</strong> raises a few table questions: does the d4 apply once, does it add to damage, and did the 2024 rules make the holy symbol disappear every time you cast it?</p>
 
 <p>Short version: Bless is still one of the cleanest 1st-level support spells in DnD. It is not flashy. It does not roll damage. It just makes important d20 rolls less likely to miss by one or two points, which is often the difference between a wasted turn and a fight staying under control.</p>
 
@@ -254,7 +254,7 @@ ${liteVideoEmbed('IPOddAMdy5k', 'Bless is INSANE in D&D 5e! - Advanced Guide to 
 `;
 
 export const dndBlessArticleHtmlZh = String.raw`
-<p>如果你搜索 <strong>dnd bless</strong>，通常不是想看一段华丽描述，而是想马上确认规则：这个 d4 能不能每次都加？能不能加伤害？2024 版写了 5+ GP holy symbol，是不是每次施法都会消耗一个圣徽？</p>
+<p><strong>dnd bless</strong> 有三个需要马上确认的规则：这个 d4 能不能每次都加？能不能加伤害？2024 版写了 5+ GP holy symbol，是不是每次施法都会消耗一个圣徽？</p>
 
 <p>简短答案：祝福术（Bless）仍然是 DnD 里最稳定的一环支援法术之一。它不炫，也不直接造成伤害。它只是让关键 d20 更少差一两点失败，而这种差距经常决定一回合有没有白过。</p>
 

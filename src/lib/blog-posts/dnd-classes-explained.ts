@@ -186,7 +186,7 @@ export const dndClassesArticleHtmlZh = String.raw`
 </ul>
 
 <h2>从玩家视角理解 DND 职业</h2>
-<p>很多关于 <strong>DND 职业</strong> 的文章只会告诉你机制差异，但对新手来说更重要的问题其实是：当战斗开始、队伍遇到麻烦、轮到你行动时，这个职业到底会让你感觉轻松、紧张、爽快，还是需要大量预判？</p>
+<p>判断 <strong>DND 职业</strong> 时，除了机制差异，还要看战斗开始、队伍遇到麻烦、轮到你行动时的实际感受：轻松、紧张、爽快，还是需要大量预判？</p>
 
 <h3>适合新手的近战与物理系职业</h3>
 <figure class="inline-figure inline-figure--square-crop">

@@ -21,9 +21,9 @@ import {
 const SILVERY_BARBS_VIDEO_ID = 'Iywz0U5Zwl0';
 
 export const dndSilveryBarbsArticleHtml = String.raw`
-<p>If you searched for <strong>dnd silvery barbs</strong>, you probably want the part people argue about before the next combat round starts: when the reaction can happen, whether the spell is allowed at your table, and what changed when a group moved from 2014 rules to 2024 rules.</p>
+<p><strong>dnd silvery barbs</strong> raises three table questions: when the reaction can happen, whether the spell is allowed at your table, and what changes when a group moves from 2014 rules to 2024 rules.</p>
 
-<p>Here is the honest table answer. Silvery Barbs is powerful because it waits for a success, spends your reaction, and can turn one enemy success into a second roll while handing an ally advantage for later. It is not free. It is not core-book default at every table. And under 2024 spellcasting, one same-turn spell-slot rule can matter more than many quick guides admit.</p>
+<p>Here is the honest table answer. Silvery Barbs is powerful because it waits for a success, spends your reaction, and can turn one enemy success into a second roll while handing an ally advantage for later. It is not free. It is not core-book default at every table. Under 2024 spellcasting, one same-turn spell-slot rule can matter at the table.</p>
 
 <h2 id="quick-answer">Quick answer: what is Silvery Barbs?</h2>
 <p><strong>Silvery Barbs is a 1st-level enchantment spell from Strixhaven that you cast as a reaction after a creature you can see within 60 feet succeeds on an attack roll, ability check, or saving throw.</strong> The creature rerolls and uses the lower result, then a creature you choose gets advantage on its next attack roll, ability check, or saving throw within 1 minute.</p>
@@ -245,7 +245,7 @@ ${liteVideoEmbed(SILVERY_BARBS_VIDEO_ID, 'Silvery Barbs: should it be banned in 
 `;
 
 export const dndSilveryBarbsArticleHtmlZh = String.raw`
-<p>如果你搜索 <strong>dnd silvery barbs</strong>，大概率不是只想看一遍法术全文。真正会卡住桌子的，是三个问题：它到底能不能用，2014/2024 规则下有没有差异，以及在线 VTT 里怎么记住“反应已经用掉”和“谁还欠一次优势”。</p>
+<p><strong>dnd silvery barbs</strong> 最会卡住桌子的，是三个问题：它到底能不能用，2014/2024 规则下有没有差异，以及在线 VTT 里怎么记住“反应已经用掉”和“谁还欠一次优势”。</p>
 
 <p>先给结论：银光倒刺（Silvery Barbs）很强，因为它等到一个成功结果出现后才出手，花掉你的反应（Reaction），让目标重掷并取较低结果，同时把一次优势（Advantage）留给另一名生物。它不是免费资源，也不是每张角色卡默认能拿的核心法术。</p>
 

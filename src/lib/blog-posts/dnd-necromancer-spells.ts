@@ -86,7 +86,7 @@ export const dndNecromancerSpellsArticleHtml = String.raw`
 </figure>
 
 <h2 id="all-spells">All Common DND Necromancy Spells by Level</h2>
-<p><strong>This is the quick dnd necromancer spells list view most players are looking for: common Necromancy-school spells grouped by spell level.</strong> Source availability varies by campaign, class list, and DM, so treat this table as a planning checklist before you lock a character sheet.</p>
+<p><strong>Start with this quick dnd necromancer spells list: common Necromancy-school spells grouped by spell level.</strong> Source availability varies by campaign, class list, and DM, so treat this table as a planning checklist before you lock a character sheet.</p>
 
 <table>
   <thead>
@@ -150,7 +150,7 @@ export const dndNecromancerSpellsArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>For strict rules sourcing, use the spell text your table owns. The list above intentionally mixes core and commonly used expansion spells because that is how most players search for necromancer options in practice.</p>
+<p>For strict rules sourcing, use the spell text your table owns. The list above mixes core and commonly used expansion spells because tables often use both source types.</p>
 
 <h2 id="best-by-level">Best DND Necromancer Spells by Level</h2>
 <p><strong>The best dnd necromancer spells by level are the ones that give you reliable value before, during, and after combat.</strong> I would rather prepare one boring spell that always matters than three edgy spells that only work in one perfect scene.</p>
@@ -367,7 +367,7 @@ ${liteVideoEmbed('wYBEbNbirkA', 'D&D 5E Animate Dead', {
 `;
 
 export const dndNecromancerSpellsArticleHtmlZh = String.raw`
-<p><strong>dnd necromancer spells</strong> 先别只看“够不够邪门”，更该看它在桌上负责什么工作。先给你死灵法术速查表，再讲 Animate Dead 的 24 小时控制循环、骷髅和僵尸怎么选，以及我自己跑团时用来避免拖慢战斗的亡灵小队流程。</p>
+<p><strong>dnd necromancer spells</strong> 别只看“够不够邪门”，更该看它在桌上负责什么工作：Animate Dead 的 24 小时控制循环、骷髅和僵尸怎么选，以及避免拖慢战斗的亡灵小队流程。</p>
 
 <p>你只想查答案，看第一张表就够；Necromancy Wizard、Death Cleric、死灵反派或亡灵 NPC 更需要分清哪些法术真的撑得起玩法，哪些只是看起来很有味道。</p>
 
@@ -434,7 +434,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
 </figure>
 
 <h2 id="all-spells">常见 DND Necromancy Spells 按环级清单</h2>
-<p><strong>很多人搜索 dnd necromancer spells 时，先想看到的就是这张按环级整理的 Necromancy 学派法术表。</strong>不同战役、职业法术表和扩展书可用性会不一样，所以先把它当成选法术前的检查清单，再和 DM 确认来源。</p>
+<p><strong>先用这张按环级整理的 Necromancy 学派法术表做检查清单。</strong>不同战役、职业法术表和扩展书可用性会不一样，再和 DM 确认来源。</p>
 
 <table>
   <thead>
@@ -498,7 +498,7 @@ export const dndNecromancerSpellsArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>严格规则请以你们桌拥有并允许的书籍文本为准。上表刻意混合了核心与常见扩展法术，因为大多数玩家实际搜索 necromancer options 时就是这样查的。</p>
+<p>严格规则请以你们桌拥有并允许的书籍文本为准。上表同时收录核心与常见扩展法术，方便你按本桌允许的来源筛选。</p>
 
 <h2 id="best-by-level">按环级推荐的 DND Necromancer Spells</h2>
 <p><strong>按环级来看，最值得选的 dnd necromancer spells 是那些在战斗前、战斗中和战斗后都能稳定提供价值的法术。</strong>我宁愿准备一个每场都能用上的朴素法术，也不想带三个只在完美场景才有用的“很酷”法术。</p>

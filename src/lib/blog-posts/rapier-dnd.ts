@@ -23,7 +23,7 @@ import {
 } from './shared';
 
 export const rapierDndArticleHtml = String.raw`
-<p>If you are searching for <strong>rapier dnd</strong>, you probably have a character sheet open and one small rules worry: is this actually the right sword? Most of the time, yes. A rapier gives a Dexterity-focused character a d8 melee weapon with Finesse. The catch is that tables often remember the good part and blur the rest. Finesse does not mean Light, and the 2024 Vex mastery is not automatic for every character holding the weapon.</p>
+<p>For <strong>rapier dnd</strong> builds, a rapier is usually the right sword for a Dexterity-focused character. It gives you a d8 melee weapon with Finesse. Finesse does not mean Light, and the 2024 Vex mastery is not automatic for every character holding the weapon.</p>
 
 <p>Before I write it on a sheet, I check the same few things every time.</p>
 
@@ -318,7 +318,7 @@ ${liteVideoEmbed('JiNIb5KzNz0', 'Rapier DnD video')}
 `;
 
 export const rapierDndArticleHtmlZh = String.raw`
-<p>如果你搜索 <strong>rapier dnd</strong>，大概率是角色卡已经打开了，只差确认这把剑到底该不该拿。多数敏捷近战角色会喜欢细剑（Rapier）：它是 d8 伤害骰，又有灵巧（Finesse）。但桌上也很容易把它说错。灵巧不等于轻型（Light），2024 规则里的 Vex 也不是每个拿细剑的人都会自动获得。</p>
+<p><strong>rapier dnd</strong> 对敏捷近战角色通常很合适：细剑（Rapier）是 d8 伤害骰，又有灵巧（Finesse）。但桌上也很容易把它说错。灵巧不等于轻型（Light），2024 规则里的 Vex 也不是每个拿细剑的人都会自动获得。</p>
 
 <p>写进角色卡前，我通常会先核对这几件事。</p>
 

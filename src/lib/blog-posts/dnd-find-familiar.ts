@@ -22,7 +22,7 @@ import {
 const DND_FIND_FAMILIAR_VIDEO_ID = 'EOgSooXEBK0';
 
 export const dndFindFamiliarArticleHtml = String.raw`
-<p>If you searched for <strong>dnd find familiar</strong>, you probably want the table answer, not another loose promise that a tiny companion is useful. Find Familiar gives you a spirit in a familiar form. It scouts, uses normal actions, delivers touch spells, and creates a second tabletop piece that everyone needs to understand.</p>
+<p>The <strong>dnd find familiar</strong> spell gives you a spirit in a familiar form. It scouts, uses normal actions, delivers touch spells, and creates a second tabletop piece that everyone needs to understand.</p>
 
 <p>It does not give you a second attacker. <strong>A familiar cannot attack unless a separate feature says otherwise.</strong> The spell is strongest when you treat it as information, positioning, Help, and VTT clarity.</p>
 
@@ -227,7 +227,7 @@ export const dndFindFamiliarArticleHtml = String.raw`
 <p>For broader character planning, pair this with the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a>. For fragile scouts and unarmored allies, the <a href="${EN_DND_MAGE_ARMOR_PATH}">Mage Armor guide</a> explains why touch range matters. If you want to test Help-enabled attacks at the table, use the <a href="${EN_DICE_ROLLER_PATH}">DnD dice roller</a>.</p>
 
 <h2 id="video-guide">Video: Find Familiar table habits</h2>
-<p>Use the video after the rules table if you want a spoken walkthrough. Keep the article open for the 2014/2024 differences and VTT setup checklist.</p>
+<p>Use the video after the rules table if you want a spoken walkthrough. Keep the 2014/2024 differences and VTT setup checklist nearby while you listen.</p>
 
 ${liteVideoEmbed(DND_FIND_FAMILIAR_VIDEO_ID, 'Find Familiar DnD guide video', {
   src: DND_FIND_FAMILIAR_VIDEO_PLACEHOLDER_PATH,
@@ -273,7 +273,7 @@ ${liteVideoEmbed(DND_FIND_FAMILIAR_VIDEO_ID, 'Find Familiar DnD guide video', {
 `;
 
 export const dndFindFamiliarArticleHtmlZh = String.raw`
-<p>如果你搜索 <strong>dnd find familiar</strong>，你大概率不是想看一句"这个法术很灵活"。你需要的是桌边能用的答案：找寻魔宠（Find Familiar）到底能做什么、2014 和 2024 规则哪里不同、魔宠能不能攻击、协助（Help）动作怎么处理，以及线上跑团时魔宠 Token 应该怎么放。</p>
+<p><strong>dnd find familiar</strong> 的桌边判断要覆盖这些事：找寻魔宠（Find Familiar）到底能做什么、2014 和 2024 规则哪里不同、魔宠能不能攻击、协助（Help）动作怎么处理，以及线上跑团时魔宠 Token 应该怎么放。</p>
 
 <p>找寻魔宠不是第二个攻击单位。普通魔宠不能攻击，除非另有职业特性或规则明确改变这一点。它真正强的地方是侦察、协助、传递接触法术，以及让桌面信息更清楚。</p>
 

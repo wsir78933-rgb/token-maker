@@ -11,6 +11,7 @@ const PALADIN_2024_SPELLS_DND_SLUG = 'paladin-2024-spells-dnd';
 const DND_SILVERY_BARBS_SLUG = 'dnd-silvery-barbs';
 const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
+const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
 
 function findSitemapEntry(url: string) {
   const sitemapEntry = sitemap().find((entry) => entry.url === url);
@@ -23,6 +24,27 @@ function findSitemapEntry(url: string) {
 }
 
 describe('blog sitemap entries', () => {
+  test('includes bilingual dnd sword sheaths blog routes with alternates', () => {
+    const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_SWORD_SHEATHS_SLUG}`);
+    const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_SWORD_SHEATHS_SLUG}`);
+
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_SWORD_SHEATHS_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_SWORD_SHEATHS_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_SWORD_SHEATHS_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-07-19'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-07-19'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes fourth blog hub pages after publishing dnd thunderclap', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/4');
     const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/4');
@@ -33,12 +55,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/4',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-07-17'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-07-19'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-07-17'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-07-19'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);

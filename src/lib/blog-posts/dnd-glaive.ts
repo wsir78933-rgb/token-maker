@@ -23,7 +23,7 @@ import {
 const DND_GLAIVE_VIDEO_ID = 'zAJmvbQXm1c';
 
 export const dndGlaiveArticleHtml = String.raw`
-<p>If you searched for <strong>dnd glaive</strong>, you probably want a fast answer before you pick a weapon, a feat, or a mini for your next session. The glaive is a martial two-handed polearm with reach, strong damage, and a clear front-line identity. In 2024 rules, it also gets Graze if your character can use weapon mastery.</p>
+<p>The <strong>dnd glaive</strong> is a martial two-handed polearm with reach, strong damage, and a clear front-line identity. In 2024 rules, it also gets Graze if your character can use weapon mastery.</p>
 
 <p>The glaive is not a subtle weapon. It asks for space on the battle map, a Strength-based character, and a player who likes controlling the distance between enemies and allies. That makes it a good fit for Fighters, Paladins, Barbarians, some Rangers, and reach-focused NPC guards or bosses.</p>
 
@@ -234,7 +234,7 @@ ${liteVideoEmbed(DND_GLAIVE_VIDEO_ID, 'The Glaive - The Weapons We Wield in D&D'
 `;
 
 export const dndGlaiveArticleHtmlZh = String.raw`
-<p>如果你在查 <strong>dnd glaive</strong>，通常不是想读一长段武器历史，而是想马上确认：这把武器伤害多少、触及怎么判、2024 版有没有 Graze、它和戟到底差在哪，以及值不值得给角色或 NPC 用。</p>
+<p><strong>dnd glaive</strong> 的桌边判断集中在五件事：这把武器伤害多少、触及怎么判、2024 版有没有 Graze、它和戟到底差在哪，以及值不值得给角色或 NPC 用。</p>
 
 <p>简短答案：长柄刀（Glaive）是一把双手军用长柄武器，伤害不错，能打出更远的近战范围，也很适合做成地图上一眼能看懂的前排 Token。它不适合拿盾，不适合敏捷近战，也不适合不看站位的桌子。</p>
 

@@ -279,9 +279,9 @@ ${liteVideoEmbed('EVwBW5GbGwQ', "How DM's react to what Race you play in Dungeon
 `;
 
 export const dndGrungArticleHtmlZh = String.raw`
-<p>选 <strong>dnd grung</strong> 前，最好先确认三件事：这个青蛙人种族到底值不值得玩，它在实战里强在哪里，以及为什么不少 DM 会先犹豫一下。这里先把这些问题讲清楚，再拆规则。按我的实际跑团体验，Grung 好玩的点不在“很怪”；更在于它把机动、毒素压迫和地形利用绑在了一起。</p>
+<p>选 <strong>dnd grung</strong> 前，先确认三件事：这个青蛙人种族到底值不值得玩，它在实战里强在哪里，以及为什么不少 DM 会先犹豫一下。Grung 好玩的点不在“很怪”；更在于它把机动、毒素压迫和地形利用绑在了一起。</p>
 
-<p>前面先放速查表，方便你快速判断能不能带上桌。后面再分别解决四个核心问题：<strong>dnd grung</strong> 到底是什么、DM 最在意什么、哪些职业最顺手、以及这个角色该怎么演才不会只剩下搞笑梗。</p>
+<p><strong>dnd grung</strong> 的关键是四件事：它到底是什么、DM 最在意什么、哪些职业最顺手，以及这个角色该怎么演才不会只剩下搞笑梗。</p>
 
 <table>
   <thead>

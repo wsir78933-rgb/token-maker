@@ -366,7 +366,7 @@ ${liteVideoEmbed('C3I4wpHshuw', 'dnd dwarf names companion video', {
 `;
 
 export const dndDwarfNamesArticleHtmlZh = String.raw`
-<p>需要 <strong>dnd dwarf names</strong> 给今晚的 NPC、玩家角色或酒馆名单用？从速查表里挑一个名、一个氏族姓，再补一个职业、誓言、伤疤或欠债。可用名字放前面，后面再讲怎么改成适合自己战役的版本。</p>
+<p>需要 <strong>dnd dwarf names</strong> 给今晚的 NPC、玩家角色或酒馆名单用？从速查表里挑一个名、一个氏族姓，再补一个职业、誓言、伤疤或欠债，然后按自己的战役调整。</p>
 
 <table>
   <thead>

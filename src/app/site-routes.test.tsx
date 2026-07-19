@@ -23,6 +23,7 @@ import {
 } from './(zh)/zh/blog/page/[page]/page';
 
 const DND_THUNDERCLAP_SLUG = 'dnd-thunderclap';
+const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
 
 describe('trust page routes', () => {
   afterEach(() => {
@@ -73,6 +74,11 @@ describe('trust page routes', () => {
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual sword-sheath detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_SWORD_SHEATHS_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_SWORD_SHEATHS_SLUG });
+  });
+
   it('emits bilingual Thunderclap detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_THUNDERCLAP_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_THUNDERCLAP_SLUG });
