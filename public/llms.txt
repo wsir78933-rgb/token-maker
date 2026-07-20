@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DnD 5e Armorer](https://www.tokenmaker.one/blog/dnd-5e-armorer): 2014 Guardian and Infiltrator roles, the 2025 Dreadnaught branch, first-round jobs, rest swaps, and VTT token cues.
 - [DnD Sword Sheaths](https://www.tokenmaker.one/blog/dnd-sword-sheaths): Current draw and stow rules, scabbard character hooks, DM-safe homebrew prompts, and VTT token visuals.
 - [Thunderclap DnD Guide](https://www.tokenmaker.one/blog/dnd-thunderclap): Thunderclap 2014/2024 rules, 5-foot Emanation range, 100-foot sound, ally risk, damage scaling, FAQ, and VTT token tips.
 - [Find Familiar DnD Guide](https://www.tokenmaker.one/blog/dnd-find-familiar): Find Familiar 2014/2024 rules, familiar forms, Help action, touch spells, scouting, FAQ, and VTT token setup.
@@ -54,6 +55,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 5e 装甲师：构筑定位、装甲模型与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-5e-armorer)
 - [DND 剑鞘指南：收剑规则、角色设定与 VTT 视觉](https://www.tokenmaker.one/zh/blog/dnd-sword-sheaths)
 - [DND 雷鸣拍击（Thunderclap）指南：2014/2024 规则、范围与 VTT 标记](https://www.tokenmaker.one/zh/blog/dnd-thunderclap)
 - [DND 找寻魔宠（Find Familiar）指南：规则、用法与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-find-familiar)

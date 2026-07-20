@@ -12,6 +12,7 @@ const DND_SILVERY_BARBS_SLUG = 'dnd-silvery-barbs';
 const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
 const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
+const DND_5E_ARMORER_SLUG = 'dnd-5e-armorer';
 
 function findSitemapEntry(url: string) {
   const sitemapEntry = sitemap().find((entry) => entry.url === url);
@@ -24,6 +25,27 @@ function findSitemapEntry(url: string) {
 }
 
 describe('blog sitemap entries', () => {
+  test('includes bilingual dnd 5e armorer blog routes with alternates', () => {
+    const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_5E_ARMORER_SLUG}`);
+    const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_5E_ARMORER_SLUG}`);
+
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_5E_ARMORER_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_5E_ARMORER_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_5E_ARMORER_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-07-20'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-07-20'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes bilingual dnd sword sheaths blog routes with alternates', () => {
     const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_SWORD_SHEATHS_SLUG}`);
     const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_SWORD_SHEATHS_SLUG}`);
@@ -45,7 +67,7 @@ describe('blog sitemap entries', () => {
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 
-  test('includes fourth blog hub pages after publishing dnd thunderclap', () => {
+  test('updates fourth blog hub pages after publishing dnd 5e armorer', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/4');
     const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/4');
 
@@ -55,12 +77,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/4',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-07-19'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-07-20'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-07-19'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-07-20'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);

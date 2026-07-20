@@ -22,6 +22,7 @@ const DND_SILVERY_BARBS_SLUG = 'dnd-silvery-barbs';
 const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
 const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
+const DND_5E_ARMORER_SLUG = 'dnd-5e-armorer';
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -84,26 +85,81 @@ describe('published blog body voice', () => {
   });
 });
 
-describe('dnd sword sheaths blog post', () => {
-  test('publishes a new bilingual article first without opening a fifth blog page', () => {
+describe('dnd 5e armorer blog post', () => {
+  test('publishes a bilingual 2014-first guide with a separate 2025 branch', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
-      DND_HEX_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
-      DND_HEX_SLUG,
     ]);
+
+    const englishPost = getBlogPost('en', DND_5E_ARMORER_SLUG);
+    const chinesePost = getBlogPost('zh', DND_5E_ARMORER_SLUG);
+
+    expect(englishPost?.title).toContain('DnD 5e Armorer');
+    expect(englishPost?.bodyHtml).toContain("2014 Tasha's Cauldron of Everything");
+    expect(englishPost?.bodyHtml).toContain('Dreadnaught');
+    expect(englishPost?.bodyHtml).toContain('Pick the party job before you choose the suit');
+    expect(englishPost?.bodyHtml).not.toContain('Quick answer');
+    expect(englishPost?.bodyHtml).not.toContain('<table');
+    expect(englishPost?.bodyHtml).not.toContain('companion video');
+    expect(englishPost?.faqItems).toBeUndefined();
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-5e-armorer-guide.webp');
+
+    expect(chinesePost?.title).toContain('DND 5e 装甲师');
+    expect(chinesePost?.bodyHtml).toContain('2014《塔莎的万事坩埚》');
+    expect(chinesePost?.bodyHtml).toContain('Dreadnaught');
+    expect(chinesePost?.bodyHtml).toContain('先看队伍缺什么，再选装甲模型');
+    expect(chinesePost?.bodyHtml).not.toContain('快速结论');
+    expect(chinesePost?.bodyHtml).not.toContain('<table');
+    expect(chinesePost?.bodyHtml).not.toContain('配套视频');
+    expect(chinesePost?.faqItems).toBeUndefined();
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-5e-armorer-guide.webp');
   });
 
+  test('builds localized metadata and an article schema for the Armorer guide', () => {
+    expect(getBlogPostPath('en', DND_5E_ARMORER_SLUG)).toBe('/blog/dnd-5e-armorer');
+    expect(getBlogPostPath('zh', DND_5E_ARMORER_SLUG)).toBe('/zh/blog/dnd-5e-armorer');
+
+    const englishMetadata = createBlogPostMetadata('en', DND_5E_ARMORER_SLUG);
+    const chineseMetadata = createBlogPostMetadata('zh', DND_5E_ARMORER_SLUG);
+
+    expect(englishMetadata.title).toBe('DnD 5e Armorer: Build Roles, Armor Models, and VTT Tokens');
+    expect(englishMetadata.alternates?.canonical).toBe('/blog/dnd-5e-armorer');
+    expect(chineseMetadata.title).toBe('DND 5e 装甲师：构筑定位、装甲模型与 VTT Token');
+    expect(chineseMetadata.description).toContain('装甲师');
+
+    expect(buildBlogPostStructuredData('en', DND_5E_ARMORER_SLUG)).toMatchObject({
+      '@type': 'Article',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-5e-armorer',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-5e-armorer-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_5E_ARMORER_SLUG)).toBeNull();
+    expect(buildBlogPostFaqStructuredData('zh', DND_5E_ARMORER_SLUG)).toBeNull();
+  });
+
+  test('uses a WebP cover and lists both localized Armorer URLs in llms.txt', () => {
+    expect(existsSync('public/blog/covers/en/dnd-5e-armorer-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-5e-armorer');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-5e-armorer');
+  });
+});
+
+describe('dnd sword sheaths blog post', () => {
   test('keeps rules, story prompts, and VTT visuals distinct in both locales', () => {
     const englishPost = getBlogPost('en', DND_SWORD_SHEATHS_SLUG);
     const chinesePost = getBlogPost('zh', DND_SWORD_SHEATHS_SLUG);
@@ -185,17 +241,17 @@ describe('dnd thunderclap blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
-      DND_HEX_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
-      DND_HEX_SLUG,
     ]);
   });
 
@@ -377,22 +433,22 @@ describe('dnd thunderclap blog post', () => {
 });
 
 describe('dnd find familiar blog post', () => {
-  test('keeps find familiar near the top after the newer sword-sheath article is published', () => {
+  test('keeps find familiar near the top after the newer Armorer article is published', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
-      DND_HEX_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
-      DND_HEX_SLUG,
     ]);
   });
 
@@ -586,22 +642,22 @@ describe('dnd find familiar blog post', () => {
 });
 
 describe('dnd hex blog post', () => {
-  test('keeps hex near the top after the newer sword-sheath article is published', () => {
+  test('keeps hex near the top after the newer Armorer article is published', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
-      DND_HEX_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
-      DND_HEX_SLUG,
     ]);
   });
 
@@ -799,14 +855,14 @@ describe('paladin 2024 spells dnd blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(4, 8)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(5, 9)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
       DND_SILVERY_BARBS_SLUG,
       DND_SHORTSWORD_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(4, 8)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(5, 9)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
       DND_SILVERY_BARBS_SLUG,

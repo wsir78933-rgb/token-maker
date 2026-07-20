@@ -30,6 +30,7 @@ import {
   DND_SHORTSWORD_COVER_PATH,
   DND_SILVERY_BARBS_COVER_PATH,
   DND_SWORD_SHEATHS_COVER_PATH,
+  DND_5E_ARMORER_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -76,6 +77,10 @@ import {
   dndSwordSheathsArticleHtml,
   dndSwordSheathsArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-sword-sheaths';
+import {
+  dnd5eArmorerArticleHtml,
+  dnd5eArmorerArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-5e-armorer';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -119,6 +124,7 @@ const DND_HEX_UPDATED_AT = '2026-07-15';
 const DND_FIND_FAMILIAR_UPDATED_AT = '2026-07-16';
 const DND_THUNDERCLAP_UPDATED_AT = '2026-07-17';
 const DND_SWORD_SHEATHS_UPDATED_AT = '2026-07-19';
+const DND_5E_ARMORER_UPDATED_AT = '2026-07-20';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
@@ -1495,6 +1501,44 @@ const dndSwordSheathsArticleZh: BlogPost = {
     },
   ],
   relatedSlugs: ['rapier-dnd', 'dnd-dagger', 'dnd-shortsword', 'dnd-classes-explained'],
+};
+
+const dnd5eArmorerArticle: BlogPost = {
+  slug: 'dnd-5e-armorer',
+  title: 'DnD 5e Armorer: Build Roles, Armor Models, and VTT Tokens',
+  seoTitle: 'DnD 5e Armorer: Build Roles, Armor Models, and VTT Tokens',
+  metaDescription:
+    'Choose a DnD 5e Armorer role for your party, use Guardian or Infiltrator under 2014 rules, check the 2025 Dreadnaught branch, and make the suit clear on a VTT token.',
+  excerpt:
+    'Choose Guardian, Infiltrator, or the 2025 Dreadnaught branch by the job your party needs, then give that role a clear first round and VTT token state.',
+  publishedAt: DND_5E_ARMORER_UPDATED_AT,
+  updatedAt: DND_5E_ARMORER_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Artificer Build',
+  coverImage: DND_5E_ARMORER_COVER_PATH,
+  coverAlt:
+    'dnd 5e armorer guide cover showing an Armorer Artificer in rune-lit plate armor with a Guardian gauntlet, a Lightning Launcher, and three readable VTT armor-model cues on a battle map',
+  bodyHtml: dnd5eArmorerArticleHtml,
+  relatedSlugs: ['dnd-armor-guide', 'dnd-classes-explained', 'dnd-mage-armor', 'dnd-sword-sheaths'],
+};
+
+const dnd5eArmorerArticleZh: BlogPost = {
+  slug: 'dnd-5e-armorer',
+  title: 'DND 5e 装甲师：构筑定位、装甲模型与 VTT Token',
+  seoTitle: 'DND 5e 装甲师：构筑定位、装甲模型与 VTT Token',
+  metaDescription:
+    '从队伍缺口选择 DND 5e 装甲师：2014 Guardian 或 Infiltrator，2025 Dreadnaught 分支，以及能在 VTT 上看清职责的 Token 方案。',
+  excerpt:
+    '按队伍需要选择 Guardian、Infiltrator，或 2025 的 Dreadnaught 分支，再把它变成清楚的首回合职责和 VTT Token 状态。',
+  publishedAt: DND_5E_ARMORER_UPDATED_AT,
+  updatedAt: DND_5E_ARMORER_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '魔械师构筑',
+  coverImage: DND_5E_ARMORER_COVER_PATH,
+  coverAlt:
+    'DND 5e 装甲师指南封面图：符文板甲中的装甲师、Guardian 拳套、Lightning Launcher，以及战斗地图上三种可识别的 VTT 装甲模型提示',
+  bodyHtml: dnd5eArmorerArticleHtmlZh,
+  relatedSlugs: ['dnd-armor-guide', 'dnd-classes-explained', 'dnd-mage-armor', 'dnd-sword-sheaths'],
 };
 
 const dndThunderclapArticle: BlogPost = {
@@ -2902,10 +2946,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

@@ -31,6 +31,7 @@ export const DND_RANGER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-ranger-spells-g
 export const DND_SHORTSWORD_COVER_PATH = '/blog/covers/en/dnd-shortsword-guide.webp';
 export const DND_SILVERY_BARBS_COVER_PATH = '/blog/covers/en/dnd-silvery-barbs-guide.webp';
 export const DND_SWORD_SHEATHS_COVER_PATH = '/blog/covers/en/dnd-sword-sheaths-guide.webp';
+export const DND_5E_ARMORER_COVER_PATH = '/blog/covers/en/dnd-5e-armorer-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -207,6 +208,10 @@ export const DND_SILVERY_BARBS_2024_CASTING_RULES_URL =
 export const DND_SILVERY_BARBS_VIDEO_URL = 'https://www.youtube.com/watch?v=Iywz0U5Zwl0';
 export const DND_2024_ATTACK_ACTION_RULES_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary#AttackAction';
+export const DND_ARMORER_2014_SOURCE_URL =
+  'https://www.dndbeyond.com/posts/912-artificer-101-armorer-from-tashas-cauldron-of';
+export const DND_ARMORER_2025_SOURCE_URL =
+  'https://www.dndbeyond.com/posts/2109-forge-your-story-with-5-inventive-artificer';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -251,6 +256,8 @@ export const EN_DND_THUNDERCLAP_PATH = getLocalizedPath('en', '/blog/dnd-thunder
 export const ZH_DND_THUNDERCLAP_PATH = getLocalizedPath('zh', '/blog/dnd-thunderclap');
 export const EN_DND_BLESS_PATH = getLocalizedPath('en', '/blog/dnd-bless');
 export const ZH_DND_BLESS_PATH = getLocalizedPath('zh', '/blog/dnd-bless');
+export const EN_DND_SWORD_SHEATHS_PATH = getLocalizedPath('en', '/blog/dnd-sword-sheaths');
+export const ZH_DND_SWORD_SHEATHS_PATH = getLocalizedPath('zh', '/blog/dnd-sword-sheaths');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');

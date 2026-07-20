@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
 import '../globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
-import { GoogleAdSense } from '@/components/analytics/GoogleAdSense';
 import { MicrosoftClarity } from '@/components/analytics/MicrosoftClarity';
 import { I18nProvider } from '@/lib/i18n';
 import { getRequestNonce } from '@/lib/security/request-nonce';
@@ -12,7 +11,7 @@ import { DEFAULT_THEME } from '@/lib/theme';
 export const metadata: Metadata = createLocaleLayoutMetadata('zh');
 export const viewport: Viewport = createSiteViewport();
 
-export default async function ChineseRootLayout({
+export default async function ChineseShareRootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -26,9 +25,6 @@ export default async function ChineseRootLayout({
       className="dark scroll-smooth"
       suppressHydrationWarning
     >
-      <head>
-        <GoogleAdSense nonce={nonce} />
-      </head>
       <body className="antialiased">
         <MicrosoftClarity nonce={nonce} />
         <Suspense fallback={null}>
