@@ -31,6 +31,7 @@ import {
   DND_SILVERY_BARBS_COVER_PATH,
   DND_SWORD_SHEATHS_COVER_PATH,
   DND_5E_ARMORER_COVER_PATH,
+  DND_DEATH_KNIGHT_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -81,6 +82,10 @@ import {
   dnd5eArmorerArticleHtml,
   dnd5eArmorerArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-5e-armorer';
+import {
+  dndDeathKnightArticleHtml,
+  dndDeathKnightArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-death-knight';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -125,6 +130,7 @@ const DND_FIND_FAMILIAR_UPDATED_AT = '2026-07-16';
 const DND_THUNDERCLAP_UPDATED_AT = '2026-07-17';
 const DND_SWORD_SHEATHS_UPDATED_AT = '2026-07-19';
 const DND_5E_ARMORER_UPDATED_AT = '2026-07-20';
+const DND_DEATH_KNIGHT_UPDATED_AT = '2026-07-22';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
@@ -1541,6 +1547,44 @@ const dnd5eArmorerArticleZh: BlogPost = {
   relatedSlugs: ['dnd-armor-guide', 'dnd-classes-explained', 'dnd-mage-armor', 'dnd-sword-sheaths'],
 };
 
+const dndDeathKnightArticle: BlogPost = {
+  slug: 'dnd-death-knight',
+  title: 'DnD Death Knight: Run a 2025 Undead Commander Encounter',
+  seoTitle: 'DnD Death Knight: Run a 2025 Undead Commander Encounter',
+  metaDescription:
+    'Run a 2025 DnD Death Knight with an objective, cover, undead jobs, legendary pressure, a Death Knight Aspirant lead-in, and a clear 2014 comparison.',
+  excerpt:
+    'Build a 2025 Death Knight encounter around an objective, separate undead jobs, answers to Hellfire Orb pressure, and a VTT commander token.',
+  publishedAt: DND_DEATH_KNIGHT_UPDATED_AT,
+  updatedAt: DND_DEATH_KNIGHT_UPDATED_AT,
+  readTime: '11 min read',
+  coverLabel: 'Monster Encounter',
+  coverImage: DND_DEATH_KNIGHT_COVER_PATH,
+  coverAlt:
+    'dnd death knight guide cover showing an undead commander in black plate with skeletal troops on a ruined moonlit battle map',
+  bodyHtml: dndDeathKnightArticleHtml,
+  relatedSlugs: ['dnd-ghost', 'dnd-necromancer-spells', 'dnd-armor-guide', 'dnd-sword-sheaths'],
+};
+
+const dndDeathKnightArticleZh: BlogPost = {
+  slug: 'dnd-death-knight',
+  title: 'DND 死亡骑士：运行 2025 亡灵指挥官遭遇',
+  seoTitle: 'DND 死亡骑士：运行 2025 亡灵指挥官遭遇',
+  metaDescription:
+    '用目标、掩体、亡灵职责、传奇压力、Death Knight Aspirant 前置遭遇和清楚的 2014 对照，运行 2025 DND 死亡骑士。',
+  excerpt:
+    '把 2025 死亡骑士放进有目标、有分工亡灵和可回应压力的遭遇，再做一张一眼能认出的 VTT 指挥官 Token。',
+  publishedAt: DND_DEATH_KNIGHT_UPDATED_AT,
+  updatedAt: DND_DEATH_KNIGHT_UPDATED_AT,
+  readTime: '11 分钟阅读',
+  coverLabel: '怪物遭遇',
+  coverImage: DND_DEATH_KNIGHT_COVER_PATH,
+  coverAlt:
+    'DND 死亡骑士指南封面图：黑色板甲中的亡灵指挥官、骷髅部属，以及月光下的废墟战斗地图',
+  bodyHtml: dndDeathKnightArticleHtmlZh,
+  relatedSlugs: ['dnd-ghost', 'dnd-necromancer-spells', 'dnd-armor-guide', 'dnd-sword-sheaths'],
+};
+
 const dndThunderclapArticle: BlogPost = {
   slug: 'dnd-thunderclap',
   title: 'Thunderclap DnD Guide: 2014/2024 Rules, Range, and VTT Tips',
@@ -2946,10 +2990,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

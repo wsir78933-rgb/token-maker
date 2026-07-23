@@ -32,6 +32,7 @@ export const DND_SHORTSWORD_COVER_PATH = '/blog/covers/en/dnd-shortsword-guide.w
 export const DND_SILVERY_BARBS_COVER_PATH = '/blog/covers/en/dnd-silvery-barbs-guide.webp';
 export const DND_SWORD_SHEATHS_COVER_PATH = '/blog/covers/en/dnd-sword-sheaths-guide.webp';
 export const DND_5E_ARMORER_COVER_PATH = '/blog/covers/en/dnd-5e-armorer-guide.webp';
+export const DND_DEATH_KNIGHT_COVER_PATH = '/blog/covers/en/dnd-death-knight-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -212,6 +213,15 @@ export const DND_ARMORER_2014_SOURCE_URL =
   'https://www.dndbeyond.com/posts/912-artificer-101-armorer-from-tashas-cauldron-of';
 export const DND_ARMORER_2025_SOURCE_URL =
   'https://www.dndbeyond.com/posts/2109-forge-your-story-with-5-inventive-artificer';
+export const DND_DEATH_KNIGHT_2025_SOURCE_URL =
+  'https://www.dndbeyond.com/posts/1913-updates-in-the-monster-manual-2025';
+export const DND_DEATH_KNIGHT_2025_ERRATA_URL =
+  'https://media.dndbeyond.com/compendium-images/errata/MM-25/MM-2025_v1.pdf';
+export const DND_DEATH_KNIGHT_2014_SOURCE_URL = 'https://www.dndbeyond.com/sources/dnd/mm-2014';
+export const DND_DEATH_KNIGHT_2025_STAT_BLOCK_URL =
+  'https://roll20.net/compendium/dnd5e/Monsters%3ADeath%20Knight?expansion=34653';
+export const DND_DEATH_KNIGHT_ASPIRANT_2025_STAT_BLOCK_URL =
+  'https://roll20.net/compendium/dnd5e/Monsters%3ADeath%20Knight%20Aspirant?expansion=34653';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');

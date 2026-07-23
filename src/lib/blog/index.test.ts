@@ -23,6 +23,7 @@ const DND_SHORTSWORD_SLUG = 'dnd-shortsword';
 const RAPIER_DND_SLUG = 'rapier-dnd';
 const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
 const DND_5E_ARMORER_SLUG = 'dnd-5e-armorer';
+const DND_DEATH_KNIGHT_SLUG = 'dnd-death-knight';
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -91,17 +92,17 @@ describe('dnd 5e armorer blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
 
     const englishPost = getBlogPost('en', DND_5E_ARMORER_SLUG);
@@ -156,6 +157,77 @@ describe('dnd 5e armorer blog post', () => {
     const llmsText = readFileSync('public/llms.txt', 'utf8');
     expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-5e-armorer');
     expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-5e-armorer');
+  });
+});
+
+describe('dnd death knight blog post', () => {
+  test('uses the 2025 encounter workflow with a separate 2014 comparison in both locales', () => {
+    const englishPost = getBlogPost('en', DND_DEATH_KNIGHT_SLUG);
+    const chinesePost = getBlogPost('zh', DND_DEATH_KNIGHT_SLUG);
+
+    expect(englishPost?.title).toContain('Death Knight');
+    expect(englishPost?.bodyHtml).toContain('2025 Monster Manual');
+    expect(englishPost?.bodyHtml).toContain('Build the battlefield before initiative');
+    expect(englishPost?.bodyHtml).toContain('Choose a scenario by the party\'s job');
+    expect(englishPost?.bodyHtml).toContain('The outer-gate warning');
+    expect(englishPost?.bodyHtml).toContain('The reliquary hold');
+    expect(englishPost?.bodyHtml).toContain('The last march');
+    expect(englishPost?.bodyHtml).toContain('For rules checks, use the 2025 Monster Manual stat block');
+    expect(englishPost?.bodyHtml).toContain('What changes at a 2014 table');
+    expect(englishPost?.bodyHtml).toContain('roll20.net/compendium/dnd5e/Monsters%3ADeath%20Knight');
+    expect(englishPost?.bodyHtml).not.toContain('Use Marshal Undead');
+    expect(englishPost?.bodyHtml).not.toContain('Quick answer');
+    expect(englishPost?.bodyHtml).not.toContain('<table');
+    expect(englishPost?.bodyHtml).not.toContain('companion video');
+    expect(englishPost?.faqItems).toBeUndefined();
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-death-knight-guide.webp');
+
+    expect(chinesePost?.title).toContain('死亡骑士');
+    expect(chinesePost?.bodyHtml).toContain('2025《怪物图鉴》');
+    expect(chinesePost?.bodyHtml).toContain('先布置战场，再掷先攻');
+    expect(chinesePost?.bodyHtml).toContain('按队伍面对的任务选遭遇');
+    expect(chinesePost?.bodyHtml).toContain('外门警报');
+    expect(chinesePost?.bodyHtml).toContain('圣物库固守');
+    expect(chinesePost?.bodyHtml).toContain('最后的行军');
+    expect(chinesePost?.bodyHtml).toContain('规则核对时，以本桌持有的 2025《怪物图鉴》数据块为准');
+    expect(chinesePost?.bodyHtml).toContain('2014 桌上哪些地方不同');
+    expect(chinesePost?.bodyHtml).toContain('Death%20Knight%20Aspirant');
+    expect(chinesePost?.bodyHtml).not.toContain('再使用 Marshal Undead');
+    expect(chinesePost?.bodyHtml).not.toContain('快速结论');
+    expect(chinesePost?.bodyHtml).not.toContain('<table');
+    expect(chinesePost?.bodyHtml).not.toContain('配套视频');
+    expect(chinesePost?.faqItems).toBeUndefined();
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-death-knight-guide.webp');
+  });
+
+  test('builds localized metadata and article schema for the Death Knight guide', () => {
+    expect(getBlogPostPath('en', DND_DEATH_KNIGHT_SLUG)).toBe('/blog/dnd-death-knight');
+    expect(getBlogPostPath('zh', DND_DEATH_KNIGHT_SLUG)).toBe('/zh/blog/dnd-death-knight');
+
+    const englishMetadata = createBlogPostMetadata('en', DND_DEATH_KNIGHT_SLUG);
+    const chineseMetadata = createBlogPostMetadata('zh', DND_DEATH_KNIGHT_SLUG);
+
+    expect(englishMetadata.title).toBe('DnD Death Knight: Run a 2025 Undead Commander Encounter');
+    expect(englishMetadata.alternates?.canonical).toBe('/blog/dnd-death-knight');
+    expect(chineseMetadata.title).toBe('DND 死亡骑士：运行 2025 亡灵指挥官遭遇');
+    expect(chineseMetadata.description).toContain('死亡骑士');
+
+    expect(buildBlogPostStructuredData('en', DND_DEATH_KNIGHT_SLUG)).toMatchObject({
+      '@type': 'Article',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-death-knight',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-death-knight-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_DEATH_KNIGHT_SLUG)).toBeNull();
+    expect(buildBlogPostFaqStructuredData('zh', DND_DEATH_KNIGHT_SLUG)).toBeNull();
+  });
+
+  test('uses a WebP cover and lists both localized Death Knight URLs in llms.txt', () => {
+    expect(existsSync('public/blog/covers/en/dnd-death-knight-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-death-knight');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-death-knight');
   });
 });
 
@@ -241,17 +313,17 @@ describe('dnd thunderclap blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
   });
 
@@ -438,17 +510,17 @@ describe('dnd find familiar blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
   });
 
@@ -647,17 +719,17 @@ describe('dnd hex blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
   });
 
@@ -855,18 +927,16 @@ describe('paladin 2024 spells dnd blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(5, 9)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(6, 9)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
       DND_SILVERY_BARBS_SLUG,
-      DND_SHORTSWORD_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(5, 9)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(6, 9)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
       DND_SILVERY_BARBS_SLUG,
-      DND_SHORTSWORD_SLUG,
     ]);
   });
 
