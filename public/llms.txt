@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DnD Flumph Guide](https://www.tokenmaker.one/blog/dnd-flumph): Use a flumph as a telepathic warning scout, frightened witness, or ally clue, then make its state readable on a VTT token.
 - [DnD Death Knight](https://www.tokenmaker.one/blog/dnd-death-knight): 2025 Death Knight encounter setup with objectives, cover, undead jobs, legendary pressure, the Aspirant lead-in, a 2014 comparison, and VTT commander-token cues.
 - [DnD 5e Armorer](https://www.tokenmaker.one/blog/dnd-5e-armorer): 2014 Guardian and Infiltrator roles, the 2025 Dreadnaught branch, first-round jobs, rest swaps, and VTT token cues.
 - [DnD Sword Sheaths](https://www.tokenmaker.one/blog/dnd-sword-sheaths): Current draw and stow rules, scabbard character hooks, DM-safe homebrew prompts, and VTT token visuals.
@@ -56,6 +57,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND Flumph 指南：盟友线索、心灵感应与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-flumph)
 - [DND 死亡骑士：运行 2025 亡灵指挥官遭遇](https://www.tokenmaker.one/zh/blog/dnd-death-knight)
 - [DND 5e 装甲师：构筑定位、装甲模型与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-5e-armorer)
 - [DND 剑鞘指南：收剑规则、角色设定与 VTT 视觉](https://www.tokenmaker.one/zh/blog/dnd-sword-sheaths)

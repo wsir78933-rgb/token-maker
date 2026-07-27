@@ -24,6 +24,7 @@ const RAPIER_DND_SLUG = 'rapier-dnd';
 const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
 const DND_5E_ARMORER_SLUG = 'dnd-5e-armorer';
 const DND_DEATH_KNIGHT_SLUG = 'dnd-death-knight';
+const DND_FLUMPH_SLUG = 'dnd-flumph';
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -86,23 +87,128 @@ describe('published blog body voice', () => {
   });
 });
 
+describe('dnd flumph blog post', () => {
+  test('publishes a bilingual flumph guide ahead of the recent July articles', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual([
+      DND_FLUMPH_SLUG,
+      DND_DEATH_KNIGHT_SLUG,
+      DND_5E_ARMORER_SLUG,
+      DND_SWORD_SHEATHS_SLUG,
+      DND_THUNDERCLAP_SLUG,
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
+      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
+    ]);
+
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual([
+      DND_FLUMPH_SLUG,
+      DND_DEATH_KNIGHT_SLUG,
+      DND_5E_ARMORER_SLUG,
+      DND_SWORD_SHEATHS_SLUG,
+      DND_THUNDERCLAP_SLUG,
+      DND_FIND_FAMILIAR_SLUG,
+      DND_HEX_SLUG,
+      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
+    ]);
+
+    const englishPost = getBlogPost('en', DND_FLUMPH_SLUG);
+    const chinesePost = getBlogPost('zh', DND_FLUMPH_SLUG);
+
+    expect(englishPost?.title).toContain('Flumph');
+    expect(englishPost?.bodyHtml).toContain('Advanced Telepathy');
+    expect(englishPost?.bodyHtml).toContain('Let the flumph solve a problem the party cannot hear');
+    expect(englishPost?.bodyHtml).toContain("Choose the flumph's job before initiative starts");
+    expect(englishPost?.bodyHtml).toContain('Make the flumph readable on a VTT token');
+    expect(englishPost?.bodyHtml).toContain('src="/blog/inline/dnd-flumph/flumph-vtt-clue-board.webp"');
+    expect(englishPost?.bodyHtml).toContain('width="1536"');
+    expect(englishPost?.bodyHtml).toContain('height="1024"');
+    expect(englishPost?.bodyHtml).toContain('loading="lazy"');
+    expect(englishPost?.bodyHtml).toContain('decoding="async"');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-flumph-guide.webp');
+    expect(englishPost?.faqItems?.length).toBeGreaterThanOrEqual(5);
+
+    expect(chinesePost?.title).toContain('Flumph');
+    expect(chinesePost?.bodyHtml).toContain('Advanced Telepathy');
+    expect(chinesePost?.bodyHtml).toContain('先让 flumph 解决队伍听不见的问题');
+    expect(chinesePost?.bodyHtml).toContain('先决定 flumph 在这场戏里做什么');
+    expect(chinesePost?.bodyHtml).toContain('让 flumph 在 VTT Token 上一眼可认');
+    expect(chinesePost?.bodyHtml).toContain('src="/blog/inline/dnd-flumph/flumph-vtt-clue-board.webp"');
+    expect(chinesePost?.bodyHtml).toContain('width="1536"');
+    expect(chinesePost?.bodyHtml).toContain('height="1024"');
+    expect(chinesePost?.bodyHtml).toContain('loading="lazy"');
+    expect(chinesePost?.bodyHtml).toContain('decoding="async"');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-flumph-guide.webp');
+    expect(chinesePost?.faqItems?.length).toBeGreaterThanOrEqual(5);
+  });
+
+  test('builds localized metadata and article schema for the flumph guide', () => {
+    expect(getBlogPostPath('en', DND_FLUMPH_SLUG)).toBe('/blog/dnd-flumph');
+    expect(getBlogPostPath('zh', DND_FLUMPH_SLUG)).toBe('/zh/blog/dnd-flumph');
+
+    const englishMetadata = createBlogPostMetadata('en', DND_FLUMPH_SLUG);
+    const chineseMetadata = createBlogPostMetadata('zh', DND_FLUMPH_SLUG);
+
+    expect(englishMetadata.title).toBe('DnD Flumph Guide: Ally Clues, Telepathy, and VTT Tokens');
+    expect(englishMetadata.alternates?.canonical).toBe('/blog/dnd-flumph');
+    expect(englishMetadata.alternates?.languages).toMatchObject({
+      'x-default': '/blog/dnd-flumph',
+      'en-US': '/blog/dnd-flumph',
+      'zh-CN': '/zh/blog/dnd-flumph',
+    });
+    expect(chineseMetadata.title).toBe('DND Flumph 指南：盟友线索、心灵感应与 VTT Token');
+    expect(chineseMetadata.alternates?.canonical).toBe('/zh/blog/dnd-flumph');
+    expect(chineseMetadata.alternates?.languages).toMatchObject({
+      'x-default': '/blog/dnd-flumph',
+      'en-US': '/blog/dnd-flumph',
+      'zh-CN': '/zh/blog/dnd-flumph',
+    });
+    expect(chineseMetadata.description).toContain('Flumph');
+
+    expect(buildBlogPostStructuredData('en', DND_FLUMPH_SLUG)).toMatchObject({
+      '@type': 'Article',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-flumph',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-flumph-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('zh', DND_FLUMPH_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+    });
+  });
+
+  test('uses a WebP cover and lists both localized flumph URLs in llms.txt', () => {
+    expect(existsSync('public/blog/covers/en/dnd-flumph-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-flumph');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-flumph');
+  });
+});
+
 describe('dnd 5e armorer blog post', () => {
   test('publishes a bilingual 2014-first guide with a separate 2025 branch', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
 
     const englishPost = getBlogPost('en', DND_5E_ARMORER_SLUG);
@@ -313,17 +419,17 @@ describe('dnd thunderclap blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
   });
 
@@ -510,17 +616,17 @@ describe('dnd find familiar blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
   });
 
@@ -719,17 +825,17 @@ describe('dnd hex blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
   });
 
@@ -927,16 +1033,14 @@ describe('paladin 2024 spells dnd blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(6, 9)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(7, 9)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
-      DND_SILVERY_BARBS_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(6, 9)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(7, 9)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
       DND_GLAIVE_SLUG,
-      DND_SILVERY_BARBS_SLUG,
     ]);
   });
 

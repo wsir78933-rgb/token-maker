@@ -32,6 +32,7 @@ import {
   DND_SWORD_SHEATHS_COVER_PATH,
   DND_5E_ARMORER_COVER_PATH,
   DND_DEATH_KNIGHT_COVER_PATH,
+  DND_FLUMPH_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -86,6 +87,7 @@ import {
   dndDeathKnightArticleHtml,
   dndDeathKnightArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-death-knight';
+import { dndFlumphArticleHtml, dndFlumphArticleHtmlZh } from '@/lib/blog-posts/dnd-flumph';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -137,6 +139,7 @@ const DND_RAPIER_UPDATED_AT = '2026-07-08';
 const DND_BLESS_UPDATED_AT = '2026-07-09';
 const DND_SHORTSWORD_UPDATED_AT = '2026-07-10';
 const DND_SILVERY_BARBS_UPDATED_AT = '2026-07-11';
+const DND_FLUMPH_UPDATED_AT = '2026-07-26';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1585,6 +1588,108 @@ const dndDeathKnightArticleZh: BlogPost = {
   relatedSlugs: ['dnd-ghost', 'dnd-necromancer-spells', 'dnd-armor-guide', 'dnd-sword-sheaths'],
 };
 
+const dndFlumphArticle: BlogPost = {
+  slug: 'dnd-flumph',
+  title: 'DnD Flumph Guide: Ally Clues, Telepathy, and VTT Tokens',
+  seoTitle: 'DnD Flumph Guide: Ally Clues, Telepathy, and VTT Tokens',
+  metaDescription:
+    'Use a dnd flumph as a warning scout, frightened witness, or telepathic clue-giver, then make it readable on a VTT token before the party walks into the real threat.',
+  excerpt:
+    'Turn a dnd flumph into a useful ally clue: catch hostile telepathy, point the party at the real danger, and keep the creature readable on a VTT map.',
+  publishedAt: DND_FLUMPH_UPDATED_AT,
+  updatedAt: DND_FLUMPH_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Aberration Guide',
+  coverImage: DND_FLUMPH_COVER_PATH,
+  coverAlt:
+    'dnd flumph guide cover showing a benevolent floating flumph above an Underdark map table with telepathic ripples and a distant psionic threat',
+  bodyHtml: dndFlumphArticleHtml,
+  faqItems: [
+    {
+      question: 'What is a flumph in DnD?',
+      answer:
+        'A flumph is a small aberration usually used as a floating telepathic creature from the Underdark. At the table, it is most useful as a warning sign, witness, or guide rather than a straight damage dealer.',
+    },
+    {
+      question: 'Are flumphs friendly?',
+      answer:
+        'They are often played as benevolent or at least non-hostile, but friendly does not mean fearless. A flumph that wants help should still behave like a creature that knows something dangerous is nearby.',
+    },
+    {
+      question: 'Why does Advanced Telepathy matter so much?',
+      answer:
+        'Because it changes what the party can learn before combat starts. A flumph can react to telepathic traffic the players cannot hear, which makes it a clean early-warning creature in psionic scenes.',
+    },
+    {
+      question: 'Can a flumph carry a whole encounter by itself?',
+      answer:
+        'Usually no. The flumph should sharpen the players\' next decision, then hand the spotlight back to the real threat, the room, or the rescue target.',
+    },
+    {
+      question: 'How should a flumph look on a VTT token?',
+      answer:
+        'Keep the silhouette simple: bright rim light, readable eye stalks, and a clear state ring for ally or warning. If the token only looks good at full illustration size, it is too soft for the map.',
+    },
+    {
+      question: 'What happens if a flumph gets knocked prone?',
+      answer:
+        'The current 2024 flumph rules include a prone deficiency that can leave the creature incapacitated at the worst moment. Use that as a reason for the party to shield the clue, not as a reason to turn the creature into a joke.',
+    },
+  ],
+  relatedSlugs: ['dnd-find-familiar', 'dnd-ghost', 'dnd-necromancer-spells', 'dnd-death-knight'],
+};
+
+const dndFlumphArticleZh: BlogPost = {
+  slug: 'dnd-flumph',
+  title: 'DND Flumph 指南：盟友线索、心灵感应与 VTT Token',
+  seoTitle: 'DND Flumph 指南：盟友线索、心灵感应与 VTT Token',
+  metaDescription:
+    '把 DND Flumph 用成预警侦察、受惊见证者或心灵线索，再用清楚的 VTT Token 让全桌在进错房前读懂它的警告。',
+  excerpt:
+    '把 DND Flumph 变成真正有用的盟友线索：先截住敌对心灵交流，再把真正的危险指给队伍看，并在 VTT 地图上保持可读。',
+  publishedAt: DND_FLUMPH_UPDATED_AT,
+  updatedAt: DND_FLUMPH_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '异怪指南',
+  coverImage: DND_FLUMPH_COVER_PATH,
+  coverAlt:
+    'DND Flumph 指南封面图，善意 flumph 漂浮在幽暗地域地图桌上方，周围有心灵波纹和远处的灵能威胁',
+  bodyHtml: dndFlumphArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DnD 里的 flumph 到底是什么？',
+      answer:
+        'Flumph 是一种小型异怪，常被用成幽暗地域里的漂浮心灵生物。真正上桌时，它最适合承担预警、见证者或向导职责，而不是纯伤害怪。',
+    },
+    {
+      question: 'Flumph 一般友善吗？',
+      answer:
+        '它们经常会被处理成善意或至少非敌对，但“友善”不代表“勇敢”。一只需要帮助的 flumph 仍然应该像真正知道危险在哪的生物一样行动。',
+    },
+    {
+      question: '为什么 Advanced Telepathy 这么重要？',
+      answer:
+        '因为它决定了队伍能不能在开打前读到危险。Flumph 能感知玩家听不见的心灵交流，所以特别适合放在灵能场景里做第一道预警。',
+    },
+    {
+      question: 'Flumph 能单独撑起一整场遭遇吗？',
+      answer:
+        '通常不行。它应该把玩家的下一步选择磨尖，然后把聚光灯交还给真正的威胁、房间里的秘密，或等待营救的人。',
+    },
+    {
+      question: 'Flumph 的 VTT Token 应该怎么做？',
+      answer:
+        '把轮廓做清楚就够了：亮边、可读的眼柄，以及盟友或预警状态环。若 Token 只有在大图尺寸下才好看，那它放上地图就太虚了。',
+    },
+    {
+      question: 'Flumph 被击倒后会怎样？',
+      answer:
+        '当前 2024 flumph 规则里有 prone deficiency，可能会让它在关键回合直接带着 incapacitated 状态失去作用。把这条当成“队伍得保护这条线索”的理由，而不是拿来搞笑。',
+    },
+  ],
+  relatedSlugs: ['dnd-find-familiar', 'dnd-ghost', 'dnd-necromancer-spells', 'dnd-death-knight'],
+};
+
 const dndThunderclapArticle: BlogPost = {
   slug: 'dnd-thunderclap',
   title: 'Thunderclap DnD Guide: 2014/2024 Rules, Range, and VTT Tips',
@@ -2990,10 +3095,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

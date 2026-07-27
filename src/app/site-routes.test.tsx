@@ -25,6 +25,7 @@ import {
 const DND_THUNDERCLAP_SLUG = 'dnd-thunderclap';
 const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
 const DND_5E_ARMORER_SLUG = 'dnd-5e-armorer';
+const DND_FLUMPH_SLUG = 'dnd-flumph';
 
 describe('trust page routes', () => {
   afterEach(() => {
@@ -88,6 +89,11 @@ describe('blog static routes', () => {
   it('emits bilingual Thunderclap detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_THUNDERCLAP_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_THUNDERCLAP_SLUG });
+  });
+
+  it('emits bilingual flumph detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_FLUMPH_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_FLUMPH_SLUG });
   });
 
   it('emits bilingual fourth-page pagination params', () => {

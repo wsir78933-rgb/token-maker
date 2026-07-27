@@ -33,6 +33,7 @@ export const DND_SILVERY_BARBS_COVER_PATH = '/blog/covers/en/dnd-silvery-barbs-g
 export const DND_SWORD_SHEATHS_COVER_PATH = '/blog/covers/en/dnd-sword-sheaths-guide.webp';
 export const DND_5E_ARMORER_COVER_PATH = '/blog/covers/en/dnd-5e-armorer-guide.webp';
 export const DND_DEATH_KNIGHT_COVER_PATH = '/blog/covers/en/dnd-death-knight-guide.webp';
+export const DND_FLUMPH_COVER_PATH = '/blog/covers/en/dnd-flumph-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -94,6 +95,7 @@ export const DND_BLESS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-bless/dnd-bles
 export const DND_SHORTSWORD_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-shortsword/dnd-shortsword-video-placeholder.webp';
 export const DND_SILVERY_BARBS_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-silvery-barbs/dnd-silvery-barbs-video-placeholder.webp';
+export const DND_FLUMPH_VTT_IMAGE_PATH = '/blog/inline/dnd-flumph/flumph-vtt-clue-board.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -222,6 +224,10 @@ export const DND_DEATH_KNIGHT_2025_STAT_BLOCK_URL =
   'https://roll20.net/compendium/dnd5e/Monsters%3ADeath%20Knight?expansion=34653';
 export const DND_DEATH_KNIGHT_ASPIRANT_2025_STAT_BLOCK_URL =
   'https://roll20.net/compendium/dnd5e/Monsters%3ADeath%20Knight%20Aspirant?expansion=34653';
+export const DND_FLUMPH_DNDBEYOND_URL = 'https://www.dndbeyond.com/posts/post-images/5032-flumph';
+export const DND_FLUMPH_2024_ROLL20_URL =
+  'https://roll20.net/compendium/dnd5e/Monsters%3AFlumph?expansion=34653';
+export const DND_FLUMPH_AIDEDD_URL = 'https://www.aidedd.org/dnd/monstres.php?vo=flumph';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
