@@ -26,6 +26,7 @@ const DND_5E_ARMORER_SLUG = 'dnd-5e-armorer';
 const DND_DEATH_KNIGHT_SLUG = 'dnd-death-knight';
 const DND_FLUMPH_SLUG = 'dnd-flumph';
 const DWELF_DND_SLUG = 'dwelf-dnd';
+const DND_DAGGER_SLUG = 'dnd-dagger';
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -88,18 +89,103 @@ describe('published blog body voice', () => {
   });
 });
 
-describe('dwelf dnd blog post', () => {
-  test('publishes a bilingual dwarf-elf character guide at the top of the blog', () => {
+describe('dnd dagger blog post', () => {
+  test('refreshes the bilingual dagger guide at the top of the blog', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DAGGER_SLUG,
+      DWELF_DND_SLUG,
+      DND_FLUMPH_SLUG,
+      DND_DEATH_KNIGHT_SLUG,
+    ]);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DND_DAGGER_SLUG,
+      DWELF_DND_SLUG,
+      DND_FLUMPH_SLUG,
+      DND_DEATH_KNIGHT_SLUG,
+    ]);
+
+    const englishPost = getBlogPost('en', DND_DAGGER_SLUG);
+    const chinesePost = getBlogPost('zh', DND_DAGGER_SLUG);
+
+    expect(englishPost?.title).toBe('DND Dagger 5e: Stats, Rules, and Best Uses');
+    expect(englishPost?.updatedAt).toBe('2026-07-28');
+    expect(englishPost?.bodyHtml).toContain('Treat a dagger as a flexible backup tool');
+    expect(englishPost?.bodyHtml).toContain('Judge a dagger build by the routes it opens');
+    expect(englishPost?.bodyHtml).toContain('For a typical Rogue, use a rapier or shortsword');
+    expect(englishPost?.bodyHtml).toContain('Place the dagger near the face, shoulder, or leading hand');
+    expect(englishPost?.bodyHtml).not.toMatch(/My short table opinion|When I test|My preference|When I make/);
+    expect(englishPost?.bodyHtml).toContain('src="/blog/inline/dnd-dagger/dagger-loadout-table-v2.webp"');
+    expect(englishPost?.bodyHtml).toContain('src="/blog/inline/dnd-dagger/dagger-throwing-range-v2.webp"');
+    expect(englishPost?.bodyHtml).toContain('src="/blog/inline/dnd-dagger/dagger-video-placeholder-v2.webp"');
+    expect(englishPost?.bodyHtml).toContain('data-video-id="RCnwjLK_ZuQ"');
+    expect(englishPost?.bodyHtml).toContain('loading="lazy"');
+    expect(englishPost?.bodyHtml).toContain('fetchpriority="low"');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-dagger-guide-v2.webp');
+    expect(englishPost?.faqItems?.length).toBe(5);
+
+    expect(chinesePost?.title).toBe('dnd dagger 指南：5e 数据、用法、Nick 与 FAQ');
+    expect(chinesePost?.updatedAt).toBe('2026-07-28');
+    expect(chinesePost?.bodyHtml).toContain('把 dagger 当成灵活备用工具');
+    expect(chinesePost?.bodyHtml).toContain('判断 dagger 构筑时，不要只问');
+    expect(chinesePost?.bodyHtml).toContain('典型 Rogue 可以在正常战斗里用 rapier 或 shortsword');
+    expect(chinesePost?.bodyHtml).toContain('把刀放在脸、肩膀或主手附近');
+    expect(chinesePost?.bodyHtml).not.toMatch(/我的短结论|我实际看|我的习惯|我做/);
+    expect(chinesePost?.bodyHtml).toContain('src="/blog/inline/dnd-dagger/dagger-loadout-table-v2.webp"');
+    expect(chinesePost?.bodyHtml).toContain('src="/blog/inline/dnd-dagger/dagger-throwing-range-v2.webp"');
+    expect(chinesePost?.bodyHtml).toContain('src="/blog/inline/dnd-dagger/dagger-video-placeholder-v2.webp"');
+    expect(chinesePost?.bodyHtml).toContain('data-video-id="RCnwjLK_ZuQ"');
+    expect(chinesePost?.bodyHtml).toContain('loading="lazy"');
+    expect(chinesePost?.bodyHtml).toContain('fetchpriority="low"');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-dagger-guide-v2.webp');
+    expect(chinesePost?.faqItems?.length).toBe(5);
+  });
+
+  test('builds dagger metadata, structured data, assets, and llms discovery', () => {
+    expect(getBlogPostPath('en', DND_DAGGER_SLUG)).toBe('/blog/dnd-dagger');
+    expect(getBlogPostPath('zh', DND_DAGGER_SLUG)).toBe('/zh/blog/dnd-dagger');
+    expect(createBlogPostMetadata('en', DND_DAGGER_SLUG).alternates?.canonical).toBe('/blog/dnd-dagger');
+    expect(createBlogPostMetadata('zh', DND_DAGGER_SLUG).alternates?.canonical).toBe('/zh/blog/dnd-dagger');
+    expect(buildBlogPostStructuredData('en', DND_DAGGER_SLUG)).toMatchObject({
+      '@type': 'Article',
+      dateModified: '2026-07-28',
+      datePublished: '2026-05-09',
+      url: 'https://www.tokenmaker.one/blog/dnd-dagger',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-dagger-guide-v2.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_DAGGER_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'en-US',
+    });
+    expect(existsSync('public/blog/covers/en/dnd-dagger-guide-v2.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-dagger/dagger-loadout-table-v2.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-dagger/dagger-throwing-range-v2.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-dagger/dagger-video-placeholder-v2.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-dagger');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-dagger');
+  });
+});
+
+describe('dwelf dnd blog post', () => {
+  test('publishes a bilingual dwarf-elf character guide near the top of the blog', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
     ]);
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
@@ -164,6 +250,7 @@ describe('dnd flumph blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
@@ -172,10 +259,10 @@ describe('dnd flumph blog post', () => {
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
@@ -184,7 +271,6 @@ describe('dnd flumph blog post', () => {
       DND_THUNDERCLAP_SLUG,
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
     ]);
 
     const englishPost = getBlogPost('en', DND_FLUMPH_SLUG);
@@ -268,14 +354,16 @@ describe('dnd 5e armorer blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
@@ -489,14 +577,16 @@ describe('dnd thunderclap blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
@@ -686,14 +776,16 @@ describe('dnd find familiar blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
@@ -895,14 +987,16 @@ describe('dnd hex blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
@@ -1100,15 +1194,15 @@ describe('dnd hex blog post', () => {
 });
 
 describe('paladin 2024 spells dnd blog post', () => {
-  test('keeps the paladin article near the top on the blog page without changing page count', () => {
+  test('moves the paladin article to the second blog page without changing page count', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(8, 9)).toEqual([
+    expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 1)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(8, 9)).toEqual([
+    expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 1)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
     ]);
   });

@@ -124,7 +124,8 @@ const DND_HUNTERS_MARK_UPDATED_AT = '2026-05-02';
 const DND_MEPHISTOPHELES_UPDATED_AT = '2026-05-05';
 const DND_BARD_SPELLS_UPDATED_AT = '2026-05-06';
 const DND_DEMONS_UPDATED_AT = '2026-05-07';
-const DND_DAGGER_UPDATED_AT = '2026-05-09';
+const DND_DAGGER_PUBLISHED_AT = '2026-05-09';
+const DND_DAGGER_UPDATED_AT = '2026-07-28';
 const DND_GHOST_UPDATED_AT = '2026-05-10';
 const DND_DWARF_NAMES_UPDATED_AT = '2026-05-11';
 const DND_GLAIVE_UPDATED_AT = '2026-07-14';
@@ -2374,7 +2375,7 @@ const dndDaggerArticle: BlogPost = {
     'Learn dnd dagger stats fast: 1d4 piercing, finesse, light, thrown range, Rogue uses, 2014 vs 2024 Nick rules, VTT token tips, FAQ, and video.',
   excerpt:
     'A practical dnd dagger encyclopedia page with the 1d4 stat block, thrown range, Rogue advice, 2014/2024 Nick notes, VTT token tips, FAQ, and video.',
-  publishedAt: DND_DAGGER_UPDATED_AT,
+  publishedAt: DND_DAGGER_PUBLISHED_AT,
   updatedAt: DND_DAGGER_UPDATED_AT,
   readTime: '10 min read',
   coverLabel: 'Equipment Guide',
@@ -2420,7 +2421,7 @@ const dndDaggerArticleZh: BlogPost = {
     '快速看懂 dnd dagger：1d4 piercing、Finesse、Light、Thrown 距离、Rogue 用法、2014/2024 Nick 差异、VTT Token 建议和 FAQ。',
   excerpt:
     '一篇实用 dnd dagger 装备百科，覆盖 1d4 数据、投掷距离、Rogue 用法、2014/2024 Nick、VTT Token 建议、FAQ 和视频。',
-  publishedAt: DND_DAGGER_UPDATED_AT,
+  publishedAt: DND_DAGGER_PUBLISHED_AT,
   updatedAt: DND_DAGGER_UPDATED_AT,
   readTime: '10 分钟阅读',
   coverLabel: '装备百科',
@@ -3136,10 +3137,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

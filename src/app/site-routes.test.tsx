@@ -27,6 +27,7 @@ const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
 const DND_5E_ARMORER_SLUG = 'dnd-5e-armorer';
 const DND_FLUMPH_SLUG = 'dnd-flumph';
 const DWELF_DND_SLUG = 'dwelf-dnd';
+const DND_DAGGER_SLUG = 'dnd-dagger';
 
 describe('trust page routes', () => {
   afterEach(() => {
@@ -77,6 +78,11 @@ describe('trust page routes', () => {
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual dagger detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_DAGGER_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_DAGGER_SLUG });
+  });
+
   it('emits bilingual dwelf dnd detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DWELF_DND_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DWELF_DND_SLUG });

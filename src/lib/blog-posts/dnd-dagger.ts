@@ -60,9 +60,9 @@ export const dndDaggerArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>My short table opinion: a dagger is not a damage race winner. It is good because it is <strong>cheap, concealable, throwable, Dexterity-friendly, and easy to keep as a backup</strong>. That mix is why it keeps showing up on character sheets even when a rapier or shortsword hits harder.</p>
+<p>Treat a dagger as a flexible backup tool, not a damage race winner. It is useful because it is <strong>cheap, concealable, throwable, Dexterity-friendly, and easy to keep as a backup</strong>. That mix is why it keeps showing up on character sheets even when a rapier or shortsword hits harder.</p>
 
-<h2 id="quick-stats">dnd dagger Quick Stats</h2>
+<h2 id="quick-stats">dnd dagger quick stats</h2>
 <p><strong>A dnd dagger is a simple melee weapon with 1d4 piercing damage, Finesse, Light, and Thrown 20/60.</strong> The <a href="${DND_DAGGER_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules weapon table</a> gives the classic fifth-edition stat line, while the <a href="${DND_DAGGER_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules equipment section</a> keeps the same basic weapon identity and adds weapon mastery context.</p>
 
 <ul>
@@ -86,7 +86,7 @@ export const dndDaggerArticleHtml = String.raw`
   <figcaption>A dagger earns its slot because it solves small problems: close backup, ranged poke, hidden blade, and Dex-friendly finesse attack.</figcaption>
 </figure>
 
-<h2 id="damage-math">How Much Damage Does a dnd dagger Do?</h2>
+<h2 id="damage-math">How much damage does a dnd dagger do?</h2>
 <p><strong>A dnd dagger deals 1d4 piercing damage plus the relevant ability modifier when the attack rules allow that modifier.</strong> The base die is small, so most dagger value comes from class features, extra attacks, off-hand timing, poison, Sneak Attack, or simply having a weapon when your main plan fails.</p>
 
 <table>
@@ -126,9 +126,9 @@ export const dndDaggerArticleHtml = String.raw`
   </tbody>
 </table>
 
-<p>When I test a dagger build at the table, I do not ask "is 1d4 impressive?" It is not. I ask whether the dagger creates a second route: can I attack with Dex, throw from cover, keep my bonus action plan, or still threaten an enemy after being disarmed?</p>
+<p>Judge a dagger build by the routes it opens. Can the character attack with Dex, throw from cover, keep a bonus action plan, or still threaten an enemy after being disarmed? If the answer is yes, the dagger is doing useful work even with a small damage die.</p>
 
-<h2 id="rogue">Is a dnd dagger Good for Rogues?</h2>
+<h2 id="rogue">Is a dnd dagger good for Rogues?</h2>
 <p><strong>Yes, a dnd dagger is good for Rogues as a backup, thrown option, and Sneak Attack delivery weapon, but it is rarely the highest-damage main weapon.</strong> A rapier usually wins the single-hit melee damage comparison, and a shortbow often wins simple ranged reliability.</p>
 
 <p>The dagger still has real Rogue value:</p>
@@ -141,9 +141,9 @@ export const dndDaggerArticleHtml = String.raw`
   <li><strong>It pairs with two-weapon play.</strong> In 2024-style rules, Nick can matter a lot if your Rogue has the mastery path to use it.</li>
 </ul>
 
-<p>My preference is simple: give the Rogue a rapier or shortsword for normal fights, then carry two to four daggers for weird fights. The dagger is the tool you are happy you brought when the plan stops being clean.</p>
+<p>For a typical Rogue, use a rapier or shortsword for normal fights, then carry two to four daggers for weird fights. The dagger becomes valuable when the plan stops being clean: a thrown hit, a hidden blade, a spare weapon after a disarm, or a cheap tool you can afford to lose.</p>
 
-<h2 id="rules-versions">What Changed for dnd dagger in the 2024 Rules?</h2>
+<h2 id="rules-versions">What changed for dnd dagger in the 2024 rules?</h2>
 <p><strong>The biggest 2024 dagger change is not the damage die; it is the Nick weapon mastery option for characters who can use weapon mastery.</strong> The dagger remains a low-damage, flexible simple weapon, but the action economy around Light weapons changed enough that older advice can mislead players.</p>
 
 <table>
@@ -180,7 +180,7 @@ export const dndDaggerArticleHtml = String.raw`
 
 <p>If your group is mixing old character sheets with newer rules, write "dagger: Nick?" directly on the sheet. That one note prevents the common mistake where a player assumes the dagger automatically grants a free extra attack.</p>
 
-<h2 id="throwing">When Should You Throw a dnd dagger?</h2>
+<h2 id="throwing">When should you throw a dnd dagger?</h2>
 <p><strong>You should throw a dnd dagger when staying in position is worth more than keeping the dagger in your hand.</strong> The range is short enough that throwing is a tactical patch, not a replacement for a real ranged weapon.</p>
 
 <figure class="inline-figure inline-figure--four-three-crop">
@@ -206,7 +206,7 @@ export const dndDaggerArticleHtml = String.raw`
 
 <p>Use the <a href="${EN_DICE_ROLLER_PATH}">D&amp;D dice roller</a> to test the difference between a normal 20-foot throw and a long-range 60-foot throw with disadvantage. The math makes the decision obvious fast.</p>
 
-<h2 id="carry-count">How Many Daggers Should a Character Carry?</h2>
+<h2 id="carry-count">How many daggers should a character carry?</h2>
 <p><strong>Most dagger-using characters should carry two to four daggers; a dedicated thrown-weapon character may want six or more.</strong> The right number depends on whether the dagger is a backup, a roleplay prop, or an actual damage plan.</p>
 
 <table>
@@ -243,7 +243,7 @@ export const dndDaggerArticleHtml = String.raw`
 
 <p>Ask your DM how strictly they track drawing, dropping, recovering, and concealing weapons. At strict tables, the logistics are the build. At loose cinematic tables, the dagger is mostly a clean fiction tool.</p>
 
-<h2 id="comparisons">dnd dagger vs Shortsword vs Rapier</h2>
+<h2 id="comparisons">dnd dagger vs shortsword vs rapier</h2>
 <p><strong>A dnd dagger is more flexible than a shortsword or rapier, but it deals less weapon-die damage.</strong> Pick the dagger for backup utility, not because it wins a fair damage spreadsheet.</p>
 
 <table>
@@ -275,10 +275,10 @@ export const dndDaggerArticleHtml = String.raw`
 
 <p>If you are still deciding the character chassis, start with the <a href="${EN_DND_CLASSES_PATH}">DND classes guide</a>. If the dagger user is getting hit too often, the <a href="${EN_DND_ARMOR_PATH}">DND armor guide</a> will matter more than squeezing one more point of dagger damage.</p>
 
-<h2 id="vtt-token">How to Show a dnd dagger on a VTT Token</h2>
+<h2 id="vtt-token">How to show a dnd dagger on a VTT token</h2>
 <p><strong>A dnd dagger VTT token should make the blade readable without turning the portrait into a tiny gray line.</strong> At map scale, silhouette beats realism.</p>
 
-<p>When I make a knife-fighter token, I usually place the dagger near the face, shoulder, or leading hand. A dagger hanging at the belt often disappears once the token shrinks to 256 or 512 px.</p>
+<p>Place the dagger near the face, shoulder, or leading hand when the weapon defines the character. A dagger hanging at the belt often disappears once the token shrinks to 256 or 512 px.</p>
 
 <ul>
   <li><strong>Use a bright edge highlight</strong> so the blade does not vanish on dark dungeon maps.</li>
@@ -290,7 +290,7 @@ export const dndDaggerArticleHtml = String.raw`
 
 <p>You can build that look in the <a href="${EN_EDITOR_PATH}">VTT token maker</a>. For grid-first portraits, use the <a href="${EN_SQUARE_TOKEN_MAKER_PATH}">square token maker</a> so the dagger hand does not get cropped off by accident.</p>
 
-<h2 id="faq">FAQ About dnd dagger</h2>
+<h2 id="faq">FAQ about dnd dagger</h2>
 <h3>Is a dnd dagger a simple weapon?</h3>
 <p><strong>Yes, a dnd dagger is a simple melee weapon.</strong> That is why it appears on so many character sheets even when the character is not a dedicated martial build.</p>
 
@@ -306,7 +306,7 @@ export const dndDaggerArticleHtml = String.raw`
 <h3>Does the 2024 Nick mastery make daggers strong?</h3>
 <p><strong>Nick makes daggers more action-efficient for the right character, but it does not change the 1d4 damage die.</strong> It is a build enabler, not a universal damage upgrade.</p>
 
-<h2 id="video">Watch the dnd dagger Video</h2>
+<h2 id="video">Watch the dnd dagger video</h2>
 
 ${liteVideoEmbed('RCnwjLK_ZuQ', 'dnd dagger companion video', {
   src: DND_DAGGER_VIDEO_PLACEHOLDER_PATH,
@@ -358,7 +358,7 @@ export const dndDaggerArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>我的短结论：dagger 不是伤害竞赛冠军。它强在 <strong>便宜、好藏、能投、吃 Dexterity、随手能当备用工具</strong>。这就是为什么它明明只有 1d4，却总能出现在角色卡上。</p>
+<p>把 dagger 当成灵活备用工具，而不是伤害竞赛冠军。它强在 <strong>便宜、好藏、能投、吃 Dexterity、随手能当备用工具</strong>。这就是为什么它明明只有 1d4，却总能出现在角色卡上。</p>
 
 <h2 id="quick-stats">dnd dagger 速查数据</h2>
 <p><strong>dnd dagger 是 1d4 piercing、Finesse、Light、Thrown 20/60 的 simple melee weapon。</strong><a href="${DND_DAGGER_2014_RULES_URL}" rel="noreferrer noopener">2014 Basic Rules 武器表</a>给出经典 5e 数据，<a href="${DND_DAGGER_2024_RULES_URL}" rel="noreferrer noopener">2024 Free Rules 装备章节</a>则保留基本定位，并加入 weapon mastery 语境。</p>
@@ -424,7 +424,7 @@ export const dndDaggerArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>我实际看 dagger 构筑时，不会问“1d4 厉不厉害”。答案当然是不厉害。我会问它有没有给角色多一条路线：能不能用 Dex、能不能从掩体后投、能不能保留 bonus action、被缴械后还能不能威胁敌人。</p>
+<p>判断 dagger 构筑时，不要只问“1d4 厉不厉害”。更该看它有没有给角色多一条路线：能不能用 Dex、能不能从掩体后投、能不能保留 bonus action、被缴械后还能不能威胁敌人。如果这些问题有明确答案，dagger 就已经在发挥作用。</p>
 
 <h2 id="rogue">dnd dagger 适合 Rogue 吗？</h2>
 <p><strong>适合，dnd dagger 对 Rogue 来说是很好的备用武器、投掷选项和 Sneak Attack 载体，但通常不是最高伤害主武器。</strong>单次近战伤害通常 rapier 更高；普通远程稳定性也经常是 shortbow 更好。</p>
@@ -439,7 +439,7 @@ export const dndDaggerArticleHtmlZh = String.raw`
   <li><strong>能配合双持。</strong>2024 风格规则里，如果 Rogue 有获得 Nick 的路径，它的动作经济会更有意义。</li>
 </ul>
 
-<p>我的习惯是：Rogue 正常战斗用 rapier 或 shortsword，再带两到四把 dagger 处理脏活。Dagger 是计划变乱时最好用的工具。</p>
+<p>典型 Rogue 可以在正常战斗里用 rapier 或 shortsword，再带两到四把 dagger 处理脏活。计划变乱时，dagger 的价值会变得很清楚：短距投掷、隐藏刀、备用武器，或者一把丢了也不心疼的工具。</p>
 
 <h2 id="rules-versions">2024 规则里的 dnd dagger 有什么变化？</h2>
 <p><strong>2024 版 dagger 的最大变化在动作经济：符合条件的角色可以围绕 Nick weapon mastery 使用它。</strong>Dagger 仍然是低伤害、高灵活性的 simple weapon，但 Light 武器的动作经济变化足够影响老攻略的判断。</p>
@@ -476,7 +476,7 @@ export const dndDaggerArticleHtmlZh = String.raw`
   </tbody>
 </table>
 
-<p>如果你们团混用旧角色卡和新规则，我建议直接在角色卡上写一句“dagger: Nick?”。这能避免玩家误以为每把 dagger 自动送一次免费攻击。</p>
+<p>如果你们团混用旧角色卡和新规则，直接在角色卡上写一句“dagger: Nick?”。这能避免玩家误以为每把 dagger 自动送一次免费攻击。</p>
 
 <h2 id="throwing">什么时候应该投掷 dnd dagger？</h2>
 <p><strong>当保持当前位置比保留手里的 dagger 更重要时，就值得投掷 dnd dagger。</strong>它的距离太短，所以投掷更像战术补丁，不是正经远程武器替代品。</p>
@@ -576,7 +576,7 @@ export const dndDaggerArticleHtmlZh = String.raw`
 <h2 id="vtt-token">dnd dagger 角色的 VTT Token 怎么做？</h2>
 <p><strong>dnd dagger 角色的 VTT Token 要让刀刃可读，但不要让它变成缩小后看不见的灰线。</strong>在地图尺度下，轮廓比真实比例更重要。</p>
 
-<p>我做持 dagger 的角色 Token 时，通常会把刀放在脸、肩膀或主手附近。挂在腰间的 dagger 缩到 256 或 512 px 后，经常直接消失。</p>
+<p>当 dagger 是角色定位的一部分，把刀放在脸、肩膀或主手附近。挂在腰间的 dagger 缩到 256 或 512 px 后，经常直接消失。</p>
 
 <ul>
   <li><strong>给刀刃加亮边</strong>，避免它在暗色地城地图上消失。</li>
