@@ -33,6 +33,7 @@ import {
   DND_5E_ARMORER_COVER_PATH,
   DND_DEATH_KNIGHT_COVER_PATH,
   DND_FLUMPH_COVER_PATH,
+  DND_DWELF_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -88,6 +89,7 @@ import {
   dndDeathKnightArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-death-knight';
 import { dndFlumphArticleHtml, dndFlumphArticleHtmlZh } from '@/lib/blog-posts/dnd-flumph';
+import { dwelfDndArticleHtml, dwelfDndArticleHtmlZh } from '@/lib/blog-posts/dwelf-dnd';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -140,6 +142,7 @@ const DND_BLESS_UPDATED_AT = '2026-07-09';
 const DND_SHORTSWORD_UPDATED_AT = '2026-07-10';
 const DND_SILVERY_BARBS_UPDATED_AT = '2026-07-11';
 const DND_FLUMPH_UPDATED_AT = '2026-07-26';
+const DWELF_DND_UPDATED_AT = '2026-07-27';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -1586,6 +1589,44 @@ const dndDeathKnightArticleZh: BlogPost = {
     'DND 死亡骑士指南封面图：黑色板甲中的亡灵指挥官、骷髅部属，以及月光下的废墟战斗地图',
   bodyHtml: dndDeathKnightArticleHtmlZh,
   relatedSlugs: ['dnd-ghost', 'dnd-necromancer-spells', 'dnd-armor-guide', 'dnd-sword-sheaths'],
+};
+
+const dwelfDndArticle: BlogPost = {
+  slug: 'dwelf-dnd',
+  title: 'Dwelf DnD: Build a Dwarf-Elf Character With One Rules Chassis',
+  seoTitle: 'Dwelf DnD: Build a Dwarf-Elf Character With One Rules Chassis',
+  metaDescription:
+    'Build a dwelf DnD character with one legal 2024 Dwarf or Elf rules chassis, a playable family conflict, and a clear VTT token portrait.',
+  excerpt:
+    'Choose one official rules chassis for your dwarf-elf character, then make the mixed heritage matter through family promises, table choices, and token details.',
+  publishedAt: DWELF_DND_UPDATED_AT,
+  updatedAt: DWELF_DND_UPDATED_AT,
+  readTime: '9 min read',
+  coverLabel: 'Character Concept',
+  coverImage: DND_DWELF_COVER_PATH,
+  coverAlt:
+    'dwelf dnd guide cover showing a dwarf-elf adventurer with pointed ears, a braided beard, a woodland staff, and a VTT portrait token beside a forge',
+  bodyHtml: dwelfDndArticleHtml,
+  relatedSlugs: ['dnd-dwarf-names', 'dnd-classes-explained', 'dnd-dhampir', 'dnd-armor-guide'],
+};
+
+const dwelfDndArticleZh: BlogPost = {
+  slug: 'dwelf-dnd',
+  title: 'Dwelf DND：用一套规则做出矮人精灵混血角色',
+  seoTitle: 'Dwelf DND：用一套规则做出矮人精灵混血角色',
+  metaDescription:
+    '用一套合法的 2024 Dwarf 或 Elf 规则底盘，做出有家族承诺、桌边选择和清楚 VTT Token 的 Dwelf DND 角色。',
+  excerpt:
+    '先给矮人精灵混血角色选一个官方规则底盘，再用家族承诺、场景选择和 Token 细节让混血身份真正上桌。',
+  publishedAt: DWELF_DND_UPDATED_AT,
+  updatedAt: DWELF_DND_UPDATED_AT,
+  readTime: '9 分钟阅读',
+  coverLabel: '角色设定',
+  coverImage: DND_DWELF_COVER_PATH,
+  coverAlt:
+    'Dwelf DND 指南封面图：尖耳、编胡子的矮人精灵混血冒险者，手持林地木杖，旁边有熔炉和 VTT 头像 Token',
+  bodyHtml: dwelfDndArticleHtmlZh,
+  relatedSlugs: ['dnd-dwarf-names', 'dnd-classes-explained', 'dnd-dhampir', 'dnd-armor-guide'],
 };
 
 const dndFlumphArticle: BlogPost = {
@@ -3095,10 +3136,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDaggerArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDaggerArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

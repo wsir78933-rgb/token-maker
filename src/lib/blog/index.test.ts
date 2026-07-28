@@ -25,6 +25,7 @@ const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
 const DND_5E_ARMORER_SLUG = 'dnd-5e-armorer';
 const DND_DEATH_KNIGHT_SLUG = 'dnd-death-knight';
 const DND_FLUMPH_SLUG = 'dnd-flumph';
+const DWELF_DND_SLUG = 'dwelf-dnd';
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -87,12 +88,83 @@ describe('published blog body voice', () => {
   });
 });
 
+describe('dwelf dnd blog post', () => {
+  test('publishes a bilingual dwarf-elf character guide at the top of the blog', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
+      DND_FLUMPH_SLUG,
+      DND_DEATH_KNIGHT_SLUG,
+      DND_5E_ARMORER_SLUG,
+    ]);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
+      DND_FLUMPH_SLUG,
+      DND_DEATH_KNIGHT_SLUG,
+      DND_5E_ARMORER_SLUG,
+    ]);
+
+    const englishPost = getBlogPost('en', DWELF_DND_SLUG);
+    const chinesePost = getBlogPost('zh', DWELF_DND_SLUG);
+
+    expect(englishPost?.title).toContain('Dwelf DnD');
+    expect(englishPost?.bodyHtml).toContain('Choose one rules chassis and keep its limits');
+    expect(englishPost?.bodyHtml).toContain('Hand your DM a four-line dwelf note');
+    expect(englishPost?.bodyHtml).toContain('one skill from Insight, Perception, or Survival');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.faqItems).toBeUndefined();
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dwelf-dnd-guide.webp');
+
+    expect(chinesePost?.title).toContain('Dwelf DND');
+    expect(chinesePost?.bodyHtml).toContain('先选一个规则底盘，再守住它的边界');
+    expect(chinesePost?.bodyHtml).toContain('交给 DM 一张四行 dwelf 说明');
+    expect(chinesePost?.bodyHtml).toContain('从 Insight、Perception、Survival 中选一项技能');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.faqItems).toBeUndefined();
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dwelf-dnd-guide.webp');
+  });
+
+  test('builds localized metadata, sitemap discovery, and reader-facing copy for the dwelf guide', () => {
+    expect(getBlogPostPath('en', DWELF_DND_SLUG)).toBe('/blog/dwelf-dnd');
+    expect(getBlogPostPath('zh', DWELF_DND_SLUG)).toBe('/zh/blog/dwelf-dnd');
+    expect(createBlogPostMetadata('en', DWELF_DND_SLUG).alternates?.canonical).toBe('/blog/dwelf-dnd');
+    expect(createBlogPostMetadata('zh', DWELF_DND_SLUG).alternates?.canonical).toBe('/zh/blog/dwelf-dnd');
+    expect(buildBlogPostStructuredData('en', DWELF_DND_SLUG)).toMatchObject({
+      '@type': 'Article',
+      url: 'https://www.tokenmaker.one/blog/dwelf-dnd',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dwelf-dnd-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DWELF_DND_SLUG)).toBeNull();
+    expect(buildBlogPostFaqStructuredData('zh', DWELF_DND_SLUG)).toBeNull();
+    expect(existsSync('public/blog/covers/en/dwelf-dnd-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dwelf-dnd');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dwelf-dnd');
+
+    for (const bodyHtml of [englishPostBody(), chinesePostBody()]) {
+      expect(bodyHtml).not.toMatch(/search intent|keyword strategy|this article will|本文将|搜索这个词的人/iu);
+    }
+  });
+});
+
+function englishPostBody() {
+  return getBlogPost('en', DWELF_DND_SLUG)?.bodyHtml;
+}
+
+function chinesePostBody() {
+  return getBlogPost('zh', DWELF_DND_SLUG)?.bodyHtml;
+}
+
 describe('dnd flumph blog post', () => {
   test('publishes a bilingual flumph guide ahead of the recent July articles', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
@@ -101,10 +173,10 @@ describe('dnd flumph blog post', () => {
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
       PALADIN_2024_SPELLS_DND_SLUG,
-      DND_GLAIVE_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
@@ -113,7 +185,6 @@ describe('dnd flumph blog post', () => {
       DND_FIND_FAMILIAR_SLUG,
       DND_HEX_SLUG,
       PALADIN_2024_SPELLS_DND_SLUG,
-      DND_GLAIVE_SLUG,
     ]);
 
     const englishPost = getBlogPost('en', DND_FLUMPH_SLUG);
@@ -198,17 +269,17 @@ describe('dnd 5e armorer blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
 
     const englishPost = getBlogPost('en', DND_5E_ARMORER_SLUG);
@@ -419,17 +490,17 @@ describe('dnd thunderclap blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
   });
 
@@ -616,17 +687,17 @@ describe('dnd find familiar blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
   });
 
@@ -825,17 +896,17 @@ describe('dnd hex blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
   });
 
@@ -1033,14 +1104,12 @@ describe('paladin 2024 spells dnd blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(7, 9)).toEqual([
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(8, 9)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
-      DND_GLAIVE_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(7, 9)).toEqual([
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(8, 9)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
-      DND_GLAIVE_SLUG,
     ]);
   });
 

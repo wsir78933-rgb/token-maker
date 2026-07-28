@@ -34,6 +34,7 @@ export const DND_SWORD_SHEATHS_COVER_PATH = '/blog/covers/en/dnd-sword-sheaths-g
 export const DND_5E_ARMORER_COVER_PATH = '/blog/covers/en/dnd-5e-armorer-guide.webp';
 export const DND_DEATH_KNIGHT_COVER_PATH = '/blog/covers/en/dnd-death-knight-guide.webp';
 export const DND_FLUMPH_COVER_PATH = '/blog/covers/en/dnd-flumph-guide.webp';
+export const DND_DWELF_COVER_PATH = '/blog/covers/en/dwelf-dnd-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -228,6 +229,12 @@ export const DND_FLUMPH_DNDBEYOND_URL = 'https://www.dndbeyond.com/posts/post-im
 export const DND_FLUMPH_2024_ROLL20_URL =
   'https://roll20.net/compendium/dnd5e/Monsters%3AFlumph?expansion=34653';
 export const DND_FLUMPH_AIDEDD_URL = 'https://www.aidedd.org/dnd/monstres.php?vo=flumph';
+export const DND_2024_CHARACTER_CREATION_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/creating-a-character';
+export const DND_2024_CHARACTER_ORIGINS_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/character-origins';
+export const DND_DWELF_HOMEBREW_REFERENCE_URL =
+  'https://stepintorpgs.wordpress.com/2018/03/31/bring-on-the-dwelfs-mixed-race-options-in-dungeons-dragons-5e/';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');

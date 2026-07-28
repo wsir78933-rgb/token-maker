@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [Dwelf DnD](https://www.tokenmaker.one/blog/dwelf-dnd): Build a dwarf-elf character with one official rules chassis, a family promise the party can act on, and a readable VTT token portrait.
 - [DnD Flumph Guide](https://www.tokenmaker.one/blog/dnd-flumph): Use a flumph as a telepathic warning scout, frightened witness, or ally clue, then make its state readable on a VTT token.
 - [DnD Death Knight](https://www.tokenmaker.one/blog/dnd-death-knight): 2025 Death Knight encounter setup with objectives, cover, undead jobs, legendary pressure, the Aspirant lead-in, a 2014 comparison, and VTT commander-token cues.
 - [DnD 5e Armorer](https://www.tokenmaker.one/blog/dnd-5e-armorer): 2014 Guardian and Infiltrator roles, the 2025 Dreadnaught branch, first-round jobs, rest swaps, and VTT token cues.
@@ -57,6 +58,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [Dwelf DND：用一套规则做出矮人精灵混血角色](https://www.tokenmaker.one/zh/blog/dwelf-dnd)
 - [DND Flumph 指南：盟友线索、心灵感应与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-flumph)
 - [DND 死亡骑士：运行 2025 亡灵指挥官遭遇](https://www.tokenmaker.one/zh/blog/dnd-death-knight)
 - [DND 5e 装甲师：构筑定位、装甲模型与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-5e-armorer)
