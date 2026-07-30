@@ -34,6 +34,7 @@ export function InnerPageChrome({
   const navLinks = [
     { href: getLocalizedPath(locale, '/'), label: navLabels.editor },
     { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller },
+    { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker },
     { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog },
   ];
   const switchedPath = localeSwitchPath ?? switchLocalePath(currentPath, locale === 'en' ? 'zh' : 'en');

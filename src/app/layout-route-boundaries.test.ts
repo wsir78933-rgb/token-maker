@@ -31,7 +31,7 @@ interface RootLayoutProps {
   children: ReactNode;
 }
 
-type RootLayout = (props: RootLayoutProps) => Promise<ReactNode>;
+type RootLayout = (props: RootLayoutProps) => ReactNode | Promise<ReactNode>;
 
 async function renderLayout(rootLayout: RootLayout) {
   const layoutElement = await rootLayout({
@@ -58,6 +58,10 @@ function expectAdSenseScriptInDocumentHead(markup: string) {
 
   expect(adSenseScriptIndex).toBeGreaterThan(-1);
   expect(documentHeadEnd).toBeGreaterThan(adSenseScriptIndex);
+}
+
+function expectNoAnalyticsScripts(markup: string) {
+  expect(markup).not.toContain('data-analytics=');
 }
 
 describe('root layout route boundaries', () => {
@@ -98,10 +102,22 @@ describe('root layout route boundaries', () => {
     );
   });
 
+  it('keeps the local Coat Maker document roots free of advertising and analytics scripts', async () => {
+    const EnglishCoatMakerRootLayout = (await import('./(maker-en)/layout')).default;
+    const ChineseCoatMakerRootLayout = (await import('./(maker-zh)/layout')).default;
+
+    expectNoAnalyticsScripts(await renderLayout(EnglishCoatMakerRootLayout));
+    expectNoAnalyticsScripts(await renderLayout(ChineseCoatMakerRootLayout));
+  });
+
   it('keeps public-share pages below the root layouts without AdSense', () => {
     expect(existsSync(resolve(process.cwd(), 'src/app/(share-en)/share/[id]/page.tsx'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/app/(share-zh)/zh/share/[id]/page.tsx'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/app/(en)/share/[id]/page.tsx'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/app/(zh)/zh/share/[id]/page.tsx'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'src/app/(maker-en)/coat-of-arms-maker/page.tsx'))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), 'src/app/(maker-zh)/zh/coat-of-arms-maker/page.tsx'))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), 'src/app/(en)/coat-of-arms-maker/page.tsx'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'src/app/(zh)/zh/coat-of-arms-maker/page.tsx'))).toBe(false);
   });
 });

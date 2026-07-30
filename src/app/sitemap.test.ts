@@ -362,3 +362,23 @@ describe('blog sitemap entries', () => {
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 });
+
+describe('coat maker sitemap entries', () => {
+  test('includes bilingual coat maker routes with language alternates', () => {
+    const englishEntry = findSitemapEntry('https://www.tokenmaker.one/coat-of-arms-maker');
+    const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/coat-of-arms-maker');
+
+    const expectedAlternates = {
+      'x-default': 'https://www.tokenmaker.one/coat-of-arms-maker',
+      'en-US': 'https://www.tokenmaker.one/coat-of-arms-maker',
+      'zh-CN': 'https://www.tokenmaker.one/zh/coat-of-arms-maker',
+    };
+
+    expect(englishEntry.changeFrequency).toBe('weekly');
+    expect(englishEntry.priority).toBe(0.8);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.changeFrequency).toBe('weekly');
+    expect(chineseEntry.priority).toBe(0.8);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+});

@@ -259,6 +259,8 @@ export const templatePageMap = new Map(templatePages.map((page) => [page.slug, p
 export interface NavLabels {
   editor: string;
   diceRoller: string;
+  coatMaker: string;
+  coatMakerBackToEditor: string;
   templates: string;
   blog: string;
   faq: string;
@@ -529,6 +531,8 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
   en: {
     editor: 'Editor',
     diceRoller: 'Dice Roller',
+    coatMaker: 'Coat Maker',
+    coatMakerBackToEditor: 'Back to the editor',
     templates: 'Templates',
     blog: 'Blog',
     faq: 'FAQ',
@@ -538,6 +542,8 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
   zh: {
     editor: '编辑器',
     diceRoller: '骰子',
+    coatMaker: '纹章制作器',
+    coatMakerBackToEditor: '返回首页编辑器',
     templates: '模板页',
     blog: '博客',
     faq: '常见问题',

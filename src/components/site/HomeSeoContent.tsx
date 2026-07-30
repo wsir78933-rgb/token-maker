@@ -205,6 +205,7 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
   const navLinks = [
     { href: `${homeHref}#editor-workspace`, label: navLabels.editor, isActive: true },
     { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller, isActive: false },
+    { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker, isActive: false },
     { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog, isActive: false },
   ];
 

@@ -11,6 +11,7 @@ import { LOCALES, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 const DEFAULT_LAST_MODIFIED = '2026-03-12';
 const HOME_LAST_MODIFIED = '2026-05-06';
 const DICE_ROLLER_LAST_MODIFIED = '2026-03-30';
+const COAT_MAKER_LAST_MODIFIED = '2026-07-28';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
 const TEMPLATE_LAST_MODIFIED = '2026-05-06';
 
@@ -61,7 +62,7 @@ function getStaticSupportPageFromPath(path: string): StaticSupportPage | null {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const staticPaths = ['/', '/faq', '/privacy', '/about', '/changelog', '/dice-roller-dnd', '/contact'] as const;
+  const staticPaths = ['/', '/faq', '/privacy', '/about', '/changelog', '/dice-roller-dnd', '/coat-of-arms-maker', '/contact'] as const;
 
   const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     staticPaths.map((path) => {
@@ -72,6 +73,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified:
           path === '/dice-roller-dnd'
             ? new Date(DICE_ROLLER_LAST_MODIFIED)
+            : path === '/coat-of-arms-maker'
+            ? new Date(COAT_MAKER_LAST_MODIFIED)
             : path === '/contact'
             ? new Date(CONTACT_LAST_MODIFIED)
             : supportPage
