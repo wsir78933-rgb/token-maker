@@ -36,6 +36,7 @@ export const DND_DEATH_KNIGHT_COVER_PATH = '/blog/covers/en/dnd-death-knight-gui
 export const DND_FLUMPH_COVER_PATH = '/blog/covers/en/dnd-flumph-guide.webp';
 export const DND_DWELF_COVER_PATH = '/blog/covers/en/dwelf-dnd-guide.webp';
 export const FIREBOLT_DND_5E_COVER_PATH = '/blog/covers/en/firebolt-dnd-5e-guide.webp';
+export const SPECTATOR_DND_COVER_PATH = '/blog/covers/en/spectator-dnd-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -239,6 +240,12 @@ export const DND_DWELF_HOMEBREW_REFERENCE_URL =
 export const DND_FIRE_BOLT_RULES_URL = 'https://www.dndbeyond.com/spells/2618890-fire-bolt';
 export const DND_2024_PLAYING_THE_GAME_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/playing-the-game';
+export const DND_SPECTATOR_2014_DNDBEYOND_URL = 'https://www.dndbeyond.com/monsters/17094-spectator';
+export const DND_SPECTATOR_2024_ROLL20_URL =
+  'https://roll20.net/compendium/dnd5e/Monsters%3ASpectator?expansion=34653';
+export const DND_SPECTATOR_TACTICS_URL = 'https://www.themonstersknow.com/beholder-tactics/';
+export const DND_SPECTATOR_BODYGUARD_RULING_URL =
+  'https://rpg.stackexchange.com/questions/142102/can-a-spectator-be-a-bodyguard-can-the-treasure-item-it-guards-be-a-person-pers';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -285,6 +292,8 @@ export const EN_DND_BLESS_PATH = getLocalizedPath('en', '/blog/dnd-bless');
 export const ZH_DND_BLESS_PATH = getLocalizedPath('zh', '/blog/dnd-bless');
 export const EN_DND_SWORD_SHEATHS_PATH = getLocalizedPath('en', '/blog/dnd-sword-sheaths');
 export const ZH_DND_SWORD_SHEATHS_PATH = getLocalizedPath('zh', '/blog/dnd-sword-sheaths');
+export const EN_DND_FLUMPH_PATH = getLocalizedPath('en', '/blog/dnd-flumph');
+export const ZH_DND_FLUMPH_PATH = getLocalizedPath('zh', '/blog/dnd-flumph');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');

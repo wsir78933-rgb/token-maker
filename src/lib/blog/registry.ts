@@ -35,6 +35,7 @@ import {
   DND_FLUMPH_COVER_PATH,
   DND_DWELF_COVER_PATH,
   FIREBOLT_DND_5E_COVER_PATH,
+  SPECTATOR_DND_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -95,6 +96,7 @@ import {
   fireboltDnd5eArticleHtml,
   fireboltDnd5eArticleHtmlZh,
 } from '@/lib/blog-posts/firebolt-dnd-5e';
+import { spectatorDndArticleHtml, spectatorDndArticleHtmlZh } from '@/lib/blog-posts/spectator-dnd';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -150,6 +152,7 @@ const DND_SILVERY_BARBS_UPDATED_AT = '2026-07-11';
 const DND_FLUMPH_UPDATED_AT = '2026-07-26';
 const DWELF_DND_UPDATED_AT = '2026-07-27';
 const FIREBOLT_DND_5E_UPDATED_AT = '2026-07-29';
+const SPECTATOR_DND_UPDATED_AT = '2026-08-02';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2373,6 +2376,44 @@ const dndGhostArticleZh: BlogPost = {
   relatedSlugs: ['dnd-necromancer-spells', 'dnd-demons', 'dnd-counterspell', 'dnd-dagger'],
 };
 
+const spectatorDndArticle: BlogPost = {
+  slug: 'spectator-dnd',
+  title: 'Spectator DnD: Guardian Rules, Eye Rays, and VTT Tokens',
+  seoTitle: 'Spectator DnD Guide: Guardian Rules, Eye Rays, and VTT Tokens',
+  metaDescription:
+    'Run a Spectator in DnD with clean 2014/2024 rule boundaries, guardian orders, eye-ray pressure, Spell Reflection, and readable VTT tokens.',
+  excerpt:
+    'Turn a spectator into a clear guardian encounter: define what it protects, choose 2014 or 2024 rules, shape the room, and crop the VTT token.',
+  publishedAt: SPECTATOR_DND_UPDATED_AT,
+  updatedAt: SPECTATOR_DND_UPDATED_AT,
+  readTime: '9 min read',
+  coverLabel: 'Monster Tactics',
+  coverImage: SPECTATOR_DND_COVER_PATH,
+  coverAlt:
+    'Spectator DnD guide cover showing a four-eyestalk floating guardian over a locked treasure vault on a VTT battle-map grid',
+  bodyHtml: spectatorDndArticleHtml,
+  relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
+};
+
+const spectatorDndArticleZh: BlogPost = {
+  slug: 'spectator-dnd',
+  title: 'Spectator DND：守卫命令、Eye Rays 与 VTT Token',
+  seoTitle: 'Spectator DND 指南：守卫规则、Eye Rays 与 VTT Token',
+  metaDescription:
+    '用清楚的 2014/2024 规则边界、守卫命令、眼线压力、Spell Reflection 和可读 VTT Token 运行 Spectator DND 遭遇。',
+  excerpt:
+    '把 spectator 做成清楚的守卫遭遇：先定义它保护什么，再选择规则版本、设计房间，并裁出可读 VTT Token。',
+  publishedAt: SPECTATOR_DND_UPDATED_AT,
+  updatedAt: SPECTATOR_DND_UPDATED_AT,
+  readTime: '9 分钟阅读',
+  coverLabel: '怪物战术',
+  coverImage: SPECTATOR_DND_COVER_PATH,
+  coverAlt:
+    'Spectator DND 指南封面图：四根眼柄的漂浮守卫悬在 VTT 战斗地图网格上的上锁宝库前',
+  bodyHtml: spectatorDndArticleHtmlZh,
+  relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
+};
+
 const fireboltDnd5eArticle: BlogPost = {
   slug: 'firebolt-dnd-5e',
   title: 'Fire Bolt DnD 5e: Attack Rules, Burning Objects, and VTT Tactics',
@@ -3181,10 +3222,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

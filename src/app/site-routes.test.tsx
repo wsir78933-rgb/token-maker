@@ -37,6 +37,7 @@ const DND_FLUMPH_SLUG = 'dnd-flumph';
 const DWELF_DND_SLUG = 'dwelf-dnd';
 const DND_DAGGER_SLUG = 'dnd-dagger';
 const FIREBOLT_DND_5E_SLUG = 'firebolt-dnd-5e';
+const SPECTATOR_DND_SLUG = 'spectator-dnd';
 
 function getStructuredDataTypes(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -334,6 +335,11 @@ describe('coat maker routes', () => {
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual Spectator detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: SPECTATOR_DND_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: SPECTATOR_DND_SLUG });
+  });
+
   it('emits bilingual Fire Bolt detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: FIREBOLT_DND_5E_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: FIREBOLT_DND_5E_SLUG });

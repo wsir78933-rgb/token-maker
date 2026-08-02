@@ -12,7 +12,8 @@ import { preloadEditorFonts } from '@/lib/editor-fonts/load';
 import { getCachedImage, preloadImageToCache } from '@/lib/utils/imageCache';
 import { getLruCacheEntry, setLruCacheEntry } from '@/lib/utils/lruCache';
 
-interface RenderTokenOptions {
+export interface RenderTokenOptions {
+  borderInsetRatio?: number;
   clipFinalOutputToMask?: boolean;
   onAssetChange?: () => void;
 }
@@ -22,9 +23,13 @@ const MAX_IMAGE_BORDER_MASK_CACHE_ENTRIES = 16;
 const BORDER_ALPHA_THRESHOLD = 8;
 const BORDER_INSET_RATIO = 0.032;
 
-function getBorderRenderInset(outputSize: number, border?: BorderTemplate): number {
+function getBorderRenderInset(
+  outputSize: number,
+  border?: BorderTemplate,
+  borderInsetRatio: number = BORDER_INSET_RATIO
+): number {
   if (!border || border.type === 'none') return 1;
-  return Math.max(1, outputSize * BORDER_INSET_RATIO);
+  return Math.max(1, outputSize * borderInsetRatio);
 }
 
 function drawImageAssetWithInset(
@@ -110,9 +115,10 @@ function applyMaskToCanvas(
   state: EditorState,
   outputSize: number,
   border?: BorderTemplate,
-  onAssetChange?: () => void
+  onAssetChange?: () => void,
+  borderInsetRatio: number = BORDER_INSET_RATIO
 ) {
-  const inset = getBorderRenderInset(outputSize, border);
+  const inset = getBorderRenderInset(outputSize, border, borderInsetRatio);
   const explicitMaskUrl = getExplicitMaskImageUrl(border);
   if (explicitMaskUrl) {
     const maskImage = getCachedImage(explicitMaskUrl, onAssetChange);
@@ -140,7 +146,8 @@ function buildImageBorderMask(
   borderImage: HTMLImageElement,
   cacheKey: string,
   outputSize: number,
-  interiorMaskId: string | null
+  interiorMaskId: string | null,
+  borderInsetRatio: number
 ): HTMLCanvasElement | null {
   const cachedMask = getLruCacheEntry(IMAGE_BORDER_MASK_CACHE, cacheKey);
   if (cachedMask) return cachedMask;
@@ -152,7 +159,11 @@ function buildImageBorderMask(
   if (!sourceCtx) return null;
 
   sourceCtx.clearRect(0, 0, outputSize, outputSize);
-  const imageBorderRenderInset = getBorderRenderInset(outputSize, { id: 'image-border', name: '', type: 'image' });
+  const imageBorderRenderInset = getBorderRenderInset(
+    outputSize,
+    { id: 'image-border', name: '', type: 'image' },
+    borderInsetRatio
+  );
   drawImageAssetWithInset(sourceCtx, borderImage, outputSize, imageBorderRenderInset);
 
   const sourceImageData = sourceCtx.getImageData(0, 0, outputSize, outputSize);
@@ -242,9 +253,10 @@ function applyFinalMask(
   state: EditorState,
   outputSize: number,
   border?: BorderTemplate,
-  onAssetChange?: () => void
+  onAssetChange?: () => void,
+  borderInsetRatio: number = BORDER_INSET_RATIO
 ) {
-  const inset = getBorderRenderInset(outputSize, border);
+  const inset = getBorderRenderInset(outputSize, border, borderInsetRatio);
   const explicitMaskUrl = getExplicitMaskImageUrl(border);
   if (explicitMaskUrl) {
     const explicitMaskImage = getCachedImage(explicitMaskUrl, onAssetChange);
@@ -265,9 +277,10 @@ function applyFinalMask(
         const interiorMaskId = getImageBorderInteriorMaskId(state, border);
         const maskCanvas = buildImageBorderMask(
           borderImage,
-          `${borderMaskImageUrl}::${outputSize}::${interiorMaskId ?? 'no-interior-mask'}`,
+          `${borderMaskImageUrl}::${outputSize}::${interiorMaskId ?? 'no-interior-mask'}::${borderInsetRatio}`,
           outputSize,
-          interiorMaskId
+          interiorMaskId,
+          borderInsetRatio
         );
 
         if (maskCanvas) {
@@ -297,7 +310,8 @@ function drawBorderContactShadow(
   ctx: CanvasRenderingContext2D,
   state: EditorState,
   outputSize: number,
-  border?: BorderTemplate
+  border?: BorderTemplate,
+  borderInsetRatio: number = BORDER_INSET_RATIO
 ) {
   if (!border || border.type === 'none') return;
 
@@ -305,7 +319,7 @@ function drawBorderContactShadow(
   const mask = getMaskById(maskId);
   if (!mask) return;
 
-  const inset = getBorderRenderInset(outputSize, border);
+  const inset = getBorderRenderInset(outputSize, border, borderInsetRatio);
   const path = createMaskPathWithInset(mask, outputSize, inset);
   const shadowLineWidth = Math.max(12, outputSize * 0.05);
   const highlightLineWidth = Math.max(2, outputSize * 0.008);
@@ -367,6 +381,7 @@ export function renderToken(
   ctx.clearRect(0, 0, outputSize, outputSize);
 
   const border = getSelectedBorder(state);
+  const borderInsetRatio = options.borderInsetRatio ?? BORDER_INSET_RATIO;
 
   const baseLayer = document.createElement('canvas');
   baseLayer.width = outputSize;
@@ -406,10 +421,17 @@ export function renderToken(
     baseCtx.globalAlpha = 1.0;
   }
 
-  applyMaskToCanvas(baseCtx, state, outputSize, border, options.onAssetChange);
+  applyMaskToCanvas(
+    baseCtx,
+    state,
+    outputSize,
+    border,
+    options.onAssetChange,
+    borderInsetRatio
+  );
   ctx.drawImage(baseLayer, 0, 0);
 
-  drawBorderContactShadow(ctx, state, outputSize, border);
+  drawBorderContactShadow(ctx, state, outputSize, border, borderInsetRatio);
 
   // ------- Step 4: 边框 -------
   if (border && border.type !== 'none') {
@@ -420,12 +442,20 @@ export function renderToken(
       state.borderTint,
       state.borderOpacity,
       state.imageBorderTintEnabled,
-      options.onAssetChange
+      options.onAssetChange,
+      borderInsetRatio
     );
   }
 
   if (options.clipFinalOutputToMask) {
-    applyFinalMask(ctx, state, outputSize, border, options.onAssetChange);
+    applyFinalMask(
+      ctx,
+      state,
+      outputSize,
+      border,
+      options.onAssetChange,
+      borderInsetRatio
+    );
   }
 
   // ------- Step 5: 文字 -------

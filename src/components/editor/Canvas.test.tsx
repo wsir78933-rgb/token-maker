@@ -232,6 +232,26 @@ describe('Canvas', () => {
     expect(previewRenderState?.textBoxes).toEqual([]);
   });
 
+  it('passes the reduced border inset ratio to the batch preview renderer', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img });
+
+    render(<Canvas previewMode="batch" />);
+
+    expect(renderTokenMock.mock.calls.at(-1)?.[3]).toEqual(
+      expect.objectContaining({ borderInsetRatio: 0.008 }),
+    );
+  });
+
+  it('leaves the renderer border inset ratio unset in the default preview', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img });
+
+    render(<Canvas />);
+
+    expect(renderTokenMock.mock.calls.at(-1)?.[3]).not.toHaveProperty('borderInsetRatio');
+  });
+
   it.each([
     {
       description: 'caps the mobile editor preview backing canvas',

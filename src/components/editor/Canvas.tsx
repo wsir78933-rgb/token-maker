@@ -16,6 +16,7 @@ const MAX_IMAGE_SCALE = 5;
 const MAX_WHEEL_DELTA = 100;
 const WHEEL_ZOOM_SENSITIVITY = 0.0015;
 const PIXELS_PER_WHEEL_LINE = 16;
+const BATCH_PREVIEW_BORDER_INSET_RATIO = 0.008;
 
 interface CanvasProps {
   previewMode?: 'default' | 'batch';
@@ -166,10 +167,12 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     };
     
     // 重新渲染 Canvas
-    renderToken(canvas, renderState, canvasSize, {
+    const renderOptions = {
       clipFinalOutputToMask: true,
       onAssetChange: handleRenderAssetChange,
-    });
+      ...(isBatchPreview ? { borderInsetRatio: BATCH_PREVIEW_BORDER_INSET_RATIO } : {}),
+    };
+    renderToken(canvas, renderState, canvasSize, renderOptions);
   }, [
     imageUrl,
     imageElement,
@@ -188,6 +191,7 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     assetRevision,
     canvasSize,
     handleRenderAssetChange,
+    isBatchPreview,
   ]);
 
   useEffect(() => {

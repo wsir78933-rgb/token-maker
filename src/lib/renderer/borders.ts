@@ -23,9 +23,13 @@ function scaledRgba(red: number, green: number, blue: number, alpha: number, str
   return `rgba(${red}, ${green}, ${blue}, ${(alpha * strength).toFixed(3)})`;
 }
 
-function getBorderRenderInset(size: number, borderType: BorderTemplate['type']): number {
+function getBorderRenderInset(
+  size: number,
+  borderType: BorderTemplate['type'],
+  borderInsetRatio: number = BORDER_INSET_RATIO
+): number {
   if (borderType === 'none') return 1;
-  return Math.max(1, size * BORDER_INSET_RATIO);
+  return Math.max(1, size * borderInsetRatio);
 }
 
 function createSquareCanvas(size: number): HTMLCanvasElement {
@@ -210,10 +214,11 @@ function drawImageBorderWithDepth(
   image: CanvasImageSource,
   size: number,
   cacheKey: string,
-  depthStrength: number = 1
+  depthStrength: number = 1,
+  borderInsetRatio: number = BORDER_INSET_RATIO
 ) {
   drawDepthComposedBorder(ctx, size, cacheKey, (baseCtx) => {
-    const inset = getBorderRenderInset(size, 'image');
+    const inset = getBorderRenderInset(size, 'image', borderInsetRatio);
     const drawSize = size - inset * 2;
     baseCtx.drawImage(image, inset, inset, drawSize, drawSize);
   }, depthStrength);
@@ -545,7 +550,8 @@ export function drawBorder(
   tint: string,
   opacity: number,
   tintImageBorder: boolean = true,
-  onAssetChange?: () => void
+  onAssetChange?: () => void,
+  borderInsetRatio: number = BORDER_INSET_RATIO
 ): void {
   if (border.type === 'none') return;
 
@@ -575,8 +581,9 @@ export function drawBorder(
         ctx,
         borderImage,
         size,
-        `${url}::${size}::${tint.toLowerCase()}::${tintImageBorder ? border.tintMode || 'original' : 'untinted'}`,
-        border.depthStrength
+        `${url}::${size}::${tint.toLowerCase()}::${tintImageBorder ? border.tintMode || 'original' : 'untinted'}::${borderInsetRatio}`,
+        border.depthStrength,
+        borderInsetRatio
       );
     }
     ctx.restore();
@@ -585,20 +592,20 @@ export function drawBorder(
 
   const cx = size / 2;
   const cy = size / 2;
-  const maxRadius = size / 2 - getBorderRenderInset(size, border.type);
+  const maxRadius = size / 2 - getBorderRenderInset(size, border.type, borderInsetRatio);
 
   switch (border.type) {
     case 'ring':
       drawRing(ctx, cx, cy, maxRadius, border, tint, size);
       break;
     case 'flat-ring':
-      drawFlatRing(ctx, cx, cy, maxRadius, border, tint);
+      drawFlatRing(ctx, cx, cy, maxRadius, border, tint, borderInsetRatio);
       break;
     case 'flat-double-ring':
-      drawFlatDoubleRing(ctx, cx, cy, maxRadius, border, tint);
+      drawFlatDoubleRing(ctx, cx, cy, maxRadius, border, tint, borderInsetRatio);
       break;
     case 'flat-polygon':
-      drawFlatPolygonBorder(ctx, cx, cy, maxRadius, border, tint);
+      drawFlatPolygonBorder(ctx, cx, cy, maxRadius, border, tint, borderInsetRatio);
       break;
     case 'double-ring':
       drawDoubleRing(ctx, cx, cy, maxRadius, border, tint, size);
@@ -642,14 +649,15 @@ function drawFlatRing(
   cy: number,
   maxRadius: number,
   border: BorderTemplate,
-  tint: string
+  tint: string,
+  borderInsetRatio: number
 ): void {
   const outer = maxRadius * (border.outerRadius ?? 1);
   const inner = maxRadius * (border.innerRadius ?? 0.946);
   drawDepthComposedBorder(
     ctx,
     Math.round(cx * 2),
-    `${border.id}::flat-ring::${Math.round(cx * 2)}::${tint.toLowerCase()}::${inner.toFixed(3)}::${outer.toFixed(3)}`,
+    `${border.id}::flat-ring::${Math.round(cx * 2)}::${tint.toLowerCase()}::${inner.toFixed(3)}::${outer.toFixed(3)}::${borderInsetRatio}`,
     (baseCtx) => {
       baseCtx.beginPath();
       baseCtx.arc(cx, cy, outer, 0, Math.PI * 2);
@@ -668,7 +676,8 @@ function drawFlatDoubleRing(
   cy: number,
   maxRadius: number,
   border: BorderTemplate,
-  tint: string
+  tint: string,
+  borderInsetRatio: number
 ): void {
   const sw = maxRadius * (border.strokeWidth ?? 0.03);
   const innerOuter = maxRadius * (border.innerRadius ?? 0.89);
@@ -676,7 +685,7 @@ function drawFlatDoubleRing(
   drawDepthComposedBorder(
     ctx,
     Math.round(cx * 2),
-    `${border.id}::flat-double-ring::${Math.round(cx * 2)}::${tint.toLowerCase()}::${sw.toFixed(3)}::${innerOuter.toFixed(3)}`,
+    `${border.id}::flat-double-ring::${Math.round(cx * 2)}::${tint.toLowerCase()}::${sw.toFixed(3)}::${innerOuter.toFixed(3)}::${borderInsetRatio}`,
     (baseCtx) => {
       baseCtx.beginPath();
       baseCtx.arc(cx, cy, maxRadius, 0, Math.PI * 2);
@@ -702,7 +711,8 @@ function drawFlatPolygonBorder(
   cy: number,
   maxRadius: number,
   border: BorderTemplate,
-  tint: string
+  tint: string,
+  borderInsetRatio: number
 ): void {
   const sides = border.sides ?? 6;
   const sw = (border.strokeWidth ?? 0.05) * maxRadius;
@@ -712,7 +722,7 @@ function drawFlatPolygonBorder(
   drawDepthComposedBorder(
     ctx,
     Math.round(cx * 2),
-    `${border.id}::flat-polygon::${Math.round(cx * 2)}::${tint.toLowerCase()}::${sides}::${sw.toFixed(3)}`,
+    `${border.id}::flat-polygon::${Math.round(cx * 2)}::${tint.toLowerCase()}::${sides}::${sw.toFixed(3)}::${borderInsetRatio}`,
     (baseCtx) => {
       baseCtx.beginPath();
       baseCtx.moveTo(outerPoints[0][0], outerPoints[0][1]);
