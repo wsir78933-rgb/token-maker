@@ -33,6 +33,7 @@ const zh = {
   addText: '添加文字',
   defaultTextContent: '新文本',
   fontSize: '字号',
+  fontFamily: '字体',
   delete: '删除',
   selectTextHint: '点击画布上的文本以在此处编辑',
 

@@ -2,6 +2,8 @@
 // Token Maker — Core Type Definitions
 // ============================================================
 
+import type { EditorFontId } from '@/types/editor-font';
+
 /** 边框模板类型 */
 export type BorderType =
   | 'none'
@@ -66,6 +68,7 @@ export interface MaskTemplate {
 export interface TextBox {
   id: string;
   content: string;
+  fontId?: EditorFontId;
   x: number;
   y: number;
   fontSize: number;

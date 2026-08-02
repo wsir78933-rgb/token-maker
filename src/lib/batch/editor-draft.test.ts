@@ -9,6 +9,7 @@ import {
   cloneBatchVisualDraft,
   createDefaultBatchDraft,
 } from './editor-draft';
+import type { EditorFontId } from '@/types/editor-font';
 import type { EditorState } from '@/types/editor';
 
 function createEditorState(overrides: Partial<EditorState> = {}): EditorState {
@@ -47,6 +48,20 @@ function createEditorState(overrides: Partial<EditorState> = {}): EditorState {
     activePresetId: 'golden-hour',
     renderRevision: 9,
     ...overrides,
+  };
+}
+
+function draftWithFont(fontId: EditorFontId | undefined) {
+  const draft = captureBatchVisualDraft(createEditorState());
+
+  return {
+    ...draft,
+    textBoxes: [
+      {
+        ...draft.textBoxes[0]!,
+        ...(fontId === undefined ? {} : { fontId }),
+      },
+    ],
   };
 }
 
@@ -142,6 +157,18 @@ describe('areBatchVisualDraftsEqual', () => {
         ...capturedDraft,
         textBoxes: [{ ...capturedDraft.textBoxes[0]!, content: 'Changed' }],
       })
+    ).toBe(false);
+  });
+
+  it('treats a legacy font ID as the system sans font', () => {
+    expect(
+      areBatchVisualDraftsEqual(draftWithFont(undefined), draftWithFont('system-sans'))
+    ).toBe(true);
+  });
+
+  it('detects different resolved font IDs', () => {
+    expect(
+      areBatchVisualDraftsEqual(draftWithFont('noto-serif-sc'), draftWithFont('lxgw-wenkai'))
     ).toBe(false);
   });
 });

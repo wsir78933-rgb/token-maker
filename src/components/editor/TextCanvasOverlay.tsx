@@ -1,6 +1,11 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+import {
+  getEditorFontCssStack,
+  resolveEditorFontId,
+  resolveEditorFontWeight,
+} from '@/lib/editor-fonts/catalog';
 import type { TextBox } from '@/types/editor';
 import { useDraggableTextState, useTextCanvasOverlayState } from './editor-store-hooks';
 
@@ -9,22 +14,12 @@ import { useDraggableTextState, useTextCanvasOverlayState } from './editor-store
  * 在主画布上方绝对定位，提供文本的拖动和双击编辑能力。
  */
 export function TextCanvasOverlay({ previewScale = 1 }: { previewScale?: number }) {
-  const { textBoxes, setSelectedText } = useTextCanvasOverlayState();
-  
-  // 点击空白处取消选中
-  const handleWrapperClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      setSelectedText(null);
-    }
-  };
+  const { textBoxes } = useTextCanvasOverlayState();
 
   if (textBoxes.length === 0) return null;
 
   return (
-    <div 
-      className="absolute inset-0 pointer-events-auto overflow-hidden" 
-      onClick={handleWrapperClick}
-    >
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {textBoxes.map((text) => (
         <DraggableText key={text.id} text={text} previewScale={previewScale} />
       ))}
@@ -125,7 +120,7 @@ function DraggableText({ text, previewScale }: { text: TextBox; previewScale: nu
   return (
     <div
       ref={boxRef}
-      className={`absolute select-none origin-center ${
+      className={`absolute pointer-events-auto select-none origin-center ${
         isSelected && !isEditing ? 'ring-2 ring-primary bg-primary/10 rounded cursor-move' : 'cursor-pointer'
       } ${isEditing ? 'z-50' : 'z-10'}`}
       style={{
@@ -133,7 +128,8 @@ function DraggableText({ text, previewScale }: { text: TextBox; previewScale: nu
         top: 0,
         transform: `${transform} translate(${translateFix}, -50%)`, // 居中修正
         fontSize: text.fontSize * scale,
-        fontWeight: text.fontWeight,
+        fontFamily: getEditorFontCssStack(resolveEditorFontId(text.fontId)),
+        fontWeight: resolveEditorFontWeight(resolveEditorFontId(text.fontId), text.fontWeight),
         color: text.color,
         textAlign: text.align,
         // 添加一点文字阴影模拟描边

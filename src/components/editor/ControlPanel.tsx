@@ -9,6 +9,11 @@ import { Separator } from '@/components/ui/separator';
 import { DownloadCloud, Layers, RotateCcw, Trash2 } from 'lucide-react';
 import { useBatchStore } from '@/lib/store/batch-store';
 import { trackUseBatchMode } from '@/lib/analytics';
+import {
+  EDITOR_FONT_DEFINITIONS,
+  getEditorFontLabel,
+  resolveEditorFontId,
+} from '@/lib/editor-fonts/catalog';
 import type { I18nKey } from '@/lib/i18n';
 import { downloadCurrentTokenWithSharePrompt } from './export-token';
 import { useControlPanelState } from './editor-store-hooks';
@@ -25,6 +30,7 @@ export function ControlPanel() {
     selectedTextId,
     selectedTextFontSize,
     selectedTextColor,
+    selectedTextFontId,
     borderTint,
     overlayTint,
     borderOpacity,
@@ -42,6 +48,7 @@ export function ControlPanel() {
   } = useControlPanelState();
   const imageScaleLabelId = useId();
   const fontSizeLabelId = useId();
+  const fontFamilyInputId = useId();
   const textColorInputId = useId();
   const borderTintInputId = useId();
   const overlayTintInputId = useId();
@@ -110,7 +117,7 @@ export function ControlPanel() {
             </Button>
           </div>
 
-          {selectedTextId && selectedTextFontSize !== null && selectedTextColor ? (
+          {selectedTextId && selectedTextFontSize !== null && selectedTextColor !== null ? (
             <div className="space-y-4 rounded-lg border border-border/50 bg-muted/30 p-3">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -133,6 +140,27 @@ export function ControlPanel() {
                   }
                   className="[&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
                 />
+              </div>
+              <div className="space-y-3">
+                <Label htmlFor={fontFamilyInputId} className="text-xs text-muted-foreground">
+                  {t('fontFamily')}
+                </Label>
+                <select
+                  id={fontFamilyInputId}
+                  value={selectedTextFontId}
+                  onChange={(event) =>
+                    updateTextBox(selectedTextId, {
+                      fontId: resolveEditorFontId(event.target.value),
+                    })
+                  }
+                  className="h-8 w-full min-w-0 rounded border border-input bg-background px-2 text-xs text-foreground"
+                >
+                  {EDITOR_FONT_DEFINITIONS.map((fontDefinition) => (
+                    <option key={fontDefinition.id} value={fontDefinition.id}>
+                      {getEditorFontLabel(fontDefinition.id, locale)}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="space-y-3">
                 <Label htmlFor={textColorInputId} className="text-xs text-muted-foreground">

@@ -30,6 +30,7 @@ const en = {
   addText: 'Add Text',
   defaultTextContent: 'New Text',
   fontSize: 'Font Size',
+  fontFamily: 'Font Family',
   delete: 'Delete',
   selectTextHint: 'Select a text on canvas to edit',
 

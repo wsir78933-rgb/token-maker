@@ -1,3 +1,4 @@
+import { resolveEditorFontId } from '@/lib/editor-fonts/catalog';
 import type { BorderLibraryMode, EditorState, TextBox } from '@/types/editor';
 
 export interface BatchVisualDraft {
@@ -82,6 +83,7 @@ export function areBatchVisualDraftsEqual(
         rightTextBox !== undefined &&
         leftTextBox.id === rightTextBox.id &&
         leftTextBox.content === rightTextBox.content &&
+        resolveEditorFontId(leftTextBox.fontId) === resolveEditorFontId(rightTextBox.fontId) &&
         leftTextBox.x === rightTextBox.x &&
         leftTextBox.y === rightTextBox.y &&
         leftTextBox.fontSize === rightTextBox.fontSize &&

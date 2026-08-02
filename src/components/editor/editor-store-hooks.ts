@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { resolveEditorFontId } from '@/lib/editor-fonts/catalog';
 import { useEditorStore } from '@/lib/store/editor-store';
 import type { BatchAddFilesOptions } from '@/lib/store/batch-store';
 import type { EditorState, TextBox } from '@/types/editor';
@@ -46,6 +47,12 @@ export function useControlPanelState() {
         ? state.textBoxes.find((textBox) => textBox.id === state.selectedTextId)
         : null;
       return text?.color ?? null;
+    }),
+    selectedTextFontId: useEditorStore((state) => {
+      const selectedText = state.selectedTextId
+        ? state.textBoxes.find((textBox) => textBox.id === state.selectedTextId)
+        : null;
+      return resolveEditorFontId(selectedText?.fontId);
     }),
     borderTint: useEditorStore((state) => state.borderTint),
     overlayTint: useEditorStore((state) => state.overlayTint),

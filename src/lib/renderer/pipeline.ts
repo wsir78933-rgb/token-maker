@@ -8,6 +8,7 @@ import { getBorderById } from '@/lib/templates/borders';
 import { createMaskPathWithInset } from './masks';
 import { drawBorder } from './borders';
 import { drawTextBoxes } from './text';
+import { preloadEditorFonts } from '@/lib/editor-fonts/load';
 import { getCachedImage, preloadImageToCache } from '@/lib/utils/imageCache';
 import { getLruCacheEntry, setLruCacheEntry } from '@/lib/utils/lruCache';
 
@@ -98,7 +99,10 @@ export function getTokenRenderAssetUrls(state: EditorState): string[] {
 
 export async function preloadTokenRenderAssets(state: EditorState) {
   const urls = getTokenRenderAssetUrls(state);
-  await Promise.all(urls.map((url) => preloadImageToCache(url)));
+  await Promise.all([
+    Promise.all(urls.map((url) => preloadImageToCache(url))),
+    preloadEditorFonts(state.textBoxes),
+  ]);
 }
 
 function applyMaskToCanvas(

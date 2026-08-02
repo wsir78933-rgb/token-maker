@@ -1,0 +1,79 @@
+@font-face {
+  font-family: "Noto Sans SC";
+  src: url("/fonts/editor/noto-sans-sc/NotoSansSC%5Bwght%5D.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noto Serif SC";
+  src: url("/fonts/editor/noto-serif-sc/NotoSerifSC%5Bwght%5D.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LXGW WenKai";
+  src: url("/fonts/editor/lxgw-wenkai/LXGWWenKai-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ma Shan Zheng";
+  src: url("/fonts/editor/ma-shan-zheng/MaShanZheng-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ZCOOL XiaoWei";
+  src: url("/fonts/editor/zcool-xiaowei/ZCOOLXiaoWei-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ZCOOL KuaiLe";
+  src: url("/fonts/editor/zcool-kuaile/ZCOOLKuaiLe-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ZCOOL QingKe HuangYou";
+  src: url("/fonts/editor/zcool-qingke-huangyou/ZCOOLQingKeHuangYou-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Zhi Mang Xing";
+  src: url("/fonts/editor/zhi-mang-xing/ZhiMangXing-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Long Cang";
+  src: url("/fonts/editor/long-cang/LongCang-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Liu Jian Mao Cao";
+  src: url("/fonts/editor/liu-jian-mao-cao/LiuJianMaoCao-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

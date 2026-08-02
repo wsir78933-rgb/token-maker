@@ -2,6 +2,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { resolveEditorFontId } from '@/lib/editor-fonts/catalog';
 import type { BorderTemplate } from '@/types/editor';
 
 type EditorStoreApi = typeof import('./editor-store')['useEditorStore'];
@@ -98,5 +99,42 @@ describe('editor store persistence', () => {
     expect(persistedValue).not.toContain('customBorders');
     expect(persistedValue).not.toContain('custom-border-old');
     expect(persistedValue).not.toContain(oldCustomBorderUrl);
+  });
+
+  it('creates a text box with the system sans font', () => {
+    useEditorStore.getState().addTextBox('New title');
+
+    expect(useEditorStore.getState().textBoxes).toEqual([
+      expect.objectContaining({
+        content: 'New title',
+        fontId: 'system-sans',
+      }),
+    ]);
+  });
+
+  it('hydrates legacy text boxes without a font ID and resolves the default font', async () => {
+    const legacyTextBox = {
+      id: 'legacy-title',
+      content: 'Legacy title',
+      x: 120,
+      y: 340,
+      fontSize: 36,
+      fontWeight: 500,
+      color: '#123456',
+      align: 'left' as const,
+    };
+    const legacyPersistedValue = JSON.stringify({
+      state: {
+        textBoxes: [legacyTextBox],
+      },
+    });
+
+    await loadEditorStore(legacyPersistedValue);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const hydratedTextBox = useEditorStore.getState().textBoxes[0];
+
+    expect(hydratedTextBox).toEqual(legacyTextBox);
+    expect(resolveEditorFontId(hydratedTextBox?.fontId)).toBe('system-sans');
   });
 });

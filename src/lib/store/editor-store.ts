@@ -5,6 +5,7 @@ import {
   type PersistStorage,
   type StorageValue,
 } from 'zustand/middleware';
+import { DEFAULT_EDITOR_FONT_ID } from '@/lib/editor-fonts/catalog';
 import { getBorderById } from '@/lib/templates/borders';
 import { STYLE_PRESETS } from '@/lib/templates/presets';
 import type { BorderLibraryMode, EditorStore, EditorState, StylePreset } from '@/types/editor';
@@ -327,6 +328,7 @@ export const useEditorStore = create<EditorStore>()(
               {
                 id: newId,
                 content: defaultContent,
+                fontId: DEFAULT_EDITOR_FONT_ID,
                 x: 256, // 默认居中 (基于 512 预览尺寸)
                 y: 450,
                 fontSize: 48,

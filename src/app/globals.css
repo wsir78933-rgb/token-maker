@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@import "./editor-fonts.css";
+
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 

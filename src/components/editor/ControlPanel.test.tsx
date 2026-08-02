@@ -131,6 +131,65 @@ describe('ControlPanel', () => {
     expect(screen.getAllByText('delete').length).toBeGreaterThan(0);
   });
 
+  it.each([
+    { locale: 'en' as const, fontFamilyLabel: 'Font Family' },
+    { locale: 'zh' as const, fontFamilyLabel: '字体' },
+  ])('updates the selected text font through the $locale font selector', ({ locale, fontFamilyLabel }) => {
+    i18nMockState.locale = locale;
+    i18nMockState.messages = { fontFamily: fontFamilyLabel };
+    const imageElement = new Image();
+    useEditorStore.setState({
+      imageElement,
+      imageUrl: 'blob:test',
+      textBoxes: [
+        {
+          id: 'txt-1',
+          content: 'Hello',
+          x: 0,
+          y: 0,
+          fontSize: 32,
+          color: '#ffffff',
+          fontWeight: 400,
+          align: 'center',
+        },
+      ],
+      selectedTextId: 'txt-1',
+    });
+
+    render(<ControlPanel />);
+
+    const fontFamilySelector = screen.getByRole('combobox', { name: fontFamilyLabel });
+
+    expect(fontFamilySelector.querySelectorAll('option')).toHaveLength(11);
+
+    fireEvent.change(fontFamilySelector, { target: { value: 'noto-serif-sc' } });
+
+    expect(useEditorStore.getState().textBoxes[0]?.fontId).toBe('noto-serif-sc');
+  });
+
+  it('keeps the font selector available when the selected text color is empty', () => {
+    i18nMockState.messages = { fontFamily: 'Font Family' };
+    useEditorStore.setState({
+      textBoxes: [
+        {
+          id: 'txt-empty-color',
+          content: 'Hello',
+          x: 0,
+          y: 0,
+          fontSize: 32,
+          color: '',
+          fontWeight: 400,
+          align: 'center',
+        },
+      ],
+      selectedTextId: 'txt-empty-color',
+    });
+
+    render(<ControlPanel />);
+
+    expect(screen.getByRole('combobox', { name: 'Font Family' })).toBeDefined();
+  });
+
   it('calls clearImage when clear button is clicked', () => {
     const img = new Image();
     useEditorStore.setState({ imageElement: img, imageUrl: 'blob:test' });

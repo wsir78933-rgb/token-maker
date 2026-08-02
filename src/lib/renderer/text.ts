@@ -3,6 +3,10 @@
 // 负责在最终的 Canvas 上绘制所有文本层
 // ============================================================
 import type { TextBox } from '@/types/editor';
+import {
+  getEditorFontCanvasShorthand,
+  resolveEditorFontId,
+} from '@/lib/editor-fonts/catalog';
 
 /**
  * 在 Canvas 上绘制所有文本框
@@ -28,8 +32,11 @@ export function drawTextBoxes(
     const y = text.y * scaleFactor;
     const fontSize = text.fontSize * scaleFactor;
 
-    // TODO: 目前仅使用了默认字体的系统回退，可通过加载自定义字体如 'Geist Sans' 来优化
-    ctx.font = `${text.fontWeight} ${fontSize}px sans-serif`;
+    ctx.font = getEditorFontCanvasShorthand(
+      resolveEditorFontId(text.fontId),
+      text.fontWeight,
+      fontSize,
+    );
     ctx.fillStyle = text.color;
     ctx.textAlign = text.align;
     ctx.textBaseline = 'middle'; // 方便对齐坐标
