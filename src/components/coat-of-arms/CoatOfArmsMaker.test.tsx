@@ -27,6 +27,22 @@ function renderWorkbench(locale: 'en' | 'zh' = 'en', project = createDefaultProj
   return render(<CoatOfArmsMaker locale={locale} />);
 }
 
+function expectWorkbenchProjectNameToBeNonHeading(expectedProjectName: string) {
+  const workbench = screen.getByRole('main');
+  expect(within(workbench).queryByRole('heading', { name: expectedProjectName })).toBeNull();
+
+  const workbenchContent = workbench.querySelector<HTMLElement>(':scope > .coat-workbench-content');
+  if (!workbenchContent) throw new Error(`Coat workbench content is unavailable for project name: ${expectedProjectName}`);
+
+  const directProjectNameElements = workbenchContent.querySelectorAll<HTMLElement>(':scope > .sr-only');
+  expect(directProjectNameElements).toHaveLength(1);
+
+  const projectNameElement = directProjectNameElements.item(0);
+  expect(projectNameElement.tagName).toBe('SPAN');
+  expect(projectNameElement.textContent).toBe(expectedProjectName);
+  expect(projectNameElement.getAttribute('role')).not.toBe('heading');
+}
+
 function getDesktopToolRail() {
   const desktopPanel = document.querySelector<HTMLElement>('.coat-target-left-panel');
   if (!desktopPanel) throw new Error('Desktop tool rail is unavailable');
@@ -150,32 +166,91 @@ describe('CoatOfArmsMaker', () => {
     expect(document.getElementById(drawTab.getAttribute('aria-controls') ?? '')?.hidden).toBe(false);
   });
 
-  it('keeps only export in the reference-style action bar while retaining a local project-library toolbar action', () => {
+  it('places export immediately left of multi-select in the canvas toolbar', () => {
     renderWorkbench();
 
     const actionBar = document.querySelector<HTMLElement>('.coat-target-actionbar');
-    expect(actionBar).not.toBeNull();
-    expect(within(actionBar!).queryByRole('button', { name: 'Projects' })).toBeNull();
-    const exportTrigger = within(actionBar!).getByRole('button', { name: 'Export' });
+    expect(actionBar).toBeNull();
+    const canvasToolbar = document.querySelector<HTMLElement>('.coat-target-canvas-toolbar');
+    const toolbarActions = canvasToolbar?.querySelector<HTMLElement>('.coat-target-canvas-toolbar-actions');
+    expect(toolbarActions).not.toBeNull();
+    const exportControl = toolbarActions?.querySelector<HTMLElement>('.coat-target-export-control');
+    expect(exportControl).not.toBeNull();
+    const exportTrigger = within(exportControl!).getByRole('button', { name: 'Export' });
+    const multiSelectTrigger = within(toolbarActions!).getByRole('button', { name: 'Multi-select' });
     expect(exportTrigger).toBeDefined();
     expect(exportTrigger.querySelectorAll('svg')).toHaveLength(2);
-    expect(actionBar!.previousElementSibling?.classList.contains('coat-target-appbar')).toBe(true);
+    expect(exportControl!.nextElementSibling).toBe(multiSelectTrigger);
+    const workbench = screen.getByRole('main');
+    const topbar = workbench.querySelector<HTMLElement>(':scope > .site-topbar');
+    const workbenchContent = workbench.querySelector<HTMLElement>(':scope > .coat-workbench-content');
+    expect(topbar).not.toBeNull();
+    expect(workbenchContent).not.toBeNull();
+    expect(topbar!.nextElementSibling).toBe(workbenchContent);
+    expectWorkbenchProjectNameToBeNonHeading('My Coat of Arms');
     expect(screen.getByRole('button', { name: 'Open local project library' })).toBeDefined();
   });
 
-  it('keeps the editor header under the original Token Maker brand', () => {
-    renderWorkbench();
+  it('uses the English shared site navigation with Coat Maker active', () => {
+    renderWorkbench('en');
 
-    expect(screen.getByLabelText('TOKEN MAKER STUDIO')).toBeDefined();
-    expect(screen.queryByLabelText('COAT OF ARMS MAKER')).toBeNull();
-    expect(screen.queryByText('User Artwork')).toBeNull();
+    expect(screen.getByRole('link', { name: 'Editor' }).getAttribute('href')).toBe('/');
+    expect(screen.getByRole('link', { name: 'Dice Roller' }).getAttribute('href')).toBe('/dice-roller-dnd');
+    const coatMakerLink = screen.getByRole('link', { name: 'Coat Maker' });
+    expect(coatMakerLink.getAttribute('href')).toBe('/coat-of-arms-maker');
+    expect(coatMakerLink.getAttribute('data-active')).toBe('true');
+    expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('href')).toBe('/blog');
+    expect(screen.getByRole('link', { name: '中文' }).getAttribute('href')).toBe('/zh/coat-of-arms-maker');
+    expect(screen.queryByRole('link', { name: 'Help Center' })).toBeNull();
   });
 
-  it('uses the reference-recorded 71px desktop header geometry', () => {
+  it('matches the homepage public-navigation presentation without overriding the site mark', () => {
+    renderWorkbench('en');
+
+    const topbar = screen.getByRole('main').querySelector<HTMLElement>(':scope > .site-topbar');
+    if (!topbar) throw new Error('Coat Maker public navigation is unavailable');
+    const navigationContent = topbar.firstElementChild as HTMLElement | null;
+    const brandTitle = topbar.querySelector<HTMLElement>('.site-brand-title');
+    const siteMark = topbar.querySelector<HTMLImageElement>('.site-brand-link > img');
+    const navigation = topbar.querySelector<HTMLElement>('nav');
+
+    expect(topbar.className).toBe('site-topbar z-50');
+    expect(navigationContent?.className).toBe('mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8');
+    expect(brandTitle?.className).toBe('site-brand-title font-semibold text-base');
+    expect(siteMark?.className).toBe('h-9 w-9 shrink-0 rounded-xl');
+    expect(navigation?.className).toBe('mt-3 flex flex-wrap items-center gap-2 sm:mt-4');
+  });
+
+  it.each([
+    ['en', 'VTT token maker'],
+    ['zh', 'VTT Token 制作器'],
+  ] as const)('uses the homepage tagline in the %s public navigation', (locale, expectedTagline) => {
+    renderWorkbench(locale);
+
+    const topbar = screen.getByRole('main').querySelector<HTMLElement>(':scope > .site-topbar');
+    expect(topbar?.querySelector('.site-brand-subtitle')?.textContent).toBe(expectedTagline);
+  });
+
+  it('uses the homepage editor visual tokens without recolouring the output artboard', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
-    expect(workbenchStyles).toContain('grid-template-rows: 4.4375rem auto minmax(0, 1fr);');
-    expect(workbenchStyles).toContain('min-height: 4.4375rem;');
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-stage:/);
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?font-family:\s*var\(--font-sans\);/);
+    expect(workbenchStyles).toContain('background: var(--coat-stage);');
+    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-artboard [role='application'] { width: 100%; height: 100%; max-width: 100%; aspect-ratio: var(--coat-canvas-aspect-ratio); border: 0; border-radius: 0; background: #fff;");
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench > \.site-topbar\s*\{[\s\S]*?font-family:\s*var\(--font-sans\);[\s\S]*?\}/);
+  });
+
+  it('keeps the Chinese shared navigation and locale switch on Coat Maker', () => {
+    renderWorkbench('zh');
+
+    expect(screen.getByRole('link', { name: '编辑器' }).getAttribute('href')).toBe('/zh');
+    expect(screen.getByRole('link', { name: '骰子' }).getAttribute('href')).toBe('/zh/dice-roller-dnd');
+    const coatMakerLink = screen.getByRole('link', { name: '纹章制作器' });
+    expect(coatMakerLink.getAttribute('href')).toBe('/zh/coat-of-arms-maker');
+    expect(coatMakerLink.getAttribute('data-active')).toBe('true');
+    expect(screen.getByRole('link', { name: '博客' }).getAttribute('href')).toBe('/zh/blog');
+    expect(screen.getByRole('link', { name: 'English' }).getAttribute('href')).toBe('/coat-of-arms-maker');
   });
 
   it('uses the Retina-normalized 170px desktop tool-tree width from the reference capture', () => {
@@ -196,11 +271,11 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-tool-tree-node > button[aria-selected='true'][aria-expanded='true'] { background: transparent; }");
   });
 
-  it('retains the reference accent treatment for Flags and Tokens in the desktop tree', () => {
+  it('uses the shared gold accent for Flags and Tokens in the desktop tree', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
     expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-tool-tree-node[data-tool-id='flags'] .coat-tool-glyph,");
-    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-tool-tree-node[data-tool-id='tokens'] .coat-tool-glyph { color: #d93636; }");
+    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-tool-tree-node[data-tool-id='tokens'] .coat-tool-glyph { color: var(--coat-accent); }");
   });
 
   it('renders every reference tool label from Chinese workbench copy', () => {
@@ -244,10 +319,10 @@ describe('CoatOfArmsMaker', () => {
     expect(getDesktopTool('Charges').getAttribute('aria-expanded')).toBe('true');
   });
 
-  it('keeps the selected desktop tree choice visibly highlighted', () => {
+  it('keeps the selected desktop tree choice in the shared active treatment', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
-    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true'] { margin-right: 0.4rem; border-radius: 0.2rem; background: #666; }");
+    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true'] { margin-right: 0.4rem; border-radius: 0.5rem; background: var(--coat-active); }");
   });
 
   it('uses the Top tree branch as the sole top-ornament category control', () => {
@@ -289,13 +364,21 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.getByRole('button', { name: /duplicate selected layers/i })).toBeDefined();
   });
 
-  it('renders the canvas-toolbar library action with the reference static control frame', () => {
+  it('renders the canvas-toolbar library action with the shared control frame', () => {
     renderWorkbench();
     const projectLibraryTrigger = screen.getByRole('button', { name: 'Open local project library' });
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
     expect(projectLibraryTrigger.classList.contains('coat-target-link-control')).toBe(true);
-    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar .coat-target-link-control { border-color: #777; background: #3a3a3a; }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar .coat-target-link-control { border-color: var(--coat-line); background: var(--coat-panel-raised); }');
+  });
+
+  it('distinguishes inactive and active multi-select controls with a shared keyboard focus treatment', () => {
+    const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
+
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-multi-select { border-color: var(--coat-line) !important; background: var(--coat-panel-raised) !important; color: var(--coat-text) !important; padding-inline: 0.85rem !important; }');
+    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-multi-select[aria-pressed='true'] { border-color: color-mix(in oklab, var(--coat-accent) 54%, var(--coat-line)) !important; background: var(--coat-active) !important; color: var(--coat-accent) !important; }");
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-content :is(button, input, select):focus-visible { outline: 2px solid var(--coat-accent); outline-offset: 2px; }');
   });
 
   it('gives the desktop How-to tabpanel a keyboard focus stop', () => {
@@ -849,9 +932,18 @@ describe('CoatOfArmsMaker', () => {
     const layerCountBeforeModal = useCoatProjectStore.getState().project.layers.length;
 
     fireEvent.click(screen.getByRole('button', { name: 'Open local project library' }));
-    const workbenchBackground = screen.getByRole('main').querySelector('.coat-workbench-content');
+    const workbench = screen.getByRole('main');
+    const workbenchBackground = workbench.querySelector('.coat-workbench-content');
+    const publicNavigation = workbench.querySelector<HTMLElement>(':scope > .site-topbar');
     expect(workbenchBackground?.getAttribute('inert')).not.toBeNull();
-    expect(screen.getByTestId('coat-project-modal-backdrop')).toBeDefined();
+    expect(publicNavigation).not.toBeNull();
+    expect(publicNavigation?.closest('[inert]')).toBeNull();
+    const projectDialog = screen.getByRole('dialog', { name: /local projects/i });
+    const modalBackdrop = screen.getByTestId('coat-project-modal-backdrop');
+    expect(workbench.contains(projectDialog)).toBe(true);
+    expect(workbench.contains(modalBackdrop)).toBe(true);
+    expect(projectDialog.closest('.coat-workbench-content')).toBeNull();
+    expect(modalBackdrop.closest('.coat-workbench-content')).toBeNull();
 
     fireEvent.click(undoButton);
     fireEvent.keyDown(undoButton, { key: 'z', ctrlKey: true });
@@ -1101,8 +1193,18 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-editor-grid { grid-template-columns: 1fr; }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-mobile-drawer { display: grid; }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-mobile-drawer > .coat-target-reference-rail { display: flex; flex: 1 1 auto; width: auto; min-width: 0; max-width: none;');
-    expect(workbenchStyles).toContain('grid-template-rows: auto auto minmax(34rem, 1fr) auto;');
-    expect(workbenchStyles).toContain('grid-template-rows: auto auto minmax(29rem, 1fr) auto;');
+    expect(workbenchStyles).toContain('grid-template-rows: auto minmax(34rem, 1fr) auto;');
+    expect(workbenchStyles).toContain('grid-template-rows: auto minmax(29rem, 1fr) auto;');
+  });
+
+  it('reserves the fullscreen workbench rows for navigation and keeps the modal above it', () => {
+    const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
+
+    expect(workbenchStyles).toContain('.coat-target-workbench {\n');
+    expect(workbenchStyles).toContain('display: grid;\n  grid-template-rows: auto minmax(0, 1fr);');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-content {\n  height: auto;\n  min-height: 0;\n  grid-template-rows: auto minmax(0, 1fr);');
+    expect(workbenchStyles).toContain('.coat-workbench-dialog { position: fixed; z-index: 60;');
+    expect(workbenchStyles).toContain('.coat-workbench-modal-backdrop { position: fixed; z-index: 59;');
   });
 
   it('roots each target workbench selector below the workbench boundary', () => {
@@ -1232,7 +1334,7 @@ describe('CoatOfArmsMaker', () => {
     expect(useCoatProjectStore.getState().project.name).toBe('Named project');
     expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBe(JSON.stringify({ version: 1, project: draft }));
     fireEvent.click(screen.getByRole('button', { name: 'Restore draft' }));
-    expect(screen.getByRole('heading', { name: 'Recovered draft' })).toBeDefined();
+    expectWorkbenchProjectNameToBeNonHeading('Recovered draft');
   });
 
   it('keeps a malformed browser draft until the user explicitly discards it', () => {
@@ -1272,7 +1374,7 @@ describe('CoatOfArmsMaker', () => {
     fireEvent.keyDown(window, { key: 'z', ctrlKey: true });
     expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBe(serializedDraft);
     fireEvent.click(screen.getByRole('button', { name: '恢复草稿' }));
-    expect(screen.getByRole('heading', { name: 'English recovery draft' })).toBeDefined();
+    expectWorkbenchProjectNameToBeNonHeading('English recovery draft');
   });
 
   it('does not mistake the active session draft for a recovery candidate after remount', () => {
@@ -1282,7 +1384,7 @@ describe('CoatOfArmsMaker', () => {
     render(<CoatOfArmsMaker locale="en" />);
 
     expect(screen.queryByRole('status', { name: 'Draft available' })).toBeNull();
-    expect(screen.getByRole('heading', { name: 'Active session project' })).toBeDefined();
+    expectWorkbenchProjectNameToBeNonHeading('Active session project');
   });
 
   it('uses Chinese draft recovery controls and lets the user discard the draft', () => {
@@ -1296,13 +1398,13 @@ describe('CoatOfArmsMaker', () => {
     fireEvent.click(screen.getByRole('button', { name: '丢弃草稿' }));
     expect(screen.queryByRole('status', { name: '发现草稿' })).toBeNull();
     expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBeNull();
-    expect(screen.getByRole('heading', { name: '我的徽章' })).toBeDefined();
+    expectWorkbenchProjectNameToBeNonHeading('我的徽章');
   });
 
   it('creates the Chinese default project when the untouched initial store first mounts in Chinese', () => {
     render(<CoatOfArmsMaker locale="zh" />);
 
-    expect(screen.getByRole('heading', { name: '我的徽章' })).toBeDefined();
+    expectWorkbenchProjectNameToBeNonHeading('我的徽章');
     expect(useCoatProjectStore.getState().project).toMatchObject({
       locale: 'zh',
       name: '我的徽章',
@@ -1315,7 +1417,7 @@ describe('CoatOfArmsMaker', () => {
 
     render(<CoatOfArmsMaker locale="zh" />);
 
-    expect(screen.getByRole('heading', { name: 'Keep these arms' })).toBeDefined();
+    expectWorkbenchProjectNameToBeNonHeading('Keep these arms');
     expect(useCoatProjectStore.getState().project).toMatchObject({
       id: editedProject.id,
       locale: 'en',
@@ -1328,7 +1430,11 @@ describe('CoatOfArmsMaker', () => {
     let downloadName = '';
     const createObjectURL = vi.fn(() => 'blob:project-json');
     const revokeObjectURL = vi.fn();
-    vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
+    class ProjectJsonUrl extends URL {
+      static createObjectURL = createObjectURL;
+      static revokeObjectURL = revokeObjectURL;
+    }
+    vi.stubGlobal('URL', ProjectJsonUrl);
     vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function clickAnchor(this: HTMLAnchorElement) {
       downloadName = this.download;
     });

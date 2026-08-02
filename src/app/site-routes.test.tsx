@@ -36,6 +36,34 @@ const DND_5E_ARMORER_SLUG = 'dnd-5e-armorer';
 const DND_FLUMPH_SLUG = 'dnd-flumph';
 const DWELF_DND_SLUG = 'dwelf-dnd';
 const DND_DAGGER_SLUG = 'dnd-dagger';
+const FIREBOLT_DND_5E_SLUG = 'firebolt-dnd-5e';
+
+function getStructuredDataTypes(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.flatMap(getStructuredDataTypes);
+  }
+
+  if (!value || typeof value !== 'object') {
+    return [];
+  }
+
+  const record = value as Record<string, unknown>;
+  const currentType = typeof record['@type'] === 'string' ? [record['@type']] : [];
+
+  return [...currentType, ...Object.values(record).flatMap(getStructuredDataTypes)];
+}
+
+function parseServerMarkup(markup: string): Document {
+  return new DOMParser().parseFromString(markup, 'text/html');
+}
+
+function getRouteStructuredData(serverDocument: Document, scriptId: string): Record<string, unknown> {
+  const structuredDataScript = serverDocument.getElementById(scriptId);
+
+  expect(structuredDataScript).not.toBeNull();
+
+  return JSON.parse(structuredDataScript?.textContent ?? '{}') as Record<string, unknown>;
+}
 
 describe('trust page routes', () => {
   afterEach(() => {
@@ -126,69 +154,191 @@ describe('coat maker routes', () => {
     expect(screen.getByRole('main', { name: workspaceName })).not.toBeNull();
   });
 
-  it('server-renders the Chinese default project heading for the untouched initial document', () => {
+  it('server-renders the Chinese default project name as non-heading text', () => {
     useCoatProjectStore.setState(useCoatProjectStore.getInitialState(), true);
 
     const markup = renderToStaticMarkup(<ChineseCoatOfArmsMakerPage />);
 
-    expect(markup).toContain('<h1 class="sr-only">我的徽章</h1>');
+    expect(markup).toContain('<span class="sr-only">我的徽章</span>');
+    expect(markup).not.toContain('<h1 class="sr-only">我的徽章</h1>');
   });
 
-  it('keeps the local Coat Maker product title in English metadata', () => {
+  it('uses the complete English keyphrase in the Coat Maker metadata title', () => {
     expect(englishCoatOfArmsMakerMetadata.title).toEqual({
-      absolute: 'Coat Maker | Free Coat of Arms Editor',
+      absolute: 'Coat of Arms Maker — Free Online Heraldry Creator',
     });
   });
 
   it.each([
     {
       PageComponent: EnglishCoatOfArmsMakerPage,
+      canonical: '/coat-of-arms-maker',
+      contentHeading: 'Coat of Arms Maker',
+      metadata: englishCoatOfArmsMakerMetadata,
+      metadataTitle: 'Coat of Arms Maker — Free Online Heraldry Creator',
+      schemaDescription:
+        'Use this free coat of arms maker to customize shields, colours, charges, text, and layers in your browser, then export PNG, JPEG, or PDF files.',
+      schemaFeatures: [
+        'Shield styles and field patterns',
+        'Charges, text, layers, and drawing tools',
+        'Local project saving and export options',
+      ],
+      schemaId: 'coat-maker-en-web-application-jsonld',
+      twitterDescription:
+        'Use this free coat of arms maker to customize shields, colours, charges, text, and layers in your browser, then export PNG, JPEG, or PDF files.',
+      twitterTitle: 'Coat of Arms Maker — Free Online Heraldry Creator',
+      projectName: 'My Coat of Arms',
+      workspaceName: 'Coat maker workspace',
+    },
+    {
+      PageComponent: ChineseCoatOfArmsMakerPage,
+      canonical: '/zh/coat-of-arms-maker',
+      contentHeading: '纹章制作器',
+      metadata: chineseCoatOfArmsMakerMetadata,
+      metadataTitle: '纹章制作器 | 免费徽章编辑器',
+      schemaDescription: '使用这款免费纹章制作器，在浏览器中自定义盾牌、颜色、图形、文字和图层，并导出 PNG、JPEG 或 PDF 文件。',
+      schemaFeatures: [
+        '盾牌样式与底纹',
+        '图形、文字、图层和绘图工具',
+        '本地项目保存与导出选项',
+      ],
+      schemaId: 'coat-maker-zh-web-application-jsonld',
+      twitterDescription: '使用这款免费纹章制作器，在浏览器中自定义盾牌、颜色、图形、文字和图层，并导出 PNG、JPEG 或 PDF 文件。',
+      twitterTitle: '纹章制作器 | 免费徽章编辑器',
+      projectName: '我的徽章',
+      workspaceName: '徽章制作工作台',
+    },
+  ])('renders localized SEO content, metadata, and WebApplication JSON-LD for $canonical', ({
+    PageComponent,
+    canonical,
+    contentHeading,
+    metadata,
+    metadataTitle,
+    projectName,
+    schemaDescription,
+    schemaFeatures,
+    schemaId,
+    twitterDescription,
+    twitterTitle,
+    workspaceName,
+  }) => {
+    const serverDocument = parseServerMarkup(renderToStaticMarkup(<PageComponent />));
+    const workbench = serverDocument.querySelector(`main[aria-label="${workspaceName}"]`);
+    const contentRoot = serverDocument.querySelector('[data-testid="coat-maker-seo-content"]');
+    const footer = serverDocument.querySelector('footer');
+    const projectNameElement = Array.from(serverDocument.querySelectorAll('.coat-workbench-content .sr-only'))
+      .find((element) => element.textContent === projectName);
+    const structuredDataScripts = Array.from(serverDocument.querySelectorAll('script[type="application/ld+json"]'));
+    const structuredData = getRouteStructuredData(serverDocument, schemaId);
+    const routeStructuredDataTypes = getStructuredDataTypes(structuredData);
+
+    if (workbench === null) {
+      throw new Error('SSR route is missing the workbench element.');
+    }
+
+    if (contentRoot === null) {
+      throw new Error('SSR route is missing the SEO content element.');
+    }
+
+    if (footer === null) {
+      throw new Error('SSR route is missing the footer element.');
+    }
+
+    expect(workbench).not.toBeNull();
+    expect(contentRoot).not.toBeNull();
+    expect(footer).not.toBeNull();
+    expect(serverDocument.querySelectorAll('h1')).toHaveLength(1);
+    expect(serverDocument.querySelector('h1')?.textContent).toBe(contentHeading);
+    expect(projectNameElement?.tagName).toBe('SPAN');
+    expect(Array.from(serverDocument.querySelectorAll('h1')).some((heading) => heading.textContent === projectName)).toBe(false);
+    expect(workbench.compareDocumentPosition(contentRoot) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(contentRoot.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(structuredDataScripts).toHaveLength(1);
+    expect(metadata.title).toEqual({ absolute: metadataTitle });
+    expect(metadata.description).toBe(schemaDescription);
+    expect(metadata.openGraph).toMatchObject({ title: metadataTitle, description: schemaDescription });
+    expect(metadata.openGraph).not.toHaveProperty('images');
+    expect(structuredData).toMatchObject({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: contentHeading,
+      applicationCategory: 'DesignApplication',
+      operatingSystem: 'Any',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      url: `https://www.tokenmaker.one${canonical}`,
+      description: schemaDescription,
+      featureList: schemaFeatures,
+    });
+    expect(structuredData['@type']).toBe('WebApplication');
+    expect(routeStructuredDataTypes).not.toContain('HowTo');
+    expect(routeStructuredDataTypes).not.toContain('FAQPage');
+    expect(metadata.twitter).toMatchObject({
+      card: 'summary',
+      title: twitterTitle,
+      description: twitterDescription,
+    });
+    expect(metadata.twitter).not.toHaveProperty('images');
+  });
+
+  it.each([
+    {
+      PageComponent: EnglishCoatOfArmsMakerPage,
       exportLabel: 'Export',
-      brandText: 'TOKEN',
       removedArtworkLinkLabel: 'User Artwork',
-      helpCenterLabel: 'Help Center',
-      helpCenterHref: '/faq',
-      changelogLabel: 'Changelog',
-      changelogHref: '/changelog',
+      sharedNavigationLinks: [
+        { label: 'Editor', href: '/' },
+        { label: 'Dice Roller', href: '/dice-roller-dnd' },
+        { label: 'Coat Maker', href: '/coat-of-arms-maker' },
+        { label: 'Blog', href: '/blog' },
+      ],
+      localeSwitchLabel: '中文',
+      localeSwitchHref: '/zh/coat-of-arms-maker',
     },
     {
       PageComponent: ChineseCoatOfArmsMakerPage,
       exportLabel: '导出',
-      brandText: 'TOKEN',
       removedArtworkLinkLabel: '用户作品',
-      helpCenterLabel: '帮助中心',
-      helpCenterHref: '/zh/faq',
-      changelogLabel: '更新日志',
-      changelogHref: '/zh/changelog',
+      sharedNavigationLinks: [
+        { label: '编辑器', href: '/zh' },
+        { label: '骰子', href: '/zh/dice-roller-dnd' },
+        { label: '纹章制作器', href: '/zh/coat-of-arms-maker' },
+        { label: '博客', href: '/zh/blog' },
+      ],
+      localeSwitchLabel: 'English',
+      localeSwitchHref: '/coat-of-arms-maker',
     },
-  ])('renders the local editor header chrome for $exportLabel', ({
+  ])('renders the shared site navigation and editor workspace chrome for $exportLabel', ({
     PageComponent,
     exportLabel,
-    brandText,
     removedArtworkLinkLabel,
-    helpCenterLabel,
-    helpCenterHref,
-    changelogLabel,
-    changelogHref,
+    sharedNavigationLinks,
+    localeSwitchLabel,
+    localeSwitchHref,
   }) => {
     render(<PageComponent />);
     const prohibitedReferenceBrand = ['Coa', 'Maker'].join('');
-    const editorHeader = document.querySelector<HTMLElement>('header.coat-target-appbar');
-    if (!editorHeader) throw new Error('Coat maker header is unavailable');
+    const sharedTopbar = document.querySelector<HTMLElement>('.site-topbar');
+    if (!sharedTopbar) throw new Error('Coat maker site topbar is unavailable');
+    expect(sharedTopbar.parentElement).toBe(screen.getByRole('main'));
 
-    expect(screen.getAllByText(brandText, { exact: false }).some((element) => element.closest('header'))).toBe(true);
     expect(screen.queryByRole('link', { name: removedArtworkLinkLabel })).toBeNull();
-    expect(within(editorHeader).getByRole('link', { name: helpCenterLabel }).getAttribute('href')).toBe(helpCenterHref);
-    expect(within(editorHeader).getByRole('link', { name: changelogLabel }).getAttribute('href')).toBe(changelogHref);
+    for (const link of sharedNavigationLinks) {
+      expect(within(sharedTopbar).getByRole('link', { name: link.label }).getAttribute('href')).toBe(link.href);
+    }
+    expect(within(sharedTopbar).getByRole('link', { name: localeSwitchLabel }).getAttribute('href')).toBe(localeSwitchHref);
     const siteFooter = screen.getByRole('contentinfo');
     expect(within(siteFooter).getByRole('navigation', { name: PageComponent === ChineseCoatOfArmsMakerPage ? '页脚导航' : 'Footer navigation' })).toBeDefined();
     expect(screen.getByRole('button', { name: exportLabel })).not.toBeNull();
     expect(screen.queryByText(prohibitedReferenceBrand, { exact: false })).toBeNull();
-    expect(screen.queryByRole('link', { name: 'Coat Maker' })).toBeNull();
   });
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual Fire Bolt detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: FIREBOLT_DND_5E_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: FIREBOLT_DND_5E_SLUG });
+  });
+
   it('emits bilingual dagger detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_DAGGER_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_DAGGER_SLUG });

@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 
 import { CoatOfArmsMaker } from '@/components/coat-of-arms/CoatOfArmsMaker';
+import { CoatMakerSeoContent } from '@/components/coat-of-arms/CoatMakerSeoContent';
+import { buildCoatMakerWebApplicationStructuredData } from '@/components/coat-of-arms/coat-maker-seo-schema';
 import { SiteFooter } from '@/components/site/SiteFooter';
+import { StructuredData } from '@/components/site/StructuredData';
+import { getCoatMakerSeoCopy } from '@/components/coat-of-arms/coat-maker-seo-copy';
 import { getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { getLanguageAlternates, getLocalizedPath } from '@/lib/site-locale';
 
@@ -9,31 +13,42 @@ const locale = 'zh';
 const path = '/coat-of-arms-maker';
 const localizedPath = getLocalizedPath(locale, path);
 const siteConfig = getSiteConfig(locale);
+const seoCopy = getCoatMakerSeoCopy(locale);
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    absolute: '纹章制作器 | 免费徽章编辑器',
+    absolute: seoCopy.metadataTitle,
   },
-  description: '在浏览器本地制作纹章：编辑盾牌、颜色、图形、文字和图层，并导出 PNG 或 PDF。',
+  description: seoCopy.metadataDescription,
   alternates: {
     canonical: localizedPath,
     languages: getLanguageAlternates(path),
   },
   openGraph: {
-    title: '纹章制作器 | 免费徽章编辑器',
-    description: '在浏览器本地制作纹章，支持盾牌、颜色、图形、文字、图层和本地导出。',
+    title: seoCopy.metadataTitle,
+    description: seoCopy.metadataDescription,
     url: localizedPath,
     siteName: siteConfig.name,
     type: 'website',
     locale: 'zh_CN',
+  },
+  twitter: {
+    card: 'summary',
+    title: seoCopy.metadataTitle,
+    description: seoCopy.metadataDescription,
   },
 };
 
 export default function ChineseCoatOfArmsMakerPage() {
   return (
     <div lang="zh-CN" className="coat-maker-page">
+      <StructuredData
+        id="coat-maker-zh-web-application-jsonld"
+        data={buildCoatMakerWebApplicationStructuredData(locale, localizedPath)}
+      />
       <CoatOfArmsMaker locale={locale} />
+      <CoatMakerSeoContent locale={locale} />
       <SiteFooter contentWidth="nearFull" currentPath={localizedPath} locale={locale} />
     </div>
   );

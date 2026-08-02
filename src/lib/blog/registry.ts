@@ -34,6 +34,7 @@ import {
   DND_DEATH_KNIGHT_COVER_PATH,
   DND_FLUMPH_COVER_PATH,
   DND_DWELF_COVER_PATH,
+  FIREBOLT_DND_5E_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -90,6 +91,10 @@ import {
 } from '@/lib/blog-posts/dnd-death-knight';
 import { dndFlumphArticleHtml, dndFlumphArticleHtmlZh } from '@/lib/blog-posts/dnd-flumph';
 import { dwelfDndArticleHtml, dwelfDndArticleHtmlZh } from '@/lib/blog-posts/dwelf-dnd';
+import {
+  fireboltDnd5eArticleHtml,
+  fireboltDnd5eArticleHtmlZh,
+} from '@/lib/blog-posts/firebolt-dnd-5e';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -144,6 +149,7 @@ const DND_SHORTSWORD_UPDATED_AT = '2026-07-10';
 const DND_SILVERY_BARBS_UPDATED_AT = '2026-07-11';
 const DND_FLUMPH_UPDATED_AT = '2026-07-26';
 const DWELF_DND_UPDATED_AT = '2026-07-27';
+const FIREBOLT_DND_5E_UPDATED_AT = '2026-07-29';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2367,6 +2373,44 @@ const dndGhostArticleZh: BlogPost = {
   relatedSlugs: ['dnd-necromancer-spells', 'dnd-demons', 'dnd-counterspell', 'dnd-dagger'],
 };
 
+const fireboltDnd5eArticle: BlogPost = {
+  slug: 'firebolt-dnd-5e',
+  title: 'Fire Bolt DnD 5e: Attack Rules, Burning Objects, and VTT Tactics',
+  seoTitle: 'Firebolt DnD 5e: Attack Rules, Burning Objects, and VTT Tactics',
+  metaDescription:
+    'Use Fire Bolt in DnD 5e with clear target choices, 120-foot positioning, object-ignition limits, and readable VTT spellcaster tokens.',
+  excerpt:
+    'Choose the right Fire Bolt target, resolve the ranged spell attack cleanly, then decide whether damage or ignition changes the map.',
+  publishedAt: FIREBOLT_DND_5E_UPDATED_AT,
+  updatedAt: FIREBOLT_DND_5E_UPDATED_AT,
+  readTime: '8 min read',
+  coverLabel: 'Spell Tactics',
+  coverImage: FIREBOLT_DND_5E_COVER_PATH,
+  coverAlt:
+    'Fire Bolt DnD 5e guide cover showing a spellcaster firing an orange bolt across a dungeon battle-map grid at an unattended wooden barricade',
+  bodyHtml: fireboltDnd5eArticleHtml,
+  relatedSlugs: ['dnd-thunderclap', 'dnd-counterspell', 'dnd-mage-armor', 'dnd-dagger'],
+};
+
+const fireboltDnd5eArticleZh: BlogPost = {
+  slug: 'firebolt-dnd-5e',
+  title: 'Fire Bolt DND 5e：攻击判定、点燃物体与 VTT 战术',
+  seoTitle: 'Firebolt DND 5e：攻击判定、点燃物体与 VTT 战术',
+  metaDescription:
+    '用清楚的目标选择、120 尺站位、物体点燃边界和可读 VTT Token，处理 Fire Bolt DND 5e 的每一次施法。',
+  excerpt:
+    '先选对 Fire Bolt 目标，再结算远程法术攻击，然后判断伤害或点火会怎样改变地图。',
+  publishedAt: FIREBOLT_DND_5E_UPDATED_AT,
+  updatedAt: FIREBOLT_DND_5E_UPDATED_AT,
+  readTime: '8 分钟阅读',
+  coverLabel: '法术战术',
+  coverImage: FIREBOLT_DND_5E_COVER_PATH,
+  coverAlt:
+    'Fire Bolt DND 5e 指南封面图：施法者在地城战斗地图网格上把橙色火焰射向无人持握的木制路障',
+  bodyHtml: fireboltDnd5eArticleHtmlZh,
+  relatedSlugs: ['dnd-thunderclap', 'dnd-counterspell', 'dnd-mage-armor', 'dnd-dagger'],
+};
+
 const dndDaggerArticle: BlogPost = {
   slug: 'dnd-dagger',
   title: 'DND Dagger 5e: Stats, Rules, and Best Uses',
@@ -3137,10 +3181,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

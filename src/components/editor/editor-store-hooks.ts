@@ -25,6 +25,7 @@ export function useCanvasEditorState() {
     isImageSelected: useEditorStore((state) => state.isImageSelected),
     renderRevision: useEditorStore((state) => state.renderRevision),
     setImageOffset: useEditorStore((state) => state.setImageOffset),
+    setImageScale: useEditorStore((state) => state.setImageScale),
     setSelectedText: useEditorStore((state) => state.setSelectedText),
   };
 }

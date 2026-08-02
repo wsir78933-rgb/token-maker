@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight, Dice5 } from 'lucide-react';
 
 import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
+import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import {
@@ -18,6 +19,7 @@ import {
   getBlogPostsForPage,
   getFeaturedBlogPost,
 } from '@/lib/blog-content';
+import { getNavLabels } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
@@ -145,9 +147,9 @@ function PostCover({
 
 // ─── Blog hub lead ────────────────────────────────────────────────────────────
 
-function BlogHubHeader({ locale, page }: { locale: SiteLocale; page: number }) {
+function BlogHubHeader({ locale }: { locale: SiteLocale }) {
   const copy = copyByLocale[locale];
-  const title = getBlogHubTitle(locale, page);
+  const title = getBlogHubTitle(locale);
   const description = getBlogHubDescription(locale);
 
   return (
@@ -156,11 +158,6 @@ function BlogHubHeader({ locale, page }: { locale: SiteLocale; page: number }) {
         <span className="rounded-full border border-[#d7b46a]/35 bg-[#d7b46a]/12 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#f1d492]">
           {copy.hubEyebrow}
         </span>
-        {page > 1 && (
-          <span className="text-[11px] uppercase tracking-[0.16em] text-stone-500">
-            {locale === 'zh' ? `第 ${page} 页` : `Page ${page}`}
-          </span>
-        )}
       </div>
       <h1 className="font-display max-w-4xl text-[2.35rem] leading-[1.04] text-stone-50 sm:text-[3rem] lg:text-[3.35rem] xl:text-[3.7rem]">
         {title}
@@ -324,6 +321,18 @@ export function BlogHubPageView({
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
   const previousPage = page > 1 ? page - 1 : null;
   const nextPage = page < totalPages ? page + 1 : null;
+  const navLabels = getNavLabels(locale);
+  const pageLabel = locale === 'zh' ? `第 ${page} 页` : `Page ${page}`;
+  const breadcrumbs = [
+    { label: navLabels.editor, href: getLocalizedPath(locale, '/') },
+    { label: navLabels.blog, href: getLocalizedPath(locale, '/blog') },
+    ...(page > 1 ? [{ label: pageLabel }] : []),
+  ];
+  const breadcrumbStructuredData = [
+    { name: navLabels.editor, path: '/' },
+    { name: navLabels.blog, path: '/blog' },
+    ...(page > 1 ? [{ name: pageLabel, path: currentPath }] : []),
+  ];
 
   return (
     <>
@@ -333,23 +342,17 @@ export function BlogHubPageView({
       />
       <StructuredData
         id={`blog-hub-breadcrumb-${locale}-${page}`}
-        data={buildBreadcrumbStructuredData(locale, [
-          { name: locale === 'zh' ? '编辑器' : 'Editor', path: '/' },
-          { name: 'Blog', path: '/blog' },
-        ])}
+        data={buildBreadcrumbStructuredData(locale, breadcrumbStructuredData)}
       />
 
       <InnerPageChrome locale={locale} currentPath={currentPath} tone="hub">
         <div className="mx-auto max-w-[92rem] space-y-10 px-4 py-10 sm:px-5 lg:px-6 lg:py-14 xl:px-8">
+          <PageBreadcrumbs items={breadcrumbs} locale={locale} />
 
-          {page === 1 ? (
-            <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.72fr)] lg:items-stretch xl:gap-10">
-              <BlogHubHeader locale={locale} page={page} />
-              <FeaturedArticleCard locale={locale} post={featuredPost} />
-            </section>
-          ) : (
-            <BlogHubHeader locale={locale} page={page} />
-          )}
+          <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.72fr)] lg:items-stretch xl:gap-10">
+            <BlogHubHeader locale={locale} />
+            <FeaturedArticleCard locale={locale} post={featuredPost} />
+          </section>
 
           {/* ── Grid ── */}
           <section>

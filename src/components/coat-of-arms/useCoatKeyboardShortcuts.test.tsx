@@ -116,6 +116,16 @@ describe('useCoatKeyboardShortcuts', () => {
     expect(useCoatProjectStore.getState().history.past).toHaveLength(0);
   });
 
+  it('keeps the sole base shield selected when keyboard deletion is attempted', () => {
+    renderShortcuts(['shield-1']);
+
+    fireEvent.keyDown(window, { key: 'Delete' });
+
+    expect(useCoatProjectStore.getState().project.layers.map((layer) => layer.id)).toContain('shield-1');
+    expect(screen.getByTestId('selection').textContent).toBe('shield-1');
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(0);
+  });
+
   it('moves every selected unlocked layer with arrow keys and uses the Shift step', () => {
     renderShortcuts(['charge-1', 'charge-2']);
     fireEvent.keyDown(window, { key: 'ArrowRight' });

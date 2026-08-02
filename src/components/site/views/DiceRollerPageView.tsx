@@ -1,16 +1,18 @@
 import { DiceRollerTool } from '@/components/dice/DiceRollerTool';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
 import {
   absoluteUrl,
   getDiceRollerPageCopy,
-  getSiteConfig,
+  getNavLabels,
 } from '@/lib/site-content';
+import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
 export function DiceRollerPageView({ locale }: { locale: SiteLocale }) {
   const copy = getDiceRollerPageCopy(locale);
-  const siteConfig = getSiteConfig(locale);
+  const navLabels = getNavLabels(locale);
   const path = '/dice-roller-dnd';
   const localizedPath = getLocalizedPath(locale, path);
 
@@ -35,22 +37,29 @@ export function DiceRollerPageView({ locale }: { locale: SiteLocale }) {
           acceptedAnswer: { '@type': 'Answer', text: item.answer },
         })),
       },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: siteConfig.name, item: absoluteUrl(getLocalizedPath(locale, '/')) },
-          { '@type': 'ListItem', position: 2, name: copy.title, item: absoluteUrl(localizedPath) },
-        ],
-      },
     ],
   };
 
   return (
     <>
       <StructuredData id={`dice-roller-dnd-${locale}-jsonld`} data={structuredData} />
+      <StructuredData
+        id={`dice-roller-dnd-${locale}-breadcrumb-jsonld`}
+        data={buildBreadcrumbStructuredData(locale, [
+          { name: navLabels.editor, path: '/' },
+          { name: navLabels.diceRoller, path },
+        ])}
+      />
 
       <InnerPageChrome locale={locale} currentPath={path} tone="hub">
         <div className="mx-auto max-w-[82rem] px-5 py-8 lg:px-8 lg:py-10">
+          <PageBreadcrumbs
+            locale={locale}
+            items={[
+              { label: navLabels.editor, href: getLocalizedPath(locale, '/') },
+              { label: navLabels.diceRoller },
+            ]}
+          />
           <DiceRollerTool locale={locale} />
           
           <div className="mt-16 sm:mt-24 border-t border-white/10 pt-16 sm:pt-20 w-full">

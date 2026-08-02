@@ -6,7 +6,7 @@ import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { LiteYouTubeEmbed } from '@/components/site/LiteYouTubeEmbed';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
-import { absoluteUrl, getSiteConfig, getSiteUiCopy, getTemplatePage } from '@/lib/site-content';
+import { absoluteUrl, getSiteUiCopy, getTemplatePage } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
@@ -68,7 +68,6 @@ export function TemplatePageView({
 }) {
   const copy = copyByLocale[locale];
   const page = getTemplatePage(locale, slug);
-  const siteConfig = getSiteConfig(locale);
   const siteUiCopy = getSiteUiCopy(locale);
 
   if (!page) {
@@ -80,7 +79,6 @@ export function TemplatePageView({
   const editorHref = getLocalizedPath(locale, page.query);
   const breadcrumbs = [
     { label: copy.editor, href: getLocalizedPath(locale, '/') },
-    { label: copy.templates },
     { label: page.title },
   ];
   const structuredData = {
@@ -121,13 +119,6 @@ export function TemplatePageView({
         description: page.video.description,
         thumbnailUrl: `https://i.ytimg.com/vi/${page.video.videoId}/hqdefault.jpg`,
         embedUrl: `https://www.youtube-nocookie.com/embed/${page.video.videoId}`,
-      },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: siteConfig.name, item: absoluteUrl(getLocalizedPath(locale, '/')) },
-          { '@type': 'ListItem', position: 2, name: page.title, item: absoluteUrl(localizedPath) },
-        ],
       },
     ],
   };

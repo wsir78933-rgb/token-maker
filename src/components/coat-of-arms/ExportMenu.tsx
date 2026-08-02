@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { ChevronDown, Download } from 'lucide-react';
 import { COAT_EXPORT_SIZES, exportCoatBatch, exportCoatJpeg, exportCoatPdf, exportCoatPng, printCoatScene } from '@/lib/coat-of-arms/export';
 import {
@@ -85,6 +85,7 @@ export function ExportMenu({ locale, project }: ExportMenuProps) {
   const [jpegQuality, setJpegQuality] = useState<JpegQuality>(getDefaultEditorPreferences().jpegQuality);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
+  const menuContainerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const baseName = sanitizeCoatFileBaseName(project.name);
@@ -109,10 +110,21 @@ export function ExportMenu({ locale, project }: ExportMenuProps) {
     return () => { isCurrent = false; };
   }, [copy]);
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setOpen(false);
     triggerRef.current?.focus();
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      const menuContainer = menuContainerRef.current;
+      if (menuContainer?.contains(event.target as Node)) return;
+      closeMenu();
+    };
+    document.addEventListener('click', closeOnOutsideClick);
+    return () => document.removeEventListener('click', closeOnOutsideClick);
+  }, [closeMenu, open]);
 
   const onMenuKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === 'Escape') {
@@ -161,7 +173,7 @@ export function ExportMenu({ locale, project }: ExportMenuProps) {
   };
 
   return (
-    <div className="relative">
+    <div ref={menuContainerRef} className="relative">
       <Button
         ref={triggerRef}
         aria-controls={exportMenuId}

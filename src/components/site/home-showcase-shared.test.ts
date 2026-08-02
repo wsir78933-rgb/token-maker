@@ -8,7 +8,13 @@ import { getPresetHref } from './home-showcase-shared';
 
 const locales: SiteLocale[] = ['en', 'zh'];
 
-const expectedShowcaseBorders = {
+type ExpectedShowcaseSelection = {
+  borderId: string;
+  maskId: string;
+  borderTint?: string;
+};
+
+const expectedShowcaseBorders: Record<string, ExpectedShowcaseSelection> = {
   'radiant-paladin': { borderId: 'revgold', maskId: 'circle' },
   'moon-archmage': { borderId: 'revgold', maskId: 'circle' },
   'grave-necromancer': { borderId: 'silverspikes', maskId: 'circle' },
@@ -49,9 +55,16 @@ describe('home showcase editor links', () => {
 
       for (const item of showcaseItems) {
         const expectedSelection =
-          expectedShowcaseBorders[item.id as keyof typeof expectedShowcaseBorders];
+          expectedShowcaseBorders[item.id];
 
         expect(expectedSelection, `Missing expected selection for ${item.id}`).toBeDefined();
+        if (item.borderId === undefined) {
+          throw new Error(`Missing borderId for showcase item ${item.id}`);
+        }
+        if (item.maskId === undefined) {
+          throw new Error(`Missing maskId for showcase item ${item.id}`);
+        }
+
         expect(item.borderId).toBe(expectedSelection.borderId);
         expect(item.maskId).toBe(expectedSelection.maskId);
         expect(item.borderTint).toBe(expectedSelection.borderTint);

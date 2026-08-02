@@ -11,9 +11,34 @@ import { useCanvasEditorState } from './editor-store-hooks';
 
 const EDITOR_REFERENCE_SIZE = 512;
 const DESKTOP_EDITOR_MEDIA_QUERY = '(min-width: 1280px)';
+const MIN_IMAGE_SCALE = 0.1;
+const MAX_IMAGE_SCALE = 5;
+const MAX_WHEEL_DELTA = 100;
+const WHEEL_ZOOM_SENSITIVITY = 0.0015;
+const PIXELS_PER_WHEEL_LINE = 16;
 
 interface CanvasProps {
   previewMode?: 'default' | 'batch';
+}
+
+function getWheelDeltaInPixels(wheelEvent: WheelEvent) {
+  if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+    return wheelEvent.deltaY * PIXELS_PER_WHEEL_LINE;
+  }
+
+  if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+    return wheelEvent.deltaY * MAX_WHEEL_DELTA;
+  }
+
+  return wheelEvent.deltaY;
+}
+
+function getNextImageScaleForWheel(currentImageScale: number, wheelDeltaY: number) {
+  const cappedWheelDelta = Math.max(-MAX_WHEEL_DELTA, Math.min(MAX_WHEEL_DELTA, wheelDeltaY));
+  const wheelZoomMultiplier = Math.exp(-cappedWheelDelta * WHEEL_ZOOM_SENSITIVITY);
+  const nextImageScale = currentImageScale * wheelZoomMultiplier;
+
+  return Math.max(MIN_IMAGE_SCALE, Math.min(MAX_IMAGE_SCALE, nextImageScale));
 }
 
 export function Canvas({ previewMode = 'default' }: CanvasProps) {
@@ -36,6 +61,7 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     isImageSelected,
     renderRevision,
     setImageOffset,
+    setImageScale,
     setSelectedText,
   } = useCanvasEditorState();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -44,6 +70,7 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
   const previewRef = useRef<HTMLDivElement>(null);
   const isMountedRef = useRef(true);
   const lastObservedPreviewCssSizeRef = useRef<number | null>(null);
+  const imageScaleRef = useRef(imageScale);
 
   const [canvasSize, setCanvasSize] = useState(512);
   const [previewCssSize, setPreviewCssSize] = useState(512);
@@ -173,6 +200,28 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     };
   }, []);
 
+  useEffect(() => {
+    imageScaleRef.current = imageScale;
+  }, [imageScale]);
+
+  useEffect(() => {
+    const previewElement = previewRef.current;
+    if (!previewElement || !imageElement) return;
+
+    const handlePreviewWheel = (wheelEvent: WheelEvent) => {
+      wheelEvent.preventDefault();
+      const wheelDeltaInPixels = getWheelDeltaInPixels(wheelEvent);
+      const nextImageScale = getNextImageScaleForWheel(imageScaleRef.current, wheelDeltaInPixels);
+      imageScaleRef.current = nextImageScale;
+      setImageScale(nextImageScale);
+    };
+
+    previewElement.addEventListener('wheel', handlePreviewWheel, { passive: false });
+    return () => {
+      previewElement.removeEventListener('wheel', handlePreviewWheel);
+    };
+  }, [imageElement, setImageScale]);
+
   const scheduleImageOffset = (x: number, y: number) => {
     pendingOffset.current = { x, y };
     if (offsetFrame.current !== null) return;
@@ -228,10 +277,10 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
 
   const rootClassName = isBatchPreview
     ? 'relative flex h-full min-h-0 w-full items-center justify-center bg-background/10 p-2 sm:p-3'
-    : 'relative flex min-h-[24rem] w-full items-center justify-center bg-background/10 p-3 sm:min-h-[32rem] sm:p-4 xl:h-full xl:min-h-0 xl:p-6';
+    : 'relative flex min-h-[24rem] w-full items-center justify-center bg-background/10 p-3 sm:min-h-[32rem] sm:p-4 xl:h-full xl:min-h-0 xl:p-3';
   const previewFrameSizeClassName = isBatchPreview
     ? 'h-full max-h-[16rem] w-auto max-w-full sm:max-h-[20rem] xl:max-h-[22rem]'
-    : 'w-full max-w-[512px]';
+    : 'w-full max-w-[640px]';
 
   return (
     <div ref={workspaceRef} data-testid="canvas-workspace" className={rootClassName}>

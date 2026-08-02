@@ -104,6 +104,7 @@ export function useCoatKeyboardShortcuts(
 
       if (event.key === 'Delete' || event.key === 'Backspace') {
         event.preventDefault();
+        if (!canRemoveSelectedLayers(store.project.layers, selectedLayers)) return;
         store.dispatch({ type: 'remove-layers', layerIds: selectedLayers.map((layer) => layer.id) });
         setSelection([]);
         return;
@@ -182,6 +183,13 @@ function getUnlockedSelectedLayers(layers: CoatLayer[], selection: string[]): Co
   const selectedLayers = selection.map((layerId) => selectedById.get(layerId)).filter(isLayer);
   if (selectedLayers.length !== selection.length || selectedLayers.some((layer) => layer.locked)) return [];
   return selectedLayers;
+}
+
+function canRemoveSelectedLayers(projectLayers: CoatLayer[], selectedLayers: CoatLayer[]): boolean {
+  const selectedLayerIds = new Set(selectedLayers.map((layer) => layer.id));
+  return ['background', 'shield'].every((baseLayerType) => projectLayers.some((layer) => (
+    layer.type === baseLayerType && !selectedLayerIds.has(layer.id)
+  )));
 }
 
 function isLayer(layer: CoatLayer | undefined): layer is CoatLayer {

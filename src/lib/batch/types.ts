@@ -1,3 +1,5 @@
+import type { BatchVisualDraft } from './editor-draft';
+
 export type BatchItemStatus = 'loading' | 'pending' | 'rendering' | 'done' | 'error';
 
 export interface BatchItem {
@@ -12,6 +14,8 @@ export interface BatchItem {
   renderedUrl: string | null;
   /** 渲染后的 PNG Blob */
   blob: Blob | null;
+  /** 此图片独有的可视化编辑草稿 */
+  draft: BatchVisualDraft | null;
   status: BatchItemStatus;
   error?: string;
 }

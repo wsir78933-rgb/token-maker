@@ -22,6 +22,7 @@ interface ProjectLibraryDialogProps {
   locale: CoatLocale;
   open: boolean;
   project: CoatProject;
+  portalHost?: HTMLElement | null;
   renderTrigger?: boolean;
   triggerRef: RefObject<HTMLButtonElement | null>;
   onOpenChange: (open: boolean) => void;
@@ -31,6 +32,7 @@ interface ProjectLibraryDialogProps {
 interface ProjectLibraryModalProps {
   locale: CoatLocale;
   project: CoatProject;
+  portalHost?: HTMLElement | null;
   onOpenChange: (open: boolean) => void;
   onProjectChange: (project: CoatProject) => void;
 }
@@ -84,10 +86,17 @@ function getDialogFocusableElements(dialog: HTMLElement): HTMLElement[] {
   )].filter((element) => !element.hasAttribute('hidden'));
 }
 
+function getProjectLibraryPortalHost(portalHost: HTMLElement | null | undefined): HTMLElement | null {
+  if (portalHost) return portalHost;
+  if (typeof document === 'undefined') return null;
+  return document.body;
+}
+
 /** Owns one open local-project-library session and refreshes records on mount. */
 function ProjectLibraryModal({
   locale,
   project,
+  portalHost,
   onOpenChange,
   onProjectChange,
 }: ProjectLibraryModalProps) {
@@ -220,13 +229,17 @@ function ProjectLibraryModal({
     }
   };
 
+  const targetPortalHost = getProjectLibraryPortalHost(portalHost);
+  if (!targetPortalHost) return null;
+
   const dialog = createPortal(<>
-    <div aria-hidden="true" className="coat-workbench-modal-backdrop" data-testid="coat-project-modal-backdrop" />
+    <div aria-hidden="true" className="coat-workbench-modal-backdrop" data-coat-project-library-modal-interaction="backdrop" data-testid="coat-project-modal-backdrop" onClick={closeLibrary} />
     <section
       ref={dialogRef}
       aria-label={copy.localProjects}
       aria-modal="true"
       className="coat-workbench-dialog"
+      data-coat-project-library-modal-interaction="dialog"
       onKeyDown={onDialogKeyDown}
       role="dialog"
     >
@@ -270,7 +283,7 @@ function ProjectLibraryModal({
       </div>
     </section>
   </>,
-    document.body,
+    targetPortalHost,
   );
 
   return dialog;
@@ -281,6 +294,7 @@ export function ProjectLibraryDialog({
   locale,
   open,
   project,
+  portalHost,
   renderTrigger = true,
   triggerRef,
   onOpenChange,
@@ -290,6 +304,6 @@ export function ProjectLibraryDialog({
 
   return <>
     {renderTrigger ? <Button ref={triggerRef} type="button" variant="outline" onClick={() => onOpenChange(true)}>{copy.projects}</Button> : null}
-    {open ? <ProjectLibraryModal locale={locale} project={project} onOpenChange={onOpenChange} onProjectChange={onProjectChange} /> : null}
+    {open ? <ProjectLibraryModal locale={locale} project={project} portalHost={portalHost} onOpenChange={onOpenChange} onProjectChange={onProjectChange} /> : null}
   </>;
 }

@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [Fire Bolt DnD 5e](https://www.tokenmaker.one/blog/firebolt-dnd-5e): Choose a Fire Bolt target, resolve the ranged spell attack, handle flammable objects, and keep the caster readable on a VTT map.
 - [DND Dagger 5e: Stats, Rules, and Best Uses](https://www.tokenmaker.one/blog/dnd-dagger): Dagger stats, thrown range, Rogue uses, 2014/2024 Nick rules, VTT token tips, FAQ, and companion video.
 - [Dwelf DnD](https://www.tokenmaker.one/blog/dwelf-dnd): Build a dwarf-elf character with one official rules chassis, a family promise the party can act on, and a readable VTT token portrait.
 - [DnD Flumph Guide](https://www.tokenmaker.one/blog/dnd-flumph): Use a flumph as a telepathic warning scout, frightened witness, or ally clue, then make its state readable on a VTT token.
@@ -58,6 +59,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [Fire Bolt DND 5e：攻击判定、点燃物体与 VTT 战术](https://www.tokenmaker.one/zh/blog/firebolt-dnd-5e)
 - [dnd dagger 指南：5e 数据、用法、Nick 与 FAQ](https://www.tokenmaker.one/zh/blog/dnd-dagger)
 - [Dwelf DND：用一套规则做出矮人精灵混血角色](https://www.tokenmaker.one/zh/blog/dwelf-dnd)
 - [DND Flumph 指南：盟友线索、心灵感应与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-flumph)

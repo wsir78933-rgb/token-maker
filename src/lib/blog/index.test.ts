@@ -27,6 +27,7 @@ const DND_DEATH_KNIGHT_SLUG = 'dnd-death-knight';
 const DND_FLUMPH_SLUG = 'dnd-flumph';
 const DWELF_DND_SLUG = 'dwelf-dnd';
 const DND_DAGGER_SLUG = 'dnd-dagger';
+const FIREBOLT_DND_5E_SLUG = 'firebolt-dnd-5e';
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -90,21 +91,21 @@ describe('published blog body voice', () => {
 });
 
 describe('dnd dagger blog post', () => {
-  test('refreshes the bilingual dagger guide at the top of the blog', () => {
+  test('keeps the bilingual dagger guide immediately after the newer Fire Bolt guide', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
-      DND_DEATH_KNIGHT_SLUG,
     ]);
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
-      DND_DEATH_KNIGHT_SLUG,
     ]);
 
     const englishPost = getBlogPost('en', DND_DAGGER_SLUG);
@@ -172,24 +173,88 @@ describe('dnd dagger blog post', () => {
   });
 });
 
+describe('firebolt dnd 5e blog post', () => {
+  test('publishes a bilingual Fire Bolt tactical guide at the top of the blog', () => {
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
+      DND_DAGGER_SLUG,
+      DWELF_DND_SLUG,
+      DND_FLUMPH_SLUG,
+    ]);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
+      DND_DAGGER_SLUG,
+      DWELF_DND_SLUG,
+      DND_FLUMPH_SLUG,
+    ]);
+
+    const englishPost = getBlogPost('en', FIREBOLT_DND_5E_SLUG);
+    const chinesePost = getBlogPost('zh', FIREBOLT_DND_5E_SLUG);
+
+    expect(englishPost?.title).toContain('Fire Bolt');
+    expect(englishPost?.bodyHtml).toContain('Read the target before you roll');
+    expect(englishPost?.bodyHtml).toContain('Treat the fire as a map problem');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.faqItems).toBeUndefined();
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/firebolt-dnd-5e-guide.webp');
+
+    expect(chinesePost?.title).toContain('Fire Bolt');
+    expect(chinesePost?.bodyHtml).toContain('掷骰前，先看你要打的目标');
+    expect(chinesePost?.bodyHtml).toContain('把火焰当成地图问题处理');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.faqItems).toBeUndefined();
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/firebolt-dnd-5e-guide.webp');
+  });
+
+  test('builds Fire Bolt metadata, assets, and llms discovery without FAQ schema', () => {
+    expect(getBlogPostPath('en', FIREBOLT_DND_5E_SLUG)).toBe('/blog/firebolt-dnd-5e');
+    expect(getBlogPostPath('zh', FIREBOLT_DND_5E_SLUG)).toBe('/zh/blog/firebolt-dnd-5e');
+    expect(createBlogPostMetadata('en', FIREBOLT_DND_5E_SLUG).alternates?.canonical).toBe('/blog/firebolt-dnd-5e');
+    expect(createBlogPostMetadata('zh', FIREBOLT_DND_5E_SLUG).alternates?.canonical).toBe('/zh/blog/firebolt-dnd-5e');
+    expect(buildBlogPostStructuredData('en', FIREBOLT_DND_5E_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-07-29',
+      dateModified: '2026-07-29',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/firebolt-dnd-5e',
+      image: ['https://www.tokenmaker.one/blog/covers/en/firebolt-dnd-5e-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', FIREBOLT_DND_5E_SLUG)).toBeNull();
+    expect(buildBlogPostStructuredData('zh', FIREBOLT_DND_5E_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-07-29',
+      dateModified: '2026-07-29',
+      inLanguage: 'zh-CN',
+      url: 'https://www.tokenmaker.one/zh/blog/firebolt-dnd-5e',
+      image: ['https://www.tokenmaker.one/blog/covers/en/firebolt-dnd-5e-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('zh', FIREBOLT_DND_5E_SLUG)).toBeNull();
+    expect(existsSync('public/blog/covers/en/firebolt-dnd-5e-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/firebolt-dnd-5e');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/firebolt-dnd-5e');
+  });
+});
+
 describe('dwelf dnd blog post', () => {
   test('publishes a bilingual dwarf-elf character guide near the top of the blog', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
 
     const englishPost = getBlogPost('en', DWELF_DND_SLUG);
@@ -250,6 +315,7 @@ describe('dnd flumph blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
@@ -262,6 +328,7 @@ describe('dnd flumph blog post', () => {
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
@@ -355,19 +422,19 @@ describe('dnd 5e armorer blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
 
     const englishPost = getBlogPost('en', DND_5E_ARMORER_SLUG);
@@ -578,19 +645,19 @@ describe('dnd thunderclap blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
   });
 
@@ -777,19 +844,19 @@ describe('dnd find familiar blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
   });
 
@@ -988,19 +1055,19 @@ describe('dnd hex blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
+      FIREBOLT_DND_5E_SLUG,
       DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
   });
 
@@ -1194,16 +1261,18 @@ describe('dnd hex blog post', () => {
 });
 
 describe('paladin 2024 spells dnd blog post', () => {
-  test('moves the paladin article to the second blog page without changing page count', () => {
+  test('keeps the Paladin article first on the second blog page without changing page count', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 1)).toEqual([
+    expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
     ]);
 
-    expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 1)).toEqual([
+    expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
       PALADIN_2024_SPELLS_DND_SLUG,
+      DND_GLAIVE_SLUG,
     ]);
   });
 

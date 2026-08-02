@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
-import { BookOpen, Link2, Maximize2, Minimize2, Redo2, Shield, Undo2, UsersRound } from 'lucide-react';
+import { BookOpen, Link2, Maximize2, Minimize2, Redo2, Undo2, UsersRound } from 'lucide-react';
+import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
 import { getCoatAsset, getDefaultProjectName } from '@/lib/coat-of-arms/assets';
 import type { ShieldReferenceCategory } from '@/lib/coat-of-arms/reference-catalog';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { ChargeAssetCategory, CoatLocale, GeometryCoatAssetKind, TopAssetCategory } from '@/lib/coat-of-arms/types';
+import { getHomeCopy, getNavLabels, getSiteConfig } from '@/lib/site-content';
+import { getLocalizedPath } from '@/lib/site-locale';
 import { Button } from '@/components/ui/button';
 import { ChargeAndOrdinaryPanel } from './ChargeAndOrdinaryPanel';
 import { CoatOfArmsCanvas } from './CoatOfArmsCanvas';
@@ -75,6 +78,16 @@ interface WorkbenchTool {
  */
 export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const copy = getCoatWorkbenchCopy(locale);
+  const homeCopy = getHomeCopy(locale);
+  const siteConfig = getSiteConfig(locale);
+  const navLabels = getNavLabels(locale);
+  const nextLocale = locale === 'en' ? 'zh' : 'en';
+  const siteNavigationLinks = [
+    { href: getLocalizedPath(locale, '/'), label: navLabels.editor, isActive: false },
+    { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller, isActive: false },
+    { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker, isActive: true },
+    { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog, isActive: false },
+  ];
   const project = useCoatProjectStore((state) => state.project);
   const canUndo = useCoatProjectStore((state) => state.history.past.length > 0);
   const canRedo = useCoatProjectStore((state) => state.history.future.length > 0);
@@ -245,18 +258,30 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     setActiveToolId(toolId);
   };
   const blockBackgroundPointerEvent = (event: MouseEvent<HTMLDivElement>) => {
-    if (!isWorkbenchBlocked || isProjectDialogEvent(event.target)) return;
+    if (!isWorkbenchBlocked || isProjectLibraryModalInteractionEvent(event.target)) return;
     event.preventDefault();
     event.stopPropagation();
   };
   const blockBackgroundKeyboardEvent = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (!isWorkbenchBlocked || isProjectDialogEvent(event.target)) return;
+    if (!isWorkbenchBlocked || isProjectLibraryModalInteractionEvent(event.target)) return;
     event.preventDefault();
     event.stopPropagation();
   };
 
   return (
     <main aria-label={copy.workspace} className="coat-workbench coat-target-workbench" ref={workbenchRef}>
+      <ContentSiteTopbar
+        brandHref={getLocalizedPath(locale, '/') + '#editor-workspace'}
+        brandName={siteConfig.name}
+        brandSubtitle={homeCopy.heroEyebrow}
+        brandTitleClassName="text-base"
+        contentClassName="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8"
+        localeSwitchHref={getLocalizedPath(nextLocale, '/coat-of-arms-maker')}
+        localeSwitchLabel={navLabels.switchLocale}
+        navClassName="mt-3 flex flex-wrap items-center gap-2 sm:mt-4"
+        navLinks={siteNavigationLinks}
+        topbarClassName="z-50"
+      />
       <div
         aria-hidden={isWorkbenchBlocked || undefined}
         className="coat-workbench-content"
@@ -264,17 +289,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
         onClickCapture={blockBackgroundPointerEvent}
         onKeyDownCapture={blockBackgroundKeyboardEvent}
       >
-        <header className="coat-target-appbar">
-          <div className="coat-target-brand" aria-label={`${copy.shell.brand.firstLine} ${copy.shell.brand.secondLine} ${copy.shell.brand.accent}`}><Shield aria-hidden="true" /><span>{copy.shell.brand.firstLine}<br />{copy.shell.brand.secondLine} <b>{copy.shell.brand.accent}</b></span></div>
-          <h1 className="sr-only">{projectName}</h1>
-          <nav aria-label={copy.shell.informationNavigation} className="coat-target-info-links"><a href={locale === 'zh' ? '/zh/faq' : '/faq'}>{copy.shell.helpCenter}</a><a href={locale === 'zh' ? '/zh/changelog' : '/changelog'}>{copy.shell.changelog}</a></nav>
-        </header>
-        <div className="coat-target-actionbar">
-          <span className="coat-target-actionbar-spacer" />
-          <div className="coat-target-header-actions">
-            <ExportMenu locale={locale} project={project} />
-          </div>
-        </div>
+        <span className="sr-only">{projectName}</span>
         <div className="coat-target-editor-grid" data-tool-panel-collapsed={isToolPanelCollapsed}>
           <aside aria-label={copy.desktopTools} className="coat-target-left-panel hidden lg:flex" data-collapsed={isToolPanelCollapsed}>
             <ReferenceToolRail activeToolId={activeTool.id} expandedToolIds={expandedToolIds} isCollapsed={isToolPanelCollapsed} locale={locale} onCollapseChange={() => setIsToolPanelCollapsed((value) => !value)} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} treeBranches={toolTreeBranches} />
@@ -289,7 +304,10 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
                 <button aria-label={copy.redo} disabled={!canRedo} onClick={redo} type="button"><Redo2 /></button>
                 <button aria-label={copy.shell.openLocalProjectLibrary} className="coat-target-link-control" onClick={() => setProjectsOpen(true)} ref={projectTriggerRef} type="button"><Link2 /></button>
               </div>
-              <button aria-pressed={isMultiSelectEnabled} className="coat-target-multi-select" onClick={() => setIsMultiSelectEnabled((value) => !value)} type="button"><UsersRound />{copy.shell.multiSelect}</button>
+              <div className="coat-target-canvas-toolbar-actions">
+                <div className="coat-target-export-control"><ExportMenu locale={locale} project={project} /></div>
+                <button aria-pressed={isMultiSelectEnabled} className="coat-target-multi-select" onClick={() => setIsMultiSelectEnabled((value) => !value)} type="button"><UsersRound />{copy.shell.multiSelect}</button>
+              </div>
             </div>
             <div className="coat-target-artboard-wrap">
               <div className="coat-target-artboard" style={{
@@ -310,7 +328,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
           </section>
         </div>
         <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
-        <ProjectLibraryDialog locale={locale} open={projectsOpen} project={project} renderTrigger={false} triggerRef={projectTriggerRef} onOpenChange={setProjectsOpen} onProjectChange={replaceProject} />
+        <ProjectLibraryDialog locale={locale} open={projectsOpen} project={project} portalHost={workbenchRef.current} renderTrigger={false} triggerRef={projectTriggerRef} onOpenChange={setProjectsOpen} onProjectChange={replaceProject} />
       </div>
       {hasDraftRecoveryAction ? <section aria-label={copy.draftAvailable} className="coat-workbench-action-row coat-target-draft" role="status">
         {invalidDraftError ? <p role="alert">{copy.invalidDraftRecoveryDescription(invalidDraftError)}</p> : <p>{copy.draftRecoveryDescription}</p>}
@@ -370,8 +388,8 @@ function HowToPanel({ locale }: { locale: CoatLocale }) {
   </section>;
 }
 
-function isProjectDialogEvent(target: EventTarget | null): boolean {
-  return target instanceof Element && target.closest('[role="dialog"]') !== null;
+function isProjectLibraryModalInteractionEvent(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest('[data-coat-project-library-modal-interaction]') !== null;
 }
 
 function isUtilityToolId(value: string): value is UtilityToolId {

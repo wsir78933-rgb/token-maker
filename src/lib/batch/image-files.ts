@@ -9,6 +9,7 @@ export function createBatchItem(file: File): BatchItem {
     imageElement: null,
     renderedUrl: null,
     blob: null,
+    draft: null,
     status: 'loading',
   };
 }

@@ -7,7 +7,7 @@ import type { BlogPost } from './types';
 export type { BlogPost, BlogPostFaqItem, BlogPostHeading, PlaceholderCopy } from './types';
 export { addHeadingAnchors } from './html-utils';
 
-export const BLOG_POSTS_PER_PAGE = 9;
+export const BLOG_POSTS_PER_PAGE = 10;
 export const BLOG_PLACEHOLDER_MODE = false;
 
 // Re-export registry — the article data lives in registry.ts

@@ -5,6 +5,15 @@ import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultProject } from '@/lib/coat-of-arms/assets';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
+
+vi.mock('next/image', async () => {
+  const { createElement } = await import('react');
+  return {
+    default: ({ src, alt, ...imageProps }: { src: string; alt: string }) =>
+      createElement('img', { ...imageProps, alt, src }),
+  };
+});
+
 import { CoatOfArmsMaker } from './CoatOfArmsMaker';
 
 vi.mock('@/components/ui/button', async () => {
@@ -68,5 +77,19 @@ describe('CoatOfArmsMaker server render', () => {
 
     expect(markup).toContain('coat-workbench-content');
     expect(markup).toContain('inert');
+  });
+
+  it('keeps public navigation outside the recovery-pending inert workspace', () => {
+    const markup = renderWithoutBrowserApiAccess();
+
+    expect(markup.indexOf('site-topbar')).toBeGreaterThan(-1);
+    expect(markup.indexOf('site-topbar')).toBeLessThan(markup.indexOf('coat-workbench-content'));
+  });
+
+  it('renders the default project name as non-heading text', () => {
+    const markup = renderToString(<CoatOfArmsMaker locale="zh" />);
+
+    expect(markup).not.toContain('<h1');
+    expect(markup).toContain('<span class="sr-only">我的徽章</span>');
   });
 });

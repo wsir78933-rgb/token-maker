@@ -104,6 +104,25 @@ function resetStore() {
   useEditorStore.getState().resetAll();
 }
 
+function dispatchWheelEvent(
+  targetElement: Element,
+  deltaY: number,
+  deltaMode: number = WheelEvent.DOM_DELTA_PIXEL,
+) {
+  const wheelEvent = new WheelEvent('wheel', {
+    bubbles: true,
+    cancelable: true,
+    deltaY,
+    deltaMode,
+  });
+  let wasNotPrevented = true;
+  act(() => {
+    wasNotPrevented = targetElement.dispatchEvent(wheelEvent);
+  });
+
+  return { wheelEvent, wasNotPrevented };
+}
+
 describe('Canvas', () => {
   let localStorageMock: Storage;
 
@@ -298,24 +317,140 @@ describe('Canvas', () => {
     fireEvent.pointerUp(canvas, { clientX: 150, clientY: 120 });
   });
 
-  it('does not zoom the image when the wheel is used over the canvas workspace', () => {
+  it('zooms the image and prevents page scrolling when the wheel is used over the preview canvas', () => {
     const img = new Image();
-    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1 });
+    useEditorStore.setState({
+      imageUrl: 'blob:test',
+      imageElement: img,
+      imageScale: 1,
+      imageOffsetX: 48,
+      imageOffsetY: -24,
+    });
 
     render(<Canvas />);
     const canvas = document.querySelector('canvas.cursor-move') as HTMLCanvasElement;
     expect(canvas).not.toBeNull();
 
-    const wheelEvent = new WheelEvent('wheel', {
-      bubbles: true,
-      cancelable: true,
-      deltaY: -100,
-    });
-    const wasNotPrevented = canvas.dispatchEvent(wheelEvent);
+    const { wheelEvent, wasNotPrevented } = dispatchWheelEvent(canvas, -100);
+
+    expect(wasNotPrevented).toBe(false);
+    expect(wheelEvent.defaultPrevented).toBe(true);
+    const editorStateAfterWheel = useEditorStore.getState();
+    expect(editorStateAfterWheel.imageScale).toBeGreaterThan(1);
+    expect(editorStateAfterWheel.imageOffsetX).toBe(48);
+    expect(editorStateAfterWheel.imageOffsetY).toBe(-24);
+  });
+
+  it('leaves wheel events outside the square preview canvas untouched', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1 });
+
+    render(<Canvas />);
+    const workspace = screen.getByTestId('canvas-workspace');
+    const { wheelEvent, wasNotPrevented } = dispatchWheelEvent(workspace, -100);
 
     expect(wasNotPrevented).toBe(true);
     expect(wheelEvent.defaultPrevented).toBe(false);
     expect(useEditorStore.getState().imageScale).toBe(1);
+  });
+
+  it('leaves wheel events inside an empty preview canvas untouched', () => {
+    render(<Canvas />);
+    const imageUploader = screen.getByTestId('image-uploader');
+    const { wheelEvent, wasNotPrevented } = dispatchWheelEvent(imageUploader, -100);
+
+    expect(wasNotPrevented).toBe(true);
+    expect(wheelEvent.defaultPrevented).toBe(false);
+    expect(useEditorStore.getState().imageScale).toBe(1);
+  });
+
+  it('zooms the image and prevents page scrolling when the wheel is used over a batch preview canvas', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1 });
+
+    render(<Canvas previewMode="batch" />);
+    const canvas = document.querySelector('canvas.cursor-move') as HTMLCanvasElement;
+    const { wheelEvent, wasNotPrevented } = dispatchWheelEvent(canvas, -100);
+
+    expect(wasNotPrevented).toBe(false);
+    expect(wheelEvent.defaultPrevented).toBe(true);
+    expect(useEditorStore.getState().imageScale).toBeGreaterThan(1);
+  });
+
+  it('zooms out when the wheel scrolls down inside the preview canvas', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1 });
+
+    render(<Canvas />);
+    const canvas = document.querySelector('canvas.cursor-move') as HTMLCanvasElement;
+    dispatchWheelEvent(canvas, 100);
+
+    expect(useEditorStore.getState().imageScale).toBeLessThan(1);
+  });
+
+  it('normalizes pixel, line, and page wheel deltas before zooming', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1 });
+
+    render(<Canvas />);
+    const canvas = document.querySelector('canvas.cursor-move') as HTMLCanvasElement;
+
+    dispatchWheelEvent(canvas, -48, WheelEvent.DOM_DELTA_PIXEL);
+    const pixelDeltaScale = useEditorStore.getState().imageScale;
+
+    act(() => {
+      useEditorStore.getState().setImageScale(1);
+    });
+    dispatchWheelEvent(canvas, -3, WheelEvent.DOM_DELTA_LINE);
+    const lineDeltaScale = useEditorStore.getState().imageScale;
+
+    act(() => {
+      useEditorStore.getState().setImageScale(1);
+    });
+    dispatchWheelEvent(canvas, -1, WheelEvent.DOM_DELTA_PAGE);
+    const pageDeltaScale = useEditorStore.getState().imageScale;
+
+    act(() => {
+      useEditorStore.getState().setImageScale(1);
+    });
+    dispatchWheelEvent(canvas, -100, WheelEvent.DOM_DELTA_PIXEL);
+    const cappedPixelDeltaScale = useEditorStore.getState().imageScale;
+
+    expect(lineDeltaScale).toBeCloseTo(pixelDeltaScale);
+    expect(pageDeltaScale).toBeCloseTo(cappedPixelDeltaScale);
+  });
+
+  it.each([
+    { description: 'upper', initialScale: 4.99, deltaY: -10_000, expectedScale: 5 },
+    { description: 'lower', initialScale: 0.11, deltaY: 10_000, expectedScale: 0.1 },
+  ])('keeps image scale at the $description boundary', ({ initialScale, deltaY, expectedScale }) => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: initialScale });
+
+    render(<Canvas />);
+    const canvas = document.querySelector('canvas.cursor-move') as HTMLCanvasElement;
+    dispatchWheelEvent(canvas, deltaY);
+
+    expect(useEditorStore.getState().imageScale).toBe(expectedScale);
+  });
+
+  it('scales touchpad and mouse wheel deltas proportionally without a giant-event jump', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1 });
+
+    render(<Canvas />);
+    const canvas = document.querySelector('canvas.cursor-move') as HTMLCanvasElement;
+    dispatchWheelEvent(canvas, -20);
+    const touchpadZoomFactor = useEditorStore.getState().imageScale;
+
+    dispatchWheelEvent(canvas, -100);
+    const mouseZoomFactor = useEditorStore.getState().imageScale / touchpadZoomFactor;
+
+    dispatchWheelEvent(canvas, -10_000);
+    const cappedZoomFactor = useEditorStore.getState().imageScale / (touchpadZoomFactor * mouseZoomFactor);
+
+    expect(mouseZoomFactor).toBeGreaterThan(touchpadZoomFactor);
+    expect(cappedZoomFactor).toBeCloseTo(mouseZoomFactor);
   });
 
   it('keeps async asset refresh active after StrictMode effect replay', async () => {
@@ -355,5 +490,21 @@ describe('Canvas', () => {
     expect(previewFrame?.className).toContain('xl:max-h-[22rem]');
     expect(previewFrame?.className).not.toContain('max-h-[28rem]');
     expect(previewFrame?.className).not.toContain('max-w-[512px]');
+  });
+
+  it('uses the expanded desktop preview only in default mode', () => {
+    const { rerender } = render(<Canvas />);
+    const defaultWorkspace = screen.getByTestId('canvas-workspace');
+    const defaultPreviewFrame = defaultWorkspace.firstElementChild;
+
+    expect(defaultWorkspace.className).toContain('xl:p-3');
+    expect(defaultPreviewFrame?.className).toContain('max-w-[640px]');
+
+    rerender(<Canvas previewMode="batch" />);
+    const batchWorkspace = screen.getByTestId('canvas-workspace');
+    const batchPreviewFrame = batchWorkspace.firstElementChild;
+
+    expect(batchWorkspace.className).not.toContain('xl:p-3');
+    expect(batchPreviewFrame?.className).not.toContain('max-w-[640px]');
   });
 });

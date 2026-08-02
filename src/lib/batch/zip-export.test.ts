@@ -42,6 +42,7 @@ function createDoneBatchItem(fileName: string): BatchItem {
     imageElement: new Image(),
     renderedUrl: `blob:rendered-${fileName}`,
     blob: new Blob(['rendered'], { type: 'image/png' }),
+    draft: null,
     status: 'done',
   };
 }
