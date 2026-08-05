@@ -4,6 +4,7 @@ import {
   DND_2024_RULES_GLOSSARY_URL,
   DND_MAUL_2014_RULES_URL,
   DND_MAUL_2024_RULES_URL,
+  DND_MAUL_VIDEO_URL,
   EN_DND_GLAIVE_PATH,
   EN_DND_MACE_PATH,
   EN_DND_QUARTERSTAFF_PATH,
@@ -12,6 +13,7 @@ import {
   ZH_DND_MACE_PATH,
   ZH_DND_QUARTERSTAFF_PATH,
   ZH_EDITOR_PATH,
+  liteVideoEmbed,
 } from './shared';
 
 export const dndMaulArticleHtml = String.raw`
@@ -63,6 +65,11 @@ export const dndMaulArticleHtml = String.raw`
 <p>After the save fails, say the handoff out loud: “Prone; my next melee attack has Advantage,” or “Prone; the Paladin is next.” If the archer is next, say that too. The short call gives the table enough information to change plans before another roll starts.</p>
 
 <p>If the creature is already Prone, another Topple attempt adds nothing. Spend the attention on the next attack, the target's route, or a different mastery weapon instead.</p>
+
+<h2>Watch Topple inside the 2024 Weapon Mastery system</h2>
+<p>GameMasters covers every 2024 mastery property in one sequence. Jump to <a href="${DND_MAUL_VIDEO_URL}&amp;t=367s" rel="noreferrer noopener">6:07 for Topple</a>, then compare its save-and-Prone flow with the maul turn above.</p>
+
+${liteVideoEmbed('z1W7G1MMPBI', 'Weapon Mastery Ultimate Guide with Topple at 6:07')}
 
 <h2>Keep a useful turn when the save succeeds</h2>
 <p>A successful Constitution save does not erase the maul hit. The target still takes 2d6 Bludgeoning damage plus the applicable modifier. Build the turn so that Topple improves a hit rather than rescuing a weak plan.</p>
@@ -170,6 +177,11 @@ export const dndMaulArticleHtmlZh = String.raw`
 <p>目标豁免失败后，直接说清交接：“Prone，我下一次近战攻击有 Advantage。”或者“Prone，下一位是 Paladin。”若下一位是弓手，也说出来。这个短提醒能让全桌在下一次掷骰前调整计划。</p>
 
 <p>目标已经 Prone 时，再用一次 Topple 不会叠加任何效果。把注意力放在后续攻击、目标路线，或者另一把能承担不同工作的掌握武器上。</p>
+
+<h2>在 2024 Weapon Mastery 体系里看 Topple</h2>
+<p>GameMasters 用一个视频依次讲解 2024 的各项武器掌握。直接跳到 <a href="${DND_MAUL_VIDEO_URL}&amp;t=367s" rel="noreferrer noopener">6:07 的 Topple</a>，再把其中的豁免与 Prone 流程对照上面的巨锤回合。</p>
+
+${liteVideoEmbed('z1W7G1MMPBI', '2024 Weapon Mastery 视频，Topple 位于 6:07')}
 
 <h2>目标豁免成功时也要有完整回合</h2>
 <p>Constitution 豁免成功不会抹掉巨锤命中。目标仍会承受 2d6 Bludgeoning 加适用调整值。让 Topple 成为一次命中的额外收益，不要让整个回合只有在目标倒地时才成立。</p>

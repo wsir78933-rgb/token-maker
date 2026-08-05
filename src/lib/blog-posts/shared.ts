@@ -257,6 +257,7 @@ export const DND_POLEARM_MASTER_2024_RULES_URL =
   'https://roll20.net/compendium/dnd5e/Feats%3APolearm%20Master?expansion=32231';
 export const DND_MAUL_2024_RULES_URL = 'https://www.dndbeyond.com/equipment/25-maul';
 export const DND_MAUL_2014_RULES_URL = 'https://roll20.net/compendium/dnd5e/Maul';
+export const DND_MAUL_VIDEO_URL = 'https://www.youtube.com/watch?v=z1W7G1MMPBI';
 export const DND_2024_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment';
 export const DND_2024_RULES_GLOSSARY_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary';

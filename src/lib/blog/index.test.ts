@@ -120,6 +120,9 @@ describe('dnd maul blog post', () => {
     expect(englishPost?.bodyHtml).toContain('Pass three gates before you equip a maul');
     expect(englishPost?.bodyHtml).toContain('Resolve one maul hit in one clean sequence');
     expect(englishPost?.bodyHtml).toContain('Write a five-line maul turn card');
+    expect(englishPost?.bodyHtml).toContain('Watch Topple inside the 2024 Weapon Mastery system');
+    expect(englishPost?.bodyHtml).toContain('data-video-id="z1W7G1MMPBI"');
+    expect(englishPost?.bodyHtml).toContain('loading="lazy"');
     expect(englishPost?.bodyHtml).not.toContain('<table');
     expect(englishPost?.bodyHtml).not.toContain('<iframe');
     expect(englishPost?.faqItems).toBeUndefined();
@@ -130,6 +133,9 @@ describe('dnd maul blog post', () => {
     expect(chinesePost?.bodyHtml).toContain('装备巨锤前先过三道门槛');
     expect(chinesePost?.bodyHtml).toContain('按固定顺序结算一次巨锤命中');
     expect(chinesePost?.bodyHtml).toContain('写一张五行巨锤回合卡');
+    expect(chinesePost?.bodyHtml).toContain('在 2024 Weapon Mastery 体系里看 Topple');
+    expect(chinesePost?.bodyHtml).toContain('data-video-id="z1W7G1MMPBI"');
+    expect(chinesePost?.bodyHtml).toContain('loading="lazy"');
     expect(chinesePost?.bodyHtml).not.toContain('<table');
     expect(chinesePost?.bodyHtml).not.toContain('<iframe');
     expect(chinesePost?.faqItems).toBeUndefined();
