@@ -19,6 +19,8 @@ const DWELF_DND_SLUG = 'dwelf-dnd';
 const DND_DAGGER_SLUG = 'dnd-dagger';
 const FIREBOLT_DND_5E_SLUG = 'firebolt-dnd-5e';
 const SPECTATOR_DND_SLUG = 'spectator-dnd';
+const DND_QUARTERSTAFF_SLUG = 'dnd-quarterstaff';
+const DND_MAUL_SLUG = 'dnd-maul';
 
 function findSitemapEntry(url: string) {
   const sitemapEntry = sitemap().find((entry) => entry.url === url);
@@ -31,6 +33,46 @@ function findSitemapEntry(url: string) {
 }
 
 describe('blog sitemap entries', () => {
+  test('includes bilingual dnd maul blog routes with alternates', () => {
+    const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_MAUL_SLUG}`);
+    const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_MAUL_SLUG}`);
+
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_MAUL_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_MAUL_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_MAUL_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-05'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-05'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
+  test('includes bilingual dnd quarterstaff blog routes with alternates', () => {
+    const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_QUARTERSTAFF_SLUG}`);
+    const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_QUARTERSTAFF_SLUG}`);
+
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_QUARTERSTAFF_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_QUARTERSTAFF_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_QUARTERSTAFF_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-03'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-03'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes bilingual spectator dnd blog routes with alternates', () => {
     const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${SPECTATOR_DND_SLUG}`);
     const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${SPECTATOR_DND_SLUG}`);
@@ -194,7 +236,7 @@ describe('blog sitemap entries', () => {
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 
-  test('updates fourth blog hub pages after publishing Spectator', () => {
+  test('updates fourth blog hub pages after publishing Maul', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/4');
     const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/4');
 
@@ -204,12 +246,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/4',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-08-02'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-05'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-02'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-05'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);

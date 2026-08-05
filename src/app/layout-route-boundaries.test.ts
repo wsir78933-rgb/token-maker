@@ -1,8 +1,10 @@
 import { createElement, type ReactNode } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToReadableStream } from 'react-dom/server';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { getRequestNonce } from '@/lib/security/request-nonce';
 
 vi.mock('@/lib/security/request-nonce', () => ({
   getRequestNonce: vi.fn(async () => 'layout-request-nonce'),
@@ -37,7 +39,9 @@ async function renderLayout(rootLayout: RootLayout) {
   const layoutElement = await rootLayout({
     children: createElement('main', undefined, 'route content'),
   });
-  return renderToStaticMarkup(layoutElement);
+  const markupStream = await renderToReadableStream(layoutElement);
+
+  return new Response(markupStream).text();
 }
 
 function expectAnalyticsScripts(
@@ -65,6 +69,10 @@ function expectNoAnalyticsScripts(markup: string) {
 }
 
 describe('root layout route boundaries', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   afterEach(() => {
     vi.resetModules();
   });
@@ -102,12 +110,23 @@ describe('root layout route boundaries', () => {
     );
   });
 
-  it('keeps the local Coat Maker document roots free of advertising and analytics scripts', async () => {
+  it('requests a nonce for each local Coat Maker document root while keeping analytics scripts out', async () => {
     const EnglishCoatMakerRootLayout = (await import('./(maker-en)/layout')).default;
     const ChineseCoatMakerRootLayout = (await import('./(maker-zh)/layout')).default;
 
     expectNoAnalyticsScripts(await renderLayout(EnglishCoatMakerRootLayout));
+    expect(getRequestNonce).toHaveBeenCalledTimes(1);
     expectNoAnalyticsScripts(await renderLayout(ChineseCoatMakerRootLayout));
+    expect(getRequestNonce).toHaveBeenCalledTimes(2);
+  });
+
+  it('fails fast when a local Coat Maker document root cannot read its nonce', async () => {
+    const nonceError = new Error('getRequestNonce requires a non-empty CSP nonce; received value: null');
+    vi.mocked(getRequestNonce).mockRejectedValueOnce(nonceError);
+
+    const EnglishCoatMakerRootLayout = (await import('./(maker-en)/layout')).default;
+
+    await expect(renderLayout(EnglishCoatMakerRootLayout)).rejects.toThrow(nonceError.message);
   });
 
   it('keeps public-share pages below the root layouts without AdSense', () => {

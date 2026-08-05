@@ -29,6 +29,20 @@ const DWELF_DND_SLUG = 'dwelf-dnd';
 const DND_DAGGER_SLUG = 'dnd-dagger';
 const FIREBOLT_DND_5E_SLUG = 'firebolt-dnd-5e';
 const SPECTATOR_DND_SLUG = 'spectator-dnd';
+const DND_QUARTERSTAFF_SLUG = 'dnd-quarterstaff';
+const DND_MAUL_SLUG = 'dnd-maul';
+const FIRST_BLOG_PAGE_SLUGS = [
+  DND_MAUL_SLUG,
+  DND_QUARTERSTAFF_SLUG,
+  SPECTATOR_DND_SLUG,
+  FIREBOLT_DND_5E_SLUG,
+  DND_DAGGER_SLUG,
+  DWELF_DND_SLUG,
+  DND_FLUMPH_SLUG,
+  DND_DEATH_KNIGHT_SLUG,
+  DND_5E_ARMORER_SLUG,
+  DND_SWORD_SHEATHS_SLUG,
+];
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -91,25 +105,144 @@ describe('published blog body voice', () => {
   });
 });
 
+describe('dnd maul blog post', () => {
+  test('publishes a bilingual maul turn guide at the top of the blog', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+
+    const englishPost = getBlogPost('en', DND_MAUL_SLUG);
+    const chinesePost = getBlogPost('zh', DND_MAUL_SLUG);
+
+    expect(englishPost?.title).toBe('DND Maul 5e: Heavy, Topple, and a Clean Turn Plan');
+    expect(englishPost?.updatedAt).toBe('2026-08-05');
+    expect(englishPost?.bodyHtml).toContain('Pass three gates before you equip a maul');
+    expect(englishPost?.bodyHtml).toContain('Resolve one maul hit in one clean sequence');
+    expect(englishPost?.bodyHtml).toContain('Write a five-line maul turn card');
+    expect(englishPost?.bodyHtml).not.toContain('<table');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.faqItems).toBeUndefined();
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-maul-guide.webp');
+
+    expect(chinesePost?.title).toBe('DND 巨锤（Maul）5e：Heavy、Topple 与清楚回合流程');
+    expect(chinesePost?.updatedAt).toBe('2026-08-05');
+    expect(chinesePost?.bodyHtml).toContain('装备巨锤前先过三道门槛');
+    expect(chinesePost?.bodyHtml).toContain('按固定顺序结算一次巨锤命中');
+    expect(chinesePost?.bodyHtml).toContain('写一张五行巨锤回合卡');
+    expect(chinesePost?.bodyHtml).not.toContain('<table');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.faqItems).toBeUndefined();
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-maul-guide.webp');
+  });
+
+  test('builds maul metadata, article schema, assets, and llms discovery', () => {
+    expect(getBlogPostPath('en', DND_MAUL_SLUG)).toBe('/blog/dnd-maul');
+    expect(getBlogPostPath('zh', DND_MAUL_SLUG)).toBe('/zh/blog/dnd-maul');
+    expect(createBlogPostMetadata('en', DND_MAUL_SLUG).alternates?.canonical).toBe('/blog/dnd-maul');
+    expect(createBlogPostMetadata('zh', DND_MAUL_SLUG).alternates?.canonical).toBe('/zh/blog/dnd-maul');
+    expect(buildBlogPostStructuredData('en', DND_MAUL_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-05',
+      dateModified: '2026-08-05',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-maul',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-maul-guide.webp'],
+    });
+    expect(buildBlogPostStructuredData('zh', DND_MAUL_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-05',
+      dateModified: '2026-08-05',
+      inLanguage: 'zh-CN',
+      url: 'https://www.tokenmaker.one/zh/blog/dnd-maul',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-maul-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_MAUL_SLUG)).toBeNull();
+    expect(buildBlogPostFaqStructuredData('zh', DND_MAUL_SLUG)).toBeNull();
+    expect(existsSync('public/blog/covers/en/dnd-maul-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-maul');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-maul');
+  });
+});
+
+describe('dnd quarterstaff blog post', () => {
+  test('publishes a bilingual hand-choice guide at the top of the blog', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 4),
+    );
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 4),
+    );
+
+    const englishPost = getBlogPost('en', DND_QUARTERSTAFF_SLUG);
+    const chinesePost = getBlogPost('zh', DND_QUARTERSTAFF_SLUG);
+
+    expect(englishPost?.title).toBe('DND Quarterstaff 5e: Hand Choices, Topple, and Builds');
+    expect(englishPost?.updatedAt).toBe('2026-08-03');
+    expect(englishPost?.bodyHtml).toContain('Decide what the other hand is doing');
+    expect(englishPost?.bodyHtml).toContain('Let Topple set the party order');
+    expect(englishPost?.bodyHtml).toContain('Run three different quarterstaff turns');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.faqItems).toBeUndefined();
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-quarterstaff-guide.webp');
+
+    expect(chinesePost?.title).toBe('DND 长棍（Quarterstaff）5e：持握选择、Topple 与构筑');
+    expect(chinesePost?.updatedAt).toBe('2026-08-03');
+    expect(chinesePost?.bodyHtml).toContain('先决定另一只手要做什么');
+    expect(chinesePost?.bodyHtml).toContain('让 Topple 决定队伍出手顺序');
+    expect(chinesePost?.bodyHtml).toContain('跑三种不同的长棍回合');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.faqItems).toBeUndefined();
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-quarterstaff-guide.webp');
+  });
+
+  test('builds quarterstaff metadata, article schema, assets, and llms discovery', () => {
+    expect(getBlogPostPath('en', DND_QUARTERSTAFF_SLUG)).toBe('/blog/dnd-quarterstaff');
+    expect(getBlogPostPath('zh', DND_QUARTERSTAFF_SLUG)).toBe('/zh/blog/dnd-quarterstaff');
+    expect(createBlogPostMetadata('en', DND_QUARTERSTAFF_SLUG).alternates?.canonical).toBe('/blog/dnd-quarterstaff');
+    expect(createBlogPostMetadata('zh', DND_QUARTERSTAFF_SLUG).alternates?.canonical).toBe('/zh/blog/dnd-quarterstaff');
+    expect(buildBlogPostStructuredData('en', DND_QUARTERSTAFF_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-03',
+      dateModified: '2026-08-03',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-quarterstaff',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-quarterstaff-guide.webp'],
+    });
+    expect(buildBlogPostStructuredData('zh', DND_QUARTERSTAFF_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-03',
+      dateModified: '2026-08-03',
+      inLanguage: 'zh-CN',
+      url: 'https://www.tokenmaker.one/zh/blog/dnd-quarterstaff',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-quarterstaff-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_QUARTERSTAFF_SLUG)).toBeNull();
+    expect(buildBlogPostFaqStructuredData('zh', DND_QUARTERSTAFF_SLUG)).toBeNull();
+    expect(existsSync('public/blog/covers/en/dnd-quarterstaff-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-quarterstaff');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-quarterstaff');
+  });
+});
+
 describe('spectator dnd blog post', () => {
   test('publishes a bilingual spectator guardian guide at the top of the blog', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
 
     const englishPost = getBlogPost('en', SPECTATOR_DND_SLUG);
     const chinesePost = getBlogPost('zh', SPECTATOR_DND_SLUG);
@@ -171,18 +304,12 @@ describe('dnd dagger blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-    ]);
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 4),
+    );
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 4),
+    );
 
     const englishPost = getBlogPost('en', DND_DAGGER_SLUG);
     const chinesePost = getBlogPost('zh', DND_DAGGER_SLUG);
@@ -251,18 +378,12 @@ describe('dnd dagger blog post', () => {
 
 describe('firebolt dnd 5e blog post', () => {
   test('publishes a bilingual Fire Bolt tactical guide near the top of the blog', () => {
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-    ]);
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 4),
+    );
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 4)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 4),
+    );
 
     const englishPost = getBlogPost('en', FIREBOLT_DND_5E_SLUG);
     const chinesePost = getBlogPost('zh', FIREBOLT_DND_5E_SLUG);
@@ -318,20 +439,12 @@ describe('dwelf dnd blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
 
     const englishPost = getBlogPost('en', DWELF_DND_SLUG);
     const chinesePost = getBlogPost('zh', DWELF_DND_SLUG);
@@ -390,31 +503,9 @@ describe('dnd flumph blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-      DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-      DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
-    ]);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
 
     const englishPost = getBlogPost('en', DND_FLUMPH_SLUG);
     const chinesePost = getBlogPost('zh', DND_FLUMPH_SLUG);
@@ -497,21 +588,13 @@ describe('dnd 5e armorer blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
 
     const englishPost = getBlogPost('en', DND_5E_ARMORER_SLUG);
     const chinesePost = getBlogPost('zh', DND_5E_ARMORER_SLUG);
@@ -720,21 +803,13 @@ describe('dnd thunderclap blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
   });
 
   test('publishes the dnd thunderclap article in English and Chinese', () => {
@@ -919,21 +994,13 @@ describe('dnd find familiar blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
   });
 
   test('publishes the dnd find familiar article in English and Chinese', () => {
@@ -1130,21 +1197,13 @@ describe('dnd hex blog post', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
-    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
 
-    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual([
-      SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
-      DND_DAGGER_SLUG,
-      DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
-    ]);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug).slice(0, 5)).toEqual(
+      FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
+    );
   });
 
   test('publishes the dnd hex article in English and Chinese', () => {
@@ -1337,18 +1396,18 @@ describe('dnd hex blog post', () => {
 });
 
 describe('paladin 2024 spells dnd blog post', () => {
-  test('keeps the Paladin article near the top of the second blog page without changing page count', () => {
+  test('keeps the second blog page boundary stable without changing page count', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
-      DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_THUNDERCLAP_SLUG,
+      DND_FIND_FAMILIAR_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
-      DND_HEX_SLUG,
-      PALADIN_2024_SPELLS_DND_SLUG,
+      DND_THUNDERCLAP_SLUG,
+      DND_FIND_FAMILIAR_SLUG,
     ]);
   });
 

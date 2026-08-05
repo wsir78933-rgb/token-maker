@@ -23,6 +23,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DND Maul 5e](https://www.tokenmaker.one/blog/dnd-maul): Check Martial proficiency, the Strength 13 Heavy threshold, and two-hand commitment, then resolve Topple and hand Prone to the next useful action.
+- [DND Quarterstaff 5e](https://www.tokenmaker.one/blog/dnd-quarterstaff): Choose the hand setup, attack ability, Topple timing, Monk or Shillelagh rules, Polearm Master action economy, and VTT token grip for a quarterstaff.
 - [Spectator DnD](https://www.tokenmaker.one/blog/spectator-dnd): Run a spectator as a contract-bound guardian with clear 2014/2024 rules, eye-ray pressure, Spell Reflection, and VTT token cues.
 - [Fire Bolt DnD 5e](https://www.tokenmaker.one/blog/firebolt-dnd-5e): Choose a Fire Bolt target, resolve the ranged spell attack, handle flammable objects, and keep the caster readable on a VTT map.
 - [DND Dagger 5e: Stats, Rules, and Best Uses](https://www.tokenmaker.one/blog/dnd-dagger): Dagger stats, thrown range, Rogue uses, 2014/2024 Nick rules, VTT token tips, FAQ, and companion video.
@@ -60,6 +62,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 巨锤（Maul）5e：Heavy、Topple 与清楚回合流程](https://www.tokenmaker.one/zh/blog/dnd-maul)
+- [DND 长棍（Quarterstaff）5e：持握选择、Topple 与构筑](https://www.tokenmaker.one/zh/blog/dnd-quarterstaff)
 - [Spectator DND：守卫命令、Eye Rays 与 VTT Token](https://www.tokenmaker.one/zh/blog/spectator-dnd)
 - [Fire Bolt DND 5e：攻击判定、点燃物体与 VTT 战术](https://www.tokenmaker.one/zh/blog/firebolt-dnd-5e)
 - [dnd dagger 指南：5e 数据、用法、Nick 与 FAQ](https://www.tokenmaker.one/zh/blog/dnd-dagger)

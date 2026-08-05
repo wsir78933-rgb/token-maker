@@ -36,6 +36,8 @@ import {
   DND_DWELF_COVER_PATH,
   FIREBOLT_DND_5E_COVER_PATH,
   SPECTATOR_DND_COVER_PATH,
+  DND_QUARTERSTAFF_COVER_PATH,
+  DND_MAUL_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -97,6 +99,11 @@ import {
   fireboltDnd5eArticleHtmlZh,
 } from '@/lib/blog-posts/firebolt-dnd-5e';
 import { spectatorDndArticleHtml, spectatorDndArticleHtmlZh } from '@/lib/blog-posts/spectator-dnd';
+import {
+  dndQuarterstaffArticleHtml,
+  dndQuarterstaffArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-quarterstaff';
+import { dndMaulArticleHtml, dndMaulArticleHtmlZh } from '@/lib/blog-posts/dnd-maul';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -153,6 +160,8 @@ const DND_FLUMPH_UPDATED_AT = '2026-07-26';
 const DWELF_DND_UPDATED_AT = '2026-07-27';
 const FIREBOLT_DND_5E_UPDATED_AT = '2026-07-29';
 const SPECTATOR_DND_UPDATED_AT = '2026-08-02';
+const DND_QUARTERSTAFF_UPDATED_AT = '2026-08-03';
+const DND_MAUL_UPDATED_AT = '2026-08-05';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2395,6 +2404,82 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndMaulArticle: BlogPost = {
+  slug: 'dnd-maul',
+  title: 'DND Maul 5e: Heavy, Topple, and a Clean Turn Plan',
+  seoTitle: 'DND Maul 5e Guide: Heavy, Topple, and Best Uses',
+  metaDescription:
+    'Use a DND maul with the right proficiency, Strength 13 Heavy check, Topple timing, weapon alternatives, turn card, and readable VTT token.',
+  excerpt:
+    'Check Martial proficiency, Strength 13, and two hands, then resolve Topple cleanly and hand the Prone result to the next useful action.',
+  publishedAt: DND_MAUL_UPDATED_AT,
+  updatedAt: DND_MAUL_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Weapon Tactics',
+  coverImage: DND_MAUL_COVER_PATH,
+  coverAlt:
+    'DND maul guide cover showing an adventurer swinging a broad two-handed hammer at an armored foe on a dungeon battle-map grid',
+  bodyHtml: dndMaulArticleHtml,
+  relatedSlugs: ['dnd-quarterstaff', 'dnd-glaive', 'dnd-mace', 'dnd-armor-guide'],
+};
+
+const dndMaulArticleZh: BlogPost = {
+  slug: 'dnd-maul',
+  title: 'DND 巨锤（Maul）5e：Heavy、Topple 与清楚回合流程',
+  seoTitle: 'DND 巨锤指南：Heavy、Topple 与最佳用法',
+  metaDescription:
+    '检查军用武器熟练、力量 13 Heavy 门槛和双手要求，再用正确 Topple 顺序、武器选择、回合卡与 VTT Token 使用 DND 巨锤。',
+  excerpt:
+    '先检查军用武器熟练、力量 13 和双手要求，再清楚结算 Topple，把 Prone 结果交给下一个真正有用的动作。',
+  publishedAt: DND_MAUL_UPDATED_AT,
+  updatedAt: DND_MAUL_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '武器战术',
+  coverImage: DND_MAUL_COVER_PATH,
+  coverAlt:
+    'DND 巨锤指南封面图：冒险者在地城战斗地图网格上用双手宽头巨锤砸向披甲敌人',
+  bodyHtml: dndMaulArticleHtmlZh,
+  relatedSlugs: ['dnd-quarterstaff', 'dnd-glaive', 'dnd-mace', 'dnd-armor-guide'],
+};
+
+const dndQuarterstaffArticle: BlogPost = {
+  slug: 'dnd-quarterstaff',
+  title: 'DND Quarterstaff 5e: Hand Choices, Topple, and Builds',
+  seoTitle: 'DND Quarterstaff 5e Guide: Stats, Topple, Monk, and Shillelagh',
+  metaDescription:
+    'Use a DND quarterstaff with the right hand setup, attack ability, Topple timing, Monk rules, Shillelagh, Polearm Master, and VTT token cues.',
+  excerpt:
+    'Choose one hand or two, set the correct attack ability, time Topple for the party, and run Monk, Shillelagh, or Polearm Master turns cleanly.',
+  publishedAt: DND_QUARTERSTAFF_UPDATED_AT,
+  updatedAt: DND_QUARTERSTAFF_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Weapon Tactics',
+  coverImage: DND_QUARTERSTAFF_COVER_PATH,
+  coverAlt:
+    'DND quarterstaff guide cover showing an adventurer using a wooden staff to topple an armored foe on a dungeon battle-map grid',
+  bodyHtml: dndQuarterstaffArticleHtml,
+  relatedSlugs: ['dnd-glaive', 'dnd-mace', 'dnd-dagger', 'dnd-armor-guide'],
+};
+
+const dndQuarterstaffArticleZh: BlogPost = {
+  slug: 'dnd-quarterstaff',
+  title: 'DND 长棍（Quarterstaff）5e：持握选择、Topple 与构筑',
+  seoTitle: 'DND 长棍指南：数据、Topple、Monk 与 Shillelagh',
+  metaDescription:
+    '用正确持握、攻击属性、Topple 顺序、Monk 规则、Shillelagh、Polearm Master 和 VTT 视觉来使用 DND 长棍。',
+  excerpt:
+    '决定单手或双手，写对攻击属性，为队伍安排 Topple，并清楚运行 Monk、Shillelagh 或 Polearm Master 回合。',
+  publishedAt: DND_QUARTERSTAFF_UPDATED_AT,
+  updatedAt: DND_QUARTERSTAFF_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '武器战术',
+  coverImage: DND_QUARTERSTAFF_COVER_PATH,
+  coverAlt:
+    'DND 长棍指南封面图：冒险者在地城战斗地图网格上用木制长棍击倒一名披甲敌人',
+  bodyHtml: dndQuarterstaffArticleHtmlZh,
+  relatedSlugs: ['dnd-glaive', 'dnd-mace', 'dnd-dagger', 'dnd-armor-guide'],
+};
+
 const spectatorDndArticleZh: BlogPost = {
   slug: 'spectator-dnd',
   title: 'Spectator DND：守卫命令、Eye Rays 与 VTT Token',
@@ -3222,10 +3307,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

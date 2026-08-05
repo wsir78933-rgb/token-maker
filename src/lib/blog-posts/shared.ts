@@ -37,6 +37,8 @@ export const DND_FLUMPH_COVER_PATH = '/blog/covers/en/dnd-flumph-guide.webp';
 export const DND_DWELF_COVER_PATH = '/blog/covers/en/dwelf-dnd-guide.webp';
 export const FIREBOLT_DND_5E_COVER_PATH = '/blog/covers/en/firebolt-dnd-5e-guide.webp';
 export const SPECTATOR_DND_COVER_PATH = '/blog/covers/en/spectator-dnd-guide.webp';
+export const DND_QUARTERSTAFF_COVER_PATH = '/blog/covers/en/dnd-quarterstaff-guide.webp';
+export const DND_MAUL_COVER_PATH = '/blog/covers/en/dnd-maul-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -246,6 +248,19 @@ export const DND_SPECTATOR_2024_ROLL20_URL =
 export const DND_SPECTATOR_TACTICS_URL = 'https://www.themonstersknow.com/beholder-tactics/';
 export const DND_SPECTATOR_BODYGUARD_RULING_URL =
   'https://rpg.stackexchange.com/questions/142102/can-a-spectator-be-a-bodyguard-can-the-treasure-item-it-guards-be-a-person-pers';
+export const DND_QUARTERSTAFF_2024_RULES_URL = 'https://www.dndbeyond.com/equipment/12-quarterstaff';
+export const DND_QUARTERSTAFF_2014_RULES_URL = 'https://roll20.net/compendium/dnd5e/Quarterstaff';
+export const DND_MONK_2024_RULES_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Monk';
+export const DND_SHILLELAGH_2024_RULES_URL = 'https://www.dndbeyond.com/spells/2618984-shillelagh';
+export const DND_POLEARM_MASTER_2024_RULES_URL =
+  'https://roll20.net/compendium/dnd5e/Feats%3APolearm%20Master?expansion=32231';
+export const DND_MAUL_2024_RULES_URL = 'https://www.dndbeyond.com/equipment/25-maul';
+export const DND_MAUL_2014_RULES_URL = 'https://roll20.net/compendium/dnd5e/Maul';
+export const DND_2024_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment';
+export const DND_2024_RULES_GLOSSARY_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary';
+export const DND_2024_FEATS_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/feats';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -294,6 +309,8 @@ export const EN_DND_SWORD_SHEATHS_PATH = getLocalizedPath('en', '/blog/dnd-sword
 export const ZH_DND_SWORD_SHEATHS_PATH = getLocalizedPath('zh', '/blog/dnd-sword-sheaths');
 export const EN_DND_FLUMPH_PATH = getLocalizedPath('en', '/blog/dnd-flumph');
 export const ZH_DND_FLUMPH_PATH = getLocalizedPath('zh', '/blog/dnd-flumph');
+export const EN_DND_QUARTERSTAFF_PATH = getLocalizedPath('en', '/blog/dnd-quarterstaff');
+export const ZH_DND_QUARTERSTAFF_PATH = getLocalizedPath('zh', '/blog/dnd-quarterstaff');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
 export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');

@@ -38,6 +38,8 @@ const DWELF_DND_SLUG = 'dwelf-dnd';
 const DND_DAGGER_SLUG = 'dnd-dagger';
 const FIREBOLT_DND_5E_SLUG = 'firebolt-dnd-5e';
 const SPECTATOR_DND_SLUG = 'spectator-dnd';
+const DND_QUARTERSTAFF_SLUG = 'dnd-quarterstaff';
+const DND_MAUL_SLUG = 'dnd-maul';
 
 function getStructuredDataTypes(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -335,6 +337,16 @@ describe('coat maker routes', () => {
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual Maul detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_MAUL_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_MAUL_SLUG });
+  });
+
+  it('emits bilingual Quarterstaff detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_QUARTERSTAFF_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_QUARTERSTAFF_SLUG });
+  });
+
   it('emits bilingual Spectator detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: SPECTATOR_DND_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: SPECTATOR_DND_SLUG });
