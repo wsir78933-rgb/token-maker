@@ -31,7 +31,9 @@ const FIREBOLT_DND_5E_SLUG = 'firebolt-dnd-5e';
 const SPECTATOR_DND_SLUG = 'spectator-dnd';
 const DND_QUARTERSTAFF_SLUG = 'dnd-quarterstaff';
 const DND_MAUL_SLUG = 'dnd-maul';
+const DND_GNOME_NAMES_SLUG = 'dnd-gnome-names';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_GNOME_NAMES_SLUG,
   DND_MAUL_SLUG,
   DND_QUARTERSTAFF_SLUG,
   SPECTATOR_DND_SLUG,
@@ -41,7 +43,6 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DND_FLUMPH_SLUG,
   DND_DEATH_KNIGHT_SLUG,
   DND_5E_ARMORER_SLUG,
-  DND_SWORD_SHEATHS_SLUG,
 ];
 
 describe('published blog body voice', () => {
@@ -102,6 +103,91 @@ describe('published blog body voice', () => {
         }
       }
     }
+  });
+});
+
+describe('dnd gnome names blog post', () => {
+  test('publishes a bilingual gnome naming workshop with a lazy video', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+
+    const englishPost = getBlogPost('en', DND_GNOME_NAMES_SLUG);
+    const chinesePost = getBlogPost('zh', DND_GNOME_NAMES_SLUG);
+
+    expect(englishPost?.title).toBe('DND Gnome Names: First Names, Clans, Nicknames, and Character Hooks');
+    expect(englishPost?.updatedAt).toBe('2026-08-06');
+    expect(englishPost?.bodyHtml).toContain('Start with the name your table will actually say');
+    expect(englishPost?.bodyHtml).toContain('Build a three-part gnome name');
+    expect(englishPost?.bodyHtml).toContain('Turn one name into a playable character');
+    expect(englishPost?.bodyHtml).toContain('Keep a whole gnome cast easy to hear');
+    expect(englishPost?.bodyHtml).toContain('data-video-id="HRX8c3IihL0"');
+    expect(englishPost?.bodyHtml).toContain('loading="lazy"');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.faqItems).toHaveLength(5);
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-gnome-names-guide.webp');
+    for (const faqItem of englishPost?.faqItems ?? []) {
+      expect(englishPost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
+      expect(englishPost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+    }
+
+    expect(chinesePost?.title).toBe('DND 侏儒名字：名字、氏族名、昵称与角色钩子');
+    expect(chinesePost?.updatedAt).toBe('2026-08-06');
+    expect(chinesePost?.bodyHtml).toContain('先选桌上真正会喊的名字');
+    expect(chinesePost?.bodyHtml).toContain('组合一个三段式侏儒名字');
+    expect(chinesePost?.bodyHtml).toContain('把一个名字变成能直接上桌的角色');
+    expect(chinesePost?.bodyHtml).toContain('让整组侏儒名字听起来不混');
+    expect(chinesePost?.bodyHtml).toContain('data-video-id="HRX8c3IihL0"');
+    expect(chinesePost?.bodyHtml).toContain('loading="lazy"');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.faqItems).toHaveLength(5);
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-gnome-names-guide.webp');
+    for (const faqItem of chinesePost?.faqItems ?? []) {
+      expect(chinesePost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
+      expect(chinesePost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+    }
+  });
+
+  test('builds gnome names metadata, schema, assets, and llms discovery', () => {
+    expect(getBlogPostPath('en', DND_GNOME_NAMES_SLUG)).toBe('/blog/dnd-gnome-names');
+    expect(getBlogPostPath('zh', DND_GNOME_NAMES_SLUG)).toBe('/zh/blog/dnd-gnome-names');
+    expect(createBlogPostMetadata('en', DND_GNOME_NAMES_SLUG).alternates?.canonical).toBe(
+      '/blog/dnd-gnome-names',
+    );
+    expect(createBlogPostMetadata('zh', DND_GNOME_NAMES_SLUG).alternates?.canonical).toBe(
+      '/zh/blog/dnd-gnome-names',
+    );
+    expect(buildBlogPostStructuredData('en', DND_GNOME_NAMES_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-06',
+      dateModified: '2026-08-06',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-gnome-names',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-gnome-names-guide.webp'],
+    });
+    expect(buildBlogPostStructuredData('zh', DND_GNOME_NAMES_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-06',
+      dateModified: '2026-08-06',
+      inLanguage: 'zh-CN',
+      url: 'https://www.tokenmaker.one/zh/blog/dnd-gnome-names',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-gnome-names-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_GNOME_NAMES_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+    });
+    expect(buildBlogPostFaqStructuredData('zh', DND_GNOME_NAMES_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+    });
+    expect(existsSync('public/blog/covers/en/dnd-gnome-names-guide.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-gnome-names/gnome-race-video-placeholder.webp')).toBe(
+      true,
+    );
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-gnome-names');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-gnome-names');
   });
 });
 
@@ -1407,13 +1493,13 @@ describe('paladin 2024 spells dnd blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_SWORD_SHEATHS_SLUG,
       DND_THUNDERCLAP_SLUG,
-      DND_FIND_FAMILIAR_SLUG,
     ]);
   });
 

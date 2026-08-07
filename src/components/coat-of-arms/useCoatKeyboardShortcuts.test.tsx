@@ -16,8 +16,8 @@ function createKeyboardProject(): CoatProject {
     ...project,
     layers: project.layers.map((layer, index) => ({ ...layer, id: index === 0 ? 'background-1' : 'shield-1' })),
   };
-  const withFirstCharge = applyProjectCommand(stableProject, { type: 'add-layer', assetId: 'golden-lion' });
-  const withSecondCharge = applyProjectCommand(withFirstCharge, { type: 'add-layer', assetId: 'eight-point-star' });
+  const withFirstCharge = applyProjectCommand(stableProject, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+  const withSecondCharge = applyProjectCommand(withFirstCharge, { type: 'add-layer', assetId: 'material-symbol-eight-point-star' });
   return {
     ...withSecondCharge,
     layers: withSecondCharge.layers.map((layer, index) => (

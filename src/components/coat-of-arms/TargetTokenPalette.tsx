@@ -12,15 +12,15 @@ import { getCoatWorkbenchCopy, tokenPaletteCategories, type TokenPaletteCategory
 
 type TokenAsset = Extract<CoatAsset, { kind: 'charge' }>;
 const featuredTokenAssetIds = new Set([
-  'soaring-eagle',
-  'compass-rose',
-  'eight-point-star',
-  'cross-pattee',
-  'crescent-moon',
-  'castle-key',
-  'mariners-anchor',
-  'heraldic-rose',
-  'fleur-de-lis',
+  'material-animal-eagle-displayed',
+  'material-animal-lion-rampant',
+  'material-symbol-compass-rose',
+  'material-symbol-eight-point-star',
+  'material-symbol-crescent-moon',
+  'material-object-castle-tower',
+  'material-object-mariner-anchor',
+  'material-plant-fleur-de-lis',
+  'material-plant-tudor-rose',
 ]);
 
 interface TokenGalleryCard {
@@ -85,6 +85,8 @@ export function TargetTokenPalette({ locale }: { locale: CoatLocale }) {
           >
             {rasterVariant
               ? <img alt="" src={rasterVariant.src} />
+              : asset.rasterSrc
+                ? <img alt="" src={asset.rasterSrc} />
               : <svg aria-hidden="true" viewBox="0 0 100 110"><path d={asset.svgPath} fill="#e9e9e9" /></svg>}
             <span>{cardName}</span>
           </button>

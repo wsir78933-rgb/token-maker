@@ -7,8 +7,6 @@ import {
 
 const catalogSections = [
   { section: 'shield' as const, categories: shieldReferenceCategories },
-  { section: 'charge' as const, categories: ['animal', 'object', 'plant', 'human', 'symbol'] },
-  { section: 'top' as const, categories: ['crown', 'mantle', 'supporter', 'other'] },
 ] as const;
 
 const localSvgReferencePattern = /(?:https?:|\/\/|www\.|data:|url\()/i;
@@ -35,9 +33,8 @@ describe('reference catalog', () => {
     expect(listReferenceCatalogEntries('shield', 'round')).toHaveLength(30);
     expect(listReferenceCatalogEntries('shield', 'lozenge')).toHaveLength(30);
     expect(shieldReferenceCategories.flatMap((category) => listReferenceCatalogEntries('shield', category))).toHaveLength(228);
-    expect(listReferenceCatalogEntries('charge', 'animal')).toHaveLength(369);
-    expect(listReferenceCatalogEntries('top', 'crown')).toHaveLength(73);
-
+    expect(() => listReferenceCatalogEntries('charge', 'animal')).toThrow('Invalid reference catalog category for charge: animal');
+    expect(() => listReferenceCatalogEntries('top', 'crown')).toThrow('Invalid reference catalog category for top: crown');
   });
 
   it('gives every kite shield reference card a unique, local, named outline identity', () => {
@@ -180,214 +177,8 @@ describe('reference catalog', () => {
     expect(new Set(lozengeSemanticKeys)).toHaveLength(30);
   });
 
-  it('gives every animal reference card a unique, local, semantic identity', () => {
-    const animalEntries = listReferenceCatalogEntries('charge', 'animal');
-    const genericAnimalName = /^Animal charge \d+$/i;
-    const genericAnimalNameZh = /^动物(?:图章|纹章) \d+$/;
-    const animalSemanticKeys = animalEntries.map((entry) => Reflect.get(entry, 'semanticKey'));
 
-    expect(animalEntries).toHaveLength(369);
-    expect(animalEntries.map((entry) => entry.id)).toEqual(expect.arrayContaining([
-      'lion-rampant',
-      'animal-charge-2',
-      'animal-charge-369',
-    ]));
-    expect(animalEntries.every((entry) => (
-      !genericAnimalName.test(entry.name)
-      && !genericAnimalNameZh.test(entry.nameZh)
-      && entry.searchTerms.every((term) => !genericAnimalName.test(term) && !genericAnimalNameZh.test(term))
-    ))).toBe(true);
-    expect(animalSemanticKeys.every((semanticKey) => (
-      typeof semanticKey === 'string' && /^[a-z]+(?:-[a-z0-9]+){2,}$/.test(semanticKey)
-    ))).toBe(true);
-    expect(new Set(animalSemanticKeys)).toHaveLength(369);
-  });
-
-  it('gives every object reference card a unique, local, named object identity', () => {
-    const objectEntries = listReferenceCatalogEntries('charge', 'object');
-    const genericObjectName = /^Object charge \d+$/i;
-    const genericObjectNameZh = /^器物(?:图章|纹章) \d+$/;
-    const objectSemanticKeys = objectEntries.map((entry) => Reflect.get(entry, 'objectSemanticKey'));
-
-    expect(objectEntries).toHaveLength(105);
-    expect(objectEntries.map((entry) => entry.id)).toEqual(expect.arrayContaining([
-      'object-charge-1',
-      'object-charge-105',
-    ]));
-    expect(objectEntries.every((entry) => (
-      !genericObjectName.test(entry.name)
-      && !genericObjectNameZh.test(entry.nameZh)
-      && entry.searchTerms.every((term) => !genericObjectName.test(term) && !genericObjectNameZh.test(term))
-      && entry.svgParts.length >= 2
-    ))).toBe(true);
-    expect(objectSemanticKeys.every((semanticKey) => (
-      typeof semanticKey === 'string' && /^object-[a-z]+-[a-z]+$/.test(semanticKey)
-    ))).toBe(true);
-    expect(new Set(objectSemanticKeys)).toHaveLength(105);
-  });
-
-  it('gives every plant reference card a unique, local, named plant identity', () => {
-    const plantEntries = listReferenceCatalogEntries('charge', 'plant');
-    const genericPlantName = /^Plant charge \d+$/i;
-    const genericPlantNameZh = /^植物(?:图章|纹章) \d+$/;
-    const plantSemanticKeys = plantEntries.map((entry) => Reflect.get(entry, 'plantSemanticKey'));
-
-    expect(plantEntries).toHaveLength(96);
-    expect(plantEntries.map((entry) => entry.id)).toEqual(expect.arrayContaining([
-      'plant-charge-1',
-      'plant-charge-96',
-    ]));
-    expect(plantEntries.every((entry) => (
-      !genericPlantName.test(entry.name)
-      && !genericPlantNameZh.test(entry.nameZh)
-      && entry.searchTerms.every((term) => !genericPlantName.test(term) && !genericPlantNameZh.test(term))
-      && entry.svgParts.length >= 2
-    ))).toBe(true);
-    expect(plantSemanticKeys.every((semanticKey) => (
-      typeof semanticKey === 'string' && /^plant-[a-z]+-[a-z]+$/.test(semanticKey)
-    ))).toBe(true);
-    expect(new Set(plantSemanticKeys)).toHaveLength(96);
-  });
-
-  it('gives every human reference card a unique, local, named human identity', () => {
-    const humanEntries = listReferenceCatalogEntries('charge', 'human');
-    const genericHumanName = /^Human charge \d+$/i;
-    const genericHumanNameZh = /^人物(?:图章|纹章) \d+$/;
-    const humanSemanticKeys = humanEntries.map((entry) => Reflect.get(entry, 'humanSemanticKey'));
-
-    expect(humanEntries).toHaveLength(96);
-    expect(humanEntries.map((entry) => entry.id)).toEqual(expect.arrayContaining([
-      'human-charge-1',
-      'human-charge-96',
-    ]));
-    expect(humanEntries.every((entry) => (
-      !genericHumanName.test(entry.name)
-      && !genericHumanNameZh.test(entry.nameZh)
-      && entry.searchTerms.every((term) => !genericHumanName.test(term) && !genericHumanNameZh.test(term))
-      && entry.svgParts.length >= 2
-    ))).toBe(true);
-    expect(humanSemanticKeys.every((semanticKey) => (
-      typeof semanticKey === 'string' && /^human-[a-z]+-[a-z]+$/.test(semanticKey)
-    ))).toBe(true);
-    expect(new Set(humanSemanticKeys)).toHaveLength(96);
-  });
-
-  it('gives every symbol reference card a unique, local, named symbol identity', () => {
-    const symbolEntries = listReferenceCatalogEntries('charge', 'symbol');
-    const genericSymbolName = /^Symbol charge \d+$/i;
-    const genericSymbolNameZh = /^符号(?:图章|纹章) \d+$/;
-    const symbolSemanticKeys = symbolEntries.map((entry) => Reflect.get(entry, 'symbolSemanticKey'));
-
-    expect(symbolEntries).toHaveLength(97);
-    expect(symbolEntries.map((entry) => entry.id)).toEqual(expect.arrayContaining([
-      'symbol-charge-1',
-      'symbol-charge-97',
-    ]));
-    expect(symbolEntries.every((entry) => (
-      !genericSymbolName.test(entry.name)
-      && !genericSymbolNameZh.test(entry.nameZh)
-      && entry.searchTerms.every((term) => !genericSymbolName.test(term) && !genericSymbolNameZh.test(term))
-      && entry.svgParts.length >= 2
-    ))).toBe(true);
-    expect(symbolSemanticKeys.every((semanticKey) => (
-      typeof semanticKey === 'string' && /^symbol-[a-z]+-[a-z]+$/.test(semanticKey)
-    ))).toBe(true);
-    expect(new Set(symbolSemanticKeys)).toHaveLength(97);
-  });
-
-  it('gives every crown reference card a unique, local, named crown identity', () => {
-    const crownEntries = listReferenceCatalogEntries('top', 'crown');
-    const genericCrownName = /^Crown exterior \d+$/i;
-    const genericCrownNameZh = /^冠冕外饰 \d+$/;
-    const crownSemanticKeys = crownEntries.map((entry) => Reflect.get(entry, 'crownSemanticKey'));
-
-    expect(crownEntries).toHaveLength(73);
-    expect(crownEntries.map((entry) => entry.id)).toEqual(expect.arrayContaining([
-      'crown-exterior-1',
-      'crown-exterior-73',
-    ]));
-    expect(crownEntries.every((entry) => (
-      !genericCrownName.test(entry.name)
-      && !genericCrownNameZh.test(entry.nameZh)
-      && entry.searchTerms.every((term) => !genericCrownName.test(term) && !genericCrownNameZh.test(term))
-      && entry.svgParts.length >= 2
-    ))).toBe(true);
-    expect(crownSemanticKeys.every((semanticKey) => (
-      typeof semanticKey === 'string' && /^crown-[a-z]+-[a-z]+$/.test(semanticKey)
-    ))).toBe(true);
-    expect(new Set(crownSemanticKeys)).toHaveLength(73);
-  });
-
-  it('gives every mantle reference card a unique, local, named mantle identity', () => {
-    const mantleEntries = listReferenceCatalogEntries('top', 'mantle');
-    const genericMantleName = /^Mantle exterior \d+$/i;
-    const genericMantleNameZh = /^斗篷外饰 \d+$/;
-    const mantleSemanticKeys = mantleEntries.map((entry) => Reflect.get(entry, 'mantleSemanticKey'));
-
-    expect(mantleEntries).toHaveLength(55);
-    expect(mantleEntries.map((entry) => entry.id)).toEqual(expect.arrayContaining([
-      'mantle-exterior-1',
-      'mantle-exterior-55',
-    ]));
-    expect(mantleEntries.every((entry) => (
-      !genericMantleName.test(entry.name)
-      && !genericMantleNameZh.test(entry.nameZh)
-      && entry.searchTerms.every((term) => !genericMantleName.test(term) && !genericMantleNameZh.test(term))
-      && entry.svgParts.length >= 2
-    ))).toBe(true);
-    expect(mantleSemanticKeys.every((semanticKey) => (
-      typeof semanticKey === 'string' && /^mantle-[a-z]+-[a-z]+$/.test(semanticKey)
-    ))).toBe(true);
-    expect(new Set(mantleSemanticKeys)).toHaveLength(55);
-  });
-
-  it('gives every supporter reference card a unique, local, named supporter identity', () => {
-    const supporterEntries = listReferenceCatalogEntries('top', 'supporter');
-    const genericSupporterName = /^Supporter exterior \d+$/i;
-    const genericSupporterNameZh = /^护持者外饰 \d+$/;
-    const supporterSemanticKeys = supporterEntries.map((entry) => Reflect.get(entry, 'supporterSemanticKey'));
-
-    expect(supporterEntries).toHaveLength(54);
-    expect(supporterEntries.map((entry) => entry.id)).toEqual(expect.arrayContaining([
-      'supporter-exterior-1',
-      'supporter-exterior-54',
-    ]));
-    expect(supporterEntries.every((entry) => (
-      !genericSupporterName.test(entry.name)
-      && !genericSupporterNameZh.test(entry.nameZh)
-      && entry.searchTerms.every((term) => !genericSupporterName.test(term) && !genericSupporterNameZh.test(term))
-      && entry.svgParts.length >= 2
-    ))).toBe(true);
-    expect(supporterSemanticKeys.every((semanticKey) => (
-      typeof semanticKey === 'string' && /^supporter-[a-z]+-[a-z]+$/.test(semanticKey)
-    ))).toBe(true);
-    expect(new Set(supporterSemanticKeys)).toHaveLength(54);
-  });
-
-  it('gives every other exterior reference card a unique, local, named exterior identity', () => {
-    const exteriorEntries = listReferenceCatalogEntries('top', 'other');
-    const genericExteriorName = /^Heraldic exterior \d+$/i;
-    const genericExteriorNameZh = /^纹章外饰 \d+$/;
-    const exteriorSemanticKeys = exteriorEntries.map((entry) => Reflect.get(entry, 'exteriorSemanticKey'));
-
-    expect(exteriorEntries).toHaveLength(55);
-    expect(exteriorEntries.map((entry) => entry.id)).toEqual(expect.arrayContaining([
-      'other-exterior-1',
-      'other-exterior-55',
-    ]));
-    expect(exteriorEntries.every((entry) => (
-      !genericExteriorName.test(entry.name)
-      && !genericExteriorNameZh.test(entry.nameZh)
-      && entry.searchTerms.every((term) => !genericExteriorName.test(term) && !genericExteriorNameZh.test(term))
-      && entry.svgParts.length >= 2
-    ))).toBe(true);
-    expect(exteriorSemanticKeys.every((semanticKey) => (
-      typeof semanticKey === 'string' && /^exterior-[a-z]+-[a-z]+$/.test(semanticKey)
-    ))).toBe(true);
-    expect(new Set(exteriorSemanticKeys)).toHaveLength(55);
-  });
-
-  it('gives every local gallery card a distinct authored vector silhouette', () => {
+  it('gives every shield card a distinct authored vector silhouette', () => {
     for (const { section, categories } of catalogSections) {
       for (const category of categories) {
         const entries = listReferenceCatalogEntries(section, category);
@@ -402,10 +193,12 @@ describe('reference catalog', () => {
 
   it('fails fast when a caller asks for a category outside its catalog section', () => {
     expect(() => listReferenceCatalogEntries('shield', 'animal')).toThrow('Invalid reference catalog category for shield: animal');
+    expect(() => listReferenceCatalogEntries('charge', 'animal')).toThrow('Invalid reference catalog category for charge: animal');
+    expect(() => listReferenceCatalogEntries('top', 'crown')).toThrow('Invalid reference catalog category for top: crown');
     expect(() => listReferenceCatalogEntries('invalid-section' as never, 'shield')).toThrow('Invalid reference catalog section: invalid-section');
   });
 
-  it('keeps every shield, charge, and top entry local', () => {
+  it('keeps every shield entry local', () => {
     for (const { section, categories } of catalogSections) {
       for (const category of categories) {
         for (const entry of listReferenceCatalogEntries(section, category)) {
@@ -465,173 +258,6 @@ describe('reference catalog', () => {
     })).toThrow('Invalid local catalog entry');
   });
 
-  it('fails fast when an animal catalog entry has no semantic key', () => {
-    const validAnimalEntry = {
-      ...createValidCatalogEntry(),
-      section: 'charge',
-      category: 'animal',
-      semanticKey: 'lion-rampant-plain',
-    };
-
-    expect(() => assertReferenceCatalogEntry(validAnimalEntry)).not.toThrow();
-    const animalEntryWithoutSemanticKey: Record<string, unknown> = { ...validAnimalEntry };
-    delete animalEntryWithoutSemanticKey.semanticKey;
-    expect(() => assertReferenceCatalogEntry(animalEntryWithoutSemanticKey)).toThrow('Invalid local catalog semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validAnimalEntry, semanticKey: 'Lion rampant' })).toThrow('Invalid local catalog semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validAnimalEntry, semanticKey: 'lion-displayed-plain' })).toThrow('Invalid local catalog semantic key');
-  });
-
-  it('fails fast when an object catalog entry lacks a defined object semantic key', () => {
-    const validObjectEntry = {
-      ...createValidCatalogEntry(),
-      section: 'charge',
-      category: 'object',
-      objectSemanticKey: 'object-watchtower-plain',
-    };
-
-    expect(() => assertReferenceCatalogEntry(validObjectEntry)).not.toThrow();
-    const objectEntryWithoutSemanticKey: Record<string, unknown> = { ...validObjectEntry };
-    delete objectEntryWithoutSemanticKey.objectSemanticKey;
-    expect(() => assertReferenceCatalogEntry(objectEntryWithoutSemanticKey)).toThrow('Invalid local catalog object semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validObjectEntry, objectSemanticKey: 'object-watchtower-missing' })).toThrow('Invalid local catalog object semantic key');
-    expect(() => assertReferenceCatalogEntry({
-      ...createValidCatalogEntry(),
-      objectSemanticKey: 'object-watchtower-plain',
-    })).toThrow('Invalid local catalog entry');
-  });
-
-  it('fails fast when a plant catalog entry lacks a defined plant semantic key', () => {
-    const validPlantEntry = {
-      ...createValidCatalogEntry(),
-      section: 'charge',
-      category: 'plant',
-      plantSemanticKey: 'plant-oak-plain',
-    };
-
-    expect(() => assertReferenceCatalogEntry(validPlantEntry)).not.toThrow();
-    const plantEntryWithoutSemanticKey: Record<string, unknown> = { ...validPlantEntry };
-    delete plantEntryWithoutSemanticKey.plantSemanticKey;
-    expect(() => assertReferenceCatalogEntry(plantEntryWithoutSemanticKey)).toThrow('Invalid local catalog plant semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validPlantEntry, plantSemanticKey: 'plant-oak-missing' })).toThrow('Invalid local catalog plant semantic key');
-    expect(() => assertReferenceCatalogEntry({
-      ...createValidCatalogEntry(),
-      plantSemanticKey: 'plant-oak-plain',
-    })).toThrow('Invalid local catalog entry');
-  });
-
-  it('fails fast when a human catalog entry lacks a defined human semantic key', () => {
-    const validHumanEntry = {
-      ...createValidCatalogEntry(),
-      section: 'charge',
-      category: 'human',
-      humanSemanticKey: 'human-archer-standing',
-    };
-
-    expect(() => assertReferenceCatalogEntry(validHumanEntry)).not.toThrow();
-    const humanEntryWithoutSemanticKey: Record<string, unknown> = { ...validHumanEntry };
-    delete humanEntryWithoutSemanticKey.humanSemanticKey;
-    expect(() => assertReferenceCatalogEntry(humanEntryWithoutSemanticKey)).toThrow('Invalid local catalog human semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validHumanEntry, humanSemanticKey: 'human-archer-missing' })).toThrow('Invalid local catalog human semantic key');
-    expect(() => assertReferenceCatalogEntry({
-      ...createValidCatalogEntry(),
-      humanSemanticKey: 'human-archer-standing',
-    })).toThrow('Invalid local catalog entry');
-  });
-
-  it('fails fast when a symbol catalog entry lacks a defined symbol semantic key', () => {
-    const validSymbolEntry = {
-      ...createValidCatalogEntry(),
-      section: 'charge',
-      category: 'symbol',
-      symbolSemanticKey: 'symbol-sun-plain',
-    };
-
-    expect(() => assertReferenceCatalogEntry(validSymbolEntry)).not.toThrow();
-    const symbolEntryWithoutSemanticKey: Record<string, unknown> = { ...validSymbolEntry };
-    delete symbolEntryWithoutSemanticKey.symbolSemanticKey;
-    expect(() => assertReferenceCatalogEntry(symbolEntryWithoutSemanticKey)).toThrow('Invalid local catalog symbol semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validSymbolEntry, symbolSemanticKey: 'symbol-sun-missing' })).toThrow('Invalid local catalog symbol semantic key');
-    expect(() => assertReferenceCatalogEntry({
-      ...createValidCatalogEntry(),
-      symbolSemanticKey: 'symbol-sun-plain',
-    })).toThrow('Invalid local catalog entry');
-  });
-
-  it('fails fast when a crown catalog entry lacks a defined crown semantic key', () => {
-    const validCrownEntry = {
-      ...createValidCatalogEntry(),
-      section: 'top',
-      category: 'crown',
-      crownSemanticKey: 'crown-imperial-plain',
-    };
-
-    expect(() => assertReferenceCatalogEntry(validCrownEntry)).not.toThrow();
-    const crownEntryWithoutSemanticKey: Record<string, unknown> = { ...validCrownEntry };
-    delete crownEntryWithoutSemanticKey.crownSemanticKey;
-    expect(() => assertReferenceCatalogEntry(crownEntryWithoutSemanticKey)).toThrow('Invalid local catalog crown semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validCrownEntry, crownSemanticKey: 'crown-imperial-missing' })).toThrow('Invalid local catalog crown semantic key');
-    expect(() => assertReferenceCatalogEntry({
-      ...createValidCatalogEntry(),
-      crownSemanticKey: 'crown-imperial-plain',
-    })).toThrow('Invalid local catalog entry');
-  });
-
-  it('fails fast when a mantle catalog entry lacks a defined mantle semantic key', () => {
-    const validMantleEntry = {
-      ...createValidCatalogEntry(),
-      section: 'top',
-      category: 'mantle',
-      mantleSemanticKey: 'mantle-regal-plain',
-    };
-
-    expect(() => assertReferenceCatalogEntry(validMantleEntry)).not.toThrow();
-    const mantleEntryWithoutSemanticKey: Record<string, unknown> = { ...validMantleEntry };
-    delete mantleEntryWithoutSemanticKey.mantleSemanticKey;
-    expect(() => assertReferenceCatalogEntry(mantleEntryWithoutSemanticKey)).toThrow('Invalid local catalog mantle semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validMantleEntry, mantleSemanticKey: 'mantle-regal-missing' })).toThrow('Invalid local catalog mantle semantic key');
-    expect(() => assertReferenceCatalogEntry({
-      ...createValidCatalogEntry(),
-      mantleSemanticKey: 'mantle-regal-plain',
-    })).toThrow('Invalid local catalog entry');
-  });
-
-  it('fails fast when a supporter catalog entry lacks a defined supporter semantic key', () => {
-    const validSupporterEntry = {
-      ...createValidCatalogEntry(),
-      section: 'top',
-      category: 'supporter',
-      supporterSemanticKey: 'supporter-stag-flanking',
-    };
-
-    expect(() => assertReferenceCatalogEntry(validSupporterEntry)).not.toThrow();
-    const supporterEntryWithoutSemanticKey: Record<string, unknown> = { ...validSupporterEntry };
-    delete supporterEntryWithoutSemanticKey.supporterSemanticKey;
-    expect(() => assertReferenceCatalogEntry(supporterEntryWithoutSemanticKey)).toThrow('Invalid local catalog supporter semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validSupporterEntry, supporterSemanticKey: 'supporter-stag-missing' })).toThrow('Invalid local catalog supporter semantic key');
-    expect(() => assertReferenceCatalogEntry({
-      ...createValidCatalogEntry(),
-      supporterSemanticKey: 'supporter-stag-flanking',
-    })).toThrow('Invalid local catalog entry');
-  });
-
-  it('fails fast when an other exterior catalog entry lacks a defined exterior semantic key', () => {
-    const validExteriorEntry = {
-      ...createValidCatalogEntry(),
-      section: 'top',
-      category: 'other',
-      exteriorSemanticKey: 'exterior-tournament-plain',
-    };
-
-    expect(() => assertReferenceCatalogEntry(validExteriorEntry)).not.toThrow();
-    const exteriorEntryWithoutSemanticKey: Record<string, unknown> = { ...validExteriorEntry };
-    delete exteriorEntryWithoutSemanticKey.exteriorSemanticKey;
-    expect(() => assertReferenceCatalogEntry(exteriorEntryWithoutSemanticKey)).toThrow('Invalid local catalog exterior semantic key');
-    expect(() => assertReferenceCatalogEntry({ ...validExteriorEntry, exteriorSemanticKey: 'exterior-tournament-missing' })).toThrow('Invalid local catalog exterior semantic key');
-    expect(() => assertReferenceCatalogEntry({
-      ...createValidCatalogEntry(),
-      exteriorSemanticKey: 'exterior-tournament-plain',
-    })).toThrow('Invalid local catalog entry');
-  });
 
   it('fails fast when a kite shield catalog entry lacks a defined shield semantic key', () => {
     const validShieldEntry = {

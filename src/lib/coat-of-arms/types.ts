@@ -8,6 +8,9 @@ export type CoatAssetKind =
   | 'pattern'
   | 'background';
 
+/** UI gallery sections; only shield entries are backed by the SVG reference catalog. */
+export type CoatAssetGallerySection = 'shield' | 'charge' | 'top';
+
 export type FieldDivision =
   | 'solid'
   | 'per-pale'
@@ -421,12 +424,27 @@ export interface CoatRasterVariant {
   src: string;
 }
 
-export interface GeometryCoatAsset<Kind extends Exclude<GeometryCoatAssetKind, 'charge'>>
-  extends CoatAssetBase {
-  kind: Kind;
+interface VectorCoatAssetSource {
   svgPath: string;
   svgParts?: readonly CoatSvgPart[];
+  rasterSrc?: never;
 }
+
+/** A pre-rendered local material. New material catalogues use this source only. */
+interface RasterCoatAssetSource {
+  rasterSrc: string;
+  svgPath?: never;
+  svgParts?: never;
+}
+
+export interface GeometryCoatAsset<Kind extends Exclude<GeometryCoatAssetKind, 'charge' | 'ordinary'>>
+  extends CoatAssetBase, VectorCoatAssetSource {
+  kind: Kind;
+}
+
+export type OrdinaryCoatAsset = CoatAssetBase & {
+  kind: 'ordinary';
+} & (VectorCoatAssetSource | RasterCoatAssetSource);
 
 export type ChargeAssetCategory =
   | 'animal'
@@ -435,14 +453,12 @@ export type ChargeAssetCategory =
   | 'human'
   | 'symbol';
 
-export interface ChargeCoatAsset extends CoatAssetBase {
+export type ChargeCoatAsset = CoatAssetBase & {
   kind: 'charge';
   category: ChargeAssetCategory;
-  svgPath: string;
-  svgParts?: readonly CoatSvgPart[];
   /** Two original raster alternatives replace the legacy SVG presentation for target libraries. */
   rasterVariants?: readonly [CoatRasterVariant, CoatRasterVariant];
-}
+} & (VectorCoatAssetSource | RasterCoatAssetSource);
 
 export interface PatternCoatAsset extends CoatAssetBase {
   kind: 'pattern';
@@ -456,18 +472,16 @@ export interface BackgroundCoatAsset extends CoatAssetBase {
 
 export type TopAssetCategory = 'mantle' | 'crown' | 'supporter' | 'other';
 
-export interface TopCoatAsset extends CoatAssetBase {
+export type TopCoatAsset = CoatAssetBase & {
   kind: 'top';
   category: TopAssetCategory;
-  svgPath: string;
-  svgParts?: readonly CoatSvgPart[];
   /** Two original raster alternatives replace the legacy SVG presentation for target libraries. */
   rasterVariants?: readonly [CoatRasterVariant, CoatRasterVariant];
-}
+} & (VectorCoatAssetSource | RasterCoatAssetSource);
 
 export type CoatAsset =
   | GeometryCoatAsset<'shield'>
-  | GeometryCoatAsset<'ordinary'>
+  | OrdinaryCoatAsset
   | ChargeCoatAsset
   | TopCoatAsset
   | PatternCoatAsset

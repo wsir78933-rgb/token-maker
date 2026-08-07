@@ -4,9 +4,9 @@ import { applyProjectCommand } from './commands';
 import { renderCoatSceneSvg } from './scene-svg';
 
 describe('coat scene SVG renderer', () => {
-  it('renders the chosen bundled WebP charge variant inside the shield field clip', () => {
+  it('renders a bundled WebP charge inside the shield field clip', () => {
     const project = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'symbol-charge-1', rasterVariantId: 'b',
+      type: 'add-layer', assetId: 'material-symbol-alchemical-air',
     } as never);
     const sun = project.layers.at(-1);
     if (!sun || sun.type !== 'charge') throw new Error('Expected bundled sun charge layer');
@@ -19,17 +19,17 @@ describe('coat scene SVG renderer', () => {
     const svg = renderCoatSceneSvg(clippedProject, { width: 512, height: 512 });
 
     expect(svg).toContain(`data-layer-id="${sun.id}"`);
-    expect(svg).toContain('data-bundled-raster-variant="b"');
-    expect(svg).toContain('href="/coat-assets/generated/symbols/symbol-sun-plain-b.webp"');
+    expect(svg).toContain('data-bundled-raster="true"');
+    expect(svg).toContain('href="/coat-assets/materials/symbols/alchemical-air.webp"');
     expect(svg).toContain('coat-charge-shield-clip-2');
   });
 
   it('renders a layer sent backward immediately above the background', () => {
     let project = createDefaultProject('en');
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'golden-lion' });
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'eight-point-star' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-alligator-passant' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-symbol-alchemical-air' });
     const background = project.layers.find((layer) => layer.type === 'background');
-    const lion = project.layers.find((layer) => layer.type === 'charge' && layer.assetId === 'golden-lion');
+    const lion = project.layers.find((layer) => layer.type === 'charge' && layer.assetId === 'material-animal-alligator-passant');
     const shield = project.layers.find((layer) => layer.type === 'shield');
     if (!background || !lion || !shield) throw new Error('Expected background, shield, and golden lion layers');
 
@@ -57,29 +57,25 @@ describe('coat scene SVG renderer', () => {
   });
 
   it('renders a top ornament in its own positioned layer', () => {
-    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'royal-crown' });
+    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
     const topLayer = project.layers.at(-1);
     if (!topLayer || topLayer.type !== 'top') throw new Error('Expected top ornament layer');
 
     const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
 
     expect(svg).toContain(`data-layer-id="${topLayer.id}"`);
-    expect(svg).toContain('fill="#B11F24"');
+    expect(svg).toContain('data-bundled-raster="true"');
+    expect(svg).toContain('href="/coat-assets/materials/crowns/royal-crown.webp"');
   });
 
-  it('renders each authored SVG colour part with its own local replacement', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'royal-crown' });
+  it('rejects SVG colour replacement requests for a WebP material', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
     const crown = project.layers.at(-1);
     if (!crown || crown.type !== 'top') throw new Error('Expected top ornament layer');
-    project = applyProjectCommand(project, {
+    expect(() => applyProjectCommand(project, {
       type: 'update-layer', layerId: crown.id,
       patch: { colorReplacements: { '#F5E6A1': '#1855A5' } },
-    });
-
-    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
-
-    expect(svg).toContain('fill="#B11F24"');
-    expect(svg).toContain('fill="#1855A5"');
+    })).toThrow('Invalid unsupported SVG part colour: #F5E6A1');
   });
 
   it('renders clipped field ornaments above the selected field division', () => {
@@ -320,7 +316,7 @@ describe('coat scene SVG renderer', () => {
   });
 
   it('clips a charge to its selected shield field placement', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
     project = applyProjectCommand(project, {
@@ -337,7 +333,7 @@ describe('coat scene SVG renderer', () => {
   });
 
   it('clips a charge to a detailed local field region', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
     project = applyProjectCommand(project, {
@@ -380,9 +376,9 @@ describe('coat scene SVG renderer', () => {
     const withCharges = applyProjectCommand(
       applyProjectCommand(createDefaultProject('en'), {
         type: 'add-layer',
-        assetId: 'golden-lion',
+        assetId: 'material-animal-lion-rampant',
       }),
-      { type: 'add-layer', assetId: 'eight-point-star' },
+      { type: 'add-layer', assetId: 'material-symbol-eight-point-star' },
     );
     const project = {
       ...withCharges,
@@ -419,7 +415,7 @@ describe('coat scene SVG renderer', () => {
 
   it('renders independent horizontal and vertical layer scaling', () => {
     let project = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'golden-lion',
+      type: 'add-layer', assetId: 'material-animal-lion-rampant',
     });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
@@ -435,7 +431,7 @@ describe('coat scene SVG renderer', () => {
 
   it('clips and flips a selected element without changing its source asset', () => {
     let project = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'golden-lion',
+      type: 'add-layer', assetId: 'material-animal-lion-rampant',
     });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
@@ -468,8 +464,8 @@ describe('coat scene SVG renderer', () => {
     project = applyProjectCommand(project, {
       type: 'set-background', assetId: 'azure-background', motif: 'dots', opacity: 0.4,
     });
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'diagonal-band' });
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'golden-lion' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-ordinary-bend' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const ordinaryId = project.layers.at(-2)?.id;
     const chargeId = project.layers.at(-1)?.id;
     if (!ordinaryId || !chargeId) throw new Error('Expected ordinary and charge');
@@ -514,7 +510,7 @@ describe('coat scene SVG renderer', () => {
   });
 
   it('composites one contiguous group in one outer opacity wrapper while preserving layer order', () => {
-    let project = ['golden-lion', 'eight-point-star', 'stone-tower'].reduce(
+    let project = ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower'].reduce(
       (currentProject, assetId) => applyProjectCommand(currentProject, { type: 'add-layer', assetId }),
       createDefaultProject('en'),
     );

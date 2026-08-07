@@ -38,6 +38,7 @@ import {
   SPECTATOR_DND_COVER_PATH,
   DND_QUARTERSTAFF_COVER_PATH,
   DND_MAUL_COVER_PATH,
+  DND_GNOME_NAMES_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -104,6 +105,10 @@ import {
   dndQuarterstaffArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-quarterstaff';
 import { dndMaulArticleHtml, dndMaulArticleHtmlZh } from '@/lib/blog-posts/dnd-maul';
+import {
+  dndGnomeNamesArticleHtml,
+  dndGnomeNamesArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-gnome-names';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -162,6 +167,7 @@ const FIREBOLT_DND_5E_UPDATED_AT = '2026-07-29';
 const SPECTATOR_DND_UPDATED_AT = '2026-08-02';
 const DND_QUARTERSTAFF_UPDATED_AT = '2026-08-03';
 const DND_MAUL_UPDATED_AT = '2026-08-05';
+const DND_GNOME_NAMES_UPDATED_AT = '2026-08-06';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2404,6 +2410,97 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndGnomeNamesArticle: BlogPost = {
+  slug: 'dnd-gnome-names',
+  title: 'DND Gnome Names: First Names, Clans, Nicknames, and Character Hooks',
+  seoTitle: 'DND Gnome Names: 132 First Names, Clans, and Nicknames',
+  metaDescription:
+    'Choose from 132 DND gnome first names, clan names, and nicknames, then turn one full name into a character hook and readable VTT token.',
+  excerpt:
+    'Mix 132 first names, clan names, and nicknames, then give the result a playable hook, distinct table sound, and readable VTT identity.',
+  publishedAt: DND_GNOME_NAMES_UPDATED_AT,
+  updatedAt: DND_GNOME_NAMES_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Character Names',
+  coverImage: DND_GNOME_NAMES_COVER_PATH,
+  coverAlt:
+    'Three DND gnome adventurers choosing names and character identities around a lantern-lit fantasy workshop table',
+  bodyHtml: dndGnomeNamesArticleHtml,
+  faqItems: [
+    {
+      question: 'What are good DND gnome names?',
+      answer:
+        'Good DND gnome names are easy to say and carry one memorable detail. Fenna Gearbloom "Blue-Fingers," Rook Underlamp "Cave-Lantern," and Hobbik Wrongmap "Shortcut" each give the table a short name plus a story prompt.',
+    },
+    {
+      question: 'Why do DND gnomes have so many names?',
+      answer:
+        'The 2014 gnome description says relatives and clan elders may each give a gnome a name, while nicknames accumulate from other people. Around outsiders, a gnome often reduces the collection to a personal name, clan name, and nickname.',
+    },
+    {
+      question: 'Do gnome names need to sound funny?',
+      answer:
+        'No. A playful sound fits many gnome characters, but the person still has to work in serious scenes. Put the humor in a nickname or family story instead of turning every syllable into a punchline.',
+    },
+    {
+      question: 'What is a good gnome clan name?',
+      answer:
+        'A useful clan name points to craft, home, reputation, or an old event. Gearbloom, Fernburrow, Underlamp, and Wrongmap all create a place or family expectation the DM can bring into play.',
+    },
+    {
+      question: 'How long should a gnome name be on a VTT?',
+      answer:
+        'Use one short personal name or nickname during play. Keep the full personal, clan, and nickname form on the sheet or handout so the map stays readable.',
+    },
+  ],
+  relatedSlugs: ['dnd-dwarf-names', 'dwelf-dnd', 'dnd-classes-explained', 'dnd-ranger-spells'],
+};
+
+const dndGnomeNamesArticleZh: BlogPost = {
+  slug: 'dnd-gnome-names',
+  title: 'DND 侏儒名字：名字、氏族名、昵称与角色钩子',
+  seoTitle: 'DND 侏儒名字：132 个名字、氏族名与昵称',
+  metaDescription:
+    '从 132 个 DND 侏儒个人名、氏族名和昵称中组合角色，再补上剧情钩子、清楚桌上称呼与可读 VTT Token。',
+  excerpt:
+    '自由组合 132 个个人名、氏族名和昵称，再让完整名字带出角色钩子、清楚声音与可读 VTT 身份。',
+  publishedAt: DND_GNOME_NAMES_UPDATED_AT,
+  updatedAt: DND_GNOME_NAMES_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '角色命名',
+  coverImage: DND_GNOME_NAMES_COVER_PATH,
+  coverAlt: '三名 DND 侏儒冒险者围在灯光照亮的奇幻工坊桌边挑选名字与角色身份',
+  bodyHtml: dndGnomeNamesArticleHtmlZh,
+  faqItems: [
+    {
+      question: '哪些 DND 侏儒名字好用？',
+      answer:
+        '好用的 DND 侏儒名字要读得顺，还要带一个记忆点。Fenna Gearbloom "Blue-Fingers"、Rook Underlamp "Cave-Lantern" 和 Hobbik Wrongmap "Shortcut" 都给了桌上短称呼和一个故事入口。',
+    },
+    {
+      question: '为什么 DND 侏儒会有很多名字？',
+      answer:
+        '2014 版侏儒说明写到，亲属和氏族长辈都可能为侏儒取名，其他人还会不断送上昵称。面对外人时，侏儒常把这组名字缩成个人名、氏族名和昵称。',
+    },
+    {
+      question: '侏儒名字必须听起来搞笑吗？',
+      answer:
+        '不必。轻快声音适合很多侏儒，但角色仍要能撑住严肃场景。把幽默放进昵称或家族旧事，比让每个音节都像笑话更耐用。',
+    },
+    {
+      question: '什么样的侏儒氏族名比较好？',
+      answer:
+        '好用的氏族名会指向手艺、家乡、名声或旧事故。Gearbloom、Fernburrow、Underlamp 和 Wrongmap 都能直接变成 DM 可调用的地点或家族期待。',
+    },
+    {
+      question: 'VTT 上的侏儒名字应该多长？',
+      answer:
+        '跑团时使用一个短个人名或昵称。个人名、氏族名和昵称组成的完整形式留在角色卡或 handout 上，地图会更清楚。',
+    },
+  ],
+  relatedSlugs: ['dnd-dwarf-names', 'dwelf-dnd', 'dnd-classes-explained', 'dnd-ranger-spells'],
+};
+
 const dndMaulArticle: BlogPost = {
   slug: 'dnd-maul',
   title: 'DND Maul 5e: Heavy, Topple, and a Clean Turn Plan',
@@ -3307,10 +3404,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

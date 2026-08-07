@@ -39,6 +39,7 @@ export const FIREBOLT_DND_5E_COVER_PATH = '/blog/covers/en/firebolt-dnd-5e-guide
 export const SPECTATOR_DND_COVER_PATH = '/blog/covers/en/spectator-dnd-guide.webp';
 export const DND_QUARTERSTAFF_COVER_PATH = '/blog/covers/en/dnd-quarterstaff-guide.webp';
 export const DND_MAUL_COVER_PATH = '/blog/covers/en/dnd-maul-guide.webp';
+export const DND_GNOME_NAMES_COVER_PATH = '/blog/covers/en/dnd-gnome-names-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -101,6 +102,8 @@ export const DND_SHORTSWORD_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-shortswor
 export const DND_SILVERY_BARBS_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-silvery-barbs/dnd-silvery-barbs-video-placeholder.webp';
 export const DND_FLUMPH_VTT_IMAGE_PATH = '/blog/inline/dnd-flumph/flumph-vtt-clue-board.webp';
+export const DND_GNOME_NAMES_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-gnome-names/gnome-race-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -258,6 +261,10 @@ export const DND_POLEARM_MASTER_2024_RULES_URL =
 export const DND_MAUL_2024_RULES_URL = 'https://www.dndbeyond.com/equipment/25-maul';
 export const DND_MAUL_2014_RULES_URL = 'https://roll20.net/compendium/dnd5e/Maul';
 export const DND_MAUL_VIDEO_URL = 'https://www.youtube.com/watch?v=z1W7G1MMPBI';
+export const DND_GNOME_2014_RULES_URL = 'https://www.dndbeyond.com/species/18-gnome';
+export const DND_GNOME_2024_RULES_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/character-origins#Gnome';
+export const DND_GNOME_NAMES_VIDEO_URL = 'https://www.youtube.com/watch?v=HRX8c3IihL0';
 export const DND_2024_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/equipment';
 export const DND_2024_RULES_GLOSSARY_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary';

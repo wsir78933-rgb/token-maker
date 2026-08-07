@@ -600,7 +600,7 @@ describe('CoatOfArmsMaker', () => {
     selectDesktopTool('Top');
     fireEvent.click(screen.getByRole('button', { name: 'Add top ornament: Royal crown' }));
 
-    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'royal-crown' });
+    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'material-crown-royal-crown' });
   });
 
   it('generates an original local identity and can apply its project name', () => {
@@ -928,7 +928,7 @@ describe('CoatOfArmsMaker', () => {
   it('makes the workbench background pointer and keyboard inert while the project modal is open', () => {
     renderWorkbench();
     const undoButton = screen.getByRole('button', { name: 'Undo' });
-    useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'golden-lion' });
+    useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const layerCountBeforeModal = useCoatProjectStore.getState().project.layers.length;
 
     fireEvent.click(screen.getByRole('button', { name: 'Open local project library' }));
@@ -962,7 +962,7 @@ describe('CoatOfArmsMaker', () => {
     expect(undoButton.getAttribute('disabled')).not.toBeNull();
     expect(redoButton.getAttribute('disabled')).not.toBeNull();
 
-    act(() => useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'golden-lion' }));
+    act(() => useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'material-animal-lion-rampant' }));
     expect(undoButton.getAttribute('disabled')).toBeNull();
     expect(redoButton.getAttribute('disabled')).not.toBeNull();
 

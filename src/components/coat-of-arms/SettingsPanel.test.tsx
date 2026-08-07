@@ -62,7 +62,7 @@ describe('SettingsPanel', () => {
 
   it('resets the unsaved editor project and local canvas preference without deleting saved projects', () => {
     const initialProject = useCoatProjectStore.getState().project;
-    useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'golden-lion' });
+    useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     saveEditorPreferences({
       version: 1,
       canvasPreset: 'instagram-story',
@@ -77,7 +77,7 @@ describe('SettingsPanel', () => {
     const resetProject = useCoatProjectStore.getState().project;
     expect(resetProject.id).not.toBe(initialProject.id);
     expect(resetProject.canvas).toEqual({ width: 1200, height: 1200 });
-    expect(resetProject.layers.some((layer) => layer.type === 'charge' && layer.assetId === 'golden-lion')).toBe(false);
+    expect(resetProject.layers.some((layer) => layer.type === 'charge' && layer.assetId === 'material-animal-lion-rampant')).toBe(false);
     expect(loadEditorPreferences().canvasPreset).toBe('square');
   });
 });

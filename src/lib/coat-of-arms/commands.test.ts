@@ -26,7 +26,7 @@ function createLocalSvgUpload(id: string) {
 }
 
 function createProjectWithMovableCharges() {
-  return ['golden-lion', 'eight-point-star', 'stone-tower'].reduce(
+  return ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower'].reduce(
     (project, assetId) => applyProjectCommand(project, { type: 'add-layer', assetId }),
     createDefaultProject('en'),
   );
@@ -40,12 +40,12 @@ function getLayerTransformX(layer: CoatLayer): number {
 describe('coat project commands', () => {
   it('persists the selected bundled WebP variant without adding a local upload', () => {
     const project = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'symbol-charge-1', rasterVariantId: 'b',
+      type: 'add-layer', assetId: 'material-symbol-radiant-sun', rasterVariantId: 'b',
     } as never);
 
     expect(project.layers.at(-1)).toMatchObject({
       type: 'charge',
-      assetId: 'symbol-charge-1',
+      assetId: 'material-symbol-radiant-sun',
       rasterVariantId: 'b',
     });
     expect(project.uploads).toEqual([]);
@@ -78,9 +78,9 @@ describe('coat project commands', () => {
   });
 
   it('adds a locally authored top ornament as an independently transformable layer', () => {
-    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'royal-crown' });
+    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
 
-    expect(project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'royal-crown', color: '#B11F24' });
+    expect(project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'material-crown-royal-crown', color: '#B11F24' });
   });
 
   it('persists independently positioned field ornaments inside the shield field', () => {
@@ -228,7 +228,7 @@ describe('coat project commands', () => {
   });
 
   it('persists independent replacement colours for every authored SVG part', () => {
-    const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'royal-crown' });
+    const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
     const crown = withCrown.layers.at(-1);
     if (!crown || crown.type !== 'top') throw new Error('Expected crown layer');
 
@@ -257,7 +257,7 @@ describe('coat project commands', () => {
 
   it('duplicates selected layer kinds with new ids without breaking group contiguity', () => {
     const project = createDefaultProject('en');
-    const withCharge = applyProjectCommand(project, { type: 'add-layer', assetId: 'golden-lion' });
+    const withCharge = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const sourceLayerIds = withCharge.layers.map((layer) => layer.id);
 
     const duplicated = applyProjectCommand(withCharge, {
@@ -278,7 +278,7 @@ describe('coat project commands', () => {
 
   it('updates and removes multiple unlocked layers as one validated command', () => {
     const project = createDefaultProject('en');
-    const withCharges = ['golden-lion', 'eight-point-star'].reduce(
+    const withCharges = ['material-animal-lion-rampant', 'material-symbol-eight-point-star'].reduce(
       (currentProject, assetId) => applyProjectCommand(currentProject, { type: 'add-layer', assetId }),
       project,
     );
@@ -303,7 +303,7 @@ describe('coat project commands', () => {
     const withOrdinary = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-layer', assetId: 'chevron',
     });
-    const withCharge = applyProjectCommand(withOrdinary, { type: 'add-layer', assetId: 'golden-lion' });
+    const withCharge = applyProjectCommand(withOrdinary, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const withText = applyProjectCommand(withCharge, {
       type: 'add-text-layer', text: 'FORTUNE', color: '#F5E6A1', fontSize: 24,
       alignment: 'center', path: { mode: 'curve', curve: 'upper' },
@@ -330,11 +330,11 @@ describe('coat project commands', () => {
     const initialProject = createDefaultProject('en');
     const once = applyProjectCommand(initialProject, {
       type: 'add-layer',
-      assetId: 'golden-lion',
+      assetId: 'material-animal-lion-rampant',
     });
     const twice = applyProjectCommand(once, {
       type: 'add-layer',
-      assetId: 'golden-lion',
+      assetId: 'material-animal-lion-rampant',
     });
 
     expect(twice.layers).toHaveLength(4);
@@ -351,7 +351,7 @@ describe('coat project commands', () => {
         {
           id: 'charge-1',
           type: 'charge' as const,
-          assetId: 'golden-lion',
+          assetId: 'material-animal-lion-rampant',
           color: '#B11F24',
           transform: { x: 0, y: 0, scale: 1, rotation: 0 },
           visible: true,
@@ -393,7 +393,7 @@ describe('coat project commands', () => {
   });
 
   it('persists bounded crop and horizontal or vertical flip controls on an unlocked element', () => {
-    const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
+    const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const lion = withLion.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
 
@@ -450,8 +450,8 @@ describe('coat project commands', () => {
   it('removes, reorders, toggles, and groups only requested unlocked layers', () => {
     const original = createDefaultProject('en');
     const withCharges = applyProjectCommand(
-      applyProjectCommand(original, { type: 'add-layer', assetId: 'golden-lion' }),
-      { type: 'add-layer', assetId: 'eight-point-star' },
+      applyProjectCommand(original, { type: 'add-layer', assetId: 'material-animal-lion-rampant' }),
+      { type: 'add-layer', assetId: 'material-symbol-eight-point-star' },
     );
     const lionId = withCharges.layers[2]?.id;
     const starId = withCharges.layers[3]?.id;
@@ -497,7 +497,7 @@ describe('coat project commands', () => {
     const background = project.layers[0];
     const shield = project.layers[1];
     if (!background || !shield) throw new Error('Expected default base layers');
-    const withCharge = applyProjectCommand(project, { type: 'add-layer', assetId: 'golden-lion' });
+    const withCharge = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const charge = withCharge.layers.at(-1);
     if (!charge) throw new Error('Expected added charge');
 
@@ -532,8 +532,8 @@ describe('coat project commands', () => {
 
   it('persists group opacity and removes metadata when a group dissolves', () => {
     const withCharges = applyProjectCommand(
-      applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' }),
-      { type: 'add-layer', assetId: 'eight-point-star' },
+      applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' }),
+      { type: 'add-layer', assetId: 'material-symbol-eight-point-star' },
     );
     const layerIds = withCharges.layers.slice(-2).map((layer) => layer.id);
     const grouped = applyProjectCommand(withCharges, {
@@ -552,7 +552,7 @@ describe('coat project commands', () => {
   });
 
   it('rejects non-contiguous layer selection when creating a composited group', () => {
-    const withCharges = ['golden-lion', 'eight-point-star', 'stone-tower'].reduce(
+    const withCharges = ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower'].reduce(
       (project, assetId) => applyProjectCommand(project, { type: 'add-layer', assetId }),
       createDefaultProject('en'),
     );
@@ -667,7 +667,7 @@ describe('coat project commands', () => {
   });
 
   it('persists a charge field placement and clipping preference through its transform', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
 
@@ -681,7 +681,7 @@ describe('coat project commands', () => {
   });
 
   it('accepts every locally editable shield field region as a precise charge clipping target', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
 
@@ -735,7 +735,7 @@ describe('coat project commands', () => {
     const initialHistory = createProjectHistory(initialProject);
     const withCharge = applyProjectHistoryCommand(initialHistory, {
       type: 'add-layer',
-      assetId: 'golden-lion',
+      assetId: 'material-animal-lion-rampant',
     });
     const undone = undoProject(withCharge);
     const redone = redoProject(undone);
@@ -884,7 +884,7 @@ describe('coat project commands', () => {
     const project = createDefaultProject('en');
     const withPalette = applyProjectCommand(
       applyProjectCommand(project, { type: 'add-custom-palette-color', color: '#B11F24' }),
-      { type: 'add-layer', assetId: 'golden-lion' },
+      { type: 'add-layer', assetId: 'material-animal-lion-rampant' },
     );
     const withBackground = applyProjectCommand(withPalette, {
       type: 'set-background', assetId: 'azure-background', motif: 'dots', opacity: 0.5,
@@ -947,7 +947,7 @@ describe('coat project commands', () => {
 
   it('normalizes a dissolved group and rejects regrouping that would make members non-contiguous', () => {
     const base = createDefaultProject('en');
-    const withCharges = ['golden-lion', 'eight-point-star', 'stone-tower', 'golden-lion']
+    const withCharges = ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower', 'material-animal-lion-rampant']
       .reduce((project, assetId) => applyProjectCommand(project, { type: 'add-layer', assetId }), base);
     const chargeIds = withCharges.layers.slice(2).map((layer) => layer.id);
     const firstGroup = applyProjectCommand(withCharges, {

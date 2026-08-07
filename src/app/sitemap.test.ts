@@ -21,6 +21,7 @@ const FIREBOLT_DND_5E_SLUG = 'firebolt-dnd-5e';
 const SPECTATOR_DND_SLUG = 'spectator-dnd';
 const DND_QUARTERSTAFF_SLUG = 'dnd-quarterstaff';
 const DND_MAUL_SLUG = 'dnd-maul';
+const DND_GNOME_NAMES_SLUG = 'dnd-gnome-names';
 
 function findSitemapEntry(url: string) {
   const sitemapEntry = sitemap().find((entry) => entry.url === url);
@@ -33,6 +34,30 @@ function findSitemapEntry(url: string) {
 }
 
 describe('blog sitemap entries', () => {
+  test('includes bilingual dnd gnome names blog routes with alternates', () => {
+    const englishEntry = findSitemapEntry(
+      `https://www.tokenmaker.one/blog/${DND_GNOME_NAMES_SLUG}`,
+    );
+    const chineseEntry = findSitemapEntry(
+      `https://www.tokenmaker.one/zh/blog/${DND_GNOME_NAMES_SLUG}`,
+    );
+
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_GNOME_NAMES_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_GNOME_NAMES_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_GNOME_NAMES_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-06'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-06'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes bilingual dnd maul blog routes with alternates', () => {
     const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_MAUL_SLUG}`);
     const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_MAUL_SLUG}`);
@@ -236,7 +261,7 @@ describe('blog sitemap entries', () => {
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 
-  test('updates fourth blog hub pages after publishing Maul', () => {
+  test('updates fourth blog hub pages after publishing Gnome Names', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/4');
     const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/4');
 
@@ -246,12 +271,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/4',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-08-05'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-06'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-05'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-06'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);

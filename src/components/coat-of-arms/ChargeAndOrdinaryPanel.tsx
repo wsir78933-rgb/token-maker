@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { getCoatAsset, listAssetsByKind } from '@/lib/coat-of-arms/assets';
-import { listReferenceCatalogEntries } from '@/lib/coat-of-arms/reference-catalog';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { ChargeAssetCategory, CoatLocale, CoatProject, CoatRasterVariantId, GeometryCoatAssetKind } from '@/lib/coat-of-arms/types';
 import { AssetLibraryPanel } from './AssetLibraryPanel';
@@ -15,21 +14,25 @@ function chooseRandomAssetId(assetIds: string[]): string | undefined {
 }
 
 const chargeCategories: readonly ChargeAssetCategory[] = ['animal', 'object', 'plant', 'human', 'symbol'];
-const referenceChargeAssetIds = new Set(
-  chargeCategories.flatMap((category) => listReferenceCatalogEntries('charge', category).map((entry) => entry.id)),
-);
-
 function listOriginalChargeGalleryEntries(category: ChargeAssetCategory): ReferenceAssetGalleryEntry[] {
   return listAssetsByKind('charge')
-    .filter((asset) => asset.category === category && !referenceChargeAssetIds.has(asset.id))
-    .map((asset) => ({
-      id: asset.id,
-      name: asset.name.en,
-      nameZh: asset.name.zh,
-      searchTerms: asset.searchTerms ?? [],
-      svgParts: asset.svgParts ? [...asset.svgParts] : [{ svgPath: asset.svgPath, sourceColor: '#1F2937' }],
-      ...(asset.rasterVariants ? { rasterVariants: asset.rasterVariants } : {}),
-    }));
+    .filter((asset) => asset.category === category)
+    .map(createWebpChargeGalleryEntry);
+}
+
+function createWebpChargeGalleryEntry(
+  asset: ReturnType<typeof listAssetsByKind<'charge'>>[number],
+): ReferenceAssetGalleryEntry {
+  if (!('rasterSrc' in asset) || typeof asset.rasterSrc !== 'string') {
+    throw new Error(`Charge material has no WebP source: ${asset.id}`);
+  }
+  return {
+    id: asset.id,
+    name: asset.name.en,
+    nameZh: asset.name.zh,
+    searchTerms: asset.searchTerms ?? [],
+    rasterSrc: asset.rasterSrc,
+  };
 }
 
 function getSelectedChargeMaterial(

@@ -70,7 +70,7 @@ describe('coat project local storage', () => {
       ...project,
       layers: Array.from({ length: 65 }, (_, index) => index < 2 ? project.layers[index]! : {
         id: `charge-${index}`,
-        type: 'charge', assetId: 'golden-lion', color: '#B11F24',
+        type: 'charge', assetId: 'material-animal-lion-rampant', color: '#B11F24',
         transform: { x: 0, y: 0, scale: 1, rotation: 0 }, visible: true, locked: false, groupId: null,
       }),
     };
@@ -198,7 +198,7 @@ describe('coat project local storage', () => {
         { ...project.layers[0]!, groupId: 'spaced' },
         { ...project.layers[1]!, groupId: null },
         {
-          id: 'charge-1', type: 'charge', assetId: 'golden-lion', color: '#B11F24',
+          id: 'charge-1', type: 'charge', assetId: 'material-animal-lion-rampant', color: '#B11F24',
           transform: { x: 0, y: 0, scale: 1, rotation: 0 }, visible: true, locked: false,
           groupId: 'spaced',
         },

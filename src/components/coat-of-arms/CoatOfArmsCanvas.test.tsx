@@ -21,7 +21,7 @@ function createCanvasProject(): CoatProject {
   };
   const withCharge = applyProjectCommand(withStableIds, {
     type: 'add-layer',
-    assetId: 'golden-lion',
+    assetId: 'material-animal-lion-rampant',
   });
   return {
     ...withCharge,
@@ -445,7 +445,7 @@ describe('CoatOfArmsCanvas', () => {
   });
 
   it('transforms every selected layer from the shared handles and preserves non-uniform proportions', () => {
-    let project = applyProjectCommand(createCanvasProject(), { type: 'add-layer', assetId: 'eight-point-star' });
+    let project = applyProjectCommand(createCanvasProject(), { type: 'add-layer', assetId: 'material-symbol-eight-point-star' });
     const secondCharge = project.layers.at(-1);
     if (!secondCharge || secondCharge.type !== 'charge') throw new Error('Expected a second charge');
     project = {

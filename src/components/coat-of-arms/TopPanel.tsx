@@ -2,17 +2,12 @@
 
 import { useState } from 'react';
 import { listAssetsByKind } from '@/lib/coat-of-arms/assets';
-import { listReferenceCatalogEntries } from '@/lib/coat-of-arms/reference-catalog';
 import type { CoatAssetByKind, CoatLocale, CoatRasterVariantId, TopAssetCategory } from '@/lib/coat-of-arms/types';
 import { usePanelCommandError } from './usePanelCommandError';
 import { ReferenceAssetGallery, type ReferenceAssetGalleryEntry } from './ReferenceAssetGallery';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
 const topCategories: readonly TopAssetCategory[] = ['crown', 'mantle', 'supporter', 'other'];
-const referenceTopAssetIds = new Set(
-  topCategories.flatMap((category) => listReferenceCatalogEntries('top', category).map((entry) => entry.id)),
-);
-
 interface TopPanelProps {
   locale: CoatLocale;
   selectedCategory?: TopAssetCategory;
@@ -27,7 +22,7 @@ export function TopPanel({ locale, selectedCategory }: TopPanelProps) {
   const isTreeControlled = selectedCategory !== undefined;
   const topAssets = listAssetsByKind('top');
   const assetsInCategory = topAssets.filter((asset) => (
-    asset.category === category && !referenceTopAssetIds.has(asset.id)
+    asset.category === category
   ));
   const originalTopGalleryEntries = assetsInCategory.map(createTopGalleryEntry);
 
@@ -65,13 +60,15 @@ export function TopPanel({ locale, selectedCategory }: TopPanelProps) {
 }
 
 function createTopGalleryEntry(asset: CoatAssetByKind<'top'>): ReferenceAssetGalleryEntry {
+  if (!('rasterSrc' in asset) || typeof asset.rasterSrc !== 'string') {
+    throw new Error(`Top material has no WebP source: ${asset.id}`);
+  }
   return {
     id: asset.id,
     name: asset.name.en,
     nameZh: asset.name.zh,
     searchTerms: asset.searchTerms ?? [],
-    svgParts: asset.svgParts ?? [{ svgPath: asset.svgPath, sourceColor: '#1F2937' }],
-    ...(asset.rasterVariants ? { rasterVariants: asset.rasterVariants } : {}),
+    rasterSrc: asset.rasterSrc,
   };
 }
 

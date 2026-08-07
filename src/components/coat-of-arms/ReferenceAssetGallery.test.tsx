@@ -32,10 +32,17 @@ describe('ReferenceAssetGallery', () => {
     expect(screen.getByRole('button', { name: '选择盾形：尖顶纹章盾' }).getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('shows and selects each original WebP alternative for a replaced symbol material', () => {
+  it('shows and selects a single bundled WebP material outside the shield catalog', () => {
     const onSelect = vi.fn();
     render(
       <ReferenceAssetGallery
+        additionalEntries={[{
+          id: 'material-symbol-radiant-sun',
+          name: 'Radiant Sun',
+          nameZh: 'Radiant Sun',
+          searchTerms: ['radiant', 'sun'],
+          rasterSrc: '/coat-assets/materials/symbols/radiant-sun.webp',
+        }]}
         categories={['symbol']}
         locale="en"
         onSelect={onSelect}
@@ -43,14 +50,12 @@ describe('ReferenceAssetGallery', () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: 'sun emblem' } });
-    const variantA = screen.getByRole('button', { name: 'Add charge: Sun emblem — A' });
-    const variantB = screen.getByRole('button', { name: 'Add charge: Sun emblem — B' });
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: 'radiant sun' } });
+    const sunCard = screen.getByRole('button', { name: 'Add charge: Radiant Sun' });
 
-    expect(variantA.querySelector('img')?.getAttribute('src')).toBe('/coat-assets/generated/symbols/symbol-sun-plain-a.webp');
-    expect(variantB.querySelector('img')?.getAttribute('src')).toBe('/coat-assets/generated/symbols/symbol-sun-plain-b.webp');
-    fireEvent.click(variantB);
-    expect(onSelect).toHaveBeenCalledWith('symbol-charge-1', 'b');
+    expect(sunCard.querySelector('img')?.getAttribute('src')).toBe('/coat-assets/materials/symbols/radiant-sun.webp');
+    fireEvent.click(sunCard);
+    expect(onSelect).toHaveBeenCalledWith('material-symbol-radiant-sun');
   });
 
   it('announces a localized empty result and rejects a category outside its section', () => {
@@ -204,78 +209,17 @@ describe('ReferenceAssetGallery', () => {
     expect(matchesCatalogSearch(diamondLozengeShield, '钻形')).toBe(true);
   });
 
-  it('matches semantic animal motif, pose, and Chinese motif queries', () => {
-    const animalEntries = listReferenceCatalogEntries('charge', 'animal');
-    const lion = animalEntries.find((entry) => entry.id === 'lion-rampant');
-    const eagle = animalEntries.find((entry) => entry.id === 'animal-charge-10');
-    if (!lion || !eagle) throw new Error('Expected preserved semantic animal reference entries');
+  it('matches a static WebP material by its name and terms', () => {
+    const webpMaterial = {
+      id: 'material-animal-lion-rampant',
+      name: 'Lion Rampant',
+      nameZh: 'Lion Rampant',
+      searchTerms: ['lion', 'rampant'],
+      rasterSrc: '/coat-assets/materials/animals/lion-rampant.webp',
+    };
 
-    expect(matchesCatalogSearch(lion, 'lion')).toBe(true);
-    expect(matchesCatalogSearch(eagle, 'eagle')).toBe(true);
-    expect(matchesCatalogSearch(eagle, '鹰')).toBe(true);
-  });
-
-  it('matches semantic object motif and Chinese object queries', () => {
-    const watchtower = listReferenceCatalogEntries('charge', 'object').find((entry) => entry.id === 'object-charge-1');
-    if (!watchtower) throw new Error('Expected preserved watchtower reference entry');
-
-    expect(matchesCatalogSearch(watchtower, 'watchtower')).toBe(true);
-    expect(matchesCatalogSearch(watchtower, '塔')).toBe(true);
-  });
-
-  it('matches semantic plant motif and Chinese plant queries', () => {
-    const oakSprig = listReferenceCatalogEntries('charge', 'plant').find((entry) => entry.id === 'plant-charge-1');
-    if (!oakSprig) throw new Error('Expected preserved oak sprig reference entry');
-
-    expect(matchesCatalogSearch(oakSprig, 'oak')).toBe(true);
-    expect(matchesCatalogSearch(oakSprig, '橡')).toBe(true);
-  });
-
-  it('matches semantic human motif and Chinese human queries', () => {
-    const standingArcher = listReferenceCatalogEntries('charge', 'human').find((entry) => entry.id === 'human-charge-1');
-    if (!standingArcher) throw new Error('Expected preserved standing archer reference entry');
-
-    expect(matchesCatalogSearch(standingArcher, 'archer')).toBe(true);
-    expect(matchesCatalogSearch(standingArcher, '弓')).toBe(true);
-  });
-
-  it('matches semantic symbol motif and Chinese symbol queries', () => {
-    const sunEmblem = listReferenceCatalogEntries('charge', 'symbol').find((entry) => entry.id === 'symbol-charge-1');
-    if (!sunEmblem) throw new Error('Expected preserved sun emblem reference entry');
-
-    expect(matchesCatalogSearch(sunEmblem, 'sun')).toBe(true);
-    expect(matchesCatalogSearch(sunEmblem, '日')).toBe(true);
-  });
-
-  it('matches semantic crown motif and Chinese crown queries', () => {
-    const imperialCrown = listReferenceCatalogEntries('top', 'crown').find((entry) => entry.id === 'crown-exterior-1');
-    if (!imperialCrown) throw new Error('Expected preserved imperial crown reference entry');
-
-    expect(matchesCatalogSearch(imperialCrown, 'imperial')).toBe(true);
-    expect(matchesCatalogSearch(imperialCrown, '帝')).toBe(true);
-  });
-
-  it('matches semantic mantle motif and Chinese mantle queries', () => {
-    const regalMantle = listReferenceCatalogEntries('top', 'mantle').find((entry) => entry.id === 'mantle-exterior-1');
-    if (!regalMantle) throw new Error('Expected preserved regal mantle reference entry');
-
-    expect(matchesCatalogSearch(regalMantle, 'regal')).toBe(true);
-    expect(matchesCatalogSearch(regalMantle, '王')).toBe(true);
-  });
-
-  it('matches semantic supporter motif and Chinese supporter queries', () => {
-    const stagSupporters = listReferenceCatalogEntries('top', 'supporter').find((entry) => entry.id === 'supporter-exterior-1');
-    if (!stagSupporters) throw new Error('Expected preserved stag supporters reference entry');
-
-    expect(matchesCatalogSearch(stagSupporters, 'stag')).toBe(true);
-    expect(matchesCatalogSearch(stagSupporters, '鹿')).toBe(true);
-  });
-
-  it('matches semantic exterior motif and Chinese exterior queries', () => {
-    const tournamentHelm = listReferenceCatalogEntries('top', 'other').find((entry) => entry.id === 'other-exterior-1');
-    if (!tournamentHelm) throw new Error('Expected preserved tournament helm reference entry');
-
-    expect(matchesCatalogSearch(tournamentHelm, 'tournament')).toBe(true);
-    expect(matchesCatalogSearch(tournamentHelm, '盔')).toBe(true);
+    expect(matchesCatalogSearch(webpMaterial, 'lion')).toBe(true);
+    expect(matchesCatalogSearch(webpMaterial, 'rampant')).toBe(true);
+    expect(matchesCatalogSearch(webpMaterial, 'shield')).toBe(false);
   });
 });

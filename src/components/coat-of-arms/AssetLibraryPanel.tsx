@@ -1,5 +1,8 @@
 'use client';
 
+/* Material thumbnails use the local bundled WebP source directly. */
+/* eslint-disable @next/next/no-img-element */
+
 import { listAssetsByKind } from '@/lib/coat-of-arms/assets';
 import type { CoatAssetKind, CoatLocale, GeometryCoatAssetKind } from '@/lib/coat-of-arms/types';
 import { getCoatWorkbenchCopy } from './workbench-copy';
@@ -26,13 +29,17 @@ export function AssetLibraryPanel({ kind, locale, search, onAdd, allowedAssetIds
     <ul aria-label={copy.assetLibrary(kind === 'charge' ? copy.charges : copy.ordinaries)} className="grid gap-2 sm:grid-cols-2">
       {assets.map((asset) => (
         <li key={asset.id} className="flex items-center justify-between gap-2 rounded border border-[color:var(--site-border-soft)] p-2">
-          <svg
+          {asset.rasterSrc ? <img
+            alt=""
+            className="h-10 w-10 shrink-0 rounded bg-[color:var(--site-panel-strong)] object-contain p-1"
+            src={asset.rasterSrc}
+          /> : <svg
             aria-label={copy.previewAsset(asset.name[locale])}
             className="h-10 w-10 shrink-0 rounded bg-[color:var(--site-panel-strong)] p-1 text-[color:var(--site-accent-strong)]"
             viewBox="0 0 100 110"
           >
             <path d={asset.svgPath} fill="currentColor" />
-          </svg>
+          </svg>}
           <span className="min-w-0 flex-1">{asset.name[locale]}</span>
           <button type="button" onClick={() => onAdd(asset.id)}>
             {copy.addAsset(asset.name[locale])}

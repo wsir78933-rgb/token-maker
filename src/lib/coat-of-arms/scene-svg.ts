@@ -395,14 +395,38 @@ function renderGeometryLayer(
   if (asset.kind !== 'ordinary' && asset.kind !== 'charge' && asset.kind !== 'top') {
     throw new Error(`Invalid geometry layer asset: ${layer.assetId}`);
   }
-  const geometryMarkup = isBundledRasterAsset(asset) && isBundledRasterLayer(layer)
-    ? renderBundledRasterAsset(asset, layer)
-    : asset.svgParts
-      ? asset.svgParts.map((part, index) => `<path d="${part.svgPath}" fill="${layer.colorReplacements?.[part.sourceColor] ?? (index === 0 ? layer.color : part.sourceColor)}"/>`).join('')
-      : `<path d="${asset.svgPath}" fill="${layer.color}"/>`;
+  const geometryMarkup = hasStaticRasterSource(asset)
+    ? renderStaticRasterAsset(asset)
+    : isBundledRasterAsset(asset) && isBundledRasterLayer(layer)
+      ? renderBundledRasterAsset(asset, layer)
+      : renderVectorGeometryAsset(asset, layer);
   const transformedMarkup = renderTransformedLayer(geometryMarkup, layer.transform, layerIndex);
   if (layer.type !== 'charge' || !layer.transform.clipToField) return transformedMarkup;
   return renderChargeFieldPlacement(transformedMarkup, project, layer.transform, layerIndex);
+}
+
+function hasStaticRasterSource(
+  asset: ReturnType<typeof getCoatAsset>,
+): asset is Extract<ReturnType<typeof getCoatAsset>, { rasterSrc: string }> {
+  return 'rasterSrc' in asset && typeof asset.rasterSrc === 'string';
+}
+
+function renderStaticRasterAsset(
+  asset: Extract<ReturnType<typeof getCoatAsset>, { rasterSrc: string }>,
+): string {
+  return `<image data-bundled-raster="true" href="${escapeXml(asset.rasterSrc)}" x="0" y="0" width="100" height="110" preserveAspectRatio="xMidYMid meet"/>`;
+}
+
+function renderVectorGeometryAsset(
+  asset: ReturnType<typeof getCoatAsset>,
+  layer: Extract<CoatLayer, { type: 'ordinary' | 'charge' | 'top' }>,
+): string {
+  if (!('svgPath' in asset) || typeof asset.svgPath !== 'string') {
+    throw new Error(`Material asset has no SVG or WebP source: ${asset.id}`);
+  }
+  return asset.svgParts
+    ? asset.svgParts.map((part, index) => `<path d="${part.svgPath}" fill="${layer.colorReplacements?.[part.sourceColor] ?? (index === 0 ? layer.color : part.sourceColor)}"/>`).join('')
+    : `<path d="${asset.svgPath}" fill="${layer.color}"/>`;
 }
 
 function isBundledRasterAsset(

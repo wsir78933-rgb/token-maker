@@ -9,15 +9,13 @@ import { buildFieldInteriorMarkup } from '@/lib/coat-of-arms/field';
 import {
   getReferenceShieldCardField,
   type ReferenceCatalogEntry,
-  type ReferenceCatalogSection,
   listReferenceCatalogEntries,
   shieldReferenceCategories,
 } from '@/lib/coat-of-arms/reference-catalog';
-import { getBundledRasterVariants } from '@/lib/coat-of-arms/generated-raster';
-import type { CoatLocale, CoatRasterVariant, CoatRasterVariantId } from '@/lib/coat-of-arms/types';
+import type { CoatAssetGallerySection, CoatLocale, CoatRasterVariant, CoatRasterVariantId } from '@/lib/coat-of-arms/types';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
-const referenceCategoriesBySection: Record<ReferenceCatalogSection, readonly string[]> = {
+const referenceCategoriesBySection: Record<CoatAssetGallerySection, readonly string[]> = {
   shield: shieldReferenceCategories,
   charge: ['animal', 'object', 'plant', 'human', 'symbol'],
   top: ['crown', 'mantle', 'supporter', 'other'],
@@ -28,7 +26,8 @@ export interface ReferenceAssetGalleryEntry {
   readonly name: string;
   readonly nameZh: string;
   readonly searchTerms: readonly string[];
-  readonly svgParts: readonly ReferenceCatalogEntry['svgParts'][number][];
+  readonly svgParts?: readonly ReferenceCatalogEntry['svgParts'][number][];
+  readonly rasterSrc?: string;
   readonly rasterVariants?: readonly [CoatRasterVariant, CoatRasterVariant];
 }
 
@@ -40,7 +39,7 @@ interface ReferenceAssetGalleryCard {
 interface ReferenceAssetGalleryProps {
   activeCategory?: string;
   additionalEntries?: readonly ReferenceAssetGalleryEntry[];
-  section: ReferenceCatalogSection;
+  section: CoatAssetGallerySection;
   categories: readonly string[];
   locale: CoatLocale;
   onActiveCategoryChange?: (category: string) => void;
@@ -99,7 +98,7 @@ export function ReferenceAssetGallery({
     ? selectedRasterVariantId
     : controlledSelectedRasterVariantId;
   const visibleEntries = [
-    ...listReferenceCatalogEntries(section, activeCategory).map(createReferenceGalleryEntry),
+    ...(section === 'shield' ? listReferenceCatalogEntries('shield', activeCategory).map(createReferenceGalleryEntry) : []),
     ...additionalEntries,
   ].filter((entry) => (
     matchesCatalogSearch(entry, search)
@@ -164,10 +163,12 @@ export function ReferenceAssetGallery({
               >
                 {presentation === 'compact' && section === 'shield'
                   ? <CompactShieldThumbnail clipIdPrefix={compactThumbnailClipIdPrefix} entry={entry} />
-                  : rasterVariant
+                    : rasterVariant
                     ? <img alt="" className="aspect-[10/11] w-full object-contain" src={rasterVariant.src} />
+                    : entry.rasterSrc
+                      ? <img alt="" className="aspect-[10/11] w-full object-contain" src={entry.rasterSrc} />
                     : <svg aria-hidden="true" className="aspect-[10/11] w-full" viewBox="0 0 100 110">
-                      {entry.svgParts.map((part, partIndex) => <path d={part.svgPath} fill={part.sourceColor} key={`${entry.id}-${partIndex}`} />)}
+                      {entry.svgParts?.map((part, partIndex) => <path d={part.svgPath} fill={part.sourceColor} key={`${entry.id}-${partIndex}`} />)}
                     </svg>}
                 {presentation === 'standard' ? <span className="coat-reference-asset-gallery__caption">{cardName}</span> : null}
               </button>
@@ -186,11 +187,6 @@ function createReferenceGalleryEntry(entry: ReferenceCatalogEntry): ReferenceAss
     nameZh: entry.nameZh,
     searchTerms: entry.searchTerms,
     svgParts: entry.svgParts,
-    rasterVariants: getBundledRasterVariants({
-      assetId: entry.id,
-      category: entry.category,
-      semanticKey: entry.symbolSemanticKey ?? entry.exteriorSemanticKey,
-    }),
   };
 }
 
@@ -205,7 +201,7 @@ function createReferenceGalleryCards(
 }
 
 function CompactShieldThumbnail({ clipIdPrefix, entry }: { clipIdPrefix: string; entry: ReferenceAssetGalleryEntry }) {
-  const shieldPath = entry.svgParts[0]?.svgPath;
+  const shieldPath = entry.svgParts?.[0]?.svgPath;
   if (!shieldPath) throw new Error(`Shield catalog entry has no preview path: ${entry.id}`);
   const clipId = `coat-compact-shield-${clipIdPrefix}-${entry.id}`;
   const field = getReferenceShieldCardField(entry.id);
@@ -224,7 +220,7 @@ function CompactShieldThumbnail({ clipIdPrefix, entry }: { clipIdPrefix: string;
 }
 
 function assertReferenceGalleryCategories(
-  section: ReferenceCatalogSection,
+  section: CoatAssetGallerySection,
   categories: readonly string[],
   categoryCopy: Readonly<Record<string, string>>,
 ) {
@@ -235,7 +231,7 @@ function assertReferenceGalleryCategories(
     if (!validCategories.includes(category) || !categoryCopy[category]) {
       throw new Error(`Invalid reference category for ${section}: ${category}`);
     }
-    if (listReferenceCatalogEntries(section, category).length === 0) {
+    if (section === 'shield' && listReferenceCatalogEntries('shield', category).length === 0) {
       throw new Error(`Missing local reference catalog entries for ${section}: ${category}`);
     }
   }

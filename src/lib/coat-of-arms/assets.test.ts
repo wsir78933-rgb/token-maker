@@ -11,14 +11,12 @@ const requiredChargeCategories: readonly ChargeAssetCategory[] = [
 ];
 
 describe('coat asset catalog', () => {
-  it('gives every replaced symbol material two locally bundled WebP variants', () => {
-    const sun = getCoatAsset('symbol-charge-1');
-    if (sun.kind !== 'charge') throw new Error(`Expected a symbol charge, received ${sun.kind}`);
+  it('exposes one bundled WebP material for every replacement category', () => {
+    const alligator = getCoatAsset('material-animal-alligator-passant');
+    if (alligator.kind !== 'charge') throw new Error(`Expected an animal charge, received ${alligator.kind}`);
 
-    expect(sun.rasterVariants).toEqual([
-      { id: 'a', src: '/coat-assets/generated/symbols/symbol-sun-plain-a.webp' },
-      { id: 'b', src: '/coat-assets/generated/symbols/symbol-sun-plain-b.webp' },
-    ]);
+    expect(alligator.rasterSrc).toBe('/coat-assets/materials/animals/alligator-passant.webp');
+    expect(alligator.svgPath).toBeUndefined();
   });
 
   it('creates the target editor showcase with local bundled layers', () => {
@@ -27,14 +25,14 @@ describe('coat asset catalog', () => {
     expect(project.layers).toMatchObject([
       { type: 'background', fill: '#FFFFFF' },
       { type: 'shield', assetId: 'heater-shield', field: { division: 'solid', colors: ['#F6C700'] } },
-      { type: 'charge', assetId: 'winged-dragon', color: '#28753A' },
-      { type: 'charge', assetId: 'golden-lion', color: '#8A451B' },
+      { type: 'charge', assetId: 'material-animal-dragon-passant', color: '#28753A' },
+      { type: 'charge', assetId: 'material-animal-alligator-passant', color: '#8A451B' },
     ]);
   });
 
-  it('exposes a local shield and a local charge without a remote source', () => {
+  it('exposes a local shield and a local WebP charge without a remote source', () => {
     const shield = getCoatAsset('heater-shield');
-    const charge = getCoatAsset('golden-lion');
+    const charge = getCoatAsset('material-animal-alligator-passant');
 
     expect(shield.kind).toBe('shield');
     expect(charge.kind).toBe('charge');
@@ -42,19 +40,19 @@ describe('coat asset catalog', () => {
     expect(charge.sourceUrl).toBeUndefined();
   });
 
-  it('keeps the two default animal materials as distinct locally authored silhouettes', () => {
-    const dragon = getCoatAsset('winged-dragon');
-    const lion = getCoatAsset('golden-lion');
+  it('keeps the two default animal materials as distinct local WebP files', () => {
+    const dragon = getCoatAsset('material-animal-dragon-passant');
+    const alligator = getCoatAsset('material-animal-alligator-passant');
 
-    if (dragon.kind !== 'charge' || lion.kind !== 'charge') {
-      throw new Error(`Expected charge assets, received ${dragon.kind} and ${lion.kind}`);
+    if (dragon.kind !== 'charge' || alligator.kind !== 'charge') {
+      throw new Error(`Expected charge assets, received ${dragon.kind} and ${alligator.kind}`);
     }
 
-    expect(dragon.svgPath).toContain('C');
-    expect(lion.svgPath).toContain('C');
-    expect(dragon.svgPath).not.toBe(lion.svgPath);
+    expect(dragon.rasterSrc).toBe('/coat-assets/materials/animals/dragon-passant.webp');
+    expect(alligator.rasterSrc).toBe('/coat-assets/materials/animals/alligator-passant.webp');
+    expect(dragon.rasterSrc).not.toBe(alligator.rasterSrc);
     expect(dragon.sourceUrl).toBeUndefined();
-    expect(lion.sourceUrl).toBeUndefined();
+    expect(alligator.sourceUrl).toBeUndefined();
   });
 
   it('rejects an unknown asset id with the invalid id in the error', () => {
@@ -72,10 +70,11 @@ describe('coat asset catalog', () => {
     expect(listAssetsByKind('charge').length).toBeGreaterThan(0);
   });
 
-  it('makes reference shield, charge, and exterior categories available through the public asset lookup', () => {
+  it('keeps reference shields and supplies each material category from WebP assets', () => {
     expect(listAssetsByKind('shield')).toHaveLength(234);
-    expect(listAssetsByKind('charge')).toHaveLength(813);
-    expect(listAssetsByKind('top')).toHaveLength(245);
+    expect(listAssetsByKind('charge')).toHaveLength(500);
+    expect(listAssetsByKind('ordinary')).toHaveLength(100);
+    expect(listAssetsByKind('top')).toHaveLength(400);
   });
 
   it('offers multiple local choices for every editor catalog category', () => {
@@ -89,31 +88,26 @@ describe('coat asset catalog', () => {
   it('stocks a broad original local charge catalogue for every editor category', () => {
     const charges = listAssetsByKind('charge');
 
-    expect(charges).toHaveLength(813);
+    expect(charges).toHaveLength(500);
 
     for (const category of requiredChargeCategories) {
-      expect(charges.filter((charge) => charge.category === category).length).toBeGreaterThanOrEqual(10);
+      expect(charges.filter((charge) => charge.category === category)).toHaveLength(100);
     }
 
     for (const charge of charges) {
       expect(charge.sourceUrl).toBeUndefined();
-      expect(charge.svgPath).toMatch(/^M/);
-      expect(charge.svgPath).not.toMatch(/(?:https?:|www\.|data:|url\()/i);
+      expect(charge.rasterSrc).toMatch(/^\/coat-assets\/materials\//);
+      expect(charge.rasterSrc).toMatch(/\.webp$/);
+      expect(charge.svgPath).toBeUndefined();
     }
   });
 
-  it('offers a wider local ordinary and exterior collection without replacing existing defaults', () => {
-    const ordinaryIds = listAssetsByKind('ordinary').map((asset) => asset.id);
-    const topIds = listAssetsByKind('top').map((asset) => asset.id);
-
-    expect(ordinaryIds).toEqual(expect.arrayContaining([
-      'diagonal-band', 'chevron', 'horizontal-band', 'vertical-pale', 'cross-ordinary',
-      'saltire-ordinary', 'bordure-ordinary', 'pile-ordinary',
-    ]));
-    expect(topIds).toEqual(expect.arrayContaining([
-      'royal-crown', 'ceremonial-mantle', 'lion-supporter', 'heraldic-helm',
-      'ducal-coronet', 'laurel-wreath', 'griffin-supporter', 'scroll-compartment',
-    ]));
+  it('replaces the ordinary and exterior defaults with their WebP catalogues', () => {
+    expectRasterSource('material-ordinary-annulet', '/coat-assets/materials/ordinaries/annulet.webp');
+    expectRasterSource('material-crown-acorn-crown', '/coat-assets/materials/crowns/acorn-crown.webp');
+    expectRasterSource('material-mantle-amber-mantle', '/coat-assets/materials/mantles/amber-mantle.webp');
+    expectRasterSource('material-supporter-paired-alligators', '/coat-assets/materials/supporters/paired-alligators.webp');
+    expectRasterSource('material-other-barbute-helm', '/coat-assets/materials/other/barbute-helm.webp');
   });
 
   it('includes locally authored French, banner, and lozenge shield outlines', () => {
@@ -123,9 +117,12 @@ describe('coat asset catalog', () => {
   });
 
   it('keeps geometry on drawing assets and fill colors on backgrounds', () => {
-    for (const kind of ['shield', 'ordinary', 'charge'] as const) {
-      for (const asset of listAssetsByKind(kind)) {
+    for (const asset of listAssetsByKind('shield')) {
         expect(asset.svgPath).toMatch(/^M/);
+    }
+    for (const kind of ['ordinary', 'charge'] as const) {
+      for (const asset of listAssetsByKind(kind)) {
+        expect(asset.rasterSrc).toMatch(/\.webp$/);
       }
     }
 
@@ -262,3 +259,11 @@ describe('coat asset catalog', () => {
     });
   });
 });
+
+function expectRasterSource(assetId: string, expectedSource: string): void {
+  const asset = getCoatAsset(assetId);
+  if (!('rasterSrc' in asset) || typeof asset.rasterSrc !== 'string') {
+    throw new Error(`Expected WebP material asset: ${assetId}`);
+  }
+  expect(asset.rasterSrc).toBe(expectedSource);
+}

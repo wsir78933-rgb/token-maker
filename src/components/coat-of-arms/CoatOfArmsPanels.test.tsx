@@ -14,8 +14,8 @@ import { getCoatWorkbenchCopy } from './workbench-copy';
 let nextId = 0;
 
 function projectWithTwoRedLayers(): CoatProject {
-  const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
-  const withStar = applyProjectCommand(withLion, { type: 'add-layer', assetId: 'eight-point-star' });
+  const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+  const withStar = applyProjectCommand(withLion, { type: 'add-layer', assetId: 'material-symbol-eight-point-star' });
   return {
     ...withStar,
     layers: withStar.layers.map((layer) => (
@@ -177,7 +177,7 @@ describe('CoatOfArmsPanels', () => {
     fireEvent.click(screen.getByRole('button', { name: /add random charge/i }));
 
     expect(useCoatProjectStore.getState().project.layers.slice(-2)).toMatchObject([
-      { type: 'ordinary', assetId: 'chevron' }, { type: 'charge', assetId: 'golden-lion' },
+      { type: 'ordinary', assetId: 'chevron' }, { type: 'charge', assetId: 'material-animal-lion-rampant' },
     ]);
   });
 
@@ -246,7 +246,7 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('updates one authored SVG part colour without recolouring the rest of the ornament', () => {
-    const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'royal-crown' });
+    const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
     const crown = withCrown.layers.at(-1);
     if (!crown || crown.type !== 'top') throw new Error('Expected crown layer');
     renderPanels(withCrown);
@@ -484,7 +484,7 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('sets a selected charge’s precise field region and clipping in the position controls', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const shield = project.layers.find((layer) => layer.type === 'shield');
     const lion = project.layers.at(-1);
     if (!shield || shield.type !== 'shield' || !lion || lion.type !== 'charge') throw new Error('Expected shield and lion charge');
@@ -503,7 +503,7 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('offers the current shield division’s detailed regions for local charge clipping', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const shield = project.layers.find((layer) => layer.type === 'shield');
     const lion = project.layers.at(-1);
     if (!shield || shield.type !== 'shield' || !lion || lion.type !== 'charge') throw new Error('Expected shield and lion charge');
@@ -601,7 +601,7 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('shows the group-contiguity command error instead of silently changing layers', async () => {
-    const project = ['golden-lion', 'eight-point-star', 'stone-tower'].reduce(
+    const project = ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower'].reduce(
       (current, assetId) => applyProjectCommand(current, { type: 'add-layer', assetId }),
       createDefaultProject('en'),
     );
@@ -617,8 +617,8 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('shows group opacity only for a selected single group and updates that group without changing layer opacity', () => {
-    const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
-    const withPair = applyProjectCommand(withLion, { type: 'add-layer', assetId: 'eight-point-star' });
+    const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    const withPair = applyProjectCommand(withLion, { type: 'add-layer', assetId: 'material-symbol-eight-point-star' });
     const groupLayerIds = withPair.layers.slice(-2).map((layer) => layer.id);
     const groupedProject = applyProjectCommand(withPair, {
       type: 'group-layers', groupId: 'opacity-group', layerIds: groupLayerIds,
@@ -656,18 +656,18 @@ describe('CoatOfArmsPanels', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Move Lion up' }));
 
-    expect(findAssetLayerIndex('golden-lion')).toBe(3);
-    expect(findAssetLayerIndex('eight-point-star')).toBe(2);
+    expect(findAssetLayerIndex('material-animal-lion-rampant')).toBe(3);
+    expect(findAssetLayerIndex('material-symbol-eight-point-star')).toBe(2);
 
     fireEvent.click(screen.getByRole('button', { name: 'Move Lion down' }));
 
-    expect(findAssetLayerIndex('golden-lion')).toBe(2);
-    expect(findAssetLayerIndex('eight-point-star')).toBe(3);
+    expect(findAssetLayerIndex('material-animal-lion-rampant')).toBe(2);
+    expect(findAssetLayerIndex('material-symbol-eight-point-star')).toBe(3);
   });
 
   it('moves a grouped layer as one contiguous block in the layer panel', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'golden-lion' });
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'eight-point-star' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-symbol-eight-point-star' });
     project = applyProjectCommand(project, { type: 'add-layer', assetId: 'oak-leaf' });
     const groupedLayerIds = project.layers.slice(2, 4).map((layer) => layer.id);
     project = applyProjectCommand(project, { type: 'group-layers', groupId: 'panel-group', layerIds: groupedLayerIds });
@@ -677,7 +677,7 @@ describe('CoatOfArmsPanels', () => {
 
     expect(useCoatProjectStore.getState().project.layers.slice(2).map((layer) => (
       'assetId' in layer ? layer.assetId : layer.type
-    ))).toEqual(['oak-leaf', 'golden-lion', 'eight-point-star']);
+    ))).toEqual(['oak-leaf', 'material-animal-lion-rampant', 'material-symbol-eight-point-star']);
   });
 
   it('rejects unsafe client upload metadata before it can dispatch an image command', async () => {
