@@ -333,7 +333,7 @@ describe('CoatOfArmsMaker', () => {
 
     expect(screen.queryByLabelText('Top category')).toBeNull();
     expect(screen.queryByRole('group', { name: 'Top ornament categories' })).toBeNull();
-    expect(screen.getByRole('button', { name: 'Add top ornament: Regal mantle' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Add top ornament: Amber Mantle' })).toBeDefined();
   });
 
   it('uses the Charges tree branch as the sole charge category control', () => {
@@ -345,7 +345,7 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.queryByLabelText('Library category')).toBeNull();
     expect(screen.queryByLabelText('Charge category')).toBeNull();
     expect(screen.queryByRole('group', { name: 'Charge categories' })).toBeNull();
-    expect(screen.getByRole('button', { name: 'Add charge: Watchtower' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Add charge: Castle Tower' })).toBeDefined();
   });
 
   it('keeps material categories in the target left library and exposes layers without a right inspector dock', () => {
@@ -395,10 +395,10 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
 
     selectDesktopTool('Tokens');
-    fireEvent.click(screen.getByRole('button', { name: 'Add Compass rose token' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add Compass Rose token' }));
 
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
-      type: 'charge', assetId: 'compass-rose',
+      type: 'charge', assetId: 'material-symbol-compass-rose',
     });
   });
 
@@ -598,7 +598,7 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
 
     selectDesktopTool('Top');
-    fireEvent.click(screen.getByRole('button', { name: 'Add top ornament: Royal crown' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add top ornament: Royal Crown' }));
 
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'material-crown-royal-crown' });
   });
@@ -1108,7 +1108,7 @@ describe('CoatOfArmsMaker', () => {
     fireEvent.click(within(mobileToolRail).getByRole('tab', { name: 'Charges' }));
     expect(within(mobileToolRail).queryByRole('button', { name: 'French shield' })).toBeNull();
     fireEvent.click(within(mobileToolRail).getByRole('button', { name: 'Objects' }));
-    expect(within(drawer).getByRole('button', { name: 'Add charge: Watchtower' })).toBeDefined();
+    expect(within(drawer).getByRole('button', { name: 'Add charge: Castle Tower' })).toBeDefined();
   });
 
   it('shows only the active expanded desktop branch in the mobile tool drawer', () => {

@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [Shatter DnD 5e](https://www.tokenmaker.one/blog/dnd-shatter-5e): Place the 10-foot blast, resolve Constitution saves, compare 2014 and 2024 disadvantage rules, and handle unattended objects and cover.
 - [DND Gnome Names](https://www.tokenmaker.one/blog/dnd-gnome-names): Mix 132 gnome first names, clan names, and nicknames, then turn one full name into a character hook and readable VTT identity.
 - [DND Maul 5e](https://www.tokenmaker.one/blog/dnd-maul): Check Martial proficiency, the Strength 13 Heavy threshold, and two-hand commitment, then resolve Topple and hand Prone to the next useful action.
 - [DND Quarterstaff 5e](https://www.tokenmaker.one/blog/dnd-quarterstaff): Choose the hand setup, attack ability, Topple timing, Monk or Shillelagh rules, Polearm Master action economy, and VTT token grip for a quarterstaff.
@@ -63,6 +64,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [Shatter DnD 5e：确定爆点、结算豁免与破坏物体](https://www.tokenmaker.one/zh/blog/dnd-shatter-5e)
 - [DND 侏儒名字：名字、氏族名、昵称与角色钩子](https://www.tokenmaker.one/zh/blog/dnd-gnome-names)
 - [DND 巨锤（Maul）5e：Heavy、Topple 与清楚回合流程](https://www.tokenmaker.one/zh/blog/dnd-maul)
 - [DND 长棍（Quarterstaff）5e：持握选择、Topple 与构筑](https://www.tokenmaker.one/zh/blog/dnd-quarterstaff)

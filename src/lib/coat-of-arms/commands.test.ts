@@ -38,16 +38,16 @@ function getLayerTransformX(layer: CoatLayer): number {
 }
 
 describe('coat project commands', () => {
-  it('persists the selected bundled WebP variant without adding a local upload', () => {
+  it('persists a bundled static WebP material without adding a local upload', () => {
     const project = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'material-symbol-radiant-sun', rasterVariantId: 'b',
-    } as never);
+      type: 'add-layer', assetId: 'material-symbol-radiant-sun',
+    });
 
     expect(project.layers.at(-1)).toMatchObject({
       type: 'charge',
       assetId: 'material-symbol-radiant-sun',
-      rasterVariantId: 'b',
     });
+    expect(project.layers.at(-1)).not.toHaveProperty('rasterVariantId');
     expect(project.uploads).toEqual([]);
   });
 
@@ -227,19 +227,15 @@ describe('coat project commands', () => {
     expect(customized.layers[0]).toMatchObject({ assetId: 'ivory-background', motif: 'honeycomb', opacity: 0.6, fill: '#004E89' });
   });
 
-  it('persists independent replacement colours for every authored SVG part', () => {
+  it('rejects SVG part colour replacements for a bundled WebP material', () => {
     const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
     const crown = withCrown.layers.at(-1);
     if (!crown || crown.type !== 'top') throw new Error('Expected crown layer');
 
-    expect(applyProjectCommand(withCrown, {
-      type: 'update-layer', layerId: crown.id,
-      patch: { colorReplacements: { '#F5E6A1': '#1855A5' } },
-    }).layers.at(-1)).toMatchObject({ colorReplacements: { '#F5E6A1': '#1855A5' } });
     expect(() => applyProjectCommand(withCrown, {
       type: 'update-layer', layerId: crown.id,
-      patch: { colorReplacements: { '#000000': '#1855A5' } },
-    } as never)).toThrow('unsupported SVG part colour');
+      patch: { colorReplacements: { '#F5E6A1': '#1855A5' } },
+    })).toThrow('Invalid unsupported SVG part colour: #F5E6A1');
   });
 
   it('adds a validated local freehand drawing layer without external SVG input', () => {
@@ -301,7 +297,7 @@ describe('coat project commands', () => {
 
   it('duplicates every supported persisted layer kind without sharing nested transforms or text paths', () => {
     const withOrdinary = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'chevron',
+      type: 'add-layer', assetId: 'material-ordinary-chevron',
     });
     const withCharge = applyProjectCommand(withOrdinary, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const withText = applyProjectCommand(withCharge, {

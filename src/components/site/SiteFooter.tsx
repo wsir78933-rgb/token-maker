@@ -37,8 +37,7 @@ interface SiteFooterProps {
 type SiteFooterContentWidth = 'contained' | 'nearFull';
 
 const editorPath = '/';
-const squareTokenMakerPath = '/templates/square-token-maker';
-const diceRollerPath = '/dice-roller-dnd';
+const coatOfArmsMakerPath = '/coat-of-arms-maker';
 const blogPath = '/blog';
 const aboutPath = '/about';
 const changelogPath = '/changelog';
@@ -62,9 +61,8 @@ const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
         title: 'Tools',
         icon: Sparkles,
         links: [
-          { label: 'Editor', path: editorPath },
-          { label: 'Square Token Maker', path: squareTokenMakerPath },
-          { label: 'Dice Roller', path: diceRollerPath },
+          { label: 'Token Maker', path: editorPath },
+          { label: 'Coat of Arms Maker', path: coatOfArmsMakerPath },
         ],
       },
       {
@@ -102,9 +100,8 @@ const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
         title: '工具',
         icon: PencilRuler,
         links: [
-          { label: '编辑器', path: editorPath },
-          { label: '方形 Token 制作器', path: squareTokenMakerPath },
-          { label: '骰子工具', path: diceRollerPath },
+          { label: 'Token Maker 编辑器', path: editorPath },
+          { label: '纹章制作器', path: coatOfArmsMakerPath },
         ],
       },
       {

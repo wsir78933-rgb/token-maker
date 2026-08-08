@@ -40,6 +40,7 @@ const FIREBOLT_DND_5E_SLUG = 'firebolt-dnd-5e';
 const SPECTATOR_DND_SLUG = 'spectator-dnd';
 const DND_QUARTERSTAFF_SLUG = 'dnd-quarterstaff';
 const DND_MAUL_SLUG = 'dnd-maul';
+const DND_SHATTER_5E_SLUG = 'dnd-shatter-5e';
 
 function getStructuredDataTypes(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -337,6 +338,11 @@ describe('coat maker routes', () => {
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual Shatter detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_SHATTER_5E_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_SHATTER_5E_SLUG });
+  });
+
   it('emits bilingual Maul detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_MAUL_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_MAUL_SLUG });

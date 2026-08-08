@@ -90,20 +90,20 @@ describe('CoatOfArmsPanels', () => {
   it('adds a charge from the library and exposes it in layers', async () => {
     renderPanels();
 
-    const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion') });
-    expect(lionCard.querySelectorAll('path')).toHaveLength(4);
+    const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') });
+    expect(lionCard.querySelector('img')).not.toBeNull();
     fireEvent.click(lionCard);
 
     expect(screen.getByRole('listitem', { name: /lion/i })).toBeDefined();
   });
 
-  it('adds the selected Lion rampant from the reference charge gallery as an independent layer', () => {
+  it('adds the selected Lion Rampant WebP material as an independent layer', () => {
     renderPanels();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add charge: Lion rampant' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add charge: Lion Rampant' }));
 
     expect(useCoatProjectStore.getState().project.layers.filter((layer) => (
-      layer.type === 'charge' && layer.assetId === 'lion-rampant'
+      layer.type === 'charge' && layer.assetId === 'material-animal-lion-rampant'
     ))).toHaveLength(1);
   });
 
@@ -121,7 +121,7 @@ describe('CoatOfArmsPanels', () => {
 
     expect(screen.getByRole('heading', { name: 'Shield & field' })).toBeDefined();
     expect(screen.getByLabelText('Shield outline')).toBeDefined();
-    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion') })).toBeDefined();
+    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Add motto' })).toBeDefined();
     expect(screen.getByRole('list', { name: 'Coat layers' })).toBeDefined();
     expect((screen.getByLabelText('Motto text') as HTMLInputElement).value).toBe('FORTUNE FAVOURS');
@@ -132,7 +132,7 @@ describe('CoatOfArmsPanels', () => {
 
     expect(screen.getByRole('heading', { name: '盾牌与底纹' })).toBeDefined();
     expect(screen.getByLabelText('盾形')).toBeDefined();
-    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', '狮子') })).toBeDefined();
+    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
     expect(screen.getByRole('button', { name: '添加格言' })).toBeDefined();
     expect(screen.getByRole('list', { name: '徽章图层' })).toBeDefined();
   });
@@ -171,13 +171,13 @@ describe('CoatOfArmsPanels', () => {
 
     fireEvent.change(screen.getByLabelText(/library category/i), { target: { value: 'ordinary' } });
     fireEvent.change(screen.getByLabelText(/search library/i), { target: { value: 'chevron' } });
-    fireEvent.click(screen.getByRole('button', { name: /add chevron/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add Chevron' }));
     fireEvent.change(screen.getByLabelText(/library category/i), { target: { value: 'charge' } });
     vi.spyOn(Math, 'random').mockReturnValue(0);
     fireEvent.click(screen.getByRole('button', { name: /add random charge/i }));
 
     expect(useCoatProjectStore.getState().project.layers.slice(-2)).toMatchObject([
-      { type: 'ordinary', assetId: 'chevron' }, { type: 'charge', assetId: 'material-animal-lion-rampant' },
+      { type: 'ordinary', assetId: 'material-ordinary-chevron' }, { type: 'charge', assetId: 'material-animal-alligator-passant' },
     ]);
   });
 
@@ -187,8 +187,8 @@ describe('CoatOfArmsPanels', () => {
     fireEvent.change(screen.getByLabelText('Charge category'), { target: { value: 'plant' } });
 
     const galleryCopy = getCoatWorkbenchCopy('en').palettes.referenceGallery;
-    expect(screen.getByRole('button', { name: galleryCopy.cardAction('charge', 'Oak leaf') })).toBeDefined();
-    expect(screen.queryByRole('button', { name: galleryCopy.cardAction('charge', 'Lion') })).toBeNull();
+    expect(screen.getByRole('button', { name: galleryCopy.cardAction('charge', 'Oak Leaf') })).toBeDefined();
+    expect(screen.queryByRole('button', { name: galleryCopy.cardAction('charge', 'Lion Rampant') })).toBeNull();
   });
 
   it('renders a searchable original charge as a gallery card', () => {
@@ -198,23 +198,23 @@ describe('CoatOfArmsPanels', () => {
     fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: 'oak' } });
 
     const galleryCopy = getCoatWorkbenchCopy('en').palettes.referenceGallery;
-    expect(screen.getByRole('button', { name: galleryCopy.cardAction('charge', 'Oak leaf') }).querySelector('svg path')).not.toBeNull();
-    expect(screen.queryByRole('button', { name: galleryCopy.cardAction('charge', 'Lion') })).toBeNull();
+    expect(screen.getByRole('button', { name: galleryCopy.cardAction('charge', 'Oak Leaf') }).querySelector('img')).not.toBeNull();
+    expect(screen.queryByRole('button', { name: galleryCopy.cardAction('charge', 'Lion Rampant') })).toBeNull();
   });
 
-  it('uses localized gallery action labels for original charge cards in Chinese', () => {
+  it('uses localized gallery action labels for bundled WebP charge cards in Chinese', () => {
     renderPanels('zh');
 
-    const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', '狮子') });
-    expect(lionCard.querySelectorAll('path')).toHaveLength(4);
+    const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') });
+    expect(lionCard.querySelector('img')).not.toBeNull();
   });
 
-  it('finds an original charge from its semantic search terms', () => {
+  it('finds a bundled charge from its search terms', () => {
     renderPanels();
 
-    fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: 'feline' } });
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: 'rampant' } });
 
-    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion') })).toBeDefined();
+    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
   });
 
   it('updates every matching colour when the replace-colour action is confirmed', async () => {
@@ -245,15 +245,17 @@ describe('CoatOfArmsPanels', () => {
     expect(useCoatProjectStore.getState().project.layers[0]).toMatchObject({ type: 'background', assetId: 'ivory-background', fill: '#004e89' });
   });
 
-  it('updates one authored SVG part colour without recolouring the rest of the ornament', () => {
+  it('updates the whole layer colour for a static WebP ornament without exposing SVG part controls', () => {
     const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
     const crown = withCrown.layers.at(-1);
     if (!crown || crown.type !== 'top') throw new Error('Expected crown layer');
     renderPanels(withCrown);
 
-    fireEvent.change(screen.getByLabelText(`Colour for ${crown.id} part #F5E6A1`), { target: { value: '#1855A5' } });
+    expect(screen.queryByLabelText(`Colour for ${crown.id} part #F5E6A1`)).toBeNull();
+    fireEvent.change(screen.getByLabelText(`Colour for ${crown.id}`), { target: { value: '#1855A5' } });
 
-    expect(getLayer(crown.id)).toMatchObject({ color: '#B11F24', colorReplacements: { '#F5E6A1': '#1855a5' } });
+    expect(getLayer(crown.id)).toMatchObject({ color: '#1855a5' });
+    expect(getLayer(crown.id)).not.toHaveProperty('colorReplacements');
   });
 
   it('uses commands to update shield fields, backgrounds, text, and local layers', async () => {
@@ -654,12 +656,12 @@ describe('CoatOfArmsPanels', () => {
   it('moves a charge toward and away from the visual top in project paint order', () => {
     renderPanels(projectWithTwoRedLayers());
 
-    fireEvent.click(screen.getByRole('button', { name: 'Move Lion up' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Move Lion Rampant up' }));
 
     expect(findAssetLayerIndex('material-animal-lion-rampant')).toBe(3);
     expect(findAssetLayerIndex('material-symbol-eight-point-star')).toBe(2);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Move Lion down' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Move Lion Rampant down' }));
 
     expect(findAssetLayerIndex('material-animal-lion-rampant')).toBe(2);
     expect(findAssetLayerIndex('material-symbol-eight-point-star')).toBe(3);
@@ -668,16 +670,16 @@ describe('CoatOfArmsPanels', () => {
   it('moves a grouped layer as one contiguous block in the layer panel', () => {
     let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-symbol-eight-point-star' });
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'oak-leaf' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-plant-oak-leaf' });
     const groupedLayerIds = project.layers.slice(2, 4).map((layer) => layer.id);
     project = applyProjectCommand(project, { type: 'group-layers', groupId: 'panel-group', layerIds: groupedLayerIds });
     renderPanels(project);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Move Lion up' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Move Lion Rampant up' }));
 
     expect(useCoatProjectStore.getState().project.layers.slice(2).map((layer) => (
       'assetId' in layer ? layer.assetId : layer.type
-    ))).toEqual(['oak-leaf', 'material-animal-lion-rampant', 'material-symbol-eight-point-star']);
+    ))).toEqual(['material-plant-oak-leaf', 'material-animal-lion-rampant', 'material-symbol-eight-point-star']);
   });
 
   it('rejects unsafe client upload metadata before it can dispatch an image command', async () => {

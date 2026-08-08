@@ -32,7 +32,9 @@ const SPECTATOR_DND_SLUG = 'spectator-dnd';
 const DND_QUARTERSTAFF_SLUG = 'dnd-quarterstaff';
 const DND_MAUL_SLUG = 'dnd-maul';
 const DND_GNOME_NAMES_SLUG = 'dnd-gnome-names';
+const DND_SHATTER_5E_SLUG = 'dnd-shatter-5e';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_SHATTER_5E_SLUG,
   DND_GNOME_NAMES_SLUG,
   DND_MAUL_SLUG,
   DND_QUARTERSTAFF_SLUG,
@@ -42,7 +44,6 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DWELF_DND_SLUG,
   DND_FLUMPH_SLUG,
   DND_DEATH_KNIGHT_SLUG,
-  DND_5E_ARMORER_SLUG,
 ];
 
 describe('published blog body voice', () => {
@@ -103,6 +104,132 @@ describe('published blog body voice', () => {
         }
       }
     }
+  });
+});
+
+describe('dnd shatter 5e blog post', () => {
+  test('publishes a bilingual blast-placement guide at the top of the blog', () => {
+    expect(getBlogPageCount('en')).toBe(4);
+    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+
+    const englishPost = getBlogPost('en', DND_SHATTER_5E_SLUG);
+    const chinesePost = getBlogPost('zh', DND_SHATTER_5E_SLUG);
+
+    expect(englishPost?.title).toBe(
+      'Shatter DnD 5e: Place the Blast, Resolve the Save, Break Objects',
+    );
+    expect(englishPost?.updatedAt).toBe('2026-08-08');
+    expect(englishPost?.bodyHtml).toContain('Place the center before anyone rolls');
+    expect(englishPost?.bodyHtml).toContain('Resolve one Shatter cast in five steps');
+    expect(englishPost?.bodyHtml).toContain('a Construct has Disadvantage on the save');
+    expect(englishPost?.bodyHtml).toContain('made of inorganic material');
+    expect(englishPost?.bodyHtml).toContain('Total Cover can block part of an area');
+    expect(englishPost?.bodyHtml).toContain('the origin appears on the near side');
+    expect(englishPost?.bodyHtml).toContain('Allies do not receive automatic protection');
+    expect(englishPost?.bodyHtml).toContain('deafness does not remove the damage');
+    expect(englishPost?.bodyHtml).toContain('The core 2024 spell lists Bard, Sorcerer, and Wizard');
+    expect(englishPost?.bodyHtml).toContain('The 2014 Basic Rules also put Shatter on the Warlock list');
+    expect(englishPost?.bodyHtml).toContain(
+      'A nonmagical object that is not worn or carried also takes the damage',
+    );
+    expect(englishPost?.bodyHtml).toContain('Roll the damage pool once for the cast');
+    expect(englishPost?.bodyHtml).toContain('Round halved damage down');
+    expect(englishPost?.bodyHtml).toContain('data-video-id="GfjIe2xD1j0"');
+    expect(englishPost?.bodyHtml).toContain(
+      'src="/blog/inline/dnd-shatter-5e/shatter-video-placeholder.webp"',
+    );
+    expect(englishPost?.bodyHtml).toContain('fetchpriority="low"');
+    expect(englishPost?.bodyHtml).toContain(
+      'src="/blog/inline/dnd-shatter-5e/shatter-blast-radius.webp"',
+    );
+    expect(englishPost?.bodyHtml).toContain('loading="lazy"');
+    expect(englishPost?.bodyHtml).toContain('decoding="async"');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.bodyHtml).not.toContain('<table');
+    expect(englishPost?.faqItems).toHaveLength(5);
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-shatter-5e-guide.webp');
+    for (const faqItem of englishPost?.faqItems ?? []) {
+      expect(englishPost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
+      expect(englishPost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+    }
+
+    expect(chinesePost?.title).toBe('Shatter DnD 5e：确定爆点、结算豁免与破坏物体');
+    expect(chinesePost?.updatedAt).toBe('2026-08-08');
+    expect(chinesePost?.bodyHtml).toContain('先确定爆点，再掷任何骰子');
+    expect(chinesePost?.bodyHtml).toContain('按五个步骤结算一次 Shatter');
+    expect(chinesePost?.bodyHtml).toContain('构装体（Construct）的豁免具有劣势');
+    expect(chinesePost?.bodyHtml).toContain('由石头、水晶或金属等无机材料构成');
+    expect(chinesePost?.bodyHtml).toContain('完全掩护（Total Cover）能挡住区域的一部分');
+    expect(chinesePost?.bodyHtml).toContain('源点会出现在障碍物靠近你的一侧');
+    expect(chinesePost?.bodyHtml).toContain('盟友不会自动获得保护');
+    expect(chinesePost?.bodyHtml).toContain('耳聋不会免除伤害');
+    expect(chinesePost?.bodyHtml).toContain('2024 核心法术表列出吟游诗人、术士和法师');
+    expect(chinesePost?.bodyHtml).toContain('2014 基础规则还把 Shatter 放在邪术师法术表里');
+    expect(chinesePost?.bodyHtml).toContain('没有被穿戴或携带的非魔法物体也会受到伤害');
+    expect(chinesePost?.bodyHtml).toContain('整次施法只掷一组伤害');
+    expect(chinesePost?.bodyHtml).toContain('减半伤害向下取整');
+    expect(chinesePost?.bodyHtml).toContain('data-video-id="GfjIe2xD1j0"');
+    expect(chinesePost?.bodyHtml).toContain(
+      'src="/blog/inline/dnd-shatter-5e/shatter-video-placeholder.webp"',
+    );
+    expect(chinesePost?.bodyHtml).toContain('fetchpriority="low"');
+    expect(chinesePost?.bodyHtml).toContain(
+      'src="/blog/inline/dnd-shatter-5e/shatter-blast-radius.webp"',
+    );
+    expect(chinesePost?.bodyHtml).toContain('loading="lazy"');
+    expect(chinesePost?.bodyHtml).toContain('decoding="async"');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.bodyHtml).not.toContain('<table');
+    expect(chinesePost?.faqItems).toHaveLength(5);
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-shatter-5e-guide.webp');
+    for (const faqItem of chinesePost?.faqItems ?? []) {
+      expect(chinesePost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
+      expect(chinesePost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+    }
+  });
+
+  test('builds Shatter metadata, schema, assets, and llms discovery', () => {
+    expect(getBlogPostPath('en', DND_SHATTER_5E_SLUG)).toBe('/blog/dnd-shatter-5e');
+    expect(getBlogPostPath('zh', DND_SHATTER_5E_SLUG)).toBe('/zh/blog/dnd-shatter-5e');
+    expect(createBlogPostMetadata('en', DND_SHATTER_5E_SLUG).alternates?.canonical).toBe(
+      '/blog/dnd-shatter-5e',
+    );
+    expect(createBlogPostMetadata('zh', DND_SHATTER_5E_SLUG).alternates?.canonical).toBe(
+      '/zh/blog/dnd-shatter-5e',
+    );
+    expect(buildBlogPostStructuredData('en', DND_SHATTER_5E_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-08',
+      dateModified: '2026-08-08',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-shatter-5e',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-shatter-5e-guide.webp'],
+    });
+    expect(buildBlogPostStructuredData('zh', DND_SHATTER_5E_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-08',
+      dateModified: '2026-08-08',
+      inLanguage: 'zh-CN',
+      url: 'https://www.tokenmaker.one/zh/blog/dnd-shatter-5e',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-shatter-5e-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_SHATTER_5E_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+    });
+    expect(buildBlogPostFaqStructuredData('zh', DND_SHATTER_5E_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+    });
+    expect(existsSync('public/blog/covers/en/dnd-shatter-5e-guide.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-shatter-5e/shatter-blast-radius.webp')).toBe(true);
+    expect(
+      existsSync('public/blog/inline/dnd-shatter-5e/shatter-video-placeholder.webp'),
+    ).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-shatter-5e');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-shatter-5e');
   });
 });
 
@@ -1493,13 +1620,13 @@ describe('paladin 2024 spells dnd blog post', () => {
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_5E_ARMORER_SLUG,
       DND_SWORD_SHEATHS_SLUG,
-      DND_THUNDERCLAP_SLUG,
     ]);
   });
 

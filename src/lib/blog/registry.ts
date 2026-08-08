@@ -39,6 +39,7 @@ import {
   DND_QUARTERSTAFF_COVER_PATH,
   DND_MAUL_COVER_PATH,
   DND_GNOME_NAMES_COVER_PATH,
+  DND_SHATTER_5E_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -109,6 +110,10 @@ import {
   dndGnomeNamesArticleHtml,
   dndGnomeNamesArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-gnome-names';
+import {
+  dndShatter5eArticleHtml,
+  dndShatter5eArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-shatter-5e';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -168,6 +173,7 @@ const SPECTATOR_DND_UPDATED_AT = '2026-08-02';
 const DND_QUARTERSTAFF_UPDATED_AT = '2026-08-03';
 const DND_MAUL_UPDATED_AT = '2026-08-05';
 const DND_GNOME_NAMES_UPDATED_AT = '2026-08-06';
+const DND_SHATTER_5E_UPDATED_AT = '2026-08-08';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2410,6 +2416,97 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndShatter5eArticle: BlogPost = {
+  slug: 'dnd-shatter-5e',
+  title: 'Shatter DnD 5e: Place the Blast, Resolve the Save, Break Objects',
+  seoTitle: 'Shatter DnD 5e: Damage, Area, Objects, and 2024 Rules',
+  metaDescription:
+    'Place Shatter correctly in DnD 5e, resolve its 3d8 Thunder damage and Constitution saves, compare 2014 and 2024 rules, and handle objects and cover.',
+  excerpt:
+    'Choose the blast center, mark the 10-foot Sphere, apply the correct disadvantage rule, and resolve creatures, objects, cover, and VTT markers cleanly.',
+  publishedAt: DND_SHATTER_5E_UPDATED_AT,
+  updatedAt: DND_SHATTER_5E_UPDATED_AT,
+  readTime: '11 min read',
+  coverLabel: 'Spell Tactics',
+  coverImage: DND_SHATTER_5E_COVER_PATH,
+  coverAlt:
+    'Shatter DnD 5e guide cover showing a spellcaster placing a thunder blast over constructs and unattended objects on a dungeon battle-map grid',
+  bodyHtml: dndShatter5eArticleHtml,
+  faqItems: [
+    {
+      question: 'What does Shatter do in DnD 5e?',
+      answer:
+        'Shatter creates a 10-foot-radius Sphere at a point within 60 feet. Creatures in the area make Constitution saves, taking 3d8 Thunder damage on a failure or half on a success. Eligible unattended nonmagical objects take the damage too.',
+    },
+    {
+      question: 'Does Shatter hurt allies?',
+      answer:
+        'Yes. Shatter affects each creature in the Sphere, including allies and potentially the caster. Place the origin and check every occupied space before rolling saves.',
+    },
+    {
+      question: 'Can Shatter break a door or wall?',
+      answer:
+        "Shatter can damage a nonmagical door or other unattended object in its area. A wall section works only if the DM treats it as a destructible object; its Hit Points and the consequences of breaking one section remain the DM's call.",
+    },
+    {
+      question: 'Does Shatter work through walls?',
+      answer:
+        'Total Cover can block a Shatter area. Under the 2024 area rules, a location is excluded when every straight line from the origin to that location is blocked, and an unseen origin beyond an obstruction appears on the near side.',
+    },
+    {
+      question: 'Who has Disadvantage on the Shatter save?',
+      answer:
+        "The 2024 spell gives a Construct Disadvantage on the save. The 2014 spell instead applies disadvantage to a creature made of inorganic material such as stone, crystal, or metal. Use the wording for your table's rules version.",
+    },
+  ],
+  relatedSlugs: ['dnd-thunderclap', 'firebolt-dnd-5e', 'dnd-counterspell', 'dnd-bless'],
+};
+
+const dndShatter5eArticleZh: BlogPost = {
+  slug: 'dnd-shatter-5e',
+  title: 'Shatter DnD 5e：确定爆点、结算豁免与破坏物体',
+  seoTitle: 'Shatter DnD 5e 指南：伤害、范围、物体与 2024 规则',
+  metaDescription:
+    '在 DnD 5e 中正确放置 Shatter，结算 3d8 雷鸣伤害与体质豁免，对照 2014/2024 规则，并处理物体、掩护和 VTT 标记。',
+  excerpt:
+    '选择爆炸中心，标出 10 英尺球形区域，应用正确的豁免劣势，再清楚结算生物、物体、掩护和 VTT 标记。',
+  publishedAt: DND_SHATTER_5E_UPDATED_AT,
+  updatedAt: DND_SHATTER_5E_UPDATED_AT,
+  readTime: '11 分钟阅读',
+  coverLabel: '法术战术',
+  coverImage: DND_SHATTER_5E_COVER_PATH,
+  coverAlt: 'Shatter DnD 5e 指南封面：施法者在地城战斗网格上把雷鸣爆炸放在构装体和无人携带物体之间',
+  bodyHtml: dndShatter5eArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'Shatter 在 DnD 5e 里有什么效果？',
+      answer:
+        'Shatter 在 60 英尺内一点创造 10 英尺半径球形区域。区域内生物进行体质豁免，失败承受 3d8 雷鸣伤害，成功承受一半；符合条件、无人携带的非魔法物体也会受伤。',
+    },
+    {
+      question: 'Shatter 会伤害盟友吗？',
+      answer:
+        '会。Shatter 影响球形区域内每个生物，包括盟友，也可能包括施法者。放好源点后逐格检查，再掷豁免。',
+    },
+    {
+      question: 'Shatter 能打破门或墙吗？',
+      answer:
+        'Shatter 能伤害区域内的非魔法门或其他无人携带物体。只有当 DM 把某段墙视为可破坏物体时，墙体才按物体结算；该段生命值和破坏后果仍由 DM 决定。',
+    },
+    {
+      question: 'Shatter 能穿过墙吗？',
+      answer:
+        '完全掩护能挡住 Shatter 区域。按 2024 区域规则，若从源点到某位置的所有直线都被阻挡，该位置不受影响；障碍物后的不可见源点会出现在障碍物靠近施法者的一侧。',
+    },
+    {
+      question: '谁进行 Shatter 豁免时有劣势？',
+      answer:
+        '2024 法术让构装体（Construct）的豁免具有劣势。2014 法术则让由石头、水晶或金属等无机材料构成的生物进行该豁免时具有劣势。使用当前桌面的规则版本。',
+    },
+  ],
+  relatedSlugs: ['dnd-thunderclap', 'firebolt-dnd-5e', 'dnd-counterspell', 'dnd-bless'],
+};
+
 const dndGnomeNamesArticle: BlogPost = {
   slug: 'dnd-gnome-names',
   title: 'DND Gnome Names: First Names, Clans, Nicknames, and Character Hooks',
@@ -3404,10 +3501,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

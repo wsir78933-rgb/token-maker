@@ -21,6 +21,29 @@ function getFooterNavigation() {
   return within(screen.getByRole('contentinfo')).getByRole('navigation', { name: 'Footer navigation' });
 }
 
+function getFooterSectionLinks(navigationLabel: string, sectionTitle: string) {
+  const footerNavigation = within(screen.getByRole('contentinfo')).getByRole('navigation', { name: navigationLabel });
+  const footerSectionHeadings = within(footerNavigation).getAllByRole('heading');
+  const footerSectionIndex = footerSectionHeadings.findIndex((footerSectionHeading) => {
+    return footerSectionHeading.textContent?.trim() === sectionTitle;
+  });
+
+  if (footerSectionIndex === -1) {
+    throw new Error(`Footer section heading was not found for "${sectionTitle}"`);
+  }
+
+  const footerSectionLinkList = footerNavigation.querySelectorAll('ul').item(footerSectionIndex);
+
+  if (!footerSectionLinkList) {
+    throw new Error(`Footer section link list was not found for "${sectionTitle}"`);
+  }
+
+  return within(footerSectionLinkList).getAllByRole('link').map((footerLink) => ({
+    name: footerLink.textContent?.trim(),
+    href: footerLink.getAttribute('href'),
+  }));
+}
+
 function getFooterSectionHeaderClassList(sectionTitle: string) {
   const sectionHeading = screen.getByRole('heading', { name: sectionTitle });
   const sectionHeader = sectionHeading.parentElement;
@@ -49,11 +72,14 @@ describe('SiteFooter', () => {
     expect(screen.getByRole('contentinfo')).toBeDefined();
     expect(screen.getByRole('heading', { name: 'Tools' })).toBeDefined();
     expect(screen.getByRole('link', { name: /token maker home/i }).getAttribute('href')).toBe('/');
-    expect(screen.getByRole('link', { name: 'Editor' }).getAttribute('href')).toBe('/#editor-workspace');
-    expect(screen.getByRole('link', { name: 'Square Token Maker' }).getAttribute('href')).toBe(
-      '/templates/square-token-maker',
-    );
-    expect(screen.getByRole('link', { name: 'Dice Roller' }).getAttribute('href')).toBe('/dice-roller-dnd');
+    expect(screen.getByRole('link', { name: 'Token Maker' }).getAttribute('href')).toBe('/#editor-workspace');
+    expect(screen.getByRole('link', { name: 'Coat of Arms Maker' }).getAttribute('href')).toBe('/coat-of-arms-maker');
+    expect(screen.queryByRole('link', { name: 'Square Token Maker' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Dice Roller' })).toBeNull();
+    expect(getFooterSectionLinks('Footer navigation', 'Tools')).toEqual([
+      { name: 'Token Maker', href: '/#editor-workspace' },
+      { name: 'Coat of Arms Maker', href: '/coat-of-arms-maker' },
+    ]);
     expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('href')).toBe('/blog');
     expect(screen.getByRole('link', { name: 'About' }).getAttribute('href')).toBe('/about');
     expect(screen.getByRole('link', { name: 'Changelog' }).getAttribute('href')).toBe('/changelog');
@@ -67,11 +93,14 @@ describe('SiteFooter', () => {
 
     expect(screen.getByRole('heading', { name: '工具' })).toBeDefined();
     expect(screen.getByRole('link', { name: /token maker 首页/i }).getAttribute('href')).toBe('/zh');
-    expect(screen.getByRole('link', { name: '编辑器' }).getAttribute('href')).toBe('/zh#editor-workspace');
-    expect(screen.getByRole('link', { name: '方形 Token 制作器' }).getAttribute('href')).toBe(
-      '/zh/templates/square-token-maker',
-    );
-    expect(screen.getByRole('link', { name: '骰子工具' }).getAttribute('href')).toBe('/zh/dice-roller-dnd');
+    expect(screen.getByRole('link', { name: 'Token Maker 编辑器' }).getAttribute('href')).toBe('/zh#editor-workspace');
+    expect(screen.getByRole('link', { name: '纹章制作器' }).getAttribute('href')).toBe('/zh/coat-of-arms-maker');
+    expect(screen.queryByRole('link', { name: '方形 Token 制作器' })).toBeNull();
+    expect(screen.queryByRole('link', { name: '骰子工具' })).toBeNull();
+    expect(getFooterSectionLinks('页脚导航', '工具')).toEqual([
+      { name: 'Token Maker 编辑器', href: '/zh#editor-workspace' },
+      { name: '纹章制作器', href: '/zh/coat-of-arms-maker' },
+    ]);
     expect(screen.getByRole('link', { name: '博客' }).getAttribute('href')).toBe('/zh/blog');
     expect(screen.getByRole('link', { name: '关于' }).getAttribute('href')).toBe('/zh/about');
     expect(screen.getByRole('link', { name: '更新记录' }).getAttribute('href')).toBe('/zh/changelog');
@@ -84,7 +113,7 @@ describe('SiteFooter', () => {
     render(<SiteFooter locale="en" currentPath="/blog/dnd-counterspell" />);
 
     expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('aria-current')).toBe('page');
-    expect(screen.getByRole('link', { name: 'Editor' }).hasAttribute('aria-current')).toBe(false);
+    expect(screen.getByRole('link', { name: 'Token Maker' }).hasAttribute('aria-current')).toBe(false);
   });
 
   it('uses a bounded wide footer content shell', () => {
@@ -115,7 +144,7 @@ describe('SiteFooter', () => {
 
     const footerNavigationClassList = Array.from(getFooterNavigation().classList);
     const footerNavigationTextOrder = getFooterNavigationTextOrder();
-    const firstFooterLinkIndex = footerNavigationTextOrder.indexOf('Editor');
+    const firstFooterLinkIndex = footerNavigationTextOrder.indexOf('Token Maker');
 
     expect(footerNavigationClassList).toContain('grid-cols-3');
     expect(footerNavigationClassList).toContain('gap-x-3');
@@ -139,7 +168,10 @@ describe('SiteFooter', () => {
     render(<HomeSeoContent locale="en" />);
 
     expect(screen.getByRole('navigation', { name: 'Footer navigation' })).toBeDefined();
-    expect(within(screen.getByRole('contentinfo')).getByRole('link', { name: 'Square Token Maker' })).toBeDefined();
+    expect(within(screen.getByRole('contentinfo')).getByRole('link', { name: 'Token Maker' }).getAttribute('aria-current')).toBe(
+      'page',
+    );
+    expect(within(screen.getByRole('contentinfo')).getByRole('link', { name: 'Coat of Arms Maker' })).toBeDefined();
     const homeFooterContentShellClassList = getFooterContentShellClassList();
 
     expect(homeFooterContentShellClassList).toContain('max-w-[92rem]');
@@ -169,7 +201,7 @@ describe('SiteFooter', () => {
     render(<SharePageView locale="en" imageUrl="https://example.com/token.png" />);
 
     expect(screen.queryByRole('navigation', { name: 'Footer navigation' })).toBeNull();
-    expect(screen.queryByRole('link', { name: 'Square Token Maker' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Coat of Arms Maker' })).toBeNull();
   });
 
   it('does not render the support strip above the homepage footer in either locale', () => {
