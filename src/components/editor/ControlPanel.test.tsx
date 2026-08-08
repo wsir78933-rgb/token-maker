@@ -21,10 +21,6 @@ vi.mock('@/lib/analytics', () => ({
   trackUseBatchMode: vi.fn(),
 }));
 
-vi.mock('./export-token', () => ({
-  downloadCurrentTokenWithSharePrompt: vi.fn(),
-}));
-
 import { ControlPanel } from './ControlPanel';
 
 function resetStore() {
@@ -89,6 +85,16 @@ describe('ControlPanel', () => {
     render(<ControlPanel />);
     const addTextBtns = screen.getAllByText(/addText/);
     expect(addTextBtns[0].closest('button')?.disabled).toBe(false);
+  });
+
+  it('does not render a download control when an image is loaded', () => {
+    i18nMockState.messages = { download: 'Download' };
+    const imageElement = new Image();
+    useEditorStore.setState({ imageElement, imageUrl: 'blob:test' });
+
+    render(<ControlPanel />);
+
+    expect(screen.queryByRole('button', { name: 'Download' })).toBeNull();
   });
 
   it('adds Chinese default text content from the control panel copy', () => {

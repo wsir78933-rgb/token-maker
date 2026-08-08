@@ -229,10 +229,26 @@ export function TemplatePanel() {
 }
 
 export function MobileBorderTemplatesPanel() {
+  const { t, locale } = useI18n();
+  const { imageElement } = useTemplatePanelState();
+
+  const handleExport = async () => {
+    await downloadCurrentTokenWithSharePrompt(t, locale);
+  };
+
   return (
     <div className="order-2 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:hidden">
       <div className="px-4 py-4 sm:py-6">
         <BorderTemplatesSection />
+        <Button
+          className="mt-4 w-full gap-2 text-sm font-medium"
+          size="default"
+          onClick={handleExport}
+          disabled={!imageElement}
+        >
+          <DownloadCloud className="h-4 w-4" />
+          {t('download')}
+        </Button>
       </div>
     </div>
   );

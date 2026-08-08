@@ -6,7 +6,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { DownloadCloud, Layers, RotateCcw, Trash2 } from 'lucide-react';
+import { Layers, RotateCcw, Trash2 } from 'lucide-react';
 import { useBatchStore } from '@/lib/store/batch-store';
 import { trackUseBatchMode } from '@/lib/analytics';
 import {
@@ -15,7 +15,6 @@ import {
   resolveEditorFontId,
 } from '@/lib/editor-fonts/catalog';
 import type { I18nKey } from '@/lib/i18n';
-import { downloadCurrentTokenWithSharePrompt } from './export-token';
 import { useControlPanelState } from './editor-store-hooks';
 
 function getSliderValue(value: number | readonly number[]) {
@@ -54,10 +53,6 @@ export function ControlPanel() {
   const overlayTintInputId = useId();
   const borderOpacityLabelId = useId();
   const overlayOpacityLabelId = useId();
-
-  const handleExport = async () => {
-    await downloadCurrentTokenWithSharePrompt(t, locale);
-  };
 
   const handleAddText = () => {
     addTextBox(t('defaultTextContent'));
@@ -320,15 +315,6 @@ export function ControlPanel() {
         >
           <Layers className="h-3.5 w-3.5" />
           {t('batchMode' as I18nKey)}
-        </Button>
-        <Button
-          className="mt-3 h-10 w-full gap-2 text-sm font-medium xl:hidden"
-          size="default"
-          onClick={handleExport}
-          disabled={!imageElement}
-        >
-          <DownloadCloud className="h-4 w-4" />
-          {t('download')}
         </Button>
       </div>
 

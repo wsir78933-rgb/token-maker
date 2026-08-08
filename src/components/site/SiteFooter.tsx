@@ -37,6 +37,7 @@ interface SiteFooterProps {
 type SiteFooterContentWidth = 'contained' | 'nearFull';
 
 const editorPath = '/';
+const diceRollerPath = '/dice-roller-dnd';
 const coatOfArmsMakerPath = '/coat-of-arms-maker';
 const blogPath = '/blog';
 const aboutPath = '/about';
@@ -62,6 +63,7 @@ const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
         icon: Sparkles,
         links: [
           { label: 'Token Maker', path: editorPath },
+          { label: 'Dice Roller', path: diceRollerPath },
           { label: 'Coat of Arms Maker', path: coatOfArmsMakerPath },
         ],
       },
@@ -101,6 +103,7 @@ const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
         icon: PencilRuler,
         links: [
           { label: 'Token Maker 编辑器', path: editorPath },
+          { label: '骰子工具', path: diceRollerPath },
           { label: '纹章制作器', path: coatOfArmsMakerPath },
         ],
       },

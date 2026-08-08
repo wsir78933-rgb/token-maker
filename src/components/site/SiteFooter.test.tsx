@@ -73,11 +73,12 @@ describe('SiteFooter', () => {
     expect(screen.getByRole('heading', { name: 'Tools' })).toBeDefined();
     expect(screen.getByRole('link', { name: /token maker home/i }).getAttribute('href')).toBe('/');
     expect(screen.getByRole('link', { name: 'Token Maker' }).getAttribute('href')).toBe('/#editor-workspace');
+    expect(screen.getByRole('link', { name: 'Dice Roller' }).getAttribute('href')).toBe('/dice-roller-dnd');
     expect(screen.getByRole('link', { name: 'Coat of Arms Maker' }).getAttribute('href')).toBe('/coat-of-arms-maker');
     expect(screen.queryByRole('link', { name: 'Square Token Maker' })).toBeNull();
-    expect(screen.queryByRole('link', { name: 'Dice Roller' })).toBeNull();
     expect(getFooterSectionLinks('Footer navigation', 'Tools')).toEqual([
       { name: 'Token Maker', href: '/#editor-workspace' },
+      { name: 'Dice Roller', href: '/dice-roller-dnd' },
       { name: 'Coat of Arms Maker', href: '/coat-of-arms-maker' },
     ]);
     expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('href')).toBe('/blog');
@@ -86,6 +87,16 @@ describe('SiteFooter', () => {
     expect(screen.getByRole('link', { name: 'FAQ' }).getAttribute('href')).toBe('/faq');
     expect(screen.getByRole('link', { name: 'Privacy' }).getAttribute('href')).toBe('/privacy');
     expect(screen.getByRole('link', { name: 'Contact' }).getAttribute('href')).toBe('/contact');
+    expect(getFooterSectionLinks('Footer navigation', 'Learn')).toEqual([
+      { name: 'Blog', href: '/blog' },
+      { name: 'About', href: '/about' },
+      { name: 'Changelog', href: '/changelog' },
+    ]);
+    expect(getFooterSectionLinks('Footer navigation', 'Support')).toEqual([
+      { name: 'FAQ', href: '/faq' },
+      { name: 'Privacy', href: '/privacy' },
+      { name: 'Contact', href: '/contact' },
+    ]);
   });
 
   it('renders localized Chinese links without adding dependencies', () => {
@@ -94,11 +105,12 @@ describe('SiteFooter', () => {
     expect(screen.getByRole('heading', { name: '工具' })).toBeDefined();
     expect(screen.getByRole('link', { name: /token maker 首页/i }).getAttribute('href')).toBe('/zh');
     expect(screen.getByRole('link', { name: 'Token Maker 编辑器' }).getAttribute('href')).toBe('/zh#editor-workspace');
+    expect(screen.getByRole('link', { name: '骰子工具' }).getAttribute('href')).toBe('/zh/dice-roller-dnd');
     expect(screen.getByRole('link', { name: '纹章制作器' }).getAttribute('href')).toBe('/zh/coat-of-arms-maker');
     expect(screen.queryByRole('link', { name: '方形 Token 制作器' })).toBeNull();
-    expect(screen.queryByRole('link', { name: '骰子工具' })).toBeNull();
     expect(getFooterSectionLinks('页脚导航', '工具')).toEqual([
       { name: 'Token Maker 编辑器', href: '/zh#editor-workspace' },
+      { name: '骰子工具', href: '/zh/dice-roller-dnd' },
       { name: '纹章制作器', href: '/zh/coat-of-arms-maker' },
     ]);
     expect(screen.getByRole('link', { name: '博客' }).getAttribute('href')).toBe('/zh/blog');
@@ -107,6 +119,16 @@ describe('SiteFooter', () => {
     expect(screen.getByRole('link', { name: '常见问题' }).getAttribute('href')).toBe('/zh/faq');
     expect(screen.getByRole('link', { name: '隐私' }).getAttribute('href')).toBe('/zh/privacy');
     expect(screen.getByRole('link', { name: '联系' }).getAttribute('href')).toBe('/zh/contact');
+    expect(getFooterSectionLinks('页脚导航', '了解')).toEqual([
+      { name: '博客', href: '/zh/blog' },
+      { name: '关于', href: '/zh/about' },
+      { name: '更新记录', href: '/zh/changelog' },
+    ]);
+    expect(getFooterSectionLinks('页脚导航', '支持')).toEqual([
+      { name: '常见问题', href: '/zh/faq' },
+      { name: '隐私', href: '/zh/privacy' },
+      { name: '联系', href: '/zh/contact' },
+    ]);
   });
 
   it('marks the current footer link for assistive technology', () => {

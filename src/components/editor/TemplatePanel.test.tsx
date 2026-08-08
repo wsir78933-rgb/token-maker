@@ -34,10 +34,12 @@ vi.mock('./export-token', () => ({
   getLocalizedName: (key: string, t: (key: string) => string) => t(key),
 }));
 
-import { TemplatePanel } from './TemplatePanel';
+import { MobileBorderTemplatesPanel, TemplatePanel } from './TemplatePanel';
+import { downloadCurrentTokenWithSharePrompt } from './export-token';
 import { preloadImageToCache } from '@/lib/utils/imageCache';
 
 const preloadImageToCacheMock = vi.mocked(preloadImageToCache);
+const downloadCurrentTokenWithSharePromptMock = vi.mocked(downloadCurrentTokenWithSharePrompt);
 const originalCreateObjectURL = URL.createObjectURL;
 let scrollIntoViewMock: ReturnType<typeof vi.fn>;
 
@@ -147,6 +149,47 @@ describe('TemplatePanel preset border assets', () => {
     expect(warriorPresetButton.className).toContain('xl:h-16');
     expect(warriorPresetButton.className).toContain('xl:aspect-auto');
     expect(warriorPresetButton.className).not.toContain('xl:aspect-square');
+  });
+
+  it('renders one mobile download control below Borders and invokes the shared download flow', () => {
+    i18nMockState.messages = {
+      ...i18nMockState.messages,
+      borderTemplates: 'Borders',
+      download: 'Download',
+    };
+    const imageElement = new Image();
+    useEditorStore.setState({ imageElement, imageUrl: 'blob:test' });
+
+    render(<MobileBorderTemplatesPanel />);
+
+    const bordersHeading = screen.getByRole('heading', { name: 'Borders' });
+    const downloadControls = screen.getAllByRole('button', { name: 'Download' });
+    const downloadControl = downloadControls[0]!;
+
+    expect(downloadControls).toHaveLength(1);
+    const borderTemplatesSection = downloadControl.previousElementSibling;
+    expect(borderTemplatesSection?.contains(bordersHeading)).toBe(true);
+
+    fireEvent.click(downloadControl);
+
+    expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledOnce();
+    expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledWith(expect.any(Function), 'en');
+  });
+
+  it('disables the mobile download control when no image is loaded', () => {
+    i18nMockState.messages = {
+      ...i18nMockState.messages,
+      download: 'Download',
+    };
+
+    render(<MobileBorderTemplatesPanel />);
+
+    const downloadControl = screen.getByRole('button', { name: 'Download' });
+    expect(downloadControl).toHaveProperty('disabled', true);
+
+    fireEvent.click(downloadControl);
+
+    expect(downloadCurrentTokenWithSharePromptMock).not.toHaveBeenCalled();
   });
 
   it('shows warrior borders inside the border templates after the warrior preset is selected', () => {
