@@ -12,6 +12,11 @@ interface FooterLink {
   path: string;
 }
 
+interface ExternalFooterLink {
+  label: string;
+  href: string;
+}
+
 interface FooterSection {
   title: string;
   icon: LucideIcon;
@@ -24,6 +29,7 @@ interface FooterCopy {
   navigationLabel: string;
   copyright: string;
   legalLinks: FooterLink[];
+  bottomExternalLinks: ExternalFooterLink[];
   sections: FooterSection[];
 }
 
@@ -45,6 +51,10 @@ const changelogPath = '/changelog';
 const faqPath = '/faq';
 const privacyPath = '/privacy';
 const contactPath = '/contact';
+const stardewValleyPlannerLink: ExternalFooterLink = {
+  label: 'stardewvalleyplanner.art',
+  href: 'https://stardewvalleyplanner.art/',
+};
 
 const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
   en: {
@@ -57,6 +67,7 @@ const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
       { label: 'Privacy policy', path: privacyPath },
       { label: 'Contact support', path: contactPath },
     ],
+    bottomExternalLinks: [stardewValleyPlannerLink],
     sections: [
       {
         title: 'Tools',
@@ -97,6 +108,7 @@ const footerCopyByLocale: Record<SiteLocale, FooterCopy> = {
       { label: '隐私政策', path: privacyPath },
       { label: '联系支持', path: contactPath },
     ],
+    bottomExternalLinks: [stardewValleyPlannerLink],
     sections: [
       {
         title: '工具',
@@ -275,6 +287,18 @@ export function SiteFooter({ locale, currentPath, contentWidth = 'contained', cl
                 >
                   {footerLink.label}
                 </Link>
+              </li>
+            ))}
+            {footerCopy.bottomExternalLinks.map((externalFooterLink) => (
+              <li key={externalFooterLink.href}>
+                <a
+                  href={externalFooterLink.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition hover:text-[#f1d492]"
+                >
+                  {externalFooterLink.label}
+                </a>
               </li>
             ))}
           </ul>
