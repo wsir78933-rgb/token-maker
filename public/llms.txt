@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DnD Races](https://www.tokenmaker.one/blog/dnd-races): Compare the ten 2024 species, separate the 2014 race rules, and choose a character concept with four practical questions.
 - [Shatter DnD 5e](https://www.tokenmaker.one/blog/dnd-shatter-5e): Place the 10-foot blast, resolve Constitution saves, compare 2014 and 2024 disadvantage rules, and handle unattended objects and cover.
 - [DND Gnome Names](https://www.tokenmaker.one/blog/dnd-gnome-names): Mix 132 gnome first names, clan names, and nicknames, then turn one full name into a character hook and readable VTT identity.
 - [DND Maul 5e](https://www.tokenmaker.one/blog/dnd-maul): Check Martial proficiency, the Strength 13 Heavy threshold, and two-hand commitment, then resolve Topple and hand Prone to the next useful action.
@@ -64,6 +65,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 种族与 Species：为 2024 角色选择出身](https://www.tokenmaker.one/zh/blog/dnd-races)
 - [Shatter DnD 5e：确定爆点、结算豁免与破坏物体](https://www.tokenmaker.one/zh/blog/dnd-shatter-5e)
 - [DND 侏儒名字：名字、氏族名、昵称与角色钩子](https://www.tokenmaker.one/zh/blog/dnd-gnome-names)
 - [DND 巨锤（Maul）5e：Heavy、Topple 与清楚回合流程](https://www.tokenmaker.one/zh/blog/dnd-maul)

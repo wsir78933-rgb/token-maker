@@ -33,7 +33,9 @@ const DND_QUARTERSTAFF_SLUG = 'dnd-quarterstaff';
 const DND_MAUL_SLUG = 'dnd-maul';
 const DND_GNOME_NAMES_SLUG = 'dnd-gnome-names';
 const DND_SHATTER_5E_SLUG = 'dnd-shatter-5e';
+const DND_RACES_SLUG = 'dnd-races';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_RACES_SLUG,
   DND_SHATTER_5E_SLUG,
   DND_GNOME_NAMES_SLUG,
   DND_MAUL_SLUG,
@@ -43,7 +45,6 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DND_DAGGER_SLUG,
   DWELF_DND_SLUG,
   DND_FLUMPH_SLUG,
-  DND_DEATH_KNIGHT_SLUG,
 ];
 
 describe('published blog body voice', () => {
@@ -104,6 +105,98 @@ describe('published blog body voice', () => {
         }
       }
     }
+  });
+});
+
+describe('dnd races blog post', () => {
+  test('publishes a bilingual 2024-first species guide with 2014 boundaries', () => {
+    const englishPost = getBlogPost('en', DND_RACES_SLUG);
+    const chinesePost = getBlogPost('zh', DND_RACES_SLUG);
+
+    expect(englishPost?.updatedAt).toBe('2026-08-10');
+    expect(englishPost?.bodyHtml).toContain('2024 Player\'s Handbook');
+    expect(englishPost?.bodyHtml).toContain('Aasimar');
+    expect(englishPost?.bodyHtml).toContain('Half-Elf');
+    expect(englishPost?.bodyHtml).toContain('Half-Orc');
+    expect(englishPost?.bodyHtml).toContain('data-video-id="opYeED0W8Z8"');
+    expect(englishPost?.bodyHtml).toContain('loading="lazy"');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.bodyHtml).not.toContain('role="button" tabindex="0"');
+    expect(englishPost?.bodyHtml?.match(/<button/g) ?? []).toHaveLength(1);
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-races-guide.webp');
+    expect(englishPost?.faqItems).toHaveLength(5);
+    for (const faqItem of englishPost?.faqItems ?? []) {
+      expect(englishPost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
+      expect(englishPost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+    }
+
+    expect(chinesePost?.updatedAt).toBe('2026-08-10');
+    expect(chinesePost?.bodyHtml).toContain('2024 版《玩家手册》');
+    expect(chinesePost?.bodyHtml).toContain('Aasimar');
+    expect(chinesePost?.bodyHtml).toContain('Half-Elf');
+    expect(chinesePost?.bodyHtml).toContain('Half-Orc');
+    expect(chinesePost?.bodyHtml).toContain('data-video-id="opYeED0W8Z8"');
+    expect(chinesePost?.bodyHtml).toContain('loading="lazy"');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.bodyHtml).not.toContain('role="button" tabindex="0"');
+    expect(chinesePost?.bodyHtml?.match(/<button/g) ?? []).toHaveLength(1);
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-races-guide.webp');
+    expect(chinesePost?.faqItems).toHaveLength(5);
+    for (const faqItem of chinesePost?.faqItems ?? []) {
+      expect(chinesePost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
+      expect(chinesePost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+    }
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+  });
+
+  test('builds dnd races metadata, schema, asset, and llms discovery', () => {
+    expect(getBlogPostPath('en', DND_RACES_SLUG)).toBe('/blog/dnd-races');
+    expect(getBlogPostPath('zh', DND_RACES_SLUG)).toBe('/zh/blog/dnd-races');
+    expect(createBlogPostMetadata('en', DND_RACES_SLUG).alternates?.canonical).toBe(
+      '/blog/dnd-races',
+    );
+    expect(createBlogPostMetadata('zh', DND_RACES_SLUG).alternates?.canonical).toBe(
+      '/zh/blog/dnd-races',
+    );
+    expect(buildBlogPostStructuredData('en', DND_RACES_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-10',
+      dateModified: '2026-08-10',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-races',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-races-guide.webp'],
+    });
+    expect(buildBlogPostStructuredData('zh', DND_RACES_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-10',
+      dateModified: '2026-08-10',
+      inLanguage: 'zh-CN',
+      url: 'https://www.tokenmaker.one/zh/blog/dnd-races',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-races-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_RACES_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      mainEntity: expect.arrayContaining([
+        expect.objectContaining({
+          name: "How many races are in the 2024 Player's Handbook?",
+        }),
+      ]),
+    });
+    expect(buildBlogPostFaqStructuredData('zh', DND_RACES_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      mainEntity: expect.arrayContaining([
+        expect.objectContaining({
+          name: '2024 版《玩家手册》有多少个种族？',
+        }),
+      ]),
+    });
+    expect(existsSync('public/blog/covers/en/dnd-races-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-races');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-races');
   });
 });
 
@@ -1615,18 +1708,18 @@ describe('dnd hex blog post', () => {
 });
 
 describe('paladin 2024 spells dnd blog post', () => {
-  test('keeps the second blog page boundary stable without changing page count', () => {
+  test('moves the second blog page boundary after publishing dnd races without changing page count', () => {
     expect(getBlogPageCount('en')).toBe(4);
     expect(getBlogPageCount('zh')).toBe(4);
 
     expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_DEATH_KNIGHT_SLUG,
       DND_5E_ARMORER_SLUG,
-      DND_SWORD_SHEATHS_SLUG,
     ]);
   });
 

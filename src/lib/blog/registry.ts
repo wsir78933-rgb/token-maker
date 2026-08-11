@@ -40,6 +40,7 @@ import {
   DND_MAUL_COVER_PATH,
   DND_GNOME_NAMES_COVER_PATH,
   DND_SHATTER_5E_COVER_PATH,
+  DND_RACES_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -114,6 +115,10 @@ import {
   dndShatter5eArticleHtml,
   dndShatter5eArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-shatter-5e';
+import {
+  dndRacesArticleHtml,
+  dndRacesArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-races';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -174,6 +179,7 @@ const DND_QUARTERSTAFF_UPDATED_AT = '2026-08-03';
 const DND_MAUL_UPDATED_AT = '2026-08-05';
 const DND_GNOME_NAMES_UPDATED_AT = '2026-08-06';
 const DND_SHATTER_5E_UPDATED_AT = '2026-08-08';
+const DND_RACES_UPDATED_AT = '2026-08-10';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2416,6 +2422,97 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndRacesArticle: BlogPost = {
+  slug: 'dnd-races',
+  title: 'DnD Races: Which Species Fits Your Character?',
+  seoTitle: 'DnD Races Explained: Which Species Fits Your Character?',
+  metaDescription:
+    'Compare DnD species traits, separate current and legacy rules, and turn your character concept into a choice that works at the table.',
+  excerpt:
+    'Compare all ten 2024 species, separate the 2014 race rules, and choose a character concept with four practical questions.',
+  publishedAt: DND_RACES_UPDATED_AT,
+  updatedAt: DND_RACES_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Character Species',
+  coverImage: DND_RACES_COVER_PATH,
+  coverAlt:
+    'A party of DnD adventurers from different 2024 species gathered around a glowing tabletop map',
+  bodyHtml: dndRacesArticleHtml,
+  faqItems: [
+    {
+      question: "How many races are in the 2024 Player's Handbook?",
+      answer:
+        "The 2024 Player's Handbook presents ten core species: Aasimar, Dragonborn, Dwarf, Elf, Gnome, Goliath, Halfling, Human, Orc, and Tiefling.",
+    },
+    {
+      question: 'Why does DnD now say species instead of race?',
+      answer:
+        'The 2024 core rulebooks use species for the game trait that older books called race. Both terms still appear in guides and table talk, so check the publication date and rules version whenever a guide says race.',
+    },
+    {
+      question: 'What happened to Half-Elf and Half-Orc?',
+      answer:
+        'Half-Elf and Half-Orc appear in the 2014 core rules but are not separate species in the 2024 core list. A table can still permit older character options under its compatibility rules, so ask which sources are allowed.',
+    },
+    {
+      question: 'What is the best DnD species for a beginner?',
+      answer:
+        'The best beginner choice is one whose traits you understand and whose character idea you want to play. Human, Dwarf, Halfling, and Orc can all support straightforward concepts, but no one species is required for a first character.',
+    },
+    {
+      question: 'Do 2024 species give ability score increases?',
+      answer:
+        'No. In the 2024 character-creation rules, ability score increases come from the background rather than the species. This is one reason old race-and-class optimization advice needs a version check.',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-gnome-names', 'dnd-dhampir', 'dwelf-dnd'],
+};
+
+const dndRacesArticleZh: BlogPost = {
+  slug: 'dnd-races',
+  title: 'DND 种族怎么选：哪个 Species 适合你的角色？',
+  seoTitle: 'DND 种族指南：哪个 Species 适合你的角色？',
+  metaDescription:
+    '对比 DND Species 的特性、角色概念和实战用途，分清现行与旧版规则，选出既符合角色故事又适合跑团的种族。',
+  excerpt:
+    '对比十个 2024 Species，分清 2014 种族规则，再用四个实际问题确定角色概念和 Token 视觉。',
+  publishedAt: DND_RACES_UPDATED_AT,
+  updatedAt: DND_RACES_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '角色 Species',
+  coverImage: DND_RACES_COVER_PATH,
+  coverAlt: '多名来自不同 2024 Species 的 DND 冒险者围在发光桌面地图旁',
+  bodyHtml: dndRacesArticleHtmlZh,
+  faqItems: [
+    {
+      question: '2024 版《玩家手册》有多少个种族？',
+      answer:
+        '2024 版《玩家手册》收录十个核心 Species：Aasimar、Dragonborn、Dwarf、Elf、Gnome、Goliath、Halfling、Human、Orc 和 Tiefling。',
+    },
+    {
+      question: 'DND 为什么改用 Species，而不再写 Race？',
+      answer:
+        '2024 核心规则用 Species 表示旧版书籍中称为 Race 的角色特性。两种说法仍会同时出现，所以看到“种族攻略”时要先检查出版时间与规则版本。',
+    },
+    {
+      question: 'Half-Elf 和 Half-Orc 去哪里了？',
+      answer:
+        'Half-Elf 与 Half-Orc 出现在 2014 核心规则里，但不是 2024 核心名单中的独立 Species。跑团仍可按兼容规则允许旧角色选项，具体要问 DM 开放哪些来源。',
+    },
+    {
+      question: '哪个 DND Species 最适合新手？',
+      answer:
+        '最适合新手的是你能理解其特性、也真的想扮演的选项。Human、Dwarf、Halfling 和 Orc 都能支持直接明了的角色概念，但第一个角色并不被迫选择其中任何一个。',
+    },
+    {
+      question: '2024 Species 会提供属性值加成吗？',
+      answer:
+        '不会。2024 建角规则把属性值加成交给背景，而不是 Species。因此，旧版种族与职业优化建议必须先做版本检查。',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-gnome-names', 'dnd-dhampir', 'dwelf-dnd'],
+};
+
 const dndShatter5eArticle: BlogPost = {
   slug: 'dnd-shatter-5e',
   title: 'Shatter DnD 5e: Place the Blast, Resolve the Save, Break Objects',
@@ -3501,10 +3598,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

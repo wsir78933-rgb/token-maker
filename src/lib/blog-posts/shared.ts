@@ -41,6 +41,7 @@ export const DND_QUARTERSTAFF_COVER_PATH = '/blog/covers/en/dnd-quarterstaff-gui
 export const DND_MAUL_COVER_PATH = '/blog/covers/en/dnd-maul-guide.webp';
 export const DND_GNOME_NAMES_COVER_PATH = '/blog/covers/en/dnd-gnome-names-guide.webp';
 export const DND_SHATTER_5E_COVER_PATH = '/blog/covers/en/dnd-shatter-5e-guide.webp';
+export const DND_RACES_COVER_PATH = '/blog/covers/en/dnd-races-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -280,6 +281,14 @@ export const DND_2024_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/br-
 export const DND_2024_RULES_GLOSSARY_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary';
 export const DND_2024_FEATS_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/feats';
+export const DND_RACES_2024_CHARACTER_CREATION_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/creating-a-character';
+export const DND_RACES_2024_SPECIES_OVERVIEW_URL =
+  'https://www.dndbeyond.com/posts/1783-the-10-species-in-the-2024-players-handbook';
+export const DND_RACES_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/phb-2014';
+export const DND_RACES_TERMINOLOGY_URL =
+  'https://www.dndbeyond.com/posts/1393-moving-on-from-race-in-the-2024-core-rulebooks';
+export const DND_RACES_VIDEO_URL = 'https://www.youtube.com/watch?v=opYeED0W8Z8';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
@@ -341,7 +350,7 @@ export function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src
   const thumb = thumbnail?.src ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
   const thumbAlt = thumbnail?.alt ?? title;
 
-  return `<div class="inline-embed inline-embed--video lite-video" data-video-id="${videoId}" data-video-title="${title}" role="button" tabindex="0" aria-label="Play video: ${title}">
+  return `<div class="inline-embed inline-embed--video lite-video" data-video-id="${videoId}" data-video-title="${title}">
   <img class="lite-video__thumb" src="${thumb}" alt="${thumbAlt}" loading="lazy" decoding="async" fetchpriority="low" width="480" height="360" />
   <div class="lite-video__overlay" aria-hidden="true"></div>
   <button class="lite-video__play" type="button" aria-label="Play: ${title}">

@@ -338,6 +338,11 @@ describe('coat maker routes', () => {
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual dnd races detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: 'dnd-races' });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: 'dnd-races' });
+  });
+
   it('emits bilingual Shatter detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_SHATTER_5E_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_SHATTER_5E_SLUG });
