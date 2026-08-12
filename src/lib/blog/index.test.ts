@@ -34,7 +34,9 @@ const DND_MAUL_SLUG = 'dnd-maul';
 const DND_GNOME_NAMES_SLUG = 'dnd-gnome-names';
 const DND_SHATTER_5E_SLUG = 'dnd-shatter-5e';
 const DND_RACES_SLUG = 'dnd-races';
+const DND_ALIGNMENT_CHART_SLUG = 'dnd-alignment-chart';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_ALIGNMENT_CHART_SLUG,
   DND_RACES_SLUG,
   DND_SHATTER_5E_SLUG,
   DND_GNOME_NAMES_SLUG,
@@ -44,7 +46,6 @@ const FIRST_BLOG_PAGE_SLUGS = [
   FIREBOLT_DND_5E_SLUG,
   DND_DAGGER_SLUG,
   DWELF_DND_SLUG,
-  DND_FLUMPH_SLUG,
 ];
 
 describe('published blog body voice', () => {
@@ -105,6 +106,76 @@ describe('published blog body voice', () => {
         }
       }
     }
+  });
+});
+
+describe('dnd alignment chart blog post', () => {
+  test('publishes a bilingual alignment decision guide at the top of the blog', () => {
+    const englishPost = getBlogPost('en', DND_ALIGNMENT_CHART_SLUG);
+    const chinesePost = getBlogPost('zh', DND_ALIGNMENT_CHART_SLUG);
+
+    expect(englishPost?.updatedAt).toBe('2026-08-11');
+    expect(englishPost?.bodyHtml).toContain('Read the DnD alignment chart in 30 seconds');
+    expect(englishPost?.bodyHtml).toContain('Choose the two axes separately');
+    expect(englishPost?.bodyHtml).toContain('Pressure-test the result with one hard choice');
+    expect(englishPost?.bodyHtml).toContain('Lawful Good');
+    expect(englishPost?.bodyHtml).toContain('Chaotic Evil');
+    expect(englishPost?.bodyHtml).toContain('2024 Basic Rules');
+    expect(englishPost?.bodyHtml).toContain('<table');
+    expect(englishPost?.bodyHtml).not.toContain('data-video-id=');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.faqItems).toBeUndefined();
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-alignment-chart-guide.webp');
+
+    expect(chinesePost?.updatedAt).toBe('2026-08-11');
+    expect(chinesePost?.bodyHtml).toContain('30 秒读懂 DND 阵营九宫格');
+    expect(chinesePost?.bodyHtml).toContain('把两条轴分开判断');
+    expect(chinesePost?.bodyHtml).toContain('用一次艰难选择检验结果');
+    expect(chinesePost?.bodyHtml).toContain('守序善良');
+    expect(chinesePost?.bodyHtml).toContain('混乱邪恶');
+    expect(chinesePost?.bodyHtml).toContain('2024 基础规则');
+    expect(chinesePost?.bodyHtml).toContain('<table');
+    expect(chinesePost?.bodyHtml).not.toContain('data-video-id=');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.faqItems).toBeUndefined();
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-alignment-chart-guide.webp');
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+  });
+
+  test('builds alignment metadata, article schema, asset, and llms discovery', () => {
+    expect(getBlogPostPath('en', DND_ALIGNMENT_CHART_SLUG)).toBe('/blog/dnd-alignment-chart');
+    expect(getBlogPostPath('zh', DND_ALIGNMENT_CHART_SLUG)).toBe('/zh/blog/dnd-alignment-chart');
+    expect(createBlogPostMetadata('en', DND_ALIGNMENT_CHART_SLUG).alternates?.canonical).toBe(
+      '/blog/dnd-alignment-chart',
+    );
+    expect(createBlogPostMetadata('zh', DND_ALIGNMENT_CHART_SLUG).alternates?.canonical).toBe(
+      '/zh/blog/dnd-alignment-chart',
+    );
+    expect(buildBlogPostStructuredData('en', DND_ALIGNMENT_CHART_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-11',
+      dateModified: '2026-08-11',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-alignment-chart',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-alignment-chart-guide.webp'],
+    });
+    expect(buildBlogPostStructuredData('zh', DND_ALIGNMENT_CHART_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-11',
+      dateModified: '2026-08-11',
+      inLanguage: 'zh-CN',
+      url: 'https://www.tokenmaker.one/zh/blog/dnd-alignment-chart',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-alignment-chart-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_ALIGNMENT_CHART_SLUG)).toBeNull();
+    expect(buildBlogPostFaqStructuredData('zh', DND_ALIGNMENT_CHART_SLUG)).toBeNull();
+    expect(existsSync('public/blog/covers/en/dnd-alignment-chart-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-alignment-chart');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-alignment-chart');
   });
 });
 
@@ -202,8 +273,8 @@ describe('dnd races blog post', () => {
 
 describe('dnd shatter 5e blog post', () => {
   test('publishes a bilingual blast-placement guide at the top of the blog', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
 
@@ -328,8 +399,8 @@ describe('dnd shatter 5e blog post', () => {
 
 describe('dnd gnome names blog post', () => {
   test('publishes a bilingual gnome naming workshop with a lazy video', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
 
@@ -413,8 +484,8 @@ describe('dnd gnome names blog post', () => {
 
 describe('dnd maul blog post', () => {
   test('publishes a bilingual maul turn guide at the top of the blog', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
     expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
 
@@ -481,8 +552,8 @@ describe('dnd maul blog post', () => {
 
 describe('dnd quarterstaff blog post', () => {
   test('publishes a bilingual hand-choice guide at the top of the blog', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual(
       FIRST_BLOG_PAGE_SLUGS.slice(0, 4),
@@ -546,8 +617,8 @@ describe('dnd quarterstaff blog post', () => {
 
 describe('spectator dnd blog post', () => {
   test('publishes a bilingual spectator guardian guide at the top of the blog', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
       FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
@@ -613,8 +684,8 @@ describe('spectator dnd blog post', () => {
 
 describe('dnd dagger blog post', () => {
   test('keeps the bilingual dagger guide near the newest monster and spell guides', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 4)).toEqual(
       FIRST_BLOG_PAGE_SLUGS.slice(0, 4),
@@ -748,8 +819,8 @@ describe('firebolt dnd 5e blog post', () => {
 
 describe('dwelf dnd blog post', () => {
   test('publishes a bilingual dwarf-elf character guide near the top of the blog', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
       FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
@@ -812,8 +883,8 @@ function chinesePostBody() {
 
 describe('dnd flumph blog post', () => {
   test('publishes a bilingual flumph guide ahead of the recent July articles', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
 
@@ -897,8 +968,8 @@ describe('dnd flumph blog post', () => {
 
 describe('dnd 5e armorer blog post', () => {
   test('publishes a bilingual 2014-first guide with a separate 2025 branch', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
       FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
@@ -1112,8 +1183,8 @@ describe('dnd sword sheaths blog post', () => {
 
 describe('dnd thunderclap blog post', () => {
   test('keeps thunderclap near the top after the newer sword-sheath article is published', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
       FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
@@ -1303,8 +1374,8 @@ describe('dnd thunderclap blog post', () => {
 
 describe('dnd find familiar blog post', () => {
   test('keeps find familiar near the top after the newer Armorer article is published', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
       FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
@@ -1506,8 +1577,8 @@ describe('dnd find familiar blog post', () => {
 
 describe('dnd hex blog post', () => {
   test('keeps hex near the top after the newer Armorer article is published', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug).slice(0, 5)).toEqual(
       FIRST_BLOG_PAGE_SLUGS.slice(0, 5),
@@ -1708,18 +1779,18 @@ describe('dnd hex blog post', () => {
 });
 
 describe('paladin 2024 spells dnd blog post', () => {
-  test('moves the second blog page boundary after publishing dnd races without changing page count', () => {
-    expect(getBlogPageCount('en')).toBe(4);
-    expect(getBlogPageCount('zh')).toBe(4);
+  test('moves the second blog page boundary after publishing the alignment chart', () => {
+    expect(getBlogPageCount('en')).toBe(5);
+    expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_FLUMPH_SLUG,
       DND_DEATH_KNIGHT_SLUG,
-      DND_5E_ARMORER_SLUG,
     ]);
   });
 

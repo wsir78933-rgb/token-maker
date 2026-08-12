@@ -338,6 +338,11 @@ describe('coat maker routes', () => {
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual dnd alignment chart detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: 'dnd-alignment-chart' });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: 'dnd-alignment-chart' });
+  });
+
   it('emits bilingual dnd races detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: 'dnd-races' });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: 'dnd-races' });
@@ -398,8 +403,8 @@ describe('blog static routes', () => {
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_FLUMPH_SLUG });
   });
 
-  it('emits bilingual fourth-page pagination params', () => {
-    expect(generateEnglishBlogPaginationStaticParams()).toContainEqual({ page: '4' });
-    expect(generateChineseBlogPaginationStaticParams()).toContainEqual({ page: '4' });
+  it('emits bilingual fifth-page pagination params', () => {
+    expect(generateEnglishBlogPaginationStaticParams()).toContainEqual({ page: '5' });
+    expect(generateChineseBlogPaginationStaticParams()).toContainEqual({ page: '5' });
   });
 });

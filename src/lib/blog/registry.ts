@@ -41,6 +41,7 @@ import {
   DND_GNOME_NAMES_COVER_PATH,
   DND_SHATTER_5E_COVER_PATH,
   DND_RACES_COVER_PATH,
+  DND_ALIGNMENT_CHART_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -119,6 +120,10 @@ import {
   dndRacesArticleHtml,
   dndRacesArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-races';
+import {
+  dndAlignmentChartArticleHtml,
+  dndAlignmentChartArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-alignment-chart';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -180,6 +185,7 @@ const DND_MAUL_UPDATED_AT = '2026-08-05';
 const DND_GNOME_NAMES_UPDATED_AT = '2026-08-06';
 const DND_SHATTER_5E_UPDATED_AT = '2026-08-08';
 const DND_RACES_UPDATED_AT = '2026-08-10';
+const DND_ALIGNMENT_CHART_UPDATED_AT = '2026-08-11';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2422,6 +2428,43 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndAlignmentChartArticle: BlogPost = {
+  slug: 'dnd-alignment-chart',
+  title: 'DnD Alignment Chart: Choose a Roleplay Compass That Can Change',
+  seoTitle: "DnD Alignment Chart: Find Your Character's Moral Compass",
+  metaDescription:
+    'Use the DnD alignment chart to separate law from morality, compare all nine alignments, test one hard choice, and roleplay without stereotypes.',
+  excerpt:
+    'Read the nine alignments, judge order and morality separately, then pressure-test the result with one decision your character cannot dodge.',
+  publishedAt: DND_ALIGNMENT_CHART_UPDATED_AT,
+  updatedAt: DND_ALIGNMENT_CHART_UPDATED_AT,
+  readTime: '10 min read',
+  coverLabel: 'Alignment Chart',
+  coverImage: DND_ALIGNMENT_CHART_COVER_PATH,
+  coverAlt:
+    'Nine original fantasy character portraits arranged as a DnD alignment chart from lawful good to chaotic evil',
+  bodyHtml: dndAlignmentChartArticleHtml,
+  relatedSlugs: ['dnd-races', 'dnd-classes-explained', 'dwelf-dnd', 'dnd-gnome-names'],
+};
+
+const dndAlignmentChartArticleZh: BlogPost = {
+  slug: 'dnd-alignment-chart',
+  title: 'DND 阵营九宫格：选择一个会随行动改变的角色坐标',
+  seoTitle: 'DND 阵营九宫格：找到角色的道德与秩序坐标',
+  metaDescription:
+    '用 DND 阵营九宫格分开判断秩序与道德，对照九种阵营，再用一次艰难选择检验结果，把标签变成能持续扮演的行动。',
+  excerpt:
+    '读懂九种阵营，分别判断秩序与道德，再用角色无法回避的一次决定检验结果。',
+  publishedAt: DND_ALIGNMENT_CHART_UPDATED_AT,
+  updatedAt: DND_ALIGNMENT_CHART_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '阵营九宫格',
+  coverImage: DND_ALIGNMENT_CHART_COVER_PATH,
+  coverAlt: '九名原创奇幻角色按 DND 阵营九宫格排列，从守序善良延伸到混乱邪恶',
+  bodyHtml: dndAlignmentChartArticleHtmlZh,
+  relatedSlugs: ['dnd-races', 'dnd-classes-explained', 'dwelf-dnd', 'dnd-gnome-names'],
+};
+
 const dndRacesArticle: BlogPost = {
   slug: 'dnd-races',
   title: 'DnD Races: Which Species Fits Your Character?',
@@ -3598,10 +3641,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

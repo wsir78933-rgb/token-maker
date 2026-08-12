@@ -196,7 +196,7 @@ export function BlogDetailPageView({
                       alt={post.coverAlt ?? post.title}
                       width={2770}
                       height={1504}
-                      priority
+                      preload
                       sizes="(min-width: 1024px) 50vw, 100vw"
                       className="h-auto w-full object-cover"
                     />
