@@ -1,4 +1,3 @@
-import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { trackDownloadPng } from '@/lib/analytics';
 import type { BatchItem } from './types';
@@ -44,6 +43,7 @@ export async function downloadBatchZip(items: BatchItem[], copy: BatchZipExportC
   const doneItems = items.filter((item) => item.status === 'done' && item.blob);
   if (doneItems.length === 0) return;
 
+  const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
   const usedNames = new Set<string>();
 

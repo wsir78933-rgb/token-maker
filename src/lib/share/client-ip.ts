@@ -1,7 +1,7 @@
 import { isIP } from 'node:net';
 
 function normalizeIpCandidate(value: string | null) {
-  const token = value?.trim().replace(/^"|"$/g, '');
+  const token = value?.trim();
   if (!token) return null;
 
   if (isIP(token)) return token;
@@ -15,27 +15,6 @@ function normalizeIpCandidate(value: string | null) {
   return null;
 }
 
-function getForwardedForCandidates(headers: Headers) {
-  return (
-    headers
-      .get('x-forwarded-for')
-      ?.split(',')
-      .map((value) => value.trim()) ?? []
-  );
-}
-
 export function getClientIp(headers: Headers) {
-  const candidates = [
-    headers.get('cf-connecting-ip'),
-    headers.get('true-client-ip'),
-    headers.get('x-real-ip'),
-    ...getForwardedForCandidates(headers),
-  ];
-
-  for (const candidate of candidates) {
-    const normalizedIp = normalizeIpCandidate(candidate);
-    if (normalizedIp) return normalizedIp;
-  }
-
-  return 'anonymous';
+  return normalizeIpCandidate(headers.get('x-vercel-forwarded-for')) ?? 'anonymous';
 }

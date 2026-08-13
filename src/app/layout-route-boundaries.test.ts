@@ -96,18 +96,13 @@ describe('root layout route boundaries', () => {
     expectAdSenseScriptInDocumentHead(chineseMarkup);
   });
 
-  it('renders Analytics and Clarity but not AdSense in public-share route roots', async () => {
+  it('renders no analytics scripts or nonce lookup in public-share route roots', async () => {
     const EnglishShareRootLayout = (await import('./(share-en)/layout')).default;
     const ChineseShareRootLayout = (await import('./(share-zh)/layout')).default;
 
-    expectAnalyticsScripts(
-      await renderLayout(EnglishShareRootLayout),
-      ['microsoft-clarity', 'google-analytics']
-    );
-    expectAnalyticsScripts(
-      await renderLayout(ChineseShareRootLayout),
-      ['microsoft-clarity', 'google-analytics']
-    );
+    expectNoAnalyticsScripts(await renderLayout(EnglishShareRootLayout));
+    expectNoAnalyticsScripts(await renderLayout(ChineseShareRootLayout));
+    expect(getRequestNonce).not.toHaveBeenCalled();
   });
 
   it('requests a nonce for each local Coat Maker document root while keeping analytics scripts out', async () => {

@@ -10,7 +10,7 @@ import { drawBorder } from './borders';
 import { drawTextBoxes } from './text';
 import { preloadEditorFonts } from '@/lib/editor-fonts/load';
 import { getCachedImage, preloadImageToCache } from '@/lib/utils/imageCache';
-import { getLruCacheEntry, setLruCacheEntry } from '@/lib/utils/lruCache';
+import { CanvasByteBudgetLruCache } from './image-border-mask-cache';
 
 export interface RenderTokenOptions {
   borderInsetRatio?: number;
@@ -18,8 +18,7 @@ export interface RenderTokenOptions {
   onAssetChange?: () => void;
 }
 
-const IMAGE_BORDER_MASK_CACHE = new Map<string, HTMLCanvasElement>();
-const MAX_IMAGE_BORDER_MASK_CACHE_ENTRIES = 16;
+const IMAGE_BORDER_MASK_CACHE = new CanvasByteBudgetLruCache(32 * 1024 * 1024);
 const BORDER_ALPHA_THRESHOLD = 8;
 const BORDER_INSET_RATIO = 0.032;
 
@@ -149,7 +148,7 @@ function buildImageBorderMask(
   interiorMaskId: string | null,
   borderInsetRatio: number
 ): HTMLCanvasElement | null {
-  const cachedMask = getLruCacheEntry(IMAGE_BORDER_MASK_CACHE, cacheKey);
+  const cachedMask = IMAGE_BORDER_MASK_CACHE.get(cacheKey);
   if (cachedMask) return cachedMask;
 
   const sourceCanvas = document.createElement('canvas');
@@ -238,12 +237,7 @@ function buildImageBorderMask(
     }
   }
 
-  setLruCacheEntry(
-    IMAGE_BORDER_MASK_CACHE,
-    cacheKey,
-    maskCanvas,
-    MAX_IMAGE_BORDER_MASK_CACHE_ENTRIES
-  );
+  IMAGE_BORDER_MASK_CACHE.set(cacheKey, maskCanvas);
 
   return maskCanvas;
 }

@@ -146,18 +146,13 @@ export function trackShareUploadFail(error: string, sizeBytes: number, exportSiz
   });
 }
 
-export function trackShareCopyLink(id: string) {
-  trackGtagEvent('share_copy_link', {
-    id,
-    ...getPageParams(),
-  });
+export function trackShareCopyLink() {
+  trackGtagEvent('share_copy_link', {});
 }
 
-export function trackShareSocial(platform: string, id: string) {
+export function trackShareSocial(platform: string) {
   trackGtagEvent('share_social', {
     platform,
-    id,
-    ...getPageParams(),
   });
 }
 
@@ -174,11 +169,8 @@ export function trackShareSuppress24h() {
   });
 }
 
-export function trackSharePageCtaClick(id: string) {
-  trackGtagEvent('share_page_cta_click', {
-    id,
-    ...getPageParams(),
-  });
+export function trackSharePageCtaClick() {
+  trackGtagEvent('share_page_cta_click', {});
 }
 
 export function trackUseBatchMode(source: string, fileCount?: number) {

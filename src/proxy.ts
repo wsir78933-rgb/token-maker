@@ -12,26 +12,24 @@ function isPublicSharePage(pathname: string) {
 
 function createContentSecurityPolicy(nonce: string, pathname: string) {
   const hasPublicSharePagePolicy = isPublicSharePage(pathname);
-  const scriptSources = [
-    "'self'",
-    `'nonce-${nonce}'`,
-    "'unsafe-inline'",
-    ...(!hasPublicSharePagePolicy || process.env.NODE_ENV === 'development'
-      ? ["'unsafe-eval'"]
-      : []),
-    "'strict-dynamic'",
-    'https:',
-    'http:',
-  ];
+  const scriptSources = hasPublicSharePagePolicy
+    ? ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'"]
+    : [
+        "'self'",
+        `'nonce-${nonce}'`,
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "'strict-dynamic'",
+        'https:',
+        'http:',
+      ];
   const imageSources = hasPublicSharePagePolicy
-    ? "'self' data: blob: https://r2.tokenmaker.one https://i.ytimg.com https://www.google-analytics.com https://www.googletagmanager.com https://c.clarity.ms"
+    ? "'self' data: blob: https://r2.tokenmaker.one"
     : "'self' data: blob: https:";
   const connectionSources = hasPublicSharePagePolicy
-    ? "'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://cloudflareinsights.com"
+    ? "'self'"
     : "'self' https:";
-  const frameSources = hasPublicSharePagePolicy
-    ? 'https://www.youtube.com https://www.youtube-nocookie.com'
-    : 'https:';
+  const frameSources = hasPublicSharePagePolicy ? "'none'" : 'https:';
 
   return [
     "default-src 'self'",

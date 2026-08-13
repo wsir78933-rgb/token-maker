@@ -213,6 +213,7 @@ export interface CoatWorkbenchCopy {
       categoryFilter: Record<ReferenceCatalogSection, string>;
       search: Record<ReferenceCatalogSection, string>;
       noResults: Record<ReferenceCatalogSection, string>;
+      loadMore: string;
       categories: Record<ReferenceCatalogSection, Record<string, string>>;
       cardAction: (section: ReferenceCatalogSection, name: string) => string;
     };
@@ -518,6 +519,7 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
         categoryFilter: { shield: 'Shield categories', charge: 'Charge categories', top: 'Top ornament categories' },
         search: { shield: 'Search shields', charge: 'Search charges', top: 'Search top ornaments' },
         noResults: { shield: 'No matching shields.', charge: 'No matching charges.', top: 'No matching top ornaments.' },
+        loadMore: 'Load more',
         categories: {
           shield: { shield: 'Heraldic shields', heater: 'Heater shields', french: 'French shields', banner: 'Banner shields', round: 'Round shields', lozenge: 'Lozenge shields' },
           charge: { animal: 'Animals', object: 'Objects', plant: 'Plants', human: 'Humans', symbol: 'Symbols' },
@@ -595,6 +597,7 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
         categoryFilter: { shield: '盾形类别', charge: '徽记类别', top: '顶部装饰类别' },
         search: { shield: '搜索盾形', charge: '搜索徽记', top: '搜索顶部装饰' },
         noResults: { shield: '没有匹配的盾形。', charge: '没有匹配的徽记。', top: '没有匹配的顶部装饰。' },
+        loadMore: '加载更多',
         categories: {
           shield: { shield: '纹章盾', heater: '熨斗盾', french: '法式盾', banner: '旗帜盾', round: '圆盾', lozenge: '菱形盾' },
           charge: { animal: '动物', object: '物件', plant: '植物', human: '人物', symbol: '符号' },

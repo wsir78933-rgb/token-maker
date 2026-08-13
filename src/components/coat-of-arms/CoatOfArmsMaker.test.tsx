@@ -65,6 +65,15 @@ function getDesktopToolTreeItem(label: string) {
   return within(getDesktopToolRail()).getByRole('button', { name: label });
 }
 
+function revealAllGalleryCards(locale: 'en' | 'zh') {
+  const loadMoreLabel = locale === 'zh' ? '加载更多' : 'Load more';
+  while (true) {
+    const loadMoreButtons = screen.queryAllByRole('button', { name: loadMoreLabel });
+    if (loadMoreButtons.length === 0) return;
+    loadMoreButtons.forEach((button) => fireEvent.click(button));
+  }
+}
+
 function getMobileDrawer() {
   const mobileDrawer = document.querySelector<HTMLElement>('.coat-workbench-mobile-drawer');
   if (!mobileDrawer) throw new Error('Mobile tool drawer is unavailable');
@@ -598,6 +607,7 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
 
     selectDesktopTool('Top');
+    revealAllGalleryCards('en');
     fireEvent.click(screen.getByRole('button', { name: 'Add top ornament: Royal Crown' }));
 
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'material-crown-royal-crown' });

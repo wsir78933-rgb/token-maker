@@ -8,10 +8,6 @@ export const SHARE_ID_PATTERN = /^[A-Za-z0-9_-]{10}$/;
 export const SHARE_OBJECT_PREFIX = 'shares';
 export const SHARE_MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 export const SHARE_MAX_REQUEST_BODY_BYTES = 8 * 1024 * 1024;
-export const SHARE_RATE_LIMIT_WINDOW_MS = 60 * 1000;
-export const SHARE_RATE_LIMIT_MAX_REQUESTS = 20;
-export const SHARE_RATE_LIMIT_MAX_BUCKETS = 1000;
-export const SHARE_RATE_LIMIT_CLEANUP_INTERVAL_MS = 60 * 1000;
 export const SHARE_IMAGE_CACHE_CONTROL = 'public, max-age=2592000, immutable';
 export const SHARE_R2_PUBLIC_BASE_URL_FALLBACK = 'https://r2.tokenmaker.one';
 export const SHARE_SITE_URL_FALLBACK = 'https://www.tokenmaker.one';
@@ -27,6 +23,7 @@ export const SHARE_UPLOAD_WIDTHS = [
   SHARE_SOCIAL_IMAGE_WIDTH,
 ] as const;
 export type ShareUploadWidth = (typeof SHARE_UPLOAD_WIDTHS)[number];
+export const SHARE_MAX_IMAGE_PIXELS = 2048 * 2048;
 
 export type SharePlatform = 'x' | 'pinterest' | 'reddit';
 
@@ -36,6 +33,12 @@ export function isShareExportWidth(value: unknown): value is ShareExportWidth {
 
 export function isShareUploadWidth(value: unknown): value is ShareUploadWidth {
   return typeof value === 'number' && SHARE_UPLOAD_WIDTHS.includes(value as ShareUploadWidth);
+}
+
+export function getShareUploadDimensions(width: ShareUploadWidth) {
+  return width === SHARE_SOCIAL_IMAGE_WIDTH
+    ? { width: SHARE_SOCIAL_IMAGE_WIDTH, height: SHARE_SOCIAL_IMAGE_HEIGHT }
+    : { width, height: width };
 }
 
 export function isShareId(value: string): boolean {

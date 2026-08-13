@@ -20,6 +20,7 @@ const referenceCategoriesBySection: Record<CoatAssetGallerySection, readonly str
   charge: ['animal', 'object', 'plant', 'human', 'symbol'],
   top: ['crown', 'mantle', 'supporter', 'other'],
 };
+const REFERENCE_ASSET_PAGE_SIZE = 24;
 
 export interface ReferenceAssetGalleryEntry {
   readonly id: string;
@@ -93,6 +94,14 @@ export function ReferenceAssetGallery({
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
   const [selectedRasterVariantId, setSelectedRasterVariantId] = useState<CoatRasterVariantId | undefined>();
   const search = controlledSearch ?? uncontrolledSearch;
+  const activeFilterKey = `${activeCategory}\u0000${search}`;
+  const [visibleCardState, setVisibleCardState] = useState(() => ({
+    filterKey: activeFilterKey,
+    count: REFERENCE_ASSET_PAGE_SIZE,
+  }));
+  const visibleCardCount = visibleCardState.filterKey === activeFilterKey
+    ? visibleCardState.count
+    : REFERENCE_ASSET_PAGE_SIZE;
   const activeSelectedAssetId = controlledSelectedAssetId === undefined ? selectedAssetId : controlledSelectedAssetId;
   const activeSelectedRasterVariantId = controlledSelectedAssetId === undefined
     ? selectedRasterVariantId
@@ -103,7 +112,8 @@ export function ReferenceAssetGallery({
   ].filter((entry) => (
     matchesCatalogSearch(entry, search)
   ));
-  const visibleCards = createReferenceGalleryCards(visibleEntries);
+  const filteredCards = createReferenceGalleryCards(visibleEntries);
+  const visibleCards = filteredCards.slice(0, visibleCardCount);
 
   return (
     <section aria-label={copy.library[section]} className={`coat-reference-asset-gallery${presentation === 'compact' ? ' coat-reference-asset-gallery--compact' : ''}`}>
@@ -138,7 +148,7 @@ export function ReferenceAssetGallery({
           value={search}
         />
       </label>
-      {visibleCards.length === 0 ? <p role="status">{copy.noResults[section]}</p> : null}
+      {filteredCards.length === 0 ? <p role="status">{copy.noResults[section]}</p> : null}
       <ul aria-label={copy.library[section]} className={`m-0 grid list-none gap-1 p-0${presentation === 'compact' ? ' coat-reference-asset-gallery__grid--compact' : ' grid-cols-3'}`}>
         {visibleCards.map(({ entry, rasterVariant }) => {
           const assetName = locale === 'zh' ? entry.nameZh : entry.name;
@@ -164,9 +174,9 @@ export function ReferenceAssetGallery({
                 {presentation === 'compact' && section === 'shield'
                   ? <CompactShieldThumbnail clipIdPrefix={compactThumbnailClipIdPrefix} entry={entry} />
                     : rasterVariant
-                    ? <img alt="" className="aspect-[10/11] w-full object-contain" src={rasterVariant.src} />
+                    ? <img alt="" className="aspect-[10/11] w-full object-contain" decoding="async" height={110} loading="lazy" src={rasterVariant.src} width={100} />
                     : entry.rasterSrc
-                      ? <img alt="" className="aspect-[10/11] w-full object-contain" src={entry.rasterSrc} />
+                      ? <img alt="" className="aspect-[10/11] w-full object-contain" decoding="async" height={110} loading="lazy" src={entry.rasterSrc} width={100} />
                     : <svg aria-hidden="true" className="aspect-[10/11] w-full" viewBox="0 0 100 110">
                       {entry.svgParts?.map((part, partIndex) => <path d={part.svgPath} fill={part.sourceColor} key={`${entry.id}-${partIndex}`} />)}
                     </svg>}
@@ -176,6 +186,16 @@ export function ReferenceAssetGallery({
           );
         })}
       </ul>
+      {filteredCards.length > visibleCards.length ? <button
+        className="rounded border border-[color:var(--coat-line)] px-2 py-1 text-xs"
+        onClick={() => setVisibleCardState({
+          filterKey: activeFilterKey,
+          count: visibleCardCount + REFERENCE_ASSET_PAGE_SIZE,
+        })}
+        type="button"
+      >
+        {copy.loadMore}
+      </button> : null}
     </section>
   );
 }

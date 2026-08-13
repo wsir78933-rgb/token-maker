@@ -6,7 +6,27 @@ function headers(values: Record<string, string>) {
 }
 
 describe('getClientIp', () => {
-  it('prefers Cloudflare client IP headers over proxy headers', () => {
+  it('uses the Vercel client IP header and normalizes an IPv4 port', () => {
+    expect(
+      getClientIp(
+        headers({
+          'x-vercel-forwarded-for': '203.0.113.10:443',
+        })
+      )
+    ).toBe('203.0.113.10');
+  });
+
+  it('normalizes a bracketed IPv6 port from the Vercel header', () => {
+    expect(
+      getClientIp(
+        headers({
+          'x-vercel-forwarded-for': '[2001:db8::1]:443',
+        })
+      )
+    ).toBe('2001:db8::1');
+  });
+
+  it('ignores untrusted client-IP headers when the Vercel header is absent', () => {
     expect(
       getClientIp(
         headers({
@@ -16,24 +36,12 @@ describe('getClientIp', () => {
           'x-forwarded-for': '203.0.113.4',
         })
       )
-    ).toBe('203.0.113.1');
+    ).toBe('anonymous');
   });
 
-  it('uses the first valid forwarded IP candidate', () => {
-    expect(
-      getClientIp(
-        headers({
-          'x-forwarded-for': 'unknown, 203.0.113.10:443, 203.0.113.11',
-        })
-      )
-    ).toBe('203.0.113.10');
-  });
-
-  it('supports bracketed IPv6 candidates', () => {
-    expect(getClientIp(headers({ 'x-real-ip': '[2001:db8::1]:443' }))).toBe('2001:db8::1');
-  });
-
-  it('falls back to anonymous when no valid client IP is present', () => {
-    expect(getClientIp(headers({ 'x-real-ip': 'not-an-ip' }))).toBe('anonymous');
+  it('falls back to anonymous for a malformed Vercel client IP header', () => {
+    expect(getClientIp(headers({ 'x-vercel-forwarded-for': 'unknown, 203.0.113.10' }))).toBe(
+      'anonymous'
+    );
   });
 });

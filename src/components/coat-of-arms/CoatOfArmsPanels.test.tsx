@@ -76,6 +76,15 @@ function findAssetLayerIndex(assetId: string): number {
   ));
 }
 
+function revealAllGalleryCards(locale: 'en' | 'zh') {
+  const loadMoreLabel = locale === 'zh' ? '加载更多' : 'Load more';
+  while (true) {
+    const loadMoreButtons = screen.queryAllByRole('button', { name: loadMoreLabel });
+    if (loadMoreButtons.length === 0) return;
+    loadMoreButtons.forEach((button) => fireEvent.click(button));
+  }
+}
+
 describe('CoatOfArmsPanels', () => {
   beforeEach(() => {
     nextId = 0;
@@ -89,6 +98,7 @@ describe('CoatOfArmsPanels', () => {
 
   it('adds a charge from the library and exposes it in layers', async () => {
     renderPanels();
+    revealAllGalleryCards('en');
 
     const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') });
     expect(lionCard.querySelector('img')).not.toBeNull();
@@ -99,6 +109,7 @@ describe('CoatOfArmsPanels', () => {
 
   it('adds the selected Lion Rampant WebP material as an independent layer', () => {
     renderPanels();
+    revealAllGalleryCards('en');
 
     fireEvent.click(screen.getByRole('button', { name: 'Add charge: Lion Rampant' }));
 
@@ -118,6 +129,7 @@ describe('CoatOfArmsPanels', () => {
 
   it('uses English-only panel labels and accessible controls', () => {
     renderPanels('en');
+    revealAllGalleryCards('en');
 
     expect(screen.getByRole('heading', { name: 'Shield & field' })).toBeDefined();
     expect(screen.getByLabelText('Shield outline')).toBeDefined();
@@ -129,6 +141,7 @@ describe('CoatOfArmsPanels', () => {
 
   it('uses Chinese-only panel labels and accessible controls', () => {
     renderPanels('zh');
+    revealAllGalleryCards('zh');
 
     expect(screen.getByRole('heading', { name: '盾牌与底纹' })).toBeDefined();
     expect(screen.getByLabelText('盾形')).toBeDefined();
@@ -185,6 +198,7 @@ describe('CoatOfArmsPanels', () => {
     renderPanels();
 
     fireEvent.change(screen.getByLabelText('Charge category'), { target: { value: 'plant' } });
+    revealAllGalleryCards('en');
 
     const galleryCopy = getCoatWorkbenchCopy('en').palettes.referenceGallery;
     expect(screen.getByRole('button', { name: galleryCopy.cardAction('charge', 'Oak Leaf') })).toBeDefined();
@@ -204,6 +218,7 @@ describe('CoatOfArmsPanels', () => {
 
   it('uses localized gallery action labels for bundled WebP charge cards in Chinese', () => {
     renderPanels('zh');
+    revealAllGalleryCards('zh');
 
     const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') });
     expect(lionCard.querySelector('img')).not.toBeNull();

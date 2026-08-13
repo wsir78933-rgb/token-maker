@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { BatchItem } from './types';
 
 const zipExportMockState = vi.hoisted(() => ({
+  jszipModuleLoadCount: 0,
   savedFiles: [] as Array<{ blob: Blob; fileName: string }>,
   zipFileNames: [] as string[],
 }));
@@ -20,15 +21,19 @@ vi.mock('@/lib/analytics', () => ({
 }));
 
 vi.mock('jszip', () => ({
-  default: class MockJSZip {
-    file(fileName: string) {
-      zipExportMockState.zipFileNames.push(fileName);
-    }
+  default: (() => {
+    zipExportMockState.jszipModuleLoadCount += 1;
 
-    async generateAsync() {
-      return new Blob(['zip']);
-    }
-  },
+    return class MockJSZip {
+      file(fileName: string) {
+        zipExportMockState.zipFileNames.push(fileName);
+      }
+
+      async generateAsync() {
+        return new Blob(['zip']);
+      }
+    };
+  })(),
 }));
 
 import { downloadBatchZip } from './zip-export';
@@ -49,9 +54,28 @@ function createDoneBatchItem(fileName: string): BatchItem {
 
 describe('downloadBatchZip', () => {
   afterEach(() => {
+    zipExportMockState.jszipModuleLoadCount = 0;
     zipExportMockState.savedFiles = [];
     zipExportMockState.zipFileNames = [];
     vi.restoreAllMocks();
+  });
+
+  it('loads JSZip only when completed items require a ZIP export', async () => {
+    expect(zipExportMockState.jszipModuleLoadCount).toBe(0);
+
+    await downloadBatchZip([], {
+      tokenFileSuffix: 'token',
+      zipFileBaseName: 'tokens',
+    });
+
+    expect(zipExportMockState.jszipModuleLoadCount).toBe(0);
+
+    await downloadBatchZip([createDoneBatchItem('hero.png')], {
+      tokenFileSuffix: 'token',
+      zipFileBaseName: 'tokens',
+    });
+
+    expect(zipExportMockState.jszipModuleLoadCount).toBe(1);
   });
 
   it('uses localized Chinese names for token files and the ZIP file', async () => {

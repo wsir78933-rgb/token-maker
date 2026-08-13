@@ -58,6 +58,60 @@ describe('ReferenceAssetGallery', () => {
     expect(onSelect).toHaveBeenCalledWith('material-symbol-radiant-sun');
   });
 
+  it('renders raster materials one page at a time and resets the page after every category or search change', () => {
+    render(
+      <ReferenceAssetGallery
+        additionalEntries={createRasterMaterialEntries(25)}
+        categories={['animal', 'object']}
+        locale="en"
+        onSelect={vi.fn()}
+        section="charge"
+      />,
+    );
+
+    expect(document.querySelectorAll('.coat-reference-asset-gallery img')).toHaveLength(24);
+    expect(screen.getByRole('button', { name: 'Load more' })).toBeTruthy();
+    expect(document.querySelector('.coat-reference-asset-gallery img')?.getAttribute('loading')).toBe('lazy');
+    expect(document.querySelector('.coat-reference-asset-gallery img')?.getAttribute('decoding')).toBe('async');
+    expect(document.querySelector('.coat-reference-asset-gallery img')?.getAttribute('width')).toBe('100');
+    expect(document.querySelector('.coat-reference-asset-gallery img')?.getAttribute('height')).toBe('110');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Load more' }));
+    expect(document.querySelectorAll('.coat-reference-asset-gallery img')).toHaveLength(25);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Objects' }));
+    expect(document.querySelectorAll('.coat-reference-asset-gallery img')).toHaveLength(24);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Load more' }));
+    expect(document.querySelectorAll('.coat-reference-asset-gallery img')).toHaveLength(25);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Animals' }));
+    expect(document.querySelectorAll('.coat-reference-asset-gallery img')).toHaveLength(24);
+
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: 'raster' } });
+    expect(document.querySelectorAll('.coat-reference-asset-gallery img')).toHaveLength(24);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Load more' }));
+    expect(document.querySelectorAll('.coat-reference-asset-gallery img')).toHaveLength(25);
+
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: '' } });
+    expect(document.querySelectorAll('.coat-reference-asset-gallery img')).toHaveLength(24);
+  });
+
+  it('localizes the raster material pagination control', () => {
+    render(
+      <ReferenceAssetGallery
+        additionalEntries={createRasterMaterialEntries(25)}
+        categories={['animal']}
+        locale="zh"
+        onSelect={vi.fn()}
+        section="charge"
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: '加载更多' })).toBeTruthy();
+  });
+
   it('announces a localized empty result and rejects a category outside its section', () => {
     render(
       <ReferenceAssetGallery
@@ -223,3 +277,13 @@ describe('ReferenceAssetGallery', () => {
     expect(matchesCatalogSearch(webpMaterial, 'shield')).toBe(false);
   });
 });
+
+function createRasterMaterialEntries(entryCount: number) {
+  return Array.from({ length: entryCount }, (_, index) => ({
+    id: `raster-material-${index + 1}`,
+    name: `Raster material ${index + 1}`,
+    nameZh: `光栅素材 ${index + 1}`,
+    searchTerms: ['raster'],
+    rasterSrc: `/coat-assets/materials/raster-${index + 1}.webp`,
+  }));
+}

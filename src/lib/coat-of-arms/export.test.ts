@@ -1,9 +1,16 @@
-import JSZip from 'jszip';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultProject } from './assets';
 import { exportCoatBatch, exportCoatJpeg, exportCoatPdf, exportCoatPng, printCoatScene } from './export';
 
-const { jsPdfInstances } = vi.hoisted(() => ({ jsPdfInstances: [] as Array<{ addImage: ReturnType<typeof vi.fn>; options: unknown }> }));
+const { jsPdfInstances, jszipModuleLoadState } = vi.hoisted(() => ({
+  jsPdfInstances: [] as Array<{ addImage: ReturnType<typeof vi.fn>; options: unknown }>,
+  jszipModuleLoadState: { count: 0 },
+}));
+
+vi.mock('jszip', async (importOriginal) => {
+  jszipModuleLoadState.count += 1;
+  return importOriginal();
+});
 
 vi.mock('jspdf', () => ({
   jsPDF: class {
@@ -124,7 +131,10 @@ describe('coat export helpers', () => {
     const first = { ...createDefaultProject('en'), name: 'Same Arms' };
     const second = { ...createDefaultProject('en'), name: 'Same Arms' };
 
+    expect(jszipModuleLoadState.count).toBe(0);
     const zipBlob = await exportCoatBatch([first, second], 512);
+    expect(jszipModuleLoadState.count).toBe(1);
+    const { default: JSZip } = await import('jszip');
     const zip = await JSZip.loadAsync(await zipBlob.arrayBuffer());
 
     expect(zipBlob.size).toBeGreaterThan(0);

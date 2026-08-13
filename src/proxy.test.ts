@@ -18,6 +18,21 @@ async function loadProxy(nodeEnvironment = 'production') {
   return import('./proxy');
 }
 
+function getContentSecurityPolicyDirective(
+  contentSecurityPolicy: string | null,
+  directiveName: string
+) {
+  const directive = contentSecurityPolicy
+    ?.split('; ')
+    .find((value) => value.startsWith(`${directiveName} `));
+
+  if (!directive) {
+    throw new Error(`Missing ${directiveName} directive in CSP: ${contentSecurityPolicy}`);
+  }
+
+  return directive.split(' ').slice(1);
+}
+
 describe('proxy', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
@@ -64,30 +79,35 @@ describe('proxy', () => {
     expect(response.headers.get('Content-Security-Policy')).toContain("'unsafe-eval'");
   });
 
-  it('keeps the narrower resource CSP on public share pages', async () => {
-    const { proxy } = await loadProxy();
+  it('allows only self-hosted share resources in production and development', async () => {
+    const productionProxy = (await loadProxy('production')).proxy;
+    const developmentProxy = (await loadProxy('development')).proxy;
+    const shareResponses = [
+      productionProxy(new NextRequest('https://www.tokenmaker.one/share/token-id')),
+      productionProxy(new NextRequest('https://www.tokenmaker.one/zh/share/token-id')),
+      developmentProxy(new NextRequest('https://www.tokenmaker.one/share/token-id')),
+      developmentProxy(new NextRequest('https://www.tokenmaker.one/zh/share/token-id')),
+    ];
 
-    const englishShareResponse = proxy(
-      new NextRequest('https://www.tokenmaker.one/share/token-id')
-    );
-    const chineseShareResponse = proxy(
-      new NextRequest('https://www.tokenmaker.one/zh/share/token-id')
-    );
-
-    for (const response of [englishShareResponse, chineseShareResponse]) {
+    for (const response of shareResponses) {
       const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
 
-      expect(contentSecurityPolicy).not.toContain("'unsafe-eval'");
-      expect(contentSecurityPolicy).toContain(
-        'img-src \'self\' data: blob: https://r2.tokenmaker.one https://i.ytimg.com'
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'script-src')).toEqual([
+        "'self'",
+        expect.stringMatching(/^'nonce-[A-Za-z0-9+/]+={0,2}'$/),
+        "'strict-dynamic'",
+      ]);
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'img-src')).toEqual([
+        "'self'",
+        'data:',
+        'blob:',
+        'https://r2.tokenmaker.one',
+      ]);
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'connect-src')).toEqual(["'self'"]);
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'frame-src')).toEqual(["'none'"]);
+      expect(contentSecurityPolicy).not.toMatch(
+        /google-analytics|googletagmanager|clarity|cloudflareinsights|youtube|ytimg/i
       );
-      expect(contentSecurityPolicy).toContain(
-        "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com"
-      );
-      expect(contentSecurityPolicy).toContain(
-        'frame-src https://www.youtube.com https://www.youtube-nocookie.com'
-      );
-      expect(contentSecurityPolicy).not.toContain('frame-src https:;');
     }
   });
 

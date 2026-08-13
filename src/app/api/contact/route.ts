@@ -1,21 +1,25 @@
-import { createHash } from 'node:crypto';
-import { isIP } from 'node:net';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerEnv } from '@/lib/env';
+import {
+  getJsonContentTypeError,
+  getSameOriginError,
+  readRequestBodyWithinLimit,
+} from '@/lib/request-validation';
+import { getClientIp } from '@/lib/share/client-ip';
+import {
+  RateLimiterUnavailableError,
+  createRateLimitKey,
+  createUpstashRateLimiter,
+} from '@/lib/share/rate-limit';
 
 export const runtime = 'nodejs';
 
 const RESEND_EMAILS_ENDPOINT = 'https://api.resend.com/emails';
 const MAX_MESSAGE_LENGTH = 4000;
 const MAX_REQUEST_BODY_BYTES = 32 * 1024;
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
-const RATE_LIMIT_MAX_REQUESTS = 5;
-const RATE_LIMIT_MAX_BUCKETS = 500;
-const RATE_LIMIT_CLEANUP_INTERVAL_MS = 60 * 1000;
+const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
+const CONTACT_RATE_LIMIT_WINDOW_SECONDS = 10 * 60;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
-let lastRateLimitCleanupAt = 0;
 
 interface ContactPayload {
   name?: unknown;
@@ -29,153 +33,27 @@ function normalizeText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function jsonResponse(body: Record<string, unknown>, status: number) {
-  return NextResponse.json(body, { status });
+function jsonResponse(body: Record<string, unknown>, status: number, headers?: HeadersInit) {
+  return NextResponse.json(body, { status, headers });
 }
 
-function getContentLength(request: NextRequest) {
-  const value = request.headers.get('content-length');
-  if (!value) return null;
-
-  const length = Number(value);
-  return Number.isFinite(length) && length >= 0 ? length : null;
-}
-
-async function readLimitedRequestBody(request: NextRequest, maxBytes: number) {
-  const contentLength = getContentLength(request);
-  if (contentLength !== null && contentLength > maxBytes) {
-    return null;
-  }
-
-  if (!request.body) {
-    return '';
-  }
-
-  const reader = request.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let totalBytes = 0;
-
+function parseContactPayload(body: Uint8Array): ContactPayload | null {
   try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      totalBytes += value.byteLength;
-      if (totalBytes > maxBytes) {
-        await reader.cancel();
-        return null;
-      }
-
-      chunks.push(value);
+    return JSON.parse(new TextDecoder().decode(body)) as ContactPayload;
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      return null;
     }
-  } finally {
-    reader.releaseLock();
-  }
 
-  const body = new Uint8Array(totalBytes);
-  let offset = 0;
-  for (const chunk of chunks) {
-    body.set(chunk, offset);
-    offset += chunk.byteLength;
+    throw error;
   }
-
-  return new TextDecoder().decode(body);
 }
 
-function normalizeIpCandidate(value: string | null) {
-  const token = value?.trim().replace(/^"|"$/g, '');
-  if (!token) return null;
-
-  if (isIP(token)) return token;
-
-  const bracketedIpv6 = token.match(/^\[([^\]]+)](?::\d+)?$/)?.[1];
-  if (bracketedIpv6 && isIP(bracketedIpv6)) return bracketedIpv6;
-
-  const ipv4WithPort = token.match(/^(\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?$/)?.[1];
-  if (ipv4WithPort && isIP(ipv4WithPort)) return ipv4WithPort;
-
-  return null;
-}
-
-function getForwardedForCandidates(request: NextRequest) {
+function isMissingServerEnvironmentError(error: unknown): error is Error {
   return (
-    request.headers
-      .get('x-forwarded-for')
-      ?.split(',')
-      .map((value) => value.trim()) ?? []
+    error instanceof Error &&
+    error.message.startsWith('Missing required environment variable: ')
   );
-}
-
-function getClientIp(request: NextRequest) {
-  const candidates = [
-    request.headers.get('cf-connecting-ip'),
-    request.headers.get('true-client-ip'),
-    request.headers.get('x-real-ip'),
-    ...getForwardedForCandidates(request),
-  ];
-
-  for (const candidate of candidates) {
-    const normalizedIp = normalizeIpCandidate(candidate);
-    if (normalizedIp) return normalizedIp;
-  }
-
-  return 'anonymous';
-}
-
-function getRateLimitHash(value: string) {
-  return createHash('sha256').update(value).digest('hex').slice(0, 24);
-}
-
-function cleanupRateLimitBuckets(now: number) {
-  if (
-    rateLimitBuckets.size < RATE_LIMIT_MAX_BUCKETS &&
-    now - lastRateLimitCleanupAt < RATE_LIMIT_CLEANUP_INTERVAL_MS
-  ) {
-    return;
-  }
-
-  lastRateLimitCleanupAt = now;
-  for (const [key, bucket] of rateLimitBuckets) {
-    if (bucket.resetAt <= now) {
-      rateLimitBuckets.delete(key);
-    }
-  }
-
-  if (rateLimitBuckets.size <= RATE_LIMIT_MAX_BUCKETS) return;
-
-  const staleKeys = Array.from(rateLimitBuckets.entries())
-    .sort(([, a], [, b]) => a.resetAt - b.resetAt)
-    .slice(0, rateLimitBuckets.size - RATE_LIMIT_MAX_BUCKETS)
-    .map(([key]) => key);
-
-  staleKeys.forEach((key) => rateLimitBuckets.delete(key));
-}
-
-function isRateLimited(keys: string[]) {
-  const now = Date.now();
-  cleanupRateLimitBuckets(now);
-
-  const uniqueKeys = Array.from(new Set(keys));
-  const hasLimitedBucket = uniqueKeys.some((key) => {
-    const bucket = rateLimitBuckets.get(key);
-    return Boolean(bucket && bucket.resetAt > now && bucket.count >= RATE_LIMIT_MAX_REQUESTS);
-  });
-
-  if (hasLimitedBucket) {
-    return true;
-  }
-
-  uniqueKeys.forEach((key) => {
-    const bucket = rateLimitBuckets.get(key);
-    if (!bucket || bucket.resetAt <= now) {
-      rateLimitBuckets.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-      return;
-    }
-
-    bucket.count += 1;
-  });
-
-  return false;
 }
 
 function escapeHtml(value: string) {
@@ -217,27 +95,51 @@ function buildEmailHtml({
 }
 
 export async function POST(request: NextRequest) {
-  let payload: ContactPayload;
+  const contentTypeError = getJsonContentTypeError(request.headers);
+  if (contentTypeError) {
+    return jsonResponse({ error: contentTypeError }, 415);
+  }
 
+  const originError = getSameOriginError(request);
+  if (originError) {
+    return jsonResponse({ error: originError }, 403);
+  }
+
+  let rateLimiter: ReturnType<typeof createUpstashRateLimiter>;
   try {
-    const body = await readLimitedRequestBody(request, MAX_REQUEST_BODY_BYTES);
-    if (body === null) {
-      return jsonResponse({ error: 'request_too_large' }, 413);
+    rateLimiter = createUpstashRateLimiter();
+    const ipLimitResult = await rateLimiter.check({
+      key: createRateLimitKey('contact:ip', getClientIp(request.headers)),
+      maxRequests: CONTACT_RATE_LIMIT_MAX_REQUESTS,
+      windowSeconds: CONTACT_RATE_LIMIT_WINDOW_SECONDS,
+    });
+
+    if (ipLimitResult.limited) {
+      return jsonResponse(
+        { error: 'rate_limited' },
+        429,
+        { 'Retry-After': String(ipLimitResult.retryAfterSeconds) }
+      );
+    }
+  } catch (error) {
+    if (error instanceof RateLimiterUnavailableError) {
+      return jsonResponse({ error: 'rate_limiter_unavailable' }, 503);
     }
 
-    payload = JSON.parse(body) as ContactPayload;
-  } catch {
+    throw error;
+  }
+
+  const bodyResult = await readRequestBodyWithinLimit(request, MAX_REQUEST_BODY_BYTES);
+  if (!bodyResult.ok) {
+    return jsonResponse({ error: 'request_too_large' }, 413);
+  }
+
+  const payload = parseContactPayload(bodyResult.value);
+  if (!payload) {
     return jsonResponse({ error: 'invalid_json' }, 400);
   }
 
-  const ip = getClientIp(request);
-
-  if (isRateLimited([`ip:${ip}`])) {
-    return jsonResponse({ error: 'rate_limited' }, 429);
-  }
-
   const honeypot = normalizeText(payload.website);
-
   if (honeypot) {
     return jsonResponse({ ok: true }, 200);
   }
@@ -259,18 +161,45 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ error: 'invalid_message' }, 400);
   }
 
-  if (isRateLimited([`email:${getRateLimitHash(email)}`])) {
-    return jsonResponse({ error: 'rate_limited' }, 429);
+  try {
+    const emailLimitResult = await rateLimiter.check({
+      key: createRateLimitKey('contact:email', email),
+      maxRequests: CONTACT_RATE_LIMIT_MAX_REQUESTS,
+      windowSeconds: CONTACT_RATE_LIMIT_WINDOW_SECONDS,
+    });
+
+    if (emailLimitResult.limited) {
+      return jsonResponse(
+        { error: 'rate_limited' },
+        429,
+        { 'Retry-After': String(emailLimitResult.retryAfterSeconds) }
+      );
+    }
+  } catch (error) {
+    if (error instanceof RateLimiterUnavailableError) {
+      return jsonResponse({ error: 'rate_limiter_unavailable' }, 503);
+    }
+
+    throw error;
   }
 
   let env: ReturnType<typeof getServerEnv>;
   try {
     env = getServerEnv();
-  } catch {
-    return jsonResponse({ error: 'email_not_configured' }, 503);
+  } catch (error) {
+    if (isMissingServerEnvironmentError(error)) {
+      return jsonResponse({ error: 'email_not_configured' }, 503);
+    }
+
+    throw error;
   }
 
-  const { RESEND_API_KEY: apiKey, RESEND_FROM_EMAIL: from, CONTACT_TO_EMAIL: to, CONTACT_SUBJECT_PREFIX: subjectPrefix } = env;
+  const {
+    RESEND_API_KEY: apiKey,
+    RESEND_FROM_EMAIL: from,
+    CONTACT_TO_EMAIL: to,
+    CONTACT_SUBJECT_PREFIX: subjectPrefix,
+  } = env;
   const subjectName = name.length > 48 ? `${name.slice(0, 48)}...` : name;
   const subject = `${subjectPrefix}: ${subjectName}`;
   const text = [
@@ -301,7 +230,14 @@ export async function POST(request: NextRequest) {
     }),
   });
 
-  const result = (await response.json().catch(() => null)) as unknown;
+  let result: unknown = null;
+  try {
+    result = await response.json();
+  } catch (error) {
+    if (!(error instanceof SyntaxError)) {
+      throw error;
+    }
+  }
 
   if (!response.ok) {
     console.error('Resend contact email failed', {

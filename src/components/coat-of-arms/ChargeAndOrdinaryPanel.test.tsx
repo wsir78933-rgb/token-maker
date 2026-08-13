@@ -46,7 +46,7 @@ describe('ChargeAndOrdinaryPanel', () => {
     });
   });
 
-  it('renders and adds an ordinary from its local WebP catalogue', () => {
+  it('adds an ordinary from one named card without a visible Add label', () => {
     render(<ChargeAndOrdinaryPanel locale="en" selectedKind="ordinary" />);
 
     fireEvent.change(screen.getByRole('textbox', { name: 'Search library' }), { target: { value: 'bend' } });
@@ -55,7 +55,10 @@ describe('ChargeAndOrdinaryPanel', () => {
     ));
     if (!bendPreview) throw new Error('Missing Bend WebP preview');
     expect(bendPreview.getAttribute('src')).toBe('/coat-assets/materials/ordinaries/bend.webp');
-    fireEvent.click(screen.getByRole('button', { name: 'Add Bend' }));
+    const bendCard = screen.getByRole('button', { name: 'Add Bend' });
+    expect(bendCard.textContent).toBe('Bend');
+    expect(bendCard.querySelector('button')).toBeNull();
+    fireEvent.click(bendCard);
 
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
       type: 'ordinary',

@@ -15,6 +15,8 @@ const mocks = vi.hoisted(() => ({
   saveAs: vi.fn(),
   clipboardWriteText: vi.fn(),
   windowOpen: vi.fn(),
+  trackShareCopyLink: vi.fn(),
+  trackShareSocial: vi.fn(),
 }));
 
 vi.mock('@/lib/i18n', () => ({
@@ -44,9 +46,9 @@ vi.mock('@/lib/i18n', () => ({
 }));
 
 vi.mock('@/lib/analytics', () => ({
-  trackShareCopyLink: vi.fn(),
+  trackShareCopyLink: mocks.trackShareCopyLink,
   trackShareRedownload: vi.fn(),
-  trackShareSocial: vi.fn(),
+  trackShareSocial: mocks.trackShareSocial,
   trackShareSuppress24h: vi.fn(),
   trackShareUploadFail: vi.fn(),
   trackShareUploadStart: vi.fn(),
@@ -107,6 +109,8 @@ describe('ShareDialog', () => {
     mocks.saveAs.mockClear();
     mocks.clipboardWriteText.mockClear();
     mocks.windowOpen.mockClear();
+    mocks.trackShareCopyLink.mockClear();
+    mocks.trackShareSocial.mockClear();
     useShareDialogStore.setState({ isOpen: false, payload: null });
   });
 
@@ -189,6 +193,7 @@ describe('ShareDialog', () => {
         'https://www.tokenmaker.one/share/abc123def4'
       )
     );
+    expect(mocks.trackShareCopyLink).toHaveBeenCalledWith();
   });
 
   it('uploads to R2 when the user shares to a social platform', async () => {
@@ -217,5 +222,6 @@ describe('ShareDialog', () => {
         'noopener,noreferrer'
       )
     );
+    expect(mocks.trackShareSocial).toHaveBeenCalledWith('pinterest');
   });
 });

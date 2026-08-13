@@ -266,7 +266,7 @@ export function ShareDialog() {
           ? { ...previousState, copied: true }
           : previousState
       );
-      trackShareCopyLink(currentShareData.id);
+      trackShareCopyLink();
     } catch {
       setShareRequestState((previousState) =>
         previousState?.payload === currentPayload
@@ -288,7 +288,7 @@ export function ShareDialog() {
     });
 
     window.open(url, '_blank', 'noopener,noreferrer');
-    trackShareSocial(platform, currentShareData.id);
+    trackShareSocial(platform);
   };
 
   const handleDownload = () => {

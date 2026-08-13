@@ -28,21 +28,25 @@ export function AssetLibraryPanel({ kind, locale, search, onAdd, allowedAssetIds
   return (
     <ul aria-label={copy.assetLibrary(kind === 'charge' ? copy.charges : copy.ordinaries)} className="grid gap-2 sm:grid-cols-2">
       {assets.map((asset) => (
-        <li key={asset.id} className="flex items-center justify-between gap-2 rounded border border-[color:var(--site-border-soft)] p-2">
-          {asset.rasterSrc ? <img
-            alt=""
-            className="h-10 w-10 shrink-0 rounded bg-[color:var(--site-panel-strong)] object-contain p-1"
-            src={asset.rasterSrc}
-          /> : <svg
-            aria-label={copy.previewAsset(asset.name[locale])}
-            className="h-10 w-10 shrink-0 rounded bg-[color:var(--site-panel-strong)] p-1 text-[color:var(--site-accent-strong)]"
-            viewBox="0 0 100 110"
+        <li key={asset.id}>
+          <button
+            aria-label={copy.addAsset(asset.name[locale])}
+            className="flex w-full min-w-0 items-center gap-2 rounded border border-[color:var(--site-border-soft)] p-2 text-left transition-colors hover:border-[color:var(--coat-accent)] hover:bg-[color:var(--coat-active)] focus-visible:border-[color:var(--coat-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--coat-accent)]"
+            onClick={() => onAdd(asset.id)}
+            type="button"
           >
-            <path d={asset.svgPath} fill="currentColor" />
-          </svg>}
-          <span className="min-w-0 flex-1">{asset.name[locale]}</span>
-          <button type="button" onClick={() => onAdd(asset.id)}>
-            {copy.addAsset(asset.name[locale])}
+            {asset.rasterSrc ? <img
+              alt=""
+              className="h-10 w-10 shrink-0 rounded bg-[color:var(--site-panel-strong)] object-contain p-1"
+              src={asset.rasterSrc}
+            /> : <svg
+              aria-hidden="true"
+              className="h-10 w-10 shrink-0 rounded bg-[color:var(--site-panel-strong)] p-1 text-[color:var(--site-accent-strong)]"
+              viewBox="0 0 100 110"
+            >
+              <path d={asset.svgPath} fill="currentColor" />
+            </svg>}
+            <span className="min-w-0 flex-1 truncate" title={asset.name[locale]}>{asset.name[locale]}</span>
           </button>
         </li>
       ))}

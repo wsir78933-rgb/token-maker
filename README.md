@@ -38,6 +38,13 @@ CONTACT_SUBJECT_PREFIX="Token Maker contact"
 
 `RESEND_FROM_EMAIL` should use a domain verified in Resend. `CONTACT_TO_EMAIL` is the inbox that receives user messages. The user's submitted email is sent as the reply-to address.
 
+## Request Rate Limiting
+
+The shared request limiter requires these environment variable names in development and production:
+
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+
 ## Share Dialog Storage
 
 The download share dialog uploads the generated PNG token to Cloudflare R2 and returns a `/share/{id}` page URL. Configure these variables in `.env.local` for development and in production:

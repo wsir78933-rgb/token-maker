@@ -1,4 +1,3 @@
-import JSZip from 'jszip';
 import { renderCoatSceneSvg } from './scene-svg';
 import type { CoatProject } from './types';
 
@@ -67,6 +66,7 @@ export async function exportCoatBatch(projects: CoatProject[], size: number): Pr
     throw new Error(`Invalid coat export projects: ${String(projects)}`);
   }
 
+  const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
   const usedNames = new Set<string>();
   for (const [index, project] of projects.entries()) {
