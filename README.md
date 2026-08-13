@@ -71,6 +71,22 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## License
+
+This repository is source-available under the [Token Maker Personal
+Non-Commercial License](./LICENSE).
+
+Individuals may view, run, fork, modify, and share the original code only for
+personal, non-commercial purposes, with attribution and under the same license.
+Commercial, organizational, employer, client, paid hosting, advertising, and
+subscription use are prohibited. Third-party materials remain subject to their
+own licenses.
+
+本仓库以《Token Maker 个人非商业许可证》公开源码。个人可以在保留署名、
+附带相同许可证的前提下，为个人非商业用途查看、运行、Fork、修改和分享代码。
+禁止商业用途、组织/公司用途、雇主或客户项目、付费托管、广告和订阅用途。
+第三方字体、素材、商标等仍分别适用其原有许可证。
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
