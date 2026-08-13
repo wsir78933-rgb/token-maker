@@ -42,6 +42,7 @@ import {
   DND_SHATTER_5E_COVER_PATH,
   DND_RACES_COVER_PATH,
   DND_ALIGNMENT_CHART_COVER_PATH,
+  DND_MEANING_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -124,6 +125,7 @@ import {
   dndAlignmentChartArticleHtml,
   dndAlignmentChartArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-alignment-chart';
+import { dndMeaningArticleHtml, dndMeaningArticleHtmlZh } from '@/lib/blog-posts/dnd-meaning';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -186,6 +188,7 @@ const DND_GNOME_NAMES_UPDATED_AT = '2026-08-06';
 const DND_SHATTER_5E_UPDATED_AT = '2026-08-08';
 const DND_RACES_UPDATED_AT = '2026-08-10';
 const DND_ALIGNMENT_CHART_UPDATED_AT = '2026-08-11';
+const DND_MEANING_UPDATED_AT = '2026-08-12';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2428,6 +2431,97 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndMeaningArticle: BlogPost = {
+  slug: 'dnd-meaning',
+  title: 'DnD meaning: what Dungeons & Dragons means in a game',
+  seoTitle: 'DnD Meaning: What Dungeons & Dragons Means and How to Play',
+  metaDescription:
+    'DND usually means Do Not Disturb in texts. In gaming, D&D means Dungeons & Dragons. Learn the roles, dice, characters, and first-game steps.',
+  excerpt:
+    'DND can mean Do Not Disturb or Dungeons & Dragons. Learn what a D&D game actually looks like, from the DM and dice to your first character.',
+  publishedAt: DND_MEANING_UPDATED_AT,
+  updatedAt: DND_MEANING_UPDATED_AT,
+  readTime: '8 min read',
+  coverLabel: 'Beginner Guide',
+  coverImage: DND_MEANING_COVER_PATH,
+  coverAlt:
+    'DnD meaning guide cover showing a Dungeon Master, four player character tokens, dice, a character sheet, and a tabletop map',
+  bodyHtml: dndMeaningArticleHtml,
+  faqItems: [
+    {
+      question: 'What does DND mean in a text message?',
+      answer:
+        'In a text message, DND usually means “Do Not Disturb.” It refers to a phone or messaging status that silences notifications. The surrounding conversation tells you whether someone instead means the tabletop game.',
+    },
+    {
+      question: 'What does DnD mean in gaming?',
+      answer:
+        'In gaming, DnD usually names a tabletop role-playing game where players make characters and make choices in a shared fantasy adventure led by a Dungeon Master.',
+    },
+    {
+      question: 'Is DnD hard for beginners?',
+      answer:
+        'DnD has rules, but a first session does not require mastering them all. Start with a character sheet, describe what your character tries to do, and ask the Dungeon Master to explain a rule when it matters.',
+    },
+    {
+      question: 'Do you need miniatures or tokens to play?',
+      answer:
+        'No. Many groups play entirely through spoken description. Maps, miniatures, and VTT tokens are optional tools for scenes where position or visual identity helps.',
+    },
+    {
+      question: 'What is the difference between a session and a campaign?',
+      answer:
+        'A session is one time the group plays. A campaign is a longer connected story made from multiple sessions, usually with the same characters and world.',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-races', 'dnd-alignment-chart'],
+};
+
+const dndMeaningArticleZh: BlogPost = {
+  slug: 'dnd-meaning',
+  title: 'DND 是什么意思：游戏语境里的《龙与地下城》',
+  seoTitle: 'DND 是什么意思：《龙与地下城》到底怎么玩',
+  metaDescription:
+    'DND 在消息里常指免打扰；在跑团语境里则是《龙与地下城》。用几分钟了解 DM、角色、骰子和第一次开团会发生什么。',
+  excerpt:
+    'DND 既可能指免打扰，也可能指《龙与地下城》。快速理解 DM、骰子、角色，以及第一次开团会发生什么。',
+  publishedAt: DND_MEANING_UPDATED_AT,
+  updatedAt: DND_MEANING_UPDATED_AT,
+  readTime: '8 分钟阅读',
+  coverLabel: '新手入门',
+  coverImage: DND_MEANING_COVER_PATH,
+  coverAlt: 'DND 是什么意思指南封面图：地下城主、四个玩家角色 Token、骰子、角色卡和桌面地图',
+  bodyHtml: dndMeaningArticleHtmlZh,
+  faqItems: [
+    {
+      question: '消息里的 DND 是什么意思？',
+      answer:
+        '消息里的 DND 通常是“免打扰”（Do Not Disturb），指手机或聊天软件静音通知的状态。具体对话如果在聊跑团，它也可能指这款桌面角色扮演游戏。',
+    },
+    {
+      question: '游戏里的 DND 是什么意思？',
+      answer:
+        '游戏里的 DND 通常指桌面角色扮演游戏。玩家创建角色，在 DM 带领的共享奇幻冒险里做选择。',
+    },
+    {
+      question: 'DND 对新手很难吗？',
+      answer:
+        'DND 有规则，但第一次游戏不需要把所有规则背下来。拿着角色卡，说出角色想做什么，规则出现时请 DM 解释即可。',
+    },
+    {
+      question: '玩 DND 一定要模型或 Token 吗？',
+      answer:
+        '不一定。很多队伍完全靠口头描述游玩。地图、模型和 VTT Token 都是位置或视觉身份更重要时才会使用的可选工具。',
+    },
+    {
+      question: 'DND 里的 Session 和 Campaign 有什么区别？',
+      answer:
+        'Session 是一次实际游戏。Campaign 是由多次 Session 组成的连续故事，通常跟随同一批角色和同一个世界。',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-races', 'dnd-alignment-chart'],
+};
+
 const dndAlignmentChartArticle: BlogPost = {
   slug: 'dnd-alignment-chart',
   title: 'DnD Alignment Chart: Choose a Roleplay Compass That Can Change',
@@ -3641,10 +3735,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

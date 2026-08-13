@@ -35,7 +35,9 @@ const DND_GNOME_NAMES_SLUG = 'dnd-gnome-names';
 const DND_SHATTER_5E_SLUG = 'dnd-shatter-5e';
 const DND_RACES_SLUG = 'dnd-races';
 const DND_ALIGNMENT_CHART_SLUG = 'dnd-alignment-chart';
+const DND_MEANING_SLUG = 'dnd-meaning';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_MEANING_SLUG,
   DND_ALIGNMENT_CHART_SLUG,
   DND_RACES_SLUG,
   DND_SHATTER_5E_SLUG,
@@ -45,7 +47,6 @@ const FIRST_BLOG_PAGE_SLUGS = [
   SPECTATOR_DND_SLUG,
   FIREBOLT_DND_5E_SLUG,
   DND_DAGGER_SLUG,
-  DWELF_DND_SLUG,
 ];
 
 describe('published blog body voice', () => {
@@ -106,6 +107,99 @@ describe('published blog body voice', () => {
         }
       }
     }
+  });
+});
+
+describe('dnd meaning blog post', () => {
+  test('publishes a bilingual Dungeons & Dragons explainer without hiding the Do Not Disturb meaning', () => {
+    const englishPost = getBlogPost('en', DND_MEANING_SLUG);
+    const chinesePost = getBlogPost('zh', DND_MEANING_SLUG);
+
+    expect(englishPost?.updatedAt).toBe('2026-08-12');
+    expect(englishPost?.bodyHtml).toContain('DND can mean two different things');
+    expect(englishPost?.bodyHtml).toContain('Do Not Disturb');
+    expect(englishPost?.bodyHtml).toContain('What Dungeons &amp; Dragons means');
+    expect(englishPost?.bodyHtml).toContain('What happens during a D&amp;D game?');
+    expect(englishPost?.bodyHtml).toContain('Where character tokens fit');
+    expect(englishPost?.bodyHtml).toContain('What does DND mean in a text message?');
+    expect(englishPost?.bodyHtml).toContain('https://www.dndbeyond.com/posts/1480-what-is-dungeons-dragons');
+    expect(englishPost?.bodyHtml).not.toContain('data-video-id=');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-meaning-guide.webp');
+    expect(englishPost?.faqItems).toHaveLength(5);
+    for (const faqItem of englishPost?.faqItems ?? []) {
+      expect(englishPost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
+      expect(englishPost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+    }
+
+    expect(chinesePost?.updatedAt).toBe('2026-08-12');
+    expect(chinesePost?.bodyHtml).toContain('DND 有两种常见含义');
+    expect(chinesePost?.bodyHtml).toContain('免打扰');
+    expect(chinesePost?.title).toBe('DND 是什么意思：游戏语境里的《龙与地下城》');
+    expect(chinesePost?.bodyHtml).toContain('游戏语境里的《龙与地下城》');
+    expect(chinesePost?.bodyHtml).toContain('一局 DND 实际会发生什么？');
+    expect(chinesePost?.bodyHtml).toContain('Token 在游戏里放在哪里？');
+    expect(chinesePost?.bodyHtml).toContain('消息里的 DND 是什么意思？');
+    expect(chinesePost?.bodyHtml).toContain('https://www.dndbeyond.com/posts/1480-what-is-dungeons-dragons');
+    expect(chinesePost?.bodyHtml).not.toContain('data-video-id=');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-meaning-guide.webp');
+    expect(chinesePost?.faqItems).toHaveLength(5);
+    for (const faqItem of chinesePost?.faqItems ?? []) {
+      expect(chinesePost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
+      expect(chinesePost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+    }
+
+    expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+    expect(getBlogPostsForPage('zh', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
+  });
+
+  test('builds dnd meaning metadata, schemas, asset, and llms discovery', () => {
+    expect(getBlogPostPath('en', DND_MEANING_SLUG)).toBe('/blog/dnd-meaning');
+    expect(getBlogPostPath('zh', DND_MEANING_SLUG)).toBe('/zh/blog/dnd-meaning');
+    expect(createBlogPostMetadata('en', DND_MEANING_SLUG).alternates?.canonical).toBe(
+      '/blog/dnd-meaning',
+    );
+    expect(createBlogPostMetadata('zh', DND_MEANING_SLUG).alternates?.canonical).toBe(
+      '/zh/blog/dnd-meaning',
+    );
+    expect(createBlogPostMetadata('zh', DND_MEANING_SLUG).title).toBe(
+      'DND 是什么意思：《龙与地下城》到底怎么玩',
+    );
+    expect(buildBlogPostStructuredData('en', DND_MEANING_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-12',
+      dateModified: '2026-08-12',
+      inLanguage: 'en-US',
+      url: 'https://www.tokenmaker.one/blog/dnd-meaning',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-meaning-guide.webp'],
+    });
+    expect(buildBlogPostStructuredData('zh', DND_MEANING_SLUG)).toMatchObject({
+      '@type': 'Article',
+      datePublished: '2026-08-12',
+      dateModified: '2026-08-12',
+      inLanguage: 'zh-CN',
+      url: 'https://www.tokenmaker.one/zh/blog/dnd-meaning',
+      image: ['https://www.tokenmaker.one/blog/covers/en/dnd-meaning-guide.webp'],
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_MEANING_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      mainEntity: expect.arrayContaining([
+        expect.objectContaining({ name: 'What does DND mean in a text message?' }),
+      ]),
+    });
+    expect(buildBlogPostFaqStructuredData('zh', DND_MEANING_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      mainEntity: expect.arrayContaining([
+        expect.objectContaining({ name: '消息里的 DND 是什么意思？' }),
+      ]),
+    });
+    expect(existsSync('public/blog/covers/en/dnd-meaning-guide.webp')).toBe(true);
+
+    const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-meaning');
+    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-meaning');
+    expect(llmsText).toContain('DND 是什么意思：游戏语境里的《龙与地下城》');
   });
 });
 
@@ -1779,18 +1873,18 @@ describe('dnd hex blog post', () => {
 });
 
 describe('paladin 2024 spells dnd blog post', () => {
-  test('moves the second blog page boundary after publishing the alignment chart', () => {
+  test('moves the second blog page boundary after publishing dnd meaning', () => {
     expect(getBlogPageCount('en')).toBe(5);
     expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
-      DND_DEATH_KNIGHT_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DWELF_DND_SLUG,
       DND_FLUMPH_SLUG,
-      DND_DEATH_KNIGHT_SLUG,
     ]);
   });
 

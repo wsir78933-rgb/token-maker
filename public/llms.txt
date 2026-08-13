@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DnD Meaning](https://www.tokenmaker.one/blog/dnd-meaning): Distinguish Do Not Disturb from Dungeons & Dragons, then learn how a DM, player characters, dice, sessions, and optional VTT tokens fit together.
 - [DnD Alignment Chart](https://www.tokenmaker.one/blog/dnd-alignment-chart): Read all nine alignments, judge order and morality separately, pressure-test one hard choice, and turn the result into repeatable roleplay.
 - [DnD Races](https://www.tokenmaker.one/blog/dnd-races): Compare the ten 2024 species, separate the 2014 race rules, and choose a character concept with four practical questions.
 - [Shatter DnD 5e](https://www.tokenmaker.one/blog/dnd-shatter-5e): Place the 10-foot blast, resolve Constitution saves, compare 2014 and 2024 disadvantage rules, and handle unattended objects and cover.
@@ -66,6 +67,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 是什么意思：游戏语境里的《龙与地下城》](https://www.tokenmaker.one/zh/blog/dnd-meaning)
 - [DND 阵营九宫格：选择一个会随行动改变的角色坐标](https://www.tokenmaker.one/zh/blog/dnd-alignment-chart)
 - [DND 种族与 Species：为 2024 角色选择出身](https://www.tokenmaker.one/zh/blog/dnd-races)
 - [Shatter DnD 5e：确定爆点、结算豁免与破坏物体](https://www.tokenmaker.one/zh/blog/dnd-shatter-5e)

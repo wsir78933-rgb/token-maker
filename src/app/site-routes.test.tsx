@@ -41,6 +41,7 @@ const SPECTATOR_DND_SLUG = 'spectator-dnd';
 const DND_QUARTERSTAFF_SLUG = 'dnd-quarterstaff';
 const DND_MAUL_SLUG = 'dnd-maul';
 const DND_SHATTER_5E_SLUG = 'dnd-shatter-5e';
+const DND_MEANING_SLUG = 'dnd-meaning';
 
 function getStructuredDataTypes(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -338,6 +339,11 @@ describe('coat maker routes', () => {
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual dnd meaning detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_MEANING_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_MEANING_SLUG });
+  });
+
   it('emits bilingual dnd alignment chart detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: 'dnd-alignment-chart' });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: 'dnd-alignment-chart' });

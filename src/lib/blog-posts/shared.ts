@@ -43,6 +43,7 @@ export const DND_GNOME_NAMES_COVER_PATH = '/blog/covers/en/dnd-gnome-names-guide
 export const DND_SHATTER_5E_COVER_PATH = '/blog/covers/en/dnd-shatter-5e-guide.webp';
 export const DND_RACES_COVER_PATH = '/blog/covers/en/dnd-races-guide.webp';
 export const DND_ALIGNMENT_CHART_COVER_PATH = '/blog/covers/en/dnd-alignment-chart-guide.webp';
+export const DND_MEANING_COVER_PATH = '/blog/covers/en/dnd-meaning-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -294,12 +295,16 @@ export const DND_ALIGNMENT_CHART_2024_RULES_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/creating-a-character';
 export const DND_ALIGNMENT_CHART_OFFICIAL_GUIDE_URL =
   'https://www.dndbeyond.com/posts/1869-breaking-down-alignment-in-d-d';
+export const DND_MEANING_OFFICIAL_GUIDE_URL =
+  'https://www.dndbeyond.com/posts/1480-what-is-dungeons-dragons';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
 export const ZH_DND_CLASSES_PATH = getLocalizedPath('zh', '/blog/dnd-classes-explained');
 export const EN_DND_RACES_PATH = getLocalizedPath('en', '/blog/dnd-races');
 export const ZH_DND_RACES_PATH = getLocalizedPath('zh', '/blog/dnd-races');
+export const EN_DND_ALIGNMENT_CHART_PATH = getLocalizedPath('en', '/blog/dnd-alignment-chart');
+export const ZH_DND_ALIGNMENT_CHART_PATH = getLocalizedPath('zh', '/blog/dnd-alignment-chart');
 export const EN_DWELF_DND_PATH = getLocalizedPath('en', '/blog/dwelf-dnd');
 export const ZH_DWELF_DND_PATH = getLocalizedPath('zh', '/blog/dwelf-dnd');
 export const EN_DND_CONSTITUTION_PATH = getLocalizedPath('en', '/blog/dnd-constitution-guide');
