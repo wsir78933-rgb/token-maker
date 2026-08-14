@@ -431,24 +431,24 @@ describe('CoatOfArmsMaker', () => {
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield'))
       .toEqual(initialShield);
     expect(getDesktopToolTreeItem('French shield').getAttribute('aria-pressed')).toBe('true');
-    expect(within(getDesktopPanel('Shields')).getByRole('button', { name: 'Select shield: Bourbon French shield' })).toBeDefined();
+    expect(within(getDesktopPanel('Shields')).getByRole('button', { name: 'Select shield: French shield material 001' })).toBeDefined();
   });
 
   it('makes each shield tree category browseable without changing its layer', () => {
     renderWorkbench();
     const initialShield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
 
-    for (const [treeLabel, galleryLabel] of [
-      ['Kite shield', 'Norman kite shield'],
-      ['Heater shield', 'Barrel heater shield'],
-      ['French shield', 'Bourbon French shield'],
-      ['Banner shield', 'Pennon banner shield'],
-      ['Round shield', 'Medallion round shield'],
-      ['Lozenge shield', 'Diamond lozenge shield'],
+    for (const treeLabel of [
+      'Kite shield',
+      'Heater shield',
+      'French shield',
+      'Banner shield',
+      'Round shield',
+      'Lozenge shield',
     ] as const) {
       fireEvent.click(getDesktopToolTreeItem(treeLabel));
       expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield')).toEqual(initialShield);
-      expect(within(getDesktopPanel('Shields')).getByRole('button', { name: `Select shield: ${galleryLabel}` })).toBeDefined();
+      expect(within(getDesktopPanel('Shields')).getAllByRole('button', { name: /^Select shield:/ }).length).toBeGreaterThan(0);
     }
   });
 
@@ -475,7 +475,7 @@ describe('CoatOfArmsMaker', () => {
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield'))
       .toMatchObject({ assetId: 'heater-shield', locked: true });
     expect(screen.queryByRole('alert')).toBeNull();
-    expect(within(getDesktopPanel('Shields')).getByRole('button', { name: 'Select shield: Bourbon French shield' })).toBeDefined();
+    expect(within(getDesktopPanel('Shields')).getByRole('button', { name: 'Select shield: French shield material 001' })).toBeDefined();
   });
 
   it('keeps Custom focused on local shield settings rather than the shield gallery', () => {
@@ -489,11 +489,11 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.queryByRole('region', { name: 'Shield library' })).toBeNull();
   });
 
-  it('keeps shield browsing to card selection and puts custom shield controls only under Custom', () => {
+  it('keeps the shield material browser separate from Custom controls', () => {
     renderWorkbench();
 
     const shieldPanel = getDesktopPanel('Shields');
-    expect(within(shieldPanel).getByRole('button', { name: 'Select shield: Barrel heater shield' })).toBeDefined();
+    expect(within(shieldPanel).getByRole('button', { name: 'Select shield: Heater shield material 001' })).toBeDefined();
     expect(within(shieldPanel).queryByRole('button', { name: 'Custom shield settings' })).toBeNull();
     expect(within(shieldPanel).queryByLabelText('Custom shield mask')).toBeNull();
   });
@@ -1018,53 +1018,25 @@ describe('CoatOfArmsMaker', () => {
     expect(within(mobileDrawer).queryByRole('region', { name: 'Tools' })).toBeNull();
   });
 
-  it('keeps the mobile shield browser card-driven and reserves field controls for Custom', () => {
+  it('keeps the mobile shield browser separate from Custom controls', () => {
     renderWorkbench();
 
     toggleMobileToolPanel();
 
-    expect(screen.getAllByRole('button', { name: 'Select shield: Barrel heater shield' })).toHaveLength(2);
+    const drawer = screen.getByRole('region', { name: 'Tools' });
+    expect(within(drawer).getByRole('button', { name: 'Select shield: Heater shield material 001' })).toBeDefined();
     expect(screen.queryByRole('button', { name: 'Custom shield settings' })).toBeNull();
   });
 
-  it('shows the named kite shield cards in the mobile shield browser', () => {
+  it('keeps every mobile shield category browseable with material cards', () => {
     renderWorkbench();
     toggleMobileToolPanel();
 
     const drawer = screen.getByRole('region', { name: 'Tools' });
-    fireEvent.click(within(getMobileToolRail()).getByRole('button', { name: 'Kite shield' }));
-
-    expect(within(drawer).getByRole('button', { name: 'Select shield: Norman kite shield' })).toBeDefined();
-  });
-
-  it('shows the named Banner shield cards in the mobile shield browser', () => {
-    renderWorkbench();
-    toggleMobileToolPanel();
-
-    const drawer = screen.getByRole('region', { name: 'Tools' });
-    fireEvent.click(within(getMobileToolRail()).getByRole('button', { name: 'Banner shield' }));
-
-    expect(within(drawer).getByRole('button', { name: 'Select shield: Pennon banner shield' })).toBeDefined();
-  });
-
-  it('shows the named Round shield cards in the mobile shield browser', () => {
-    renderWorkbench();
-    toggleMobileToolPanel();
-
-    const drawer = screen.getByRole('region', { name: 'Tools' });
-    fireEvent.click(within(getMobileToolRail()).getByRole('button', { name: 'Round shield' }));
-
-    expect(within(drawer).getByRole('button', { name: 'Select shield: Medallion round shield' })).toBeDefined();
-  });
-
-  it('shows the named Lozenge shield cards in the mobile shield browser', () => {
-    renderWorkbench();
-    toggleMobileToolPanel();
-
-    const drawer = screen.getByRole('region', { name: 'Tools' });
-    fireEvent.click(within(getMobileToolRail()).getByRole('button', { name: 'Lozenge shield' }));
-
-    expect(within(drawer).getByRole('button', { name: 'Select shield: Diamond lozenge shield' })).toBeDefined();
+    for (const treeLabel of ['Kite shield', 'Heater shield', 'French shield', 'Banner shield', 'Round shield', 'Lozenge shield']) {
+      fireEvent.click(within(getMobileToolRail()).getByRole('button', { name: treeLabel }));
+      expect(within(drawer).getAllByRole('button', { name: /^Select shield:/ }).length).toBeGreaterThan(0);
+    }
   });
 
   it('renders the six reference shield branch glyphs in the desktop tool tree', () => {
@@ -1113,7 +1085,7 @@ describe('CoatOfArmsMaker', () => {
     const mobileToolRail = getMobileToolRail();
     fireEvent.click(within(mobileToolRail).getByRole('button', { name: 'French shield' }));
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield')).toMatchObject({ assetId: 'heater-shield' });
-    expect(within(drawer).getByRole('button', { name: 'Select shield: Bourbon French shield' })).toBeDefined();
+    expect(within(drawer).getByRole('button', { name: 'Select shield: French shield material 001' })).toBeDefined();
 
     fireEvent.click(within(mobileToolRail).getByRole('tab', { name: 'Charges' }));
     expect(within(mobileToolRail).queryByRole('button', { name: 'French shield' })).toBeNull();

@@ -11,13 +11,8 @@ import type {
   ShieldLayer,
 } from './types';
 import { createLocalCoatId } from './id';
+import { listReferenceCatalogEntries, shieldReferenceCategories } from './reference-catalog';
 import { webpMaterialAssets } from './webp-material-catalog';
-import {
-  type ReferenceCatalogEntry,
-  type ReferenceCatalogSection,
-  listReferenceCatalogEntries,
-  shieldReferenceCategories,
-} from './reference-catalog';
 
 const validAssetKinds: readonly CoatAssetKind[] = [
   'shield',
@@ -111,40 +106,18 @@ const localCoatAssets: readonly CoatAsset[] = [
   },
 ];
 
-const referenceCatalogSectionCategories: readonly {
-  readonly section: ReferenceCatalogSection;
-  readonly categories: readonly string[];
-}[] = [
-  { section: 'shield', categories: shieldReferenceCategories },
-];
-
 const coatAssets: readonly CoatAsset[] = [
   ...localCoatAssets,
   ...webpMaterialAssets,
-  ...createReferenceCatalogCoatAssets(),
-];
-
-function createReferenceCatalogCoatAssets(): readonly CoatAsset[] {
-  return referenceCatalogSectionCategories.flatMap(({ section, categories }) => (
-    categories.flatMap((category) => (
-      listReferenceCatalogEntries(section, category).map(createReferenceCatalogCoatAsset)
-    ))
-  ));
-}
-
-function createReferenceCatalogCoatAsset(entry: ReferenceCatalogEntry): CoatAsset {
-  if (entry.section !== 'shield') {
-    throw new Error(`Unsupported non-shield reference catalog section: ${entry.section}`);
-  }
-  return {
+  ...shieldReferenceCategories.flatMap((category) => listReferenceCatalogEntries('shield', category).map((entry) => ({
     id: entry.id,
-    kind: 'shield',
+    kind: 'shield' as const,
     name: { en: entry.name, zh: entry.nameZh },
     searchTerms: [...entry.searchTerms],
-    svgPath: entry.svgParts.map((part) => part.svgPath).join(' '),
-    svgParts: entry.svgParts.map((part) => ({ ...part })),
-  };
-}
+    svgPath: entry.svgPath,
+    staticImageSrc: entry.staticImageSrc,
+  }))),
+];
 
 export function getCoatAsset(assetId: string): CoatAsset {
   if (typeof assetId !== 'string') {

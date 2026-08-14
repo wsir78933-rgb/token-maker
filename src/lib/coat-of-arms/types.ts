@@ -427,6 +427,8 @@ export interface CoatRasterVariant {
 interface VectorCoatAssetSource {
   svgPath: string;
   svgParts?: readonly CoatSvgPart[];
+  /** Full authored local SVG for non-destructive shield material rendering. */
+  staticImageSrc?: string;
   rasterSrc?: never;
 }
 

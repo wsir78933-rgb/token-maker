@@ -157,6 +157,9 @@ function renderShieldLayer(layer: ShieldLayer, project: CoatProject, layerIndex:
     throw new Error(`Invalid shield layer asset: ${layer.assetId}`);
   }
   if (layer.customMaskUploadId && !layer.customOutlinePath) return renderCustomShieldLayer(layer, project, layerIndex);
+  if (shield.staticImageSrc) {
+    return renderTransformedLayer(`<image data-bundled-shield-material="true" href="${escapeXml(shield.staticImageSrc)}" x="0" y="0" width="100" height="110" preserveAspectRatio="xMidYMid meet"/>`, layer.transform, layerIndex);
+  }
   const shieldPath = layer.customOutlinePath ?? shield.svgPath;
   const clipPathId = `coat-shield-clip-${layerIndex}`;
   const outline = layer.field.outline ?? { visible: true, color: '#1E293B', width: 1.5 };

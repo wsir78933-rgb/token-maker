@@ -70,8 +70,12 @@ describe('coat asset catalog', () => {
     expect(listAssetsByKind('charge').length).toBeGreaterThan(0);
   });
 
-  it('keeps reference shields and supplies each material category from WebP assets', () => {
-    expect(listAssetsByKind('shield')).toHaveLength(234);
+  it('keeps six base shields and registers 234 original SVG shield materials', () => {
+    expect(listAssetsByKind('shield')).toHaveLength(240);
+    expect(getCoatAsset('heater-002')).toMatchObject({
+      kind: 'shield',
+      staticImageSrc: '/coat-assets/materials/shields/heater/heater-002.svg',
+    });
     expect(listAssetsByKind('charge')).toHaveLength(500);
     expect(listAssetsByKind('ordinary')).toHaveLength(100);
     expect(listAssetsByKind('top')).toHaveLength(400);

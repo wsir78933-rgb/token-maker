@@ -3,16 +3,12 @@
 /* The editor previews browser-local user-selectable WebP material directly. */
 /* eslint-disable @next/next/no-img-element */
 
-import { useId, useState } from 'react';
+import { useState } from 'react';
 import { Search } from 'lucide-react';
-import { buildFieldInteriorMarkup } from '@/lib/coat-of-arms/field';
 import {
-  getReferenceShieldCardField,
-  type ReferenceCatalogEntry,
-  listReferenceCatalogEntries,
   shieldReferenceCategories,
 } from '@/lib/coat-of-arms/reference-catalog';
-import type { CoatAssetGallerySection, CoatLocale, CoatRasterVariant, CoatRasterVariantId } from '@/lib/coat-of-arms/types';
+import type { CoatAssetGallerySection, CoatLocale, CoatRasterVariant, CoatRasterVariantId, CoatSvgPart } from '@/lib/coat-of-arms/types';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
 const referenceCategoriesBySection: Record<CoatAssetGallerySection, readonly string[]> = {
@@ -27,7 +23,7 @@ export interface ReferenceAssetGalleryEntry {
   readonly name: string;
   readonly nameZh: string;
   readonly searchTerms: readonly string[];
-  readonly svgParts?: readonly ReferenceCatalogEntry['svgParts'][number][];
+  readonly svgParts?: readonly CoatSvgPart[];
   readonly rasterSrc?: string;
   readonly rasterVariants?: readonly [CoatRasterVariant, CoatRasterVariant];
 }
@@ -45,7 +41,7 @@ interface ReferenceAssetGalleryProps {
   locale: CoatLocale;
   onActiveCategoryChange?: (category: string) => void;
   onSearchChange?: (search: string) => void;
-  onSelect: (assetId: string, rasterVariantId?: CoatRasterVariantId) => void;
+  onSelect?: (assetId: string, rasterVariantId?: CoatRasterVariantId) => void;
   presentation?: 'standard' | 'compact';
   search?: string;
   selectedAssetId?: string | null;
@@ -87,8 +83,10 @@ export function ReferenceAssetGallery({
   if (controlledCategory !== undefined && !categories.includes(controlledCategory)) {
     throw new Error(`Invalid controlled reference category for ${section}: ${controlledCategory}`);
   }
+  if (!onSelect && additionalEntries.length > 0) {
+    throw new Error(`Reference gallery requires a selection callback for ${section}`);
+  }
   const [uncontrolledCategory, setUncontrolledCategory] = useState(categories[0]!);
-  const compactThumbnailClipIdPrefix = useId();
   const activeCategory = controlledCategory ?? uncontrolledCategory;
   const [uncontrolledSearch, setUncontrolledSearch] = useState('');
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
@@ -106,10 +104,7 @@ export function ReferenceAssetGallery({
   const activeSelectedRasterVariantId = controlledSelectedAssetId === undefined
     ? selectedRasterVariantId
     : controlledSelectedRasterVariantId;
-  const visibleEntries = [
-    ...(section === 'shield' ? listReferenceCatalogEntries('shield', activeCategory).map(createReferenceGalleryEntry) : []),
-    ...additionalEntries,
-  ].filter((entry) => (
+  const visibleEntries = additionalEntries.filter((entry) => (
     matchesCatalogSearch(entry, search)
   ));
   const filteredCards = createReferenceGalleryCards(visibleEntries);
@@ -166,14 +161,12 @@ export function ReferenceAssetGallery({
                     setSelectedAssetId(entry.id);
                     setSelectedRasterVariantId(rasterVariant?.id);
                   }
-                  if (rasterVariant) onSelect(entry.id, rasterVariant.id);
-                  else onSelect(entry.id);
+                  if (rasterVariant) onSelect?.(entry.id, rasterVariant.id);
+                  else onSelect?.(entry.id);
                 }}
                 type="button"
               >
-                {presentation === 'compact' && section === 'shield'
-                  ? <CompactShieldThumbnail clipIdPrefix={compactThumbnailClipIdPrefix} entry={entry} />
-                    : rasterVariant
+                {rasterVariant
                     ? <img alt="" className="aspect-[10/11] w-full object-contain" decoding="async" height={110} loading="lazy" src={rasterVariant.src} width={100} />
                     : entry.rasterSrc
                       ? <img alt="" className="aspect-[10/11] w-full object-contain" decoding="async" height={110} loading="lazy" src={entry.rasterSrc} width={100} />
@@ -200,16 +193,6 @@ export function ReferenceAssetGallery({
   );
 }
 
-function createReferenceGalleryEntry(entry: ReferenceCatalogEntry): ReferenceAssetGalleryEntry {
-  return {
-    id: entry.id,
-    name: entry.name,
-    nameZh: entry.nameZh,
-    searchTerms: entry.searchTerms,
-    svgParts: entry.svgParts,
-  };
-}
-
 function createReferenceGalleryCards(
   entries: readonly ReferenceAssetGalleryEntry[],
 ): readonly ReferenceAssetGalleryCard[] {
@@ -218,25 +201,6 @@ function createReferenceGalleryCards(
       ? entry.rasterVariants.map((rasterVariant) => ({ entry, rasterVariant }))
       : [{ entry }]
   ));
-}
-
-function CompactShieldThumbnail({ clipIdPrefix, entry }: { clipIdPrefix: string; entry: ReferenceAssetGalleryEntry }) {
-  const shieldPath = entry.svgParts?.[0]?.svgPath;
-  if (!shieldPath) throw new Error(`Shield catalog entry has no preview path: ${entry.id}`);
-  const clipId = `coat-compact-shield-${clipIdPrefix}-${entry.id}`;
-  const field = getReferenceShieldCardField(entry.id);
-  const [baseColor, accentColor = baseColor] = field.colors;
-  if (!baseColor) throw new Error(`Shield catalog entry has no field colour: ${entry.id}`);
-
-  return <svg aria-hidden="true" className="aspect-[10/11] w-full" viewBox="0 0 100 110">
-    <defs><clipPath id={clipId}><path d={shieldPath} /></clipPath></defs>
-    <g
-      clipPath={`url(#${clipId})`}
-      data-shield-card-division={field.division}
-      dangerouslySetInnerHTML={{ __html: buildFieldInteriorMarkup(field, clipId, [baseColor, accentColor]) }}
-    />
-    <path d={shieldPath} fill="none" stroke="#171717" strokeWidth="4" />
-  </svg>;
 }
 
 function assertReferenceGalleryCategories(
@@ -250,9 +214,6 @@ function assertReferenceGalleryCategories(
   for (const category of categories) {
     if (!validCategories.includes(category) || !categoryCopy[category]) {
       throw new Error(`Invalid reference category for ${section}: ${category}`);
-    }
-    if (section === 'shield' && listReferenceCatalogEntries('shield', category).length === 0) {
-      throw new Error(`Missing local reference catalog entries for ${section}: ${category}`);
     }
   }
 }

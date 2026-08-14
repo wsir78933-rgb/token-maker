@@ -4,6 +4,22 @@ import { applyProjectCommand } from './commands';
 import { renderCoatSceneSvg } from './scene-svg';
 
 describe('coat scene SVG renderer', () => {
+  it('renders a selected bundled SVG shield material as its authored image', () => {
+    const baseProject = createDefaultProject('en');
+    const shield = baseProject.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected default shield layer');
+    const project = applyProjectCommand(baseProject, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'shield-001' },
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('data-bundled-shield-material="true"');
+    expect(svg).toContain('href="/coat-assets/materials/shields/shield/shield-001.svg"');
+  });
+
   it('renders a bundled WebP charge inside the shield field clip', () => {
     const project = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-layer', assetId: 'material-symbol-alchemical-air',
