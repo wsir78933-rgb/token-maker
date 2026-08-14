@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Dice5, FileText } from 'lucide-react';
+import { ArrowRight, Dice5, FileText, Shield } from 'lucide-react';
 
 import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
@@ -40,6 +40,7 @@ const copyByLocale = {
     actionCard: 'What to do next',
     editor: 'Open Editor',
     diceRoller: 'Dice Roller',
+    coatMaker: 'Coat of Arms Maker',
     bottomCtaEyebrow: 'Ready to play?',
     bottomCtaHeading: 'Start building your adventure',
     bottomCtaBody: 'After reading the guide, create your character token or roll some dice for your next session.',
@@ -65,6 +66,7 @@ const copyByLocale = {
     actionCard: '现在可以做什么',
     editor: '打开编辑器',
     diceRoller: '骰子工具',
+    coatMaker: '纹章制作器',
     bottomCtaEyebrow: '准备好开始冒险了吗？',
     bottomCtaHeading: '开启你的下一次冒险',
     bottomCtaBody: '看完这篇指南后，现在去制作你的角色 Token，或者扔几颗骰子开始下一场战役吧。',
@@ -233,6 +235,14 @@ export function BlogDetailPageView({
                       <Dice5 className="h-4 w-4" />
                       {copy.diceRoller}
                     </Link>
+                    <Link
+                      href={getLocalizedPath(locale, '/coat-of-arms-maker')}
+                      prefetch={false}
+                      className="site-cta-secondary w-full justify-center"
+                    >
+                      <Shield className="h-4 w-4" />
+                      {copy.coatMaker}
+                    </Link>
                   </div>
                 </div>
               </aside>
@@ -276,17 +286,17 @@ export function BlogDetailPageView({
             {!isPlaceholder ? (
               <section className="site-surface-card site-surface-card--warm rounded-[34px] px-5 py-6 sm:px-6 sm:py-7">
                 <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-                  <div className="max-w-xl space-y-2.5">
+                  <div className="min-w-0 max-w-xl space-y-2.5">
                     <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.bottomCtaEyebrow}</p>
                     <h2 className="font-display text-[1.75rem] leading-[1.08] text-stone-50 sm:text-[2rem]">
                       {copy.bottomCtaHeading}
                     </h2>
                     <p className="text-sm leading-7 text-stone-300">{copy.bottomCtaBody}</p>
                   </div>
-                  <div className="flex shrink-0 flex-col gap-2.5 md:min-w-[200px]">
+                  <div className="grid shrink-0 grid-cols-1 gap-2.5 md:min-w-[410px] md:grid-cols-2">
                     <EditorLaunchButton
                       href={`${getLocalizedPath(locale, '/')}#editor-workspace`}
-                      className="site-cta-primary w-full justify-center"
+                      className="site-cta-primary w-full justify-center md:col-start-2 md:row-start-1"
                     >
                       {copy.editor}
                       <ArrowRight className="h-4 w-4" />
@@ -294,10 +304,18 @@ export function BlogDetailPageView({
                     <Link
                       href={getLocalizedPath(locale, '/dice-roller-dnd')}
                       prefetch={false}
-                      className="site-cta-secondary w-full justify-center"
+                      className="site-cta-secondary w-full justify-center md:col-start-2 md:row-start-2"
                     >
                       <Dice5 className="h-4 w-4" />
                       {copy.diceRoller}
+                    </Link>
+                    <Link
+                      href={getLocalizedPath(locale, '/coat-of-arms-maker')}
+                      prefetch={false}
+                      className="site-cta-secondary w-full justify-center md:col-start-1 md:row-start-1"
+                    >
+                      <Shield className="h-4 w-4" />
+                      {copy.coatMaker}
                     </Link>
                   </div>
                 </div>

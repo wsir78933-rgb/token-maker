@@ -26,6 +26,7 @@ const DND_SHATTER_5E_SLUG = 'dnd-shatter-5e';
 const DND_RACES_SLUG = 'dnd-races';
 const DND_ALIGNMENT_CHART_SLUG = 'dnd-alignment-chart';
 const DND_MEANING_SLUG = 'dnd-meaning';
+const DND_LANGUAGES_SLUG = 'dnd-languages';
 
 function findSitemapEntry(url: string) {
   const sitemapEntry = sitemap().find((entry) => entry.url === url);
@@ -38,6 +39,29 @@ function findSitemapEntry(url: string) {
 }
 
 describe('blog sitemap entries', () => {
+  test('includes bilingual dnd languages routes with alternates', () => {
+    const englishEntry = findSitemapEntry(
+      `https://www.tokenmaker.one/blog/${DND_LANGUAGES_SLUG}`,
+    );
+    const chineseEntry = findSitemapEntry(
+      `https://www.tokenmaker.one/zh/blog/${DND_LANGUAGES_SLUG}`,
+    );
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_LANGUAGES_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_LANGUAGES_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_LANGUAGES_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-14'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-14'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes bilingual dnd meaning routes with alternates', () => {
     const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_MEANING_SLUG}`);
     const chineseEntry = findSitemapEntry(
@@ -357,7 +381,7 @@ describe('blog sitemap entries', () => {
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 
-  test('keeps fifth blog hub pages current after publishing dnd meaning', () => {
+  test('keeps fifth blog hub pages current after publishing dnd languages', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/5');
     const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/5');
 
@@ -367,12 +391,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/5',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-08-12'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-14'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-12'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-14'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);

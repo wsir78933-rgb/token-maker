@@ -36,7 +36,9 @@ const DND_SHATTER_5E_SLUG = 'dnd-shatter-5e';
 const DND_RACES_SLUG = 'dnd-races';
 const DND_ALIGNMENT_CHART_SLUG = 'dnd-alignment-chart';
 const DND_MEANING_SLUG = 'dnd-meaning';
+const DND_LANGUAGES_SLUG = 'dnd-languages';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_LANGUAGES_SLUG,
   DND_MEANING_SLUG,
   DND_ALIGNMENT_CHART_SLUG,
   DND_RACES_SLUG,
@@ -46,7 +48,6 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DND_QUARTERSTAFF_SLUG,
   SPECTATOR_DND_SLUG,
   FIREBOLT_DND_5E_SLUG,
-  DND_DAGGER_SLUG,
 ];
 
 describe('published blog body voice', () => {
@@ -1873,18 +1874,18 @@ describe('dnd hex blog post', () => {
 });
 
 describe('paladin 2024 spells dnd blog post', () => {
-  test('moves the second blog page boundary after publishing dnd meaning', () => {
+  test('moves the second blog page boundary after publishing dnd languages', () => {
     expect(getBlogPageCount('en')).toBe(5);
     expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_DAGGER_SLUG,
       DWELF_DND_SLUG,
-      DND_FLUMPH_SLUG,
     ]);
   });
 

@@ -43,6 +43,7 @@ import {
   DND_RACES_COVER_PATH,
   DND_ALIGNMENT_CHART_COVER_PATH,
   DND_MEANING_COVER_PATH,
+  DND_LANGUAGES_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -126,6 +127,7 @@ import {
   dndAlignmentChartArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-alignment-chart';
 import { dndMeaningArticleHtml, dndMeaningArticleHtmlZh } from '@/lib/blog-posts/dnd-meaning';
+import { dndLanguagesArticleHtml, dndLanguagesArticleHtmlZh } from '@/lib/blog-posts/dnd-languages';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -189,6 +191,7 @@ const DND_SHATTER_5E_UPDATED_AT = '2026-08-08';
 const DND_RACES_UPDATED_AT = '2026-08-10';
 const DND_ALIGNMENT_CHART_UPDATED_AT = '2026-08-11';
 const DND_MEANING_UPDATED_AT = '2026-08-12';
+const DND_LANGUAGES_UPDATED_AT = '2026-08-14';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2431,6 +2434,87 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndLanguagesArticle: BlogPost = {
+  slug: 'dnd-languages',
+  title: 'D&D Languages: One for Your Past, One for the Campaign',
+  seoTitle: 'D&D Languages: One for Your Past, One for the Campaign',
+  metaDescription:
+    'Use four 2024 D&D questions to separate standard from rare languages, match the campaign, and turn your character’s past into a usable hook.',
+  excerpt:
+    'Choose two D&D languages for a 2024 character with a campaign-first checklist, clear 2014 boundaries, and VTT-ready character cues.',
+  publishedAt: DND_LANGUAGES_UPDATED_AT,
+  updatedAt: DND_LANGUAGES_UPDATED_AT,
+  readTime: '9 min read',
+  coverLabel: 'Character Guide',
+  coverImage: DND_LANGUAGES_COVER_PATH,
+  coverAlt:
+    'An adventurer studies a multilingual route map with runic notes and a small party token nearby',
+  bodyHtml: dndLanguagesArticleHtml,
+  faqItems: [
+    {
+      question: 'How many languages does a 2024 D&D character know?',
+      answer:
+        'The 2024 Basic Rules says a character knows at least three: Common plus two languages rolled or chosen from the Standard Languages table. A class or another feature can add languages.',
+    },
+    {
+      question: 'Can a 2024 character choose a rare language at level 1?',
+      answer:
+        'The basic character-creation step gives two choices from the Standard Languages table. Rare languages are separate, and some features grant them. Ask the DM before treating a rare language as a substitute for a standard starting choice.',
+    },
+    {
+      question: 'Do D&D languages include reading and writing?',
+      answer:
+        'In the 2024 Basic Rules, knowing a language means your character can communicate in it, read it, and write it. Older books and campaign rules can frame language grants differently.',
+    },
+    {
+      question: 'What are the best D&D languages to choose?',
+      answer:
+        'There is no best pair without a campaign. Take one language tied to your character’s past and one tied to likely places, people, or problems in the adventure.',
+    },
+  ],
+  relatedSlugs: ['dnd-races', 'dnd-meaning', 'dnd-classes-explained'],
+};
+
+const dndLanguagesArticleZh: BlogPost = {
+  slug: 'dnd-languages',
+  title: 'DND 语言：一门写角色过去，一门留给战役',
+  seoTitle: 'DND 语言：一门写角色过去，一门留给战役',
+  metaDescription:
+    '用四个问题分清 2024 的标准与异域语言：一门从角色过去出发，一门对准战役地点、人物或线索。',
+  excerpt:
+    '从角色过去和战役地点出发，选出两门真正有机会在桌上派上用场的 DND 语言，并分清 2014 与 2024 的规则流程。',
+  publishedAt: DND_LANGUAGES_UPDATED_AT,
+  updatedAt: DND_LANGUAGES_UPDATED_AT,
+  readTime: '9 分钟阅读',
+  coverLabel: '角色指南',
+  coverImage: DND_LANGUAGES_COVER_PATH,
+  coverAlt: '一名冒险者查看带有多种文字注记的路线地图，旁边放着小型队伍 Token',
+  bodyHtml: dndLanguagesArticleHtmlZh,
+  faqItems: [
+    {
+      question: '2024 版 DND 角色一开始会几门语言？',
+      answer:
+        '2024 基础规则写的是至少三门：Common 加上从标准语言表中掷出或选出的两门。职业或其他特性还可能再给语言。',
+    },
+    {
+      question: '2024 角色一级能直接选异域语言吗？',
+      answer:
+        '基础角色创建步骤给的是两门标准语言。异域语言单独列出，有些特性会授予它们。想把异域语言当成标准起始选择的替代项，先问 DM。',
+    },
+    {
+      question: 'DND 语言包含读和写吗？',
+      answer:
+        '2024 基础规则里，懂一门语言代表能交流、能读、能写。旧书和战役规则对语言来源的写法可能不同，按桌上实际版本处理。',
+    },
+    {
+      question: 'DND 语言到底选哪两门最好？',
+      answer:
+        '脱离战役不存在最好的一对。先选一门来自角色过去的语言，再选一门和冒险地点、人物或问题有关的语言。',
+    },
+  ],
+  relatedSlugs: ['dnd-races', 'dnd-meaning', 'dnd-classes-explained'],
+};
+
 const dndMeaningArticle: BlogPost = {
   slug: 'dnd-meaning',
   title: 'DnD meaning: what Dungeons & Dragons means in a game',
@@ -3735,10 +3819,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

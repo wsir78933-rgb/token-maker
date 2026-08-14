@@ -44,6 +44,7 @@ export const DND_SHATTER_5E_COVER_PATH = '/blog/covers/en/dnd-shatter-5e-guide.w
 export const DND_RACES_COVER_PATH = '/blog/covers/en/dnd-races-guide.webp';
 export const DND_ALIGNMENT_CHART_COVER_PATH = '/blog/covers/en/dnd-alignment-chart-guide.webp';
 export const DND_MEANING_COVER_PATH = '/blog/covers/en/dnd-meaning-guide.webp';
+export const DND_LANGUAGES_COVER_PATH = '/blog/covers/en/dnd-languages-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -246,6 +247,7 @@ export const DND_FLUMPH_2024_ROLL20_URL =
 export const DND_FLUMPH_AIDEDD_URL = 'https://www.aidedd.org/dnd/monstres.php?vo=flumph';
 export const DND_2024_CHARACTER_CREATION_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/creating-a-character';
+export const DND_LANGUAGES_2014_SRD_URL = 'https://5thsrd.org/character/languages/';
 export const DND_2024_CHARACTER_ORIGINS_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/character-origins';
 export const DND_DWELF_HOMEBREW_REFERENCE_URL =
