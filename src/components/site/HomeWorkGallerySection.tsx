@@ -1,36 +1,89 @@
 'use client';
 
-import Image from 'next/image';
-import { Download } from 'lucide-react';
-import { useRef, useState } from 'react';
+import Image, { getImageProps } from 'next/image';
+import { Download, Loader2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import {
   HOME_WORK_GALLERY_BATCH_SIZE,
   HOME_WORK_GALLERY_IMAGES,
   HOME_WORK_GALLERY_INITIAL_COUNT,
   getHomeWorkGalleryCopy,
 } from '@/lib/home-work-gallery';
+import type { HomeWorkGalleryImage } from '@/lib/home-work-gallery';
 import type { SiteLocale } from '@/lib/site-locale';
 
 const galleryImageSizes = '(min-width: 1024px) 16.666vw, (min-width: 768px) 33.333vw, 50vw';
+const HOME_WORK_GALLERY_PRELOAD_DELAY_MS = 1000;
+
+function preloadGalleryImages(galleryImages: readonly HomeWorkGalleryImage[]) {
+  for (const galleryImage of galleryImages) {
+    const { props: responsiveImageProps } = getImageProps({
+      src: galleryImage.src,
+      alt: '',
+      width: galleryImage.width,
+      height: galleryImage.height,
+      sizes: galleryImageSizes,
+    });
+
+    if (responsiveImageProps.sizes === undefined || responsiveImageProps.srcSet === undefined) {
+      throw new Error(`Missing responsive preload props for gallery image: ${galleryImage.src}`);
+    }
+
+    const preloadedImage = new window.Image();
+    preloadedImage.sizes = responsiveImageProps.sizes;
+    preloadedImage.srcset = responsiveImageProps.srcSet;
+    preloadedImage.src = responsiveImageProps.src;
+  }
+}
+
+function waitForGalleryPreloadDelay(galleryPreloadDelayTimerRef: { current: number | null }) {
+  return new Promise<void>((resolve) => {
+    galleryPreloadDelayTimerRef.current = window.setTimeout(() => {
+      galleryPreloadDelayTimerRef.current = null;
+      resolve();
+    }, HOME_WORK_GALLERY_PRELOAD_DELAY_MS);
+  });
+}
 
 export function HomeWorkGallerySection({ locale }: { locale: SiteLocale }) {
   const [visibleWorkCount, setVisibleWorkCount] = useState(HOME_WORK_GALLERY_INITIAL_COUNT);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const countStatusRef = useRef<HTMLParagraphElement>(null);
+  const galleryPreloadDelayTimerRef = useRef<number | null>(null);
   const copy = getHomeWorkGalleryCopy(locale);
   const visibleWorks = HOME_WORK_GALLERY_IMAGES.slice(0, visibleWorkCount);
   const totalWorkCount = HOME_WORK_GALLERY_IMAGES.length;
 
-  function showMoreWorks() {
+  useEffect(() => {
+    const galleryPreloadDelayTimer = galleryPreloadDelayTimerRef;
+
+    return () => {
+      if (galleryPreloadDelayTimer.current !== null) {
+        window.clearTimeout(galleryPreloadDelayTimer.current);
+      }
+    };
+  }, []);
+
+  async function showMoreWorks() {
+    if (isLoadingMore) {
+      return;
+    }
+
     const nextVisibleWorkCount = Math.min(
       visibleWorkCount + HOME_WORK_GALLERY_BATCH_SIZE,
       totalWorkCount,
     );
+
+    setIsLoadingMore(true);
+    preloadGalleryImages(HOME_WORK_GALLERY_IMAGES.slice(visibleWorkCount, nextVisibleWorkCount));
+    await waitForGalleryPreloadDelay(galleryPreloadDelayTimerRef);
 
     if (nextVisibleWorkCount === totalWorkCount) {
       countStatusRef.current?.focus({ preventScroll: true });
     }
 
     setVisibleWorkCount(nextVisibleWorkCount);
+    setIsLoadingMore(false);
   }
 
   return (
@@ -81,8 +134,17 @@ export function HomeWorkGallerySection({ locale }: { locale: SiteLocale }) {
 
         {visibleWorkCount < totalWorkCount ? (
           <div className="mt-8 flex justify-center">
-            <button type="button" className="site-cta-primary" aria-controls="home-work-gallery-grid" onClick={showMoreWorks}>
-              {copy.loadMoreLabel}
+            <button
+              type="button"
+              className="site-cta-primary"
+              aria-controls="home-work-gallery-grid"
+              aria-label={copy.loadMoreLabel}
+              aria-busy={isLoadingMore}
+              disabled={isLoadingMore}
+              onClick={showMoreWorks}
+              style={isLoadingMore ? { width: '2.75rem', height: '2.75rem', padding: 0 } : undefined}
+            >
+              {isLoadingMore ? <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin motion-reduce:animate-none" /> : copy.loadMoreLabel}
             </button>
           </div>
         ) : null}

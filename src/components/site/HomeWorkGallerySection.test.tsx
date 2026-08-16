@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { HOME_WORK_GALLERY_IMAGES } from '@/lib/home-work-gallery';
@@ -45,8 +45,29 @@ const initialWorkGalleryPaths = [
   '/work-gallery/0_IaTVSOa0.png',
 ];
 
+const nextOptimizedWorkGallerySources = [
+  '/_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F0k-6UsJzfB.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F0yJc-ZgsHP.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F1AWcSOmW1a.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F1irw8Z5hC1.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F22t2gS4KtX.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F2943TclzYk.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F2dUk1xDhem.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F3_5ByLuSkp.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F3uLXUQNVJv.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F4f8zZkiHbB.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F6A4e-G8MAO.png&w=3840&q=75',
+];
+
+const workGalleryImageSizes = '(min-width: 1024px) 16.666vw, (min-width: 768px) 33.333vw, 50vw';
+const firstNextWorkGallerySrcSet =
+  '/_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=384&q=75 384w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=640&q=75 640w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=750&q=75 750w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=828&q=75 828w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=1080&q=75 1080w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=1200&q=75 1200w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=1920&q=75 1920w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=2048&q=75 2048w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=3840&q=75 3840w';
+
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
@@ -83,7 +104,8 @@ describe('HomeWorkGallerySection', () => {
 
   it.each(galleryLocales)(
     'reveals each remaining gallery batch and removes the control at the $locale boundary',
-    ({ locale, loadMoreLabel, downloadLabel, artworkLabel, countSeparator }) => {
+    async ({ locale, loadMoreLabel, downloadLabel, artworkLabel, countSeparator }) => {
+      vi.useFakeTimers();
       const countStatusFocusSpy = vi.spyOn(HTMLParagraphElement.prototype, 'focus');
       render(<HomeWorkGallerySection locale={locale} />);
 
@@ -94,6 +116,9 @@ describe('HomeWorkGallerySection', () => {
 
       for (const visibleCount of [24, 36, 48]) {
         fireEvent.click(loadMoreButton);
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(1000);
+        });
         expect(within(galleryGrid).getAllByRole('listitem')).toHaveLength(visibleCount);
         expect(screen.getByText(`${visibleCount} ${countSeparator} 54`).getAttribute('aria-live')).toBe('polite');
       }
@@ -101,6 +126,9 @@ describe('HomeWorkGallerySection', () => {
       loadMoreButton.focus();
       expect(document.activeElement).toBe(loadMoreButton);
       fireEvent.click(loadMoreButton);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1000);
+      });
 
       const completeCountStatus = screen.getByText(`54 ${countSeparator} 54`);
       const completeDownloadLinks = within(galleryGrid).getAllByRole('link', {
@@ -119,6 +147,103 @@ describe('HomeWorkGallerySection', () => {
       expect(countStatusFocusSpy).toHaveBeenCalledWith({ preventScroll: true });
     },
   );
+
+  it.each(galleryLocales)(
+    'preloads the next localized gallery batch while delaying its reveal for $locale',
+    async ({ locale, loadMoreLabel }) => {
+      vi.useFakeTimers();
+      const preloadedImageRecords: Array<{ sizes: string; srcset: string; src: string }> = [];
+      const preloadImageAssignmentProperties: string[] = [];
+
+      class TestPreloadedImage {
+        private readonly preloadImageRecord = { sizes: '', srcset: '', src: '' };
+
+        constructor() {
+          preloadedImageRecords.push(this.preloadImageRecord);
+        }
+
+        set sizes(imageSizes: string) {
+          preloadImageAssignmentProperties.push('sizes');
+          this.preloadImageRecord.sizes = imageSizes;
+        }
+
+        set srcset(imageSrcSet: string) {
+          preloadImageAssignmentProperties.push('srcset');
+          this.preloadImageRecord.srcset = imageSrcSet;
+        }
+
+        set src(imageSource: string) {
+          preloadImageAssignmentProperties.push('src');
+          this.preloadImageRecord.src = imageSource;
+        }
+      }
+
+      vi.stubGlobal('Image', TestPreloadedImage);
+      render(<HomeWorkGallerySection locale={locale} />);
+
+      const galleryGrid = screen.getByRole('list');
+      const loadMoreButton = screen.getByRole('button', { name: loadMoreLabel });
+
+      fireEvent.click(loadMoreButton);
+
+      expect(loadMoreButton.hasAttribute('disabled')).toBe(true);
+      expect(loadMoreButton.getAttribute('aria-busy')).toBe('true');
+      expect(loadMoreButton.getAttribute('aria-label')).toBe(loadMoreLabel);
+      expect(loadMoreButton.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+      expect(loadMoreButton.style.width).toBe('2.75rem');
+      expect(loadMoreButton.style.height).toBe('2.75rem');
+      expect(within(galleryGrid).getAllByRole('listitem')).toHaveLength(12);
+      expect(preloadedImageRecords.map((preloadedImageRecord) => preloadedImageRecord.src)).toEqual(
+        nextOptimizedWorkGallerySources,
+      );
+      expect(preloadedImageRecords[0]).toEqual({
+        sizes: workGalleryImageSizes,
+        srcset: firstNextWorkGallerySrcSet,
+        src: nextOptimizedWorkGallerySources[0],
+      });
+      expect(preloadImageAssignmentProperties).toEqual(
+        Array.from({ length: 12 }, () => ['sizes', 'srcset', 'src']).flat(),
+      );
+
+      const preloadImageRecordsBeforeDuplicateClick = preloadedImageRecords.map((preloadedImageRecord) => ({
+        ...preloadedImageRecord,
+      }));
+      const pendingTimerCountBeforeDuplicateClick = vi.getTimerCount();
+
+      fireEvent.click(loadMoreButton);
+      expect(preloadedImageRecords).toEqual(preloadImageRecordsBeforeDuplicateClick);
+      expect(vi.getTimerCount()).toBe(pendingTimerCountBeforeDuplicateClick);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(999);
+      });
+
+      expect(within(galleryGrid).getAllByRole('listitem')).toHaveLength(12);
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
+
+      expect(within(galleryGrid).getAllByRole('listitem')).toHaveLength(24);
+      expect(loadMoreButton.hasAttribute('disabled')).toBe(false);
+      expect(loadMoreButton.getAttribute('aria-busy')).toBe('false');
+      expect(loadMoreButton.textContent).toBe(loadMoreLabel);
+      expect(loadMoreButton.style.width).toBe('');
+      expect(loadMoreButton.style.height).toBe('');
+      expect(loadMoreButton.style.padding).toBe('');
+    },
+  );
+
+  it('cancels a pending gallery reveal when unmounted', () => {
+    vi.useFakeTimers();
+    const { unmount } = render(<HomeWorkGallerySection locale="en" />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'View More' }));
+    expect(vi.getTimerCount()).toBe(1);
+
+    unmount();
+
+    expect(vi.getTimerCount()).toBe(0);
+  });
 
   it.each(galleryLocales)(
     'uses square display cards and ordinal download labels for $locale',

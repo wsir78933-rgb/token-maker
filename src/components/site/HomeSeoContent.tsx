@@ -9,6 +9,7 @@ import {
 } from '@/lib/site-content';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
+import { HomeTokenFaq, HomeTokenGuide } from '@/components/site/HomeTokenSeoSections';
 import { SiteFooter } from '@/components/site/SiteFooter';
 
 function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
@@ -267,7 +268,9 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
 export function HomeSeoContent({ locale }: { locale: SiteLocale }) {
   return (
     <div className="site-shell__content relative overflow-hidden text-stone-100">
+      <HomeTokenGuide locale={locale} />
       <HomeFeedbackSection locale={locale} />
+      <HomeTokenFaq locale={locale} />
       <SiteFooter locale={locale} currentPath="/" contentWidth="nearFull" />
     </div>
   );

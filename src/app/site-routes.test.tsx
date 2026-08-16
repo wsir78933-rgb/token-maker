@@ -86,18 +86,21 @@ describe('localized homepage routes', () => {
       PageComponent: EnglishHomePage,
       selectedWorkHeading: 'See the finish quality before you decide to keep going',
       galleryTitle: 'See What Your Next Token Could Become',
+      structuredDataScriptId: 'homepage-jsonld',
     },
     {
       localeLabel: 'Chinese',
       PageComponent: ChineseHomePage,
       selectedWorkHeading: '看一眼完成度，再决定要不要继续做',
       galleryTitle: '看看你的下一枚 Token，可以是什么样子',
+      structuredDataScriptId: 'homepage-zh-jsonld',
     },
-  ])('keeps the work gallery between selected work and feedback on the $localeLabel homepage', ({
+  ])('keeps the approved content order after the work gallery on the $localeLabel homepage', ({
     localeLabel,
     PageComponent,
     selectedWorkHeading,
     galleryTitle,
+    structuredDataScriptId,
   }) => {
     const serverDocument = parseServerMarkup(renderToStaticMarkup(<PageComponent />));
     const selectedWorkHeadingElement = Array.from(serverDocument.querySelectorAll('h2')).find(
@@ -110,7 +113,10 @@ describe('localized homepage routes', () => {
 
     const selectedWorkSection = selectedWorkHeadingElement.closest('section');
     const gallerySection = serverDocument.querySelector('[data-testid="home-work-gallery"]');
+    const guideSection = serverDocument.querySelector('[data-testid="home-token-guide"]');
     const feedbackSection = serverDocument.querySelector('#feedback');
+    const faqSection = serverDocument.querySelector('[data-testid="home-token-faq"]');
+    const footer = serverDocument.querySelector('footer');
 
     if (selectedWorkSection === null) {
       throw new Error(`SSR ${localeLabel} homepage selected-work heading has no section ancestor.`);
@@ -130,13 +136,33 @@ describe('localized homepage routes', () => {
       throw new Error(`SSR ${localeLabel} homepage is missing the feedback section.`);
     }
 
+    if (guideSection === null || faqSection === null || footer === null) {
+      throw new Error(`SSR ${localeLabel} homepage is missing approved SEO content landmarks.`);
+    }
+
     expect(galleryHeading.textContent).toBe(galleryTitle);
     expect(
       selectedWorkSection.compareDocumentPosition(gallerySection) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(
-      gallerySection.compareDocumentPosition(feedbackSection) & Node.DOCUMENT_POSITION_FOLLOWING,
+      gallerySection.compareDocumentPosition(guideSection) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      guideSection.compareDocumentPosition(feedbackSection) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      feedbackSection.compareDocumentPosition(faqSection) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      faqSection.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+
+    const homepageStructuredDataTypes = getStructuredDataTypes(
+      getRouteStructuredData(serverDocument, structuredDataScriptId),
+    );
+
+    expect(homepageStructuredDataTypes).toContain('SoftwareApplication');
+    expect(homepageStructuredDataTypes).not.toContain('FAQPage');
   });
 });
 
