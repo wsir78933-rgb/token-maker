@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { HOME_WORK_GALLERY_IMAGES } from '@/lib/home-work-gallery';
 import { HomeWorkGallerySection } from './HomeWorkGallerySection';
@@ -47,6 +47,7 @@ const initialWorkGalleryPaths = [
 
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
 });
 
 describe('HomeWorkGallerySection', () => {
@@ -83,6 +84,7 @@ describe('HomeWorkGallerySection', () => {
   it.each(galleryLocales)(
     'reveals each remaining gallery batch and removes the control at the $locale boundary',
     ({ locale, loadMoreLabel, downloadLabel, artworkLabel, countSeparator }) => {
+      const countStatusFocusSpy = vi.spyOn(HTMLParagraphElement.prototype, 'focus');
       render(<HomeWorkGallerySection locale={locale} />);
 
       const galleryGrid = screen.getByRole('list');
@@ -114,6 +116,7 @@ describe('HomeWorkGallerySection', () => {
       expect(completeCountStatus.getAttribute('aria-live')).toBe('polite');
       expect(screen.queryByRole('button', { name: loadMoreLabel })).toBeNull();
       expect(document.activeElement).toBe(completeCountStatus);
+      expect(countStatusFocusSpy).toHaveBeenCalledWith({ preventScroll: true });
     },
   );
 

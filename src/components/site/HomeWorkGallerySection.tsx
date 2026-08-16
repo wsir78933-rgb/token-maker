@@ -27,7 +27,7 @@ export function HomeWorkGallerySection({ locale }: { locale: SiteLocale }) {
     );
 
     if (nextVisibleWorkCount === totalWorkCount) {
-      countStatusRef.current?.focus();
+      countStatusRef.current?.focus({ preventScroll: true });
     }
 
     setVisibleWorkCount(nextVisibleWorkCount);
