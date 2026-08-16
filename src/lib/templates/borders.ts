@@ -69,7 +69,7 @@ const PRESET_BORDER_COUNTS = {
   undead: 29,
   monster: 31,
 } as const;
-const PRESET_BORDER_ASSET_VERSION = 'alpha-20260531';
+const PRESET_BORDER_ASSET_VERSION = 'thin-20260816';
 const OMITTED_PRESET_BORDER_NUMBERS: Partial<Record<keyof typeof PRESET_BORDER_COUNTS, readonly string[]>> = {
   rogue: ['06', '09'],
 };
