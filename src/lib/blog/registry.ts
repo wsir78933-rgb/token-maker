@@ -44,6 +44,7 @@ import {
   DND_ALIGNMENT_CHART_COVER_PATH,
   DND_MEANING_COVER_PATH,
   DND_LANGUAGES_COVER_PATH,
+  DND_STATS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -128,6 +129,7 @@ import {
 } from '@/lib/blog-posts/dnd-alignment-chart';
 import { dndMeaningArticleHtml, dndMeaningArticleHtmlZh } from '@/lib/blog-posts/dnd-meaning';
 import { dndLanguagesArticleHtml, dndLanguagesArticleHtmlZh } from '@/lib/blog-posts/dnd-languages';
+import { dndStatsArticleHtml, dndStatsArticleHtmlZh } from '@/lib/blog-posts/dnd-stats';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -192,6 +194,7 @@ const DND_RACES_UPDATED_AT = '2026-08-10';
 const DND_ALIGNMENT_CHART_UPDATED_AT = '2026-08-11';
 const DND_MEANING_UPDATED_AT = '2026-08-12';
 const DND_LANGUAGES_UPDATED_AT = '2026-08-14';
+const DND_STATS_UPDATED_AT = '2026-08-15';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2434,6 +2437,96 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndStatsArticle: BlogPost = {
+  slug: 'dnd-stats',
+  title: 'All Six DnD Stats Explained for Your First Character',
+  seoTitle: 'All Six DnD Stats Explained for Your First Character',
+  metaDescription:
+    'Learn what all six DnD stats control, convert scores to modifiers, compare standard array, point cost, and 4d6, then assign them by class.',
+  excerpt:
+    'Read all six DnD stats, calculate modifiers, choose a generation method, and assign a workable level 1 array without mixing 2014 and 2024 rules.',
+  publishedAt: DND_STATS_UPDATED_AT,
+  updatedAt: DND_STATS_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Ability Scores',
+  coverImage: DND_STATS_COVER_PATH,
+  coverAlt:
+    'A blank twenty-sided die surrounded by six fantasy objects representing the DnD ability scores on a candlelit table',
+  bodyHtml: dndStatsArticleHtml,
+  faqItems: [
+    {
+      question: 'What are the six stats in DnD?',
+      answer:
+        'The six DnD stats are Strength, Dexterity, Constitution, Intelligence, Wisdom, and Charisma. The rules also call them abilities or ability scores.',
+    },
+    {
+      question: 'How do I calculate a DnD ability modifier?',
+      answer:
+        'Subtract 10 from the ability score, divide by 2, and round down. A score of 15 gives +2, while a score of 8 gives −1.',
+    },
+    {
+      question: 'What is the DnD standard array?',
+      answer:
+        'The 2024 standard array is 15, 14, 13, 12, 10, and 8. Assign each number to a different ability, then apply the increases allowed by the character-creation rules you are using.',
+    },
+    {
+      question: 'What is the best stat in DnD?',
+      answer:
+        "There is no universal best stat. The class's primary ability usually receives the highest score, while Constitution, Dexterity, and any secondary class ability compete for the remaining high numbers.",
+    },
+    {
+      question: 'Is 4d6 drop lowest the default way to roll stats?',
+      answer:
+        'It is the random-generation method in the 2024 Free Basic Rules, but it is not the only character-creation method. Standard array and 27-point cost are also listed, and the DM can require one method for the campaign.',
+    },
+  ],
+  relatedSlugs: ['dnd-constitution-guide', 'dnd-races', 'dnd-classes-explained'],
+};
+
+const dndStatsArticleZh: BlogPost = {
+  slug: 'dnd-stats',
+  title: '新手 DND 六项属性详解：完成你的第一个角色',
+  seoTitle: '新手 DND 六项属性详解：完成你的第一个角色',
+  metaDescription:
+    '读懂力量、敏捷、体质、智力、感知与魅力，计算属性调整值，对比标准数组、27 点购点和 4d6 去最低，再按职业分配六项能力值。',
+  excerpt:
+    '读懂六项 DND 属性，换算调整值，选择生成方法，再按职业分配一组能用的 1 级属性，同时分清 2014 与 2024 规则。',
+  publishedAt: DND_STATS_UPDATED_AT,
+  updatedAt: DND_STATS_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '能力值指南',
+  coverImage: DND_STATS_COVER_PATH,
+  coverAlt: '烛光桌面上，一颗空白二十面骰被六件代表 DND 能力值的奇幻物品围绕',
+  bodyHtml: dndStatsArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND 的六项属性是什么？',
+      answer:
+        'DND 的六项属性是力量、敏捷、体质、智力、感知和魅力。规则中也会把它们称为能力或能力值。',
+    },
+    {
+      question: 'DND 属性调整值怎样计算？',
+      answer: '属性值减 10，再除以 2 并向下取整。属性值 15 对应 +2，属性值 8 对应 −1。',
+    },
+    {
+      question: 'DND 标准数组是什么？',
+      answer:
+        '2024 标准数组是 15、14、13、12、10、8。把六个数分别放入六项属性，再加入当前角色创建规则允许的属性提升。',
+    },
+    {
+      question: 'DND 最好的属性是哪一项？',
+      answer:
+        '没有适合所有角色的最佳属性。职业主属性通常拿最高值，体质、敏捷与职业需要的第二属性再竞争其他高值。',
+    },
+    {
+      question: '4d6 去最低是 DND 默认的属性生成方法吗？',
+      answer:
+        '它是 2024 免费基础规则中的随机生成方法，但不是唯一方法。规则还列出标准数组和 27 点购点，DM 可以要求整场战役统一采用其中一种。',
+    },
+  ],
+  relatedSlugs: ['dnd-constitution-guide', 'dnd-races', 'dnd-classes-explained'],
+};
+
 const dndLanguagesArticle: BlogPost = {
   slug: 'dnd-languages',
   title: 'D&D Languages: One for Your Past, One for the Campaign',
@@ -3819,10 +3912,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

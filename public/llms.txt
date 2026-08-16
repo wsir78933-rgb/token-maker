@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [All Six DnD Stats Explained for Your First Character](https://www.tokenmaker.one/blog/dnd-stats): Understand all six ability scores, calculate modifiers, compare the three 2024 generation methods, and assign a level 1 array without mixing rulesets.
 - [D&D Languages](https://www.tokenmaker.one/blog/dnd-languages): Choose two standard languages for a 2024 character, keep 2014 rules separate, and turn a language choice into a real campaign hook.
 - [DnD Meaning](https://www.tokenmaker.one/blog/dnd-meaning): Distinguish Do Not Disturb from Dungeons & Dragons, then learn how a DM, player characters, dice, sessions, and optional VTT tokens fit together.
 - [DnD Alignment Chart](https://www.tokenmaker.one/blog/dnd-alignment-chart): Read all nine alignments, judge order and morality separately, pressure-test one hard choice, and turn the result into repeatable roleplay.
@@ -68,6 +69,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [新手 DND 六项属性详解：完成你的第一个角色](https://www.tokenmaker.one/zh/blog/dnd-stats): 读懂六项属性与调整值，对比标准数组、27 点购点和 4d6 去最低，再按职业完成 1 级角色分配。
 - [DND 语言：2024 角色怎样选出合适的两门语言](https://www.tokenmaker.one/zh/blog/dnd-languages): 从角色过去和战役地点出发，选出两门真正能在桌上派上用场的 DND 语言，并分清 2014 与 2024 的规则流程。
 - [DND 是什么意思：游戏语境里的《龙与地下城》](https://www.tokenmaker.one/zh/blog/dnd-meaning)
 - [DND 阵营九宫格：选择一个会随行动改变的角色坐标](https://www.tokenmaker.one/zh/blog/dnd-alignment-chart)

@@ -272,6 +272,30 @@ describe('TemplatePanel preset border assets', () => {
     expect(screen.getByRole('button', { name: 'border.warrior.01' })).toBeDefined();
   });
 
+  it.each([
+    ['warrior', 'border.warrior.02'],
+    ['mage', 'border.mage.02'],
+    ['rogue', 'border.rogue.02'],
+    ['cleric', 'border.cleric.02'],
+    ['ranger', 'border.ranger.02'],
+    ['undead', 'border.undead.02'],
+    ['monster', 'border.monster.02'],
+    ['other', 'border.wood'],
+  ])('keeps the %s preset category highlighted after one of its borders is selected', (
+    presetId,
+    borderLabel
+  ) => {
+    render(<TemplatePanel />);
+
+    const presetButton = screen.getByTitle(presetId);
+    fireEvent.click(presetButton);
+    const borderButton = screen.getByRole('button', { name: borderLabel });
+    fireEvent.click(borderButton);
+
+    expect(presetButton.className.split(/\s+/)).toContain('bg-primary/10');
+    expect(borderButton.className.split(/\s+/)).toContain('ring-primary/50');
+  });
+
   it('shows the original border library under the other preset', () => {
     render(<TemplatePanel />);
 

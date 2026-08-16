@@ -195,6 +195,8 @@ export interface CoatWorkbenchCopy {
     multiSelect: string;
     canvasZoom: string;
     canvasZoomPercentage: string;
+    selectedElementColours: string;
+    changeElementColour: (fromColor: string) => string;
     resetCanvasZoom: string;
     enterFullscreen: string;
     exitFullscreen: string;
@@ -509,7 +511,7 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
       brand: { firstLine: 'TOKEN', secondLine: 'MAKER', accent: 'STUDIO' },
       informationNavigation: 'Coat maker information', helpCenter: 'Help Center', changelog: 'Changelog', shieldStyles: 'Shield styles',
       collapseToolPanel: 'Collapse tool panel', expandToolPanel: 'Expand tool panel', openLocalProjectLibrary: 'Open local project library', multiSelect: 'Multi-select',
-      canvasZoom: 'Canvas zoom', canvasZoomPercentage: 'Canvas zoom percentage', resetCanvasZoom: 'Reset canvas zoom', enterFullscreen: 'Enter fullscreen', exitFullscreen: 'Exit fullscreen',
+      canvasZoom: 'Canvas zoom', canvasZoomPercentage: 'Canvas zoom percentage', selectedElementColours: 'Selected element colours', changeElementColour: (fromColor) => `Change element colour: ${fromColor}`, resetCanvasZoom: 'Reset canvas zoom', enterFullscreen: 'Enter fullscreen', exitFullscreen: 'Exit fullscreen',
       fullscreenRootMissing: 'Fullscreen is unavailable because the editor root is missing.', fullscreenExitUnavailable: 'Fullscreen exit is unavailable in this browser.', fullscreenUnavailable: 'Fullscreen is unavailable in this browser.', fullscreenOperationFailed: (message) => `Fullscreen operation failed: ${message}`,
       editorUtilities: 'Editor utilities', howToPanel: 'How-to', howToHeading: 'Build your coat of arms', howToDescription: 'Choose a shield on the left, add charges, then drag items on the artboard to arrange them.',
     },
@@ -587,7 +589,7 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
       brand: { firstLine: 'TOKEN', secondLine: 'MAKER', accent: 'STUDIO' },
       informationNavigation: '徽章制作器信息', helpCenter: '帮助中心', changelog: '更新日志', shieldStyles: '盾牌样式',
       collapseToolPanel: '收起工具面板', expandToolPanel: '展开工具面板', openLocalProjectLibrary: '打开本地项目库', multiSelect: '多选',
-      canvasZoom: '画布缩放', canvasZoomPercentage: '画布缩放百分比', resetCanvasZoom: '重置画布缩放', enterFullscreen: '进入全屏', exitFullscreen: '退出全屏',
+      canvasZoom: '画布缩放', canvasZoomPercentage: '画布缩放百分比', selectedElementColours: '选中元素颜色', changeElementColour: (fromColor) => `更改元素颜色：${fromColor}`, resetCanvasZoom: '重置画布缩放', enterFullscreen: '进入全屏', exitFullscreen: '退出全屏',
       fullscreenRootMissing: '编辑器根节点不可用，无法进入全屏。', fullscreenExitUnavailable: '当前浏览器不支持退出全屏。', fullscreenUnavailable: '当前浏览器不支持全屏。', fullscreenOperationFailed: () => '全屏操作失败。请重试。',
       editorUtilities: '编辑器工具', howToPanel: '使用说明', howToHeading: '开始制作徽章', howToDescription: '先从左侧选择盾形，再加入纹章。拖动画布中的素材即可调整位置。',
     },

@@ -941,6 +941,109 @@ describe('coat project commands', () => {
     });
   });
 
+  it('replaces every matching colour on only the selected shield layer without changing the palette or other layers', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const configured = applyProjectCommand(project, {
+      type: 'set-field', layerId: shield.id,
+      field: {
+        ...shield.field,
+        division: 'quarterly',
+        colors: ['#B11F24', '#1855A5'],
+        regions: { q1: { colors: ['#B11F24'], pattern: 'solid' } },
+        ornaments: [{
+          id: 'selected-colour-ornament', kind: 'fess', color: '#B11F24',
+          colors: ['#F5E6A1', '#B11F24'], colorAmplitudes: [1, 1],
+          x: 0, y: 0, scale: 1, rotation: 0,
+        }],
+        outline: { visible: true, color: '#B11F24', width: 2 },
+      },
+    });
+    const withText = applyProjectCommand(configured, {
+      type: 'add-text-layer', text: 'HONOUR', color: '#B11F24', fontSize: 24,
+      alignment: 'center', path: { mode: 'none' },
+    });
+    const paletteBeforeReplacement = [...withText.palette];
+    const textBeforeReplacement = withText.layers.at(-1);
+    const replaced = applyProjectCommand(withText, {
+      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#b11f24', toColor: '#004E89',
+    });
+    const replacedShield = replaced.layers.find((layer) => layer.id === shield.id);
+
+    if (!replacedShield || replacedShield.type !== 'shield') throw new Error('Expected replaced shield layer');
+    expect(replacedShield.field).toMatchObject({
+      colors: ['#B11F24', '#1855A5'],
+      regions: {
+        q1: { colors: ['#004E89'] }, q4: { colors: ['#004E89'] },
+      },
+      ornaments: [{ color: '#B11F24', colors: ['#F5E6A1', '#004E89'] }],
+      outline: { visible: true, color: '#004E89', width: 2 },
+    });
+    expect(replacedShield.field.regions?.q2).toBeUndefined();
+    expect(replacedShield.field.regions?.q3).toBeUndefined();
+    expect(replaced.palette).toEqual(paletteBeforeReplacement);
+    expect(replaced.layers.at(-1)).toEqual(textBeforeReplacement);
+    expect(withText.layers.find((layer) => layer.id === shield.id)).toMatchObject({
+      field: { colors: ['#B11F24', '#1855A5'] },
+    });
+  });
+
+  it('rejects locked, missing, unsupported, and source-missing selected layer colour replacements', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    const background = project.layers.find((layer) => layer.type === 'background');
+    if (!shield || shield.type !== 'shield' || !background) throw new Error('Expected default base layers');
+    const locked = applyProjectCommand(project, { type: 'set-layer-lock', layerId: shield.id, locked: true });
+
+    expect(() => applyProjectCommand(locked, {
+      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#1855A5', toColor: '#004E89',
+    })).toThrow(`Coat layer is locked: ${shield.id}`);
+    expect(() => applyProjectCommand(project, {
+      type: 'replace-layer-colour', layerId: 'missing-layer', fromColor: '#1855A5', toColor: '#004E89',
+    })).toThrow('Unknown coat layer id: missing-layer');
+    expect(() => applyProjectCommand(project, {
+      type: 'replace-layer-colour', layerId: background.id, fromColor: '#1855A5', toColor: '#004E89',
+    })).toThrow(`Layer does not support editable colour replacement: ${background.id}`);
+    expect(() => applyProjectCommand(project, {
+      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#FFFFFF', toColor: '#004E89',
+    })).toThrow(`Editable layer colour source not found: #FFFFFF on layer ${shield.id}`);
+  });
+
+  it('validates selected layer colour command keys and values before replacement', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+
+    expect(() => applyProjectCommand(project, {
+      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#1855A', toColor: '#004E89',
+    })).toThrow('Invalid source color: #1855A');
+    expect(() => applyProjectCommand(project, {
+      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#1855A5', toColor: '#004E8',
+    })).toThrow('Invalid replacement color: #004E8');
+    expect(() => applyProjectCommand(project, {
+      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#1855A5', toColor: '#004E89', extra: true,
+    } as never)).toThrow('extra');
+  });
+
+  it('records one undoable selected layer colour replacement history step', () => {
+    const initialProject = createDefaultProject('en');
+    const shield = initialProject.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const replacedHistory = applyProjectHistoryCommand(createProjectHistory(initialProject), {
+      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#1855A5', toColor: '#004E89',
+    });
+    const undoneHistory = undoProject(replacedHistory);
+    const redoneHistory = redoProject(undoneHistory);
+
+    expect(replacedHistory.past).toHaveLength(1);
+    expect(replacedHistory.present.layers.find((layer) => layer.id === shield.id)).toMatchObject({
+      field: { colors: ['#004E89'] },
+    });
+    expect(undoneHistory.present).toEqual(initialProject);
+    expect(redoneHistory.present).toEqual(replacedHistory.present);
+  });
+
   it('normalizes a dissolved group and rejects regrouping that would make members non-contiguous', () => {
     const base = createDefaultProject('en');
     const withCharges = ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower', 'material-animal-lion-rampant']

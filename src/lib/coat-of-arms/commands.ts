@@ -28,6 +28,7 @@ import { assertFieldPatternConfig, fieldPatterns } from './field-pattern';
 import { assertFieldRegions } from './field-regions';
 import { createLocalCoatId } from './id';
 import { assertCustomShieldOutlinePath, normalizeCustomShieldOutlinePath } from './shield-outline';
+import { replaceEditableLayerColour } from './layer-colours';
 
 const validDivisions: readonly FieldDivision[] = [
   'solid',
@@ -133,6 +134,7 @@ export type CoatProjectCommand =
   | { type: 'remove-local-upload'; uploadId: string }
   | { type: 'add-image-layer'; uploadId: string; opacity?: number; transform?: CanvasTransform }
   | { type: 'remove-image-layer'; layerId: string }
+  | { type: 'replace-layer-colour'; layerId: string; fromColor: string; toColor: string }
   | { type: 'replace-all-colour'; fromColor: string; toColor: string }
   | { type: 'add-custom-palette-color'; color: string }
   | { type: 'remove-custom-palette-color'; color: string };
@@ -215,6 +217,8 @@ export function applyProjectCommand(
       return addImageLayer(project, command);
     case 'remove-image-layer':
       return removeImageLayer(project, command.layerId);
+    case 'replace-layer-colour':
+      return replaceProjectLayerColour(project, command.layerId, command.fromColor, command.toColor);
     case 'replace-all-colour':
       return replaceAllColour(project, command.fromColor, command.toColor);
     case 'add-custom-palette-color':
@@ -840,6 +844,13 @@ function replaceAllColour(project: CoatProject, fromColor: string, toColor: stri
   };
 }
 
+function replaceProjectLayerColour(project: CoatProject, layerId: string, fromColor: string, toColor: string): CoatProject {
+  assertColor(fromColor, 'source color');
+  assertColor(toColor, 'replacement color');
+  const layer = getUnlockedLayer(project, layerId);
+  return replaceLayer(project, layer.id, replaceEditableLayerColour(layer, fromColor, toColor));
+}
+
 function replaceShieldFieldColours(field: CoatField, replaceColor: (color: string) => string): CoatField {
   return {
     ...field,
@@ -1009,7 +1020,7 @@ function assertProjectCommand(command: unknown): asserts command is CoatProjectC
     'add-layer', 'update-layer', 'update-layers', 'remove-layer', 'remove-layers', 'duplicate-layers', 'move-layer', 'set-layer-visibility',
     'set-layer-lock', 'group-layers', 'ungroup-layers', 'set-group-opacity', 'align-layer-ids', 'distribute-layer-ids', 'move-layer-ids', 'set-layer-ids-visibility', 'set-layer-ids-lock', 'group-layer-ids', 'ungroup-layer-ids', 'set-layer-ids-opacity', 'resize-layer-ids', 'set-field', 'set-custom-shield-mask', 'set-custom-shield-outline', 'set-background', 'set-canvas-size', 'add-drawing-layer', 'set-project-name',
     'add-text-layer', 'remove-text-layer', 'register-local-upload', 'add-local-upload-images', 'remove-local-upload',
-    'add-image-layer', 'remove-image-layer', 'replace-all-colour', 'add-custom-palette-color',
+    'add-image-layer', 'remove-image-layer', 'replace-layer-colour', 'replace-all-colour', 'add-custom-palette-color',
     'remove-custom-palette-color',
   ]);
   if (!validTypes.has(command.type as CoatProjectCommand['type'])) {
@@ -1051,6 +1062,7 @@ function assertProjectCommand(command: unknown): asserts command is CoatProjectC
     'remove-local-upload': ['type', 'uploadId'],
     'add-image-layer': ['type', 'uploadId', 'opacity', 'transform'],
     'remove-image-layer': ['type', 'layerId'],
+    'replace-layer-colour': ['type', 'layerId', 'fromColor', 'toColor'],
     'replace-all-colour': ['type', 'fromColor', 'toColor'],
     'add-custom-palette-color': ['type', 'color'],
     'remove-custom-palette-color': ['type', 'color'],

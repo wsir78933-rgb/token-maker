@@ -45,6 +45,7 @@ export const DND_RACES_COVER_PATH = '/blog/covers/en/dnd-races-guide.webp';
 export const DND_ALIGNMENT_CHART_COVER_PATH = '/blog/covers/en/dnd-alignment-chart-guide.webp';
 export const DND_MEANING_COVER_PATH = '/blog/covers/en/dnd-meaning-guide.webp';
 export const DND_LANGUAGES_COVER_PATH = '/blog/covers/en/dnd-languages-guide.webp';
+export const DND_STATS_COVER_PATH = '/blog/covers/en/dnd-stats-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';

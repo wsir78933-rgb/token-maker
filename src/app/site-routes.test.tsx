@@ -43,6 +43,7 @@ const DND_MAUL_SLUG = 'dnd-maul';
 const DND_SHATTER_5E_SLUG = 'dnd-shatter-5e';
 const DND_MEANING_SLUG = 'dnd-meaning';
 const DND_LANGUAGES_SLUG = 'dnd-languages';
+const DND_STATS_SLUG = 'dnd-stats';
 
 function getStructuredDataTypes(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -340,6 +341,11 @@ describe('coat maker routes', () => {
 });
 
 describe('blog static routes', () => {
+  it('emits bilingual dnd stats detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_STATS_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_STATS_SLUG });
+  });
+
   it('emits bilingual dnd languages detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_LANGUAGES_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_LANGUAGES_SLUG });
