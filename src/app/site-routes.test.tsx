@@ -2,15 +2,17 @@
 
 import { cleanup, render, screen, within } from '@testing-library/react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 
 import EnglishAboutPage, { metadata as englishAboutMetadata } from './(en)/about/page';
 import EnglishChangelogPage, { metadata as englishChangelogMetadata } from './(en)/changelog/page';
+import EnglishHomePage from './(en)/page';
 import ChineseAboutPage, { metadata as chineseAboutMetadata } from './(zh)/zh/about/page';
 import ChineseChangelogPage, {
   metadata as chineseChangelogMetadata,
 } from './(zh)/zh/changelog/page';
+import ChineseHomePage from './(zh)/zh/page';
 import EnglishCoatOfArmsMakerPage, {
   metadata as englishCoatOfArmsMakerMetadata,
 } from './(maker-en)/coat-of-arms-maker/page';
@@ -29,6 +31,11 @@ import {
 import {
   generateStaticParams as generateChineseBlogPaginationStaticParams,
 } from './(zh)/zh/blog/page/[page]/page';
+
+vi.mock('next/navigation', async (importOriginal) => ({
+  ...(await importOriginal()),
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 const DND_THUNDERCLAP_SLUG = 'dnd-thunderclap';
 const DND_SWORD_SHEATHS_SLUG = 'dnd-sword-sheaths';
@@ -70,6 +77,67 @@ function getRouteStructuredData(serverDocument: Document, scriptId: string): Rec
 
   return JSON.parse(structuredDataScript?.textContent ?? '{}') as Record<string, unknown>;
 }
+
+describe('localized homepage routes', () => {
+  it.each([
+    {
+      localeLabel: 'English',
+      PageComponent: EnglishHomePage,
+      selectedWorkHeading: 'See the finish quality before you decide to keep going',
+      galleryTitle: 'See What Your Next Token Could Become',
+    },
+    {
+      localeLabel: 'Chinese',
+      PageComponent: ChineseHomePage,
+      selectedWorkHeading: '看一眼完成度，再决定要不要继续做',
+      galleryTitle: '看看你的下一枚 Token，可以是什么样子',
+    },
+  ])('keeps the work gallery between selected work and feedback on the $localeLabel homepage', ({
+    localeLabel,
+    PageComponent,
+    selectedWorkHeading,
+    galleryTitle,
+  }) => {
+    const serverDocument = parseServerMarkup(renderToStaticMarkup(<PageComponent />));
+    const selectedWorkHeadingElement = Array.from(serverDocument.querySelectorAll('h2')).find(
+      (heading) => heading.textContent === selectedWorkHeading,
+    );
+
+    if (selectedWorkHeadingElement === undefined) {
+      throw new Error(`SSR ${localeLabel} homepage is missing the selected-work heading.`);
+    }
+
+    const selectedWorkSection = selectedWorkHeadingElement.closest('section');
+    const gallerySection = serverDocument.querySelector('[data-testid="home-work-gallery"]');
+    const feedbackSection = serverDocument.querySelector('#feedback');
+
+    if (selectedWorkSection === null) {
+      throw new Error(`SSR ${localeLabel} homepage selected-work heading has no section ancestor.`);
+    }
+
+    if (gallerySection === null) {
+      throw new Error(`SSR ${localeLabel} homepage is missing the home work gallery.`);
+    }
+
+    const galleryHeading = gallerySection.querySelector('h2');
+
+    if (galleryHeading === null) {
+      throw new Error(`SSR ${localeLabel} homepage gallery is missing its heading.`);
+    }
+
+    if (feedbackSection === null) {
+      throw new Error(`SSR ${localeLabel} homepage is missing the feedback section.`);
+    }
+
+    expect(galleryHeading.textContent).toBe(galleryTitle);
+    expect(
+      selectedWorkSection.compareDocumentPosition(gallerySection) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      gallerySection.compareDocumentPosition(feedbackSection) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+});
 
 describe('trust page routes', () => {
   afterEach(() => {

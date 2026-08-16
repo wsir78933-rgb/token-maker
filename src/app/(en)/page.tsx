@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { DeferredEditorLayout } from '@/components/layout/DeferredEditorLayout';
+import { HomeWorkGallerySection } from '@/components/site/HomeWorkGallerySection';
 import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
@@ -69,6 +70,7 @@ export default function Home() {
         <HomeHero locale="en" />
         <DeferredEditorLayout />
         <EditorShowcaseSection locale="en" />
+        <HomeWorkGallerySection locale="en" />
         <HomeSeoContent locale="en" />
       </main>
     </>
