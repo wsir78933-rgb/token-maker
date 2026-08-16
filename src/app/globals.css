@@ -1439,8 +1439,10 @@
 .coat-target-workbench .coat-target-collapse { position: absolute; z-index: 2; top: 50%; right: -1.15rem; display: grid; width: 2.3rem; height: 3.9rem; transform: translateY(-50%); place-items: center; border: 1px solid var(--coat-line); border-radius: 1.1rem; background: var(--coat-panel-raised); color: var(--coat-text); box-shadow: 0 12px 30px -20px var(--workspace-shadow-color); }
 
 .coat-target-workbench .coat-target-scene { position: relative; display: grid; min-width: 0; min-height: 0; grid-template-rows: 2.5rem minmax(0, 1fr); overflow: hidden; background: radial-gradient(circle at 50% 30%, var(--coat-accent-bg), transparent 42%), var(--coat-stage); }
-.coat-target-workbench .coat-target-canvas-toolbar { display: flex; align-items: center; justify-content: space-between; min-width: 0; border-bottom: 1px solid var(--coat-line); padding: 0.25rem 0.72rem; }
+.coat-target-workbench .coat-target-canvas-toolbar { display: flex; align-items: center; gap: 0.5rem; min-width: 0; border-bottom: 1px solid var(--coat-line); padding: 0.25rem 0.72rem; }
 .coat-target-workbench .coat-target-canvas-toolbar > div { display: flex; gap: 0.22rem; }
+.coat-target-workbench .coat-target-canvas-toolbar > div:first-child,
+.coat-target-workbench .coat-target-canvas-toolbar-actions { flex: 0 0 auto; }
 .coat-target-workbench .coat-target-canvas-toolbar button { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; min-height: 2.4rem; border: 1px solid transparent; border-radius: 0.625rem; background: transparent; color: var(--coat-text); padding: 0.42rem 0.52rem; font-family: inherit; font-size: 1rem; font-weight: 700; }
 .coat-target-workbench .coat-target-canvas-toolbar button:hover,
 .coat-target-workbench .coat-target-canvas-toolbar button[aria-pressed='true'] { border-color: color-mix(in oklab, var(--coat-accent) 52%, var(--coat-line)); background: var(--coat-active); color: var(--coat-accent); }
@@ -1451,6 +1453,15 @@
 .coat-target-workbench .coat-target-export-control > div > button { border-color: var(--coat-line); background: var(--coat-panel-raised); color: var(--coat-text); padding-inline: 0.85rem; }
 .coat-target-workbench .coat-target-multi-select { border-color: var(--coat-line) !important; background: var(--coat-panel-raised) !important; color: var(--coat-text) !important; padding-inline: 0.85rem !important; }
 .coat-target-workbench .coat-target-multi-select[aria-pressed='true'] { border-color: color-mix(in oklab, var(--coat-accent) 54%, var(--coat-line)) !important; background: var(--coat-active) !important; color: var(--coat-accent) !important; }
+.coat-target-workbench .coat-target-selected-element-colour-strip { display: flex; flex: 1 1 auto; min-width: 0; overflow-x: auto; align-items: center; gap: 0.28rem; }
+.coat-target-workbench .coat-target-selected-element-colour-strip::-webkit-scrollbar { height: 0.125rem; }
+@supports not selector(::-webkit-scrollbar) {
+  .coat-target-workbench .coat-target-selected-element-colour-strip { scrollbar-width: thin; }
+}
+.coat-target-workbench .coat-target-selected-element-colour-strip input { width: 1.85rem; height: 1.85rem; flex: 0 0 auto; cursor: pointer; border: 1px solid var(--coat-line); border-radius: 0.5rem; background: var(--coat-panel-raised); padding: 0.12rem; }
+.coat-target-workbench .coat-target-selected-element-colour-strip input::-webkit-color-swatch-wrapper { padding: 0; }
+.coat-target-workbench .coat-target-selected-element-colour-strip input::-webkit-color-swatch { border: 0; border-radius: 0.3rem; }
+.coat-target-workbench .coat-target-selected-element-colour-error { margin: 0; color: var(--coat-danger); font-size: 0.72rem; line-height: 1.35; }
 
 .coat-target-workbench .coat-target-artboard-wrap { display: grid; min-height: 0; place-items: center; overflow: auto; padding: clamp(0.75rem, 2vh, 2rem) clamp(1.25rem, 6vw, 8rem); }
 .coat-target-workbench .coat-target-artboard { display: grid; width: min(30rem, calc((100svh - 12rem) * 0.91), calc(100vw - 28rem)); max-width: 96%; aspect-ratio: var(--coat-canvas-aspect-ratio); place-items: center; border: 1px solid color-mix(in oklab, var(--coat-accent) 38%, var(--coat-line)); border-radius: 1rem; background: #fff; box-shadow: 0 28px 90px -48px var(--workspace-shadow-color); zoom: var(--coat-scene-zoom-level); }
@@ -1535,7 +1546,9 @@
   .coat-target-workbench .coat-workbench-content { grid-template-rows: auto minmax(29rem, 1fr) auto; }
   .coat-target-workbench .coat-target-project-name { display: none; }
   .coat-target-workbench .coat-target-actionbar { padding: 0.4rem 0.75rem; }
-  .coat-target-workbench .coat-target-canvas-toolbar { padding-inline: 0.45rem; }
+  .coat-target-workbench .coat-target-scene { grid-template-rows: auto minmax(0, 1fr); }
+  .coat-target-workbench .coat-target-canvas-toolbar { flex-wrap: wrap; padding-inline: 0.45rem; }
+  .coat-target-workbench .coat-target-selected-element-colour-strip { order: 3; flex: 1 0 100%; width: 100%; max-width: 100%; overflow-x: auto; padding-block: 0.25rem; }
   .coat-target-workbench .coat-target-multi-select { font-size: 0.75rem !important; }
   .coat-target-workbench .coat-target-artboard-wrap { padding: 1rem; }
   .coat-target-workbench .coat-target-artboard { width: min(22rem, 82vw); }

@@ -23,6 +23,7 @@ import { ArrangePanel } from './ArrangePanel';
 import { ReferenceToolRail, type ReferenceToolBranchGlyph, type ReferenceToolTreeBranches } from './ReferenceToolRail';
 import { SettingsPanel } from './SettingsPanel';
 import { ShieldFieldPanel } from './ShieldFieldPanel';
+import { SelectedElementColourStrip } from './SelectedElementColourStrip';
 import { TargetShieldPalette } from './TargetShieldPalette';
 import { TargetFlagPalette } from './TargetFlagPalette';
 import { TargetTokenPalette } from './TargetTokenPalette';
@@ -304,6 +305,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
                 <button aria-label={copy.redo} disabled={!canRedo} onClick={redo} type="button"><Redo2 /></button>
                 <button aria-label={copy.shell.openLocalProjectLibrary} className="coat-target-link-control" onClick={() => setProjectsOpen(true)} ref={projectTriggerRef} type="button"><Link2 /></button>
               </div>
+              <SelectedElementColourStrip locale={locale} />
               <div className="coat-target-canvas-toolbar-actions">
                 <div className="coat-target-export-control"><ExportMenu locale={locale} project={project} /></div>
                 <button aria-pressed={isMultiSelectEnabled} className="coat-target-multi-select" onClick={() => setIsMultiSelectEnabled((value) => !value)} type="button"><UsersRound />{copy.shell.multiSelect}</button>

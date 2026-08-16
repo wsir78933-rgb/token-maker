@@ -4,9 +4,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useI18n, type I18nKey } from '@/lib/i18n';
 import { trackApplyBorder } from '@/lib/analytics';
-import {
-  getVisibleBorderTemplates,
-} from '@/lib/templates/borders';
+import { getPresetIdForBorder, getVisibleBorderTemplates } from '@/lib/templates/borders';
 import { STYLE_PRESETS } from '@/lib/templates/presets';
 import { drawBorderThumbnail } from '@/lib/renderer/borders';
 import { Button } from '@/components/ui/button';
@@ -146,8 +144,10 @@ function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
 
 export function TemplatePanel() {
   const { t, locale } = useI18n();
-  const { activePresetId, exportSize, imageElement, applyPreset, setExportSize } =
+  const { activePresetId, selectedBorderId, exportSize, imageElement, applyPreset, setExportSize } =
     useTemplatePanelState();
+  const selectedBorderCategoryId =
+    activePresetId ?? getPresetIdForBorder(selectedBorderId) ?? 'other';
 
   const handleExport = async () => {
     await downloadCurrentTokenWithSharePrompt(t, locale);
@@ -168,7 +168,7 @@ export function TemplatePanel() {
           <h3 className="text-sm font-semibold text-foreground/90">{t('presets')}</h3>
           <div className="grid grid-cols-3 gap-2 min-[480px]:grid-cols-4 md:grid-cols-6 xl:grid-cols-4">
             {STYLE_PRESETS.map((preset) => {
-              const isActive = activePresetId === preset.id;
+              const isActive = selectedBorderCategoryId === preset.id;
               return (
                 <button
                   key={preset.id}

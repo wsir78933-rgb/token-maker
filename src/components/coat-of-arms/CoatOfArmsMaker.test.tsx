@@ -200,6 +200,30 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.getByRole('button', { name: 'Open local project library' })).toBeDefined();
   });
 
+  it('places the selected-element colour strip between toolbar groups and preserves its mobile row contract', () => {
+    renderWorkbench();
+    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
+    if (!shield) throw new Error('Expected a selectable shield layer');
+    act(() => useCoatProjectStore.getState().setSelectedLayerIds([shield.id]));
+
+    const canvasToolbar = document.querySelector<HTMLElement>('.coat-target-canvas-toolbar');
+    const toolbarGroups = canvasToolbar?.querySelectorAll<HTMLElement>(':scope > div');
+    const colourStrip = screen.getByRole('group', { name: 'Selected element colours' });
+    const toolbarActions = canvasToolbar?.querySelector<HTMLElement>('.coat-target-canvas-toolbar-actions');
+    expect(toolbarGroups?.item(0)?.nextElementSibling).toBe(colourStrip);
+    expect(colourStrip.nextElementSibling).toBe(toolbarActions);
+
+    const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-scene { position: relative; display: grid; min-width: 0; min-height: 0; grid-template-rows: 2.5rem minmax(0, 1fr);');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar > div:first-child,\n.coat-target-workbench .coat-target-canvas-toolbar-actions { flex: 0 0 auto; }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-selected-element-colour-strip { display: flex; flex: 1 1 auto; min-width: 0; overflow-x: auto; align-items: center; gap: 0.28rem; }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-selected-element-colour-strip::-webkit-scrollbar { height: 0.125rem; }');
+    expect(workbenchStyles).toContain('@supports not selector(::-webkit-scrollbar) {\n  .coat-target-workbench .coat-target-selected-element-colour-strip { scrollbar-width: thin; }\n}');
+    expect(workbenchStyles).toContain('@media (max-width: 639px) {\n  .coat-target-workbench .coat-workbench-content');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-scene { grid-template-rows: auto minmax(0, 1fr); }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-selected-element-colour-strip { order: 3; flex: 1 0 100%; width: 100%; max-width: 100%; overflow-x: auto;');
+  });
+
   it('uses the English shared site navigation with Coat Maker active', () => {
     renderWorkbench('en');
 

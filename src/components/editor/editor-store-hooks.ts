@@ -74,6 +74,7 @@ export function useControlPanelState() {
 export function useTemplatePanelState() {
   return {
     activePresetId: useEditorStore((state) => state.activePresetId),
+    selectedBorderId: useEditorStore((state) => state.selectedBorderId),
     exportSize: useEditorStore((state) => state.exportSize),
     imageElement: useEditorStore((state) => state.imageElement),
     applyPreset: useEditorStore((state) => state.applyPreset),
