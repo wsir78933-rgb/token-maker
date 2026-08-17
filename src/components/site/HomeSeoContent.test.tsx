@@ -25,8 +25,12 @@ describe('HomeSeoContent', () => {
       locale: 'en' as const,
       definitionHeading: 'Make a VTT token that stays readable on the map',
       workflowHeading: 'A practical three-step token workflow',
-      useCasesHeading: 'Build tokens for every role in the encounter',
-      shapesHeading: 'Choose the right token shape',
+      useCasesHeading: 'Give Every Character a Look Worthy of Your Campaign',
+      useCasesIntroduction:
+        'A carefully built campaign deserves more than mismatched character portraits. Use Token Maker to give heroes, NPCs, and monsters a shared visual language while preserving the face, faction cue, or silhouette that makes each one distinct.',
+      shapesHeading: 'Circle, Square, or Polygon? Let the Map Decide',
+      shapesIntroduction:
+        'Use circles for portrait-led characters, squares when the composition needs room, and polygons for bosses or objectives. The best shape is the one that stays clear at the scale your players actually see.',
       faqHeading: 'Practical token-making questions',
       feedbackHeading: 'Need a token export fixed?',
       feedbackCta: 'Report an issue',
@@ -45,8 +49,12 @@ describe('HomeSeoContent', () => {
       locale: 'zh' as const,
       definitionHeading: '制作一枚放到 VTT 地图上仍然清楚的 Token',
       workflowHeading: '从立绘到 VTT：三步完成 Token',
-      useCasesHeading: '为遭遇中的每个角色制作合适的 Token',
-      shapesHeading: '如何选择 Token 的形状',
+      useCasesHeading: '让每个角色都配得上你的战役',
+      useCasesIntroduction:
+        '精心准备的战役，不该被风格混乱的角色肖像破坏。使用 Token Maker 为英雄、NPC 和怪物建立统一的视觉语言，同时保留脸部、派系线索或轮廓中最有辨识度的部分。',
+      shapesHeading: '圆形、方形还是多边形？让地图用途来决定',
+      shapesIntroduction:
+        '肖像角色适合圆形，需要保留构图时选择方形，Boss 和任务目标可以使用多边形。最合适的形状，是玩家在实际地图比例下仍能看清的那一种。',
       faqHeading: 'Token 制作中的常见实用问题',
       feedbackHeading: '有问题或建议？',
       feedbackCta: '发送反馈',
@@ -66,7 +74,9 @@ describe('HomeSeoContent', () => {
     definitionHeading,
     workflowHeading,
     useCasesHeading,
+    useCasesIntroduction,
     shapesHeading,
+    shapesIntroduction,
     faqHeading,
     feedbackHeading,
     feedbackCta,
@@ -89,7 +99,13 @@ describe('HomeSeoContent', () => {
     expect(renderedDefinitionHeading).toBeDefined();
     expect(renderedWorkflowHeading.closest('section')?.querySelector('ol')?.children).toHaveLength(3);
     expect(renderedUseCasesHeading.closest('section')?.querySelectorAll('article')).toHaveLength(3);
+    expect(
+      within(renderedUseCasesHeading.closest('section') as HTMLElement).getByText(
+        useCasesIntroduction,
+      ),
+    ).toBeDefined();
     expect(renderedShapesHeading.closest('section')?.querySelectorAll('article')).toHaveLength(3);
+    expect(within(renderedShapesHeading.closest('section') as HTMLElement).getByText(shapesIntroduction)).toBeDefined();
     expect(within(faq).getByRole('heading', { level: 2, name: faqHeading })).toBeDefined();
     expect(within(faq).getAllByRole('article')).toHaveLength(5);
     expect(within(guide).getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual(guideHrefs);

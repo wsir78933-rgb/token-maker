@@ -80,8 +80,8 @@ export const HOME_WORK_GALLERY_IMAGES: readonly HomeWorkGalleryImage[] = [
 const homeWorkGalleryCopyByLocale: Record<SiteLocale, HomeWorkGalleryCopy> = {
   en: {
     eyebrow: 'Token gallery',
-    title: 'See What Your Next Token Could Become',
-    description: 'Explore 54 finished designs and find inspiration across different characters, frames, and moods. Download any work you want to keep.',
+    title: 'Find a Token You Want to Drop Into Your Campaign',
+    description: 'Explore 54 ready-made results across heroes, monsters, borders, and visual styles. When one fits your campaign, download it directly and bring it to the table.',
     loadMoreLabel: 'View More',
     downloadLabel: 'Download work',
     artworkLabel: 'Fantasy token artwork',
@@ -89,8 +89,8 @@ const homeWorkGalleryCopyByLocale: Record<SiteLocale, HomeWorkGalleryCopy> = {
   },
   zh: {
     eyebrow: '作品展示',
-    title: '看看你的下一枚 Token，可以是什么样子',
-    description: '浏览 54 个完成作品，从不同角色、边框和氛围中找到灵感。喜欢的作品也可以直接下载。',
+    title: '找到一枚让你想立刻带进战役的 Token',
+    description: '从 54 个英雄、怪物、边框和视觉风格各异的成品中寻找灵感。遇到适合自己战役的作品，可以直接下载并带到跑团桌上。',
     loadMoreLabel: '查看更多',
     downloadLabel: '下载作品',
     artworkLabel: '奇幻 Token 作品',

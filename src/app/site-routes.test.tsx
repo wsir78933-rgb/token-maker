@@ -7,12 +7,12 @@ import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 
 import EnglishAboutPage, { metadata as englishAboutMetadata } from './(en)/about/page';
 import EnglishChangelogPage, { metadata as englishChangelogMetadata } from './(en)/changelog/page';
-import EnglishHomePage from './(en)/page';
+import EnglishHomePage, { metadata as englishHomeMetadata } from './(en)/page';
 import ChineseAboutPage, { metadata as chineseAboutMetadata } from './(zh)/zh/about/page';
 import ChineseChangelogPage, {
   metadata as chineseChangelogMetadata,
 } from './(zh)/zh/changelog/page';
-import ChineseHomePage from './(zh)/zh/page';
+import ChineseHomePage, { metadata as chineseHomeMetadata } from './(zh)/zh/page';
 import EnglishCoatOfArmsMakerPage, {
   metadata as englishCoatOfArmsMakerMetadata,
 } from './(maker-en)/coat-of-arms-maker/page';
@@ -71,6 +71,24 @@ function parseServerMarkup(markup: string): Document {
   return new DOMParser().parseFromString(markup, 'text/html');
 }
 
+function getVisibleEnglishWords(root: Element): string[] {
+  const visibleRoot = root.cloneNode(true) as Element;
+
+  visibleRoot
+    .querySelectorAll(
+      'script, style, template, noscript, [aria-hidden="true"], [hidden], .sr-only',
+    )
+    .forEach((element) => element.remove());
+
+  return (visibleRoot.textContent?.match(/[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*/g) ?? []).map(
+    (word) => word.toLowerCase(),
+  );
+}
+
+function getExactWordCount(words: readonly string[], targetWord: string): number {
+  return words.filter((word) => word === targetWord).length;
+}
+
 function getRouteStructuredData(serverDocument: Document, scriptId: string): Record<string, unknown> {
   const structuredDataScript = serverDocument.getElementById(scriptId);
 
@@ -80,19 +98,70 @@ function getRouteStructuredData(serverDocument: Document, scriptId: string): Rec
 }
 
 describe('localized homepage routes', () => {
+  it('preserves the approved homepage metadata and hero copy', () => {
+    expect(englishHomeMetadata.title).toEqual({
+      absolute: 'DnD Token Maker | Free VTT Token Maker for Roll20 & Foundry VTT',
+    });
+    expect(englishHomeMetadata.description).toBe(
+      'Create DnD and VTT tokens online for Roll20, Foundry VTT, and Owlbear. Upload character art, add circular or square masks, token borders, text, and export transparent PNG tokens.',
+    );
+    expect(chineseHomeMetadata.title).toEqual({
+      absolute: 'DnD Token Maker | Roll20 与 Foundry VTT 透明 PNG Token 制作器',
+    });
+    expect(chineseHomeMetadata.description).toBe(
+      '在线制作 DnD 和 VTT Token，适合 Roll20、Foundry VTT 与 Owlbear。上传角色立绘，添加圆形或方形遮罩、Token 边框和文字，导出透明 PNG。',
+    );
+
+    const englishDocument = parseServerMarkup(renderToStaticMarkup(<EnglishHomePage />));
+    const chineseDocument = parseServerMarkup(renderToStaticMarkup(<ChineseHomePage />));
+
+    expect(englishDocument.querySelector('h1')?.textContent).toBe(
+      'Free DnD Token Maker for Roll20 and Foundry VTT',
+    );
+    expect(englishDocument.querySelector('h1 + p')?.textContent).toBe(
+      'Create circular, square, and transparent PNG VTT tokens from character art. Add token borders, masks, and text, then export locally for DnD, Roll20, Foundry VTT, and Owlbear.',
+    );
+    expect(chineseDocument.querySelector('h1')?.textContent).toBe(
+      '免费 DnD Token Maker，适合 Roll20 和 Foundry VTT',
+    );
+    expect(chineseDocument.querySelector('h1 + p')?.textContent).toBe(
+      '把角色立绘做成圆形、方形或多边形 VTT Token，添加 Token 边框、遮罩和文字，然后为 DnD、Roll20、Foundry VTT 与 Owlbear 导出透明 PNG。',
+    );
+  });
+
+  it('keeps calibrated maker and stamp counts in the editable English homepage copy', () => {
+    const serverDocument = parseServerMarkup(renderToStaticMarkup(<EnglishHomePage />));
+    const guide = serverDocument.querySelector('[data-testid="home-token-guide"]');
+    const faq = serverDocument.querySelector('[data-testid="home-token-faq"]');
+
+    if (guide === null || faq === null) {
+      throw new Error('SSR English homepage is missing editable SEO content.');
+    }
+
+    const editableContent = serverDocument.createElement('div');
+    editableContent.append(guide.cloneNode(true), faq.cloneNode(true));
+    const visibleWords = getVisibleEnglishWords(editableContent);
+
+    expect(getExactWordCount(visibleWords, 'maker')).toBeGreaterThanOrEqual(21);
+    expect(getExactWordCount(visibleWords, 'maker')).toBeLessThanOrEqual(22);
+    expect(getExactWordCount(visibleWords, 'stamp')).toBeGreaterThanOrEqual(36);
+    expect(getExactWordCount(visibleWords, 'stamp')).toBeLessThanOrEqual(37);
+    expect(getExactWordCount(visibleWords, 'stmap')).toBe(0);
+  });
+
   it.each([
     {
       localeLabel: 'English',
       PageComponent: EnglishHomePage,
       selectedWorkHeading: 'See the finish quality before you decide to keep going',
-      galleryTitle: 'See What Your Next Token Could Become',
+      galleryTitle: 'Find a Token You Want to Drop Into Your Campaign',
       structuredDataScriptId: 'homepage-jsonld',
     },
     {
       localeLabel: 'Chinese',
       PageComponent: ChineseHomePage,
       selectedWorkHeading: '看一眼完成度，再决定要不要继续做',
-      galleryTitle: '看看你的下一枚 Token，可以是什么样子',
+      galleryTitle: '找到一枚让你想立刻带进战役的 Token',
       structuredDataScriptId: 'homepage-zh-jsonld',
     },
   ])('keeps the approved content order after the work gallery on the $localeLabel homepage', ({
