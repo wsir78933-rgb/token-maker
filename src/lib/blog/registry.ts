@@ -42,6 +42,7 @@ import {
   DND_SHATTER_5E_COVER_PATH,
   DND_RACES_COVER_PATH,
   DND_ALIGNMENT_CHART_COVER_PATH,
+  DND_ARTIFICER_COVER_PATH,
   DND_MEANING_COVER_PATH,
   DND_LANGUAGES_COVER_PATH,
   DND_STATS_COVER_PATH,
@@ -130,6 +131,7 @@ import {
 import { dndMeaningArticleHtml, dndMeaningArticleHtmlZh } from '@/lib/blog-posts/dnd-meaning';
 import { dndLanguagesArticleHtml, dndLanguagesArticleHtmlZh } from '@/lib/blog-posts/dnd-languages';
 import { dndStatsArticleHtml, dndStatsArticleHtmlZh } from '@/lib/blog-posts/dnd-stats';
+import { dndArtificerArticleHtml, dndArtificerArticleHtmlZh } from '@/lib/blog-posts/dnd-artificer';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -195,6 +197,7 @@ const DND_ALIGNMENT_CHART_UPDATED_AT = '2026-08-11';
 const DND_MEANING_UPDATED_AT = '2026-08-12';
 const DND_LANGUAGES_UPDATED_AT = '2026-08-14';
 const DND_STATS_UPDATED_AT = '2026-08-15';
+const DND_ARTIFICER_UPDATED_AT = '2026-08-17';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2437,6 +2440,97 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndArtificerArticle: BlogPost = {
+  slug: 'dnd-artificer',
+  title: 'Which DND Artificer Fits Your Party Job?',
+  seoTitle: 'Which DND Artificer Fits Your Party Job?',
+  metaDescription:
+    'Choose an Artificer from the job your party needs: support, front line, ranged firepower, companion play, maps, or horror science.',
+  excerpt:
+    'Choose a current Artificer source, pick the party job you want to cover, compare all six subclasses, and make the character readable on a VTT map.',
+  publishedAt: DND_ARTIFICER_UPDATED_AT,
+  updatedAt: DND_ARTIFICER_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Artificer Guide',
+  coverImage: DND_ARTIFICER_COVER_PATH,
+  coverAlt:
+    'A fantasy DND Artificer at a workshop bench with brass tools, a glowing blueprint, and a small construct companion',
+  bodyHtml: dndArtificerArticleHtml,
+  faqItems: [
+    {
+      question: 'Where is the current Artificer published?',
+      answer:
+        "The revised Artificer is published in the 2025 book Eberron: Forge of the Artificer and is compatible with the 2024 rules. It is not in the 2024 Player's Handbook.",
+    },
+    {
+      question: 'What ability score matters most for an Artificer?',
+      answer:
+        "Intelligence is the Artificer's spellcasting ability in the revised class. After that, choose scores that support the job, armor, movement, and survival needs of the character you are actually building.",
+    },
+    {
+      question: 'Which Artificer subclass is best?',
+      answer:
+        'There is no universal best choice. Pick the subclass whose job fills a real gap in your party and fits the kind of turns you enjoy taking.',
+    },
+    {
+      question: 'Is Cartographer an official Artificer subclass?',
+      answer:
+        'Yes. Cartographer appears with the revised Artificer in Eberron: Forge of the Artificer.',
+    },
+    {
+      question: 'Can I use a 2014 Artificer in a 2024 campaign?',
+      answer:
+        'Ask the DM. Older Artificer material is common, but a table using the revised class should decide exactly which source and compatibility rules apply before character creation.',
+    },
+  ],
+  relatedSlugs: ['dnd-5e-armorer', 'dnd-stats', 'dnd-classes-explained'],
+};
+
+const dndArtificerArticleZh: BlogPost = {
+  slug: 'dnd-artificer',
+  title: '哪个 DND Artificer 最适合你的队伍职责？',
+  seoTitle: '哪个 DND Artificer 最适合你的队伍职责？',
+  metaDescription:
+    '按队伍实际需要选择 Artificer：支援、前线、远程火力、构装伙伴、地图探索或惊悚工坊。',
+  excerpt:
+    '先确定当前 Artificer 来源，再按队伍职责选择六个子职业之一，完成能在 VTT 地图上清楚辨认的角色构筑。',
+  publishedAt: DND_ARTIFICER_UPDATED_AT,
+  updatedAt: DND_ARTIFICER_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: 'Artificer 指南',
+  coverImage: DND_ARTIFICER_COVER_PATH,
+  coverAlt: '一名 DND Artificer 坐在工坊工作台前，身边有黄铜工具、发光蓝图和小型构装伙伴',
+  bodyHtml: dndArtificerArticleHtmlZh,
+  faqItems: [
+    {
+      question: '当前 Artificer 收录在哪里？',
+      answer:
+        '修订后的 Artificer 收录在 2025 年出版的 Eberron: Forge of the Artificer，并兼容 2024 规则；它不在 2024 年的 Player\'s Handbook 本体中。',
+    },
+    {
+      question: 'Artificer 最重要的属性是什么？',
+      answer:
+        '修订版 Artificer 用智力施法。之后再根据角色实际承担的职责、护甲、移动方式和生存需求决定其他属性。',
+    },
+    {
+      question: '哪个 Artificer 子职业最好？',
+      answer:
+        '没有适合所有队伍的最佳子职业。选能补上真实队伍缺口、也符合你想反复进行的回合类型的那个。',
+    },
+    {
+      question: 'Cartographer 是官方 Artificer 子职业吗？',
+      answer:
+        '是。Cartographer 与修订后的 Artificer 一起收录在 Eberron: Forge of the Artificer。',
+    },
+    {
+      question: '2024 战役还能用 2014 版 Artificer 吗？',
+      answer:
+        '先问 DM。旧版 Artificer 很常见，但使用修订版的桌子应该在建卡前明确具体来源和兼容方式。',
+    },
+  ],
+  relatedSlugs: ['dnd-5e-armorer', 'dnd-stats', 'dnd-classes-explained'],
+};
+
 const dndStatsArticle: BlogPost = {
   slug: 'dnd-stats',
   title: 'All Six DnD Stats Explained for Your First Character',
@@ -3912,10 +4006,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

@@ -32,6 +32,7 @@ export const DND_SHORTSWORD_COVER_PATH = '/blog/covers/en/dnd-shortsword-guide.w
 export const DND_SILVERY_BARBS_COVER_PATH = '/blog/covers/en/dnd-silvery-barbs-guide.webp';
 export const DND_SWORD_SHEATHS_COVER_PATH = '/blog/covers/en/dnd-sword-sheaths-guide.webp';
 export const DND_5E_ARMORER_COVER_PATH = '/blog/covers/en/dnd-5e-armorer-guide.webp';
+export const DND_ARTIFICER_COVER_PATH = '/blog/covers/en/dnd-artificer-guide.webp';
 export const DND_DEATH_KNIGHT_COVER_PATH = '/blog/covers/en/dnd-death-knight-guide.webp';
 export const DND_FLUMPH_COVER_PATH = '/blog/covers/en/dnd-flumph-guide.webp';
 export const DND_DWELF_COVER_PATH = '/blog/covers/en/dwelf-dnd-guide.webp';
@@ -233,6 +234,12 @@ export const DND_ARMORER_2014_SOURCE_URL =
   'https://www.dndbeyond.com/posts/912-artificer-101-armorer-from-tashas-cauldron-of';
 export const DND_ARMORER_2025_SOURCE_URL =
   'https://www.dndbeyond.com/posts/2109-forge-your-story-with-5-inventive-artificer';
+export const DND_ARTIFICER_2024_SOURCE_URL = 'https://www.dndbeyond.com/sources/dnd/efota';
+export const DND_ARTIFICER_SUBCLASSES_SOURCE_URL =
+  'https://www.dndbeyond.com/posts/2109-forge-your-story-with-5-inventive-artificer';
+export const DND_RAVENLOFT_SOURCE_URL = 'https://www.dndbeyond.com/sources/dnd/rthw';
+export const DND_ARTIFICER_REANIMATOR_SOURCE_URL =
+  'https://www.dndbeyond.com/posts/2191-become-the-monster-in-the-shadows-with-7';
 export const DND_DEATH_KNIGHT_2025_SOURCE_URL =
   'https://www.dndbeyond.com/posts/1913-updates-in-the-monster-manual-2025';
 export const DND_DEATH_KNIGHT_2025_ERRATA_URL =
@@ -304,6 +311,10 @@ export const DND_MEANING_OFFICIAL_GUIDE_URL =
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');
 export const ZH_DND_CLASSES_PATH = getLocalizedPath('zh', '/blog/dnd-classes-explained');
+export const EN_DND_5E_ARMORER_PATH = getLocalizedPath('en', '/blog/dnd-5e-armorer');
+export const ZH_DND_5E_ARMORER_PATH = getLocalizedPath('zh', '/blog/dnd-5e-armorer');
+export const EN_DND_STATS_PATH = getLocalizedPath('en', '/blog/dnd-stats');
+export const ZH_DND_STATS_PATH = getLocalizedPath('zh', '/blog/dnd-stats');
 export const EN_DND_RACES_PATH = getLocalizedPath('en', '/blog/dnd-races');
 export const ZH_DND_RACES_PATH = getLocalizedPath('zh', '/blog/dnd-races');
 export const EN_DND_ALIGNMENT_CHART_PATH = getLocalizedPath('en', '/blog/dnd-alignment-chart');
