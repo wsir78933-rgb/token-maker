@@ -46,6 +46,7 @@ import {
   DND_MEANING_COVER_PATH,
   DND_LANGUAGES_COVER_PATH,
   DND_STATS_COVER_PATH,
+  DND_PALADIN_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -132,6 +133,7 @@ import { dndMeaningArticleHtml, dndMeaningArticleHtmlZh } from '@/lib/blog-posts
 import { dndLanguagesArticleHtml, dndLanguagesArticleHtmlZh } from '@/lib/blog-posts/dnd-languages';
 import { dndStatsArticleHtml, dndStatsArticleHtmlZh } from '@/lib/blog-posts/dnd-stats';
 import { dndArtificerArticleHtml, dndArtificerArticleHtmlZh } from '@/lib/blog-posts/dnd-artificer';
+import { dndPaladinArticleHtml, dndPaladinArticleHtmlZh } from '@/lib/blog-posts/dnd-paladin';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -198,6 +200,7 @@ const DND_MEANING_UPDATED_AT = '2026-08-12';
 const DND_LANGUAGES_UPDATED_AT = '2026-08-14';
 const DND_STATS_UPDATED_AT = '2026-08-15';
 const DND_ARTIFICER_UPDATED_AT = '2026-08-17';
+const DND_PALADIN_UPDATED_AT = '2026-08-18';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2440,6 +2443,97 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const dndPaladinArticle: BlogPost = {
+  slug: 'dnd-paladin',
+  title: 'DnD Paladin Turn Plan: When to Heal, Smite, or Protect',
+  seoTitle: 'DnD Paladin Turn Plan: When to Heal, Smite, or Protect',
+  metaDescription:
+    'Use a simple combat decision tree for attacks, Lay on Hands, Divine Smite, concentration, and positioning without wasting your action economy.',
+  excerpt:
+    'Use a simple combat decision tree for attacks, Lay on Hands, Divine Smite, concentration, and positioning without wasting your action economy.',
+  publishedAt: DND_PALADIN_UPDATED_AT,
+  updatedAt: DND_PALADIN_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Paladin Guide',
+  coverImage: DND_PALADIN_COVER_PATH,
+  coverAlt:
+    'Weathered DnD Paladin in worn plate armor holding a helmet beside a narrow window in a dark stone chamber',
+  bodyHtml: dndPaladinArticleHtml,
+  faqItems: [
+    {
+      question: 'Does a DnD Paladin need a god?',
+      answer:
+        'A fifth-edition Paladin is defined by an oath. The character can worship a god, serve a church, or frame the oath without a deity. Agree with the DM on how divine power and oaths work in the campaign setting.',
+    },
+    {
+      question: 'What are the best stats for a Paladin?',
+      answer:
+        "Strength and Charisma are the current class's primary abilities. Constitution is the usual next priority for a front-line character. A Dexterity build needs an approved weapon, armor, and multiclass plan rather than copying the standard heavy-armor setup.",
+    },
+    {
+      question: 'Which Paladin oath is best?',
+      answer:
+        'There is no universal best oath. Devotion is a clear protector, Glory rewards mobile heroic play, Ancients adds durability and control, and Vengeance focuses pressure on priority targets. Pick the oath whose job and promise will matter in your campaign.',
+    },
+    {
+      question: 'How often can a 2024 Paladin use Divine Smite?',
+      answer:
+        "Divine Smite is an always-prepared Bonus Action spell used immediately after a melee weapon or Unarmed Strike hit. Paladin's Smite grants one casting without a spell slot per Long Rest; additional castings require available spell slots and follow the 2024 spellcasting rules.",
+    },
+    {
+      question: 'Is Paladin beginner friendly?',
+      answer:
+        'Paladin is beginner friendly when you use a default attack-and-position turn and treat healing, Smite, and oath tools as deliberate branches. It becomes harder when every round starts with a search through the full spell list.',
+    },
+  ],
+  relatedSlugs: ['paladin-2024-spells-dnd', 'dnd-stats', 'dnd-armor-guide', 'dnd-classes-explained'],
+};
+
+const dndPaladinArticleZh: BlogPost = {
+  slug: 'dnd-paladin',
+  title: '龙与地下城圣武士回合计划：何时治疗、惩击或保护队友？',
+  seoTitle: '龙与地下城圣武士回合计划：何时治疗、惩击或保护队友？',
+  metaDescription:
+    '用简单的战斗决策流程安排攻击、圣疗、神圣惩击、维持专注与站位，在治疗、爆发和保护队友之间做出清楚选择，避免浪费行动资源。',
+  excerpt:
+    '用简单的战斗决策流程安排攻击、圣疗、神圣惩击、维持专注与站位，在治疗、爆发和保护队友之间做出清楚选择，避免浪费行动资源。',
+  publishedAt: DND_PALADIN_UPDATED_AT,
+  updatedAt: DND_PALADIN_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: 'Paladin 指南',
+  coverImage: DND_PALADIN_COVER_PATH,
+  coverAlt: '一名身穿磨损板甲的 DND Paladin 在昏暗石室窗边手按胸甲，臂弯抱着头盔',
+  bodyHtml: dndPaladinArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND Paladin 圣武士必须信仰神明吗？',
+      answer:
+        '第五版 Paladin 的力量核心是誓言。角色可以信仰神明、服务教会，也可以不依附特定神祇来解释誓言。开团前与 DM 商定战役世界里的神圣力量和誓言怎样运作。',
+    },
+    {
+      question: 'Paladin 最适合优先提高哪些属性？',
+      answer:
+        'Strength 与 Charisma 是当前职业列出的主要属性，前线角色通常再优先考虑 Constitution。Dexterity 构筑需要获准使用的武器、护甲与多职业计划，不能直接照搬标准重甲配置。',
+    },
+    {
+      question: '哪个 Paladin 誓言最好？',
+      answer:
+        '没有适合所有队伍的最佳誓言。Devotion 是清楚的保护者，Glory 奖励机动的英雄式行动，Ancients 增加耐久与控制，Vengeance 集中压迫高优先级目标。选择会在本场战役中真正影响职责与承诺的誓言。',
+    },
+    {
+      question: '2024 Paladin 多久能使用一次 Divine Smite？',
+      answer:
+        "Divine Smite 是近战武器或徒手打击命中后立刻使用的常备 Bonus Action 法术。Paladin's Smite 每次 Long Rest 提供一次不消耗法术位的施放；之后的施放需要可用法术位，并遵守 2024 施法规则。",
+    },
+    {
+      question: 'Paladin 适合新手吗？',
+      answer:
+        '先准备一套默认攻击与站位回合，再把治疗、Smite 和誓言能力当成明确分支时，Paladin 很适合新手。如果每一轮都从完整法术表开始搜索，操作难度会迅速上升。',
+    },
+  ],
+  relatedSlugs: ['paladin-2024-spells-dnd', 'dnd-stats', 'dnd-armor-guide', 'dnd-classes-explained'],
+};
+
 const dndArtificerArticle: BlogPost = {
   slug: 'dnd-artificer',
   title: 'Which DND Artificer Fits Your Party Job?',
@@ -4006,10 +4100,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

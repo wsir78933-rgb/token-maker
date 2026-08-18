@@ -39,7 +39,9 @@ const DND_MEANING_SLUG = 'dnd-meaning';
 const DND_LANGUAGES_SLUG = 'dnd-languages';
 const DND_STATS_SLUG = 'dnd-stats';
 const DND_ARTIFICER_SLUG = 'dnd-artificer';
+const DND_PALADIN_SLUG = 'dnd-paladin';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_PALADIN_SLUG,
   DND_ARTIFICER_SLUG,
   DND_STATS_SLUG,
   DND_LANGUAGES_SLUG,
@@ -49,7 +51,6 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DND_SHATTER_5E_SLUG,
   DND_GNOME_NAMES_SLUG,
   DND_MAUL_SLUG,
-  DND_QUARTERSTAFF_SLUG,
 ];
 
 describe('published blog body voice', () => {
@@ -1876,18 +1877,18 @@ describe('dnd hex blog post', () => {
 });
 
 describe('paladin 2024 spells dnd blog post', () => {
-  test('moves the second blog page boundary after publishing dnd artificer', () => {
+  test('moves the second blog page boundary after publishing dnd paladin', () => {
     expect(getBlogPageCount('en')).toBe(5);
     expect(getBlogPageCount('zh')).toBe(5);
 
     expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_QUARTERSTAFF_SLUG,
       SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
     ]);
 
     expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
+      DND_QUARTERSTAFF_SLUG,
       SPECTATOR_DND_SLUG,
-      FIREBOLT_DND_5E_SLUG,
     ]);
   });
 

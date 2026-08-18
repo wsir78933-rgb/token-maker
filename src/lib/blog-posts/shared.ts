@@ -47,6 +47,7 @@ export const DND_ALIGNMENT_CHART_COVER_PATH = '/blog/covers/en/dnd-alignment-cha
 export const DND_MEANING_COVER_PATH = '/blog/covers/en/dnd-meaning-guide.webp';
 export const DND_LANGUAGES_COVER_PATH = '/blog/covers/en/dnd-languages-guide.webp';
 export const DND_STATS_COVER_PATH = '/blog/covers/en/dnd-stats-guide.webp';
+export const DND_PALADIN_COVER_PATH = '/blog/covers/en/dnd-paladin-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -115,6 +116,8 @@ export const DND_SHATTER_5E_RADIUS_IMAGE_PATH =
   '/blog/inline/dnd-shatter-5e/shatter-blast-radius.webp';
 export const DND_SHATTER_5E_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-shatter-5e/shatter-video-placeholder.webp';
+export const DND_PALADIN_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-paladin/dnd-paladin-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -179,6 +182,11 @@ export const DND_GLAIVE_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/
 export const DND_GLAIVE_VIDEO_URL = 'https://www.youtube.com/watch?v=zAJmvbQXm1c';
 export const PALADIN_2024_CLASS_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Paladin';
 export const PALADIN_2024_SPELL_DESCRIPTIONS_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions';
+export const DND_PALADIN_CURRENT_CLASS_URL = 'https://www.dndbeyond.com/classes/2190881-paladin';
+export const DND_PALADIN_2024_CHANGES_URL =
+  'https://www.dndbeyond.com/posts/1749-2024-paladin-vs-2014-paladin-whats-new';
+export const DND_PALADIN_OATHS_GUIDE_URL = 'https://pages.roll20.net/guide-to-paladin-oaths';
+export const DND_PALADIN_VIDEO_URL = 'https://www.youtube.com/watch?v=Ch5vWBPCrl0';
 export const DND_2024_CASTING_SPELLS_RULES_URL = 'https://roll20.net/compendium/dnd5e/Rules%3ACasting%20Spells';
 export const PALADIN_2024_SPELLS_DND_VIDEO_URL = 'https://www.youtube.com/watch?v=_vx-oqXOabw';
 export const DND_HEX_2024_RULES_URL = 'https://www.dndbeyond.com/spells/2618988-hex';
@@ -315,6 +323,8 @@ export const EN_DND_5E_ARMORER_PATH = getLocalizedPath('en', '/blog/dnd-5e-armor
 export const ZH_DND_5E_ARMORER_PATH = getLocalizedPath('zh', '/blog/dnd-5e-armorer');
 export const EN_DND_STATS_PATH = getLocalizedPath('en', '/blog/dnd-stats');
 export const ZH_DND_STATS_PATH = getLocalizedPath('zh', '/blog/dnd-stats');
+export const EN_PALADIN_2024_SPELLS_DND_PATH = getLocalizedPath('en', '/blog/paladin-2024-spells-dnd');
+export const ZH_PALADIN_2024_SPELLS_DND_PATH = getLocalizedPath('zh', '/blog/paladin-2024-spells-dnd');
 export const EN_DND_RACES_PATH = getLocalizedPath('en', '/blog/dnd-races');
 export const ZH_DND_RACES_PATH = getLocalizedPath('zh', '/blog/dnd-races');
 export const EN_DND_ALIGNMENT_CHART_PATH = getLocalizedPath('en', '/blog/dnd-alignment-chart');
