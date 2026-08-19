@@ -37,6 +37,12 @@ function getLayerTransformX(layer: CoatLayer): number {
   return layer.transform.x;
 }
 
+function requireShieldLayer(project: ReturnType<typeof createDefaultProject>, layerId: string) {
+  const shield = project.layers.find((layer) => layer.id === layerId);
+  if (!shield || shield.type !== 'shield') throw new Error(`Expected shield layer: ${layerId}`);
+  return shield;
+}
+
 describe('coat project commands', () => {
   it('persists a bundled static WebP material without adding a local upload', () => {
     const project = applyProjectCommand(createDefaultProject('en'), {
@@ -236,6 +242,103 @@ describe('coat project commands', () => {
       type: 'update-layer', layerId: crown.id,
       patch: { colorReplacements: { '#F5E6A1': '#1855A5' } },
     })).toThrow('Invalid unsupported SVG part colour: #F5E6A1');
+  });
+
+  it('persists heater-002 shield colour replacements in the same patch that selects the material', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+
+    const updated = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002', colorReplacements: { '#B4282E': '#004E89' } },
+    });
+
+    expect(requireShieldLayer(updated, shield.id)).toMatchObject({
+      assetId: 'heater-002',
+      colorReplacements: { '#B4282E': '#004E89' },
+    });
+  });
+
+  it('rejects an unknown heater-002 shield paint with the paint in the error', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002', colorReplacements: { '#FFFFFF': '#004E89' } },
+    })).toThrow('#FFFFFF');
+  });
+
+  it('copies heater-002 shield colour replacements onto a duplicated layer', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const withReplacements = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002', colorReplacements: { '#B4282E': '#004E89' } },
+    });
+
+    const duplicated = applyProjectCommand(withReplacements, {
+      type: 'duplicate-layers',
+      sourceLayerIds: [shield.id],
+      newLayerIds: ['copied-heater-002'],
+    });
+    const sourceShield = requireShieldLayer(withReplacements, shield.id);
+    if (!sourceShield.colorReplacements) throw new Error('Expected source colour replacements');
+    sourceShield.colorReplacements['#B4282E'] = '#FFFFFF';
+
+    expect(requireShieldLayer(duplicated, 'copied-heater-002')).toMatchObject({
+      type: 'shield',
+      assetId: 'heater-002',
+      colorReplacements: { '#B4282E': '#004E89' },
+    });
+  });
+
+  it('drops shield colour replacements when the material changes without a replacement patch', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const withReplacements = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002', colorReplacements: { '#B4282E': '#004E89' } },
+    });
+
+    const switched = applyProjectCommand(withReplacements, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-003' },
+    });
+
+    expect(requireShieldLayer(switched, shield.id)).toMatchObject({ assetId: 'heater-003' });
+    expect(requireShieldLayer(switched, shield.id)).not.toHaveProperty('colorReplacements');
+  });
+
+  it('keeps supplied colour replacements when switching heater-002 to heater-003', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const withReplacements = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002', colorReplacements: { '#B4282E': '#004E89' } },
+    });
+
+    const switched = applyProjectCommand(withReplacements, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-003', colorReplacements: { '#2452A3': '#123456' } },
+    });
+
+    expect(requireShieldLayer(switched, shield.id)).toMatchObject({
+      assetId: 'heater-003',
+      colorReplacements: { '#2452A3': '#123456' },
+    });
   });
 
   it('adds a validated local freehand drawing layer without external SVG input', () => {
@@ -895,6 +998,49 @@ describe('coat project commands', () => {
     expect(applyProjectCommand(replaced, {
       type: 'remove-custom-palette-color', color: '#123456',
     }).palette).not.toContain('#123456');
+  });
+
+  it('remaps heater-002 shield colour replacement values with replace-all-colour', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const withReplacements = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: {
+        assetId: 'heater-002',
+        colorReplacements: { '#B4282E': '#B11F24' },
+        field: { ...shield.field, colors: ['#B11F24'] },
+      },
+    });
+
+    const replaced = applyProjectCommand(withReplacements, {
+      type: 'replace-all-colour', fromColor: '#B11F24', toColor: '#123456',
+    });
+
+    expect(requireShieldLayer(replaced, shield.id)).toMatchObject({
+      colorReplacements: { '#B4282E': '#123456' },
+      field: { colors: ['#123456'] },
+    });
+  });
+
+  it('replaces a heater-002 paint through replace-layer-colour', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const withMaterial = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002' },
+    });
+
+    const replaced = applyProjectCommand(withMaterial, {
+      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#B4282E', toColor: '#004E89',
+    });
+
+    expect(requireShieldLayer(replaced, shield.id)).toMatchObject({
+      colorReplacements: { '#B4282E': '#004E89' },
+    });
   });
 
   it('replaces matching regional and structural shield colours without changing unrelated field data', () => {

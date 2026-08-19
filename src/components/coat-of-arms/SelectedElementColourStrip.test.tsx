@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { createDefaultProject } from '@/lib/coat-of-arms/assets';
 import { applyProjectCommand } from '@/lib/coat-of-arms/commands';
+import { getEditableLayerColours } from '@/lib/coat-of-arms/layer-colours';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CoatProject } from '@/lib/coat-of-arms/types';
 import { SelectedElementColourStrip } from './SelectedElementColourStrip';
@@ -116,6 +117,26 @@ describe('SelectedElementColourStrip', () => {
     expect(colourInputs.map((input) => input.getAttribute('value'))).toEqual(['#1855A5', '#B11F24']);
   });
 
+  it('renders colour inputs for a selected heater-002 library shield', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected a default shield layer');
+    const withMaterial = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002' },
+    });
+    renderStrip('en', withMaterial, [shield.id]);
+
+    const colourGroup = screen.getByRole('group', { name: 'Selected element colours' });
+    const colourValues = [...colourGroup.querySelectorAll<HTMLInputElement>('input[type="color"]')]
+      .map((input) => input.getAttribute('value'));
+    expect(colourValues).toEqual(expect.arrayContaining(['#B4282E', '#E1B432']));
+    if (colourValues.includes('#111111')) {
+      expect(colourValues).toContain('#111111');
+    }
+  });
+
   it.each([
     ['en', 'Selected element colours', 'Change element colour: #1855A5'],
     ['zh', '选中元素颜色', '更改元素颜色：#1855A5'],
@@ -141,6 +162,21 @@ describe('SelectedElementColourStrip', () => {
       type: 'replace-layer-colour', layerId: shieldId, fromColor: '#1855A5', toColor: '#004e89',
     });
     expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('keeps the same colour input mounted after a live change so the native picker can continue', () => {
+    const { project, shieldId } = createSupportedSelectionProject();
+    renderStrip('en', project, [shieldId]);
+
+    const colourInput = screen.getByLabelText('Change element colour: #1855A5');
+    fireEvent.change(colourInput, { target: { value: '#004E89' } });
+
+    expect(colourInput.isConnected).toBe(true);
+    fireEvent.change(colourInput, { target: { value: '#112233' } });
+
+    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.id === shieldId);
+    if (!shield) throw new Error(`Expected shield layer: ${shieldId}`);
+    expect(getEditableLayerColours(shield)).toContain('#112233');
   });
 
   it('does not dispatch when a colour change differs only by case', () => {

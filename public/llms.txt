@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [D&D Player's Handbook: Choose 5e (2014) or 5.5e (2024)](https://www.tokenmaker.one/blog/players-handbook-dnd-5e): Choose the handbook that matches the campaign, keep the two rulesets separate, use official free rules, and prepare only what session one needs.
 - [DnD Paladin Turn Plan: When to Heal, Smite, or Protect](https://www.tokenmaker.one/blog/dnd-paladin): Use a simple combat decision tree for attacks, Lay on Hands, Divine Smite, concentration, and positioning without wasting your action economy.
 - [Which DND Artificer Fits Your Party Job?](https://www.tokenmaker.one/blog/dnd-artificer): Choose an Artificer from the job your party needs: support, front line, ranged firepower, companion play, maps, or horror science.
 - [All Six DnD Stats Explained for Your First Character](https://www.tokenmaker.one/blog/dnd-stats): Understand all six ability scores, calculate modifiers, compare the three 2024 generation methods, and assign a level 1 array without mixing rulesets.
@@ -71,6 +72,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND《玩家手册》怎么选：5e 与 5.5e 版本指南](https://www.tokenmaker.one/zh/blog/players-handbook-dnd-5e): 按战役版本选择《玩家手册》，分清 2014 年 5e 与 2024 年 5.5e 的建卡边界，并使用官方免费规则完成首场游戏准备。
 - [龙与地下城圣武士回合计划：何时治疗、惩击或保护队友？](https://www.tokenmaker.one/zh/blog/dnd-paladin): 用简单的战斗决策流程安排攻击、圣疗、神圣惩击、维持专注与站位，在治疗、爆发和保护队友之间做出清楚选择，避免浪费行动资源。
 - [哪个 DND Artificer 最适合你的队伍职责？](https://www.tokenmaker.one/zh/blog/dnd-artificer): 按队伍实际需要选择 Artificer：支援、前线、远程火力、构装伙伴、地图探索或惊悚工坊。
 - [新手 DND 六项属性详解：完成你的第一个角色](https://www.tokenmaker.one/zh/blog/dnd-stats): 读懂六项属性与调整值，对比标准数组、27 点购点和 4d6 去最低，再按职业完成 1 级角色分配。

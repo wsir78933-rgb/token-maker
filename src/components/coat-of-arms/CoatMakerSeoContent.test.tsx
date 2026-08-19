@@ -113,8 +113,8 @@ describe('CoatMakerSeoContent', () => {
     const density = calculateKeyphraseDensity(semanticText, keyphrase, locale);
 
     if (locale === 'zh') {
-      expect(countChineseTokens(semanticText)).toBe(413);
-      expect(density).toBeCloseTo(10 / 413, 10);
+      expect(countChineseTokens(semanticText)).toBe(419);
+      expect(density).toBeCloseTo(10 / 419, 10);
     }
 
     expect(density).toBeGreaterThanOrEqual(0.02);

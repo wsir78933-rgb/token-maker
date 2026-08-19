@@ -273,6 +273,8 @@ export interface ShieldLayer extends CoatLayerBase {
   customMaskUploadId?: string;
   /** Locally authored, bounded M/L/Z silhouette that takes precedence over a library outline. */
   customOutlinePath?: string;
+  /** Source-paint keyed overrides for bundled static shield materials. */
+  colorReplacements?: Record<string, string>;
   field: CoatField;
   transform: CanvasTransform;
 }

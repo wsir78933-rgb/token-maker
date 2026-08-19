@@ -47,6 +47,7 @@ import {
   DND_LANGUAGES_COVER_PATH,
   DND_STATS_COVER_PATH,
   DND_PALADIN_COVER_PATH,
+  PLAYERS_HANDBOOK_DND_5E_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -134,6 +135,10 @@ import { dndLanguagesArticleHtml, dndLanguagesArticleHtmlZh } from '@/lib/blog-p
 import { dndStatsArticleHtml, dndStatsArticleHtmlZh } from '@/lib/blog-posts/dnd-stats';
 import { dndArtificerArticleHtml, dndArtificerArticleHtmlZh } from '@/lib/blog-posts/dnd-artificer';
 import { dndPaladinArticleHtml, dndPaladinArticleHtmlZh } from '@/lib/blog-posts/dnd-paladin';
+import {
+  playersHandbookDnd5eArticleHtml,
+  playersHandbookDnd5eArticleHtmlZh,
+} from '@/lib/blog-posts/players-handbook-dnd-5e';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -201,6 +206,7 @@ const DND_LANGUAGES_UPDATED_AT = '2026-08-14';
 const DND_STATS_UPDATED_AT = '2026-08-15';
 const DND_ARTIFICER_UPDATED_AT = '2026-08-17';
 const DND_PALADIN_UPDATED_AT = '2026-08-18';
+const PLAYERS_HANDBOOK_DND_5E_UPDATED_AT = '2026-08-19';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -2443,6 +2449,97 @@ const spectatorDndArticle: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-counterspell', 'dnd-death-knight', 'dnd-dagger'],
 };
 
+const playersHandbookDnd5eArticle: BlogPost = {
+  slug: 'players-handbook-dnd-5e',
+  title: "D&D Player's Handbook: Choose 5e (2014) or 5.5e (2024)",
+  seoTitle: "D&D 5e Player's Handbook: 2014 or 2024, Which One?",
+  metaDescription:
+    "Compare the 2014 5e and 2024 5.5e books, confirm your campaign's ruleset, find the legal free rules, and read the right sections before play.",
+  excerpt:
+    'Choose the handbook that matches your campaign, keep 2014 5e and 2024 5.5e rules separate, use legal free rules, and read only what session one needs.',
+  publishedAt: PLAYERS_HANDBOOK_DND_5E_UPDATED_AT,
+  updatedAt: PLAYERS_HANDBOOK_DND_5E_UPDATED_AT,
+  readTime: '13 min read',
+  coverLabel: 'Rules Guide',
+  coverImage: PLAYERS_HANDBOOK_DND_5E_COVER_PATH,
+  coverAlt:
+    "Two generic fantasy rulebooks labeled 5e 2014 and 5.5e 2024 beside dice and a character sheet, illustrating a Player's Handbook version choice",
+  bodyHtml: playersHandbookDnd5eArticleHtml,
+  faqItems: [
+    {
+      question: "Is the 2014 Player's Handbook still valid?",
+      answer:
+        'Yes. D&D Beyond labels the 2014 book as legacy 5e content and continues to support it. It remains the correct rulebook for a campaign that uses the 2014 rules. A table can move to 5.5e, but the newer handbook does not retroactively change an existing campaign.',
+    },
+    {
+      question: "Is the 2024 Player's Handbook D&D 5e or 5.5e?",
+      answer:
+        'D&D Beyond currently labels the 2024 revised rules as 5.5e and the 2014 rules as 5e. The 2024 book still belongs to the fifth-edition rules family and is designed to work with older fifth-edition material under its compatibility guidance.',
+    },
+    {
+      question: 'Can 2014 and 2024 characters play in the same campaign?',
+      answer:
+        'They can when the DM permits it and the table follows the compatibility guidance. Each character should use one base ruleset, and every older option should have an approved source. Compatibility is not permission to combine the strongest wording from both versions.',
+    },
+    {
+      question: "Does every player need a Player's Handbook?",
+      answer:
+        'No rule requires every person to own a separate copy. Every player does need reliable access to the rules and character options used at the table. Official free rules can cover a complete starting character, while a shared or personal handbook gives the group more options and faster reference.',
+    },
+    {
+      question: "Can I download the D&D 5e Player's Handbook PDF for free?",
+      answer:
+        "Wizards of the Coast does not offer the complete paid Player's Handbook as a free PDF. Use the official 2014 Basic Rules or 2024 Free Rules for legal free access. Avoid unexplained full-book downloads, which can be unauthorized, outdated, or missing errata.",
+    },
+  ],
+  relatedSlugs: ['dnd-stats', 'dnd-classes-explained', 'dnd-races', 'dnd-paladin'],
+};
+
+const playersHandbookDnd5eArticleZh: BlogPost = {
+  slug: 'players-handbook-dnd-5e',
+  title: 'DND《玩家手册》怎么选：5e 与 5.5e 版本指南',
+  seoTitle: 'DND《玩家手册》指南：5e 与 5.5e 版本怎么选',
+  metaDescription:
+    '分清 2014 年 5e 与 2024 年 5.5e《玩家手册》，按当前战役选择规则，了解首场游戏前该读哪些章节，以及哪里能合法查看免费规则。',
+  excerpt:
+    '按战役版本选择《玩家手册》，分清 2014 年 5e 与 2024 年 5.5e 的建卡边界，使用官方免费规则并完成首场游戏准备。',
+  publishedAt: PLAYERS_HANDBOOK_DND_5E_UPDATED_AT,
+  updatedAt: PLAYERS_HANDBOOK_DND_5E_UPDATED_AT,
+  readTime: '13 分钟阅读',
+  coverLabel: '规则手册',
+  coverImage: PLAYERS_HANDBOOK_DND_5E_COVER_PATH,
+  coverAlt: '两本分别标注 5e 2014 和 5.5e 2024 的奇幻规则书放在骰子与角色卡旁，用于说明《玩家手册》版本选择',
+  bodyHtml: playersHandbookDnd5eArticleHtmlZh,
+  faqItems: [
+    {
+      question: '2014 版《玩家手册》现在还能用吗？',
+      answer:
+        '能。D&D Beyond 把 2014 版标为旧版 5e 内容，并继续提供支持。使用 2014 规则的战役仍应以它为准；除非整桌同意迁移，2024 版不会自动改写正在进行的战役。',
+    },
+    {
+      question: '2024 版《玩家手册》属于 5e 还是 5.5e？',
+      answer:
+        'D&D Beyond 目前把 2024 修订规则标为 5.5e，把 2014 规则标为 5e。2024 版仍属于第五版规则体系，并通过兼容规则使用较早的第五版内容。',
+    },
+    {
+      question: '2014 版和 2024 版角色能在同一场战役里玩吗？',
+      answer:
+        '可以，但必须得到 DM 许可并遵守兼容说明。每个角色应以一套基础规则为准，每个旧选项都要有获准来源。兼容不等于能把两个版本里最有利的措辞拼到一起。',
+    },
+    {
+      question: '每位玩家都要有一本《玩家手册》吗？',
+      answer:
+        '规则没有要求每人单独拥有一本。每位玩家都需要稳定查到本桌使用的规则和角色选项。官方免费规则足以完成一个起始角色，共用或个人手册则能提供更多选项并提高查询效率。',
+    },
+    {
+      question: '能免费下载完整的 DND 5e《玩家手册》PDF 吗？',
+      answer:
+        'Wizards of the Coast 没有把完整付费《玩家手册》作为免费 PDF 提供。需要合法免费内容时，使用官方 2014 基础规则或 2024 免费规则。来路不明的整书下载可能未经授权、已经过时或缺少勘误。',
+    },
+  ],
+  relatedSlugs: ['dnd-stats', 'dnd-classes-explained', 'dnd-races', 'dnd-paladin'],
+};
+
 const dndPaladinArticle: BlogPost = {
   slug: 'dnd-paladin',
   title: 'DnD Paladin Turn Plan: When to Heal, Smite, or Protect',
@@ -4100,10 +4197,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

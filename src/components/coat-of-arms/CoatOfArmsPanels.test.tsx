@@ -500,6 +500,24 @@ describe('CoatOfArmsPanels', () => {
     expect(useCoatProjectStore.getState().project.uploads).toHaveLength(1);
   });
 
+  it('does not expose crop editor controls for a selected layer', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    const lion = project.layers.at(-1);
+    if (!lion) throw new Error('Expected lion charge');
+    renderPanels(project);
+    fireEvent.click(screen.getByLabelText(new RegExp(`Select layer ${lion.id}`)));
+
+    expect(screen.getByRole('group', { name: 'Flip selected layer' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Flip horizontal' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Flip vertical' })).toBeDefined();
+    expect(screen.queryByRole('group', { name: 'Flip & crop' })).toBeNull();
+    expect(screen.queryByLabelText('Crop left')).toBeNull();
+    expect(screen.queryByLabelText('Crop top')).toBeNull();
+    expect(screen.queryByLabelText('Crop width')).toBeNull();
+    expect(screen.queryByLabelText('Crop height')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Reset crop' })).toBeNull();
+  });
+
   it('sets a selected charge’s precise field region and clipping in the position controls', () => {
     let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
     const shield = project.layers.find((layer) => layer.type === 'shield');
@@ -540,9 +558,9 @@ describe('CoatOfArmsPanels', () => {
   it('applies local canvas dimensions through the settings panel', () => {
     renderPanels();
 
-    fireEvent.change(screen.getByLabelText('Canvas width'), { target: { value: '1600' } });
-    fireEvent.change(screen.getByLabelText('Canvas height'), { target: { value: '900' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Apply canvas size' }));
+    fireEvent.change(screen.getByLabelText('Width'), { target: { value: '1600' } });
+    fireEvent.change(screen.getByLabelText('Height'), { target: { value: '900' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
 
     expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1600, height: 900 });
   });

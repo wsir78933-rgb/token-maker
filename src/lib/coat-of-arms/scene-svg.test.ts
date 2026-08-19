@@ -1,10 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultProject } from './assets';
 import { applyProjectCommand } from './commands';
 import { renderCoatSceneSvg } from './scene-svg';
+import * as shieldMaterialPaints from './shield-material-paints';
 
 describe('coat scene SVG renderer', () => {
-  it('renders a selected bundled SVG shield material as its authored image', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+  it('renders a selected bundled SVG shield material as inlined authored markup', () => {
     const baseProject = createDefaultProject('en');
     const shield = baseProject.layers.find((layer) => layer.type === 'shield');
     if (!shield || shield.type !== 'shield') throw new Error('Expected default shield layer');
@@ -17,7 +21,88 @@ describe('coat scene SVG renderer', () => {
     const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
 
     expect(svg).toContain('data-bundled-shield-material="true"');
-    expect(svg).toContain('href="/coat-assets/materials/shields/shield/shield-001.svg"');
+    expect(svg).toContain('id="clip-shield-001-1"');
+    expect(svg).toContain('url(#clip-shield-001-1)');
+    expect(svg).toContain('fill="#E1B432"');
+    expect(svg).not.toContain('href="/coat-assets/materials/shields/shield/shield-001.svg"');
+  });
+
+  it('inlines recoloured heater-002 paints inside a nested shield material svg', () => {
+    const baseProject = createDefaultProject('en');
+    const shield = baseProject.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected default shield layer');
+    const project = applyProjectCommand(baseProject, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: {
+        assetId: 'heater-002',
+        colorReplacements: { '#B4282E': '#004E89', '#E1B432': '#F5E6A1' },
+      },
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('data-bundled-shield-material="true"');
+    expect(svg).toContain('fill="#004E89"');
+    expect(svg).toContain('fill="#F5E6A1"');
+    expect(svg).not.toContain('fill="#B4282E"');
+    expect(svg).not.toContain('fill="#E1B432"');
+    expect(svg).toContain('id="clip-heater-002-1"');
+    expect(svg).toContain('url(#clip-heater-002-1)');
+    expect(svg).not.toContain('id="clip-heater-002"');
+  });
+
+  it('namespaces clipPath ids when two heater-002 shields share the scene', () => {
+    const baseProject = createDefaultProject('en');
+    const shield = baseProject.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected default shield layer');
+    const withFirst = applyProjectCommand(baseProject, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002' },
+    });
+    const project = applyProjectCommand(withFirst, { type: 'add-layer', assetId: 'heater-002' });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('id="clip-heater-002-1"');
+    expect(svg).toContain('id="clip-heater-002-2"');
+    expect(svg).toContain('url(#clip-heater-002-1)');
+    expect(svg).toContain('url(#clip-heater-002-2)');
+    expect(svg).not.toContain('id="clip-heater-002"');
+  });
+
+  it('rejects missing shield material markup with the asset id', () => {
+    vi.spyOn(shieldMaterialPaints, 'getShieldMaterialSvgMarkup').mockReturnValue('');
+    const baseProject = createDefaultProject('en');
+    const shield = baseProject.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected default shield layer');
+    const project = applyProjectCommand(baseProject, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002' },
+    });
+
+    expect(() => renderCoatSceneSvg(project, { width: 512, height: 512 })).toThrow('heater-002');
+  });
+
+  it('strips an XML declaration from inlined shield material markup', () => {
+    vi.spyOn(shieldMaterialPaints, 'getShieldMaterialSvgMarkup').mockReturnValue(
+      '<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><rect fill="#B4282E"/></svg>',
+    );
+    const baseProject = createDefaultProject('en');
+    const shield = baseProject.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected default shield layer');
+    const project = applyProjectCommand(baseProject, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'heater-002' },
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).not.toContain('<?xml');
+    expect(svg).toContain('fill="#B4282E"');
   });
 
   it('renders a bundled WebP charge inside the shield field clip', () => {

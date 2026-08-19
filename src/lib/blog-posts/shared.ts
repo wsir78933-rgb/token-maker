@@ -48,6 +48,8 @@ export const DND_MEANING_COVER_PATH = '/blog/covers/en/dnd-meaning-guide.webp';
 export const DND_LANGUAGES_COVER_PATH = '/blog/covers/en/dnd-languages-guide.webp';
 export const DND_STATS_COVER_PATH = '/blog/covers/en/dnd-stats-guide.webp';
 export const DND_PALADIN_COVER_PATH = '/blog/covers/en/dnd-paladin-guide.webp';
+export const PLAYERS_HANDBOOK_DND_5E_COVER_PATH =
+  '/blog/covers/en/players-handbook-dnd-5e-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -118,6 +120,8 @@ export const DND_SHATTER_5E_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-shatter-5e/shatter-video-placeholder.webp';
 export const DND_PALADIN_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-paladin/dnd-paladin-video-placeholder.webp';
+export const PLAYERS_HANDBOOK_DND_5E_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/players-handbook-dnd-5e/players-handbook-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -315,6 +319,17 @@ export const DND_ALIGNMENT_CHART_OFFICIAL_GUIDE_URL =
   'https://www.dndbeyond.com/posts/1869-breaking-down-alignment-in-d-d';
 export const DND_MEANING_OFFICIAL_GUIDE_URL =
   'https://www.dndbeyond.com/posts/1480-what-is-dungeons-dragons';
+export const DND_2014_PLAYERS_HANDBOOK_URL =
+  'https://marketplace.dndbeyond.com/rulebooks/players-handbook';
+export const DND_2024_CORE_RULEBOOK_BUNDLE_URL =
+  'https://marketplace.dndbeyond.com/LP-CRB-2024/core-rulebook-bundle';
+export const DND_2024_FREE_RULES_ARTICLE_URL =
+  'https://www.dndbeyond.com/posts/1804-start-playing-today-with-the-2024-d-d-free-rules';
+export const DND_2024_PLAYERS_HANDBOOK_UPDATES_URL =
+  'https://www.dndbeyond.com/posts/1810-updates-in-the-players-handbook-2024';
+export const DND_BEYOND_CHANGELOG_URL = 'https://www.dndbeyond.com/changelog';
+export const DND_2024_PLAYERS_HANDBOOK_ERRATA_URL =
+  'https://media.dndbeyond.com/compendium-images/errata/PHB-24/PHB-2024_v1.pdf';
 
 // Localized paths
 export const EN_DND_CLASSES_PATH = getLocalizedPath('en', '/blog/dnd-classes-explained');

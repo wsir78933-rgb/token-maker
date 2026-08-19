@@ -3,18 +3,27 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getAssetColorSources, getCoatAsset, listAssetsByKind } from '@/lib/coat-of-arms/assets';
 import {
-  getDefaultEditorPreferences,
-  loadEditorPreferences,
-  updateEditorPreferences,
+  editorCanvasPresets,
+  getMatchingEditorCanvasPresetId,
+  requireEditorColorPickerMode,
+  type EditorColorPickerMode,
   type EditorPreferences,
 } from '@/lib/coat-of-arms/editor-preferences';
+import { useEditorPreferencesStore } from '@/lib/coat-of-arms/editor-preferences-session';
 import { fieldPatterns } from '@/lib/coat-of-arms/field-pattern';
+import {
+  heraldicSwatchGroups,
+  listHeraldicSwatches,
+  type HeraldicSwatch,
+  type HeraldicSwatchGroupId,
+} from '@/lib/coat-of-arms/heraldic-swatches';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
-import type { CoatLayer, CoatLocale, FieldPattern } from '@/lib/coat-of-arms/types';
+import type { BackgroundLayer, CoatLayer, CoatLocale, FieldPattern } from '@/lib/coat-of-arms/types';
 import { usePanelCommandError } from './usePanelCommandError';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
 const backgroundPatterns: readonly FieldPattern[] = fieldPatterns;
+const BACKGROUND_CHARGE_ASSET_ID = 'material-animal-lion-rampant';
 
 export type ColorPanelSection = 'used-colours' | 'background';
 
@@ -41,15 +50,85 @@ function colorsUsedByProject(layers: CoatLayer[], palette: string[]) {
   return [...colors];
 }
 
+function getBackgroundFillLayer(layers: CoatLayer[]): BackgroundLayer {
+  const backgroundLayer = layers.find((layer) => layer.type === 'background');
+  if (!backgroundLayer || backgroundLayer.type !== 'background') throw new Error('Missing background layer');
+  return backgroundLayer;
+}
+
+function getBackgroundDecorationLayers(layers: CoatLayer[]): CoatLayer[] {
+  const shieldIndex = layers.findIndex((layer) => layer.type === 'shield');
+  if (shieldIndex === -1) throw new Error('Missing shield layer');
+  return layers.slice(1, shieldIndex).filter((layer) => layer.type !== 'background');
+}
+
+function getBackgroundFillColour(backgroundLayer: BackgroundLayer): string {
+  return backgroundLayer.fill ?? getBackgroundAssetFill(backgroundLayer.assetId);
+}
+
+function renderHeraldicSwatchButtons(
+  swatches: readonly HeraldicSwatch[],
+  selectedHex: string,
+  swatchLabel: (hex: string) => string,
+  onPickSwatch: (hex: string) => void,
+) {
+  return (
+    <ul className="flex flex-wrap gap-2">
+      {swatches.map((swatch) => <li key={swatch.id}>
+        <button
+          aria-label={swatchLabel(swatch.hex)}
+          aria-pressed={selectedHex.toUpperCase() === swatch.hex.toUpperCase()}
+          className="h-7 w-7 border border-[color:var(--border)]"
+          style={{ backgroundColor: swatch.hex }}
+          type="button"
+          onClick={() => onPickSwatch(swatch.hex)}
+        />
+      </li>)}
+    </ul>
+  );
+}
+
+function HeraldicColourSwatches({
+  colorPickerMode,
+  groupHeadings,
+  onPickSwatch,
+  selectedHex,
+  swatchLabel,
+}: {
+  colorPickerMode: EditorColorPickerMode;
+  groupHeadings: Record<HeraldicSwatchGroupId, string>;
+  onPickSwatch: (hex: string) => void;
+  selectedHex: string;
+  swatchLabel: (hex: string) => string;
+}) {
+  requireEditorColorPickerMode(colorPickerMode);
+  if (colorPickerMode === 'simple') {
+    return renderHeraldicSwatchButtons(listHeraldicSwatches(), selectedHex, swatchLabel, onPickSwatch);
+  }
+  return (
+    <>
+      {heraldicSwatchGroups.map((group) => (
+        <section key={group.id}>
+          <h4>{groupHeadings[group.id]}</h4>
+          {renderHeraldicSwatchButtons(group.swatches, selectedHex, swatchLabel, onPickSwatch)}
+        </section>
+      ))}
+    </>
+  );
+}
+
 /** Edits colour and background values only by sending validated commands to the project store. */
 export function ColorBackgroundPanel({ locale, sectionToFocus }: ColorBackgroundPanelProps) {
   const copy = getCoatWorkbenchCopy(locale).panels;
   const project = useCoatProjectStore((state) => state.project);
+  const setSelectedLayerIds = useCoatProjectStore((state) => state.setSelectedLayerIds);
+  const preferences = useEditorPreferencesStore((state) => state.preferences);
+  const loadFromBrowser = useEditorPreferencesStore((state) => state.loadFromBrowser);
+  const patchPreferences = useEditorPreferencesStore((state) => state.patchPreferences);
   const { error, reportError, run } = usePanelCommandError(locale);
   const [customColor, setCustomColor] = useState('#004E89');
   const [fromColor, setFromColor] = useState('#B11F24');
   const [toColor, setToColor] = useState('#004E89');
-  const [preferences, setPreferences] = useState<EditorPreferences>(getDefaultEditorPreferences);
   const [gradientAngle, setGradientAngle] = useState('0');
   const [gradientStartColor, setGradientStartColor] = useState('#004E89');
   const [gradientEndColor, setGradientEndColor] = useState('#B11F24');
@@ -57,14 +136,17 @@ export function ColorBackgroundPanel({ locale, sectionToFocus }: ColorBackground
   const backgroundSectionRef = useRef<HTMLElement>(null);
   const usedColors = useMemo(() => colorsUsedByProject(project.layers, project.palette), [project.layers, project.palette]);
   const background = project.layers.find((layer) => layer.type === 'background');
+  const showUsedColours = sectionToFocus !== 'background';
+  const showBackground = sectionToFocus !== 'used-colours';
+  const decorationLayers = showBackground ? getBackgroundDecorationLayers(project.layers) : [];
+  const canvasPresetId = getMatchingEditorCanvasPresetId(project.canvas.width, project.canvas.height);
 
   useEffect(() => {
     let isCurrent = true;
     void Promise.resolve().then(() => {
       try {
-        const storedPreferences = loadEditorPreferences();
+        const storedPreferences = loadFromBrowser();
         if (!isCurrent) return;
-        setPreferences(storedPreferences);
         if (storedPreferences.backgroundGradient) {
           setGradientAngle(String(storedPreferences.backgroundGradient.angle));
           setGradientStartColor(storedPreferences.backgroundGradient.startColor);
@@ -75,7 +157,7 @@ export function ColorBackgroundPanel({ locale, sectionToFocus }: ColorBackground
       }
     });
     return () => { isCurrent = false; };
-  }, [reportError]);
+  }, [loadFromBrowser, reportError]);
 
   useEffect(() => {
     if (sectionToFocus === 'used-colours') usedColoursSectionRef.current?.focus();
@@ -84,7 +166,7 @@ export function ColorBackgroundPanel({ locale, sectionToFocus }: ColorBackground
 
   const updatePreferences = (update: (currentPreferences: EditorPreferences) => EditorPreferences): boolean => {
     try {
-      setPreferences(updateEditorPreferences(update));
+      patchPreferences(update);
       return true;
     } catch (caught) {
       reportError(caught);
@@ -123,12 +205,55 @@ export function ColorBackgroundPanel({ locale, sectionToFocus }: ColorBackground
       updatePreferences((currentPreferences) => ({ ...currentPreferences, backgroundGradient }));
     }
   };
+  const applyFill = (fill: string) => {
+    const backgroundLayer = getBackgroundFillLayer(project.layers);
+    run({
+      type: 'set-background',
+      assetId: backgroundLayer.assetId,
+      motif: backgroundLayer.motif,
+      opacity: 1,
+      fill,
+      gradient: backgroundLayer.gradient ?? null,
+    });
+  };
+  const applyTransparentBackground = () => {
+    const backgroundLayer = getBackgroundFillLayer(project.layers);
+    run({
+      type: 'set-background',
+      assetId: backgroundLayer.assetId,
+      motif: backgroundLayer.motif,
+      opacity: backgroundLayer.opacity === 0 ? 1 : 0,
+      fill: backgroundLayer.fill,
+      gradient: backgroundLayer.gradient ?? null,
+    });
+  };
+  const applyCanvasPreset = (presetId: string) => {
+    if (presetId === 'custom') return;
+    const preset = editorCanvasPresets.find((candidate) => candidate.id === presetId);
+    if (!preset) throw new Error(`Unknown canvas preset: ${presetId}`);
+    if (run({ type: 'set-canvas-size', width: preset.width, height: preset.height })) {
+      updatePreferences((currentPreferences) => ({ ...currentPreferences, canvasPreset: preset.id }));
+    }
+  };
+  const addChargeBehindShield = () => {
+    try {
+      if (!run({ type: 'add-layer', assetId: BACKGROUND_CHARGE_ASSET_ID })) return;
+      const addedLayer = useCoatProjectStore.getState().project.layers.at(-1);
+      if (!addedLayer || addedLayer.type !== 'charge' || addedLayer.assetId !== BACKGROUND_CHARGE_ASSET_ID) {
+        throw new Error(`Unable to add background charge: ${BACKGROUND_CHARGE_ASSET_ID}`);
+      }
+      if (!run({ type: 'move-layer-ids', direction: 'back', layerIds: [addedLayer.id] })) return;
+      setSelectedLayerIds([addedLayer.id]);
+    } catch (caught) {
+      reportError(caught);
+    }
+  };
 
   return (
     <section aria-label={copy.coloursAndBackground} className="space-y-2">
       <h2>{copy.coloursAndBackground}</h2>
       {error ? <p role="alert">{error}</p> : null}
-      <section aria-label={copy.usedColours} ref={usedColoursSectionRef} tabIndex={-1}>
+      {showUsedColours ? <section aria-label={copy.usedColours} ref={usedColoursSectionRef} tabIndex={-1}>
         <p>{copy.usedColours}</p>
         <ul aria-label={copy.usedColours}>{usedColors.map((color) => <li key={color}>{color}</li>)}</ul>
         <label>
@@ -150,11 +275,40 @@ export function ColorBackgroundPanel({ locale, sectionToFocus }: ColorBackground
           <input aria-label={copy.replaceColourWith} value={toColor} onChange={(event) => setToColor(event.target.value)} />
         </label>
         <button type="button" onClick={() => run({ type: 'replace-all-colour', fromColor, toColor })}>{copy.replaceAllColours}</button>
-      </section>
-      {background?.type === 'background' ? <section aria-label={copy.backgroundColour} ref={backgroundSectionRef} tabIndex={-1}>
+      </section> : null}
+      {showBackground && background?.type === 'background' ? <section aria-label={copy.backgroundColour} ref={backgroundSectionRef} tabIndex={-1}>
+        <div className="flex items-center justify-between gap-2">
+          <h3>{copy.backgroundColour}</h3>
+          <button aria-pressed={background.opacity === 0} type="button" onClick={applyTransparentBackground}>{copy.transparentBackground}</button>
+        </div>
+        <HeraldicColourSwatches
+          colorPickerMode={preferences.colorPickerMode}
+          groupHeadings={copy.heraldicSwatchGroups}
+          onPickSwatch={applyFill}
+          selectedHex={background.opacity === 0 ? '' : getBackgroundFillColour(background)}
+          swatchLabel={copy.backgroundColourSwatch}
+        />
+        <label>
+          {copy.customBackgroundColour}
+          <input aria-label={copy.customBackgroundColour} type="color" value={getBackgroundFillColour(background)} onChange={(event) => applyFill(event.target.value)} />
+        </label>
+        <label>
+          {copy.canvasSize}
+          <select aria-label={copy.canvasSize} value={canvasPresetId} onChange={(event) => applyCanvasPreset(event.target.value)}>
+            {canvasPresetId === 'custom' ? <option value="custom">{`${project.canvas.width}×${project.canvas.height}`}</option> : null}
+            {editorCanvasPresets.map((preset) => <option key={preset.id} value={preset.id}>{copy.canvasPresetNames[preset.id]}</option>)}
+          </select>
+        </label>
+        <section aria-label={copy.backgroundLayers}>
+          <h3>{copy.backgroundLayers}</h3>
+          {decorationLayers.length === 0 ? <p>{copy.noBackgroundLayers}</p> : <ul aria-label={copy.backgroundLayers}>
+            {decorationLayers.map((layer) => <li key={layer.id}>{copy.layerType(layer.type)}</li>)}
+          </ul>}
+          <button type="button" onClick={addChargeBehindShield}>{copy.addBackgroundCharge}</button>
+        </section>
         <label>
           {copy.backgroundColour}
-          <select aria-label={copy.backgroundColour} value={background.assetId} onChange={(event) => run({ type: 'set-background', assetId: event.target.value, motif: background.motif, opacity: background.opacity, fill: background.fill })}>
+          <select aria-label={`${copy.backgroundColour} asset`} value={background.assetId} onChange={(event) => run({ type: 'set-background', assetId: event.target.value, motif: background.motif, opacity: background.opacity, fill: background.fill })}>
             {listAssetsByKind('background').map((asset) => <option key={asset.id} value={asset.id}>{asset.name[locale]}</option>)}
           </select>
         </label>
@@ -167,10 +321,6 @@ export function ColorBackgroundPanel({ locale, sectionToFocus }: ColorBackground
         <label>
           {copy.backgroundOpacity}
           <input aria-label={copy.backgroundOpacity} type="range" min="0" max="1" step="0.05" value={background.opacity} onChange={(event) => run({ type: 'set-background', assetId: background.assetId, motif: background.motif, opacity: Number(event.target.value), fill: background.fill })} />
-        </label>
-        <label>
-          {copy.customBackgroundColour}
-          <input aria-label={copy.customBackgroundColour} type="color" value={background.fill ?? getBackgroundAssetFill(background.assetId)} onChange={(event) => run({ type: 'set-background', assetId: background.assetId, motif: background.motif, opacity: background.opacity, fill: event.target.value })} />
         </label>
         <fieldset><legend>{copy.backgroundGradient}</legend>
           <label>{copy.backgroundGradientAngle}<input aria-label={copy.backgroundGradientAngle} type="number" min="0" max="360" value={gradientAngle} onChange={(event) => setGradientAngle(event.target.value)} /></label>
@@ -187,7 +337,7 @@ export function ColorBackgroundPanel({ locale, sectionToFocus }: ColorBackground
           {copy.backgroundVisible}
         </label>
       </section> : null}
-      <div aria-label={copy.perLayerColours}>
+      {showUsedColours ? <div aria-label={copy.perLayerColours}>
         {project.layers.filter((layer) => layer.type === 'ordinary' || layer.type === 'charge' || layer.type === 'top' || layer.type === 'draw' || layer.type === 'text').map((layer) => (
           <div key={layer.id}>
             <label>
@@ -200,7 +350,7 @@ export function ColorBackgroundPanel({ locale, sectionToFocus }: ColorBackground
             </label>) : null}
           </div>
         ))}
-      </div>
+      </div> : null}
     </section>
   );
 }

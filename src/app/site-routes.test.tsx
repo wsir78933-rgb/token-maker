@@ -52,6 +52,7 @@ const DND_MEANING_SLUG = 'dnd-meaning';
 const DND_LANGUAGES_SLUG = 'dnd-languages';
 const DND_STATS_SLUG = 'dnd-stats';
 const DND_ARTIFICER_SLUG = 'dnd-artificer';
+const PLAYERS_HANDBOOK_DND_5E_SLUG = 'players-handbook-dnd-5e';
 
 function getStructuredDataTypes(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -352,7 +353,7 @@ describe('coat maker routes', () => {
       schemaFeatures: [
         'Shield styles and field patterns',
         'Charges, text, layers, and drawing tools',
-        'Local project saving and export options',
+        'PNG, JPEG, PDF, and batch export options',
       ],
       schemaId: 'coat-maker-en-web-application-jsonld',
       twitterDescription:
@@ -371,7 +372,7 @@ describe('coat maker routes', () => {
       schemaFeatures: [
         '盾牌样式与底纹',
         '图形、文字、图层和绘图工具',
-        '本地项目保存与导出选项',
+        'PNG、JPEG、PDF 与批量导出选项',
       ],
       schemaId: 'coat-maker-zh-web-application-jsonld',
       twitterDescription: '使用这款免费纹章制作器，在浏览器中自定义盾牌、颜色、图形、文字和图层，并导出 PNG、JPEG 或 PDF 文件。',
@@ -505,6 +506,15 @@ describe('coat maker routes', () => {
 });
 
 describe('blog static routes', () => {
+  it("emits bilingual Player's Handbook detail params", () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({
+      slug: PLAYERS_HANDBOOK_DND_5E_SLUG,
+    });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({
+      slug: PLAYERS_HANDBOOK_DND_5E_SLUG,
+    });
+  });
+
   it('emits bilingual dnd artificer detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_ARTIFICER_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_ARTIFICER_SLUG });

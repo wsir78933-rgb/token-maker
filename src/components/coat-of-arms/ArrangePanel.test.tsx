@@ -41,7 +41,7 @@ describe('ArrangePanel', () => {
     expect(new Set(project.layers.filter((layer) => selectedLayerIds.includes(layer.id)).map((layer) => layer.groupId))).toEqual(new Set([project.groups[0]?.id]));
   });
 
-  it('retains the former precise position, crop, and flip controls for one selected movable layer', () => {
+  it('retains precise position and flip controls for one selected movable layer', () => {
     const selectedLayerId = useCoatProjectStore.getState().selectedLayerIds[0];
     if (!selectedLayerId) throw new Error('Expected selected charge');
     useCoatProjectStore.getState().setSelectedLayerIds([selectedLayerId]);
@@ -49,11 +49,28 @@ describe('ArrangePanel', () => {
 
     fireEvent.change(screen.getByLabelText('Position X'), { target: { value: '12' } });
     fireEvent.click(screen.getByRole('button', { name: 'Flip horizontal' }));
-    fireEvent.change(screen.getByLabelText('Crop width'), { target: { value: '80' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Flip vertical' }));
 
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.id === selectedLayerId)).toMatchObject({
-      transform: { x: 12, flipHorizontal: true, crop: { x: 0, y: 0, width: 80, height: 110 } },
+      transform: { x: 12, flipHorizontal: true, flipVertical: true },
     });
+  });
+
+  it('does not expose crop editor controls for a selected layer', () => {
+    const selectedLayerId = useCoatProjectStore.getState().selectedLayerIds[0];
+    if (!selectedLayerId) throw new Error('Expected selected charge');
+    useCoatProjectStore.getState().setSelectedLayerIds([selectedLayerId]);
+    render(<ArrangePanel locale="en" />);
+
+    expect(screen.getByRole('group', { name: 'Flip selected layer' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Flip horizontal' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Flip vertical' })).toBeDefined();
+    expect(screen.queryByRole('group', { name: 'Flip & crop' })).toBeNull();
+    expect(screen.queryByLabelText('Crop left')).toBeNull();
+    expect(screen.queryByLabelText('Crop top')).toBeNull();
+    expect(screen.queryByLabelText('Crop width')).toBeNull();
+    expect(screen.queryByLabelText('Crop height')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Reset crop' })).toBeNull();
   });
 
   it('applies the aspect-locked selected size through one typed project command', () => {

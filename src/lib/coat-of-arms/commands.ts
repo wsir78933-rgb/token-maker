@@ -825,6 +825,9 @@ function replaceAllColour(project: CoatProject, fromColor: string, toColor: stri
         return {
           ...layer,
           field: replaceShieldFieldColours(layer.field, replaceColor),
+          ...(layer.colorReplacements ? {
+            colorReplacements: Object.fromEntries(Object.entries(layer.colorReplacements).map(([sourceColor, replacementColor]) => [sourceColor, replaceColor(replacementColor)])),
+          } : {}),
         };
       }
       if (layer.type === 'ordinary' || layer.type === 'charge' || layer.type === 'top' || layer.type === 'draw' || layer.type === 'text') {
@@ -997,6 +1000,16 @@ function applyLayerPatch(layer: CoatLayer, patch: CoatLayerPatch): CoatLayer {
     const { pathData, ...remainingPatch } = clonedPatch;
     return { ...layer, ...remainingPatch, path: pathData };
   }
+  if (
+    layer.type === 'shield'
+    && clonedPatch.assetId !== undefined
+    && clonedPatch.assetId !== layer.assetId
+    && !('colorReplacements' in clonedPatch)
+  ) {
+    const shieldWithoutColourReplacements = { ...layer };
+    delete shieldWithoutColourReplacements.colorReplacements;
+    return { ...shieldWithoutColourReplacements, ...clonedPatch };
+  }
   return { ...layer, ...clonedPatch } as CoatLayer;
 }
 
@@ -1075,7 +1088,7 @@ function assertLayerPatch(layer: CoatLayer, patch: unknown): asserts patch is Co
     throw new Error(`Invalid layer patch: ${String(patch)}`);
   }
   const allowedPatchKeys: Record<CoatLayer['type'], readonly string[]> = {
-    background: ['assetId', 'motif', 'opacity', 'fill'], shield: ['assetId', 'field', 'transform'],
+    background: ['assetId', 'motif', 'opacity', 'fill'], shield: ['assetId', 'field', 'transform', 'colorReplacements'],
     ordinary: ['assetId', 'color', 'colorReplacements', 'transform'], charge: ['assetId', 'color', 'colorReplacements', 'transform'], top: ['assetId', 'color', 'colorReplacements', 'transform'],
     draw: ['pathData', 'color', 'strokeWidth', 'transform'],
     image: ['opacity', 'transform'], text: ['text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'alignment', 'path', 'transform'],
@@ -1087,7 +1100,10 @@ function assertLayerPatch(layer: CoatLayer, patch: unknown): asserts patch is Co
   }
   if ('assetId' in patch) assertLayerAsset(layer.type, patch.assetId);
   if ('color' in patch) assertColor(patch.color, 'layer color');
-  if ('colorReplacements' in patch) assertLayerColorReplacements(layer, patch.colorReplacements);
+  if ('colorReplacements' in patch) {
+    const layerForColourValidation = typeof patch.assetId === 'string' ? { ...layer, assetId: patch.assetId } : layer;
+    assertLayerColorReplacements(layerForColourValidation, patch.colorReplacements);
+  }
   if ('field' in patch) assertCoatField(patch.field);
   if ('text' in patch) assertTextLength(patch.text);
   if ('fontSize' in patch) assertPositiveFiniteNumber(patch.fontSize, 'text layer font size');
@@ -1118,8 +1134,8 @@ function assertCoatLayer(layer: unknown, uploadById: Map<string, LocalUpload>): 
       assertLayerAsset('background', layer.assetId); assertFieldPattern(layer.motif); assertOpacity(layer.opacity, 'background opacity'); if ('fill' in layer) assertColor(layer.fill, 'background fill'); if ('gradient' in layer) assertBackgroundGradient(layer.gradient);
       return;
     case 'shield':
-      assertExactKeys(layer, ['id', 'type', 'assetId', 'customMaskUploadId', 'customOutlinePath', 'field', 'transform', 'visible', 'locked', 'groupId'], 'shield layer');
-      assertLayerAsset('shield', layer.assetId); if ('customMaskUploadId' in layer) { assertNonEmptyString(layer.customMaskUploadId, 'custom shield mask upload id'); if (!uploadById.has(layer.customMaskUploadId)) throw new Error(`Invalid custom shield mask upload: ${layer.customMaskUploadId}`); } if ('customOutlinePath' in layer) assertCustomShieldOutlinePath(layer.customOutlinePath); assertCoatField(layer.field); assertTransform(layer.transform); return;
+      assertExactKeys(layer, ['id', 'type', 'assetId', 'customMaskUploadId', 'customOutlinePath', 'colorReplacements', 'field', 'transform', 'visible', 'locked', 'groupId'], 'shield layer');
+      assertLayerAsset('shield', layer.assetId); if ('customMaskUploadId' in layer) { assertNonEmptyString(layer.customMaskUploadId, 'custom shield mask upload id'); if (!uploadById.has(layer.customMaskUploadId)) throw new Error(`Invalid custom shield mask upload: ${layer.customMaskUploadId}`); } if ('customOutlinePath' in layer) assertCustomShieldOutlinePath(layer.customOutlinePath); if ('colorReplacements' in layer) assertAssetColorReplacements(layer.assetId, layer.colorReplacements); assertCoatField(layer.field); assertTransform(layer.transform); return;
     case 'ordinary':
     case 'charge':
     case 'top':
@@ -1715,7 +1731,7 @@ function assertTextFontWeight(fontWeight: unknown): asserts fontWeight is TextFo
 }
 
 function assertLayerColorReplacements(layer: CoatLayer, colorReplacements: unknown): asserts colorReplacements is Record<string, string> {
-  if (layer.type !== 'ordinary' && layer.type !== 'charge' && layer.type !== 'top') {
+  if (layer.type !== 'ordinary' && layer.type !== 'charge' && layer.type !== 'top' && layer.type !== 'shield') {
     throw new Error(`Layer does not support SVG part colour replacement: ${layer.id}`);
   }
   assertAssetColorReplacements(layer.assetId, colorReplacements);
@@ -1800,7 +1816,7 @@ function cloneLayerForDuplicate(layer: CoatLayer, newLayerId: string): CoatLayer
     case 'background':
       return { ...metadata, type: 'background', assetId: layer.assetId, motif: layer.motif, opacity: layer.opacity, ...(layer.fill ? { fill: layer.fill } : {}), ...(layer.gradient ? { gradient: { ...layer.gradient } } : {}) };
     case 'shield':
-      return { ...metadata, type: 'shield', assetId: layer.assetId, ...(layer.customMaskUploadId ? { customMaskUploadId: layer.customMaskUploadId } : {}), ...(layer.customOutlinePath ? { customOutlinePath: layer.customOutlinePath } : {}), field: cloneField(layer.field), transform: cloneCanvasTransform(layer.transform) };
+      return { ...metadata, type: 'shield', assetId: layer.assetId, ...(layer.customMaskUploadId ? { customMaskUploadId: layer.customMaskUploadId } : {}), ...(layer.customOutlinePath ? { customOutlinePath: layer.customOutlinePath } : {}), ...(layer.colorReplacements ? { colorReplacements: { ...layer.colorReplacements } } : {}), field: cloneField(layer.field), transform: cloneCanvasTransform(layer.transform) };
     case 'ordinary':
       return { ...metadata, type: 'ordinary', assetId: layer.assetId, color: layer.color, ...(layer.colorReplacements ? { colorReplacements: { ...layer.colorReplacements } } : {}), transform: cloneCanvasTransform(layer.transform) };
     case 'charge':

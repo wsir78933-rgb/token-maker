@@ -3,6 +3,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   EDITOR_PREFERENCES_STORAGE_KEY,
+  getMatchingEditorCanvasPresetId,
   loadEditorPreferences,
   saveEditorPreferences,
   updateEditorPreferences,
@@ -21,6 +22,8 @@ describe('editor preferences', () => {
 
     expect(loadEditorPreferences()).toEqual({
       version: 1,
+      appearance: 'dark',
+      colorPickerMode: 'simple',
       canvasPreset: 'square',
       exportSize: 1024,
       jpegQuality: 'ultra',
@@ -52,6 +55,8 @@ describe('editor preferences', () => {
   it('rejects malformed colours and gradient values instead of replacing them with defaults', () => {
     expect(() => saveEditorPreferences({
       version: 1,
+      appearance: 'dark',
+      colorPickerMode: 'simple',
       canvasPreset: 'square',
       jpegQuality: 'high',
       customPalette: ['not-a-colour'],
@@ -59,6 +64,8 @@ describe('editor preferences', () => {
     })).toThrow('not-a-colour');
     expect(() => saveEditorPreferences({
       version: 1,
+      appearance: 'dark',
+      colorPickerMode: 'simple',
       canvasPreset: 'square',
       jpegQuality: 'high',
       customPalette: [],
@@ -69,6 +76,8 @@ describe('editor preferences', () => {
   it('applies each patch to the latest validated browser-local preferences', () => {
     saveEditorPreferences({
       version: 1,
+      appearance: 'dark',
+      colorPickerMode: 'simple',
       canvasPreset: 'square',
       jpegQuality: 'ultra',
       customPalette: [],
@@ -83,5 +92,51 @@ describe('editor preferences', () => {
       jpegQuality: 'ultra',
       customPalette: ['#123456'],
     });
+  });
+
+  it('adds appearance and color picker defaults to an existing version one document', () => {
+    window.localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
+      version: 1,
+      canvasPreset: 'square',
+      exportSize: 1024,
+      jpegQuality: 'high',
+      customPalette: [],
+      backgroundGradient: null,
+    }));
+
+    expect(loadEditorPreferences()).toMatchObject({
+      appearance: 'dark',
+      colorPickerMode: 'simple',
+    });
+  });
+
+  it('rewrites a retired canvas preset id to custom', () => {
+    window.localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
+      version: 1,
+      canvasPreset: 'portrait',
+      exportSize: 1024,
+      jpegQuality: 'high',
+      customPalette: [],
+      backgroundGradient: null,
+    }));
+
+    expect(loadEditorPreferences().canvasPreset).toBe('custom');
+  });
+
+  it('rejects an invalid appearance with its value', () => {
+    expect(() => saveEditorPreferences({
+      version: 1,
+      appearance: 'neon' as never,
+      colorPickerMode: 'simple',
+      canvasPreset: 'square',
+      jpegQuality: 'high',
+      customPalette: [],
+      backgroundGradient: null,
+    })).toThrow('neon');
+  });
+
+  it('matches a competitor canvas preset by exact width and height', () => {
+    expect(getMatchingEditorCanvasPresetId(1080, 1920)).toBe('instagram-story');
+    expect(getMatchingEditorCanvasPresetId(1200, 1200)).toBe('custom');
   });
 });

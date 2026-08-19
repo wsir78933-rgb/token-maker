@@ -267,7 +267,7 @@ describe('CoatOfArmsCanvas', () => {
     expect(useCoatProjectStore.getState().history.past).toHaveLength(2);
   });
 
-  it('commits a bounded crop resize only after its crop handle is released', () => {
+  it('does not expose crop handles on a selected layer', () => {
     const { canvas } = renderCanvas();
     const charge = canvas.querySelector('[data-layer-id="charge-1"]');
     if (!(charge instanceof SVGElement)) throw new Error('Expected charge scene element');
@@ -275,137 +275,15 @@ describe('CoatOfArmsCanvas', () => {
     fireEvent.pointerDown(charge, { clientX: 50, clientY: 55, pointerId: 1 });
     fireEvent.pointerUp(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
 
-    const cropFrame = screen.getByRole('group', { name: 'Crop selected layer' });
-    expect(cropFrame.getAttribute('data-crop-width')).toBe('100');
-    expect(cropFrame.getAttribute('data-crop-height')).toBe('110');
-
-    fireEvent.pointerDown(screen.getByRole('button', { name: 'Resize crop left edge' }), {
-      clientX: 0, clientY: 55, pointerId: 8,
-    });
-    fireEvent.pointerMove(canvas, { clientX: 200, clientY: 55, pointerId: 8 });
-
-    expect(getTransformLayer('charge-1').transform.crop).toBeUndefined();
-    expect(useCoatProjectStore.getState().history.past).toHaveLength(0);
-    expect(cropFrame.getAttribute('data-crop-x')).toBe('99');
-    expect(cropFrame.getAttribute('data-crop-width')).toBe('1');
-
-    fireEvent.pointerUp(canvas, { clientX: 200, clientY: 55, pointerId: 8 });
-
-    expect(getLayer('charge-1')).toMatchObject({ transform: { crop: { x: 99, y: 0, width: 1, height: 110 } } });
-    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
-  });
-
-  it('moves an existing crop frame within the canvas bounds', () => {
-    const cropped = applyProjectCommand(createCanvasProject(), {
-      type: 'update-layer',
-      layerId: 'charge-1',
-      patch: { transform: { x: 0, y: 0, scale: 1, rotation: 0, crop: { x: 10, y: 20, width: 60, height: 70 } } },
-    });
-    const { canvas } = renderCanvas(cropped);
-    const charge = canvas.querySelector('[data-layer-id="charge-1"]');
-    if (!(charge instanceof SVGElement)) throw new Error('Expected charge scene element');
-
-    fireEvent.pointerDown(charge, { clientX: 40, clientY: 55, pointerId: 1 });
-    fireEvent.pointerUp(canvas, { clientX: 40, clientY: 55, pointerId: 1 });
-    fireEvent.pointerDown(screen.getByRole('button', { name: 'Move crop frame' }), {
-      clientX: 40, clientY: 55, pointerId: 10,
-    });
-    fireEvent.pointerMove(canvas, { clientX: -60, clientY: 155, pointerId: 10 });
-
-    expect(screen.getByRole('group', { name: 'Crop selected layer' })).toMatchObject({
-      dataset: { cropX: '0', cropY: '40', cropWidth: '60', cropHeight: '70' },
-    });
-    expect(getLayer('charge-1')).toMatchObject({ transform: { crop: { x: 10, y: 20, width: 60, height: 70 } } });
-
-    fireEvent.pointerUp(canvas, { clientX: -60, clientY: 155, pointerId: 10 });
-    expect(getLayer('charge-1')).toMatchObject({ transform: { crop: { x: 0, y: 40, width: 60, height: 70 } } });
-  });
-
-  it('keeps the crop frame aligned with a translated non-uniformly scaled layer and converts its resize gesture to local crop units', () => {
-    const transformed = applyProjectCommand(createCanvasProject(), {
-      type: 'update-layer',
-      layerId: 'charge-1',
-      patch: {
-        transform: {
-          x: 10, y: -5, scale: 1, scaleX: 2, scaleY: 0.5, rotation: 0,
-          crop: { x: 10, y: 20, width: 60, height: 70 },
-        },
-      },
-    });
-    const { canvas } = renderCanvas(transformed);
-    const charge = canvas.querySelector('[data-layer-id="charge-1"]');
-    if (!(charge instanceof SVGElement)) throw new Error('Expected charge scene element');
-
-    fireEvent.pointerDown(charge, { clientX: 50, clientY: 55, pointerId: 1 });
-    fireEvent.pointerUp(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
-
-    const cropFrame = screen.getByRole('group', { name: 'Crop selected layer' });
-    expect(cropFrame.parentElement?.getAttribute('style')).toContain('translate(10%, -4.545454545454546%) rotate(0deg) scale(2, 0.5)');
-
-    fireEvent.pointerDown(screen.getByRole('button', { name: 'Resize crop right edge' }), {
-      clientX: 100, clientY: 50, pointerId: 11,
-    });
-    fireEvent.pointerMove(canvas, { clientX: 120, clientY: 50, pointerId: 11 });
-
-    expect(cropFrame).toMatchObject({ dataset: { cropX: '10', cropY: '20', cropWidth: '70', cropHeight: '70' } });
-    expect(getLayer('charge-1')).toMatchObject({ transform: { crop: { x: 10, y: 20, width: 60, height: 70 } } });
-
-    fireEvent.pointerUp(canvas, { clientX: 120, clientY: 50, pointerId: 11 });
-    expect(getLayer('charge-1')).toMatchObject({ transform: { crop: { x: 10, y: 20, width: 70, height: 70 } } });
-  });
-
-  it('maps a rotated crop move through the inverse layer transform before committing it', () => {
-    const rotated = applyProjectCommand(createCanvasProject(), {
-      type: 'update-layer',
-      layerId: 'charge-1',
-      patch: {
-        transform: {
-          x: 8, y: -4, scale: 1.25, rotation: 90,
-          crop: { x: 10, y: 20, width: 60, height: 70 },
-        },
-      },
-    });
-    const { canvas } = renderCanvas(rotated);
-    const charge = canvas.querySelector('[data-layer-id="charge-1"]');
-    if (!(charge instanceof SVGElement)) throw new Error('Expected charge scene element');
-
-    fireEvent.pointerDown(charge, { clientX: 50, clientY: 55, pointerId: 1 });
-    fireEvent.pointerUp(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
-    const cropFrame = screen.getByRole('group', { name: 'Crop selected layer' });
-    expect(cropFrame.parentElement?.getAttribute('style')).toContain('translate(8%, -3.6363636363636362%) rotate(90deg) scale(1.25, 1.25)');
-
-    fireEvent.pointerDown(screen.getByRole('button', { name: 'Move crop frame' }), {
-      clientX: 58, clientY: 38.5, pointerId: 12,
-    });
-    fireEvent.pointerMove(canvas, { clientX: 45.5, clientY: 48.5, pointerId: 12 });
-
-    expect(cropFrame).toMatchObject({ dataset: { cropX: '18', cropWidth: '60', cropHeight: '70' } });
-    expect(Number(cropFrame.getAttribute('data-crop-y'))).toBeCloseTo(30);
-    expect(getLayer('charge-1')).toMatchObject({ transform: { crop: { x: 10, y: 20, width: 60, height: 70 } } });
-
-    fireEvent.pointerUp(canvas, { clientX: 45.5, clientY: 48.5, pointerId: 12 });
-    expect(getLayer('charge-1')).toMatchObject({ transform: { crop: { x: 18, width: 60, height: 70 } } });
-    expect(getTransformLayer('charge-1').transform.crop?.y).toBeCloseTo(30);
-  });
-
-  it('cancels an in-progress crop gesture with Escape without changing the layer', () => {
-    const { canvas } = renderCanvas();
-    const charge = canvas.querySelector('[data-layer-id="charge-1"]');
-    if (!(charge instanceof SVGElement)) throw new Error('Expected charge scene element');
-
-    fireEvent.pointerDown(charge, { clientX: 50, clientY: 55, pointerId: 1 });
-    fireEvent.pointerUp(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
-    fireEvent.pointerDown(screen.getByRole('button', { name: 'Resize crop left edge' }), {
-      clientX: 0, clientY: 55, pointerId: 9,
-    });
-    fireEvent.pointerMove(canvas, { clientX: 40, clientY: 55, pointerId: 9 });
-
-    expect(screen.getByRole('group', { name: 'Crop selected layer' }).getAttribute('data-crop-x')).toBe('40');
-    fireEvent.keyDown(canvas, { key: 'Escape' });
-
-    expect(getTransformLayer('charge-1').transform.crop).toBeUndefined();
-    expect(useCoatProjectStore.getState().history.past).toHaveLength(0);
-    expect(screen.getByRole('group', { name: 'Crop selected layer' }).getAttribute('data-crop-x')).toBe('0');
+    expect(screen.getByRole('button', { name: 'Resize selected layer' })).toBeDefined();
+    expect(screen.queryByLabelText('Crop left')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Reset crop' })).toBeNull();
+    expect(screen.queryByRole('group', { name: 'Crop selected layer' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Move crop frame' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Resize crop left edge' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Resize crop right edge' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Resize crop top edge' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Resize crop bottom edge' })).toBeNull();
   });
 
   it('lets keyboard users select a canvas layer and adjust its scale and rotation without persisting selection', () => {
@@ -436,6 +314,9 @@ describe('CoatOfArmsCanvas', () => {
     expect(resizeHandle.className).toContain('w-6');
     expect(rotateHandle.className).toContain('h-6');
     expect(rotateHandle.className).toContain('w-6');
+    expect(resizeHandle.querySelector('span')?.className).toContain('h-[13px]');
+    expect(resizeHandle.querySelector('span')?.className).toContain('w-[13px]');
+    expect(rotateHandle.querySelector('span')?.className).toContain('h-[13px]');
 
     fireEvent.keyDown(resizeHandle, { key: 'Enter' });
     fireEvent.keyDown(rotateHandle, { key: ' ' });
@@ -517,8 +398,44 @@ describe('CoatOfArmsCanvas', () => {
     fireEvent.pointerDown(charge, { clientX: 50, clientY: 55, pointerId: 1 });
 
     const controls = screen.getByLabelText('Selected layer controls');
-    expect(controls.getAttribute('style')).toContain('left: 70%');
-    expect(controls.getAttribute('style')).toContain('top: 60%');
+    expect(controls.getAttribute('data-selection-x')).toBe('20');
+    expect(controls.getAttribute('data-selection-y')).toBe('11');
+    expect(controls.getAttribute('style')).toContain('left: 20%');
+    expect(controls.getAttribute('style')).toContain('top: 10%');
+  });
+
+  it('shows eight resize handles, a rotate handle, and the floating action toolbar on the selected layer', () => {
+    const { canvas } = renderCanvas();
+    const charge = canvas.querySelector('[data-layer-id="charge-1"]');
+    if (!(charge instanceof SVGElement)) throw new Error('Expected charge scene element');
+
+    fireEvent.pointerDown(charge, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+
+    expect(canvas.querySelectorAll('[data-resize-handle]')).toHaveLength(8);
+    expect(screen.getByRole('button', { name: 'Resize selected layer' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Rotate selected layer' })).toBeDefined();
+    expect(screen.getByRole('toolbar', { name: 'Selected element actions' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Duplicate selected element' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Flip selected element horizontally' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Selected element layer order' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Delete selected element' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Lock selected element' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Hide selected element' })).toBeDefined();
+  });
+
+  it('keeps the selection when the floating toolbar is pressed', () => {
+    const { canvas } = renderCanvas();
+    const charge = canvas.querySelector('[data-layer-id="charge-1"]');
+    if (!(charge instanceof SVGElement)) throw new Error('Expected charge scene element');
+
+    fireEvent.pointerDown(charge, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerDown(screen.getByRole('toolbar', { name: 'Selected element actions' }), {
+      clientX: 50, clientY: 8, pointerId: 4,
+    });
+
+    expect(useCoatProjectStore.getState().selectedLayerIds).toEqual(['charge-1']);
   });
 
   it('renders the shared SVG scene and keeps canvas focusable for keyboard editing', () => {

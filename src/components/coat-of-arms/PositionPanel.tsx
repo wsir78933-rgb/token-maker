@@ -2,7 +2,7 @@
 
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import { getFieldRegionIds } from '@/lib/coat-of-arms/field-regions';
-import type { CanvasCrop, CanvasTransform, CoatLayer, CoatLocale, FieldRegionId } from '@/lib/coat-of-arms/types';
+import type { CanvasTransform, CoatLayer, CoatLocale, FieldRegionId } from '@/lib/coat-of-arms/types';
 import { usePanelCommandError } from './usePanelCommandError';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
@@ -22,28 +22,10 @@ export function PositionPanel({ locale }: { locale: CoatLocale }) {
 
   const updateTransform = (patch: Partial<CanvasTransform>) => {
     if (!selectedLayer) return;
-    const nextTransform = { ...selectedLayer.transform, ...patch };
-    if (Object.prototype.hasOwnProperty.call(patch, 'crop') && patch.crop === undefined) {
-      delete nextTransform.crop;
-    }
-    run({ type: 'update-layer', layerId: selectedLayer.id, patch: { transform: nextTransform } });
+    run({ type: 'update-layer', layerId: selectedLayer.id, patch: { transform: { ...selectedLayer.transform, ...patch } } });
   };
 
   const updateUniformScale = (scale: number) => updateTransform({ scale, scaleX: scale, scaleY: scale });
-
-  const updateCrop = (patch: Partial<CanvasCrop>) => {
-    if (!selectedLayer) return;
-    const currentCrop = selectedLayer.transform.crop ?? { x: 0, y: 0, width: 100, height: 110 };
-    const nextCrop = { ...currentCrop, ...patch };
-    updateTransform({
-      crop: {
-        x: nextCrop.x,
-        y: nextCrop.y,
-        width: Math.min(nextCrop.width, 100 - nextCrop.x),
-        height: Math.min(nextCrop.height, 110 - nextCrop.y),
-      },
-    });
-  };
 
   const moveLayer = (direction: 'forward' | 'backward' | 'front' | 'back') => {
     if (!selectedLayer) return;
@@ -77,14 +59,9 @@ export function PositionPanel({ locale }: { locale: CoatLocale }) {
         <fieldset><legend>{copy.align}</legend>
           {(['left', 'center', 'right', 'top', 'middle', 'bottom'] as const).map((alignment) => <button key={alignment} type="button" onClick={() => updateTransform(getAlignmentTransform(alignment, selectedLayer.transform))}>{copy.alignments[alignment]}</button>)}
         </fieldset>
-        <fieldset><legend>{copy.flipAndCrop}</legend>
+        <fieldset><legend>{copy.flipSelectedLayer}</legend>
           <button type="button" onClick={() => updateTransform({ flipHorizontal: !selectedLayer.transform.flipHorizontal })}>{copy.flipHorizontal}</button>
           <button type="button" onClick={() => updateTransform({ flipVertical: !selectedLayer.transform.flipVertical })}>{copy.flipVertical}</button>
-          <label>{copy.cropLeft}<input aria-label={copy.cropLeft} type="number" min="0" max="99" value={selectedLayer.transform.crop?.x ?? 0} onChange={(event) => updateCrop({ x: Number(event.target.value) })} /></label>
-          <label>{copy.cropTop}<input aria-label={copy.cropTop} type="number" min="0" max="109" value={selectedLayer.transform.crop?.y ?? 0} onChange={(event) => updateCrop({ y: Number(event.target.value) })} /></label>
-          <label>{copy.cropWidth}<input aria-label={copy.cropWidth} type="number" min="1" max={100 - (selectedLayer.transform.crop?.x ?? 0)} value={selectedLayer.transform.crop?.width ?? 100} onChange={(event) => updateCrop({ width: Number(event.target.value) })} /></label>
-          <label>{copy.cropHeight}<input aria-label={copy.cropHeight} type="number" min="1" max={110 - (selectedLayer.transform.crop?.y ?? 0)} value={selectedLayer.transform.crop?.height ?? 110} onChange={(event) => updateCrop({ height: Number(event.target.value) })} /></label>
-          <button type="button" onClick={() => updateTransform({ crop: undefined })}>{copy.resetCrop}</button>
         </fieldset>
         {selectedLayer.type === 'charge' ? <fieldset><legend>{copy.fieldPlacement}</legend>
           <label>{copy.fieldPlacement}<select aria-label={copy.fieldPlacement} value={selectedLayer.transform.fieldRegionId ?? fieldRegions[0]!} onChange={(event) => updateTransform({ fieldRegionId: event.target.value as FieldRegionId })}>

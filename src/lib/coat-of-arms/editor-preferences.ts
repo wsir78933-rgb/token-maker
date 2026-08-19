@@ -4,13 +4,18 @@ export const EDITOR_PREFERENCES_STORAGE_KEY = 'coat-maker-editor-preferences';
 export const EDITOR_PREFERENCES_VERSION = 1;
 
 export const editorCanvasPresets = [
-  { id: 'square', width: 1200, height: 1200 },
+  { id: 'square', width: 1080, height: 1080 },
   { id: 'instagram-story', width: 1080, height: 1920 },
-  { id: 'portrait', width: 1080, height: 1350 },
-  { id: 'landscape', width: 1920, height: 1080 },
+  { id: 'facebook-image', width: 1200, height: 630 },
+  { id: 'twitter-image', width: 900, height: 450 },
+  { id: 'pinterest', width: 1000, height: 1500 },
 ] as const;
 
+const retiredEditorCanvasPresetIds = ['portrait', 'landscape'] as const;
+
 export type EditorCanvasPresetId = typeof editorCanvasPresets[number]['id'] | 'custom';
+export type EditorAppearance = 'dark' | 'light';
+export type EditorColorPickerMode = 'simple' | 'advanced';
 export type EditorJpegQuality = 'low' | 'medium' | 'high' | 'ultra';
 export const editorExportSizes = [256, 512, 1024, 2048] as const;
 export type EditorExportSize = typeof editorExportSizes[number];
@@ -19,6 +24,8 @@ export type EditorBackgroundGradient = BackgroundGradient;
 
 export interface EditorPreferences {
   version: typeof EDITOR_PREFERENCES_VERSION;
+  appearance: EditorAppearance;
+  colorPickerMode: EditorColorPickerMode;
   canvasPreset: EditorCanvasPresetId;
   exportSize?: EditorExportSize;
   jpegQuality: EditorJpegQuality;
@@ -28,12 +35,25 @@ export interface EditorPreferences {
 
 const defaultEditorPreferences: EditorPreferences = {
   version: EDITOR_PREFERENCES_VERSION,
+  appearance: 'dark',
+  colorPickerMode: 'simple',
   canvasPreset: 'square',
   exportSize: 1024,
   jpegQuality: 'high',
   customPalette: [],
   backgroundGradient: null,
 };
+
+const editorPreferenceKeys = [
+  'version',
+  'appearance',
+  'colorPickerMode',
+  'canvasPreset',
+  'exportSize',
+  'jpegQuality',
+  'customPalette',
+  'backgroundGradient',
+] as const;
 
 export function getDefaultEditorPreferences(): EditorPreferences {
   return cloneEditorPreferences(defaultEditorPreferences);
@@ -46,18 +66,18 @@ export function loadEditorPreferences(): EditorPreferences {
   if (serializedPreferences === null) return getDefaultEditorPreferences();
   const parsedPreferences = parseEditorPreferences(serializedPreferences);
   const isVersionZeroPreferences = isRecord(parsedPreferences) && !Object.hasOwn(parsedPreferences, 'version');
-  const isVersionOnePreferencesWithoutExportSize = isRecord(parsedPreferences)
+  const needsVersionOneFieldMigration = isRecord(parsedPreferences)
     && parsedPreferences.version === EDITOR_PREFERENCES_VERSION
-    && !Object.hasOwn(parsedPreferences, 'exportSize');
+    && versionOnePreferencesNeedFieldMigration(parsedPreferences);
   const preferences = isVersionZeroPreferences
     ? migrateVersionZeroEditorPreferences(parsedPreferences)
-    : isVersionOnePreferencesWithoutExportSize
+    : needsVersionOneFieldMigration
       ? migrateVersionOneEditorPreferences(parsedPreferences)
     : assertCurrentEditorPreferences(parsedPreferences);
   if (preferences.version !== EDITOR_PREFERENCES_VERSION) {
     throw new Error(`Unsupported editor preferences version: ${String(preferences.version)}`);
   }
-  if (isVersionZeroPreferences || isVersionOnePreferencesWithoutExportSize) {
+  if (isVersionZeroPreferences || needsVersionOneFieldMigration) {
     browserStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
   }
   return cloneEditorPreferences(preferences);
@@ -86,6 +106,25 @@ export function getEditorCanvasPreset(presetId: EditorCanvasPresetId) {
   return preset;
 }
 
+export function getMatchingEditorCanvasPresetId(width: number, height: number): EditorCanvasPresetId {
+  const preset = editorCanvasPresets.find((candidate) => candidate.width === width && candidate.height === height);
+  return preset?.id ?? 'custom';
+}
+
+export function requireEditorAppearance(value: unknown): EditorAppearance {
+  if (value !== 'dark' && value !== 'light') {
+    throw new Error(`Invalid editor appearance: ${String(value)}`);
+  }
+  return value;
+}
+
+export function requireEditorColorPickerMode(value: unknown): EditorColorPickerMode {
+  if (value !== 'simple' && value !== 'advanced') {
+    throw new Error(`Invalid editor color picker mode: ${String(value)}`);
+  }
+  return value;
+}
+
 function parseEditorPreferences(serializedPreferences: string): unknown {
   try {
     return JSON.parse(serializedPreferences);
@@ -94,10 +133,19 @@ function parseEditorPreferences(serializedPreferences: string): unknown {
   }
 }
 
+function versionOnePreferencesNeedFieldMigration(preferences: Record<string, unknown>): boolean {
+  return !Object.hasOwn(preferences, 'exportSize')
+    || !Object.hasOwn(preferences, 'appearance')
+    || !Object.hasOwn(preferences, 'colorPickerMode')
+    || retiredEditorCanvasPresetIds.includes(preferences.canvasPreset as typeof retiredEditorCanvasPresetIds[number]);
+}
+
 function migrateVersionZeroEditorPreferences(preferences: Record<string, unknown>): EditorPreferences {
   assertExactKeys(preferences, ['jpegQuality', 'customPalette', 'backgroundGradient'], 'version zero editor preferences');
   const migratedPreferences: EditorPreferences = {
     version: EDITOR_PREFERENCES_VERSION,
+    appearance: 'dark',
+    colorPickerMode: 'simple',
     canvasPreset: 'square',
     exportSize: 1024,
     jpegQuality: preferences.jpegQuality as EditorJpegQuality,
@@ -109,7 +157,15 @@ function migrateVersionZeroEditorPreferences(preferences: Record<string, unknown
 }
 
 function migrateVersionOneEditorPreferences(preferences: Record<string, unknown>): EditorPreferences {
-  const migratedPreferences: EditorPreferences = { ...preferences, exportSize: 1024 } as EditorPreferences;
+  const migratedPreferences: EditorPreferences = {
+    ...preferences,
+    appearance: Object.hasOwn(preferences, 'appearance') ? preferences.appearance : 'dark',
+    colorPickerMode: Object.hasOwn(preferences, 'colorPickerMode') ? preferences.colorPickerMode : 'simple',
+    canvasPreset: retiredEditorCanvasPresetIds.includes(preferences.canvasPreset as typeof retiredEditorCanvasPresetIds[number])
+      ? 'custom'
+      : preferences.canvasPreset,
+    exportSize: Object.hasOwn(preferences, 'exportSize') ? preferences.exportSize : 1024,
+  } as EditorPreferences;
   assertEditorPreferences(migratedPreferences);
   return migratedPreferences;
 }
@@ -121,10 +177,12 @@ function assertCurrentEditorPreferences(preferences: unknown): EditorPreferences
 
 function assertEditorPreferences(preferences: unknown): asserts preferences is EditorPreferences {
   if (!isRecord(preferences)) throw new Error(`Invalid editor preferences: ${String(preferences)}`);
-  assertExactKeys(preferences, ['version', 'canvasPreset', 'exportSize', 'jpegQuality', 'customPalette', 'backgroundGradient'], 'editor preferences');
+  assertExactKeys(preferences, editorPreferenceKeys, 'editor preferences');
   if (preferences.version !== EDITOR_PREFERENCES_VERSION) {
     throw new Error(`Unsupported editor preferences version: ${String(preferences.version)}`);
   }
+  requireEditorAppearance(preferences.appearance);
+  requireEditorColorPickerMode(preferences.colorPickerMode);
   if (preferences.canvasPreset !== 'custom' && !editorCanvasPresets.some((preset) => preset.id === preferences.canvasPreset)) {
     throw new Error(`Invalid editor canvas preset: ${String(preferences.canvasPreset)}`);
   }

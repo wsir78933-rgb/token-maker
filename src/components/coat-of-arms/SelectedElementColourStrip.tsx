@@ -38,10 +38,10 @@ function SelectedElementColourStripControls({
 
   return (
     <div aria-label={copy.selectedElementColours} className="coat-target-selected-element-colour-strip" role="group">
-      {editableColours.map((fromColor) => (
+      {editableColours.map((fromColor, colourIndex) => (
         <input
           aria-label={copy.changeElementColour(fromColor)}
-          key={fromColor}
+          key={`${selectedLayer.id}-colour-${colourIndex}`}
           onChange={(event) => {
             const toColor = event.currentTarget.value;
             if (fromColor.toUpperCase() === toColor.toUpperCase()) return;

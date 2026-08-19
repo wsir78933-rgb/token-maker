@@ -1300,8 +1300,8 @@
 .coat-workbench-tool-rail button[aria-selected="true"], .coat-workbench-mobile-tabs button[aria-selected="true"] { border-left-color: var(--site-accent-strong); background: linear-gradient(90deg, var(--site-accent-bg), transparent); color: var(--foreground); }
 .coat-workbench-panel, .coat-workbench-dock { min-height: 0; overflow: auto; padding: 0.875rem; }
 .coat-workbench-panel section, .coat-workbench-dock section { display: grid; gap: 0.5rem; }
-.coat-workbench-panel label, .coat-workbench-dock label, .coat-workbench-export-menu label, .coat-workbench-dialog label { display: grid; gap: 0.25rem; color: var(--muted-foreground); font-size: 0.875rem; }
-.coat-workbench-panel input, .coat-workbench-panel select, .coat-workbench-dock input, .coat-workbench-dock select, .coat-workbench-export-menu select, .coat-workbench-dialog input, .coat-workbench-dialog select { min-width: 0; border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px); padding: 0.4rem 0.5rem; background: var(--background); color: var(--foreground); }
+.coat-workbench-panel label, .coat-workbench-dock label, .coat-workbench-export-menu label { display: grid; gap: 0.25rem; color: var(--muted-foreground); font-size: 0.875rem; }
+.coat-workbench-panel input, .coat-workbench-panel select, .coat-workbench-dock input, .coat-workbench-dock select, .coat-workbench-export-menu select { min-width: 0; border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px); padding: 0.4rem 0.5rem; background: var(--background); color: var(--foreground); }
 .coat-workbench-scene { display: grid; min-width: 0; place-items: center; overflow: auto; background: radial-gradient(circle at 50% 35%, var(--site-accent-bg), transparent 52%), color-mix(in oklab, var(--muted) 70%, var(--background)); padding: clamp(0.75rem, 2vw, 1.5rem); }
 .coat-workbench-scene > div { width: auto; height: min(100%, 36rem); max-width: 100%; max-height: 100%; }
 .coat-workbench-dock { grid-template-rows: auto minmax(0, 1fr); border-left: 1px solid var(--border); background: color-mix(in oklab, var(--card) 94%, var(--background)); padding: 0; }
@@ -1313,10 +1313,6 @@
 .coat-workbench-dock-tabs button[aria-selected="true"] { background: var(--site-accent-bg); color: var(--foreground); }
 .coat-workbench-dock .coat-workbench-panel { padding: 0.75rem; }
 .coat-workbench-export-menu { position: absolute; z-index: 20; right: 0; top: calc(100% + 0.5rem); display: grid; min-width: 15rem; gap: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--popover); color: var(--popover-foreground); padding: 0.75rem; box-shadow: var(--shadow-lg); }
-.coat-workbench-dialog { position: fixed; z-index: 60; top: 50%; left: 50%; width: min(42rem, calc(100vw - 2rem)); max-height: min(44rem, calc(100svh - 2rem)); transform: translate(-50%, -50%); display: grid; gap: 0.75rem; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); color: var(--card-foreground); padding: 1rem; box-shadow: var(--shadow-xl); }
-.coat-workbench-modal-backdrop { position: fixed; z-index: 59; inset: 0; background: color-mix(in oklab, var(--foreground) 38%, transparent); cursor: default; }
-.coat-workbench-dialog h2, .coat-workbench-dialog p { margin: 0; }
-.coat-workbench-project-list { display: grid; gap: 0.5rem; border-top: 1px solid var(--border); padding-top: 0.75rem; }
 .coat-workbench-mobile-drawer { display: grid; gap: 0.5rem; }
 .coat-workbench-mobile-sheet { display: grid; gap: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); padding: 0.75rem; }
 .coat-workbench-mobile-tabs { overflow-x: auto; padding-bottom: 0.25rem; }
@@ -1358,6 +1354,18 @@
   background: var(--site-bg-hub);
   color: var(--coat-text);
   font-family: var(--font-sans);
+}
+
+.coat-target-workbench[data-appearance='light'] {
+  --coat-stage: #ececee;
+  --coat-toolbar: #f3f3f5;
+  --coat-panel: #f7f7f8;
+  --coat-panel-raised: #ffffff;
+  --coat-line: #d4d4d8;
+  --coat-active: #e4e4e7;
+  --coat-text: #18181b;
+  --coat-muted: #52525b;
+  background: #f4f4f5;
 }
 
 .coat-maker-page > .coat-target-workbench {
@@ -1447,10 +1455,73 @@
 .coat-target-workbench .coat-target-canvas-toolbar button:hover,
 .coat-target-workbench .coat-target-canvas-toolbar button[aria-pressed='true'] { border-color: color-mix(in oklab, var(--coat-accent) 52%, var(--coat-line)); background: var(--coat-active); color: var(--coat-accent); }
 .coat-target-workbench .coat-target-canvas-toolbar button:disabled { cursor: not-allowed; opacity: 0.38; }
-.coat-target-workbench .coat-target-canvas-toolbar .coat-target-link-control { border-color: var(--coat-line); background: var(--coat-panel-raised); }
 .coat-target-workbench .coat-target-canvas-toolbar svg { width: 1.35rem; height: 1.35rem; }
 .coat-target-workbench .coat-target-canvas-toolbar-actions { align-items: center; margin-left: auto; }
 .coat-target-workbench .coat-target-export-control > div > button { border-color: var(--coat-line); background: var(--coat-panel-raised); color: var(--coat-text); padding-inline: 0.85rem; }
+.coat-target-workbench .coat-workbench-export-menu {
+  min-width: 17rem;
+  width: 17rem;
+  gap: 0.95rem;
+  padding: 0.9rem;
+}
+.coat-target-workbench .coat-workbench-export-menu label {
+  color: var(--coat-text);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+.coat-target-workbench .coat-workbench-export-menu select {
+  width: 100%;
+  font-weight: 500;
+}
+.coat-target-workbench .coat-workbench-export-menu input[type='range'] {
+  width: 100%;
+  accent-color: var(--coat-accent);
+}
+.coat-target-workbench .coat-workbench-export-quality-ticks {
+  display: flex;
+  justify-content: space-between;
+  color: var(--coat-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+.coat-target-workbench .coat-workbench-export-transparent {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.coat-target-workbench .coat-workbench-export-transparent:has(input:disabled) { color: var(--coat-muted); }
+.coat-target-workbench .coat-workbench-export-dimensions {
+  margin: 0;
+  color: var(--coat-muted);
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+.coat-target-workbench .coat-target-canvas-toolbar .coat-workbench-export-menu button {
+  min-height: 2.1rem;
+  width: 100%;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.coat-target-workbench .coat-target-canvas-toolbar .coat-workbench-export-menu button:hover {
+  color: var(--coat-text);
+}
+.coat-target-workbench .coat-target-canvas-toolbar .coat-workbench-export-download,
+.coat-target-workbench .coat-target-canvas-toolbar .coat-workbench-export-download:hover {
+  border-color: var(--coat-accent);
+  background: var(--coat-accent);
+  color: var(--coat-stage);
+}
+.coat-target-workbench .coat-workbench-export-secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.coat-target-workbench .coat-target-canvas-toolbar .coat-workbench-export-secondary button {
+  border-color: var(--coat-line);
+  background: var(--coat-panel-raised);
+  color: var(--coat-text);
+}
 .coat-target-workbench .coat-target-multi-select { border-color: var(--coat-line) !important; background: var(--coat-panel-raised) !important; color: var(--coat-text) !important; padding-inline: 0.85rem !important; }
 .coat-target-workbench .coat-target-multi-select[aria-pressed='true'] { border-color: color-mix(in oklab, var(--coat-accent) 54%, var(--coat-line)) !important; background: var(--coat-active) !important; color: var(--coat-accent) !important; }
 .coat-target-workbench .coat-target-selected-element-colour-strip { display: flex; flex: 1 1 auto; min-width: 0; overflow-x: auto; align-items: center; gap: 0.28rem; }

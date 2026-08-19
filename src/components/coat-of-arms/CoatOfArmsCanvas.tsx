@@ -2,6 +2,7 @@
 
 import {
   useCallback,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -11,19 +12,23 @@ import {
 } from 'react';
 import { renderCoatSceneSvg } from '@/lib/coat-of-arms/scene-svg';
 import { appendFreehandPoint, createFreehandPath, type FreehandPoint } from '@/lib/coat-of-arms/drawing';
+import {
+  getTransformedSelectionBounds,
+  sceneBoundsEqual,
+  sceneBoundsFromClientRects,
+  type SceneBounds,
+} from '@/lib/coat-of-arms/selection-bounds';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CanvasTransform, CoatLayer, CoatLocale } from '@/lib/coat-of-arms/types';
 import { getTransformSelectionCenter, scaleCanvasTransform, transformCanvasSelection, type TransformSelectionCenter } from '@/lib/coat-of-arms/transform';
-import { CanvasCropOverlay, type CropHandle } from './CanvasCropOverlay';
 import { CanvasSelectionHandles } from './CanvasSelectionHandles';
 import { useCoatKeyboardShortcuts } from './useCoatKeyboardShortcuts';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
 const SCENE_WIDTH = 100;
 const SCENE_HEIGHT = 110;
-const FULL_CANVAS_CROP = { x: 0, y: 0, width: SCENE_WIDTH, height: SCENE_HEIGHT };
 
-type InteractionMode = 'drag' | 'resize' | 'rotate' | 'crop-move' | 'crop-resize';
+type InteractionMode = 'drag' | 'resize' | 'rotate';
 
 interface CanvasInteraction {
   mode: InteractionMode;
@@ -35,7 +40,6 @@ interface CanvasInteraction {
   startTransforms: Record<string, CanvasTransform>;
   selectionCenter: TransformSelectionCenter;
   startAngle: number;
-  cropHandle?: CropHandle;
 }
 
 interface ScenePoint {
@@ -81,28 +85,41 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
     () => renderCoatSceneSvg(sceneProject, { width: project.canvas.width, height: project.canvas.height }),
     [project.canvas.height, project.canvas.width, sceneProject],
   );
-  const selectedLayer = getSelectedTransformLayer(project.layers, selection);
   const selectedTransformLayers = getSelectedTransformLayers(project.layers, selection);
   const selectedHandleLayer = selectedTransformLayers[0];
-  const selectedTransform = selectedLayer && transformPreview?.transforms[selectedLayer.id]
-    ? transformPreview.transforms[selectedLayer.id]
-    : selectedLayer?.transform;
   const selectedHandleTransforms = selectedTransformLayers.map((layer) => (
     transformPreview?.transforms[layer.id] ?? layer.transform
   ));
   const selectedHandleCenter = selectedHandleTransforms.length > 0
     ? getTransformSelectionCenter(selectedHandleTransforms)
     : null;
+  const overlayLayers = getSelectedOverlayLayers(sceneProject.layers, selection);
+  const overlayLayerKey = overlayLayers.map((layer) => layer.id).join(',');
+  const fallbackSelectionBounds = overlayLayers.length > 0
+    ? getTransformedSelectionBounds(overlayLayers.map((layer) => layer.transform))
+    : null;
+  const [measuredSelectionBounds, setMeasuredSelectionBounds] = useState<SceneBounds | null>(null);
+  const selectionBounds = measuredSelectionBounds ?? fallbackSelectionBounds;
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    const overlayLayerIds = overlayLayerKey === '' ? [] : overlayLayerKey.split(',');
+    if (!canvas || overlayLayerIds.length === 0) {
+      setMeasuredSelectionBounds((current) => current === null ? current : null);
+      return;
+    }
+    const layerRects = overlayLayerIds.map((layerId) => readLayerClientRect(canvas, layerId));
+    const nextBounds = sceneBoundsFromClientRects(canvas.getBoundingClientRect(), layerRects);
+    setMeasuredSelectionBounds((current) => sceneBoundsEqual(current, nextBounds) ? current : nextBounds);
+  }, [overlayLayerKey, sceneSvg]);
 
   const beginInteraction = useCallback((
     event: PointerEvent<HTMLElement>,
     mode: InteractionMode,
     layer: Exclude<CoatLayer, { type: 'background' }>,
-    cropHandle?: CropHandle,
     interactionLayers: Exclude<CoatLayer, { type: 'background' }>[] = [layer],
   ) => {
-    const scenePoint = toScenePoint(event);
-    const startPoint = isCropInteraction(mode) ? toLayerScenePoint(scenePoint, layer.transform) : scenePoint;
+    const startPoint = toScenePoint(event);
     const selectionCenter = getTransformSelectionCenter(interactionLayers.map((interactionLayer) => interactionLayer.transform));
     interactionRef.current = {
       mode,
@@ -117,7 +134,6 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
       ])),
       selectionCenter,
       startAngle: getAngleFromScenePoint(startPoint, toSceneSelectionPoint(selectionCenter)),
-      cropHandle,
     };
     capturePointer(canvasRef.current, getPointerId(event));
     canvasRef.current?.focus();
@@ -164,7 +180,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
       const selectedDragLayers = nextSelection
         .map((selectedLayerId) => project.layers.find((candidate) => candidate.id === selectedLayerId))
         .filter((candidate): candidate is Exclude<CoatLayer, { type: 'background' }> => candidate !== undefined && hasTransform(candidate) && !candidate.locked);
-      beginInteraction(event, 'drag', layer, undefined, selectedDragLayers.length > 1 ? selectedDragLayers : [layer]);
+      beginInteraction(event, 'drag', layer, selectedDragLayers.length > 1 ? selectedDragLayers : [layer]);
     }
   }, [beginInteraction, disabled, drawingSettings.isActive, multiSelectEnabled, project.layers, selection, setSelection, toScenePoint]);
 
@@ -178,11 +194,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
     }
     const interaction = interactionRef.current;
     if (!interaction || interaction.pointerId !== getPointerId(event)) return;
-    const scenePoint = toScenePoint(event);
-    const currentPoint = isCropInteraction(interaction.mode)
-      ? toLayerScenePoint(scenePoint, interaction.startTransform)
-      : scenePoint;
-    setTransformPreview({ transforms: getNextTransforms(interaction, currentPoint) });
+    setTransformPreview({ transforms: getNextTransforms(interaction, toScenePoint(event)) });
   }, [toScenePoint]);
 
   const completeInteraction = useCallback((event: PointerEvent<HTMLDivElement>) => {
@@ -204,11 +216,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
     }
     const interaction = interactionRef.current;
     if (!interaction || interaction.pointerId !== getPointerId(event)) return;
-    const scenePoint = toScenePoint(event);
-    const nextTransforms = getNextTransforms(
-      interaction,
-      isCropInteraction(interaction.mode) ? toLayerScenePoint(scenePoint, interaction.startTransform) : scenePoint,
-    );
+    const nextTransforms = getNextTransforms(interaction, toScenePoint(event));
     interactionRef.current = null;
     releasePointer(canvasRef.current, interaction.pointerId);
     setTransformPreview(null);
@@ -245,15 +253,8 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
   ) => {
     event.preventDefault();
     event.stopPropagation();
-    if (selectedHandleLayer) beginInteraction(event, mode, selectedHandleLayer, undefined, selectedTransformLayers);
+    if (selectedHandleLayer) beginInteraction(event, mode, selectedHandleLayer, selectedTransformLayers);
   }, [beginInteraction, selectedHandleLayer, selectedTransformLayers]);
-
-  const beginCropInteraction = useCallback((cropHandle: CropHandle, event: PointerEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (!selectedLayer) return;
-    beginInteraction(event, cropHandle === 'move' ? 'crop-move' : 'crop-resize', selectedLayer, cropHandle);
-  }, [beginInteraction, selectedLayer]);
 
   const cancelTransformInteraction = useCallback(() => {
     const interaction = interactionRef.current;
@@ -303,7 +304,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
       aria-describedby="coat-canvas-help"
       aria-disabled={disabled || undefined}
       aria-label={copy.canvas.label}
-      className="coat-canvas relative w-full touch-none overflow-hidden rounded-md border border-[color:var(--site-border-strong)] bg-[color:var(--site-panel-strong)] shadow-[var(--site-card-shadow)] outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--site-accent-strong)]"
+      className="coat-canvas relative w-full touch-none overflow-visible rounded-md border border-[color:var(--site-border-strong)] bg-[color:var(--site-panel-strong)] shadow-[var(--site-card-shadow)] outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--site-accent-strong)]"
       onKeyDown={handleCanvasKeyDown}
       onPointerCancel={cancelInteraction}
       onPointerDown={handlePointerDown}
@@ -313,26 +314,19 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
       style={{ '--coat-canvas-aspect-ratio': `${project.canvas.width} / ${project.canvas.height}` } as React.CSSProperties}
       tabIndex={disabled ? -1 : 0}
     >
-      <div className="absolute inset-0" dangerouslySetInnerHTML={{ __html: sceneSvg }} />
+      <div className="absolute inset-0 overflow-hidden rounded-[inherit]" dangerouslySetInnerHTML={{ __html: sceneSvg }} />
       {drawingPreview && drawingPreview.length >= 2 ? <svg aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 110">
         <path d={createFreehandPath(drawingPreview)} fill="none" stroke={drawingSettings.color} strokeLinecap="round" strokeLinejoin="round" strokeWidth={drawingSettings.strokeWidth} />
       </svg> : null}
-      {selectedHandleLayer && selectedHandleCenter ? (
+      {selectionBounds ? (
         <CanvasSelectionHandles
           locale={locale}
-          selectionCenter={selectedHandleCenter}
+          selectionBounds={selectionBounds}
+          showTransformHandles={selectedHandleLayer !== undefined && selectedHandleCenter !== null}
           onResizeKeyDown={handleHandleKeyDown({ scale: 0.1 })}
           onResizePointerDown={beginHandleInteraction('resize')}
           onRotateKeyDown={handleHandleKeyDown({ rotation: 15 })}
           onRotatePointerDown={beginHandleInteraction('rotate')}
-        />
-      ) : null}
-      {selectedLayer && selectedTransform ? (
-        <CanvasCropOverlay
-          crop={selectedTransform.crop ?? FULL_CANVAS_CROP}
-          locale={locale}
-          onPointerDown={beginCropInteraction}
-          transform={selectedTransform}
         />
       ) : null}
       <p className="sr-only" id="coat-canvas-help">
@@ -358,18 +352,31 @@ function useCanvasScenePoint(canvasRef: RefObject<HTMLDivElement | null>) {
   }, [canvasRef]);
 }
 
-function getSelectedTransformLayer(layers: CoatLayer[], selection: string[]) {
-  if (selection.length !== 1) return null;
-  const selectedLayer = layers.find((layer) => layer.id === selection[0]);
-  return selectedLayer && !selectedLayer.locked && hasTransform(selectedLayer) ? selectedLayer : null;
-}
-
 function getSelectedTransformLayers(layers: CoatLayer[], selection: string[]): Exclude<CoatLayer, { type: 'background' }>[] {
   if (selection.length === 0) return [];
   const layerById = new Map(layers.map((layer) => [layer.id, layer]));
   const selectedLayers = selection.map((layerId) => layerById.get(layerId));
   if (selectedLayers.some((layer) => layer === undefined || layer.locked || !hasTransform(layer))) return [];
   return selectedLayers as Exclude<CoatLayer, { type: 'background' }>[];
+}
+
+function getSelectedOverlayLayers(layers: CoatLayer[], selection: string[]): Exclude<CoatLayer, { type: 'background' }>[] {
+  return selection.flatMap((layerId) => {
+    const layer = layers.find((candidate) => candidate.id === layerId);
+    if (!layer || !hasTransform(layer)) return [];
+    return [layer];
+  });
+}
+
+function readLayerClientRect(canvas: HTMLElement, layerId: string): { left: number; top: number; width: number; height: number } {
+  if (layerId.includes('"') || layerId.includes(']')) {
+    throw new Error(`Unsupported layer id for selection bounds query: ${layerId}`);
+  }
+  const layerElement = canvas.querySelector(`[data-layer-id="${layerId}"]`);
+  if (!(layerElement instanceof Element)) {
+    return { left: 0, top: 0, width: 0, height: 0 };
+  }
+  return layerElement.getBoundingClientRect();
 }
 
 function hasTransform(layer: CoatLayer): layer is Exclude<CoatLayer, { type: 'background' }> {
@@ -428,79 +435,7 @@ function getNextTransform(interaction: CanvasInteraction, currentPoint: ScenePoi
         ...interaction.startTransform,
         rotation: interaction.startTransform.rotation + getAngleFromScenePoint(currentPoint, toSceneSelectionPoint(interaction.selectionCenter)) - interaction.startAngle,
       };
-    case 'crop-move':
-    case 'crop-resize':
-      return withCrop(interaction.startTransform, getNextCrop(interaction, currentPoint));
   }
-}
-
-function isCropInteraction(mode: InteractionMode): mode is 'crop-move' | 'crop-resize' {
-  return mode === 'crop-move' || mode === 'crop-resize';
-}
-
-/** Maps a screen-space scene point back through the selected layer transform. */
-function toLayerScenePoint(point: ScenePoint, transform: CanvasTransform): ScenePoint {
-  const horizontalScale = (transform.scaleX ?? transform.scale) * (transform.flipHorizontal ? -1 : 1);
-  const verticalScale = (transform.scaleY ?? transform.scale) * (transform.flipVertical ? -1 : 1);
-  if (horizontalScale === 0 || verticalScale === 0) {
-    throw new Error(`Cannot map crop pointer through zero-sized layer transform: ${horizontalScale}x${verticalScale}`);
-  }
-  const translatedX = point.x - transform.x - SCENE_WIDTH / 2;
-  const translatedY = point.y - transform.y - SCENE_HEIGHT / 2;
-  const radians = transform.rotation * Math.PI / 180;
-  const unrotatedX = translatedX * Math.cos(radians) + translatedY * Math.sin(radians);
-  const unrotatedY = -translatedX * Math.sin(radians) + translatedY * Math.cos(radians);
-  return {
-    x: unrotatedX / horizontalScale + SCENE_WIDTH / 2,
-    y: unrotatedY / verticalScale + SCENE_HEIGHT / 2,
-  };
-}
-
-function getNextCrop(interaction: CanvasInteraction, currentPoint: ScenePoint) {
-  const startCrop = interaction.startTransform.crop ?? FULL_CANVAS_CROP;
-  const deltaX = currentPoint.x - interaction.startPoint.x;
-  const deltaY = currentPoint.y - interaction.startPoint.y;
-  const cropHandle = interaction.cropHandle;
-  if (!cropHandle) throw new Error(`Crop interaction is missing a handle for layer: ${interaction.layerId}`);
-  if (interaction.mode === 'crop-move') {
-    return {
-      ...startCrop,
-      x: clamp(startCrop.x + deltaX, 0, SCENE_WIDTH - startCrop.width),
-      y: clamp(startCrop.y + deltaY, 0, SCENE_HEIGHT - startCrop.height),
-    };
-  }
-  const right = startCrop.x + startCrop.width;
-  const bottom = startCrop.y + startCrop.height;
-  const x = cropHandle === 'left' ? clamp(startCrop.x + deltaX, 0, right - 1) : startCrop.x;
-  const y = cropHandle === 'top' ? clamp(startCrop.y + deltaY, 0, bottom - 1) : startCrop.y;
-  const nextRight = cropHandle === 'right' ? clamp(right + deltaX, x + 1, SCENE_WIDTH) : right;
-  const nextBottom = cropHandle === 'bottom' ? clamp(bottom + deltaY, y + 1, SCENE_HEIGHT) : bottom;
-  return { x, y, width: nextRight - x, height: nextBottom - y };
-}
-
-function withCrop(transform: CanvasTransform, crop: typeof FULL_CANVAS_CROP): CanvasTransform {
-  const nextTransform = { ...transform };
-  if (isFullCanvasCrop(crop)) {
-    if (transform.crop && isFullCanvasCrop(transform.crop)) {
-      nextTransform.crop = { ...transform.crop };
-    } else {
-      delete nextTransform.crop;
-    }
-  } else {
-    nextTransform.crop = crop;
-  }
-  return nextTransform;
-}
-
-function isFullCanvasCrop(crop: typeof FULL_CANVAS_CROP): boolean {
-  return crop.x === FULL_CANVAS_CROP.x
-    && crop.y === FULL_CANVAS_CROP.y
-    && crop.width === FULL_CANVAS_CROP.width
-    && crop.height === FULL_CANVAS_CROP.height;
-}
-
-function clamp(value: number, minimum: number, maximum: number): number {
-  return Math.min(maximum, Math.max(minimum, value));
 }
 
 function toSceneSelectionPoint(selectionCenter: TransformSelectionCenter): ScenePoint {
@@ -524,7 +459,6 @@ function getNextTransforms(interaction: CanvasInteraction, currentPoint: ScenePo
     const rotationDelta = nextTransform.rotation - interaction.startTransform.rotation;
     return createSelectionTransformMap(interaction, { rotationDegrees: rotationDelta });
   }
-  if (interaction.mode !== 'drag') return { [interaction.layerId]: nextTransform };
   const deltaX = nextTransform.x - interaction.startTransform.x;
   const deltaY = nextTransform.y - interaction.startTransform.y;
   return Object.fromEntries(interaction.layerIds.map((layerId) => {

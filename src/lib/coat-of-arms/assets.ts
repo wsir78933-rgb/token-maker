@@ -11,6 +11,7 @@ import type {
   ShieldLayer,
 } from './types';
 import { createLocalCoatId } from './id';
+import { isShieldMaterialAssetId, getShieldMaterialPaintColours } from './shield-material-paints';
 import { listReferenceCatalogEntries, shieldReferenceCategories } from './reference-catalog';
 import { webpMaterialAssets } from './webp-material-catalog';
 
@@ -144,6 +145,9 @@ export function listAssetsByKind<Kind extends CoatAssetKind>(
 /** Returns the authored SVG source colours that can safely be replaced for one local vector asset. */
 export function getAssetColorSources(assetId: string): string[] {
   const asset = getCoatAsset(assetId);
+  if (asset.kind === 'shield' && isShieldMaterialAssetId(asset.id)) {
+    return getShieldMaterialPaintColours(asset.id);
+  }
   if (!('svgParts' in asset) || !asset.svgParts) return [];
   return [...new Set(asset.svgParts.map((part) => part.sourceColor))];
 }

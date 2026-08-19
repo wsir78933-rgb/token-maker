@@ -1,5 +1,6 @@
 import { getCoatAsset } from './assets';
 import { resolveFieldRegions } from './field-regions';
+import { getShieldMaterialPaintColours, isShieldMaterialAssetId } from './shield-material-paints';
 import type { CoatField, CoatLayer, OrdinaryLayer, ShieldLayer } from './types';
 
 const defaultShieldOutline = { visible: true, color: '#1E293B', width: 1.5 } as const;
@@ -7,7 +8,7 @@ const defaultShieldOutline = { visible: true, color: '#1E293B', width: 1.5 } as 
 export function getEditableLayerColours(layer: CoatLayer): string[] {
   switch (layer.type) {
     case 'shield':
-      return isEditableShieldLayer(layer) ? getShieldColours(layer.field) : [];
+      return getEditableShieldColours(layer);
     case 'ordinary':
     case 'charge':
     case 'top':
@@ -54,6 +55,13 @@ export function replaceEditableLayerColour(
   }
 }
 
+function getEditableShieldColours(layer: ShieldLayer): string[] {
+  if (!isEditableShieldLayer(layer)) return [];
+  return usesShieldMaterialPaintColours(layer)
+    ? getShieldMaterialLayerColours(layer)
+    : getShieldColours(layer.field);
+}
+
 function getShieldColours(field: CoatField): string[] {
   const renderedColours = field.regions === undefined
     ? getRenderedLegacyFieldColours(field)
@@ -77,7 +85,29 @@ function getVectorLayerColours(layer: OrdinaryLayer | Extract<CoatLayer, { type:
 function isEditableShieldLayer(layer: ShieldLayer): boolean {
   const asset = getCoatAsset(layer.assetId);
   if (asset.kind !== 'shield') return false;
-  return !asset.staticImageSrc || (layer.customMaskUploadId !== undefined && layer.customOutlinePath === undefined);
+  if (isCustomMaskFieldShield(layer)) return true;
+  if (isShieldMaterialAssetId(layer.assetId)) return true;
+  return !asset.staticImageSrc;
+}
+
+function isCustomMaskFieldShield(layer: ShieldLayer): boolean {
+  return layer.customMaskUploadId !== undefined && layer.customOutlinePath === undefined;
+}
+
+function usesShieldMaterialPaintColours(layer: ShieldLayer): boolean {
+  return isShieldMaterialAssetId(layer.assetId) && !isCustomMaskFieldShield(layer);
+}
+
+function getShieldMaterialLayerColours(layer: ShieldLayer): string[] {
+  return getOrderedUniqueColours(
+    getShieldMaterialPaintColours(layer.assetId).map((sourcePaint) => (
+      getEffectiveShieldMaterialPaint(layer, sourcePaint)
+    )),
+  );
+}
+
+function getEffectiveShieldMaterialPaint(layer: ShieldLayer, sourcePaint: string): string {
+  return layer.colorReplacements?.[sourcePaint] ?? sourcePaint;
 }
 
 function isEditableVectorLayer(layer: OrdinaryLayer | Extract<CoatLayer, { type: 'charge' | 'top' }>): boolean {
@@ -97,6 +127,9 @@ function getOrderedUniqueColours(colours: string[]): string[] {
 }
 
 function replaceShieldColour(layer: ShieldLayer, fromColor: string, toColor: string): ShieldLayer {
+  if (usesShieldMaterialPaintColours(layer)) {
+    return replaceShieldMaterialPaintColour(layer, fromColor, toColor);
+  }
   const replaceColour = (color: string) => (hasSameColour(color, fromColor) ? toColor : color);
   const resolvedRegions = layer.field.regions === undefined ? undefined : resolveFieldRegions(layer.field);
   let nextRegions = layer.field.regions;
@@ -141,6 +174,40 @@ function replaceShieldColour(layer: ShieldLayer, fromColor: string, toColor: str
       ...(nextOutline ? { outline: nextOutline } : {}),
     },
   };
+}
+
+function replaceShieldMaterialPaintColour(layer: ShieldLayer, fromColor: string, toColor: string): ShieldLayer {
+  const nextColourReplacements: Record<string, string> = { ...layer.colorReplacements };
+  let matchedSourcePaint = false;
+  for (const sourcePaint of getShieldMaterialPaintColours(layer.assetId)) {
+    if (!hasSameColour(getEffectiveShieldMaterialPaint(layer, sourcePaint), fromColor)) continue;
+    matchedSourcePaint = true;
+    nextColourReplacements[sourcePaint] = toColor;
+  }
+  if (!matchedSourcePaint) {
+    throw new Error(`Editable layer colour source not found: ${fromColor} on layer ${layer.id}`);
+  }
+  return withShieldPaintReplacements(layer, nextColourReplacements);
+}
+
+function withShieldPaintReplacements(
+  layer: ShieldLayer,
+  colourReplacements: Record<string, string>,
+): ShieldLayer {
+  const realOverrides = Object.fromEntries(
+    Object.entries(colourReplacements).filter(([sourcePaint, replacementColour]) => (
+      !hasSameColour(sourcePaint, replacementColour)
+    )),
+  );
+  const layerWithoutColourReplacements = withoutShieldColourReplacements(layer);
+  if (Object.keys(realOverrides).length === 0) return layerWithoutColourReplacements;
+  return { ...layerWithoutColourReplacements, colorReplacements: realOverrides };
+}
+
+function withoutShieldColourReplacements(layer: ShieldLayer): ShieldLayer {
+  const layerWithoutColourReplacements = { ...layer };
+  delete layerWithoutColourReplacements.colorReplacements;
+  return layerWithoutColourReplacements;
 }
 
 function getRenderedLegacyFieldColours(field: CoatField): string[] {

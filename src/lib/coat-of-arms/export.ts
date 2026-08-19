@@ -4,16 +4,77 @@ import type { CoatProject } from './types';
 export const COAT_EXPORT_SIZES = [256, 512, 1024, 2048] as const;
 const DEFAULT_COAT_JPEG_QUALITY = 0.92;
 
-type CoatExportSize = (typeof COAT_EXPORT_SIZES)[number];
+export type CoatExportSize = (typeof COAT_EXPORT_SIZES)[number];
+export type CoatExportQuality = 'low' | 'medium' | 'high' | 'ultra';
+
+export const coatExportSizeByQuality = {
+  low: 256,
+  medium: 512,
+  high: 1024,
+  ultra: 2048,
+} as const;
+
+export const coatJpegEncoderQualityByLevel = {
+  low: 0.55,
+  medium: 0.72,
+  high: 0.86,
+  ultra: 0.96,
+} as const;
+
+export interface CoatExportRenderOptions {
+  transparentBackground?: boolean;
+}
 
 interface CoatExportDimensions {
   width: number;
   height: number;
 }
 
-export async function exportCoatPng(project: CoatProject, size: number): Promise<Blob> {
+const coatExportQualityBySize = {
+  256: 'low',
+  512: 'medium',
+  1024: 'high',
+  2048: 'ultra',
+} as const;
+
+export function getCoatExportSizeForQuality(quality: CoatExportQuality): CoatExportSize {
+  assertCoatExportQuality(quality);
+  return coatExportSizeByQuality[quality];
+}
+
+export function getCoatExportQualityForSize(size: number): CoatExportQuality {
   assertExportSize(size);
-  const canvas = await renderProjectToCanvas(project, getProjectExportDimensions(project, size));
+  return coatExportQualityBySize[size];
+}
+
+/** Maps the selected longest-edge export size onto the project's own canvas ratio. */
+export function getCoatExportDimensions(project: CoatProject, size: number): CoatExportDimensions {
+  assertExportSize(size);
+  return scaleCanvasToLongestEdge(project, size);
+}
+
+export function formatCoatExportDimensionsLabel(dimensions: CoatExportDimensions): string {
+  return `${dimensions.width} × ${dimensions.height} px`;
+}
+
+export function projectForCoatExport(project: CoatProject, options?: CoatExportRenderOptions): CoatProject {
+  if (options === undefined) return project;
+  assertCoatExportRenderOptions(options);
+  if (options.transparentBackground !== true) return project;
+  return hideBackgroundLayersForExport(project);
+}
+
+export async function exportCoatPng(
+  project: CoatProject,
+  size: number,
+  options?: CoatExportRenderOptions,
+): Promise<Blob> {
+  assertExportSize(size);
+  assertCoatExportRenderOptions(options);
+  const canvas = await renderProjectToCanvas(
+    projectForCoatExport(project, options),
+    getCoatExportDimensions(project, size),
+  );
   return canvasToPngBlob(canvas);
 }
 
@@ -21,17 +82,28 @@ export async function exportCoatJpeg(
   project: CoatProject,
   size: number,
   quality = DEFAULT_COAT_JPEG_QUALITY,
+  options?: CoatExportRenderOptions,
 ): Promise<Blob> {
   assertExportSize(size);
+  assertCoatExportRenderOptions(options);
+  rejectJpegTransparentBackground(options, quality);
   assertJpegQuality(quality);
-  const canvas = await renderProjectToCanvas(project, getProjectExportDimensions(project, size));
+  const canvas = await renderProjectToCanvas(
+    projectForCoatExport(project, options),
+    getCoatExportDimensions(project, size),
+  );
   return canvasToJpegBlob(canvas, quality);
 }
 
-export async function exportCoatPdf(project: CoatProject, size: number): Promise<Blob> {
+export async function exportCoatPdf(
+  project: CoatProject,
+  size: number,
+  options?: CoatExportRenderOptions,
+): Promise<Blob> {
   assertExportSize(size);
-  const dimensions = getProjectExportDimensions(project, size);
-  const canvas = await renderProjectToCanvas(project, dimensions);
+  assertCoatExportRenderOptions(options);
+  const dimensions = getCoatExportDimensions(project, size);
+  const canvas = await renderProjectToCanvas(projectForCoatExport(project, options), dimensions);
   if (typeof canvas.toDataURL !== 'function') {
     throw new Error('Coat PDF export failed: canvas data URL is unavailable');
   }
@@ -86,15 +158,19 @@ export async function exportCoatBatch(projects: CoatProject[], size: number): Pr
   }
 }
 
-export function printCoatScene(project: CoatProject, size: number): void {
+export function printCoatScene(project: CoatProject, size: number, options?: CoatExportRenderOptions): void {
   assertExportSize(size);
+  assertCoatExportRenderOptions(options);
   const printWindow = globalThis.window?.open('', '_blank');
   if (!printWindow) {
     throw new Error('Coat print failed: browser popup was blocked');
   }
 
   try {
-    const svg = renderCoatSceneSvg(project, getProjectExportDimensions(project, size));
+    const svg = renderCoatSceneSvg(
+      projectForCoatExport(project, options),
+      getCoatExportDimensions(project, size),
+    );
     printWindow.document.open();
     printWindow.document.write(`<!doctype html><html><head><title>Coat of Arms</title><style>html,body{margin:0;background:#fff}svg{display:block;width:100%;height:auto}</style></head><body>${svg}</body></html>`);
     printWindow.addEventListener('load', () => {
@@ -212,14 +288,16 @@ function getUniqueProjectFileName(projectName: string, index: number, usedNames:
   return fileName;
 }
 
-function assertExportSize(size: unknown): asserts size is CoatExportSize {
-  if (!COAT_EXPORT_SIZES.includes(size as CoatExportSize)) {
-    throw new Error(`Unsupported coat export size: ${String(size)}`);
-  }
+function hideBackgroundLayersForExport(project: CoatProject): CoatProject {
+  return {
+    ...project,
+    layers: project.layers.map((layer) => (
+      layer.type === 'background' ? { ...layer, visible: false } : layer
+    )),
+  };
 }
 
-/** Maps the selected longest-edge export size onto the project's own canvas ratio. */
-function getProjectExportDimensions(project: CoatProject, size: CoatExportSize): CoatExportDimensions {
+function scaleCanvasToLongestEdge(project: CoatProject, size: CoatExportSize): CoatExportDimensions {
   const longestCanvasEdge = Math.max(project.canvas.width, project.canvas.height);
   const scale = size / longestCanvasEdge;
   return {
@@ -228,10 +306,41 @@ function getProjectExportDimensions(project: CoatProject, size: CoatExportSize):
   };
 }
 
+function assertCoatExportQuality(quality: unknown): asserts quality is CoatExportQuality {
+  if (quality !== 'low' && quality !== 'medium' && quality !== 'high' && quality !== 'ultra') {
+    throw new Error(`Unsupported coat export quality: ${String(quality)}`);
+  }
+}
+
+function assertExportSize(size: unknown): asserts size is CoatExportSize {
+  if (!COAT_EXPORT_SIZES.includes(size as CoatExportSize)) {
+    throw new Error(`Unsupported coat export size: ${String(size)}`);
+  }
+}
+
+function assertCoatExportRenderOptions(options: unknown): asserts options is CoatExportRenderOptions | undefined {
+  if (options === undefined) return;
+  if (!isPlainObject(options)) {
+    throw new Error(`Invalid coat export options: ${JSON.stringify(options)}`);
+  }
+  if (Object.hasOwn(options, 'transparentBackground') && typeof options.transparentBackground !== 'boolean') {
+    throw new Error(`Invalid coat export transparentBackground: ${JSON.stringify(options.transparentBackground)}`);
+  }
+}
+
+function rejectJpegTransparentBackground(options: CoatExportRenderOptions | undefined, quality: number): void {
+  if (options?.transparentBackground !== true) return;
+  throw new Error(`JPEG coat export does not support transparentBackground: true (quality ${quality})`);
+}
+
 function assertJpegQuality(quality: unknown): asserts quality is number {
   if (typeof quality !== 'number' || !Number.isFinite(quality) || quality < 0 || quality > 1) {
     throw new Error(`Invalid coat JPEG quality: ${String(quality)}`);
   }
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
 function isCanvasLike(value: unknown): value is HTMLCanvasElement {

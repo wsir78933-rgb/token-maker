@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createLocalCoatId } from '@/lib/coat-of-arms/id';
 import { getFieldRegionIds } from '@/lib/coat-of-arms/field-regions';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
-import type { CanvasCrop, CanvasTransform, CoatLayer, CoatLocale, FieldRegionId } from '@/lib/coat-of-arms/types';
+import type { CanvasTransform, CoatLayer, CoatLocale, FieldRegionId } from '@/lib/coat-of-arms/types';
 import { usePanelCommandError } from './usePanelCommandError';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
@@ -29,22 +29,7 @@ export function ArrangePanel({ locale }: { locale: CoatLocale }) {
 
   const updateTransform = (patch: Partial<CanvasTransform>) => {
     if (!selectedLayer) return;
-    const transform = { ...selectedLayer.transform, ...patch };
-    if (Object.hasOwn(patch, 'crop') && patch.crop === undefined) delete transform.crop;
-    run({ type: 'update-layer', layerId: selectedLayer.id, patch: { transform } });
-  };
-  const updateCrop = (patch: Partial<CanvasCrop>) => {
-    if (!selectedLayer) return;
-    const currentCrop = selectedLayer.transform.crop ?? { x: 0, y: 0, width: 100, height: 110 };
-    const crop = { ...currentCrop, ...patch };
-    updateTransform({
-      crop: {
-        x: crop.x,
-        y: crop.y,
-        width: Math.min(crop.width, 100 - crop.x),
-        height: Math.min(crop.height, 110 - crop.y),
-      },
-    });
+    run({ type: 'update-layer', layerId: selectedLayer.id, patch: { transform: { ...selectedLayer.transform, ...patch } } });
   };
   const setSelectedLock = () => {
     const unlockedLayerIds = selectedLayers.filter((layer) => !layer.locked).map((layer) => layer.id);
@@ -105,14 +90,9 @@ export function ArrangePanel({ locale }: { locale: CoatLocale }) {
           <label>{copy.positionRotation}<input aria-label={copy.positionRotation} type="number" value={selectedLayer.transform.rotation} onChange={(event) => updateTransform({ rotation: Number(event.target.value) })} /></label>
           <label>{copy.positionOpacity}<input aria-label={copy.positionOpacity} type="range" min="0" max="1" step="0.05" value={selectedLayer.transform.opacity ?? 1} onChange={(event) => run({ type: 'set-layer-ids-opacity', layerIds: [selectedLayer.id], opacity: Number(event.target.value) })} /></label>
         </fieldset>
-        <fieldset><legend>{copy.flipAndCrop}</legend>
+        <fieldset><legend>{copy.flipSelectedLayer}</legend>
           <button type="button" onClick={() => updateTransform({ flipHorizontal: !selectedLayer.transform.flipHorizontal })}>{copy.flipHorizontal}</button>
           <button type="button" onClick={() => updateTransform({ flipVertical: !selectedLayer.transform.flipVertical })}>{copy.flipVertical}</button>
-          <label>{copy.cropLeft}<input aria-label={copy.cropLeft} type="number" min="0" max="99" value={selectedLayer.transform.crop?.x ?? 0} onChange={(event) => updateCrop({ x: Number(event.target.value) })} /></label>
-          <label>{copy.cropTop}<input aria-label={copy.cropTop} type="number" min="0" max="109" value={selectedLayer.transform.crop?.y ?? 0} onChange={(event) => updateCrop({ y: Number(event.target.value) })} /></label>
-          <label>{copy.cropWidth}<input aria-label={copy.cropWidth} type="number" min="1" max={100 - (selectedLayer.transform.crop?.x ?? 0)} value={selectedLayer.transform.crop?.width ?? 100} onChange={(event) => updateCrop({ width: Number(event.target.value) })} /></label>
-          <label>{copy.cropHeight}<input aria-label={copy.cropHeight} type="number" min="1" max={110 - (selectedLayer.transform.crop?.y ?? 0)} value={selectedLayer.transform.crop?.height ?? 110} onChange={(event) => updateCrop({ height: Number(event.target.value) })} /></label>
-          <button type="button" onClick={() => updateTransform({ crop: undefined })}>{copy.resetCrop}</button>
         </fieldset>
         {selectedLayer.type === 'charge' ? <fieldset><legend>{copy.fieldPlacement}</legend>
           <label>{copy.fieldPlacement}<select aria-label={copy.fieldPlacement} value={selectedLayer.transform.fieldRegionId ?? fieldRegions[0]!} onChange={(event) => updateTransform({ fieldRegionId: event.target.value as FieldRegionId })}>

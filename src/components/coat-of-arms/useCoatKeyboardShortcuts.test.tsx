@@ -41,7 +41,7 @@ function TransformShortcutHarness({ selectedLayerIds }: { selectedLayerIds: stri
 
 function DialogShortcutHarness() {
   useCoatKeyboardShortcuts({ initialSelection: ['charge-1'] });
-  return <section role="dialog" aria-label="Local projects"><button type="button">Delete saved project</button></section>;
+  return <section role="dialog" aria-label="Example dialog"><button type="button">Delete saved project</button></section>;
 }
 
 function EditorOverlayShortcutHarness() {

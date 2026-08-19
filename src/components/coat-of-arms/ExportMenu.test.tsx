@@ -32,8 +32,27 @@ describe('ExportMenu', () => {
     render(<><button type="button">Outside export menu</button><ExportMenu locale="en" project={createDefaultProject('en')} /></>);
 
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
-    fireEvent.click(screen.getByLabelText('Export size'));
+    fireEvent.click(screen.getByLabelText('File type'));
 
     expect(screen.getByRole('region', { name: 'Local export options' })).not.toBeNull();
+  });
+
+  it('updates the live dimensions label when the quality slider changes', () => {
+    render(<ExportMenu locale="en" project={createDefaultProject('en')} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    expect(screen.getByText('1024 × 1024 px')).toBeDefined();
+
+    fireEvent.change(screen.getByLabelText('Quality'), { target: { value: '0' } });
+
+    expect(screen.getByText('256 × 256 px')).toBeDefined();
+  });
+
+  it('shows Download PNG as the default primary action', () => {
+    render(<ExportMenu locale="en" project={createDefaultProject('en')} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+
+    expect(screen.getByRole('button', { name: 'Download PNG' })).toBeDefined();
   });
 });

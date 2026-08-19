@@ -11,6 +11,10 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+function createMaterialShieldLayer(): ShieldLayer {
+  return { ...createShieldLayer(), assetId: 'heater-002' };
+}
+
 function createShieldLayer(): ShieldLayer {
   return {
     id: 'shield-layer', type: 'shield', assetId: 'heater-shield', ...layerMetadata, transform,
@@ -163,12 +167,11 @@ describe('editable rendered layer colours', () => {
     expect(getEditableLayerColours(drawLayer)).toEqual(['#004E89']);
   });
 
-  it('returns no editable colours for bundled raster, static shield, image, and background layers', () => {
+  it('returns no editable colours for bundled raster, image, and background layers', () => {
     const rasterLayer: CoatLayer = {
       id: 'raster-layer', type: 'ordinary', assetId: 'material-ordinary-chevron', color: '#B11F24',
       ...layerMetadata, transform,
     };
-    const staticShieldLayer = { ...createShieldLayer(), assetId: 'heater-002' };
     const imageLayer: CoatLayer = {
       id: 'image-layer', type: 'image', source: 'local-upload', uploadId: 'upload', mimeType: 'image/png', opacity: 1,
       ...layerMetadata, transform,
@@ -179,9 +182,68 @@ describe('editable rendered layer colours', () => {
     };
 
     expect(getEditableLayerColours(rasterLayer)).toEqual([]);
-    expect(getEditableLayerColours(staticShieldLayer)).toEqual([]);
     expect(getEditableLayerColours(imageLayer)).toEqual([]);
     expect(getEditableLayerColours(backgroundLayer)).toEqual([]);
+  });
+
+  it('exposes catalogued heater-002 material paints as editable colours', () => {
+    expect(getEditableLayerColours(createMaterialShieldLayer())).toEqual(['#B4282E', '#E1B432', '#111111']);
+  });
+
+  it('replaces a heater-002 paint via colorReplacements and returns the new effective colour', () => {
+    const layer = createMaterialShieldLayer();
+    const replaced = replaceEditableLayerColour(layer, '#B4282E', '#004E89');
+    if (replaced.type !== 'shield') throw new Error('Expected heater-002 shield replacement');
+
+    expect(replaced.colorReplacements).toEqual({ '#B4282E': '#004E89' });
+    expect(replaced.field).toEqual(layer.field);
+    expect(getEditableLayerColours(replaced)).toEqual(['#004E89', '#E1B432', '#111111']);
+  });
+
+  it('replaces a heater-002 effective colour after a previous paint replacement', () => {
+    const firstReplacement = replaceEditableLayerColour(createMaterialShieldLayer(), '#B4282E', '#004E89');
+    const secondReplacement = replaceEditableLayerColour(firstReplacement, '#004E89', '#1855A5');
+    if (secondReplacement.type !== 'shield') throw new Error('Expected heater-002 second replacement');
+
+    expect(secondReplacement.colorReplacements).toEqual({ '#B4282E': '#1855A5' });
+    expect(getEditableLayerColours(secondReplacement)).toEqual(['#1855A5', '#E1B432', '#111111']);
+  });
+
+  it('omits heater-002 colorReplacements when every override returns to its catalog paint', () => {
+    const replaced = replaceEditableLayerColour(createMaterialShieldLayer(), '#B4282E', '#004E89');
+    const restored = replaceEditableLayerColour(replaced, '#004E89', '#B4282E');
+    if (restored.type !== 'shield') throw new Error('Expected heater-002 identity restoration');
+
+    expect(restored).not.toHaveProperty('colorReplacements');
+    expect(getEditableLayerColours(restored)).toEqual(['#B4282E', '#E1B432', '#111111']);
+  });
+
+  it('rejects an unknown heater-002 colour with the colour and layer id', () => {
+    expect(() => replaceEditableLayerColour(createMaterialShieldLayer(), '#FFFFFF', '#004E89')).toThrow(
+      'Editable layer colour source not found: #FFFFFF on layer shield-layer',
+    );
+  });
+
+  it('rejects colour replacement on a locked static shield', () => {
+    expect(() => replaceEditableLayerColour({ ...createMaterialShieldLayer(), locked: true }, '#B4282E', '#004E89')).toThrow(
+      'Coat layer is locked: shield-layer',
+    );
+  });
+
+  it('keeps custom-mask static shields on the field-colour path', () => {
+    const layer = { ...createMaterialShieldLayer(), customMaskUploadId: 'custom-shield-mask' };
+
+    expect(getEditableLayerColours(layer)).toEqual(['#B11F24', '#1855A5', '#123456', '#1E293B']);
+    const replaced = replaceEditableLayerColour(layer, '#b11f24', '#004E89');
+    if (replaced.type !== 'shield') throw new Error('Expected custom-mask shield replacement');
+    expect(replaced).not.toHaveProperty('colorReplacements');
+    expect(replaced.field.regions?.q1?.colors).toEqual(['#004E89', '#CAFE00']);
+  });
+
+  it('keeps procedural heater-shield field and outline colours', () => {
+    expect(getEditableLayerColours(createShieldLayer())).toEqual([
+      '#B11F24', '#1855A5', '#123456', '#1E293B',
+    ]);
   });
 
   it('materializes only matching implicit shield regions and preserves unmatched region fallbacks', () => {

@@ -1,6 +1,18 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultProject } from './assets';
-import { exportCoatBatch, exportCoatJpeg, exportCoatPdf, exportCoatPng, printCoatScene } from './export';
+import {
+  type CoatExportQuality,
+  exportCoatBatch,
+  exportCoatJpeg,
+  exportCoatPdf,
+  exportCoatPng,
+  formatCoatExportDimensionsLabel,
+  getCoatExportDimensions,
+  getCoatExportQualityForSize,
+  getCoatExportSizeForQuality,
+  printCoatScene,
+  projectForCoatExport,
+} from './export';
 
 const { jsPdfInstances, jszipModuleLoadState } = vi.hoisted(() => ({
   jsPdfInstances: [] as Array<{ addImage: ReturnType<typeof vi.fn>; options: unknown }>,
@@ -32,6 +44,76 @@ vi.mock('jspdf', () => ({
 afterEach(() => {
   vi.unstubAllGlobals();
   jsPdfInstances.length = 0;
+});
+
+describe('coat export quality and dimensions', () => {
+  it.each([
+    ['low', 256],
+    ['medium', 512],
+    ['high', 1024],
+    ['ultra', 2048],
+  ] as const)('maps quality %s to size %s and back', (quality, size) => {
+    expect(getCoatExportSizeForQuality(quality)).toBe(size);
+    expect(getCoatExportQualityForSize(size)).toBe(quality);
+  });
+
+  it('rejects an unknown export quality with the received value', () => {
+    expect(() => getCoatExportSizeForQuality('huge' as CoatExportQuality)).toThrow('huge');
+  });
+
+  it('rejects an unknown export size with the received value', () => {
+    expect(() => getCoatExportQualityForSize(1080)).toThrow('1080');
+  });
+
+  it('formats a square default project at 512 like CoaMaker', () => {
+    const project = createDefaultProject('en');
+
+    expect(formatCoatExportDimensionsLabel(getCoatExportDimensions(project, 512))).toBe('512 × 512 px');
+  });
+
+  it('maps Instagram 1080×1920 at 1024 to 576×1024', () => {
+    const instagramProject = { ...createDefaultProject('en'), canvas: { width: 1080, height: 1920 } };
+
+    expect(getCoatExportDimensions(instagramProject, 1024)).toEqual({ width: 576, height: 1024 });
+  });
+
+  it('rejects an unsupported dimension size with the received value', () => {
+    expect(() => getCoatExportDimensions(createDefaultProject('en'), 123)).toThrow('123');
+  });
+});
+
+describe('projectForCoatExport', () => {
+  it('returns the same project when options are omitted or the background stays opaque', () => {
+    const project = createDefaultProject('en');
+
+    expect(projectForCoatExport(project)).toBe(project);
+    expect(projectForCoatExport(project, {})).toBe(project);
+    expect(projectForCoatExport(project, { transparentBackground: false })).toBe(project);
+  });
+
+  it('hides background layers without mutating the input project', () => {
+    const project = createDefaultProject('en');
+    const background = project.layers.find((layer) => layer.type === 'background');
+    if (!background) throw new Error('Expected default background layer');
+
+    const exported = projectForCoatExport(project, { transparentBackground: true });
+    const exportedBackground = exported.layers.find((layer) => layer.type === 'background');
+    if (!exportedBackground) throw new Error('Expected exported background layer');
+
+    expect(exported).not.toBe(project);
+    expect(background.visible).toBe(true);
+    expect(exportedBackground.visible).toBe(false);
+    expect(exportedBackground).not.toBe(background);
+    expect(exported.layers[1]).toBe(project.layers[1]);
+  });
+
+  it.each([null, [], 'nope', 1])('rejects non-object options including the received value: %s', (invalidOptions) => {
+    expect(() => projectForCoatExport(createDefaultProject('en'), invalidOptions as never)).toThrow(JSON.stringify(invalidOptions));
+  });
+
+  it.each(['yes', 1, null])('rejects a non-boolean transparentBackground including the received value: %s', (invalidFlag) => {
+    expect(() => projectForCoatExport(createDefaultProject('en'), { transparentBackground: invalidFlag as never })).toThrow(JSON.stringify(invalidFlag));
+  });
 });
 
 describe('coat export helpers', () => {
@@ -183,10 +265,69 @@ describe('coat export helpers', () => {
   it('exposes a PDF exporter that rejects unsupported dimensions before browser work', async () => {
     await expect(exportCoatPdf(createDefaultProject('en'), 123)).rejects.toThrow('123');
   });
+
+  it('prints a scene whose default background layer is omitted when transparentBackground is true', () => {
+    const project = createDefaultProject('en');
+    const background = project.layers.find((layer) => layer.type === 'background');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!background || !shield) throw new Error('Expected default background and shield layers');
+    const popup = createPopup();
+    vi.stubGlobal('window', { open: () => popup });
+
+    printCoatScene(project, 512, { transparentBackground: true });
+
+    const writtenHtml = String(popup.document.write.mock.calls[0]?.[0]);
+    expect(background.visible).toBe(true);
+    expect(writtenHtml).not.toContain(`data-layer-id="${background.id}"`);
+    expect(writtenHtml).not.toContain('#F5E6A1');
+    expect(writtenHtml).toContain(`data-layer-id="${shield.id}"`);
+  });
+
+  it('renders PNG and PDF from a project whose default background is hidden when transparentBackground is true', async () => {
+    const project = createDefaultProject('en');
+    const background = project.layers.find((layer) => layer.type === 'background');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!background || !shield) throw new Error('Expected default background and shield layers');
+    const svgBlobs: Blob[] = [];
+    installCanvasBrowser({
+      onObjectUrlBlob: (blob) => {
+        svgBlobs.push(blob);
+      },
+    });
+
+    await exportCoatPng(project, 512, { transparentBackground: true });
+    await exportCoatPdf(project, 512, { transparentBackground: true });
+
+    expect(svgBlobs).toHaveLength(2);
+    expect(background.visible).toBe(true);
+    for (const svgBlob of svgBlobs) {
+      const svg = await svgBlob.text();
+      expect(svg).not.toContain(`data-layer-id="${background.id}"`);
+      expect(svg).not.toContain('#F5E6A1');
+      expect(svg).toContain(`data-layer-id="${shield.id}"`);
+    }
+  });
+
+  it('rejects JPEG transparent background with true and the quality number before canvas work', async () => {
+    await expect(exportCoatJpeg(createDefaultProject('en'), 512, 0.73, { transparentBackground: true }))
+      .rejects.toThrow(/true[\s\S]*0\.73|0\.73[\s\S]*true/);
+  });
+
+  it.each([null, [], 'nope'])('rejects invalid export options including the received value: %s', async (invalidOptions) => {
+    await expect(exportCoatPng(createDefaultProject('en'), 512, invalidOptions as never))
+      .rejects.toThrow(JSON.stringify(invalidOptions));
+    await expect(exportCoatJpeg(createDefaultProject('en'), 512, 0.73, invalidOptions as never))
+      .rejects.toThrow(JSON.stringify(invalidOptions));
+    await expect(exportCoatPdf(createDefaultProject('en'), 512, invalidOptions as never))
+      .rejects.toThrow(JSON.stringify(invalidOptions));
+    expect(() => printCoatScene(createDefaultProject('en'), 512, invalidOptions as never))
+      .toThrow(JSON.stringify(invalidOptions));
+  });
 });
 
 function installCanvasBrowser(options: {
   onCanvasCreated?: (canvas: { width: number; height: number }) => void;
+  onObjectUrlBlob?: (blob: Blob) => void;
   revokeObjectURL?: ReturnType<typeof vi.fn>;
   toBlob?: (callback: BlobCallback, type?: string, quality?: number) => void;
 } = {}): void {
@@ -207,7 +348,10 @@ function installCanvasBrowser(options: {
   });
   vi.stubGlobal('Image', FakeImage);
   vi.stubGlobal('URL', {
-    createObjectURL: () => 'blob:coat',
+    createObjectURL: (blob: Blob) => {
+      options.onObjectUrlBlob?.(blob);
+      return 'blob:coat';
+    },
     revokeObjectURL: options.revokeObjectURL ?? (() => undefined),
   });
 }

@@ -44,7 +44,7 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
     metadataDescription:
       'Use this free coat of arms maker to customize shields, colours, charges, text, and layers in your browser, then export PNG, JPEG, or PDF files.',
     introduction:
-      'Build a personal heraldic design in the browser, then save a project or export a finished image for your game, group, or story. Start from a blank shield, return to a saved local project, and refine the colours, symbols, and wording at your own pace before sharing a finished result.',
+      'Build a personal heraldic design in the browser, then export a finished image for your game, group, or story. Start from a blank shield, refine the colours, symbols, and wording at your own pace before sharing a finished result.',
     stepsHeading: 'Create a heraldic design in three steps',
     stepsAriaLabel: 'Coat maker steps',
     steps: [
@@ -58,13 +58,13 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
       },
       {
         title: 'Finish and export',
-        description: 'Adjust the final details, keep a local project, then export the image when it is ready.',
+        description: 'Adjust the final details, then export the image when it is ready.',
       },
     ],
     featuresHeading: 'Tools for a complete design',
     verifiedCapabilities: [
       'Shield styles, field patterns, charges, text, layers, and drawing tools',
-      'Local project saving, importing, and downloading',
+      'Browser draft recovery after a reload',
       'PNG, JPEG, PDF, print, and batch export options',
     ],
     useCasesHeading: 'Useful for',
@@ -74,19 +74,19 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
       'Fantasy characters and family banners',
       'Props for personal worldbuilding projects',
     ],
-    privacyHeading: 'Local projects and exports',
+    privacyHeading: 'Local editing and exports',
     localPrivacy: 'Your project stays in your browser',
     exportExplanation:
-      'Saved projects and exports are handled on your device, so you can keep working without sending a design to an account or shared workspace.',
+      'Exports are handled on your device, so you can keep working without sending a design to an account or shared workspace.',
     faqHeading: 'Frequently asked questions',
     faqItems: [
       {
         question: 'Is this coat of arms maker free to use?',
-        answer: 'Yes. You can create, save, and export a design in the browser without a paid plan.',
+        answer: 'Yes. You can create and export a design in the browser without a paid plan.',
       },
       {
         question: 'Can I return to a design later?',
-        answer: 'Yes. Save a local project, then load it again from the project library when you want to continue.',
+        answer: 'Yes. If the browser still has a recent draft, you can restore it when you reopen the maker. Export an image when you want a finished copy.',
       },
       {
         question: 'Which image formats can I export?',
@@ -102,7 +102,7 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
     webApplicationFeatureNames: [
       'Shield styles and field patterns',
       'Charges, text, layers, and drawing tools',
-      'Local project saving and export options',
+      'PNG, JPEG, PDF, and batch export options',
     ],
   },
   zh: {
@@ -122,14 +122,14 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
         description: '加入图形、文字、颜色和图层，让设计在缩小时依然清晰。',
       },
       {
-        title: '保存并导出',
-        description: '调整最后细节，保留本地项目，再导出完成的图片。',
+        title: '完成并导出',
+        description: '调整最后细节，再导出完成的图片。',
       },
     ],
     featuresHeading: '完成设计所需的工具',
     verifiedCapabilities: [
       '盾牌样式、底纹、图形、文字、图层和绘图工具',
-      '本地项目保存、导入和下载',
+      '重新打开页面后可恢复浏览器草稿',
       'PNG、JPEG、PDF、打印和批量导出选项',
     ],
     useCasesHeading: '适合用于',
@@ -139,18 +139,18 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
       '奇幻角色与家族旗帜',
       '个人世界观设定的道具',
     ],
-    privacyHeading: '本地项目与导出',
+    privacyHeading: '本地编辑与导出',
     localPrivacy: '你的项目保留在浏览器中',
-    exportExplanation: '项目保存和导出都由你的设备处理，无需把设计发送到账号或共享工作区，也能继续编辑。',
+    exportExplanation: '导出由你的设备处理，无需把设计发送到账号或共享工作区，也能继续编辑。',
     faqHeading: '常见问题',
     faqItems: [
       {
         question: '纹章制作器可以免费使用吗？',
-        answer: '可以。你可以直接在浏览器中创建、保存和导出设计，不需要付费方案。',
+        answer: '可以。你可以直接在浏览器中创建和导出设计，不需要付费方案。',
       },
       {
         question: '以后还能继续编辑吗？',
-        answer: '可以。保存本地项目后，可在项目库中重新加载，继续调整设计。',
+        answer: '可以。重新打开制作器时，如果浏览器仍保留最近草稿，可以恢复后继续调整。需要成品时再导出图片。',
       },
       {
         question: '可以导出哪些格式？',
@@ -166,7 +166,7 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
     webApplicationFeatureNames: [
       '盾牌样式与底纹',
       '图形、文字、图层和绘图工具',
-      '本地项目保存与导出选项',
+      'PNG、JPEG、PDF 与批量导出选项',
     ],
   },
 };

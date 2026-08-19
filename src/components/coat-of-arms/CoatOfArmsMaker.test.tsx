@@ -7,20 +7,24 @@ import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testi
 import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 import { createDefaultProject } from '@/lib/coat-of-arms/assets';
-import { EDITOR_PREFERENCES_STORAGE_KEY, loadEditorPreferences, updateEditorPreferences } from '@/lib/coat-of-arms/editor-preferences';
-import { COAT_PROJECT_DRAFT_STORAGE_KEY, COAT_PROJECT_STORAGE_KEY, MAX_COAT_PROJECT_DOCUMENT_BYTES, listProjectRecords, saveProjectRecord } from '@/lib/coat-of-arms/project-storage';
+import { EDITOR_PREFERENCES_STORAGE_KEY, getDefaultEditorPreferences, loadEditorPreferences, updateEditorPreferences } from '@/lib/coat-of-arms/editor-preferences';
+import { useEditorPreferencesStore } from '@/lib/coat-of-arms/editor-preferences-session';
+import { COAT_PROJECT_DRAFT_STORAGE_KEY } from '@/lib/coat-of-arms/project-storage';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import * as exportModule from '@/lib/coat-of-arms/export';
 import { CoatOfArmsMaker } from './CoatOfArmsMaker';
 
-vi.mock('@/lib/coat-of-arms/export', () => ({
-  COAT_EXPORT_SIZES: [256, 512, 1024, 2048],
-  exportCoatPng: vi.fn(async () => new Blob(['png'], { type: 'image/png' })),
-  exportCoatJpeg: vi.fn(async () => new Blob(['jpg'], { type: 'image/jpeg' })),
-  exportCoatPdf: vi.fn(async () => new Blob(['pdf'], { type: 'application/pdf' })),
-  exportCoatBatch: vi.fn(async () => new Blob(['zip'], { type: 'application/zip' })),
-  printCoatScene: vi.fn(),
-}));
+vi.mock('@/lib/coat-of-arms/export', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/coat-of-arms/export')>();
+  return {
+    ...actual,
+    exportCoatPng: vi.fn(async () => new Blob(['png'], { type: 'image/png' })),
+    exportCoatJpeg: vi.fn(async () => new Blob(['jpg'], { type: 'image/jpeg' })),
+    exportCoatPdf: vi.fn(async () => new Blob(['pdf'], { type: 'application/pdf' })),
+    exportCoatBatch: vi.fn(async () => new Blob(['zip'], { type: 'application/zip' })),
+    printCoatScene: vi.fn(),
+  };
+});
 
 function renderWorkbench(locale: 'en' | 'zh' = 'en', project = createDefaultProject(locale)) {
   useCoatProjectStore.getState().replaceProject(project);
@@ -130,6 +134,7 @@ describe('CoatOfArmsMaker', () => {
     localStorage.clear();
     vi.stubGlobal('crypto', { randomUUID: () => `workbench-id-${nextId++}` });
     useCoatProjectStore.setState(useCoatProjectStore.getInitialState(), true);
+    useEditorPreferencesStore.setState({ preferences: getDefaultEditorPreferences() });
   });
 
   afterEach(() => {
@@ -153,7 +158,18 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.getByRole('tab', { name: 'Upload' })).toBeDefined();
     expect(screen.getByRole('tab', { name: 'Layers' })).toBeDefined();
     expect(screen.getByRole('button', { name: /export/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: 'Open local project library' })).toBeDefined();
+  });
+
+  it('does not expose a named local project library', () => {
+    renderWorkbench();
+
+    expect(screen.queryByRole('button', { name: 'Open local project library' })).toBeNull();
+    expect(screen.queryByRole('dialog', { name: 'Local projects' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Save project locally' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Save as local copy' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Export project JSON' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Import project JSON' })).toBeNull();
+    expect(screen.queryByLabelText('Project name')).toBeNull();
   });
 
   it('connects editor utility tabs to their active panel and roves focus with horizontal arrows', () => {
@@ -197,7 +213,6 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchContent).not.toBeNull();
     expect(topbar!.nextElementSibling).toBe(workbenchContent);
     expectWorkbenchProjectNameToBeNonHeading('My Coat of Arms');
-    expect(screen.getByRole('button', { name: 'Open local project library' })).toBeDefined();
   });
 
   it('places the selected-element colour strip between toolbar groups and preserves its mobile row contract', () => {
@@ -397,15 +412,6 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.getByRole('button', { name: /duplicate selected layers/i })).toBeDefined();
   });
 
-  it('renders the canvas-toolbar library action with the shared control frame', () => {
-    renderWorkbench();
-    const projectLibraryTrigger = screen.getByRole('button', { name: 'Open local project library' });
-    const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
-
-    expect(projectLibraryTrigger.classList.contains('coat-target-link-control')).toBe(true);
-    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar .coat-target-link-control { border-color: var(--coat-line); background: var(--coat-panel-raised); }');
-  });
-
   it('distinguishes inactive and active multi-select controls with a shared keyboard focus treatment', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
@@ -433,17 +439,6 @@ describe('CoatOfArmsMaker', () => {
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
       type: 'charge', assetId: 'material-symbol-compass-rose',
     });
-  });
-
-  it('refreshes saved projects when the canvas toolbar opens the local project library', () => {
-    const savedProject = { ...createDefaultProject('en'), id: 'saved-from-toolbar', name: 'Saved from toolbar' };
-    saveProjectRecord({ id: savedProject.id, name: savedProject.name, project: savedProject });
-    renderWorkbench();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Open local project library' }));
-
-    expect(screen.getByRole('dialog', { name: 'Local projects' })).toBeDefined();
-    expect(screen.getByRole('option', { name: 'Saved from toolbar' })).toBeDefined();
   });
 
   it('browses a selected shield tree category without mutating the canvas', () => {
@@ -560,7 +555,7 @@ describe('CoatOfArmsMaker', () => {
     expect(xInput.value).toBe('0');
     expect(within(positionPanel).getByLabelText('Keep aspect ratio')).toBeDefined();
     expect(within(positionPanel).getByRole('button', { name: 'Flip horizontal' })).toBeDefined();
-    expect(within(positionPanel).getByLabelText('Crop left')).toBeDefined();
+    expect(within(positionPanel).queryByLabelText('Crop left')).toBeNull();
     expect(within(positionPanel).getByRole('button', { name: 'Group selected layers' })).toBeDefined();
     fireEvent.change(xInput, { target: { value: '18' } });
     fireEvent.change(within(positionPanel).getByLabelText('Position opacity'), { target: { value: '0.4' } });
@@ -586,7 +581,7 @@ describe('CoatOfArmsMaker', () => {
     });
   });
 
-  it('flips and non-destructively crops the selected layer from the Position panel', () => {
+  it('flips the selected layer from the Position panel without exposing crop editor controls', () => {
     renderWorkbench();
     const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
     if (!shield) throw new Error('Expected default shield layer');
@@ -595,17 +590,17 @@ describe('CoatOfArmsMaker', () => {
     fireEvent.click(screen.getAllByLabelText(new RegExp(`Select layer ${shield.id}`))[0]!);
     selectDesktopTool('Position');
     const positionPanel = getDesktopPanel('Position');
+    expect(within(positionPanel).getByRole('group', { name: 'Flip selected layer' })).toBeDefined();
+    expect(within(positionPanel).queryByLabelText('Crop left')).toBeNull();
+    expect(within(positionPanel).queryByLabelText('Crop top')).toBeNull();
+    expect(within(positionPanel).queryByLabelText('Crop width')).toBeNull();
+    expect(within(positionPanel).queryByLabelText('Crop height')).toBeNull();
+    expect(within(positionPanel).queryByRole('button', { name: 'Reset crop' })).toBeNull();
     fireEvent.click(within(positionPanel).getByRole('button', { name: 'Flip horizontal' }));
-    fireEvent.change(within(positionPanel).getByLabelText('Crop left'), { target: { value: '12' } });
-    fireEvent.change(within(positionPanel).getByLabelText('Crop width'), { target: { value: '70' } });
+    fireEvent.click(within(positionPanel).getByRole('button', { name: 'Flip vertical' }));
 
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.id === shield.id))
-      .toMatchObject({ transform: { flipHorizontal: true, crop: { x: 12, y: 0, width: 70, height: 110 } } });
-
-    fireEvent.click(within(positionPanel).getByRole('button', { name: 'Reset crop' }));
-    const shieldAfterCropReset = useCoatProjectStore.getState().project.layers.find((layer) => layer.id === shield.id);
-    if (!shieldAfterCropReset || shieldAfterCropReset.type !== 'shield') throw new Error('Expected shield layer after crop reset');
-    expect(shieldAfterCropReset.transform.crop).toBeUndefined();
+      .toMatchObject({ transform: { flipHorizontal: true, flipVertical: true } });
   });
 
   it('edits a selected text layer and preserves its chosen browser-safe font family', () => {
@@ -658,66 +653,27 @@ describe('CoatOfArmsMaker', () => {
   it('keeps the project and export actions explicitly local', () => {
     renderWorkbench();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open local project library' }));
-    expect(screen.getByRole('button', { name: /save project locally/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /export project json/i })).toBeDefined();
-
-    fireEvent.click(screen.getByRole('button', { name: /close/i }));
     fireEvent.click(screen.getByRole('button', { name: /export/i }));
-    expect(screen.getByRole('button', { name: /export png/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /export jpg/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /export pdf/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /print locally/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /export batch zip/i })).toBeDefined();
-  });
-
-  it('keeps browser-local save-as, rename, load, delete, and invalid JSON import lossless', async () => {
-    const originalProject = { ...createDefaultProject('en'), id: 'original-project', name: 'Original project' };
-    renderWorkbench('en', originalProject);
-
-    fireEvent.click(screen.getByRole('button', { name: 'Open local project library' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Save project locally' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Save as local copy' }));
-    const copiedProjectId = useCoatProjectStore.getState().project.id;
-    fireEvent.change(screen.getByLabelText('Project name'), { target: { value: 'Renamed local copy' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Rename saved project' }));
-
-    expect(listProjectRecords().map((record) => ({ id: record.id, name: record.name }))).toEqual([
-      { id: originalProject.id, name: 'Original project' },
-      { id: copiedProjectId, name: 'Renamed local copy' },
-    ]);
-
-    fireEvent.change(screen.getByLabelText('Saved projects'), { target: { value: originalProject.id } });
-    fireEvent.click(screen.getByRole('button', { name: 'Load saved project' }));
-    expect(useCoatProjectStore.getState().project).toMatchObject({ id: originalProject.id, name: 'Original project' });
-
-    const invalidDocument = new File(['{'], 'invalid-project.json', { type: 'application/json' });
-    Object.defineProperty(invalidDocument, 'text', { value: async () => '{' });
-    fireEvent.change(screen.getByLabelText('Import project JSON file'), { target: { files: [invalidDocument] } });
-
-    expect((await screen.findByRole('alert')).textContent).toContain('Invalid serialized coat project JSON');
-    expect(useCoatProjectStore.getState().project).toMatchObject({ id: originalProject.id, name: 'Original project' });
-    expect(listProjectRecords()).toHaveLength(2);
-
-    fireEvent.click(screen.getByRole('button', { name: 'Delete saved project' }));
-    expect(listProjectRecords().map((record) => record.id)).toEqual([copiedProjectId]);
-  });
-
-  it('keeps the local project library open and actionable when stored project records are corrupt', async () => {
-    localStorage.setItem(COAT_PROJECT_STORAGE_KEY, '{');
-    renderWorkbench();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Open local project library' }));
-
-    const dialog = screen.getByRole('dialog', { name: 'Local projects' });
-    expect((await within(dialog).findByRole('alert')).textContent).toContain('Project operation failed');
-    expect(within(dialog).getByRole('button', { name: 'New project' })).toBeDefined();
+    expect(screen.getByLabelText('File type')).toBeDefined();
+    expect(screen.getByLabelText('Quality')).toBeDefined();
+    expect(screen.getByLabelText('Transparent background')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Download PNG' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Share' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Print' })).toBeDefined();
+    expect(screen.queryByRole('button', { name: 'Copy image' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Export batch ZIP' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Export PNG' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Export JPG' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Export PDF' })).toBeNull();
   });
 
   it('restores and persists the browser-local JPEG export quality', async () => {
     localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
       version: 1,
+      appearance: 'dark',
+      colorPickerMode: 'simple',
       canvasPreset: 'square',
+      exportSize: 2048,
       jpegQuality: 'ultra',
       customPalette: [],
       backgroundGradient: null,
@@ -725,12 +681,14 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
 
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
-    const jpegQuality = screen.getByLabelText('JPG quality') as HTMLSelectElement;
-    await waitFor(() => expect(jpegQuality.value).toBe('ultra'));
+    const qualityControl = screen.getByLabelText('Quality');
+    await act(async () => { await Promise.resolve(); });
 
-    fireEvent.change(jpegQuality, { target: { value: 'medium' } });
+    fireEvent.change(qualityControl, { target: { value: '3' } });
+    expect(loadEditorPreferences()).toMatchObject({ jpegQuality: 'ultra', exportSize: 2048 });
 
-    expect(loadEditorPreferences().jpegQuality).toBe('medium');
+    fireEvent.change(qualityControl, { target: { value: '1' } });
+    expect(loadEditorPreferences()).toMatchObject({ jpegQuality: 'medium', exportSize: 512 });
   });
 
   it('reports the JPG-specific success message after a local JPG export', async () => {
@@ -738,7 +696,8 @@ describe('CoatOfArmsMaker', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
     const exportMenu = screen.getByRole('region', { name: 'Local export options' });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Export JPG' }));
+    fireEvent.change(screen.getByLabelText('File type'), { target: { value: 'jpeg' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Download JPG' }));
 
     expect((await within(exportMenu).findByText('JPG exported locally.')).textContent).toBe('JPG exported locally.');
   });
@@ -747,12 +706,8 @@ describe('CoatOfArmsMaker', () => {
     vi.clearAllMocks();
     const jsdomErrorMonitor = monitorJsdomErrors();
     const project = createDefaultProject('en');
-    const clipboardWrite = vi.fn(async () => undefined);
     const share = vi.fn(async () => undefined);
     const downloadClicks = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
-    class TestClipboardItem {
-      constructor(readonly payload: Record<string, Blob>) {}
-    }
     class TestFile extends Blob {
       readonly name: string;
 
@@ -761,39 +716,37 @@ describe('CoatOfArmsMaker', () => {
         this.name = name;
       }
     }
-    vi.stubGlobal('ClipboardItem', TestClipboardItem);
     vi.stubGlobal('File', TestFile);
-    vi.stubGlobal('navigator', { clipboard: { write: clipboardWrite }, canShare: () => true, share });
+    vi.stubGlobal('navigator', { canShare: () => true, share });
     renderWorkbench('en', project);
 
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
-    fireEvent.change(screen.getByLabelText('Export size'), { target: { value: '512' } });
-    fireEvent.change(screen.getByLabelText('JPG quality'), { target: { value: 'low' } });
+    fireEvent.change(screen.getByLabelText('Quality'), { target: { value: '1' } });
 
     expect(JSON.parse(localStorage.getItem(EDITOR_PREFERENCES_STORAGE_KEY) ?? '')).toMatchObject({
       exportSize: 512,
-      jpegQuality: 'low',
+      jpegQuality: 'medium',
     });
 
     updateEditorPreferences((preferences) => ({ ...preferences, exportSize: 2048, jpegQuality: 'ultra' }));
+    const renderOptions = { transparentBackground: false };
     try {
-      fireEvent.click(screen.getByRole('button', { name: 'Export PNG' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Export JPG' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Copy image' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Share image' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Export PDF' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Print locally' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Export batch ZIP' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
+      fireEvent.change(screen.getByLabelText('File type'), { target: { value: 'jpeg' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Download JPG' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Share' }));
+      fireEvent.change(screen.getByLabelText('File type'), { target: { value: 'pdf' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Download PDF' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Print' }));
 
       await waitFor(() => {
-        expect(exportModule.exportCoatPng).toHaveBeenCalledWith(project, 2048);
+        expect(exportModule.exportCoatPng).toHaveBeenCalledWith(project, 2048, renderOptions);
         expect(exportModule.exportCoatJpeg).toHaveBeenCalledWith(project, 2048, 0.96);
-        expect(exportModule.exportCoatPdf).toHaveBeenCalledWith(project, 2048);
-        expect(exportModule.printCoatScene).toHaveBeenCalledWith(project, 2048);
-        expect(exportModule.exportCoatBatch).toHaveBeenCalledWith([project], 2048);
-        expect(clipboardWrite).toHaveBeenCalledTimes(1);
+        expect(exportModule.exportCoatPdf).toHaveBeenCalledWith(project, 2048, renderOptions);
+        expect(exportModule.printCoatScene).toHaveBeenCalledWith(project, 2048, renderOptions);
+        expect(exportModule.exportCoatBatch).not.toHaveBeenCalled();
         expect(share).toHaveBeenCalledTimes(1);
-        expect(downloadClicks).toHaveBeenCalledTimes(4);
+        expect(downloadClicks).toHaveBeenCalledTimes(3);
       });
       expect(jsdomErrorMonitor.errors).toEqual([]);
     } finally {
@@ -801,10 +754,35 @@ describe('CoatOfArmsMaker', () => {
     }
   });
 
+  it('defaults the workbench chrome to dark appearance', () => {
+    renderWorkbench();
+
+    expect(document.querySelector('main.coat-target-workbench')?.getAttribute('data-appearance')).toBe('dark');
+  });
+
+  it('hydrates light workbench chrome from the stored editor preferences document', async () => {
+    localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
+      version: 1,
+      appearance: 'light',
+      colorPickerMode: 'simple',
+      canvasPreset: 'square',
+      jpegQuality: 'high',
+      customPalette: [],
+      backgroundGradient: null,
+    }));
+    renderWorkbench();
+
+    await waitFor(() => {
+      expect(document.querySelector('main.coat-target-workbench')?.getAttribute('data-appearance')).toBe('light');
+    });
+  });
+
   it('shows the invalid persisted export size and leaves the active project unchanged', async () => {
     const project = createDefaultProject('en');
     localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
       version: 1,
+      appearance: 'dark',
+      colorPickerMode: 'simple',
       canvasPreset: 'square',
       exportSize: 123,
       jpegQuality: 'high',
@@ -817,25 +795,6 @@ describe('CoatOfArmsMaker', () => {
 
     expect((await screen.findByRole('alert')).textContent).toContain('123');
     expect(useCoatProjectStore.getState().project).toEqual(project);
-  });
-
-  it('copies a PNG export to the browser clipboard', async () => {
-    const clipboardWrite = vi.fn(async () => undefined);
-    class TestClipboardItem {
-      constructor(readonly payload: Record<string, Blob>) {}
-    }
-    vi.stubGlobal('ClipboardItem', TestClipboardItem);
-    vi.stubGlobal('navigator', { clipboard: { write: clipboardWrite } });
-    renderWorkbench();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Copy image' }));
-
-    const exportOptions = screen.getByRole('region', { name: 'Local export options' });
-    expect((await within(exportOptions).findByText(/image copied to clipboard/i)).textContent).toMatch(/copied/i);
-    expect(clipboardWrite).toHaveBeenCalledWith([
-      expect.objectContaining({ payload: { 'image/png': expect.any(Blob) } }),
-    ]);
   });
 
   it('shares a PNG export through the native share sheet when the browser supports files', async () => {
@@ -853,24 +812,11 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
 
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Share image' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Share' }));
 
     const exportOptions = screen.getByRole('region', { name: 'Local export options' });
     expect((await within(exportOptions).findByText(/native share sheet opened/i)).textContent).toMatch(/share sheet opened/i);
     expect(share).toHaveBeenCalledWith(expect.objectContaining({ files: [expect.any(TestFile)] }));
-  });
-
-  it('shows a visible error when local project storage is unavailable', () => {
-    renderWorkbench();
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-      throw new Error('storage quota exceeded');
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: 'Open local project library' }));
-    fireEvent.click(screen.getByRole('button', { name: /save project locally/i }));
-
-    expect(screen.getByRole('alert').textContent).toMatch(/storage quota exceeded/i);
-    expect(localStorage.getItem(COAT_PROJECT_STORAGE_KEY)).toBeNull();
   });
 
   it('shows a visible error when PNG export cannot create a blob URL', async () => {
@@ -878,26 +824,16 @@ describe('CoatOfArmsMaker', () => {
     vi.stubGlobal('URL', { createObjectURL: () => { throw new Error('Export download is unavailable in this browser'); }, revokeObjectURL: vi.fn() });
 
     fireEvent.click(screen.getByRole('button', { name: /export/i }));
-    fireEvent.click(screen.getByRole('button', { name: /export png/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
 
     expect((await screen.findByRole('alert')).textContent).toMatch(/unavailable in this browser/i);
   });
 
   it('uses Chinese-only project and export errors without exposing raw English failures', async () => {
     renderWorkbench('zh');
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-      throw new Error('storage quota exceeded');
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: '打开本地项目库' }));
-    fireEvent.click(screen.getByRole('button', { name: '本地保存项目' }));
-    expect(screen.getByRole('alert').textContent).toContain('项目操作失败');
-    expect(screen.getByRole('alert').textContent).not.toContain('storage quota exceeded');
-
-    fireEvent.click(screen.getByRole('button', { name: '关闭' }));
     vi.stubGlobal('URL', { createObjectURL: () => { throw new Error('Export download is unavailable in this browser'); }, revokeObjectURL: vi.fn() });
     fireEvent.click(screen.getByRole('button', { name: '导出' }));
-    fireEvent.click(screen.getByRole('button', { name: '导出 PNG' }));
+    fireEvent.click(screen.getByRole('button', { name: '下载 PNG' }));
 
     const exportError = await screen.findByRole('alert');
     expect(exportError.textContent).toContain('导出失败');
@@ -905,87 +841,31 @@ describe('CoatOfArmsMaker', () => {
     expect(exportError.textContent).not.toContain('browser');
   });
 
-  it.each([
-    { locale: 'en' as const, projectLibrary: 'Open local project library', importFile: 'Import project JSON file', expectedError: 'Project JSON file is too large' },
-    { locale: 'zh' as const, projectLibrary: '打开本地项目库', importFile: '导入项目 JSON 文件', expectedError: '项目 JSON 文件过大' },
-  ])('rejects an oversized $locale project JSON file before reading it', async ({ locale, projectLibrary, importFile, expectedError }) => {
-    renderWorkbench(locale);
-    const oversizedFile = new File(['{}'], 'oversized.json', { type: 'application/json' });
-    const text = vi.fn(async () => '{}');
-    Object.defineProperty(oversizedFile, 'size', { value: MAX_COAT_PROJECT_DOCUMENT_BYTES + 1 });
-    Object.defineProperty(oversizedFile, 'text', { value: text });
+  it('passes a transparent background option when downloading PNG', async () => {
+    const project = createDefaultProject('en');
+    renderWorkbench('en', project);
 
-    fireEvent.click(screen.getByRole('button', { name: projectLibrary }));
-    fireEvent.change(screen.getByLabelText(importFile), { target: { files: [oversizedFile] } });
+    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(screen.getByLabelText('Transparent background'));
+    fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
 
-    expect((await screen.findByRole('alert')).textContent).toContain(expectedError);
-    expect(text).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(exportModule.exportCoatPng).toHaveBeenCalledWith(project, 1024, { transparentBackground: true });
+    });
   });
 
-  it('keeps focus inside the project modal, closes on Escape, and restores its opener', () => {
+  it('disables the transparent background checkbox for JPG', () => {
     renderWorkbench();
-    const projectsTrigger = screen.getByRole('button', { name: 'Open local project library' });
-    projectsTrigger.focus();
-    fireEvent.click(projectsTrigger);
 
-    const dialog = screen.getByRole('dialog', { name: /local projects/i });
-    const closeButton = within(dialog).getByRole('button', { name: 'Close' });
-    expect(within(dialog).getByLabelText('Import project JSON file').tabIndex).toBe(-1);
-    const dialogButtons = within(dialog).getAllByRole('button');
-    const lastButton = dialogButtons.at(-1);
-    if (!lastButton) throw new Error('Expected a final dialog button');
-    expect(document.activeElement).toBe(closeButton);
+    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(screen.getByLabelText('Transparent background'));
+    expect((screen.getByLabelText('Transparent background') as HTMLInputElement).checked).toBe(true);
 
-    lastButton.focus();
-    fireEvent.keyDown(lastButton, { key: 'Tab' });
-    expect(document.activeElement).toBe(closeButton);
-    fireEvent.keyDown(closeButton, { key: 'Tab', shiftKey: true });
-    expect(document.activeElement).toBe(lastButton);
+    fireEvent.change(screen.getByLabelText('File type'), { target: { value: 'jpeg' } });
 
-    fireEvent.keyDown(dialog, { key: 'Escape' });
-    expect(screen.queryByRole('dialog', { name: /local projects/i })).toBeNull();
-    expect(screen.getByRole('main').querySelector('.coat-workbench-content')?.getAttribute('inert')).toBeNull();
-    expect(document.activeElement).toBe(projectsTrigger);
-  });
-
-  it('restores the project trigger only after Maker removes background inertness', () => {
-    renderWorkbench();
-    const projectsTrigger = screen.getByRole('button', { name: 'Open local project library' });
-    fireEvent.click(projectsTrigger);
-
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
-
-    expect(screen.getByRole('main').querySelector('.coat-workbench-content')?.getAttribute('inert')).toBeNull();
-    expect(document.activeElement).toBe(projectsTrigger);
-  });
-
-  it('makes the workbench background pointer and keyboard inert while the project modal is open', () => {
-    renderWorkbench();
-    const undoButton = screen.getByRole('button', { name: 'Undo' });
-    useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'material-animal-lion-rampant' });
-    const layerCountBeforeModal = useCoatProjectStore.getState().project.layers.length;
-
-    fireEvent.click(screen.getByRole('button', { name: 'Open local project library' }));
-    const workbench = screen.getByRole('main');
-    const workbenchBackground = workbench.querySelector('.coat-workbench-content');
-    const publicNavigation = workbench.querySelector<HTMLElement>(':scope > .site-topbar');
-    expect(workbenchBackground?.getAttribute('inert')).not.toBeNull();
-    expect(publicNavigation).not.toBeNull();
-    expect(publicNavigation?.closest('[inert]')).toBeNull();
-    const projectDialog = screen.getByRole('dialog', { name: /local projects/i });
-    const modalBackdrop = screen.getByTestId('coat-project-modal-backdrop');
-    expect(workbench.contains(projectDialog)).toBe(true);
-    expect(workbench.contains(modalBackdrop)).toBe(true);
-    expect(projectDialog.closest('.coat-workbench-content')).toBeNull();
-    expect(modalBackdrop.closest('.coat-workbench-content')).toBeNull();
-
-    fireEvent.click(undoButton);
-    fireEvent.keyDown(undoButton, { key: 'z', ctrlKey: true });
-    expect(useCoatProjectStore.getState().project.layers).toHaveLength(layerCountBeforeModal);
-
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
-    expect(workbenchBackground?.getAttribute('inert')).toBeNull();
-    expect(screen.queryByTestId('coat-project-modal-backdrop')).toBeNull();
+    const transparentBackground = screen.getByLabelText('Transparent background') as HTMLInputElement;
+    expect(transparentBackground.disabled).toBe(true);
+    expect(transparentBackground.checked).toBe(false);
   });
 
   it('only enables history actions when a matching history transition exists', () => {
@@ -1019,7 +899,7 @@ describe('CoatOfArmsMaker', () => {
     expect(exportTrigger.getAttribute('aria-expanded')).toBe('true');
     const exportMenu = screen.getByRole('region', { name: /local export options/i });
     expect(exportTrigger.getAttribute('aria-controls')).toBe(exportMenu.id);
-    expect(document.activeElement).toBe(within(exportMenu).getByRole('button', { name: 'Close export menu' }));
+    expect(document.activeElement).toBe(within(exportMenu).getByLabelText('File type'));
 
     fireEvent.keyDown(exportMenu, { key: 'Escape' });
     expect(screen.queryByRole('region', { name: /local export options/i })).toBeNull();
@@ -1132,9 +1012,9 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
 
     fireEvent.click(getDesktopTool('Colors'));
-    fireEvent.click(getDesktopToolTreeItem('Background colour'));
+    fireEvent.click(getDesktopToolTreeItem('Background'));
 
-    expect(document.activeElement).toBe(within(getDesktopPanel('Colors')).getByRole('region', { name: 'Background colour' }));
+    expect(document.activeElement).toBe(within(getDesktopPanel('Colors')).getByRole('region', { name: 'Background Color' }));
   });
 
   it('keeps canvas drawing active when the mobile tools drawer closes', () => {
@@ -1203,14 +1083,12 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchStyles).toContain('grid-template-rows: auto minmax(29rem, 1fr) auto;');
   });
 
-  it('reserves the fullscreen workbench rows for navigation and keeps the modal above it', () => {
+  it('reserves the fullscreen workbench rows for navigation', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
     expect(workbenchStyles).toContain('.coat-target-workbench {\n');
     expect(workbenchStyles).toContain('display: grid;\n  grid-template-rows: auto minmax(0, 1fr);');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-content {\n  height: auto;\n  min-height: 0;\n  grid-template-rows: auto minmax(0, 1fr);');
-    expect(workbenchStyles).toContain('.coat-workbench-dialog { position: fixed; z-index: 60;');
-    expect(workbenchStyles).toContain('.coat-workbench-modal-backdrop { position: fixed; z-index: 59;');
   });
 
   it('roots each target workbench selector below the workbench boundary', () => {
@@ -1237,7 +1115,8 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
 
     selectDesktopTool('Settings');
-    fireEvent.click(screen.getByRole('button', { name: 'Instagram Story' }));
+    const desktopTools = screen.getByRole('complementary', { name: 'Desktop coat tools' });
+    fireEvent.click(within(desktopTools).getByRole('button', { name: /Instagram Story/ }));
 
     const artboard = document.querySelector('.coat-target-artboard');
     const canvas = screen.getByRole('application', { name: 'Coat of arms canvas' });
@@ -1269,14 +1148,13 @@ describe('CoatOfArmsMaker', () => {
 
     expect(screen.getByRole('button', { name: '撤销' })).toBeDefined();
     expect(screen.getByRole('button', { name: '重做' })).toBeDefined();
-    const projectsTrigger = screen.getByRole('button', { name: '打开本地项目库' });
-    fireEvent.click(projectsTrigger);
-    expect(screen.getByRole('button', { name: '本地保存项目' })).toBeDefined();
-    expect(screen.getByRole('button', { name: '关闭' })).toBeDefined();
-    fireEvent.click(screen.getByRole('button', { name: '关闭' }));
+    expect(screen.queryByRole('button', { name: '打开本地项目库' })).toBeNull();
+    expect(screen.queryByRole('dialog', { name: '本地项目' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '导出' }));
-    expect(screen.getByRole('button', { name: '导出 PNG' })).toBeDefined();
-    expect(screen.getByRole('button', { name: '关闭导出菜单' })).toBeDefined();
+    expect(screen.getByRole('button', { name: '下载 PNG' })).toBeDefined();
+    expect(screen.getByRole('button', { name: '分享' })).toBeDefined();
+    expect(screen.getByRole('button', { name: '打印' })).toBeDefined();
+    expect(screen.queryByRole('button', { name: '关闭导出菜单' })).toBeNull();
   });
 
   it('localizes Maker accessibility labels and tool tabs when locale is Chinese', () => {
@@ -1431,26 +1309,4 @@ describe('CoatOfArmsMaker', () => {
     });
   });
 
-  it('sanitizes project JSON download names and revokes its object URL', () => {
-    const unsafeNameProject = { ...createDefaultProject('en'), name: '../../\u0000' };
-    let downloadName = '';
-    const createObjectURL = vi.fn(() => 'blob:project-json');
-    const revokeObjectURL = vi.fn();
-    class ProjectJsonUrl extends URL {
-      static createObjectURL = createObjectURL;
-      static revokeObjectURL = revokeObjectURL;
-    }
-    vi.stubGlobal('URL', ProjectJsonUrl);
-    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function clickAnchor(this: HTMLAnchorElement) {
-      downloadName = this.download;
-    });
-    renderWorkbench('en', unsafeNameProject);
-
-    fireEvent.click(screen.getByRole('button', { name: 'Open local project library' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Export project JSON' }));
-
-    expect(downloadName).toBe('coat-of-arms.json');
-    expect(createObjectURL).toHaveBeenCalledTimes(1);
-    expect(revokeObjectURL).toHaveBeenCalledWith('blob:project-json');
-  });
 });

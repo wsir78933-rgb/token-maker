@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
-import { BookOpen, Link2, Maximize2, Minimize2, Redo2, Undo2, UsersRound } from 'lucide-react';
+import { BookOpen, Maximize2, Minimize2, Redo2, Undo2, UsersRound } from 'lucide-react';
 import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
 import { getCoatAsset, getDefaultProjectName } from '@/lib/coat-of-arms/assets';
 import type { ShieldReferenceCategory } from '@/lib/coat-of-arms/reference-catalog';
+import { useEditorPreferencesStore } from '@/lib/coat-of-arms/editor-preferences-session';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { ChargeAssetCategory, CoatLocale, GeometryCoatAssetKind, TopAssetCategory } from '@/lib/coat-of-arms/types';
 import { getHomeCopy, getNavLabels, getSiteConfig } from '@/lib/site-content';
@@ -18,7 +19,6 @@ import { DrawPanel } from './DrawPanel';
 import { ExportMenu } from './ExportMenu';
 import { LayerPanel } from './LayerPanel';
 import { NamePanel } from './NamePanel';
-import { ProjectLibraryDialog } from './ProjectLibraryDialog';
 import { ArrangePanel } from './ArrangePanel';
 import { ReferenceToolRail, type ReferenceToolBranchGlyph, type ReferenceToolTreeBranches } from './ReferenceToolRail';
 import { SettingsPanel } from './SettingsPanel';
@@ -89,6 +89,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker, isActive: true },
     { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog, isActive: false },
   ];
+  const appearance = useEditorPreferencesStore((state) => state.preferences.appearance);
   const project = useCoatProjectStore((state) => state.project);
   const canUndo = useCoatProjectStore((state) => state.history.past.length > 0);
   const canRedo = useCoatProjectStore((state) => state.history.future.length > 0);
@@ -109,7 +110,6 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const [selectedTopCategory, setSelectedTopCategory] = useState<TopAssetCategory>('crown');
   const [selectedColorSection, setSelectedColorSection] = useState<ColorPanelSection>();
   const [textMottoDraft, setTextMottoDraft] = useState<TextMottoDraft | null>(null);
-  const [projectsOpen, setProjectsOpen] = useState(false);
   const [isDraftDismissed, setIsDraftDismissed] = useState(false);
   const [isMultiSelectEnabled, setIsMultiSelectEnabled] = useState(false);
   const [isToolPanelCollapsed, setIsToolPanelCollapsed] = useState(false);
@@ -118,8 +118,6 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const [fullscreenError, setFullscreenError] = useState<string | null>(null);
   const isRecoveryCheckComplete = useHydrationComplete();
   const workbenchRef = useRef<HTMLElement>(null);
-  const projectTriggerRef = useRef<HTMLButtonElement>(null);
-  const wasProjectsOpenRef = useRef(false);
   const utilityContent = getUtilityContent(activeUtilityId, locale, textMottoDraft, setTextMottoDraft);
   const toolsById: Record<TargetToolId, WorkbenchTool> = {
     position: { id: 'position', content: <ArrangePanel locale={locale} /> },
@@ -151,7 +149,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     top: topAssetCategories.map((category) => ({ id: category, label: copy.panels.topCategories[category] })),
     colors: [
       { id: 'used-colours', label: copy.panels.usedColours },
-      { id: 'background', label: copy.panels.backgroundColour },
+      { id: 'background', label: copy.panels.background },
     ],
     tools: Object.entries(copy.utilityTabs).map(([id, label]) => ({ id, label })),
   };
@@ -163,12 +161,11 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const hasRecoverableDraft = !isDraftDismissed && recoverableDraft !== null;
   const invalidDraftError = !isDraftDismissed && draftInspection.status === 'invalid' ? draftInspection.error : null;
   const hasDraftRecoveryAction = hasRecoverableDraft || invalidDraftError !== null;
-  const isWorkbenchBlocked = projectsOpen || isRecoveryCheckPending || hasDraftRecoveryAction;
+  const isWorkbenchBlocked = isRecoveryCheckPending || hasDraftRecoveryAction;
 
   useEffect(() => {
-    if (wasProjectsOpenRef.current && !projectsOpen) projectTriggerRef.current?.focus();
-    wasProjectsOpenRef.current = projectsOpen;
-  }, [projectsOpen]);
+    readStoredEditorPreferences();
+  }, []);
 
   useEffect(() => {
     const syncFullscreenState = () => {
@@ -259,18 +256,18 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     setActiveToolId(toolId);
   };
   const blockBackgroundPointerEvent = (event: MouseEvent<HTMLDivElement>) => {
-    if (!isWorkbenchBlocked || isProjectLibraryModalInteractionEvent(event.target)) return;
+    if (!isWorkbenchBlocked) return;
     event.preventDefault();
     event.stopPropagation();
   };
   const blockBackgroundKeyboardEvent = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (!isWorkbenchBlocked || isProjectLibraryModalInteractionEvent(event.target)) return;
+    if (!isWorkbenchBlocked) return;
     event.preventDefault();
     event.stopPropagation();
   };
 
   return (
-    <main aria-label={copy.workspace} className="coat-workbench coat-target-workbench" ref={workbenchRef}>
+    <main aria-label={copy.workspace} className="coat-workbench coat-target-workbench" data-appearance={appearance} ref={workbenchRef}>
       <ContentSiteTopbar
         brandHref={getLocalizedPath(locale, '/') + '#editor-workspace'}
         brandName={siteConfig.name}
@@ -303,7 +300,6 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
               <div>
                 <button aria-label={copy.undo} disabled={!canUndo} onClick={undo} type="button"><Undo2 /></button>
                 <button aria-label={copy.redo} disabled={!canRedo} onClick={redo} type="button"><Redo2 /></button>
-                <button aria-label={copy.shell.openLocalProjectLibrary} className="coat-target-link-control" onClick={() => setProjectsOpen(true)} ref={projectTriggerRef} type="button"><Link2 /></button>
               </div>
               <SelectedElementColourStrip locale={locale} />
               <div className="coat-target-canvas-toolbar-actions">
@@ -330,7 +326,6 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
           </section>
         </div>
         <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
-        <ProjectLibraryDialog locale={locale} open={projectsOpen} project={project} portalHost={workbenchRef.current} renderTrigger={false} triggerRef={projectTriggerRef} onOpenChange={setProjectsOpen} onProjectChange={replaceProject} />
       </div>
       {hasDraftRecoveryAction ? <section aria-label={copy.draftAvailable} className="coat-workbench-action-row coat-target-draft" role="status">
         {invalidDraftError ? <p role="alert">{copy.invalidDraftRecoveryDescription(invalidDraftError)}</p> : <p>{copy.draftRecoveryDescription}</p>}
@@ -390,10 +385,6 @@ function HowToPanel({ locale }: { locale: CoatLocale }) {
   </section>;
 }
 
-function isProjectLibraryModalInteractionEvent(target: EventTarget | null): boolean {
-  return target instanceof Element && target.closest('[data-coat-project-library-modal-interaction]') !== null;
-}
-
 function isUtilityToolId(value: string): value is UtilityToolId {
   return value === 'text' || value === 'draw' || value === 'names' || value === 'upload' || value === 'layers';
 }
@@ -408,6 +399,16 @@ function isColorPanelSection(value: string): value is ColorPanelSection {
 
 function isChargeAssetCategory(value: string): value is ChargeAssetCategory {
   return chargeAssetCategories.some((category) => category === value);
+}
+
+function readStoredEditorPreferences(): void {
+  try {
+    useEditorPreferencesStore.getState().loadFromBrowser();
+  } catch (caught) {
+    if (!(caught instanceof Error)) {
+      throw new Error(`Invalid stored editor preferences: ${String(caught)}`);
+    }
+  }
 }
 
 function useHydrationComplete(): boolean {

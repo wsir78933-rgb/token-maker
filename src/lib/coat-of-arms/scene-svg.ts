@@ -1,5 +1,7 @@
 import { getCoatAsset } from './assets';
 import { assertCoatProject } from './commands';
+import { getShieldMaterialSvgMarkup, isShieldMaterialAssetId } from './shield-material-paints';
+import { applySvgPaintReplacements } from './svg-paint-colours';
 import { textFontStacks } from './types';
 import type {
   CanvasTransform,
@@ -157,6 +159,9 @@ function renderShieldLayer(layer: ShieldLayer, project: CoatProject, layerIndex:
     throw new Error(`Invalid shield layer asset: ${layer.assetId}`);
   }
   if (layer.customMaskUploadId && !layer.customOutlinePath) return renderCustomShieldLayer(layer, project, layerIndex);
+  if (isShieldMaterialAssetId(layer.assetId)) {
+    return renderTransformedLayer(renderShieldMaterialSvg(layer, layerIndex), layer.transform, layerIndex);
+  }
   if (shield.staticImageSrc) {
     return renderTransformedLayer(`<image data-bundled-shield-material="true" href="${escapeXml(shield.staticImageSrc)}" x="0" y="0" width="100" height="110" preserveAspectRatio="xMidYMid meet"/>`, layer.transform, layerIndex);
   }
@@ -166,6 +171,53 @@ function renderShieldLayer(layer: ShieldLayer, project: CoatProject, layerIndex:
   const outlineMarkup = outline.visible ? `<path d="${shieldPath}" fill="none" stroke="${outline.color}" stroke-width="${outline.width}"/>` : '';
   const customOutlineAttribute = layer.customOutlinePath ? ' data-custom-shield-outline="true"' : '';
   return renderTransformedLayer(`<g${customOutlineAttribute}><defs><clipPath id="${clipPathId}"><path d="${shieldPath}"/></clipPath></defs><g clip-path="url(#${clipPathId})">${renderField(layer.field, clipPathId)}</g>${outlineMarkup}</g>`, layer.transform, layerIndex);
+}
+
+function renderShieldMaterialSvg(layer: ShieldLayer, layerIndex: number): string {
+  const authoredMarkup = getShieldMaterialSvgMarkup(layer.assetId);
+  if (authoredMarkup.trim().length === 0) {
+    throw new Error(`Shield material has no SVG markup: ${layer.assetId}`);
+  }
+  const recolouredMarkup = applySvgPaintReplacements(authoredMarkup, layer.colorReplacements ?? {});
+  const documentMarkup = stripXmlDeclaration(recolouredMarkup).trim();
+  if (!/^<svg\b/i.test(documentMarkup)) {
+    throw new Error(`Shield material has no SVG markup: ${layer.assetId}`);
+  }
+  return placeNestedShieldMaterialSvg(namespaceSvgFragmentIds(documentMarkup, layerIndex));
+}
+
+function stripXmlDeclaration(svgText: string): string {
+  return svgText.replace(/^\s*<\?xml\b[^?]*\?>\s*/i, '');
+}
+
+function namespaceSvgFragmentIds(svgMarkup: string, layerIndex: number): string {
+  const discoveredIds: string[] = [];
+  for (const match of svgMarkup.matchAll(/\bid="([^"]+)"/g)) {
+    const originalId = match[1];
+    if (originalId === undefined || originalId.trim().length === 0) {
+      throw new Error(`Invalid SVG id in shield material: ${JSON.stringify(originalId)}`);
+    }
+    discoveredIds.push(originalId);
+  }
+  const uniqueIds = [...new Set(discoveredIds)].sort((leftId, rightId) => rightId.length - leftId.length);
+  let namespacedMarkup = svgMarkup;
+  for (const originalId of uniqueIds) {
+    const namespacedId = `${originalId}-${layerIndex}`;
+    namespacedMarkup = namespacedMarkup.replaceAll(`id="${originalId}"`, `id="${namespacedId}"`);
+    namespacedMarkup = namespacedMarkup.replace(
+      new RegExp(`url\\(#${escapeRegExp(originalId)}\\)`, 'g'),
+      `url(#${namespacedId})`,
+    );
+  }
+  return namespacedMarkup;
+}
+
+function placeNestedShieldMaterialSvg(svgMarkup: string): string {
+  return svgMarkup.replace(/^<svg\b/i, '<svg data-bundled-shield-material="true" x="0" y="0" width="100" height="110"');
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function renderCustomShieldLayer(layer: ShieldLayer, project: CoatProject, layerIndex: number): string {
