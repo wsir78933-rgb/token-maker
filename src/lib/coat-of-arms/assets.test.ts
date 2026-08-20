@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createCoatMakerShowcaseProject, createDefaultProject, getCoatAsset, listAssetsByKind } from './assets';
+import { createCoatMakerShowcaseProject, createDefaultProject, getCoatAsset, listAssetsByKind, listShieldSilhouetteAssets, requireShieldSilhouetteAssetId } from './assets';
 import type { ChargeAssetCategory } from './types';
 
 const requiredChargeCategories: readonly ChargeAssetCategory[] = [
@@ -163,6 +163,24 @@ describe('coat asset catalog', () => {
     firstShield.name.en = 'Changed by caller';
 
     expect(getCoatAsset('heater-shield').name.en).toBe('Heater shield');
+  });
+
+  it('lists the six local shield silhouettes with authored SVG paths', () => {
+    expect(listShieldSilhouetteAssets().map((asset) => asset.id)).toEqual([
+      'heater-shield',
+      'round-shield',
+      'kite-shield',
+      'french-shield',
+      'banner-shield',
+      'lozenge-shield',
+    ]);
+    for (const asset of listShieldSilhouetteAssets()) {
+      expect(asset.svgPath.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('rejects an unknown shield silhouette with the offending value', () => {
+    expect(() => requireShieldSilhouetteAssetId('heater-001')).toThrow('heater-001');
   });
 
   it('rejects an invalid asset kind with the rejected value', () => {

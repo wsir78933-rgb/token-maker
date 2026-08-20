@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
-import { BookOpen, Maximize2, Minimize2, Redo2, Undo2, UsersRound } from 'lucide-react';
+import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
+import { BookOpen, Maximize2, Minimize2, Redo2, Shuffle, Undo2, UsersRound } from 'lucide-react';
 import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
 import { getCoatAsset, getDefaultProjectName } from '@/lib/coat-of-arms/assets';
 import type { ShieldReferenceCategory } from '@/lib/coat-of-arms/reference-catalog';
@@ -29,7 +29,6 @@ import { TargetFlagPalette } from './TargetFlagPalette';
 import { TargetTokenPalette } from './TargetTokenPalette';
 import { TextMottoPanel, type TextMottoDraft } from './TextMottoPanel';
 import { TopPanel } from './TopPanel';
-import { UploadPanel } from './UploadPanel';
 import { getCoatWorkbenchCopy, toolOrder, type ReferenceToolId } from './workbench-copy';
 
 interface CoatOfArmsMakerProps {
@@ -37,7 +36,8 @@ interface CoatOfArmsMakerProps {
 }
 
 type TargetToolId = ReferenceToolId;
-type UtilityToolId = 'text' | 'draw' | 'names' | 'upload' | 'layers';
+type UtilityToolId = 'text' | 'draw' | 'random' | 'names';
+type PositionSectionId = 'arrange' | 'layers';
 const DEFAULT_SCENE_ZOOM = 0.47;
 
 const shieldTreeItems: readonly { assetId: ReferenceToolBranchGlyph }[] = [
@@ -66,7 +66,7 @@ const shieldTreeAssetIdByCategory: Readonly<Record<ShieldReferenceCategory, Refe
 };
 const topAssetCategories: readonly TopAssetCategory[] = ['crown', 'mantle', 'supporter', 'other'];
 const chargeAssetCategories: readonly ChargeAssetCategory[] = ['animal', 'object', 'plant', 'human', 'symbol'];
-const utilityToolOrder: readonly UtilityToolId[] = ['text', 'draw', 'names', 'upload', 'layers'];
+const utilityToolOrder: readonly UtilityToolId[] = ['text', 'draw', 'random', 'names'];
 
 interface WorkbenchTool {
   id: TargetToolId;
@@ -103,6 +103,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const discardDraft = useCoatProjectStore((state) => state.discardDraft);
   const [activeToolId, setActiveToolId] = useState<TargetToolId>('shields');
   const [activeUtilityId, setActiveUtilityId] = useState<UtilityToolId>('text');
+  const [selectedPositionSection, setSelectedPositionSection] = useState<PositionSectionId>('arrange');
   const [expandedToolIds, setExpandedToolIds] = useState<TargetToolId[]>(['shields']);
   const [selectedShieldTreeAssetId, setSelectedShieldTreeAssetId] = useState<ReferenceToolBranchGlyph>('heater-shield');
   const [selectedChargeCategory, setSelectedChargeCategory] = useState<ChargeAssetCategory>('animal');
@@ -118,15 +119,15 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const [fullscreenError, setFullscreenError] = useState<string | null>(null);
   const isRecoveryCheckComplete = useHydrationComplete();
   const workbenchRef = useRef<HTMLElement>(null);
-  const utilityContent = getUtilityContent(activeUtilityId, locale, textMottoDraft, setTextMottoDraft);
+  const utilityContent = getUtilityContent(activeUtilityId, locale, textMottoDraft, setTextMottoDraft, randomizeProject);
   const toolsById: Record<TargetToolId, WorkbenchTool> = {
-    position: { id: 'position', content: <ArrangePanel locale={locale} /> },
+    position: { id: 'position', content: getPositionSectionContent(selectedPositionSection, locale) },
     shields: { id: 'shields', content: <TargetShieldPalette activeCategory={shieldCategoryByTreeAssetId[selectedShieldTreeAssetId]} locale={locale} onActiveCategoryChange={(category) => setSelectedShieldTreeAssetId(shieldTreeAssetIdByCategory[category])} /> },
     custom: { id: 'custom', content: <ShieldFieldPanel locale={locale} /> },
     charges: { id: 'charges', content: <ChargeAndOrdinaryPanel locale={locale} selectedChargeCategory={selectedChargeCategory} selectedKind={selectedChargeKind} /> },
     top: { id: 'top', content: <TopPanel locale={locale} selectedCategory={selectedTopCategory} /> },
     colors: { id: 'colors', content: <ColorBackgroundPanel locale={locale} sectionToFocus={selectedColorSection} /> },
-    tools: { id: 'tools', content: <TargetUtilityPanel activeUtilityId={activeUtilityId} locale={locale} onRandomizeProject={randomizeProject} onUtilityChange={setActiveUtilityId}>{utilityContent}</TargetUtilityPanel> },
+    tools: { id: 'tools', content: <TargetUtilityPanel locale={locale}>{utilityContent}</TargetUtilityPanel> },
     settings: { id: 'settings', content: <SettingsPanel locale={locale} /> },
     'how-to': { id: 'how-to', content: <HowToPanel locale={locale} /> },
     flags: { id: 'flags', content: <TargetFlagPalette locale={locale} /> },
@@ -140,7 +141,10 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     return { ...shape, glyph: shape.assetId, label: shieldAsset.name[locale] };
   });
   const toolTreeBranches: ReferenceToolTreeBranches = {
-    position: [{ id: 'arrange', label: copy.panels.position }],
+    position: [
+      { id: 'arrange', icon: 'arrange', label: copy.panels.arrange },
+      { id: 'layers', icon: 'layers', label: copy.panels.layers },
+    ],
     shields: localizedShieldTreeItems.map((shape) => ({ glyph: shape.glyph, id: shape.assetId, label: shape.label })),
     charges: [
       ...chargeAssetCategories.map((category) => ({ id: category, label: copy.panels.chargeCategories[category] })),
@@ -151,7 +155,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
       { id: 'used-colours', label: copy.panels.usedColours },
       { id: 'background', label: copy.panels.background },
     ],
-    tools: Object.entries(copy.utilityTabs).map(([id, label]) => ({ id, label })),
+    tools: utilityToolOrder.map((utilityId) => ({ id: utilityId, label: copy.utilityTabs[utilityId] })),
   };
   const mobileTools: CoatToolTab[] = tools.map(({ content, id }) => ({ content, id }));
   const projectName = isInitialDocument ? getDefaultProjectName(locale) : project.name;
@@ -225,6 +229,12 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     }
   };
   const selectToolTreeChild = (toolId: TargetToolId, childId: string) => {
+    if (toolId === 'position') {
+      if (!isPositionSectionId(childId)) throw new Error(`Invalid tool tree position section: ${childId}`);
+      setSelectedPositionSection(childId);
+      setActiveToolId('position');
+      return;
+    }
     if (toolId === 'shields') {
       const shieldCategory = shieldCategoryByTreeAssetId[childId as ReferenceToolBranchGlyph];
       if (!shieldCategory) throw new Error(`Invalid shield tree category: ${childId}`);
@@ -290,7 +300,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
         <span className="sr-only">{projectName}</span>
         <div className="coat-target-editor-grid" data-tool-panel-collapsed={isToolPanelCollapsed}>
           <aside aria-label={copy.desktopTools} className="coat-target-left-panel hidden lg:flex" data-collapsed={isToolPanelCollapsed}>
-            <ReferenceToolRail activeToolId={activeTool.id} expandedToolIds={expandedToolIds} isCollapsed={isToolPanelCollapsed} locale={locale} onCollapseChange={() => setIsToolPanelCollapsed((value) => !value)} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} treeBranches={toolTreeBranches} />
+            <ReferenceToolRail activeToolId={activeTool.id} expandedToolIds={expandedToolIds} isCollapsed={isToolPanelCollapsed} locale={locale} onCollapseChange={() => setIsToolPanelCollapsed((value) => !value)} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} treeBranches={toolTreeBranches} />
             {tools.map((tool) => tool.id === activeTool.id ? <section aria-labelledby={`coat-tab-${tool.id}`} className="coat-target-library-panel" id={`coat-panel-${tool.id}`} key={tool.id} role="tabpanel" tabIndex={0}>
               {tool.content}
             </section> : <section aria-labelledby={`coat-tab-${tool.id}`} hidden id={`coat-panel-${tool.id}`} key={tool.id} role="tabpanel" tabIndex={0} />)}
@@ -325,7 +335,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
             </div>
           </section>
         </div>
-        <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
+        <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
       </div>
       {hasDraftRecoveryAction ? <section aria-label={copy.draftAvailable} className="coat-workbench-action-row coat-target-draft" role="status">
         {invalidDraftError ? <p role="alert">{copy.invalidDraftRecoveryDescription(invalidDraftError)}</p> : <p>{copy.draftRecoveryDescription}</p>}
@@ -336,44 +346,36 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   );
 }
 
-function getUtilityContent(activeUtilityId: UtilityToolId, locale: CoatLocale, textMottoDraft: TextMottoDraft | null, onTextMottoDraftChange: (draft: TextMottoDraft) => void): ReactNode {
-  if (activeUtilityId === 'text') return <TextMottoPanel draft={textMottoDraft} locale={locale} onDraftChange={onTextMottoDraftChange} />;
-  if (activeUtilityId === 'draw') return <DrawPanel locale={locale} />;
-  if (activeUtilityId === 'names') return <NamePanel locale={locale} />;
-  if (activeUtilityId === 'upload') return <UploadPanel locale={locale} />;
-  return <LayerPanel locale={locale} />;
+function getPositionSectionContent(section: PositionSectionId, locale: CoatLocale): ReactNode {
+  if (section === 'arrange') return <ArrangePanel locale={locale} />;
+  if (section === 'layers') return <LayerPanel locale={locale} />;
+  throw new Error(`Unexpected position section: ${section}`);
 }
 
-function TargetUtilityPanel({ activeUtilityId, children, locale, onRandomizeProject, onUtilityChange }: { activeUtilityId: UtilityToolId; children: ReactNode; locale: CoatLocale; onRandomizeProject?: () => void; onUtilityChange: (tool: UtilityToolId) => void }) {
+function getUtilityContent(activeUtilityId: UtilityToolId, locale: CoatLocale, textMottoDraft: TextMottoDraft | null, onTextMottoDraftChange: (draft: TextMottoDraft) => void, onRandomizeProject: () => void): ReactNode {
+  if (activeUtilityId === 'text') return <TextMottoPanel draft={textMottoDraft} locale={locale} onDraftChange={onTextMottoDraftChange} />;
+  if (activeUtilityId === 'draw') return <DrawPanel locale={locale} />;
+  if (activeUtilityId === 'random') return <RandomPanel locale={locale} onRandomizeProject={onRandomizeProject} />;
+  if (activeUtilityId === 'names') return <NamePanel locale={locale} />;
+  throw new Error(`Unexpected utility tool id: ${activeUtilityId}`);
+}
+
+function TargetUtilityPanel({ children, locale }: { children: ReactNode; locale: CoatLocale }) {
   const copy = getCoatWorkbenchCopy(locale);
-  const utilityPanelIdPrefix = useId();
-  const utilityTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const focusUtilityAt = (index: number) => {
-    const nextUtilityId = utilityToolOrder[index];
-    if (!nextUtilityId) return;
-    onUtilityChange(nextUtilityId);
-    utilityTabRefs.current[index]?.focus();
-  };
-  const onUtilityTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
-    if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      focusUtilityAt((index + 1) % utilityToolOrder.length);
-    } else if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      focusUtilityAt((index - 1 + utilityToolOrder.length) % utilityToolOrder.length);
-    } else if (event.key === 'Home') {
-      event.preventDefault();
-      focusUtilityAt(0);
-    } else if (event.key === 'End') {
-      event.preventDefault();
-      focusUtilityAt(utilityToolOrder.length - 1);
-    }
-  };
-  return <section aria-label={copy.shell.editorUtilities} className="coat-target-utility-panel">
-    <div aria-label={copy.shell.editorUtilities} role="tablist">{utilityToolOrder.map((tool, index) => <button aria-controls={`${utilityPanelIdPrefix}-utility-panel-${tool}`} aria-selected={activeUtilityId === tool} id={`${utilityPanelIdPrefix}-utility-tab-${tool}`} key={tool} ref={(element) => { utilityTabRefs.current[index] = element; }} role="tab" tabIndex={activeUtilityId === tool ? 0 : -1} type="button" onClick={() => onUtilityChange(tool)} onKeyDown={(event) => onUtilityTabKeyDown(event, index)}>{copy.utilityTabs[tool]}</button>)}</div>
-    {utilityToolOrder.map((tool) => <div aria-labelledby={`${utilityPanelIdPrefix}-utility-tab-${tool}`} hidden={tool !== activeUtilityId} id={`${utilityPanelIdPrefix}-utility-panel-${tool}`} key={tool} role="tabpanel" tabIndex={0}>{tool === activeUtilityId ? children : null}</div>)}
-    {onRandomizeProject ? <button className="coat-target-randomize" onClick={() => onRandomizeProject()} type="button">{copy.randomizeProject}</button> : null}
-  </section>;
+  return <section aria-label={copy.shell.editorUtilities} className="coat-target-utility-panel">{children}</section>;
+}
+
+function RandomPanel({ locale, onRandomizeProject }: { locale: CoatLocale; onRandomizeProject: () => void }) {
+  const copy = getCoatWorkbenchCopy(locale);
+  return (
+    <section aria-label={copy.utilityTabs.random} className="coat-target-random-panel">
+      <p>{copy.randomizeDescription}</p>
+      <button className="coat-target-randomize" type="button" onClick={() => onRandomizeProject()}>
+        <Shuffle aria-hidden="true" />
+        <span>{copy.randomizeProject}</span>
+      </button>
+    </section>
+  );
 }
 
 function HowToPanel({ locale }: { locale: CoatLocale }) {
@@ -386,7 +388,11 @@ function HowToPanel({ locale }: { locale: CoatLocale }) {
 }
 
 function isUtilityToolId(value: string): value is UtilityToolId {
-  return value === 'text' || value === 'draw' || value === 'names' || value === 'upload' || value === 'layers';
+  return value === 'text' || value === 'draw' || value === 'random' || value === 'names';
+}
+
+function isPositionSectionId(value: string): value is PositionSectionId {
+  return value === 'arrange' || value === 'layers';
 }
 
 function isTopAssetCategory(value: string): value is TopAssetCategory {

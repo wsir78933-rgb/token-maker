@@ -7,7 +7,6 @@ import { applyProjectCommand, COAT_PROJECT_LIMITS } from '@/lib/coat-of-arms/com
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CoatProject } from '@/lib/coat-of-arms/types';
 import { CoatOfArmsPanels } from './CoatOfArmsPanels';
-import { ShieldFieldPanel } from './ShieldFieldPanel';
 import { createValidatedLocalUpload, validateLocalUploadFile } from './UploadPanel';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
@@ -57,11 +56,6 @@ function renderPanels(localeOrProject: 'en' | 'zh' | CoatProject = 'en', project
     : localeOrProject;
   useCoatProjectStore.getState().replaceProject(currentProject);
   return render(<CoatOfArmsPanels locale={locale} />);
-}
-
-function renderShieldFieldPanel(locale: 'en' | 'zh' = 'en') {
-  useCoatProjectStore.getState().replaceProject(createDefaultProject(locale));
-  return render(<ShieldFieldPanel locale={locale} />);
 }
 
 function getLayer(layerId: string) {
@@ -131,8 +125,8 @@ describe('CoatOfArmsPanels', () => {
     renderPanels('en');
     revealAllGalleryCards('en');
 
-    expect(screen.getByRole('heading', { name: 'Shield & field' })).toBeDefined();
-    expect(screen.getByLabelText('Shield outline')).toBeDefined();
+    expect(screen.getByRole('heading', { name: 'Custom Shield Uploads' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Select escutcheon: Heater shield' })).toBeDefined();
     expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Add motto' })).toBeDefined();
     expect(screen.getByRole('list', { name: 'Coat layers' })).toBeDefined();
@@ -143,8 +137,8 @@ describe('CoatOfArmsPanels', () => {
     renderPanels('zh');
     revealAllGalleryCards('zh');
 
-    expect(screen.getByRole('heading', { name: '盾牌与底纹' })).toBeDefined();
-    expect(screen.getByLabelText('盾形')).toBeDefined();
+    expect(screen.getByRole('heading', { name: '自定义盾形上传' })).toBeDefined();
+    expect(screen.getByRole('button', { name: '选择盾形：熨斗盾' })).toBeDefined();
     expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
     expect(screen.getByRole('button', { name: '添加格言' })).toBeDefined();
     expect(screen.getByRole('list', { name: '徽章图层' })).toBeDefined();
@@ -278,202 +272,16 @@ describe('CoatOfArmsPanels', () => {
     const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
     if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
 
-    fireEvent.change(screen.getByLabelText(/shield outline/i), { target: { value: 'round-shield' } });
-    fireEvent.change(screen.getByLabelText(/field division/i), { target: { value: 'quarterly' } });
-    fireEvent.click(screen.getByLabelText('Show shield border'));
-    fireEvent.change(screen.getByLabelText('Shield border width'), { target: { value: '3' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Select escutcheon: Round shield' }));
     fireEvent.change(screen.getByLabelText(/background motif/i), { target: { value: 'dots' } });
     fireEvent.click(screen.getByLabelText(/transparent export background/i));
     fireEvent.click(screen.getByLabelText(/background visible/i));
     fireEvent.change(screen.getByLabelText(/motto text/i), { target: { value: 'FORTUNE' } });
     fireEvent.click(screen.getByRole('button', { name: /add motto/i }));
 
-    expect(getLayer(shield.id)).toMatchObject({ assetId: 'round-shield', field: { division: 'quarterly', outline: { visible: false, width: 3 } } });
+    expect(getLayer(shield.id)).toMatchObject({ assetId: 'round-shield' });
     expect(useCoatProjectStore.getState().project.layers[0]).toMatchObject({ type: 'background', motif: 'dots', opacity: 0, visible: false });
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'text', text: 'FORTUNE' });
-  });
-
-  it('edits only the controls applicable to the selected global and regional field pattern', () => {
-    renderPanels();
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
-
-    fireEvent.change(screen.getByLabelText('Field variation'), { target: { value: 'stripes' } });
-    expect(screen.getByLabelText('Stripe count')).toBeDefined();
-    expect(screen.getByLabelText('Stripe direction')).toBeDefined();
-    expect(screen.queryByLabelText('Masoned rows')).toBeNull();
-    fireEvent.change(screen.getByLabelText('Stripe count'), { target: { value: '7' } });
-    fireEvent.change(screen.getByLabelText('Stripe direction'), { target: { value: 'vertical' } });
-
-    fireEvent.change(screen.getByLabelText('Field division'), { target: { value: 'per-pale' } });
-    fireEvent.change(screen.getByLabelText('Dexter field variation'), { target: { value: 'seme' } });
-    fireEvent.change(screen.getByLabelText('Dexter semé count'), { target: { value: '6' } });
-    fireEvent.change(screen.getByLabelText('Dexter semé symbol size'), { target: { value: '7' } });
-
-    expect(getLayer(shield.id)).toMatchObject({
-      field: {
-        patternConfig: { count: 7, direction: 'vertical' },
-        regions: { dexter: { pattern: 'seme', patternConfig: { count: 6, symbolSize: 7 } } },
-      },
-    });
-  });
-
-  it('authors true independent regions for horizontal and repeated field divisions', () => {
-    renderPanels();
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
-
-    fireEvent.change(screen.getByLabelText('Field division'), { target: { value: 'per-fess' } });
-    fireEvent.change(screen.getByLabelText('Chief primary colour'), { target: { value: '#B11F24' } });
-    expect(getLayer(shield.id)).toMatchObject({
-      field: {
-        regions: {
-          chief: { colors: ['#b11f24'] },
-          base: { colors: ['#1855A5'] },
-        },
-      },
-    });
-
-    fireEvent.change(screen.getByLabelText('Field division'), { target: { value: 'barry' } });
-    fireEvent.change(screen.getByLabelText('Bar 4 field variation'), { target: { value: 'stripes' } });
-    expect(getLayer(shield.id)).toMatchObject({ field: { regions: { 'bar-1': {}, 'bar-4': { pattern: 'stripes' }, 'bar-5': {} } } });
-
-    fireEvent.change(screen.getByLabelText('Field division'), { target: { value: 'paly' } });
-    expect(screen.getByLabelText('Pale 1 primary colour')).toBeDefined();
-    fireEvent.change(screen.getByLabelText('Pale 2 field variation'), { target: { value: 'checks' } });
-    expect(getLayer(shield.id)).toMatchObject({ field: { regions: { 'paly-1': {}, 'paly-2': { pattern: 'checks' }, 'paly-5': {} } } });
-
-    fireEvent.change(screen.getByLabelText('Field division'), { target: { value: 'bendy' } });
-    expect(screen.getByLabelText('Bend 1 primary colour')).toBeDefined();
-    fireEvent.change(screen.getByLabelText('Bend 5 field variation'), { target: { value: 'seme' } });
-    expect(getLayer(shield.id)).toMatchObject({ field: { regions: { 'bend-1': {}, 'bend-5': { pattern: 'seme' } } } });
-  });
-
-  it('adds a custom chief ornament to the shield field', () => {
-    renderPanels();
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
-
-    fireEvent.change(screen.getByLabelText('Field ornament'), { target: { value: 'chief' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Add field ornament' }));
-
-    expect(getLayer(shield.id)).toMatchObject({ field: { ornaments: [{ kind: 'chief' }] } });
-  });
-
-  it('edits a chief’s dedicated dimensions and heraldic edge controls', () => {
-    renderPanels();
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
-
-    fireEvent.change(screen.getByLabelText('Field ornament'), { target: { value: 'chief' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Add field ornament' }));
-    const chief = getLayer(shield.id);
-    if (chief.type !== 'shield') throw new Error('Expected shield layer');
-    const chiefId = chief.field.ornaments?.[0]?.id;
-    if (!chiefId) throw new Error('Expected chief ornament');
-
-    fireEvent.change(screen.getByLabelText(`Ornament width ${chiefId}`), { target: { value: '84' } });
-    fireEvent.change(screen.getByLabelText(`Ornament height ${chiefId}`), { target: { value: '19' } });
-    fireEvent.change(screen.getByLabelText(`Ornament edge ${chiefId}`), { target: { value: 'wavy' } });
-    fireEvent.change(screen.getByLabelText(`Division line frequency ${chiefId}`), { target: { value: '5' } });
-
-    expect(getLayer(shield.id)).toMatchObject({
-      field: { ornaments: [{ width: 84, height: 19, edge: { style: 'wavy', frequency: 5, amplitude: 6 } }] },
-    });
-  });
-
-  it('edits dedicated geometry controls for the configurable field structures', () => {
-    renderShieldFieldPanel();
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
-
-    for (const kind of ['cross', 'saltire', 'chevron', 'pall', 'mountain'] as const) {
-      fireEvent.change(screen.getByLabelText('Field ornament'), { target: { value: kind } });
-      fireEvent.click(screen.getByRole('button', { name: 'Add field ornament' }));
-    }
-    const configuredShield = getLayer(shield.id);
-    if (configuredShield.type !== 'shield') throw new Error('Expected shield layer');
-    const ornamentIdFor = (kind: string) => {
-      const id = configuredShield.field.ornaments?.find((ornament) => ornament.kind === kind)?.id;
-      if (!id) throw new Error(`Expected ${kind} ornament`);
-      return id;
-    };
-
-    fireEvent.change(screen.getByLabelText(`Cross horizontal thickness ${ornamentIdFor('cross')}`), { target: { value: '18' } });
-    fireEvent.change(screen.getByLabelText(`Cross vertical thickness ${ornamentIdFor('cross')}`), { target: { value: '24' } });
-    fireEvent.change(screen.getByLabelText(`Saltire centre X ${ornamentIdFor('saltire')}`), { target: { value: '46' } });
-    fireEvent.change(screen.getByLabelText(`Chevron peak height ${ornamentIdFor('chevron')}`), { target: { value: '31' } });
-    fireEvent.change(screen.getByLabelText(`Pall fork X ${ornamentIdFor('pall')}`), { target: { value: '54' } });
-    fireEvent.change(screen.getByLabelText(`Mountain peak count ${ornamentIdFor('mountain')}`), { target: { value: '4' } });
-    fireEvent.change(screen.getByLabelText(`Mountain steepness ${ornamentIdFor('mountain')}`), { target: { value: '0.73' } });
-
-    expect(getLayer(shield.id)).toMatchObject({
-      field: { ornaments: [
-        { kind: 'cross', crossHorizontalThickness: 18, crossVerticalThickness: 24 },
-        { kind: 'saltire', saltireCenterX: 46 },
-        { kind: 'chevron', chevronPeakHeight: 31 },
-        { kind: 'pall', pallForkX: 54 },
-        { kind: 'mountain', mountainPeakCount: 4, mountainSteepness: 0.73 },
-      ] },
-    });
-  });
-
-  it('adds and weights local palette colours for a field ornament', () => {
-    renderPanels();
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
-
-    fireEvent.change(screen.getByLabelText('Field ornament'), { target: { value: 'fess' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Add field ornament' }));
-    const fieldLayer = getLayer(shield.id);
-    if (fieldLayer.type !== 'shield') throw new Error('Expected shield layer');
-    const fessId = fieldLayer.field.ornaments?.[0]?.id;
-    if (!fessId) throw new Error('Expected fess ornament');
-
-    fireEvent.click(screen.getByRole('button', { name: 'Add ornament colour' }));
-    fireEvent.change(screen.getByLabelText(`Ornament colour 2 ${fessId}`), { target: { value: '#B11F24' } });
-    fireEvent.change(screen.getByLabelText(`Ornament colour 1 weight ${fessId}`), { target: { value: '2' } });
-
-    expect(getLayer(shield.id)).toMatchObject({
-      field: { ornaments: [{ colors: ['#F5E6A1', '#b11f24'], colorAmplitudes: [2, 1] }] },
-    });
-  });
-
-  it('adds every missing target field structure and keeps the structure layer order editable', () => {
-    renderPanels();
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
-
-    for (const kind of ['canton', 'chevron', 'pall', 'saltire', 'fretty']) {
-      fireEvent.change(screen.getByLabelText('Field ornament'), { target: { value: kind } });
-      fireEvent.click(screen.getByRole('button', { name: 'Add field ornament' }));
-    }
-    const saltire = getLayer(shield.id);
-    if (saltire.type !== 'shield') throw new Error('Expected shield layer');
-    const saltireId = saltire.field.ornaments?.find((ornament) => ornament.kind === 'saltire')?.id;
-    if (!saltireId) throw new Error('Expected saltire ornament');
-    fireEvent.click(screen.getByLabelText(`Move field ornament forward ${saltireId}`));
-
-    const ornaments = (getLayer(shield.id) as typeof shield).field.ornaments;
-    expect(ornaments?.map((ornament) => ornament.kind)).toEqual(['canton', 'chevron', 'pall', 'fretty', 'saltire']);
-  });
-
-  it('selects an existing local image as the custom shield mask', () => {
-    let project = createDefaultProject('en');
-    project = applyProjectCommand(project, {
-      type: 'register-local-upload',
-      upload: {
-        id: 'panel-mask', mimeType: 'image/svg+xml', encoding: 'base64',
-        data: 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTEwIiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==',
-      },
-    });
-    const shield = project.layers.find((layer) => layer.type === 'shield');
-    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
-    renderPanels(project);
-
-    fireEvent.change(screen.getByLabelText('Custom shield mask'), { target: { value: 'panel-mask' } });
-
-    expect(getLayer(shield.id)).toMatchObject({ type: 'shield', customMaskUploadId: 'panel-mask' });
   });
 
   it('exposes a direct local custom shield upload control', () => {
@@ -507,9 +315,8 @@ describe('CoatOfArmsPanels', () => {
     renderPanels(project);
     fireEvent.click(screen.getByLabelText(new RegExp(`Select layer ${lion.id}`)));
 
-    expect(screen.getByRole('group', { name: 'Flip selected layer' })).toBeDefined();
-    expect(screen.getByRole('button', { name: 'Flip horizontal' })).toBeDefined();
-    expect(screen.getByRole('button', { name: 'Flip vertical' })).toBeDefined();
+    expect(screen.getByRole('group', { name: 'Position' })).toBeDefined();
+    expect(screen.queryByRole('group', { name: 'Flip selected layer' })).toBeNull();
     expect(screen.queryByRole('group', { name: 'Flip & crop' })).toBeNull();
     expect(screen.queryByLabelText('Crop left')).toBeNull();
     expect(screen.queryByLabelText('Crop top')).toBeNull();
@@ -565,36 +372,11 @@ describe('CoatOfArmsPanels', () => {
     expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1600, height: 900 });
   });
 
-  it('keeps an independently chosen accent colour on a divided shield field', () => {
+  it('makes the extended target background patterns available in background controls', () => {
     renderPanels();
 
-    fireEvent.change(screen.getByLabelText(/field division/i), { target: { value: 'per-pale' } });
-    fireEvent.change(screen.getByLabelText(/field accent colour/i), { target: { value: '#B11F24' } });
-
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    expect(shield).toMatchObject({ field: { division: 'per-pale', colors: ['#1855A5', '#b11f24'] } });
-  });
-
-  it('configures the selected field division line through the shield workbench', () => {
-    renderPanels();
-
-    fireEvent.change(screen.getByLabelText('Field division'), { target: { value: 'per-pale' } });
-    fireEvent.change(screen.getByLabelText('Field division line'), { target: { value: 'wavy' } });
-    fireEvent.change(screen.getByLabelText('Division line frequency'), { target: { value: '5' } });
-    fireEvent.change(screen.getByLabelText('Division line amplitude'), { target: { value: '9' } });
-
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    expect(shield).toMatchObject({ field: { divisionLine: { style: 'wavy', frequency: 5, amplitude: 9 } } });
-  });
-
-  it('makes the extended target field patterns available in both field and background controls', () => {
-    renderPanels();
-
-    fireEvent.change(screen.getByLabelText('Field variation'), { target: { value: 'vair' } });
     fireEvent.change(screen.getByLabelText('Background motif'), { target: { value: 'papelonny' } });
 
-    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    expect(shield).toMatchObject({ field: { pattern: 'vair' } });
     expect(useCoatProjectStore.getState().project.layers[0]).toMatchObject({ type: 'background', motif: 'papelonny' });
   });
 
@@ -684,6 +466,21 @@ describe('CoatOfArmsPanels', () => {
     expect(screen.getByRole('button', { name: /hide lion/i })).toBeDefined();
     expect(screen.getByRole('button', { name: /lock lion/i })).toBeDefined();
     expect(screen.getByRole('button', { name: /delete lion/i })).toBeDefined();
+  });
+
+  it('renames a layer from the list and uses the new name for later actions', () => {
+    renderPanels(projectWithTwoRedLayers());
+
+    fireEvent.change(screen.getByLabelText('Rename Lion Rampant'), { target: { value: 'Dexter lion' } });
+    fireEvent.blur(screen.getByLabelText('Rename Lion Rampant'));
+
+    const renamedLayer = useCoatProjectStore.getState().project.layers.find((layer) => (
+      'assetId' in layer && layer.assetId === 'material-animal-lion-rampant'
+    ));
+    expect(renamedLayer).toMatchObject({ displayName: 'Dexter lion' });
+    expect(screen.getByRole('listitem', { name: 'Dexter lion' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Move Dexter lion up' })).toBeDefined();
+    expect(screen.queryByRole('button', { name: 'Move Lion Rampant up' })).toBeNull();
   });
 
   it('moves a charge toward and away from the visual top in project paint order', () => {

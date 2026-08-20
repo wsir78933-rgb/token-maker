@@ -242,6 +242,8 @@ export interface CoatLayerBase {
   visible: boolean;
   locked: boolean;
   groupId: string | null;
+  /** Optional user-facing list label. Missing values keep the asset or local fallback name. */
+  displayName?: string;
 }
 
 export interface CoatGroup {

@@ -108,6 +108,7 @@ export type CoatProjectCommand =
   | { type: 'move-layer'; layerId: string; toIndex: number }
   | { type: 'set-layer-visibility'; layerId: string; visible: boolean }
   | { type: 'set-layer-lock'; layerId: string; locked: boolean }
+  | { type: 'set-layer-display-name'; layerId: string; displayName: string }
   | { type: 'group-layers'; groupId: string; layerIds: string[] }
   | { type: 'ungroup-layers'; groupId: string }
   | { type: 'set-group-opacity'; groupId: string; opacity: number }
@@ -165,6 +166,8 @@ export function applyProjectCommand(
       return setProjectLayerVisibility(project, command.layerId, command.visible);
     case 'set-layer-lock':
       return setProjectLayerLock(project, command.layerId, command.locked);
+    case 'set-layer-display-name':
+      return setLayerDisplayName(project, command.layerId, command.displayName);
     case 'group-layers':
       return groupProjectLayers(project, command.groupId, command.layerIds);
     case 'ungroup-layers':
@@ -424,6 +427,19 @@ function setProjectLayerLock(project: CoatProject, layerId: string, locked: bool
   if (typeof locked !== 'boolean') throw new Error(`Invalid layer lock: ${String(locked)}`);
   const layer = getLayerById(project, layerId);
   return replaceLayer(project, layer.id, { ...layer, locked });
+}
+
+function setLayerDisplayName(project: CoatProject, layerId: string, displayName: unknown): CoatProject {
+  if (typeof displayName !== 'string') throw new Error(`Invalid layer display name: ${String(displayName)}`);
+  const layer = getLayerById(project, layerId);
+  const trimmedDisplayName = displayName.trim();
+  if (trimmedDisplayName.length > 120) throw new Error(`Invalid layer display name: ${displayName}`);
+  if (trimmedDisplayName.length === 0) {
+    if (!('displayName' in layer)) return project;
+    const { displayName: _removedDisplayName, ...layerWithoutDisplayName } = layer;
+    return replaceLayer(project, layer.id, layerWithoutDisplayName as CoatLayer);
+  }
+  return replaceLayer(project, layer.id, { ...layer, displayName: trimmedDisplayName });
 }
 
 function groupProjectLayers(project: CoatProject, groupId: string, layerIds: string[]): CoatProject {
@@ -1031,7 +1047,7 @@ function assertProjectCommand(command: unknown): asserts command is CoatProjectC
   }
   const validTypes = new Set<CoatProjectCommand['type']>([
     'add-layer', 'update-layer', 'update-layers', 'remove-layer', 'remove-layers', 'duplicate-layers', 'move-layer', 'set-layer-visibility',
-    'set-layer-lock', 'group-layers', 'ungroup-layers', 'set-group-opacity', 'align-layer-ids', 'distribute-layer-ids', 'move-layer-ids', 'set-layer-ids-visibility', 'set-layer-ids-lock', 'group-layer-ids', 'ungroup-layer-ids', 'set-layer-ids-opacity', 'resize-layer-ids', 'set-field', 'set-custom-shield-mask', 'set-custom-shield-outline', 'set-background', 'set-canvas-size', 'add-drawing-layer', 'set-project-name',
+    'set-layer-lock', 'set-layer-display-name', 'group-layers', 'ungroup-layers', 'set-group-opacity', 'align-layer-ids', 'distribute-layer-ids', 'move-layer-ids', 'set-layer-ids-visibility', 'set-layer-ids-lock', 'group-layer-ids', 'ungroup-layer-ids', 'set-layer-ids-opacity', 'resize-layer-ids', 'set-field', 'set-custom-shield-mask', 'set-custom-shield-outline', 'set-background', 'set-canvas-size', 'add-drawing-layer', 'set-project-name',
     'add-text-layer', 'remove-text-layer', 'register-local-upload', 'add-local-upload-images', 'remove-local-upload',
     'add-image-layer', 'remove-image-layer', 'replace-layer-colour', 'replace-all-colour', 'add-custom-palette-color',
     'remove-custom-palette-color',
@@ -1049,6 +1065,7 @@ function assertProjectCommand(command: unknown): asserts command is CoatProjectC
     'move-layer': ['type', 'layerId', 'toIndex'],
     'set-layer-visibility': ['type', 'layerId', 'visible'],
     'set-layer-lock': ['type', 'layerId', 'locked'],
+    'set-layer-display-name': ['type', 'layerId', 'displayName'],
     'group-layers': ['type', 'groupId', 'layerIds'],
     'ungroup-layers': ['type', 'groupId'],
     'set-group-opacity': ['type', 'groupId', 'opacity'],
@@ -1128,24 +1145,25 @@ function assertCoatLayer(layer: unknown, uploadById: Map<string, LocalUpload>): 
   if (typeof layer.visible !== 'boolean') throw new Error(`Invalid layer visibility: ${String(layer.visible)}`);
   if (typeof layer.locked !== 'boolean') throw new Error(`Invalid layer lock: ${String(layer.locked)}`);
   if (layer.groupId !== null) assertGroupId(layer.groupId);
+  if ('displayName' in layer) assertLayerDisplayName(layer.displayName);
   switch (layer.type) {
     case 'background':
-      assertExactKeys(layer, ['id', 'type', 'assetId', 'motif', 'opacity', 'fill', 'gradient', 'visible', 'locked', 'groupId'], 'background layer');
+      assertExactKeys(layer, ['id', 'type', 'assetId', 'motif', 'opacity', 'fill', 'gradient', 'visible', 'locked', 'groupId', 'displayName'], 'background layer');
       assertLayerAsset('background', layer.assetId); assertFieldPattern(layer.motif); assertOpacity(layer.opacity, 'background opacity'); if ('fill' in layer) assertColor(layer.fill, 'background fill'); if ('gradient' in layer) assertBackgroundGradient(layer.gradient);
       return;
     case 'shield':
-      assertExactKeys(layer, ['id', 'type', 'assetId', 'customMaskUploadId', 'customOutlinePath', 'colorReplacements', 'field', 'transform', 'visible', 'locked', 'groupId'], 'shield layer');
-      assertLayerAsset('shield', layer.assetId); if ('customMaskUploadId' in layer) { assertNonEmptyString(layer.customMaskUploadId, 'custom shield mask upload id'); if (!uploadById.has(layer.customMaskUploadId)) throw new Error(`Invalid custom shield mask upload: ${layer.customMaskUploadId}`); } if ('customOutlinePath' in layer) assertCustomShieldOutlinePath(layer.customOutlinePath); if ('colorReplacements' in layer) assertAssetColorReplacements(layer.assetId, layer.colorReplacements); assertCoatField(layer.field); assertTransform(layer.transform); return;
+      assertExactKeys(layer, ['id', 'type', 'assetId', 'customMaskUploadId', 'customOutlinePath', 'colorReplacements', 'field', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'shield layer');
+      assertNonEmptyString(layer.assetId, 'shield layer asset id'); assertLayerAsset('shield', layer.assetId); if ('customMaskUploadId' in layer) { assertNonEmptyString(layer.customMaskUploadId, 'custom shield mask upload id'); if (!uploadById.has(layer.customMaskUploadId)) throw new Error(`Invalid custom shield mask upload: ${layer.customMaskUploadId}`); } if ('customOutlinePath' in layer) assertCustomShieldOutlinePath(layer.customOutlinePath); if ('colorReplacements' in layer) assertAssetColorReplacements(layer.assetId, layer.colorReplacements); assertCoatField(layer.field); assertTransform(layer.transform); return;
     case 'ordinary':
     case 'charge':
     case 'top':
-      assertExactKeys(layer, ['id', 'type', 'assetId', 'rasterVariantId', 'color', 'colorReplacements', 'transform', 'visible', 'locked', 'groupId'], `${layer.type} layer`);
+      assertExactKeys(layer, ['id', 'type', 'assetId', 'rasterVariantId', 'color', 'colorReplacements', 'transform', 'visible', 'locked', 'groupId', 'displayName'], `${layer.type} layer`);
       assertNonEmptyString(layer.assetId, `${layer.type} layer asset id`); assertLayerAsset(layer.type, layer.assetId); if ('rasterVariantId' in layer) assertLayerRasterVariant(layer.assetId, layer.rasterVariantId); assertColor(layer.color, 'layer color'); if ('colorReplacements' in layer) assertAssetColorReplacements(layer.assetId, layer.colorReplacements); assertTransform(layer.transform); return;
     case 'draw':
-      assertExactKeys(layer, ['id', 'type', 'path', 'color', 'strokeWidth', 'transform', 'visible', 'locked', 'groupId'], 'draw layer');
+      assertExactKeys(layer, ['id', 'type', 'path', 'color', 'strokeWidth', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'draw layer');
       assertDrawingPath(layer.path); assertColor(layer.color, 'drawing color'); assertStrokeWidth(layer.strokeWidth); assertTransform(layer.transform); return;
     case 'image':
-      assertExactKeys(layer, ['id', 'type', 'source', 'uploadId', 'mimeType', 'opacity', 'transform', 'visible', 'locked', 'groupId'], 'image layer');
+      assertExactKeys(layer, ['id', 'type', 'source', 'uploadId', 'mimeType', 'opacity', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'image layer');
       assertNonEmptyString(layer.uploadId, 'local upload layer id');
       const upload = uploadById.get(layer.uploadId);
       if (layer.source !== 'local-upload' || !upload) throw new Error(`Invalid local upload layer: ${String(layer.uploadId)}`);
@@ -1153,7 +1171,7 @@ function assertCoatLayer(layer: unknown, uploadById: Map<string, LocalUpload>): 
       assertOpacity(layer.opacity, 'image layer opacity');
       assertTransform(layer.transform); return;
     case 'text':
-      assertExactKeys(layer, ['id', 'type', 'text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'alignment', 'path', 'transform', 'visible', 'locked', 'groupId'], 'text layer');
+      assertExactKeys(layer, ['id', 'type', 'text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'alignment', 'path', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'text layer');
       assertTextLength(layer.text); assertColor(layer.color, 'text layer color'); assertPositiveFiniteNumber(layer.fontSize, 'text layer font size'); if ('fontFamily' in layer) assertTextFontFamily(layer.fontFamily); if ('fontStyle' in layer) assertTextFontStyle(layer.fontStyle); if ('fontWeight' in layer) assertTextFontWeight(layer.fontWeight); assertTextAlignment(layer.alignment); assertTextPath(layer.path); assertTransform(layer.transform); return;
   }
 }
@@ -1597,6 +1615,12 @@ function assertProjectName(name: unknown): asserts name is string {
   }
 }
 
+function assertLayerDisplayName(name: unknown): asserts name is string {
+  if (typeof name !== 'string' || name.trim().length === 0 || name.trim().length > 120 || name !== name.trim()) {
+    throw new Error(`Invalid layer display name: ${String(name)}`);
+  }
+}
+
 function assertTextLength(text: unknown): asserts text is string {
   assertNonEmptyString(text, 'text layer text');
   if (text.length > COAT_PROJECT_LIMITS.maxTextLength) {
@@ -1811,7 +1835,10 @@ function cloneLayerPatch(patch: CoatLayerPatch): CoatLayerPatch {
 }
 
 function cloneLayerForDuplicate(layer: CoatLayer, newLayerId: string): CoatLayer {
-  const metadata = { id: newLayerId, visible: layer.visible, locked: false, groupId: null };
+  const metadata = {
+    id: newLayerId, visible: layer.visible, locked: false, groupId: null,
+    ...(layer.displayName ? { displayName: layer.displayName } : {}),
+  };
   switch (layer.type) {
     case 'background':
       return { ...metadata, type: 'background', assetId: layer.assetId, motif: layer.motif, opacity: layer.opacity, ...(layer.fill ? { fill: layer.fill } : {}), ...(layer.gradient ? { gradient: { ...layer.gradient } } : {}) };

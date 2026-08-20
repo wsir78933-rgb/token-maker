@@ -8,11 +8,13 @@ import { getCoatWorkbenchCopy, toolOrder, type ReferenceToolId } from './workben
 
 export interface ReferenceToolTreeChild {
   glyph?: ReferenceToolBranchGlyph;
+  icon?: ReferenceToolTreeChildIcon;
   id: string;
   label: string;
 }
 
 export type ReferenceToolBranchGlyph = 'kite-shield' | 'heater-shield' | 'french-shield' | 'banner-shield' | 'round-shield' | 'lozenge-shield';
+export type ReferenceToolTreeChildIcon = 'arrange' | 'layers';
 
 export type ReferenceToolTreeBranches = Partial<Record<ReferenceToolId, readonly ReferenceToolTreeChild[]>>;
 
@@ -107,7 +109,7 @@ export function ReferenceToolRail({
             onKeyDown={(event) => onTabKeyDown(event, index)}
           ><CoatToolGlyph toolId={toolId} /><span>{copy.toolTabs[toolId]}</span>{hasBranch ? isExpanded ? <ChevronDown aria-hidden="true" className="coat-target-tool-tree-toggle" /> : <ChevronRight aria-hidden="true" className="coat-target-tool-tree-toggle" /> : null}</button>
           {hasBranch && isExpanded ? <div aria-label={copy.toolTabs[toolId]} className="coat-target-tool-tree-branch" role="group">
-            {branch.map((child) => <button aria-pressed={selectedToolChildren[toolId] === child.id} key={child.id} type="button" onClick={() => onToolChildSelect?.(toolId, child.id)}>{child.glyph ? <ShieldBranchGlyph glyph={child.glyph} /> : null}{child.label}</button>)}
+            {branch.map((child) => <button aria-pressed={selectedToolChildren[toolId] === child.id} key={child.id} type="button" onClick={() => onToolChildSelect?.(toolId, child.id)}>{child.glyph ? <ShieldBranchGlyph glyph={child.glyph} /> : null}{child.icon ? <PositionSectionGlyph icon={child.icon} /> : null}{child.label}</button>)}
           </div> : null}
         </div>;
       })}
@@ -123,4 +125,10 @@ function ShieldBranchGlyph({ glyph }: { glyph: ReferenceToolBranchGlyph }) {
   if (glyph === 'round-shield') return <svg aria-hidden="true" data-branch-glyph={glyph} viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /></svg>;
   if (glyph === 'lozenge-shield') return <svg aria-hidden="true" data-branch-glyph={glyph} viewBox="0 0 24 24"><path d="m12 3 8 9-8 9-8-9 8-9Z" /></svg>;
   return <svg aria-hidden="true" data-branch-glyph={glyph} viewBox="0 0 24 24"><path d="M5 5h14v10l-7 5-7-5V5Z" /></svg>;
+}
+
+function PositionSectionGlyph({ icon }: { icon: ReferenceToolTreeChildIcon }) {
+  if (icon === 'arrange') return <svg aria-hidden="true" data-branch-glyph={icon} viewBox="0 0 24 24"><path d="M12 2.4 18.2 10H5.8L12 2.4Zm0 19.2L5.8 14h12.4L12 21.6Z" /></svg>;
+  if (icon === 'layers') return <svg aria-hidden="true" data-branch-glyph={icon} viewBox="0 0 24 24"><path d="M6.5 4h13v3.6h-13V4Zm-1.7 5.2h13v3.6h-13V9.2ZM3 14.4h13v3.6H3v-3.6Z" /></svg>;
+  throw new Error(`Invalid position section icon: ${String(icon)}`);
 }

@@ -1,155 +1,180 @@
 'use client';
 
 import { useState, type ChangeEvent } from 'react';
-import { listAssetsByKind } from '@/lib/coat-of-arms/assets';
-import { fieldDivisionLineStyles, supportsFieldDivisionLine } from '@/lib/coat-of-arms/field-division-line';
-import { fieldPatterns, getFieldPatternConfigControls, resolveFieldPatternConfig } from '@/lib/coat-of-arms/field-pattern';
-import { resolveFieldRegions } from '@/lib/coat-of-arms/field-regions';
-import { createLocalCoatId } from '@/lib/coat-of-arms/id';
-import { DEFAULT_CUSTOM_SHIELD_OUTLINE_PATH } from '@/lib/coat-of-arms/shield-outline';
+import { ChevronDown, Pencil } from 'lucide-react';
+import { listShieldSilhouetteAssets, requireShieldSilhouetteAssetId } from '@/lib/coat-of-arms/assets';
+import type { CoatProjectCommand } from '@/lib/coat-of-arms/commands';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
-import type { CoatLocale, FieldDivision, FieldDivisionLine, FieldOrnament, FieldOrnamentKind, FieldPattern, FieldPatternConfig, FieldRegionId, FieldRegionStyle, FieldStripeDirection } from '@/lib/coat-of-arms/types';
+import type { CoatLayer, CoatLocale, ShieldLayer } from '@/lib/coat-of-arms/types';
 import { usePanelCommandError } from './usePanelCommandError';
 import { createValidatedLocalUpload } from './UploadPanel';
-import { getCoatWorkbenchCopy, type CoatWorkbenchCopy } from './workbench-copy';
+import { getCoatWorkbenchCopy } from './workbench-copy';
 
-const divisions: FieldDivision[] = ['solid', 'per-pale', 'per-fess', 'per-bend', 'per-bend-sinister', 'per-chevron', 'quarterly', 'gyronny', 'tierced-per-pale', 'tierced-per-fess', 'per-saltire', 'barry', 'paly', 'bendy'];
-const patterns: readonly FieldPattern[] = fieldPatterns;
-const fieldOrnamentKinds: FieldOrnamentKind[] = ['bar', 'base', 'bendlet', 'chief', 'cross', 'fess', 'mountain', 'pale', 'pile', 'escutcheon', 'bordure', 'canton', 'chevron', 'pall', 'saltire', 'fretty'];
-const fieldOrnamentWidthKinds: readonly FieldOrnamentKind[] = ['bar', 'base', 'chief', 'fess', 'mountain', 'canton', 'pile', 'chevron'];
-const fieldOrnamentHeightKinds: readonly FieldOrnamentKind[] = ['base', 'chief', 'mountain', 'canton'];
-const fieldOrnamentThicknessKinds: readonly FieldOrnamentKind[] = ['bar', 'bendlet', 'fess', 'pale', 'chevron', 'pall', 'bordure', 'saltire', 'fretty'];
-const fieldOrnamentReversibleKinds: readonly FieldOrnamentKind[] = ['pile', 'chevron', 'pall'];
-const fieldOrnamentEdgeKinds: readonly FieldOrnamentKind[] = ['base', 'chief', 'bendlet', 'fess', 'pale'];
+const selectedEscutcheonFill = '#e11d2e';
+const idleEscutcheonFill = '#64748b';
 
-function defaultFieldOrnamentWidth(kind: FieldOrnamentKind): number {
-  if (kind === 'canton') return 35;
-  if (kind === 'pile') return 60;
-  return 100;
+function listShieldLayers(layers: CoatLayer[]): ShieldLayer[] {
+  return layers.filter((layer): layer is ShieldLayer => layer.type === 'shield');
 }
 
-function defaultFieldOrnamentHeight(kind: FieldOrnamentKind): number {
-  if (kind === 'base') return 28;
-  if (kind === 'chief') return 25;
-  if (kind === 'mountain') return 68;
-  return 35;
+function resolveEditedShield(layers: CoatLayer[], selectedLayerIds: string[]): { shield: ShieldLayer; ordinal: number } | undefined {
+  const shieldLayers = listShieldLayers(layers);
+  if (shieldLayers.length === 0) return undefined;
+  let editedShield = shieldLayers[0];
+  for (const layerId of selectedLayerIds) {
+    const selectedShield = shieldLayers.find((layer) => layer.id === layerId);
+    if (selectedShield) {
+      editedShield = selectedShield;
+      break;
+    }
+  }
+  if (!editedShield) {
+    throw new Error(`Unable to resolve an edited shield from selected layer ids: ${selectedLayerIds.join(',') || '(none)'}`);
+  }
+  const ordinal = shieldLayers.findIndex((layer) => layer.id === editedShield.id) + 1;
+  if (ordinal < 1) {
+    throw new Error(`Edited shield is not in the project: ${editedShield.id}`);
+  }
+  return { shield: editedShield, ordinal };
 }
 
-function defaultFieldOrnamentThickness(kind: FieldOrnamentKind): number {
-  if (kind === 'bordure' || kind === 'fretty') return 8;
-  if (kind === 'saltire') return 9;
-  if (kind === 'pall') return 22;
-  if (kind === 'fess') return 26;
-  if (kind === 'pale') return 22;
-  if (kind === 'bar') return 10;
-  return 14;
+function addNewEscutcheon(
+  layers: CoatLayer[],
+  run: (command: CoatProjectCommand) => boolean,
+  setSelectedLayerIds: (layerIds: string[]) => void,
+): void {
+  const existingShieldIds = new Set(listShieldLayers(layers).map((layer) => layer.id));
+  if (!run({ type: 'add-layer', assetId: 'heater-shield' })) return;
+  const addedShield = listShieldLayers(useCoatProjectStore.getState().project.layers)
+    .filter((layer) => !existingShieldIds.has(layer.id))
+    .at(-1);
+  if (!addedShield) {
+    throw new Error(`No new escutcheon layer was added for assetId: heater-shield`);
+  }
+  setSelectedLayerIds([addedShield.id]);
 }
 
-function PatternConfigControls({
-  pattern,
-  patternConfig,
-  copy,
-  labelFor,
-  onChange,
+function pickEscutcheonShape(
+  assetId: string,
+  editedShield: ShieldLayer,
+  run: (command: CoatProjectCommand) => boolean,
+): void {
+  const silhouetteAssetId = requireShieldSilhouetteAssetId(assetId);
+  if (editedShield.customOutlinePath && !run({ type: 'set-custom-shield-outline', layerId: editedShield.id })) {
+    return;
+  }
+  if (editedShield.customMaskUploadId && !run({ type: 'set-custom-shield-mask', layerId: editedShield.id })) {
+    return;
+  }
+  run({ type: 'update-layer', layerId: editedShield.id, patch: { assetId: silhouetteAssetId } });
+}
+
+function EscutcheonShapeThumbGrid({
+  locale,
+  editedShield,
+  selectEscutcheonShape,
+  onPickShape,
 }: {
-  pattern: FieldPattern;
-  patternConfig: FieldPatternConfig | undefined;
-  copy: CoatWorkbenchCopy['panels'];
-  labelFor: (control: 'count' | 'direction' | 'rows' | 'bricks' | 'columns' | 'symbolSize') => string;
-  onChange: (patch: Partial<FieldPatternConfig>) => void;
+  locale: CoatLocale;
+  editedShield: ShieldLayer;
+  selectEscutcheonShape: (name: string) => string;
+  onPickShape: (assetId: string) => void;
 }) {
-  const resolvedConfig = resolveFieldPatternConfig(pattern, patternConfig);
-  return <>
-    {getFieldPatternConfigControls(pattern).map((control) => {
-      const label = labelFor(control);
-      if (control === 'direction') {
-        return <label key={control}>{label}<select aria-label={label} value={resolvedConfig.direction} onChange={(event) => onChange({ direction: event.target.value as FieldStripeDirection })}>
-          {(['bend', 'bend-sinister', 'horizontal', 'vertical'] as const).map((direction) => <option key={direction} value={direction}>{copy.fieldStripeDirections[direction]}</option>)}
-        </select></label>;
-      }
-      const maximum = control === 'symbolSize' ? 20 : pattern === 'gyronny' && control === 'count' ? 16 : 12;
-      const minimum = control === 'symbolSize' ? 1 : control === 'count' || control === 'rows' || control === 'bricks' || control === 'columns' ? 2 : 1;
-      return <label key={control}>{label}<input aria-label={label} type="number" min={minimum} max={maximum} step="1" value={resolvedConfig[control] ?? ''} onChange={(event) => onChange({ [control]: Number(event.target.value) })} /></label>;
-    })}
-  </>;
+  return (
+    <div className="grid grid-cols-4 gap-2">
+      {listShieldSilhouetteAssets().map((asset) => {
+        const localizedName = asset.name[locale];
+        if (typeof localizedName !== 'string' || localizedName.length === 0) {
+          throw new Error(`Missing escutcheon name for locale ${locale}: ${asset.id}`);
+        }
+        const isPressed = editedShield.assetId === asset.id
+          && editedShield.customOutlinePath === undefined
+          && editedShield.customMaskUploadId === undefined;
+        return (
+          <button
+            key={asset.id}
+            aria-label={selectEscutcheonShape(localizedName)}
+            aria-pressed={isPressed}
+            className={isPressed
+              ? 'aspect-square rounded-md border-2 border-[#e11d2e] bg-[color:var(--coat-panel-raised)] p-1.5'
+              : 'aspect-square rounded-md border-2 border-transparent bg-[color:var(--coat-panel-raised)] p-1.5'}
+            type="button"
+            onClick={() => onPickShape(asset.id)}
+          >
+            <svg aria-hidden="true" className="mx-auto h-full w-full" viewBox="0 0 100 110">
+              <path d={asset.svgPath} fill={isPressed ? selectedEscutcheonFill : idleEscutcheonFill} />
+            </svg>
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
-function CustomVectorShieldOutlineEditor({
-  initialPath,
-  copy,
-  onApply,
-  onReset,
+function EditingEscutcheonCard({
+  editingEscutcheon,
+  editingEscutcheonName,
+  editingLabel,
 }: {
-  initialPath: string;
-  copy: CoatWorkbenchCopy['panels'];
-  onApply: (path: string) => void;
-  onReset: () => void;
+  editingEscutcheon: string;
+  editingEscutcheonName: string;
+  editingLabel: string;
 }) {
-  const [draftPath, setDraftPath] = useState(initialPath);
-  return <fieldset>
-    <legend>{copy.customVectorShieldOutline}</legend>
-    <label>
-      {copy.customVectorShieldPath}
-      <textarea aria-label={copy.customVectorShieldPath} rows={3} spellCheck={false} value={draftPath} onChange={(event) => setDraftPath(event.target.value)} />
-    </label>
-    <button type="button" onClick={() => onApply(draftPath)}>{copy.applyCustomVectorShieldOutline}</button>
-    <button type="button" onClick={onReset}>{copy.resetCustomVectorShieldOutline}</button>
-  </fieldset>;
+  return (
+    <div
+      aria-label={editingEscutcheon}
+      className="flex items-center gap-3 rounded-md border border-[color:var(--coat-line)] bg-[color:var(--coat-panel-raised)] px-3 py-2.5"
+    >
+      <Pencil aria-hidden="true" className="h-4 w-4 shrink-0 text-[color:var(--coat-text)]" />
+      <div className="min-w-0 leading-tight">
+        <div className="text-xs text-[color:var(--coat-muted)]">{editingLabel}</div>
+        <div className="text-sm font-medium text-[color:var(--coat-text)]">{editingEscutcheonName}</div>
+      </div>
+    </div>
+  );
 }
 
-/** Changes the one persisted shield only through validated project commands. */
+function CustomShieldUploads({
+  heading,
+  hint,
+  uploadLabel,
+  uploadStatus,
+  onFileChange,
+}: {
+  heading: string;
+  hint: string;
+  uploadLabel: string;
+  uploadStatus: string | null;
+  onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <h3 className="text-sm font-medium text-[color:var(--coat-text)]">{heading}</h3>
+      <p className="text-xs text-[color:var(--coat-muted)]">{hint}</p>
+      <input
+        accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml"
+        aria-label={uploadLabel}
+        className="block w-full text-xs text-[color:var(--coat-text)]"
+        type="file"
+        onChange={onFileChange}
+      />
+      {uploadStatus ? <p role="status">{uploadStatus}</p> : null}
+    </div>
+  );
+}
+
+/** Changes the edited shield only through validated project commands. */
 export function ShieldFieldPanel({ locale }: { locale: CoatLocale }) {
   const copy = getCoatWorkbenchCopy(locale).panels;
   const project = useCoatProjectStore((state) => state.project);
+  const selectedLayerIds = useCoatProjectStore((state) => state.selectedLayerIds);
+  const setSelectedLayerIds = useCoatProjectStore((state) => state.setSelectedLayerIds);
   const { error, reportError, run } = usePanelCommandError(locale);
-  const [fieldOrnamentKind, setFieldOrnamentKind] = useState<FieldOrnamentKind>('chief');
   const [customShieldUploadStatus, setCustomShieldUploadStatus] = useState<string | null>(null);
-  const shield = project.layers.find((layer) => layer.type === 'shield');
-  if (!shield || shield.type !== 'shield') return <section aria-label={copy.shieldAndField}><p>{copy.noShieldLayer}</p></section>;
-  const outline = shield.field.outline ?? { visible: true, color: '#1E293B', width: 1.5 };
-  const divisionLine: FieldDivisionLine = shield.field.divisionLine ?? { style: 'straight', frequency: 3, amplitude: 6 };
-  const fieldRegions = resolveFieldRegions(shield.field);
+  const editedEscutcheon = resolveEditedShield(project.layers, selectedLayerIds);
+  if (!editedEscutcheon) return <section aria-label={copy.shieldAndField}><p>{copy.noShieldLayer}</p></section>;
+  const { shield, ordinal: editedEscutcheonOrdinal } = editedEscutcheon;
 
-  const updateField = (patch: Partial<typeof shield.field>) => {
-    const nextField = { ...shield.field, ...patch };
-    if (patch.division !== undefined && patch.division !== shield.field.division) delete nextField.regions;
-    if (patch.pattern !== undefined && patch.pattern !== shield.field.pattern) delete nextField.patternConfig;
-    if (nextField.regions !== undefined) delete nextField.divisionLine;
-    const needsTwoColors = nextField.division !== 'solid' || nextField.pattern !== 'solid';
-    if (needsTwoColors && nextField.colors.length < 2) nextField.colors = [nextField.colors[0]!, nextField.colors[0]!];
-    if (!supportsFieldDivisionLine(nextField.division)) delete nextField.divisionLine;
-    run({ type: 'set-field', layerId: shield.id, field: nextField });
-  };
-  const updateFieldRegion = (regionId: FieldRegionId, patch: Partial<FieldRegionStyle>) => {
-    const nextRegions: Partial<Record<FieldRegionId, FieldRegionStyle>> = {};
-    for (const region of fieldRegions) {
-      const nextStyle = region.id === regionId ? { ...region.style, ...patch } : region.style;
-      if (region.id === regionId && patch.pattern !== undefined && patch.pattern !== region.style.pattern) delete nextStyle.patternConfig;
-      const colors = nextStyle.pattern === 'solid'
-        ? [nextStyle.colors[0]!]
-        : nextStyle.colors.length >= 2
-          ? nextStyle.colors
-          : [nextStyle.colors[0]!, nextStyle.colors[0]!];
-      nextRegions[region.id] = { colors, pattern: nextStyle.pattern, patternScale: nextStyle.patternScale, ...(nextStyle.patternConfig === undefined ? {} : { patternConfig: nextStyle.patternConfig }) };
-    }
-    updateField({ regions: nextRegions });
-  };
-  const updateDivisionLine = (patch: Partial<FieldDivisionLine>) => updateField({ divisionLine: { ...divisionLine, ...patch } });
-  const addFieldOrnament = () => {
-    const ornament: FieldOrnament = { id: createLocalCoatId(), kind: fieldOrnamentKind, color: '#F5E6A1', x: 0, y: 0, scale: 1, rotation: 0 };
-    updateField({ ornaments: [...(shield.field.ornaments ?? []), ornament] });
-  };
-  const updateFieldOrnament = (ornamentId: string, patch: Partial<FieldOrnament>) => updateField({
-    ornaments: (shield.field.ornaments ?? []).map((ornament) => ornament.id === ornamentId ? { ...ornament, ...patch } : ornament),
-  });
-  const moveFieldOrnament = (ornamentId: string, direction: -1 | 1) => {
-    const ornaments = [...(shield.field.ornaments ?? [])];
-    const currentIndex = ornaments.findIndex((ornament) => ornament.id === ornamentId);
-    const nextIndex = currentIndex + direction;
-    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= ornaments.length) return;
-    [ornaments[currentIndex], ornaments[nextIndex]] = [ornaments[nextIndex]!, ornaments[currentIndex]!];
-    updateField({ ornaments });
-  };
   const onCustomShieldMaskFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -158,194 +183,62 @@ export function ShieldFieldPanel({ locale }: { locale: CoatLocale }) {
       setCustomShieldUploadStatus(null);
       const upload = await createValidatedLocalUpload(file);
       if (!run({ type: 'register-local-upload', upload })) return;
-      if (!selectCustomShieldMask(upload.id)) return;
+      if (shield.customOutlinePath && !run({ type: 'set-custom-shield-outline', layerId: shield.id })) return;
+      if (!run({ type: 'set-custom-shield-mask', layerId: shield.id, uploadId: upload.id })) return;
       setCustomShieldUploadStatus(copy.customShieldMaskAdded(file.name));
     } catch (caught) {
       reportError(caught);
     }
   };
-  const changeShieldOutlineSource = (source: 'library' | 'custom-vector') => {
-    if (source === 'library') {
-      run({ type: 'set-custom-shield-outline', layerId: shield.id });
-      return;
-    }
-    const starterPath = shield.customOutlinePath ?? DEFAULT_CUSTOM_SHIELD_OUTLINE_PATH;
-    run({ type: 'set-custom-shield-outline', layerId: shield.id, path: starterPath });
-  };
-  const applyCustomOutlinePath = (path: string) => {
-    run({ type: 'set-custom-shield-outline', layerId: shield.id, path });
-  };
-  const resetCustomOutline = () => {
-    run({ type: 'set-custom-shield-outline', layerId: shield.id, path: DEFAULT_CUSTOM_SHIELD_OUTLINE_PATH });
-  };
-  const selectCustomShieldMask = (uploadId?: string) => {
-    if (shield.customOutlinePath && !run({ type: 'set-custom-shield-outline', layerId: shield.id })) return false;
-    return run({ type: 'set-custom-shield-mask', layerId: shield.id, ...(uploadId ? { uploadId } : {}) });
-  };
 
   return (
-    <section aria-label={copy.shieldAndField} className="space-y-2">
-      <h2>{copy.shieldAndField}</h2>
+    <section aria-label={copy.shieldAndField} className="space-y-3">
       {error ? <p role="alert">{error}</p> : null}
-      <label>
-        {copy.shieldOutline}
-        <select aria-label={copy.shieldOutline} value={shield.assetId} onChange={(event) => run({
-          type: 'update-layer', layerId: shield.id, patch: { assetId: event.target.value },
-        })}>
-          {listAssetsByKind('shield').map((asset) => <option key={asset.id} value={asset.id}>{asset.name[locale]}</option>)}
-        </select>
-      </label>
-      <label>
-        {copy.shieldOutlineSource}
-        <select aria-label={copy.shieldOutlineSource} value={shield.customOutlinePath ? 'custom-vector' : 'library'} onChange={(event) => changeShieldOutlineSource(event.target.value as 'library' | 'custom-vector')}>
-          <option value="library">{copy.shieldOutlineSources.library}</option>
-          <option value="custom-vector">{copy.shieldOutlineSources['custom-vector']}</option>
-        </select>
-      </label>
-      {shield.customOutlinePath ? <CustomVectorShieldOutlineEditor key={shield.customOutlinePath} initialPath={shield.customOutlinePath} copy={copy} onApply={applyCustomOutlinePath} onReset={resetCustomOutline} /> : null}
-      <label>
-        {copy.customShieldMask}
-        <select aria-label={copy.customShieldMask} value={shield.customMaskUploadId ?? ''} onChange={(event) => selectCustomShieldMask(event.target.value || undefined)}>
-          <option value="">{copy.defaultShieldMask}</option>
-          {project.uploads.map((upload) => <option key={upload.id} value={upload.id}>{upload.id}</option>)}
-        </select>
-      </label>
-      <label>
-        {copy.uploadCustomShieldMask}
-        <input aria-label={copy.uploadCustomShieldMask} type="file" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" onChange={onCustomShieldMaskFileChange} />
-      </label>
-      {customShieldUploadStatus ? <p role="status">{customShieldUploadStatus}</p> : null}
-      <label>
-        {copy.fieldDivision}
-        <select aria-label={copy.fieldDivision} value={shield.field.division} onChange={(event) => updateField({ division: event.target.value as FieldDivision })}>
-          {divisions.map((division) => <option key={division} value={division}>{copy.fieldDivisions[division]}</option>)}
-        </select>
-      </label>
-      <label>
-        {copy.fieldVariation}
-        <select aria-label={copy.fieldVariation} value={shield.field.pattern} onChange={(event) => updateField({ pattern: event.target.value as FieldPattern })}>
-          {patterns.map((pattern) => <option key={pattern} value={pattern}>{copy.fieldPatterns[pattern]}</option>)}
-        </select>
-      </label>
-      <PatternConfigControls
-        pattern={shield.field.pattern}
-        patternConfig={shield.field.patternConfig}
-        copy={copy}
-        labelFor={(control) => copy.fieldPatternControl(shield.field.pattern, control)}
-        onChange={(patternConfig) => updateField({ patternConfig: { ...shield.field.patternConfig, ...patternConfig } })}
+      <EditingEscutcheonCard
+        editingEscutcheon={copy.editingEscutcheon(editedEscutcheonOrdinal)}
+        editingEscutcheonName={copy.editingEscutcheonName(editedEscutcheonOrdinal)}
+        editingLabel={copy.editingLabel}
       />
-      {supportsFieldDivisionLine(shield.field.division) ? <fieldset><legend>{copy.fieldDivisionLine}</legend>
-        <label>{copy.fieldDivisionLine}<select aria-label={copy.fieldDivisionLine} value={divisionLine.style} onChange={(event) => updateDivisionLine({ style: event.target.value as FieldDivisionLine['style'] })}>
-          {fieldDivisionLineStyles.map((style) => <option key={style} value={style}>{copy.fieldDivisionLineStyles[style]}</option>)}
-        </select></label>
-        <label>{copy.divisionLineFrequency}<input aria-label={copy.divisionLineFrequency} type="number" min="1" max="30" step="1" value={divisionLine.frequency} onChange={(event) => updateDivisionLine({ frequency: Number(event.target.value) })} /></label>
-        <label>{copy.divisionLineAmplitude}<input aria-label={copy.divisionLineAmplitude} type="number" min="1" max="20" step="1" value={divisionLine.amplitude} onChange={(event) => updateDivisionLine({ amplitude: Number(event.target.value) })} /></label>
-      </fieldset> : null}
-      <label>
-        {copy.fieldPrimaryColour}
-        <input aria-label={copy.fieldPrimaryColour} type="color" value={shield.field.colors[0]} onChange={(event) => updateField({
-          colors: [event.target.value, ...shield.field.colors.slice(1)],
-        })} />
-      </label>
-      {shield.field.division !== 'solid' || shield.field.pattern !== 'solid' ? <label>
-        {copy.fieldAccentColour}
-        <input aria-label={copy.fieldAccentColour} type="color" value={shield.field.colors[1] ?? shield.field.colors[0]} onChange={(event) => updateField({
-          colors: [shield.field.colors[0]!, event.target.value, ...shield.field.colors.slice(2)],
-        })} />
-      </label> : null}
-      {fieldRegions.length > 1 ? <fieldset><legend>{copy.fieldRegions}</legend>
-        {fieldRegions.map(({ id, style }) => {
-          const regionName = copy.fieldRegionNames[id];
-          return <fieldset key={id}><legend>{copy.fieldRegion(regionName)}</legend>
-            <label>{copy.fieldRegionVariation(regionName)}<select aria-label={copy.fieldRegionVariation(regionName)} value={style.pattern} onChange={(event) => updateFieldRegion(id, { pattern: event.target.value as FieldPattern })}>{patterns.map((pattern) => <option key={pattern} value={pattern}>{copy.fieldPatterns[pattern]}</option>)}</select></label>
-            <PatternConfigControls
-              pattern={style.pattern}
-              patternConfig={style.patternConfig}
-              copy={copy}
-              labelFor={(control) => copy.fieldRegionPatternControl(regionName, style.pattern, control)}
-              onChange={(patternConfig) => updateFieldRegion(id, { patternConfig: { ...style.patternConfig, ...patternConfig } })}
-            />
-            <label>{copy.fieldRegionPrimaryColour(regionName)}<input aria-label={copy.fieldRegionPrimaryColour(regionName)} type="color" value={style.colors[0]} onChange={(event) => updateFieldRegion(id, { colors: [event.target.value, ...style.colors.slice(1)] })} /></label>
-            {style.pattern !== 'solid' ? <label>{copy.fieldRegionAccentColour(regionName)}<input aria-label={copy.fieldRegionAccentColour(regionName)} type="color" value={style.colors[1] ?? style.colors[0]} onChange={(event) => updateFieldRegion(id, { colors: [style.colors[0]!, event.target.value] })} /></label> : null}
-            <label>{copy.fieldRegionPatternScale(regionName)}<input aria-label={copy.fieldRegionPatternScale(regionName)} type="number" min="0.25" max="4" step="0.05" value={style.patternScale} onChange={(event) => updateFieldRegion(id, { patternScale: Number(event.target.value) })} /></label>
-          </fieldset>;
-        })}
-      </fieldset> : null}
-      <fieldset><legend>{copy.fieldOrnaments}</legend>
-        <label>{copy.fieldOrnament}<select aria-label={copy.fieldOrnament} value={fieldOrnamentKind} onChange={(event) => setFieldOrnamentKind(event.target.value as FieldOrnamentKind)}>{fieldOrnamentKinds.map((kind) => <option key={kind} value={kind}>{copy.fieldOrnamentKinds[kind]}</option>)}</select></label>
-        <button type="button" onClick={addFieldOrnament}>{copy.addFieldOrnament}</button>
-        {(shield.field.ornaments ?? []).map((ornament, ornamentIndex, ornaments) => <fieldset key={ornament.id}><legend>{copy.fieldOrnamentItem(ornament.kind)}</legend>
-          <label>{copy.fieldOrnamentColour}<input aria-label={`${copy.fieldOrnamentColour} ${ornament.id}`} type="color" value={ornament.color} onChange={(event) => updateFieldOrnament(ornament.id, { color: event.target.value, ...(ornament.colors ? { colors: [event.target.value, ...ornament.colors.slice(1)] } : {}) })} /></label>
-          {ornament.colors?.map((color, colorIndex) => <fieldset key={`${ornament.id}-colour-${colorIndex}`}><legend>{copy.fieldOrnamentPaletteColour(colorIndex)}</legend>
-            {colorIndex > 0 ? <label>{copy.fieldOrnamentPaletteColour(colorIndex)}<input aria-label={`${copy.fieldOrnamentPaletteColour(colorIndex)} ${ornament.id}`} type="color" value={color} onChange={(event) => updateFieldOrnament(ornament.id, { colors: ornament.colors?.map((candidate, candidateIndex) => candidateIndex === colorIndex ? event.target.value : candidate) })} /></label> : null}
-            <label>{copy.fieldOrnamentColourAmplitude(colorIndex)}<input aria-label={`${copy.fieldOrnamentColourAmplitude(colorIndex)} ${ornament.id}`} type="number" min="0.1" max="100" step="0.1" value={ornament.colorAmplitudes?.[colorIndex] ?? 1} onChange={(event) => updateFieldOrnament(ornament.id, { colorAmplitudes: ornament.colorAmplitudes?.map((amplitude, amplitudeIndex) => amplitudeIndex === colorIndex ? Number(event.target.value) : amplitude) })} /></label>
-            {colorIndex > 0 ? <button type="button" aria-label={`${copy.removeFieldOrnamentColour(colorIndex)} ${ornament.id}`} onClick={() => {
-              const reducedColors = ornament.colors?.filter((_, candidateIndex) => candidateIndex !== colorIndex) ?? [];
-              const reducedAmplitudes = ornament.colorAmplitudes?.filter((_, candidateIndex) => candidateIndex !== colorIndex) ?? [];
-              updateFieldOrnament(ornament.id, reducedColors.length === 1
-                ? { color: reducedColors[0]!, colors: undefined, colorAmplitudes: undefined }
-                : { colors: reducedColors, colorAmplitudes: reducedAmplitudes });
-            }}>{copy.removeFieldOrnamentColour(colorIndex)}</button> : null}
-          </fieldset>)}
-          {(ornament.colors?.length ?? 1) < 4 ? <button type="button" onClick={() => {
-            const colors = ornament.colors ?? [ornament.color];
-            const colorAmplitudes = ornament.colorAmplitudes ?? [1];
-            updateFieldOrnament(ornament.id, { colors: [...colors, '#F5E6A1'], colorAmplitudes: [...colorAmplitudes, 1] });
-          }}>{copy.addFieldOrnamentColour}</button> : null}
-          <label>{copy.fieldOrnamentX}<input aria-label={`${copy.fieldOrnamentX} ${ornament.id}`} type="number" value={ornament.x} onChange={(event) => updateFieldOrnament(ornament.id, { x: Number(event.target.value) })} /></label>
-          <label>{copy.fieldOrnamentY}<input aria-label={`${copy.fieldOrnamentY} ${ornament.id}`} type="number" value={ornament.y} onChange={(event) => updateFieldOrnament(ornament.id, { y: Number(event.target.value) })} /></label>
-          <label>{copy.fieldOrnamentScale}<input aria-label={`${copy.fieldOrnamentScale} ${ornament.id}`} type="number" min="0.1" max="5" step="0.1" value={ornament.scale} onChange={(event) => updateFieldOrnament(ornament.id, { scale: Number(event.target.value) })} /></label>
-          {fieldOrnamentWidthKinds.includes(ornament.kind) ? <label>{copy.fieldOrnamentWidth}<input aria-label={`${copy.fieldOrnamentWidth} ${ornament.id}`} type="number" min="5" max="100" value={ornament.width ?? defaultFieldOrnamentWidth(ornament.kind)} onChange={(event) => updateFieldOrnament(ornament.id, { width: Number(event.target.value) })} /></label> : null}
-          {fieldOrnamentHeightKinds.includes(ornament.kind) ? <label>{copy.fieldOrnamentHeight}<input aria-label={`${copy.fieldOrnamentHeight} ${ornament.id}`} type="number" min="5" max="110" value={ornament.height ?? defaultFieldOrnamentHeight(ornament.kind)} onChange={(event) => updateFieldOrnament(ornament.id, { height: Number(event.target.value) })} /></label> : null}
-          {fieldOrnamentThicknessKinds.includes(ornament.kind) ? <label>{copy.fieldOrnamentThickness}<input aria-label={`${copy.fieldOrnamentThickness} ${ornament.id}`} type="number" min="1" max="50" value={ornament.thickness ?? defaultFieldOrnamentThickness(ornament.kind)} onChange={(event) => updateFieldOrnament(ornament.id, { thickness: Number(event.target.value) })} /></label> : null}
-          {fieldOrnamentReversibleKinds.includes(ornament.kind) ? <label><input aria-label={`${copy.fieldOrnamentReversed} ${ornament.id}`} type="checkbox" checked={ornament.reversed ?? false} onChange={(event) => updateFieldOrnament(ornament.id, { reversed: event.target.checked })} />{copy.fieldOrnamentReversed}</label> : null}
-          {ornament.kind === 'canton' ? <label><input aria-label={`${copy.fieldOrnamentKeepAspectRatio} ${ornament.id}`} type="checkbox" checked={ornament.keepAspectRatio ?? false} onChange={(event) => updateFieldOrnament(ornament.id, { keepAspectRatio: event.target.checked })} />{copy.fieldOrnamentKeepAspectRatio}</label> : null}
-          {ornament.kind === 'mountain' ? <label>{copy.fieldOrnamentOverlap}<input aria-label={`${copy.fieldOrnamentOverlap} ${ornament.id}`} type="number" min="0" max="100" value={ornament.overlap ?? 0} onChange={(event) => updateFieldOrnament(ornament.id, { overlap: Number(event.target.value) })} /></label> : null}
-          {ornament.kind === 'cross' ? <>
-            <label>{copy.crossHorizontalThickness}<input aria-label={`${copy.crossHorizontalThickness} ${ornament.id}`} type="number" min="1" max="50" value={ornament.crossHorizontalThickness ?? 32} onChange={(event) => updateFieldOrnament(ornament.id, { crossHorizontalThickness: Number(event.target.value) })} /></label>
-            <label>{copy.crossVerticalThickness}<input aria-label={`${copy.crossVerticalThickness} ${ornament.id}`} type="number" min="1" max="50" value={ornament.crossVerticalThickness ?? 22} onChange={(event) => updateFieldOrnament(ornament.id, { crossVerticalThickness: Number(event.target.value) })} /></label>
-            <label>{copy.crossCentreX}<input aria-label={`${copy.crossCentreX} ${ornament.id}`} type="number" min="0" max="100" value={ornament.crossCenterX ?? 50} onChange={(event) => updateFieldOrnament(ornament.id, { crossCenterX: Number(event.target.value) })} /></label>
-            <label>{copy.crossCentreY}<input aria-label={`${copy.crossCentreY} ${ornament.id}`} type="number" min="0" max="110" value={ornament.crossCenterY ?? 55} onChange={(event) => updateFieldOrnament(ornament.id, { crossCenterY: Number(event.target.value) })} /></label>
-          </> : null}
-          {ornament.kind === 'saltire' ? <>
-            <label>{copy.saltireCentreX}<input aria-label={`${copy.saltireCentreX} ${ornament.id}`} type="number" min="0" max="100" value={ornament.saltireCenterX ?? 50} onChange={(event) => updateFieldOrnament(ornament.id, { saltireCenterX: Number(event.target.value) })} /></label>
-            <label>{copy.saltireCentreY}<input aria-label={`${copy.saltireCentreY} ${ornament.id}`} type="number" min="0" max="110" value={ornament.saltireCenterY ?? 55} onChange={(event) => updateFieldOrnament(ornament.id, { saltireCenterY: Number(event.target.value) })} /></label>
-          </> : null}
-          {ornament.kind === 'chevron' ? <>
-            <label>{copy.chevronPeakHeight}<input aria-label={`${copy.chevronPeakHeight} ${ornament.id}`} type="number" min="5" max="75" value={ornament.chevronPeakHeight ?? 35} onChange={(event) => updateFieldOrnament(ornament.id, { chevronPeakHeight: Number(event.target.value) })} /></label>
-            <label>{copy.chevronVerticalPosition}<input aria-label={`${copy.chevronVerticalPosition} ${ornament.id}`} type="number" min="0" max="110" value={ornament.chevronVerticalPosition ?? 55} onChange={(event) => updateFieldOrnament(ornament.id, { chevronVerticalPosition: Number(event.target.value) })} /></label>
-          </> : null}
-          {ornament.kind === 'pall' ? <>
-            <label>{copy.pallForkX}<input aria-label={`${copy.pallForkX} ${ornament.id}`} type="number" min="11" max="89" value={ornament.pallForkX ?? 50} onChange={(event) => updateFieldOrnament(ornament.id, { pallForkX: Number(event.target.value) })} /></label>
-            <label>{copy.pallForkY}<input aria-label={`${copy.pallForkY} ${ornament.id}`} type="number" min="10" max="71" value={ornament.pallForkY ?? 50} onChange={(event) => updateFieldOrnament(ornament.id, { pallForkY: Number(event.target.value) })} /></label>
-          </> : null}
-          {ornament.kind === 'mountain' ? <>
-            <label>{copy.mountainPeakCount}<input aria-label={`${copy.mountainPeakCount} ${ornament.id}`} type="number" min="1" max="8" step="1" value={ornament.mountainPeakCount ?? 2} onChange={(event) => updateFieldOrnament(ornament.id, { mountainPeakCount: Number(event.target.value) })} /></label>
-            <label>{copy.mountainSteepness}<input aria-label={`${copy.mountainSteepness} ${ornament.id}`} type="number" min="0.1" max="1" step="0.01" value={ornament.mountainSteepness ?? 0.72} onChange={(event) => updateFieldOrnament(ornament.id, { mountainSteepness: Number(event.target.value) })} /></label>
-          </> : null}
-          {ornament.kind === 'bendlet' ? <label><input aria-label={`${copy.fieldOrnamentBendSinister} ${ornament.id}`} type="checkbox" checked={ornament.bendSinister ?? false} onChange={(event) => updateFieldOrnament(ornament.id, { bendSinister: event.target.checked })} />{copy.fieldOrnamentBendSinister}</label> : null}
-          {fieldOrnamentEdgeKinds.includes(ornament.kind) ? <fieldset><legend>{copy.fieldOrnamentEdge}</legend>
-            <label>{copy.fieldOrnamentEdge}<select aria-label={`${copy.fieldOrnamentEdge} ${ornament.id}`} value={ornament.edge?.style ?? 'straight'} onChange={(event) => updateFieldOrnament(ornament.id, { edge: { ...(ornament.edge ?? { frequency: 3, amplitude: 6 }), style: event.target.value as FieldDivisionLine['style'] } })}>{fieldDivisionLineStyles.map((style) => <option key={style} value={style}>{copy.fieldDivisionLineStyles[style]}</option>)}</select></label>
-            <label>{copy.divisionLineFrequency}<input aria-label={`${copy.divisionLineFrequency} ${ornament.id}`} type="number" min="1" max="30" value={ornament.edge?.frequency ?? 3} onChange={(event) => updateFieldOrnament(ornament.id, { edge: { ...(ornament.edge ?? { style: 'straight', amplitude: 6 }), frequency: Number(event.target.value) } })} /></label>
-            <label>{copy.divisionLineAmplitude}<input aria-label={`${copy.divisionLineAmplitude} ${ornament.id}`} type="number" min="1" max="20" value={ornament.edge?.amplitude ?? 6} onChange={(event) => updateFieldOrnament(ornament.id, { edge: { ...(ornament.edge ?? { style: 'straight', frequency: 3 }), amplitude: Number(event.target.value) } })} /></label>
-          </fieldset> : null}
-          <button type="button" aria-label={copy.moveFieldOrnamentBackward(ornament.id)} disabled={ornamentIndex === 0} onClick={() => moveFieldOrnament(ornament.id, -1)}>{copy.moveFieldOrnamentBackwardLabel}</button>
-          <button type="button" aria-label={copy.moveFieldOrnamentForward(ornament.id)} disabled={ornamentIndex === ornaments.length - 1} onClick={() => moveFieldOrnament(ornament.id, 1)}>{copy.moveFieldOrnamentForwardLabel}</button>
-          <button type="button" onClick={() => updateField({ ornaments: (shield.field.ornaments ?? []).filter((candidate) => candidate.id !== ornament.id) })}>{copy.removeFieldOrnament}</button>
-        </fieldset>)}
-      </fieldset>
-      <label>
-        {copy.shieldBorderColour}
-        <input aria-label={copy.shieldBorderColour} type="color" value={outline.color} onChange={(event) => updateField({ outline: { ...outline, color: event.target.value } })} />
-      </label>
-      <label>
-        {copy.shieldBorderWidth}
-        <input aria-label={copy.shieldBorderWidth} min="0.25" max="10" step="0.25" type="number" value={outline.width} onChange={(event) => updateField({ outline: { ...outline, width: Number(event.target.value) } })} />
-      </label>
-      <label>
-        <input aria-label={copy.showShieldBorder} checked={outline.visible} type="checkbox" onChange={(event) => updateField({ outline: { ...outline, visible: event.target.checked } })} />
-        {copy.showShieldBorder}
-      </label>
+      <button
+        className="w-full rounded-md border border-[color:var(--coat-line)] bg-[color:var(--coat-panel-raised)] px-3 py-2.5 text-sm text-[color:var(--coat-text)]"
+        type="button"
+        onClick={() => {
+          try {
+            addNewEscutcheon(project.layers, run, setSelectedLayerIds);
+          } catch (caught) {
+            reportError(caught);
+          }
+        }}
+      >{copy.addNewEscutcheon}</button>
+      <details className="group" open>
+        <summary className="flex cursor-pointer list-none items-center justify-between py-2 text-sm font-medium text-[color:var(--coat-text)] [&::-webkit-details-marker]:hidden">
+          <span>{copy.escutcheonLibrary}</span>
+          <ChevronDown aria-hidden="true" className="h-4 w-4 shrink-0 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="pt-1">
+          <EscutcheonShapeThumbGrid
+            locale={locale}
+            editedShield={shield}
+            selectEscutcheonShape={copy.selectEscutcheonShape}
+            onPickShape={(assetId) => {
+              try {
+                pickEscutcheonShape(assetId, shield, run);
+              } catch (caught) {
+                reportError(caught);
+              }
+            }}
+          />
+        </div>
+      </details>
+      <CustomShieldUploads
+        heading={copy.customShieldUploads}
+        hint={copy.customShieldUploadHint}
+        uploadLabel={copy.uploadCustomShieldMask}
+        uploadStatus={customShieldUploadStatus}
+        onFileChange={(event) => {
+          void onCustomShieldMaskFileChange(event);
+        }}
+      />
     </section>
   );
 }

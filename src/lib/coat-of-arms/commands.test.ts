@@ -1414,4 +1414,52 @@ describe('coat project commands', () => {
       type: 'set-background', assetId: background.assetId, gradient: { angle: 45, startColor: 'bad-colour', endColor: '#B11F24' },
     } as never)).toThrow('bad-colour');
   });
+
+  it('sets, clears, and duplicates a layer display name without requiring the layer to be unlocked', () => {
+    const project = createProjectWithMovableCharges();
+    const charge = project.layers.at(-1);
+    const background = project.layers.find((layer) => layer.type === 'background');
+    if (!charge || charge.type !== 'charge' || !background) throw new Error('Expected charge and background layers');
+    const renamed = applyProjectCommand(project, {
+      type: 'set-layer-display-name', layerId: charge.id, displayName: '  Dexter lion  ',
+    });
+    expect(renamed.layers.find((layer) => layer.id === charge.id)).toMatchObject({ displayName: 'Dexter lion' });
+
+    const locked = applyProjectCommand(renamed, { type: 'set-layer-lock', layerId: charge.id, locked: true });
+    const renamedWhileLocked = applyProjectCommand(locked, {
+      type: 'set-layer-display-name', layerId: charge.id, displayName: 'Locked lion',
+    });
+    expect(renamedWhileLocked.layers.find((layer) => layer.id === charge.id)).toMatchObject({
+      displayName: 'Locked lion', locked: true,
+    });
+
+    const renamedBackground = applyProjectCommand(renamed, {
+      type: 'set-layer-display-name', layerId: background.id, displayName: 'Field',
+    });
+    expect(renamedBackground.layers.find((layer) => layer.id === background.id)).toMatchObject({ displayName: 'Field' });
+
+    const duplicated = applyProjectCommand(renamed, {
+      type: 'duplicate-layers', sourceLayerIds: [charge.id], newLayerIds: ['renamed-charge-copy'],
+    });
+    expect(duplicated.layers.find((layer) => layer.id === 'renamed-charge-copy')).toMatchObject({
+      displayName: 'Dexter lion',
+    });
+
+    const cleared = applyProjectCommand(renamed, {
+      type: 'set-layer-display-name', layerId: charge.id, displayName: '   ',
+    });
+    expect(cleared.layers.find((layer) => layer.id === charge.id)).not.toHaveProperty('displayName');
+    expect(assertCoatProject(createDefaultProject('en'))).toBeUndefined();
+
+    const tooLongName = 'x'.repeat(121);
+    expect(() => applyProjectCommand(project, {
+      type: 'set-layer-display-name', layerId: charge.id, displayName: tooLongName,
+    })).toThrow(tooLongName);
+    expect(() => applyProjectCommand(project, {
+      type: 'set-layer-display-name', layerId: 'missing-rename-layer', displayName: 'Scout',
+    })).toThrow('missing-rename-layer');
+    expect(() => applyProjectCommand(project, {
+      type: 'set-layer-display-name', layerId: charge.id, displayName: 12 as never,
+    })).toThrow('12');
+  });
 });

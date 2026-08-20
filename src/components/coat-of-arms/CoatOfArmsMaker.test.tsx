@@ -103,12 +103,23 @@ function selectDesktopTool(label: string) {
 }
 
 function selectEditorUtility(label: string) {
-  selectDesktopTool('Tools');
-  fireEvent.click(screen.getByRole('tab', { name: label }));
+  const toolsTab = getDesktopTool(/tools/i);
+  if (toolsTab.getAttribute('aria-expanded') !== 'true') {
+    fireEvent.click(toolsTab);
+  }
+  fireEvent.click(getDesktopToolTreeItem(label));
+}
+
+function selectPositionSection(label: 'Arrange' | 'Layers') {
+  const positionTab = getDesktopTool(/position/i);
+  if (positionTab.getAttribute('aria-expanded') !== 'true') {
+    fireEvent.click(positionTab);
+  }
+  fireEvent.click(getDesktopToolTreeItem(label));
 }
 
 function selectLayers() {
-  selectEditorUtility('Layers');
+  selectPositionSection('Layers');
 }
 
 interface JsdomVirtualConsole {
@@ -155,8 +166,15 @@ describe('CoatOfArmsMaker', () => {
     expect(getDesktopTool(/tools/i)).toBeDefined();
     expect(getDesktopTool(/tokens/i)).toBeDefined();
     selectEditorUtility('Text');
-    expect(screen.getByRole('tab', { name: 'Upload' })).toBeDefined();
-    expect(screen.getByRole('tab', { name: 'Layers' })).toBeDefined();
+    expect(getDesktopToolTreeItem('Text')).toBeDefined();
+    expect(getDesktopToolTreeItem('Draw')).toBeDefined();
+    expect(getDesktopToolTreeItem('Random')).toBeDefined();
+    expect(getDesktopToolTreeItem('Names')).toBeDefined();
+    expect(within(getDesktopToolRail()).queryByRole('button', { name: 'Upload' })).toBeNull();
+    expect(screen.queryByRole('tab', { name: 'Layers' })).toBeNull();
+    fireEvent.click(getDesktopTool(/position/i));
+    expect(getDesktopToolTreeItem('Arrange')).toBeDefined();
+    expect(getDesktopToolTreeItem('Layers')).toBeDefined();
     expect(screen.getByRole('button', { name: /export/i })).toBeDefined();
   });
 
@@ -172,23 +190,15 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.queryByLabelText('Project name')).toBeNull();
   });
 
-  it('connects editor utility tabs to their active panel and roves focus with horizontal arrows', () => {
+  it('opens the matching Tools panel from the left tree', () => {
     renderWorkbench();
     selectDesktopTool('Tools');
 
-    const toolsPanel = getDesktopPanel('Tools');
-    const utilityTabList = within(toolsPanel).getByRole('tablist');
-    const textTab = within(utilityTabList).getByRole('tab', { name: 'Text' });
-    const textPanelId = textTab.getAttribute('aria-controls');
-    expect(textPanelId).toMatch(/-utility-panel-text$/);
-    expect(document.getElementById(textPanelId ?? '')?.getAttribute('aria-labelledby')).toBe(textTab.id);
-
-    textTab.focus();
-    fireEvent.keyDown(textTab, { key: 'ArrowRight' });
-    const drawTab = within(utilityTabList).getByRole('tab', { name: 'Draw' });
-    expect(document.activeElement).toBe(drawTab);
-    expect(drawTab.getAttribute('aria-selected')).toBe('true');
-    expect(document.getElementById(drawTab.getAttribute('aria-controls') ?? '')?.hidden).toBe(false);
+    fireEvent.click(getDesktopToolTreeItem('Draw'));
+    expect(within(getDesktopPanel('Tools')).getByRole('region', { name: 'Draw' })).toBeDefined();
+    fireEvent.click(getDesktopToolTreeItem('Random'));
+    expect(within(getDesktopPanel('Tools')).getByRole('button', { name: 'Create Random Coat of Arms' })).toBeDefined();
+    expect(within(getDesktopPanel('Tools')).getByText(/Click on the button to generate random coats of arms/)).toBeDefined();
   });
 
   it('places export immediately left of multi-select in the canvas toolbar', () => {
@@ -504,7 +514,11 @@ describe('CoatOfArmsMaker', () => {
 
     const customPanel = getDesktopPanel('Custom');
     expect(within(customPanel).getByRole('region', { name: 'Shield & field' })).toBeDefined();
-    expect(within(customPanel).getByLabelText('Custom shield mask')).toBeDefined();
+    expect(within(customPanel).getByLabelText('Editing: Escutcheon 1')).toBeDefined();
+    expect(within(customPanel).getByRole('button', { name: '+ Add New Escutcheon' })).toBeDefined();
+    expect(within(customPanel).getByRole('heading', { name: 'Custom Shield Uploads' })).toBeDefined();
+    expect(within(customPanel).getByLabelText('Upload custom shield mask')).toBeDefined();
+    expect(within(customPanel).queryByLabelText('Field division')).toBeNull();
     expect(screen.queryByRole('region', { name: 'Shield library' })).toBeNull();
   });
 
@@ -548,37 +562,35 @@ describe('CoatOfArmsMaker', () => {
 
     selectLayers();
     fireEvent.click(screen.getAllByLabelText(new RegExp(`Select layer ${shield.id}`))[0]!);
-    selectDesktopTool('Position');
+    selectPositionSection('Arrange');
 
     const positionPanel = getDesktopPanel('Position');
     const xInput = within(positionPanel).getByLabelText('Position X') as HTMLInputElement;
     expect(xInput.value).toBe('0');
     expect(within(positionPanel).getByLabelText('Keep aspect ratio')).toBeDefined();
-    expect(within(positionPanel).getByRole('button', { name: 'Flip horizontal' })).toBeDefined();
+    expect(within(positionPanel).queryByRole('button', { name: 'Flip horizontal' })).toBeNull();
     expect(within(positionPanel).queryByLabelText('Crop left')).toBeNull();
-    expect(within(positionPanel).getByRole('button', { name: 'Group selected layers' })).toBeDefined();
+    expect(within(positionPanel).queryByRole('button', { name: 'Group selected layers' })).toBeNull();
     fireEvent.change(xInput, { target: { value: '18' } });
     fireEvent.change(within(positionPanel).getByLabelText('Position opacity'), { target: { value: '0.4' } });
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.id === shield.id))
       .toMatchObject({ transform: { x: 18, opacity: 0.4 } });
   });
 
-  it('edits each quarterly field region without changing the other regions', () => {
+  it('shows Arrange placeholder until a layer is selected, then Position X', () => {
     renderWorkbench();
 
-    selectDesktopTool('Custom');
-    fireEvent.change(screen.getByLabelText('Field division'), { target: { value: 'quarterly' } });
-    fireEvent.change(screen.getByLabelText('Quarter 1 primary colour'), { target: { value: '#112233' } });
-    fireEvent.change(screen.getByLabelText('Quarter 2 field variation'), { target: { value: 'stripes' } });
+    selectPositionSection('Arrange');
+    const emptyPositionPanel = getDesktopPanel('Position');
+    expect(within(emptyPositionPanel).getByText('Select an element to see position options.')).toBeDefined();
+    expect(within(emptyPositionPanel).queryByLabelText('Position X')).toBeNull();
 
     const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
-    if (!shield || shield.type !== 'shield') throw new Error('Expected default shield layer');
-    expect(shield.field.regions).toMatchObject({
-      q1: { colors: ['#112233'], pattern: 'solid', patternScale: 1 },
-      q2: { colors: ['#1855A5', '#1855A5'], pattern: 'stripes', patternScale: 1 },
-      q3: { colors: ['#1855A5'], pattern: 'solid', patternScale: 1 },
-      q4: { colors: ['#1855A5'], pattern: 'solid', patternScale: 1 },
-    });
+    if (!shield) throw new Error('Expected default shield layer');
+    selectLayers();
+    fireEvent.click(screen.getAllByLabelText(new RegExp(`Select layer ${shield.id}`))[0]!);
+    selectPositionSection('Arrange');
+    expect(within(getDesktopPanel('Position')).getByLabelText('Position X')).toBeDefined();
   });
 
   it('flips the selected layer from the Position panel without exposing crop editor controls', () => {
@@ -588,19 +600,19 @@ describe('CoatOfArmsMaker', () => {
 
     selectLayers();
     fireEvent.click(screen.getAllByLabelText(new RegExp(`Select layer ${shield.id}`))[0]!);
-    selectDesktopTool('Position');
+    selectPositionSection('Arrange');
     const positionPanel = getDesktopPanel('Position');
-    expect(within(positionPanel).getByRole('group', { name: 'Flip selected layer' })).toBeDefined();
+    expect(within(positionPanel).getByRole('group', { name: 'Position' })).toBeDefined();
+    expect(within(positionPanel).queryByRole('group', { name: 'Flip selected layer' })).toBeNull();
     expect(within(positionPanel).queryByLabelText('Crop left')).toBeNull();
     expect(within(positionPanel).queryByLabelText('Crop top')).toBeNull();
     expect(within(positionPanel).queryByLabelText('Crop width')).toBeNull();
     expect(within(positionPanel).queryByLabelText('Crop height')).toBeNull();
     expect(within(positionPanel).queryByRole('button', { name: 'Reset crop' })).toBeNull();
-    fireEvent.click(within(positionPanel).getByRole('button', { name: 'Flip horizontal' }));
-    fireEvent.click(within(positionPanel).getByRole('button', { name: 'Flip vertical' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Flip selected element horizontally' }));
 
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.id === shield.id))
-      .toMatchObject({ transform: { flipHorizontal: true, flipVertical: true } });
+      .toMatchObject({ transform: { flipHorizontal: true } });
   });
 
   it('edits a selected text layer and preserves its chosen browser-safe font family', () => {
@@ -970,7 +982,7 @@ describe('CoatOfArmsMaker', () => {
       expect(tab.getAttribute('aria-controls')).toBe(tab.id.replace('-tab-', '-panel-'));
     }
     fireEvent.click(within(mobileToolRail).getByRole('tab', { name: 'Position' }));
-    expect(within(within(drawer).getByRole('tabpanel', { name: 'Position' })).getByRole('region', { name: 'Position' })).toBeDefined();
+    expect(within(within(drawer).getByRole('tabpanel', { name: 'Position' })).getByRole('region', { name: 'Arrange' })).toBeDefined();
     fireEvent.click(within(mobileToolRail).getByRole('tab', { name: 'Custom' }));
     expect(within(within(drawer).getByRole('tabpanel', { name: 'Custom' })).getByRole('region', { name: 'Shield & field' })).toBeDefined();
     fireEvent.click(within(mobileToolRail).getByRole('tab', { name: 'How-to' }));
@@ -1197,7 +1209,8 @@ describe('CoatOfArmsMaker', () => {
     const projectIdBeforeRandomize = useCoatProjectStore.getState().project.id;
 
     selectDesktopTool('Tools');
-    fireEvent.click(screen.getByRole('button', { name: 'Randomize project' }));
+    fireEvent.click(getDesktopToolTreeItem('Random'));
+    fireEvent.click(screen.getByRole('button', { name: 'Create Random Coat of Arms' }));
 
     expect(useCoatProjectStore.getState().project.id).not.toBe(projectIdBeforeRandomize);
   });

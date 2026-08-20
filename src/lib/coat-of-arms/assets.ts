@@ -15,6 +15,17 @@ import { isShieldMaterialAssetId, getShieldMaterialPaintColours } from './shield
 import { listReferenceCatalogEntries, shieldReferenceCategories } from './reference-catalog';
 import { webpMaterialAssets } from './webp-material-catalog';
 
+export const shieldSilhouetteAssetIds = [
+  'heater-shield',
+  'round-shield',
+  'kite-shield',
+  'french-shield',
+  'banner-shield',
+  'lozenge-shield',
+] as const;
+
+export type ShieldSilhouetteAssetId = typeof shieldSilhouetteAssetIds[number];
+
 const validAssetKinds: readonly CoatAssetKind[] = [
   'shield',
   'ordinary',
@@ -129,6 +140,23 @@ export function getCoatAsset(assetId: string): CoatAsset {
     throw new Error(`Unknown coat asset id: ${assetId}`);
   }
   return cloneCoatAsset(coatAsset);
+}
+
+export function listShieldSilhouetteAssets(): CoatAssetByKind<'shield'>[] {
+  return shieldSilhouetteAssetIds.map((assetId) => {
+    const asset = getCoatAsset(assetId);
+    if (asset.kind !== 'shield' || !('svgPath' in asset) || typeof asset.svgPath !== 'string') {
+      throw new Error(`Shield silhouette is missing an SVG path: ${assetId}`);
+    }
+    return asset;
+  });
+}
+
+export function requireShieldSilhouetteAssetId(assetId: string): ShieldSilhouetteAssetId {
+  if (!shieldSilhouetteAssetIds.includes(assetId as ShieldSilhouetteAssetId)) {
+    throw new Error(`Unknown shield silhouette: ${JSON.stringify(assetId)}`);
+  }
+  return assetId as ShieldSilhouetteAssetId;
 }
 
 export function listAssetsByKind<Kind extends CoatAssetKind>(
