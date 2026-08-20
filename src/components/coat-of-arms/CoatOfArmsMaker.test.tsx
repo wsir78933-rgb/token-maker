@@ -84,6 +84,12 @@ function getMobileDrawer() {
   return mobileDrawer;
 }
 
+function getDesktopExportTrigger(label: string | RegExp = 'Export') {
+  const desktopExport = document.querySelector<HTMLElement>('.coat-target-desktop-export');
+  if (!desktopExport) throw new Error('Desktop export control is unavailable');
+  return within(desktopExport).getByRole('button', { name: label });
+}
+
 function getMobileToolRail() {
   const mobileDrawer = getMobileDrawer();
   const rail = mobileDrawer.querySelector<HTMLElement>(':scope > .coat-target-reference-rail');
@@ -163,8 +169,12 @@ describe('CoatOfArmsMaker', () => {
     expect(getDesktopTool(/charges/i)).toBeDefined();
     expect(getDesktopTool(/top/i)).toBeDefined();
     expect(getDesktopTool(/colors/i)).toBeDefined();
+    fireEvent.click(getDesktopTool(/colors/i));
+    expect(getDesktopToolTreeItem('Used')).toBeDefined();
+    expect(getDesktopToolTreeItem('Palettes')).toBeDefined();
+    expect(getDesktopToolTreeItem('Custom')).toBeDefined();
+    expect(getDesktopToolTreeItem('Background')).toBeDefined();
     expect(getDesktopTool(/tools/i)).toBeDefined();
-    expect(getDesktopTool(/tokens/i)).toBeDefined();
     selectEditorUtility('Text');
     expect(getDesktopToolTreeItem('Text')).toBeDefined();
     expect(getDesktopToolTreeItem('Draw')).toBeDefined();
@@ -175,7 +185,24 @@ describe('CoatOfArmsMaker', () => {
     fireEvent.click(getDesktopTool(/position/i));
     expect(getDesktopToolTreeItem('Arrange')).toBeDefined();
     expect(getDesktopToolTreeItem('Layers')).toBeDefined();
-    expect(screen.getByRole('button', { name: /export/i })).toBeDefined();
+    expect(getDesktopExportTrigger(/export/i)).toBeDefined();
+  });
+
+  it.each([
+    { href: '/', label: 'Tokens', locale: 'en' as const },
+    { href: '/zh', label: '符记', locale: 'zh' as const },
+  ])('exposes $label as a new-tab link to the localized homepage on desktop and mobile', ({ href, label, locale }) => {
+    renderWorkbench(locale);
+
+    const tokenLinks = screen.getAllByRole('link', { name: label });
+    expect(tokenLinks).toHaveLength(2);
+    for (const tokenLink of tokenLinks) {
+      expect(tokenLink).toHaveAttribute('href', href);
+      expect(tokenLink).toHaveAttribute('target', '_blank');
+      expect(tokenLink).toHaveAttribute('rel', 'noopener noreferrer');
+    }
+    expect(screen.queryByRole('tab', { name: label })).toBeNull();
+    expect(screen.queryByRole('tabpanel', { name: label, hidden: true })).toBeNull();
   });
 
   it('does not expose a named local project library', () => {
@@ -201,28 +228,72 @@ describe('CoatOfArmsMaker', () => {
     expect(within(getDesktopPanel('Tools')).getByText(/Click on the button to generate random coats of arms/)).toBeDefined();
   });
 
-  it('places export immediately left of multi-select in the canvas toolbar', () => {
+  it('places desktop export in an actionbar before the editor and keeps a responsive mobile export wrapper in the canvas toolbar', () => {
     renderWorkbench();
 
-    const actionBar = document.querySelector<HTMLElement>('.coat-target-actionbar');
-    expect(actionBar).toBeNull();
-    const canvasToolbar = document.querySelector<HTMLElement>('.coat-target-canvas-toolbar');
-    const toolbarActions = canvasToolbar?.querySelector<HTMLElement>('.coat-target-canvas-toolbar-actions');
-    expect(toolbarActions).not.toBeNull();
-    const exportControl = toolbarActions?.querySelector<HTMLElement>('.coat-target-export-control');
-    expect(exportControl).not.toBeNull();
-    const exportTrigger = within(exportControl!).getByRole('button', { name: 'Export' });
-    const multiSelectTrigger = within(toolbarActions!).getByRole('button', { name: 'Multi-select' });
-    expect(exportTrigger).toBeDefined();
-    expect(exportTrigger.querySelectorAll('svg')).toHaveLength(2);
-    expect(exportControl!.nextElementSibling).toBe(multiSelectTrigger);
     const workbench = screen.getByRole('main');
     const topbar = workbench.querySelector<HTMLElement>(':scope > .site-topbar');
     const workbenchContent = workbench.querySelector<HTMLElement>(':scope > .coat-workbench-content');
+    const actionBar = workbenchContent?.querySelector<HTMLElement>(':scope > .coat-target-actionbar');
+    const editorGrid = workbenchContent?.querySelector<HTMLElement>(':scope > .coat-target-editor-grid');
+    const canvasToolbar = document.querySelector<HTMLElement>('.coat-target-canvas-toolbar');
+    const toolbarActions = canvasToolbar?.querySelector<HTMLElement>('.coat-target-canvas-toolbar-actions');
+
+    expect(actionBar).not.toBeNull();
+    expect(editorGrid).not.toBeNull();
+    expect(actionBar!.nextElementSibling).toBe(editorGrid);
+    const desktopExportTrigger = within(actionBar!).getByRole('button', { name: 'Export' });
+    expect(desktopExportTrigger.getAttribute('aria-controls')).toBe('coat-desktop-export-options');
+    expect(toolbarActions).not.toBeNull();
+    expect(toolbarActions!.querySelector('.coat-target-desktop-export')).toBeNull();
+    const multiSelectTrigger = within(toolbarActions!).getByRole('button', { name: 'Multi-select' });
+    expect(multiSelectTrigger).toBeDefined();
+    const mobileExport = canvasToolbar?.querySelector<HTMLElement>(':scope > .coat-target-mobile-export');
+    expect(mobileExport).not.toBeNull();
+    const mobileExportTrigger = within(mobileExport!).getByRole('button', { name: 'Export' });
+    expect(mobileExportTrigger.getAttribute('aria-controls')).toBe('coat-mobile-export-options');
+    expect(mobileExportTrigger.getAttribute('aria-controls')).not.toBe(desktopExportTrigger.getAttribute('aria-controls'));
     expect(topbar).not.toBeNull();
     expect(workbenchContent).not.toBeNull();
     expect(topbar!.nextElementSibling).toBe(workbenchContent);
     expectWorkbenchProjectNameToBeNonHeading('My Coat of Arms');
+  });
+
+  it('orders undo, redo, and magnet snapping before colour and multi-select controls and toggles both pressed states', () => {
+    renderWorkbench();
+    const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
+    if (!shield) throw new Error('Expected a selectable shield layer');
+    act(() => useCoatProjectStore.getState().setSelectedLayerIds([shield.id]));
+
+    const canvasToolbar = document.querySelector<HTMLElement>('.coat-target-canvas-toolbar');
+    const historyControls = canvasToolbar?.querySelector<HTMLElement>(':scope > .coat-target-history-controls');
+    const colourStrip = canvasToolbar?.querySelector<HTMLElement>(':scope > .coat-target-selected-element-colour-strip');
+    const toolbarActions = canvasToolbar?.querySelector<HTMLElement>(':scope > .coat-target-canvas-toolbar-actions');
+    if (!historyControls || !toolbarActions) throw new Error('Canvas toolbar groups are unavailable');
+
+    const historyButtons = within(historyControls).getAllByRole('button');
+    expect(historyButtons.map((button) => button.getAttribute('aria-label'))).toEqual(['Undo', 'Redo', 'Magnet snapping']);
+    expect(historyControls.nextElementSibling).toBe(colourStrip);
+    expect(colourStrip?.nextElementSibling).toBe(toolbarActions);
+
+    const snappingToggle = within(historyControls).getByRole('button', { name: 'Magnet snapping' });
+    expect(snappingToggle.getAttribute('title')).toBe('Magnet snapping');
+    expect(snappingToggle.getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(snappingToggle);
+    expect(snappingToggle.getAttribute('aria-pressed')).toBe('false');
+
+    const multiSelectToggle = within(toolbarActions).getByRole('button', { name: 'Multi-select' });
+    expect(multiSelectToggle.getAttribute('aria-pressed')).toBe('false');
+    fireEvent.click(multiSelectToggle);
+    expect(multiSelectToggle.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('localizes the magnet snapping label and title in Chinese', () => {
+    renderWorkbench('zh');
+
+    const snappingToggle = screen.getByRole('button', { name: '磁吸对齐' });
+    expect(snappingToggle.getAttribute('title')).toBe('磁吸对齐');
+    expect(snappingToggle.getAttribute('aria-pressed')).toBe('true');
   });
 
   it('places the selected-element colour strip between toolbar groups and preserves its mobile row contract', () => {
@@ -239,8 +310,8 @@ describe('CoatOfArmsMaker', () => {
     expect(colourStrip.nextElementSibling).toBe(toolbarActions);
 
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
-    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-scene { position: relative; display: grid; min-width: 0; min-height: 0; grid-template-rows: 2.5rem minmax(0, 1fr);');
-    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar > div:first-child,\n.coat-target-workbench .coat-target-canvas-toolbar-actions { flex: 0 0 auto; }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-scene { position: relative; display: grid; min-width: 0; min-height: 0; grid-template-rows: 40px minmax(0, 1fr);');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-history-controls,\n.coat-target-workbench .coat-target-canvas-toolbar-actions { flex: 0 0 auto; }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-selected-element-colour-strip { display: flex; flex: 1 1 auto; min-width: 0; overflow-x: auto; align-items: center; gap: 0.28rem; }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-selected-element-colour-strip::-webkit-scrollbar { height: 0.125rem; }');
     expect(workbenchStyles).toContain('@supports not selector(::-webkit-scrollbar) {\n  .coat-target-workbench .coat-target-selected-element-colour-strip { scrollbar-width: thin; }\n}');
@@ -311,16 +382,35 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.getByRole('link', { name: 'English' }).getAttribute('href')).toBe('/coat-of-arms-maker');
   });
 
-  it('uses the Retina-normalized 170px desktop tool-tree width from the reference capture', () => {
+  it('keeps the desktop tool tree wide enough for its category labels', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
-    expect(workbenchStyles).toContain('flex: 0 0 10.625rem; width: 10.625rem; min-width: 10.625rem; max-width: 10.625rem;');
+    expect(workbenchStyles).toContain('flex: 0 0 170px; width: 170px; min-width: 170px; max-width: 170px;');
   });
 
-  it('uses the reference-recorded 40px canvas toolbar height', () => {
+  it('uses the exact desktop editor geometry and preserves the mobile export and drawer contract', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
-    expect(workbenchStyles).toContain('grid-template-rows: 2.5rem minmax(0, 1fr);');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-actionbar {\n  display: flex;\n  height: 50px;');
+    expect(workbenchStyles).toContain('border-bottom: 1px solid #636363;\n  background: #474747;\n  padding: 8.5px;');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-desktop-export > div > button { width: 109.375px; height: 38.25px; }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-scene { position: relative; display: grid; min-width: 0; min-height: 0; grid-template-rows: 40px minmax(0, 1fr);');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar { display: flex; height: 40px;');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-editor-grid { display: grid; min-height: 0; grid-template-columns: 460px minmax(0, 1fr);');
+    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-editor-grid[data-tool-panel-collapsed='true'] { grid-template-columns: 170px minmax(0, 1fr); }");
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-left-panel { position: relative;');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-reference-rail { position: static; display: flex; flex: 0 0 170px; width: 170px; min-width: 170px; max-width: 170px; }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-library-panel { flex: 0 0 290px; width: 290px;');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-collapse { position: absolute; z-index: 2; top: 50%; right: -12px; display: grid; width: 24px; height: 46px;');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-zoom { position: absolute; right: 1.55rem; bottom: 1.35rem; display: flex; width: 220px; height: 36px;');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar > .coat-target-history-controls { gap: 2px; }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar > .coat-target-history-controls button { width: 34px; height: 34px; min-height: 34px; padding: 0; }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar > .coat-target-mobile-export { display: none; }');
+    expect(workbenchStyles).toContain('@media (max-width: 1023px) {');
+    expect(workbenchStyles).toContain('  .coat-target-workbench .coat-target-actionbar { display: none; }');
+    expect(workbenchStyles).toContain('  .coat-target-workbench .coat-target-canvas-toolbar > .coat-target-mobile-export { display: block; }');
+    expect(workbenchStyles).toContain('  .coat-target-workbench .coat-target-zoom { width: auto; height: auto; }');
+    expect(workbenchStyles).toContain('  .coat-target-workbench .coat-workbench-mobile-drawer { display: grid; }');
   });
 
   it('uses the reference selected-child treatment without keeping an expanded parent highlighted', () => {
@@ -341,8 +431,9 @@ describe('CoatOfArmsMaker', () => {
 
     const toolRail = getDesktopToolRail();
     expect(within(toolRail).getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
-      '定位', '盾牌', '自定义', '图形', '顶部', '颜色', '工具', '使用说明', '设置', '旗帜', '符记',
+      '定位', '盾牌', '自定义', '图形', '顶部', '颜色', '工具', '使用说明', '设置', '旗帜',
     ]);
+    expect(screen.getAllByRole('link', { name: '符记' })).toHaveLength(2);
     expect(screen.queryByRole('button', { name: 'Collapse tools' })).toBeNull();
   });
 
@@ -413,11 +504,6 @@ describe('CoatOfArmsMaker', () => {
     expect(within(desktopTools).getByRole('tab', { name: 'Shields' })).toBeDefined();
     expect(screen.queryByRole('complementary', { name: 'Project and layer dock' })).toBeNull();
     expect(screen.getByRole('tabpanel', { name: 'Shields' })).toBeDefined();
-
-    selectDesktopTool('Tokens');
-
-    expect(screen.getByRole('tabpanel', { name: 'Tokens' })).toBeDefined();
-    expect(screen.getByRole('button', { name: /add compass rose token/i })).toBeDefined();
     selectLayers();
     expect(screen.getByRole('button', { name: /duplicate selected layers/i })).toBeDefined();
   });
@@ -438,17 +524,6 @@ describe('CoatOfArmsMaker', () => {
     expect(howToPanel.getAttribute('tabindex')).toBe('0');
     howToPanel.focus();
     expect(document.activeElement).toBe(howToPanel);
-  });
-
-  it('adds a local token from the independent Tokens library', () => {
-    renderWorkbench();
-
-    selectDesktopTool('Tokens');
-    fireEvent.click(screen.getByRole('button', { name: 'Add Compass Rose token' }));
-
-    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
-      type: 'charge', assetId: 'material-symbol-compass-rose',
-    });
   });
 
   it('browses a selected shield tree category without mutating the canvas', () => {
@@ -515,11 +590,12 @@ describe('CoatOfArmsMaker', () => {
     const customPanel = getDesktopPanel('Custom');
     expect(within(customPanel).getByRole('region', { name: 'Shield & field' })).toBeDefined();
     expect(within(customPanel).getByLabelText('Editing: Escutcheon 1')).toBeDefined();
-    expect(within(customPanel).getByRole('button', { name: '+ Add New Escutcheon' })).toBeDefined();
+    expect(within(customPanel).getByRole('button', { name: 'Add New Escutcheon' })).toBeDefined();
     expect(within(customPanel).getByRole('heading', { name: 'Custom Shield Uploads' })).toBeDefined();
     expect(within(customPanel).getByLabelText('Upload custom shield mask')).toBeDefined();
     expect(within(customPanel).queryByLabelText('Field division')).toBeNull();
     expect(screen.queryByRole('region', { name: 'Shield library' })).toBeNull();
+    expect(within(getDesktopToolRail()).queryByRole('group', { name: 'Shields' })).toBeNull();
   });
 
   it('keeps the shield material browser separate from Custom controls', () => {
@@ -665,7 +741,7 @@ describe('CoatOfArmsMaker', () => {
   it('keeps the project and export actions explicitly local', () => {
     renderWorkbench();
 
-    fireEvent.click(screen.getByRole('button', { name: /export/i }));
+    fireEvent.click(getDesktopExportTrigger(/export/i));
     expect(screen.getByLabelText('File type')).toBeDefined();
     expect(screen.getByLabelText('Quality')).toBeDefined();
     expect(screen.getByLabelText('Transparent background')).toBeDefined();
@@ -692,7 +768,7 @@ describe('CoatOfArmsMaker', () => {
     }));
     renderWorkbench();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(getDesktopExportTrigger());
     const qualityControl = screen.getByLabelText('Quality');
     await act(async () => { await Promise.resolve(); });
 
@@ -705,7 +781,7 @@ describe('CoatOfArmsMaker', () => {
 
   it('reports the JPG-specific success message after a local JPG export', async () => {
     renderWorkbench();
-    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(getDesktopExportTrigger());
     const exportMenu = screen.getByRole('region', { name: 'Local export options' });
 
     fireEvent.change(screen.getByLabelText('File type'), { target: { value: 'jpeg' } });
@@ -732,7 +808,7 @@ describe('CoatOfArmsMaker', () => {
     vi.stubGlobal('navigator', { canShare: () => true, share });
     renderWorkbench('en', project);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(getDesktopExportTrigger());
     fireEvent.change(screen.getByLabelText('Quality'), { target: { value: '1' } });
 
     expect(JSON.parse(localStorage.getItem(EDITOR_PREFERENCES_STORAGE_KEY) ?? '')).toMatchObject({
@@ -803,7 +879,7 @@ describe('CoatOfArmsMaker', () => {
     }));
     renderWorkbench('en', project);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(getDesktopExportTrigger());
 
     expect((await screen.findByRole('alert')).textContent).toContain('123');
     expect(useCoatProjectStore.getState().project).toEqual(project);
@@ -823,7 +899,7 @@ describe('CoatOfArmsMaker', () => {
     vi.stubGlobal('navigator', { canShare: () => true, share });
     renderWorkbench();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(getDesktopExportTrigger());
     fireEvent.click(screen.getByRole('button', { name: 'Share' }));
 
     const exportOptions = screen.getByRole('region', { name: 'Local export options' });
@@ -835,7 +911,7 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
     vi.stubGlobal('URL', { createObjectURL: () => { throw new Error('Export download is unavailable in this browser'); }, revokeObjectURL: vi.fn() });
 
-    fireEvent.click(screen.getByRole('button', { name: /export/i }));
+    fireEvent.click(getDesktopExportTrigger(/export/i));
     fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
 
     expect((await screen.findByRole('alert')).textContent).toMatch(/unavailable in this browser/i);
@@ -844,7 +920,7 @@ describe('CoatOfArmsMaker', () => {
   it('uses Chinese-only project and export errors without exposing raw English failures', async () => {
     renderWorkbench('zh');
     vi.stubGlobal('URL', { createObjectURL: () => { throw new Error('Export download is unavailable in this browser'); }, revokeObjectURL: vi.fn() });
-    fireEvent.click(screen.getByRole('button', { name: '导出' }));
+    fireEvent.click(getDesktopExportTrigger('导出'));
     fireEvent.click(screen.getByRole('button', { name: '下载 PNG' }));
 
     const exportError = await screen.findByRole('alert');
@@ -857,7 +933,7 @@ describe('CoatOfArmsMaker', () => {
     const project = createDefaultProject('en');
     renderWorkbench('en', project);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(getDesktopExportTrigger());
     fireEvent.click(screen.getByLabelText('Transparent background'));
     fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
 
@@ -869,7 +945,7 @@ describe('CoatOfArmsMaker', () => {
   it('disables the transparent background checkbox for JPG', () => {
     renderWorkbench();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(getDesktopExportTrigger());
     fireEvent.click(screen.getByLabelText('Transparent background'));
     expect((screen.getByLabelText('Transparent background') as HTMLInputElement).checked).toBe(true);
 
@@ -905,7 +981,7 @@ describe('CoatOfArmsMaker', () => {
 
   it('gives export menu controls a close action, escape dismissal, and trigger focus restoration', () => {
     renderWorkbench();
-    const exportTrigger = screen.getByRole('button', { name: 'Export' });
+    const exportTrigger = getDesktopExportTrigger();
     fireEvent.click(exportTrigger);
 
     expect(exportTrigger.getAttribute('aria-expanded')).toBe('true');
@@ -924,8 +1000,9 @@ describe('CoatOfArmsMaker', () => {
     const mobileDrawer = getMobileDrawer();
     const mobileToolRail = getMobileToolRail();
     expect(within(mobileToolRail).getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
-      'Position', 'Shields', 'Custom', 'Charges', 'Top', 'Colors', 'Tools', 'How-to', 'Settings', 'Flags', 'Tokens',
+      'Position', 'Shields', 'Custom', 'Charges', 'Top', 'Colors', 'Tools', 'How-to', 'Settings', 'Flags',
     ]);
+    expect(within(mobileDrawer).getByRole('link', { name: 'Tokens' })).toBeDefined();
     for (const tab of within(mobileToolRail).getAllByRole('tab')) {
       const panelId = tab.getAttribute('aria-controls');
       expect(panelId).not.toBeNull();
@@ -972,12 +1049,13 @@ describe('CoatOfArmsMaker', () => {
     expect(document.activeElement).toBe(within(getMobileDrawer()).getByRole('button', { name: 'Close tools' }));
     const mobileToolRail = getMobileToolRail();
     expect(within(mobileToolRail).getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
-      'Position', 'Shields', 'Custom', 'Charges', 'Top', 'Colors', 'Tools', 'How-to', 'Settings', 'Flags', 'Tokens',
+      'Position', 'Shields', 'Custom', 'Charges', 'Top', 'Colors', 'Tools', 'How-to', 'Settings', 'Flags',
     ]);
     expect(within(mobileToolRail).getAllByRole('tab').map((tab) => tab.id)).toEqual([
       'mobile-coat-tab-position', 'mobile-coat-tab-shields', 'mobile-coat-tab-custom', 'mobile-coat-tab-charges', 'mobile-coat-tab-top',
-      'mobile-coat-tab-colors', 'mobile-coat-tab-tools', 'mobile-coat-tab-how-to', 'mobile-coat-tab-settings', 'mobile-coat-tab-flags', 'mobile-coat-tab-tokens',
+      'mobile-coat-tab-colors', 'mobile-coat-tab-tools', 'mobile-coat-tab-how-to', 'mobile-coat-tab-settings', 'mobile-coat-tab-flags',
     ]);
+    expect(within(getMobileDrawer()).getByRole('link', { name: 'Tokens' })).toBeDefined();
     for (const tab of within(mobileToolRail).getAllByRole('tab')) {
       expect(tab.getAttribute('aria-controls')).toBe(tab.id.replace('-tab-', '-panel-'));
     }
@@ -1027,6 +1105,19 @@ describe('CoatOfArmsMaker', () => {
     fireEvent.click(getDesktopToolTreeItem('Background'));
 
     expect(document.activeElement).toBe(within(getDesktopPanel('Colors')).getByRole('region', { name: 'Background Color' }));
+  });
+
+  it('opens Palettes from the Colors tree with named competitor palettes', () => {
+    renderWorkbench();
+
+    fireEvent.click(getDesktopTool('Colors'));
+    fireEvent.click(getDesktopToolTreeItem('Palettes'));
+
+    const palettes = within(getDesktopPanel('Colors')).getByRole('region', { name: 'Palettes' });
+    expect(within(palettes).getByRole('article', { name: 'Vampire Castle' })).toBeDefined();
+    expect(within(palettes).getByRole('article', { name: 'Seven Seas' })).toBeDefined();
+    expect(within(palettes).getAllByRole('button', { name: 'Set as default' }).length).toBeGreaterThan(0);
+    expect(within(palettes).getAllByRole('button', { name: 'Add' }).length).toBeGreaterThan(0);
   });
 
   it('keeps canvas drawing active when the mobile tools drawer closes', () => {
@@ -1091,6 +1182,7 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-editor-grid { grid-template-columns: 1fr; }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-mobile-drawer { display: grid; }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-mobile-drawer > .coat-target-reference-rail { display: flex; flex: 1 1 auto; width: auto; min-width: 0; max-width: none;');
+    expect(workbenchStyles).toContain(".coat-target-workbench .coat-workbench-mobile-sheet [role='tabpanel'] > section.coat-escutcheon-panel { display: flex; width: 100%; flex-direction: column; gap: 0; overflow: visible; padding: 8px;");
     expect(workbenchStyles).toContain('grid-template-rows: auto minmax(34rem, 1fr) auto;');
     expect(workbenchStyles).toContain('grid-template-rows: auto minmax(29rem, 1fr) auto;');
   });
@@ -1123,18 +1215,18 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-artboard [role='application'] { width: 100%; height: 100%; max-width: 100%; aspect-ratio: var(--coat-canvas-aspect-ratio);");
   });
 
-  it('uses the Instagram preset dimensions for both canvas geometry and serialized SVG', () => {
+  it('uses the 3:5 canvas preset dimensions for both canvas geometry and serialized SVG', () => {
     renderWorkbench();
 
     selectDesktopTool('Settings');
     const desktopTools = screen.getByRole('complementary', { name: 'Desktop coat tools' });
-    fireEvent.click(within(desktopTools).getByRole('button', { name: /Instagram Story/ }));
+    fireEvent.click(within(desktopTools).getByRole('button', { name: /3:5 \(Germany/ }));
 
     const artboard = document.querySelector('.coat-target-artboard');
     const canvas = screen.getByRole('application', { name: 'Coat of arms canvas' });
-    expect(artboard?.getAttribute('style')).toContain('--coat-canvas-aspect-ratio: 1080 / 1920');
-    expect(canvas.getAttribute('style')).toContain('--coat-canvas-aspect-ratio: 1080 / 1920');
-    expect(canvas.innerHTML).toContain('width="1080" height="1920"');
+    expect(artboard?.getAttribute('style')).toContain('--coat-canvas-aspect-ratio: 1800 / 1080');
+    expect(canvas.getAttribute('style')).toContain('--coat-canvas-aspect-ratio: 1800 / 1080');
+    expect(canvas.innerHTML).toContain('width="1800" height="1080"');
   });
 
   it('keeps the default artboard within a short desktop scene viewport', () => {
@@ -1162,7 +1254,7 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.getByRole('button', { name: '重做' })).toBeDefined();
     expect(screen.queryByRole('button', { name: '打开本地项目库' })).toBeNull();
     expect(screen.queryByRole('dialog', { name: '本地项目' })).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: '导出' }));
+    fireEvent.click(getDesktopExportTrigger('导出'));
     expect(screen.getByRole('button', { name: '下载 PNG' })).toBeDefined();
     expect(screen.getByRole('button', { name: '分享' })).toBeDefined();
     expect(screen.getByRole('button', { name: '打印' })).toBeDefined();
@@ -1177,7 +1269,7 @@ describe('CoatOfArmsMaker', () => {
     expect(getDesktopToolRail()).toBeDefined();
     expect(screen.queryByRole('complementary', { name: '项目与图层停靠区' })).toBeNull();
     expect(getDesktopTool('盾牌')).toBeDefined();
-    expect(getDesktopTool('符记')).toBeDefined();
+    expect(screen.getAllByRole('link', { name: '符记' })).toHaveLength(2);
   });
 
   it('uses locale-owned workbench, canvas, and mobile controls', () => {

@@ -31,15 +31,40 @@ function createCanvasProject(): CoatProject {
   };
 }
 
-function renderCanvas(project: CoatProject = createCanvasProject(), multiSelectEnabled = false) {
+function renderCanvas(
+  project: CoatProject = createCanvasProject(),
+  multiSelectEnabled = false,
+  snappingEnabled?: boolean,
+  canvasSize: { width: number; height: number } = { width: 100, height: 110 },
+) {
   useCoatProjectStore.getState().replaceProject(project);
-  const result = render(<CoatOfArmsCanvas locale="en" multiSelectEnabled={multiSelectEnabled} />);
+  const result = render(
+    <CoatOfArmsCanvas
+      locale="en"
+      multiSelectEnabled={multiSelectEnabled}
+      snappingEnabled={snappingEnabled}
+    />,
+  );
   const canvas = screen.getByRole('application', { name: 'Coat of arms canvas' });
   vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-    x: 0, y: 0, left: 0, top: 0, right: 100, bottom: 110, width: 100, height: 110,
+    x: 0, y: 0, left: 0, top: 0,
+    right: canvasSize.width, bottom: canvasSize.height,
+    width: canvasSize.width, height: canvasSize.height,
     toJSON: () => ({}),
   });
   return { ...result, canvas };
+}
+
+function createSnappingProject(): CoatProject {
+  const project = createCanvasProject();
+  return {
+    ...project,
+    layers: project.layers.map((layer) => (
+      layer.id === 'charge-1' && layer.type !== 'background'
+        ? { ...layer, transform: { ...layer.transform, crop: { x: 40, y: 45, width: 20, height: 20 } } }
+        : layer
+    )),
+  };
 }
 
 function getLayer(layerId: string) {
@@ -86,6 +111,126 @@ describe('CoatOfArmsCanvas', () => {
     expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
     useCoatProjectStore.getState().undo();
     expect(getLayer('charge-1')).toMatchObject({ transform: { x: 0, y: 0 } });
+  });
+
+  it('snaps a drag by default, renders the exact alignment guide, and commits one undo entry', () => {
+    const { canvas } = renderCanvas(createSnappingProject());
+    const charge = canvas.querySelector('[data-layer-id="charge-1"]');
+    if (!(charge instanceof SVGElement)) throw new Error('Expected charge scene element');
+
+    fireEvent.pointerDown(charge, { clientX: 10, clientY: 55, pointerId: 1 });
+    fireEvent.pointerMove(canvas, { clientX: 49, clientY: 55, pointerId: 1 });
+
+    const xGuide = canvas.querySelector('[data-snap-guide-axis="x"]');
+    if (!(xGuide instanceof Element)) throw new Error('Expected vertical snapping guide');
+    expect(xGuide.getAttribute('x1')).toBe('100');
+    expect(xGuide.getAttribute('stroke')).toBe('#5b9bd5');
+    expect(xGuide.getAttribute('stroke-width')).toBe('2');
+    expect(xGuide.getAttribute('stroke-dasharray')).toBe('5 4');
+    expect(getTransformLayer('charge-1').transform.x).toBe(0);
+
+    fireEvent.pointerUp(canvas, { clientX: 49, clientY: 55, pointerId: 1 });
+
+    expect(getTransformLayer('charge-1').transform.x).toBe(40);
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+    expect(canvas.querySelector('[data-snap-guide-axis]')).toBeNull();
+
+    const movedCharge = canvas.querySelector('[data-layer-id="charge-1"]');
+    if (!(movedCharge instanceof SVGElement)) throw new Error('Expected moved charge scene element');
+    fireEvent.pointerDown(movedCharge, { clientX: 49, clientY: 55, pointerId: 2 });
+    fireEvent.pointerMove(canvas, { clientX: 45, clientY: 55, pointerId: 2 });
+    expect(canvas.querySelector('[data-snap-guide-axis="x"]')).not.toBeNull();
+    fireEvent.pointerCancel(canvas, { clientX: 45, clientY: 55, pointerId: 2 });
+    expect(canvas.querySelector('[data-snap-guide-axis]')).toBeNull();
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('keeps a drag unsnapped when the public snapping switch is off', () => {
+    const { canvas } = renderCanvas(createSnappingProject(), false, false);
+    const charge = canvas.querySelector('[data-layer-id="charge-1"]');
+    if (!(charge instanceof SVGElement)) throw new Error('Expected charge scene element');
+
+    fireEvent.pointerDown(charge, { clientX: 10, clientY: 55, pointerId: 1 });
+    fireEvent.pointerMove(canvas, { clientX: 49, clientY: 55, pointerId: 1 });
+    fireEvent.pointerUp(canvas, { clientX: 49, clientY: 55, pointerId: 1 });
+
+    expect(getTransformLayer('charge-1').transform.x).toBe(39);
+    expect(canvas.querySelector('[data-snap-guide-axis]')).toBeNull();
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('uses Alt to reverse both states of the public snapping switch during a drag', () => {
+    const enabledCanvas = renderCanvas(createSnappingProject());
+    const enabledCharge = enabledCanvas.canvas.querySelector('[data-layer-id="charge-1"]');
+    if (!(enabledCharge instanceof SVGElement)) throw new Error('Expected charge scene element');
+
+    fireEvent.pointerDown(enabledCharge, { clientX: 10, clientY: 55, pointerId: 1 });
+    fireEvent.pointerMove(enabledCanvas.canvas, { clientX: 49, clientY: 55, pointerId: 1, altKey: true });
+    fireEvent.pointerUp(enabledCanvas.canvas, { clientX: 49, clientY: 55, pointerId: 1, altKey: true });
+    expect(getTransformLayer('charge-1').transform.x).toBe(39);
+    enabledCanvas.unmount();
+
+    const disabledCanvas = renderCanvas(createSnappingProject(), false, false);
+    const disabledCharge = disabledCanvas.canvas.querySelector('[data-layer-id="charge-1"]');
+    if (!(disabledCharge instanceof SVGElement)) throw new Error('Expected charge scene element');
+    fireEvent.pointerDown(disabledCharge, { clientX: 10, clientY: 55, pointerId: 2 });
+    fireEvent.pointerMove(disabledCanvas.canvas, { clientX: 49, clientY: 55, pointerId: 2, altKey: true });
+    fireEvent.pointerUp(disabledCanvas.canvas, { clientX: 49, clientY: 55, pointerId: 2, altKey: true });
+
+    expect(getTransformLayer('charge-1').transform.x).toBe(40);
+  });
+
+  it('uses a seven CSS pixel threshold across 400, 440, and 480px canvas rects', () => {
+    for (const [index, width] of [400, 440, 480].entries()) {
+      const height = width * 1.1;
+      const startX = width / 2;
+      const insideEndX = startX + width * 0.4 - 7;
+      const insideThreshold = renderCanvas(createSnappingProject(), false, true, { width, height });
+      const insideCharge = insideThreshold.canvas.querySelector('[data-layer-id="charge-1"]');
+      if (!(insideCharge instanceof SVGElement)) throw new Error('Expected charge scene element');
+
+      fireEvent.pointerDown(insideCharge, { clientX: startX, clientY: height / 2, pointerId: index * 2 + 1 });
+      fireEvent.pointerMove(insideThreshold.canvas, { clientX: insideEndX, clientY: height / 2, pointerId: index * 2 + 1 });
+      fireEvent.pointerUp(insideThreshold.canvas, { clientX: insideEndX, clientY: height / 2, pointerId: index * 2 + 1 });
+      expect(getTransformLayer('charge-1').transform.x).toBe(40);
+      insideThreshold.unmount();
+
+      const outsideEndX = startX + width * 0.4 - 8;
+      const outsideThreshold = renderCanvas(createSnappingProject(), false, true, { width, height });
+      const outsideCharge = outsideThreshold.canvas.querySelector('[data-layer-id="charge-1"]');
+      if (!(outsideCharge instanceof SVGElement)) throw new Error('Expected charge scene element');
+
+      fireEvent.pointerDown(outsideCharge, { clientX: startX, clientY: height / 2, pointerId: index * 2 + 2 });
+      fireEvent.pointerMove(outsideThreshold.canvas, { clientX: outsideEndX, clientY: height / 2, pointerId: index * 2 + 2 });
+      fireEvent.pointerUp(outsideThreshold.canvas, { clientX: outsideEndX, clientY: height / 2, pointerId: index * 2 + 2 });
+      expect(getTransformLayer('charge-1').transform.x).toBeCloseTo(40 - 800 / width);
+      outsideThreshold.unmount();
+    }
+  });
+
+  it('snaps painted layer bounds instead of their full scene transform boxes', () => {
+    const { canvas } = renderCanvas(createCanvasProject(), false, true, { width: 400, height: 440 });
+    const charge = canvas.querySelector('[data-layer-id="charge-1"]');
+    const shield = canvas.querySelector('[data-layer-id="shield-1"]');
+    if (!(charge instanceof SVGElement) || !(shield instanceof SVGElement)) {
+      throw new Error('Expected charge and shield scene elements');
+    }
+    vi.spyOn(charge, 'getBoundingClientRect').mockReturnValue({
+      x: 80, y: 80, left: 80, top: 80, right: 120, bottom: 120, width: 40, height: 40,
+      toJSON: () => ({}),
+    });
+    vi.spyOn(shield, 'getBoundingClientRect').mockReturnValue({
+      x: 190, y: 160, left: 190, top: 160, right: 230, bottom: 200, width: 40, height: 40,
+      toJSON: () => ({}),
+    });
+
+    fireEvent.pointerDown(charge, { clientX: 100, clientY: 100, pointerId: 1 });
+    fireEvent.pointerMove(canvas, { clientX: 166, clientY: 100, pointerId: 1 });
+
+    const guide = canvas.querySelector('[data-snap-guide-axis="x"]');
+    expect(guide?.getAttribute('x1')).toBe('47.5');
+    fireEvent.pointerUp(canvas, { clientX: 166, clientY: 100, pointerId: 1 });
+    expect(getTransformLayer('charge-1').transform.x).toBe(17.5);
   });
 
   it('adds canvas layers to the selection without a keyboard modifier when multi-select is enabled', () => {

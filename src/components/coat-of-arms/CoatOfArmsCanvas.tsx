@@ -13,11 +13,17 @@ import {
 import { renderCoatSceneSvg } from '@/lib/coat-of-arms/scene-svg';
 import { appendFreehandPoint, createFreehandPath, type FreehandPoint } from '@/lib/coat-of-arms/drawing';
 import {
+  getTransformedLayerBounds,
   getTransformedSelectionBounds,
   sceneBoundsEqual,
   sceneBoundsFromClientRects,
   type SceneBounds,
 } from '@/lib/coat-of-arms/selection-bounds';
+import {
+  snapCanvasDrag,
+  type CanvasSnapGuide,
+  type CanvasSnapLayerTarget,
+} from '@/lib/coat-of-arms/canvas-snapping';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CanvasTransform, CoatLayer, CoatLocale } from '@/lib/coat-of-arms/types';
 import { getTransformSelectionCenter, scaleCanvasTransform, transformCanvasSelection, type TransformSelectionCenter } from '@/lib/coat-of-arms/transform';
@@ -40,6 +46,8 @@ interface CanvasInteraction {
   startTransforms: Record<string, CanvasTransform>;
   selectionCenter: TransformSelectionCenter;
   startAngle: number;
+  startSelectionBounds: SceneBounds;
+  snapLayerTargets: CanvasSnapLayerTarget[];
 }
 
 interface ScenePoint {
@@ -56,11 +64,23 @@ interface DrawingInteraction {
   points: FreehandPoint[];
 }
 
+export interface CoatOfArmsCanvasProps {
+  disabled?: boolean;
+  locale: CoatLocale;
+  multiSelectEnabled?: boolean;
+  snappingEnabled?: boolean;
+}
+
 /**
  * Renders the shared scene SVG and translates only active canvas gestures into
  * validated update-layer commands. Selection is transient UI state.
  */
-export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled = false }: { disabled?: boolean; locale: CoatLocale; multiSelectEnabled?: boolean }) {
+export function CoatOfArmsCanvas({
+  disabled = false,
+  locale,
+  multiSelectEnabled = false,
+  snappingEnabled = true,
+}: CoatOfArmsCanvasProps) {
   const copy = getCoatWorkbenchCopy(locale);
   const project = useCoatProjectStore((state) => state.project);
   const dispatch = useCoatProjectStore((state) => state.dispatch);
@@ -69,6 +89,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
   const interactionRef = useRef<CanvasInteraction | null>(null);
   const drawingInteractionRef = useRef<DrawingInteraction | null>(null);
   const [transformPreview, setTransformPreview] = useState<TransformPreview | null>(null);
+  const [snapGuides, setSnapGuides] = useState<CanvasSnapGuide[]>([]);
   const [drawingPreview, setDrawingPreview] = useState<FreehandPoint[] | null>(null);
   const toScenePoint = useCanvasScenePoint(canvasRef);
   const {
@@ -120,12 +141,13 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
     interactionLayers: Exclude<CoatLayer, { type: 'background' }>[] = [layer],
   ) => {
     const startPoint = toScenePoint(event);
+    const interactionLayerIds = interactionLayers.map((interactionLayer) => interactionLayer.id);
     const selectionCenter = getTransformSelectionCenter(interactionLayers.map((interactionLayer) => interactionLayer.transform));
     interactionRef.current = {
       mode,
       pointerId: getPointerId(event),
       layerId: layer.id,
-      layerIds: interactionLayers.map((interactionLayer) => interactionLayer.id),
+      layerIds: interactionLayerIds,
       startPoint,
       startTransform: cloneTransform(layer.transform),
       startTransforms: Object.fromEntries(interactionLayers.map((interactionLayer) => [
@@ -134,10 +156,13 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
       ])),
       selectionCenter,
       startAngle: getAngleFromScenePoint(startPoint, toSceneSelectionPoint(selectionCenter)),
+      startSelectionBounds: getPaintedSelectionBounds(canvasRef.current, interactionLayers),
+      snapLayerTargets: getSnapLayerTargets(canvasRef.current, project.layers, interactionLayerIds),
     };
+    setSnapGuides([]);
     capturePointer(canvasRef.current, getPointerId(event));
     canvasRef.current?.focus();
-  }, [toScenePoint]);
+  }, [project.layers, toScenePoint]);
 
   const handlePointerDown = useCallback((event: PointerEvent<HTMLDivElement>) => {
     if (disabled) return;
@@ -194,8 +219,16 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
     }
     const interaction = interactionRef.current;
     if (!interaction || interaction.pointerId !== getPointerId(event)) return;
-    setTransformPreview({ transforms: getNextTransforms(interaction, toScenePoint(event)) });
-  }, [toScenePoint]);
+    const preview = getNextInteractionPreview(
+      interaction,
+      toScenePoint(event),
+      snappingEnabled,
+      event.altKey,
+      getCanvasClientSize(canvasRef.current),
+    );
+    setTransformPreview({ transforms: preview.transforms });
+    setSnapGuides(preview.guides);
+  }, [snappingEnabled, toScenePoint]);
 
   const completeInteraction = useCallback((event: PointerEvent<HTMLDivElement>) => {
     const drawingInteraction = drawingInteractionRef.current;
@@ -216,10 +249,17 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
     }
     const interaction = interactionRef.current;
     if (!interaction || interaction.pointerId !== getPointerId(event)) return;
-    const nextTransforms = getNextTransforms(interaction, toScenePoint(event));
+    const nextTransforms = getNextInteractionPreview(
+      interaction,
+      toScenePoint(event),
+      snappingEnabled,
+      event.altKey,
+      getCanvasClientSize(canvasRef.current),
+    ).transforms;
     interactionRef.current = null;
     releasePointer(canvasRef.current, interaction.pointerId);
     setTransformPreview(null);
+    setSnapGuides([]);
     const updates = interaction.layerIds.flatMap((layerId) => {
       const startTransform = interaction.startTransforms[layerId];
       const nextTransform = nextTransforms[layerId];
@@ -231,7 +271,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
     } else if (updates.length > 1) {
       dispatch({ type: 'update-layers', updates });
     }
-  }, [dispatch, drawingSettings.color, drawingSettings.strokeWidth, setSelection, toScenePoint]);
+  }, [dispatch, drawingSettings.color, drawingSettings.strokeWidth, setSelection, snappingEnabled, toScenePoint]);
 
   const cancelInteraction = useCallback((event: PointerEvent<HTMLDivElement>) => {
     const drawingInteraction = drawingInteractionRef.current;
@@ -239,6 +279,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
       drawingInteractionRef.current = null;
       releasePointer(canvasRef.current, drawingInteraction.pointerId);
       setDrawingPreview(null);
+      setSnapGuides([]);
       return;
     }
     const interaction = interactionRef.current;
@@ -246,6 +287,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
     interactionRef.current = null;
     releasePointer(canvasRef.current, interaction.pointerId);
     setTransformPreview(null);
+    setSnapGuides([]);
   }, []);
 
   const beginHandleInteraction = useCallback((mode: 'resize' | 'rotate') => (
@@ -262,6 +304,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
     interactionRef.current = null;
     releasePointer(canvasRef.current, interaction.pointerId);
     setTransformPreview(null);
+    setSnapGuides([]);
     return true;
   }, []);
 
@@ -318,6 +361,7 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
       {drawingPreview && drawingPreview.length >= 2 ? <svg aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 110">
         <path d={createFreehandPath(drawingPreview)} fill="none" stroke={drawingSettings.color} strokeLinecap="round" strokeLinejoin="round" strokeWidth={drawingSettings.strokeWidth} />
       </svg> : null}
+      {snapGuides.length > 0 ? <CanvasSnapGuides guides={snapGuides} /> : null}
       {selectionBounds ? (
         <CanvasSelectionHandles
           locale={locale}
@@ -333,6 +377,27 @@ export function CoatOfArmsCanvas({ disabled = false, locale, multiSelectEnabled 
         {copy.canvas.help}
       </p>
     </div>
+  );
+}
+
+function CanvasSnapGuides({ guides }: { guides: readonly CanvasSnapGuide[] }) {
+  return (
+    <svg aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 110">
+      {guides.map((guide) => (
+        <line
+          data-snap-guide-axis={guide.axis}
+          key={guide.axis}
+          stroke="#5b9bd5"
+          strokeDasharray="5 4"
+          strokeWidth="2"
+          vectorEffect="non-scaling-stroke"
+          x1={guide.axis === 'x' ? guide.position : guide.start}
+          x2={guide.axis === 'x' ? guide.position : guide.end}
+          y1={guide.axis === 'y' ? guide.position : guide.start}
+          y2={guide.axis === 'y' ? guide.position : guide.end}
+        />
+      ))}
+    </svg>
   );
 }
 
@@ -466,6 +531,78 @@ function getNextTransforms(interaction: CanvasInteraction, currentPoint: ScenePo
     if (!startTransform) throw new Error(`Missing start transform for selected layer: ${layerId}`);
     return [layerId, { ...startTransform, x: startTransform.x + deltaX, y: startTransform.y + deltaY }];
   }));
+}
+
+function getNextInteractionPreview(
+  interaction: CanvasInteraction,
+  currentPoint: ScenePoint,
+  snappingEnabled: boolean,
+  altKey: boolean,
+  canvasClientSize: { width: number; height: number },
+): { transforms: Record<string, CanvasTransform>; guides: CanvasSnapGuide[] } {
+  if (interaction.mode !== 'drag') {
+    return { transforms: getNextTransforms(interaction, currentPoint), guides: [] };
+  }
+  const proposedTransform = getNextTransform(interaction, currentPoint);
+  const snapResult = snapCanvasDrag({
+    selectionBounds: interaction.startSelectionBounds,
+    proposedDelta: {
+      x: proposedTransform.x - interaction.startTransform.x,
+      y: proposedTransform.y - interaction.startTransform.y,
+    },
+    pageBounds: { x: 0, y: 0, width: SCENE_WIDTH, height: SCENE_HEIGHT },
+    layerTargets: interaction.snapLayerTargets,
+    canvasClientSize,
+    snappingEnabled,
+    altKey,
+  });
+  return {
+    transforms: createDragTransformMap(interaction, snapResult.delta),
+    guides: snapResult.guides,
+  };
+}
+
+function createDragTransformMap(
+  interaction: CanvasInteraction,
+  delta: { x: number; y: number },
+): Record<string, CanvasTransform> {
+  return Object.fromEntries(interaction.layerIds.map((layerId) => {
+    const startTransform = interaction.startTransforms[layerId];
+    if (!startTransform) throw new Error(`Missing start transform for selected layer: ${layerId}`);
+    return [layerId, { ...startTransform, x: startTransform.x + delta.x, y: startTransform.y + delta.y }];
+  }));
+}
+
+function getPaintedSelectionBounds(
+  canvas: HTMLDivElement | null,
+  layers: readonly Exclude<CoatLayer, { type: 'background' }>[],
+): SceneBounds {
+  if (!canvas) throw new Error('Canvas element is unavailable for selection snapping bounds');
+  const paintedBounds = sceneBoundsFromClientRects(
+    canvas.getBoundingClientRect(),
+    layers.map((layer) => readLayerClientRect(canvas, layer.id)),
+  );
+  return paintedBounds ?? getTransformedSelectionBounds(layers.map((layer) => layer.transform));
+}
+
+function getSnapLayerTargets(
+  canvas: HTMLDivElement | null,
+  layers: readonly CoatLayer[],
+  selectedLayerIds: readonly string[],
+): CanvasSnapLayerTarget[] {
+  if (!canvas) throw new Error('Canvas element is unavailable for layer snapping bounds');
+  const canvasRect = canvas.getBoundingClientRect();
+  return layers.flatMap((layer) => {
+    if (!layer.visible || layer.locked || selectedLayerIds.includes(layer.id) || !hasTransform(layer)) return [];
+    const paintedBounds = sceneBoundsFromClientRects(canvasRect, [readLayerClientRect(canvas, layer.id)]);
+    return [{ id: layer.id, bounds: paintedBounds ?? getTransformedLayerBounds(layer.transform) }];
+  });
+}
+
+function getCanvasClientSize(canvas: HTMLDivElement | null): { width: number; height: number } {
+  if (!canvas) throw new Error('Canvas element is unavailable for snapping threshold');
+  const bounds = canvas.getBoundingClientRect();
+  return { width: bounds.width, height: bounds.height };
 }
 
 function createSelectionTransformMap(

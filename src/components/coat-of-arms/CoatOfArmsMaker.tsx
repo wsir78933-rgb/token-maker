@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
-import { BookOpen, Maximize2, Minimize2, Redo2, Shuffle, Undo2, UsersRound } from 'lucide-react';
+import { BookOpen, Magnet, Maximize2, Minimize2, Redo2, Shuffle, Undo2, UsersRound } from 'lucide-react';
 import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
 import { getCoatAsset, getDefaultProjectName } from '@/lib/coat-of-arms/assets';
 import type { ShieldReferenceCategory } from '@/lib/coat-of-arms/reference-catalog';
@@ -26,7 +26,6 @@ import { ShieldFieldPanel } from './ShieldFieldPanel';
 import { SelectedElementColourStrip } from './SelectedElementColourStrip';
 import { TargetShieldPalette } from './TargetShieldPalette';
 import { TargetFlagPalette } from './TargetFlagPalette';
-import { TargetTokenPalette } from './TargetTokenPalette';
 import { TextMottoPanel, type TextMottoDraft } from './TextMottoPanel';
 import { TopPanel } from './TopPanel';
 import { getCoatWorkbenchCopy, toolOrder, type ReferenceToolId } from './workbench-copy';
@@ -83,8 +82,9 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const siteConfig = getSiteConfig(locale);
   const navLabels = getNavLabels(locale);
   const nextLocale = locale === 'en' ? 'zh' : 'en';
+  const homeHref = getLocalizedPath(locale, '/');
   const siteNavigationLinks = [
-    { href: getLocalizedPath(locale, '/'), label: navLabels.editor, isActive: false },
+    { href: homeHref, label: navLabels.editor, isActive: false },
     { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller, isActive: false },
     { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker, isActive: true },
     { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog, isActive: false },
@@ -109,10 +109,11 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const [selectedChargeCategory, setSelectedChargeCategory] = useState<ChargeAssetCategory>('animal');
   const [selectedChargeKind, setSelectedChargeKind] = useState<Extract<GeometryCoatAssetKind, 'charge' | 'ordinary'>>('charge');
   const [selectedTopCategory, setSelectedTopCategory] = useState<TopAssetCategory>('crown');
-  const [selectedColorSection, setSelectedColorSection] = useState<ColorPanelSection>();
+  const [selectedColorSection, setSelectedColorSection] = useState<ColorPanelSection>('used-colours');
   const [textMottoDraft, setTextMottoDraft] = useState<TextMottoDraft | null>(null);
   const [isDraftDismissed, setIsDraftDismissed] = useState(false);
   const [isMultiSelectEnabled, setIsMultiSelectEnabled] = useState(false);
+  const [isSnappingEnabled, setIsSnappingEnabled] = useState(true);
   const [isToolPanelCollapsed, setIsToolPanelCollapsed] = useState(false);
   const [sceneZoom, setSceneZoom] = useState(DEFAULT_SCENE_ZOOM);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -131,7 +132,6 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     settings: { id: 'settings', content: <SettingsPanel locale={locale} /> },
     'how-to': { id: 'how-to', content: <HowToPanel locale={locale} /> },
     flags: { id: 'flags', content: <TargetFlagPalette locale={locale} /> },
-    tokens: { id: 'tokens', content: <TargetTokenPalette locale={locale} /> },
   };
   const tools = toolOrder.map((toolId) => toolsById[toolId]);
   const activeTool = tools.find((tool) => tool.id === activeToolId) ?? tools[0];
@@ -152,8 +152,10 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     ],
     top: topAssetCategories.map((category) => ({ id: category, label: copy.panels.topCategories[category] })),
     colors: [
-      { id: 'used-colours', label: copy.panels.usedColours },
-      { id: 'background', label: copy.panels.background },
+      { id: 'used-colours', icon: 'used', label: copy.panels.colorTreeUsed },
+      { id: 'palettes', icon: 'palettes', label: copy.panels.colorPalettes },
+      { id: 'custom', icon: 'custom-colours', label: copy.panels.colorCustom },
+      { id: 'background', icon: 'background', label: copy.panels.background },
     ],
     tools: utilityToolOrder.map((utilityId) => ({ id: utilityId, label: copy.utilityTabs[utilityId] })),
   };
@@ -197,6 +199,9 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   };
   const selectTool = (nextToolId: TargetToolId) => {
     setActiveToolId(nextToolId);
+    if ((toolTreeBranches[nextToolId]?.length ?? 0) === 0) {
+      setExpandedToolIds([]);
+    }
   };
   const toggleToolExpansion = (toolId: TargetToolId) => {
     setExpandedToolIds((currentToolIds) => (
@@ -279,7 +284,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   return (
     <main aria-label={copy.workspace} className="coat-workbench coat-target-workbench" data-appearance={appearance} ref={workbenchRef}>
       <ContentSiteTopbar
-        brandHref={getLocalizedPath(locale, '/') + '#editor-workspace'}
+        brandHref={homeHref + '#editor-workspace'}
         brandName={siteConfig.name}
         brandSubtitle={homeCopy.heroEyebrow}
         brandTitleClassName="text-base"
@@ -298,31 +303,35 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
         onKeyDownCapture={blockBackgroundKeyboardEvent}
       >
         <span className="sr-only">{projectName}</span>
+        <div className="coat-target-actionbar">
+          <div className="coat-target-desktop-export coat-target-export-control"><ExportMenu locale={locale} menuId="coat-desktop-export-options" project={project} /></div>
+        </div>
         <div className="coat-target-editor-grid" data-tool-panel-collapsed={isToolPanelCollapsed}>
           <aside aria-label={copy.desktopTools} className="coat-target-left-panel hidden lg:flex" data-collapsed={isToolPanelCollapsed}>
-            <ReferenceToolRail activeToolId={activeTool.id} expandedToolIds={expandedToolIds} isCollapsed={isToolPanelCollapsed} locale={locale} onCollapseChange={() => setIsToolPanelCollapsed((value) => !value)} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} treeBranches={toolTreeBranches} />
+            <ReferenceToolRail activeToolId={activeTool.id} expandedToolIds={expandedToolIds} homeHref={homeHref} isCollapsed={isToolPanelCollapsed} locale={locale} onCollapseChange={() => setIsToolPanelCollapsed((value) => !value)} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} treeBranches={toolTreeBranches} />
             {tools.map((tool) => tool.id === activeTool.id ? <section aria-labelledby={`coat-tab-${tool.id}`} className="coat-target-library-panel" id={`coat-panel-${tool.id}`} key={tool.id} role="tabpanel" tabIndex={0}>
               {tool.content}
             </section> : <section aria-labelledby={`coat-tab-${tool.id}`} hidden id={`coat-panel-${tool.id}`} key={tool.id} role="tabpanel" tabIndex={0} />)}
           </aside>
           <section aria-label={copy.scene} className="coat-target-scene">
             <div className="coat-target-canvas-toolbar">
-              <div>
+              <div className="coat-target-history-controls">
                 <button aria-label={copy.undo} disabled={!canUndo} onClick={undo} type="button"><Undo2 /></button>
                 <button aria-label={copy.redo} disabled={!canRedo} onClick={redo} type="button"><Redo2 /></button>
+                <button aria-label={copy.shell.magnetSnapping} aria-pressed={isSnappingEnabled} onClick={() => setIsSnappingEnabled((value) => !value)} title={copy.shell.magnetSnapping} type="button"><Magnet aria-hidden="true" /></button>
               </div>
               <SelectedElementColourStrip locale={locale} />
               <div className="coat-target-canvas-toolbar-actions">
-                <div className="coat-target-export-control"><ExportMenu locale={locale} project={project} /></div>
                 <button aria-pressed={isMultiSelectEnabled} className="coat-target-multi-select" onClick={() => setIsMultiSelectEnabled((value) => !value)} type="button"><UsersRound />{copy.shell.multiSelect}</button>
               </div>
+              <div className="coat-target-mobile-export coat-target-export-control"><ExportMenu locale={locale} menuId="coat-mobile-export-options" project={project} /></div>
             </div>
             <div className="coat-target-artboard-wrap">
               <div className="coat-target-artboard" style={{
                 '--coat-canvas-aspect-ratio': `${project.canvas.width} / ${project.canvas.height}`,
                 '--coat-scene-zoom-level': sceneZoom / DEFAULT_SCENE_ZOOM,
               } as React.CSSProperties}>
-                <CoatOfArmsCanvas disabled={isRecoveryCheckPending || hasRecoverableDraft} locale={locale} multiSelectEnabled={isMultiSelectEnabled} />
+                <CoatOfArmsCanvas disabled={isRecoveryCheckPending || hasRecoverableDraft} locale={locale} multiSelectEnabled={isMultiSelectEnabled} snappingEnabled={isSnappingEnabled} />
               </div>
             </div>
             <div className="coat-target-zoom" aria-label={copy.shell.canvasZoom}>
@@ -335,7 +344,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
             </div>
           </section>
         </div>
-        <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
+        <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} homeHref={homeHref} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
       </div>
       {hasDraftRecoveryAction ? <section aria-label={copy.draftAvailable} className="coat-workbench-action-row coat-target-draft" role="status">
         {invalidDraftError ? <p role="alert">{copy.invalidDraftRecoveryDescription(invalidDraftError)}</p> : <p>{copy.draftRecoveryDescription}</p>}
@@ -400,7 +409,7 @@ function isTopAssetCategory(value: string): value is TopAssetCategory {
 }
 
 function isColorPanelSection(value: string): value is ColorPanelSection {
-  return value === 'used-colours' || value === 'background';
+  return value === 'used-colours' || value === 'palettes' || value === 'custom' || value === 'background';
 }
 
 function isChargeAssetCategory(value: string): value is ChargeAssetCategory {

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { createDefaultProject } from '@/lib/coat-of-arms/assets';
 import { ExportMenu } from './ExportMenu';
 
@@ -54,5 +54,34 @@ describe('ExportMenu', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
 
     expect(screen.getByRole('button', { name: 'Download PNG' })).toBeDefined();
+  });
+
+  it('keeps caller-owned controls and section IDs unique when two menus are open', () => {
+    const project = createDefaultProject('en');
+    render(<>
+      <ExportMenu locale="en" menuId="desktop-export-options" project={project} />
+      <ExportMenu locale="en" menuId="mobile-export-options" project={project} />
+    </>);
+    const triggers = screen.getAllByRole('button', { name: 'Export' });
+
+    expect(triggers.map((trigger) => trigger.getAttribute('aria-controls'))).toEqual([
+      'desktop-export-options',
+      'mobile-export-options',
+    ]);
+    act(() => {
+      triggers[0]?.click();
+      triggers[1]?.click();
+    });
+
+    const menus = screen.getAllByRole('region', { name: 'Local export options' });
+    expect(menus.map((menu) => menu.id)).toEqual(['desktop-export-options', 'mobile-export-options']);
+    expect(document.querySelectorAll('#desktop-export-options')).toHaveLength(1);
+    expect(document.querySelectorAll('#mobile-export-options')).toHaveLength(1);
+  });
+
+  it('fails fast when a caller provides a blank menu ID', () => {
+    expect(() => render(
+      <ExportMenu locale="en" menuId="  " project={createDefaultProject('en')} />,
+    )).toThrow('Export menu ID must be non-empty; received "  "');
   });
 });

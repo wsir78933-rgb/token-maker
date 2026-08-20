@@ -32,7 +32,16 @@ type CoatExportFileType = 'png' | 'jpeg' | 'pdf';
 
 interface ExportMenuProps {
   locale: CoatLocale;
+  menuId?: string;
   project: CoatProject;
+}
+
+function resolveExportMenuId(menuId: string | undefined): string {
+  const resolvedMenuId = menuId ?? exportMenuId;
+  if (resolvedMenuId.trim().length === 0) {
+    throw new Error(`Export menu ID must be non-empty; received "${resolvedMenuId}"`);
+  }
+  return resolvedMenuId;
 }
 
 function getErrorMessage(error: unknown): string {
@@ -144,8 +153,9 @@ function getCoatExportRenderOptions(transparentBackground: boolean): { transpare
 }
 
 /** UI for existing local export primitives, with its own popup focus lifecycle. */
-export function ExportMenu({ locale, project }: ExportMenuProps) {
+export function ExportMenu({ locale, menuId, project }: ExportMenuProps) {
   const copy = getCoatWorkbenchCopy(locale);
+  const resolvedMenuId = resolveExportMenuId(menuId);
   const [open, setOpen] = useState(false);
   const [exportQuality, setExportQuality] = useState<CoatExportQuality>(
     resolvePersistedExportQuality(getDefaultEditorPreferences()),
@@ -268,7 +278,7 @@ export function ExportMenu({ locale, project }: ExportMenuProps) {
     <div ref={menuContainerRef} className="relative">
       <Button
         ref={triggerRef}
-        aria-controls={exportMenuId}
+        aria-controls={resolvedMenuId}
         aria-expanded={open}
         type="button"
         variant="outline"
@@ -276,7 +286,7 @@ export function ExportMenu({ locale, project }: ExportMenuProps) {
       ><Download aria-hidden="true" /><span>{copy.export}</span><ChevronDown aria-hidden="true" /></Button>
       {open ? <section
         data-coat-editor-overlay
-        id={exportMenuId}
+        id={resolvedMenuId}
         aria-label={copy.exportOptions}
         className="coat-workbench-export-menu"
         onKeyDown={onMenuKeyDown}
