@@ -6,39 +6,27 @@ function createNonce() {
   return btoa(String.fromCharCode(...nonceBytes));
 }
 
-function isPublicSharePage(pathname: string) {
-  return /^\/(?:zh\/)?share\/[^/]+\/?$/.test(pathname);
+function isShareDocument(pathname: string) {
+  return /^\/(?:zh\/)?share(?:\/|$)/.test(pathname);
 }
 
-function createContentSecurityPolicy(nonce: string, pathname: string) {
-  const hasPublicSharePagePolicy = isPublicSharePage(pathname);
-  const scriptSources = hasPublicSharePagePolicy
-    ? ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'"]
-    : [
-        "'self'",
-        `'nonce-${nonce}'`,
-        "'unsafe-inline'",
-        "'unsafe-eval'",
-        "'strict-dynamic'",
-        'https:',
-        'http:',
-      ];
-  const imageSources = hasPublicSharePagePolicy
+function createProtectedContentSecurityPolicy(nonce: string, pathname: string) {
+  const imageSources = isShareDocument(pathname)
     ? "'self' data: blob: https://r2.tokenmaker.one"
-    : "'self' data: blob: https:";
-  const connectionSources = hasPublicSharePagePolicy
-    ? "'self'"
-    : "'self' https:";
-  const frameSources = hasPublicSharePagePolicy ? "'none'" : 'https:';
+    : "'self' data: blob:";
+  const scriptSources =
+    process.env.NODE_ENV === 'development'
+      ? `'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval'`
+      : `'self' 'nonce-${nonce}' 'strict-dynamic'`;
 
   return [
     "default-src 'self'",
-    `script-src ${scriptSources.join(' ')}`,
+    `script-src ${scriptSources}`,
     "style-src 'self' 'unsafe-inline'",
     `img-src ${imageSources}`,
     "font-src 'self'",
-    `connect-src ${connectionSources}`,
-    `frame-src ${frameSources}`,
+    "connect-src 'self'",
+    "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -48,7 +36,7 @@ function createContentSecurityPolicy(nonce: string, pathname: string) {
 
 export function proxy(request: NextRequest) {
   const nonce = createNonce();
-  const contentSecurityPolicy = createContentSecurityPolicy(nonce, request.nextUrl.pathname);
+  const contentSecurityPolicy = createProtectedContentSecurityPolicy(nonce, request.nextUrl.pathname);
   const forwardedHeaders = new Headers(request.headers);
 
   forwardedHeaders.set('x-nonce', nonce);
@@ -66,9 +54,9 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    {
-      source:
-        '/((?!api(?:/|$)|_next/(?:static|image)(?:/|$)|(?:.*\\/)?opengraph-image(?:/|$)|.*\\.(?:avif|bmp|css|gif|ico|jpe?g|js|map|png|svg|txt|webmanifest|webp|woff2?|xml)$).*)',
-    },
+    '/share/:path*',
+    '/zh/share/:path*',
+    '/coat-of-arms-maker',
+    '/zh/coat-of-arms-maker',
   ],
 } satisfies ProxyConfig;

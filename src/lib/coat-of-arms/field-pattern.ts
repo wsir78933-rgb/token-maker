@@ -1,7 +1,7 @@
 import type { FieldPattern, FieldPatternConfig, FieldStripeDirection } from './types';
 
 export const fieldPatterns: readonly FieldPattern[] = [
-  'solid', 'stripes', 'dots', 'checks', 'lozengy', 'crosses', 'waves',
+  'solid', 'barry', 'paly', 'bendy', 'stripes', 'dots', 'checks', 'lozengy', 'crosses', 'waves',
   'masoned', 'honeycomb', 'fretty', 'scales', 'chevronelly', 'vair',
   'vair-in-pointe', 'vair-in-pale', 'paly-bendy', 'barry-bendy', 'gyronny',
   'papelonny', 'seme',
@@ -10,14 +10,14 @@ export const fieldPatterns: readonly FieldPattern[] = [
 export type FieldPatternConfigControl = 'count' | 'direction' | 'rows' | 'bricks' | 'columns' | 'symbolSize';
 
 const patternConfigControls: Readonly<Record<FieldPattern, readonly FieldPatternConfigControl[]>> = {
-  solid: [], stripes: ['count', 'direction'], dots: [], checks: ['rows'], lozengy: ['columns'],
+  solid: [], barry: [], paly: [], bendy: [], stripes: ['count', 'direction'], dots: [], checks: ['rows'], lozengy: ['columns'],
   crosses: [], waves: [], masoned: ['rows', 'bricks'], honeycomb: [], fretty: [], scales: [],
   chevronelly: ['count'], vair: ['rows'], 'vair-in-pointe': ['rows'], 'vair-in-pale': ['rows'],
   'paly-bendy': [], 'barry-bendy': [], gyronny: ['count'], papelonny: [], seme: ['count', 'symbolSize'],
 };
 
 const defaultPatternConfig: Readonly<Record<FieldPattern, FieldPatternConfig>> = {
-  solid: {}, stripes: { count: 3, direction: 'bend' }, dots: {}, checks: { rows: 4 }, lozengy: { columns: 4 },
+  solid: {}, barry: {}, paly: {}, bendy: {}, stripes: { count: 3, direction: 'bend' }, dots: {}, checks: { rows: 4 }, lozengy: { columns: 4 },
   crosses: {}, waves: {}, masoned: { rows: 5, bricks: 5 }, honeycomb: {}, fretty: {}, scales: {},
   chevronelly: { count: 3 }, vair: { rows: 3 }, 'vair-in-pointe': { rows: 3 }, 'vair-in-pale': { rows: 3 },
   'paly-bendy': {}, 'barry-bendy': {}, gyronny: { count: 4 }, papelonny: {}, seme: { count: 4, symbolSize: 4 },

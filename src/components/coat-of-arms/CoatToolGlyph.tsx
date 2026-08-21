@@ -1,7 +1,9 @@
-import type { ReferenceToolId } from './workbench-copy';
+import type { ReferenceNavigationId, ReferenceToolId } from './workbench-copy';
+
+type CoatToolGlyphId = ReferenceToolId | ReferenceNavigationId;
 
 interface CoatToolGlyphProps {
-  toolId: ReferenceToolId;
+  toolId: CoatToolGlyphId;
 }
 
 /** Original, small geometric category glyphs for the coat-maker tool rail. */

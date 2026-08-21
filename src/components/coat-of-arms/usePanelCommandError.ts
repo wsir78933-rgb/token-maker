@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
+import { useCoatProjectStore, type CoatProjectDispatchResult } from '@/lib/coat-of-arms/store';
 import type { CoatProjectCommand } from '@/lib/coat-of-arms/commands';
 import type { CoatLocale } from '@/lib/coat-of-arms/types';
 import { getCoatWorkbenchCopy } from './workbench-copy';
@@ -15,16 +15,17 @@ export function usePanelCommandError(locale: CoatLocale) {
     const message = caught instanceof Error ? caught.message : String(caught);
     setError(copy.panels.commandFailed(message));
   }, [copy.panels]);
-  const run = useCallback((command: CoatProjectCommand): boolean => {
+  const runWithResult = useCallback((command: CoatProjectCommand): CoatProjectDispatchResult | null => {
     try {
-      dispatch(command);
+      const result = dispatch(command);
       setError(null);
-      return true;
+      return result;
     } catch (caught) {
       reportError(caught);
-      return false;
+      return null;
     }
   }, [dispatch, reportError]);
+  const run = useCallback((command: CoatProjectCommand): boolean => runWithResult(command) !== null, [runWithResult]);
 
-  return { error, reportError, run };
+  return { error, reportError, run, runWithResult };
 }

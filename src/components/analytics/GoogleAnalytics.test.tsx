@@ -32,26 +32,14 @@ describe('GoogleAnalytics', () => {
     vi.resetModules();
   });
 
-  it('attaches the request nonce to both executable analytics scripts', async () => {
+  it('renders both executable analytics scripts without a request nonce', async () => {
     vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('NEXT_PUBLIC_GA_MEASUREMENT_ID', 'G-TEST123');
     const { GoogleAnalytics } = await import('./GoogleAnalytics');
 
-    render(<GoogleAnalytics nonce="request-nonce" />);
+    render(<GoogleAnalytics />);
 
-    expect(document.querySelector('script[data-src*="googletagmanager.com"]')?.getAttribute('nonce')).toBe(
-      'request-nonce'
-    );
-    expect(document.querySelector('#google-analytics')?.getAttribute('nonce')).toBe('request-nonce');
-  });
-
-  it('rejects an empty nonce instead of emitting CSP-blocked analytics scripts', async () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    vi.stubEnv('NEXT_PUBLIC_GA_MEASUREMENT_ID', 'G-TEST123');
-    const { GoogleAnalytics } = await import('./GoogleAnalytics');
-
-    expect(() => render(<GoogleAnalytics nonce="" />)).toThrow(
-      'GoogleAnalytics requires a non-empty CSP nonce; received value: '
-    );
+    expect(document.querySelector('script[data-src*="googletagmanager.com"]')?.getAttribute('nonce')).toBeNull();
+    expect(document.querySelector('#google-analytics')?.getAttribute('nonce')).toBeNull();
   });
 });

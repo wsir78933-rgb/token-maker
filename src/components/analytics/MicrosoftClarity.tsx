@@ -1,17 +1,10 @@
 import Script from 'next/script';
-import { requireCspNonce } from '@/lib/security/require-csp-nonce';
 
 const CLARITY_PROJECT_ID = 'wlcq64go88';
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 const CLARITY_SCRIPT_STRATEGY = 'lazyOnload';
 
-interface MicrosoftClarityProps {
-  nonce: string;
-}
-
-export function MicrosoftClarity({ nonce }: MicrosoftClarityProps) {
-  const requestNonce = requireCspNonce('MicrosoftClarity', nonce);
-
+export function MicrosoftClarity() {
   if (IS_DEVELOPMENT) {
     return null;
   }
@@ -19,7 +12,6 @@ export function MicrosoftClarity({ nonce }: MicrosoftClarityProps) {
   return (
     <Script
       id="microsoft-clarity"
-      nonce={requestNonce}
       strategy={CLARITY_SCRIPT_STRATEGY}
       type="text/javascript"
       dangerouslySetInnerHTML={{

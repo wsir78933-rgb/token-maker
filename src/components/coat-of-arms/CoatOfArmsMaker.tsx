@@ -26,7 +26,8 @@ import { ShieldFieldPanel } from './ShieldFieldPanel';
 import { SelectedElementColourStrip } from './SelectedElementColourStrip';
 import { TargetShieldPalette } from './TargetShieldPalette';
 import { TargetFlagPalette } from './TargetFlagPalette';
-import { TextMottoPanel, type TextMottoDraft } from './TextMottoPanel';
+import { TextMottoPanel } from './TextMottoPanel';
+import { TextSelectionToolbar } from './TextSelectionToolbar';
 import { TopPanel } from './TopPanel';
 import { getCoatWorkbenchCopy, toolOrder, type ReferenceToolId } from './workbench-copy';
 
@@ -91,6 +92,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   ];
   const appearance = useEditorPreferencesStore((state) => state.preferences.appearance);
   const project = useCoatProjectStore((state) => state.project);
+  const selectedLayerIds = useCoatProjectStore((state) => state.selectedLayerIds);
   const canUndo = useCoatProjectStore((state) => state.history.past.length > 0);
   const canRedo = useCoatProjectStore((state) => state.history.future.length > 0);
   const isInitialDocument = useCoatProjectStore((state) => state.isInitialDocument);
@@ -110,7 +112,6 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const [selectedChargeKind, setSelectedChargeKind] = useState<Extract<GeometryCoatAssetKind, 'charge' | 'ordinary'>>('charge');
   const [selectedTopCategory, setSelectedTopCategory] = useState<TopAssetCategory>('crown');
   const [selectedColorSection, setSelectedColorSection] = useState<ColorPanelSection>('used-colours');
-  const [textMottoDraft, setTextMottoDraft] = useState<TextMottoDraft | null>(null);
   const [isDraftDismissed, setIsDraftDismissed] = useState(false);
   const [isMultiSelectEnabled, setIsMultiSelectEnabled] = useState(false);
   const [isSnappingEnabled, setIsSnappingEnabled] = useState(true);
@@ -120,7 +121,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const [fullscreenError, setFullscreenError] = useState<string | null>(null);
   const isRecoveryCheckComplete = useHydrationComplete();
   const workbenchRef = useRef<HTMLElement>(null);
-  const utilityContent = getUtilityContent(activeUtilityId, locale, textMottoDraft, setTextMottoDraft, randomizeProject);
+  const utilityContent = getUtilityContent(activeUtilityId, locale, randomizeProject);
   const toolsById: Record<TargetToolId, WorkbenchTool> = {
     position: { id: 'position', content: getPositionSectionContent(selectedPositionSection, locale) },
     shields: { id: 'shields', content: <TargetShieldPalette activeCategory={shieldCategoryByTreeAssetId[selectedShieldTreeAssetId]} locale={locale} onActiveCategoryChange={(category) => setSelectedShieldTreeAssetId(shieldTreeAssetIdByCategory[category])} /> },
@@ -160,6 +161,9 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     tools: utilityToolOrder.map((utilityId) => ({ id: utilityId, label: copy.utilityTabs[utilityId] })),
   };
   const mobileTools: CoatToolTab[] = tools.map(({ content, id }) => ({ content, id }));
+  const selectedTextLayer = selectedLayerIds.length === 1
+    ? project.layers.find((layer) => layer.id === selectedLayerIds[0] && layer.type === 'text')
+    : undefined;
   const projectName = isInitialDocument ? getDefaultProjectName(locale) : project.name;
   const draftInspection = isRecoveryCheckComplete && isInitialDocument ? inspectDraft() : { status: 'missing' as const };
   const recoverableDraft = draftInspection.status === 'available' ? draftInspection.project : null;
@@ -304,7 +308,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
       >
         <span className="sr-only">{projectName}</span>
         <div className="coat-target-actionbar">
-          <div className="coat-target-desktop-export coat-target-export-control"><ExportMenu locale={locale} menuId="coat-desktop-export-options" project={project} /></div>
+          <div className="coat-target-export coat-target-export-control"><ExportMenu locale={locale} menuId="coat-export-options" project={project} /></div>
         </div>
         <div className="coat-target-editor-grid" data-tool-panel-collapsed={isToolPanelCollapsed}>
           <aside aria-label={copy.desktopTools} className="coat-target-left-panel hidden lg:flex" data-collapsed={isToolPanelCollapsed}>
@@ -320,11 +324,12 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
                 <button aria-label={copy.redo} disabled={!canRedo} onClick={redo} type="button"><Redo2 /></button>
                 <button aria-label={copy.shell.magnetSnapping} aria-pressed={isSnappingEnabled} onClick={() => setIsSnappingEnabled((value) => !value)} title={copy.shell.magnetSnapping} type="button"><Magnet aria-hidden="true" /></button>
               </div>
-              <SelectedElementColourStrip locale={locale} />
+              {selectedTextLayer ? <TextSelectionToolbar locale={locale} /> : <SelectedElementColourStrip locale={locale} />}
               <div className="coat-target-canvas-toolbar-actions">
-                <button aria-pressed={isMultiSelectEnabled} className="coat-target-multi-select" onClick={() => setIsMultiSelectEnabled((value) => !value)} type="button"><UsersRound />{copy.shell.multiSelect}</button>
+                {selectedTextLayer ? null : <>
+                  <button aria-pressed={isMultiSelectEnabled} className="coat-target-multi-select" onClick={() => setIsMultiSelectEnabled((value) => !value)} type="button"><UsersRound />{copy.shell.multiSelect}</button>
+                </>}
               </div>
-              <div className="coat-target-mobile-export coat-target-export-control"><ExportMenu locale={locale} menuId="coat-mobile-export-options" project={project} /></div>
             </div>
             <div className="coat-target-artboard-wrap">
               <div className="coat-target-artboard" style={{
@@ -361,8 +366,8 @@ function getPositionSectionContent(section: PositionSectionId, locale: CoatLocal
   throw new Error(`Unexpected position section: ${section}`);
 }
 
-function getUtilityContent(activeUtilityId: UtilityToolId, locale: CoatLocale, textMottoDraft: TextMottoDraft | null, onTextMottoDraftChange: (draft: TextMottoDraft) => void, onRandomizeProject: () => void): ReactNode {
-  if (activeUtilityId === 'text') return <TextMottoPanel draft={textMottoDraft} locale={locale} onDraftChange={onTextMottoDraftChange} />;
+function getUtilityContent(activeUtilityId: UtilityToolId, locale: CoatLocale, onRandomizeProject: () => void): ReactNode {
+  if (activeUtilityId === 'text') return <TextMottoPanel locale={locale} />;
   if (activeUtilityId === 'draw') return <DrawPanel locale={locale} />;
   if (activeUtilityId === 'random') return <RandomPanel locale={locale} onRandomizeProject={onRandomizeProject} />;
   if (activeUtilityId === 'names') return <NamePanel locale={locale} />;

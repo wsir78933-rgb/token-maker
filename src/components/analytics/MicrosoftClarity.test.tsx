@@ -30,22 +30,13 @@ describe('MicrosoftClarity', () => {
     vi.resetModules();
   });
 
-  it('loads after the page has finished its critical rendering work with the request nonce', async () => {
+  it('loads after the page has finished its critical rendering work without a request nonce', async () => {
     vi.stubEnv('NODE_ENV', 'production');
     const { MicrosoftClarity } = await import('./MicrosoftClarity');
 
-    render(<MicrosoftClarity nonce="request-nonce" />);
+    render(<MicrosoftClarity />);
 
     expect(document.querySelector('#microsoft-clarity')?.getAttribute('data-strategy')).toBe('lazyOnload');
-    expect(document.querySelector('#microsoft-clarity')?.getAttribute('nonce')).toBe('request-nonce');
-  });
-
-  it('rejects an empty nonce instead of emitting a CSP-blocked clarity script', async () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    const { MicrosoftClarity } = await import('./MicrosoftClarity');
-
-    expect(() => render(<MicrosoftClarity nonce="" />)).toThrow(
-      'MicrosoftClarity requires a non-empty CSP nonce; received value: '
-    );
+    expect(document.querySelector('#microsoft-clarity')?.getAttribute('nonce')).toBeNull();
   });
 });

@@ -84,11 +84,11 @@ describe('editor preferences', () => {
       backgroundGradient: null,
     });
 
-    updateEditorPreferences((preferences) => ({ ...preferences, canvasPreset: 'instagram-story' }));
+    updateEditorPreferences((preferences) => ({ ...preferences, canvasPreset: '3-5' }));
     updateEditorPreferences((preferences) => ({ ...preferences, customPalette: ['#123456'] }));
 
     expect(loadEditorPreferences()).toMatchObject({
-      canvasPreset: 'instagram-story',
+      canvasPreset: '3-5',
       jpegQuality: 'ultra',
       customPalette: ['#123456'],
     });
@@ -136,7 +136,7 @@ describe('editor preferences', () => {
   });
 
   it('matches a competitor canvas preset by exact width and height', () => {
-    expect(getMatchingEditorCanvasPresetId(1080, 1920)).toBe('instagram-story');
+    expect(getMatchingEditorCanvasPresetId(1800, 1080)).toBe('3-5');
     expect(getMatchingEditorCanvasPresetId(1200, 1200)).toBe('custom');
   });
 });

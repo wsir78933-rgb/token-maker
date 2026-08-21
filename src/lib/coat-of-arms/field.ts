@@ -234,6 +234,12 @@ function buildPatternOverlay(pattern: FieldPattern, colors: string[], patternCon
   switch (pattern) {
     case 'solid':
       return '';
+    case 'barry':
+      return `<g data-field-pattern="barry" fill="${accentColor}"><rect y="22" width="100" height="22"/><rect y="66" width="100" height="22"/></g>`;
+    case 'paly':
+      return `<g data-field-pattern="paly" fill="${accentColor}"><rect x="20" width="20" height="110"/><rect x="60" width="20" height="110"/></g>`;
+    case 'bendy':
+      return `<g data-field-pattern="bendy" fill="${accentColor}"><path d="M-55 0H-30L70 110H45ZM-5 0H20L120 110H95Z"/></g>`;
     case 'stripes': {
       const count = config.count!;
       const direction = config.direction!;

@@ -1,3 +1,4 @@
+import { requireHeraldicPaletteId, type HeraldicPaletteId } from './heraldic-palettes';
 import type { BackgroundGradient } from './types';
 
 export const EDITOR_PREFERENCES_STORAGE_KEY = 'coat-maker-editor-preferences';
@@ -5,13 +6,16 @@ export const EDITOR_PREFERENCES_VERSION = 1;
 
 export const editorCanvasPresets = [
   { id: 'square', width: 1080, height: 1080 },
-  { id: 'instagram-story', width: 1080, height: 1920 },
-  { id: 'facebook-image', width: 1200, height: 630 },
-  { id: 'twitter-image', width: 900, height: 450 },
-  { id: 'pinterest', width: 1000, height: 1500 },
+  { id: '8-11', width: 1485, height: 1080 },
+  { id: '7-10', width: 1543, height: 1080 },
+  { id: '2-3', width: 1620, height: 1080 },
+  { id: '5-8', width: 1728, height: 1080 },
+  { id: '3-5', width: 1800, height: 1080 },
+  { id: '10-19', width: 2052, height: 1080 },
+  { id: '1-2', width: 2160, height: 1080 },
 ] as const;
 
-const retiredEditorCanvasPresetIds = ['portrait', 'landscape'] as const;
+const retiredEditorCanvasPresetIds = ['portrait', 'landscape', 'instagram-story', 'facebook-image', 'twitter-image', 'pinterest'] as const;
 
 export type EditorCanvasPresetId = typeof editorCanvasPresets[number]['id'] | 'custom';
 export type EditorAppearance = 'dark' | 'light';
@@ -31,6 +35,7 @@ export interface EditorPreferences {
   jpegQuality: EditorJpegQuality;
   customPalette: string[];
   backgroundGradient: EditorBackgroundGradient | null;
+  defaultPaletteId?: HeraldicPaletteId;
 }
 
 const defaultEditorPreferences: EditorPreferences = {
@@ -53,6 +58,7 @@ const editorPreferenceKeys = [
   'jpegQuality',
   'customPalette',
   'backgroundGradient',
+  'defaultPaletteId',
 ] as const;
 
 export function getDefaultEditorPreferences(): EditorPreferences {
@@ -194,6 +200,7 @@ function assertEditorPreferences(preferences: unknown): asserts preferences is E
   }
   assertCustomPalette(preferences.customPalette);
   assertBackgroundGradient(preferences.backgroundGradient);
+  if (preferences.defaultPaletteId !== undefined) requireHeraldicPaletteId(preferences.defaultPaletteId);
 }
 
 function assertCustomPalette(customPalette: unknown): asserts customPalette is string[] {
@@ -231,6 +238,7 @@ function cloneEditorPreferences(preferences: EditorPreferences): EditorPreferenc
     ...preferences,
     customPalette: [...preferences.customPalette],
     backgroundGradient: preferences.backgroundGradient ? { ...preferences.backgroundGradient } : null,
+    ...(preferences.defaultPaletteId ? { defaultPaletteId: preferences.defaultPaletteId } : {}),
   };
 }
 

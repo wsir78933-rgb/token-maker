@@ -19,6 +19,15 @@ interface TargetShieldPaletteProps {
   onActiveCategoryChange?: (category: ShieldReferenceCategory) => void;
 }
 
+const targetShieldPaletteBaseAssetIds = new Set([
+  'heater-shield',
+  'round-shield',
+  'kite-shield',
+  'french-shield',
+  'banner-shield',
+  'lozenge-shield',
+]);
+
 /**
  * Target-style shield browser for bundled original SVG material.
  */
@@ -67,5 +76,7 @@ export function TargetShieldPalette({
 }
 
 export function listTargetShieldPaletteAssets() {
-  return listAssetsByKind('shield');
+  return listAssetsByKind('shield').filter((asset) => (
+    targetShieldPaletteBaseAssetIds.has(asset.id) || typeof asset.staticImageSrc === 'string'
+  ));
 }

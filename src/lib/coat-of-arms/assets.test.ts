@@ -70,8 +70,8 @@ describe('coat asset catalog', () => {
     expect(listAssetsByKind('charge').length).toBeGreaterThan(0);
   });
 
-  it('keeps six base shields and registers 234 original SVG shield materials', () => {
-    expect(listAssetsByKind('shield')).toHaveLength(240);
+  it('keeps 17 base shields and registers 234 original SVG shield materials', () => {
+    expect(listAssetsByKind('shield')).toHaveLength(251);
     expect(getCoatAsset('heater-002')).toMatchObject({
       kind: 'shield',
       staticImageSrc: '/coat-assets/materials/shields/heater/heater-002.svg',
@@ -165,7 +165,7 @@ describe('coat asset catalog', () => {
     expect(getCoatAsset('heater-shield').name.en).toBe('Heater shield');
   });
 
-  it('lists the six local shield silhouettes with authored SVG paths', () => {
+  it('lists 17 local shield silhouettes with unique closed authored SVG paths', () => {
     expect(listShieldSilhouetteAssets().map((asset) => asset.id)).toEqual([
       'heater-shield',
       'round-shield',
@@ -173,9 +173,27 @@ describe('coat asset catalog', () => {
       'french-shield',
       'banner-shield',
       'lozenge-shield',
+      'targe-shield',
+      'buckler-shield',
+      'scalloped-shield',
+      'arched-shield',
+      'pointed-shield',
+      'ogee-shield',
+      'embattled-shield',
+      'notched-shield',
+      'cuirass-shield',
+      'swallowtail-shield',
+      'oval-shield',
     ]);
-    for (const asset of listShieldSilhouetteAssets()) {
+    const silhouettes = listShieldSilhouetteAssets();
+    expect(new Set(silhouettes.map((asset) => asset.id)).size).toBe(17);
+    for (const asset of silhouettes) {
       expect(asset.svgPath.length).toBeGreaterThan(0);
+      expect(asset.svgPath).toMatch(/^M/);
+      expect(asset.svgPath).toMatch(/[Zz]\s*$/);
+      const pathCoordinates = asset.svgPath.match(/-?\d+(?:\.\d+)?/g)?.map(Number) ?? [];
+      expect(Math.min(...pathCoordinates), asset.id).toBeGreaterThanOrEqual(0);
+      expect(Math.max(...pathCoordinates), asset.id).toBeLessThanOrEqual(110);
     }
   });
 

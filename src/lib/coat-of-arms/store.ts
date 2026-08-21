@@ -23,10 +23,15 @@ export interface CoatProjectHistory {
   future: CoatProject[];
 }
 
+export interface CoatProjectDispatchResult {
+  createdLayerId?: string;
+}
+
 export interface CoatDrawingSettings {
   isActive: boolean;
   color: string;
   strokeWidth: number;
+  opacity: number;
 }
 
 export interface CoatProjectStore {
@@ -37,7 +42,7 @@ export interface CoatProjectStore {
   drawingSettings: CoatDrawingSettings;
   setSelectedLayerIds: (layerIds: string[]) => void;
   setDrawingSettings: (settings: CoatDrawingSettings) => void;
-  dispatch: (command: CoatProjectCommand) => void;
+  dispatch: (command: CoatProjectCommand) => CoatProjectDispatchResult;
   undo: () => void;
   redo: () => void;
   replaceProject: (project: CoatProject) => void;
@@ -101,7 +106,7 @@ export const useCoatProjectStore = create<CoatProjectStore>()((set, get) => {
     history: initialHistory,
     isInitialDocument: true,
     selectedLayerIds: [],
-    drawingSettings: { isActive: false, color: '#004E89', strokeWidth: 3 },
+    drawingSettings: { isActive: false, color: '#000000', strokeWidth: 10, opacity: 1 },
     setSelectedLayerIds: (layerIds) => {
       if (!Array.isArray(layerIds)) throw new Error(`Invalid selected layer ids: ${String(layerIds)}`);
       const selectedIds = new Set<string>();
@@ -118,7 +123,9 @@ export const useCoatProjectStore = create<CoatProjectStore>()((set, get) => {
       set({ drawingSettings: { ...settings, color: settings.color.toUpperCase() } });
     },
     dispatch: (command) => {
-      const nextHistory = applyProjectHistoryCommand(get().history, command);
+      const currentHistory = get().history;
+      const nextHistory = applyProjectHistoryCommand(currentHistory, command);
+      const createdLayerId = findCreatedLayerId(currentHistory.present, nextHistory.present, command);
       persistProjectDraft(nextHistory.present);
       set({
         history: nextHistory,
@@ -126,6 +133,7 @@ export const useCoatProjectStore = create<CoatProjectStore>()((set, get) => {
         isInitialDocument: false,
         selectedLayerIds: keepExistingSelectedLayerIds(nextHistory.present, get().selectedLayerIds),
       });
+      return createdLayerId === undefined ? {} : { createdLayerId };
     },
     undo: () => {
       const nextHistory = undoProject(get().history);
@@ -204,6 +212,22 @@ function persistProjectDraft(project: CoatProject): void {
   if (hasCoatProjectBrowserStorage()) saveProjectDraft(project);
 }
 
+function findCreatedLayerId(
+  previousProject: CoatProject,
+  nextProject: CoatProject,
+  command: CoatProjectCommand,
+): string | undefined {
+  if (command.type !== 'add-layer' && command.type !== 'add-drawing-layer' && command.type !== 'add-text-layer' && command.type !== 'add-image-layer') {
+    return undefined;
+  }
+  const previousLayerIds = new Set(previousProject.layers.map((layer) => layer.id));
+  const createdLayers = nextProject.layers.filter((layer) => !previousLayerIds.has(layer.id));
+  if (createdLayers.length !== 1) {
+    throw new Error(`Expected one created layer for command ${command.type}, received ${createdLayers.length}`);
+  }
+  return createdLayers[0]!.id;
+}
+
 function keepExistingSelectedLayerIds(project: CoatProject, selectedLayerIds: string[]): string[] {
   const currentLayerIds = new Set(project.layers.map((layer) => layer.id));
   return selectedLayerIds.filter((layerId) => currentLayerIds.has(layerId));
@@ -216,15 +240,29 @@ function assertCoatLocale(locale: unknown): asserts locale is CoatLocale {
 }
 
 function assertDrawingSettings(settings: unknown): asserts settings is CoatDrawingSettings {
-  if (!isRecord(settings) || Object.keys(settings).length !== 3
-    || typeof settings.isActive !== 'boolean'
-    || typeof settings.color !== 'string'
-    || !/^#[0-9A-Fa-f]{6}$/.test(settings.color)
-    || typeof settings.strokeWidth !== 'number'
-    || !Number.isFinite(settings.strokeWidth)
-    || settings.strokeWidth < 0.5
-    || settings.strokeWidth > 20) {
-    throw new Error(`Invalid drawing settings: ${String(settings)}`);
+  if (!isRecord(settings)) throw new Error(`Invalid drawing settings: ${String(settings)}`);
+  assertExactKeys(settings, ['isActive', 'color', 'strokeWidth', 'opacity'], 'drawing settings');
+  if (typeof settings.isActive !== 'boolean') throw new Error(`Invalid drawing active state: ${String(settings.isActive)}`);
+  assertDrawingColor(settings.color);
+  assertDrawingStrokeWidth(settings.strokeWidth);
+  assertDrawingOpacity(settings.opacity);
+}
+
+function assertDrawingColor(color: unknown): asserts color is string {
+  if (typeof color !== 'string' || !/^#[0-9A-Fa-f]{6}$/.test(color)) {
+    throw new Error(`Invalid drawing color: ${String(color)}`);
+  }
+}
+
+function assertDrawingStrokeWidth(strokeWidth: unknown): asserts strokeWidth is number {
+  if (typeof strokeWidth !== 'number' || !Number.isFinite(strokeWidth) || strokeWidth < 1 || strokeWidth > 100) {
+    throw new Error(`Invalid drawing stroke width: ${String(strokeWidth)}`);
+  }
+}
+
+function assertDrawingOpacity(opacity: unknown): asserts opacity is number {
+  if (typeof opacity !== 'number' || !Number.isFinite(opacity) || opacity < 0 || opacity > 1) {
+    throw new Error(`Invalid drawing opacity: ${String(opacity)}`);
   }
 }
 

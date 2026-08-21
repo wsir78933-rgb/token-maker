@@ -12,7 +12,7 @@ describe('ReferenceToolRail', () => {
 
   it('uses vertical arrows without reacting to either horizontal arrow on a desktop tablist', () => {
     const onToolChange = vi.fn();
-    render(<ReferenceToolRail activeToolId="shields" locale="en" onCollapseChange={vi.fn()} onToolChange={onToolChange} />);
+    render(<ReferenceToolRail activeToolId="shields" homeHref="/" locale="en" onCollapseChange={vi.fn()} onToolChange={onToolChange} />);
 
     const shields = screen.getByRole('tab', { name: 'Shields' });
     shields.focus();
@@ -39,6 +39,7 @@ describe('ReferenceToolRail', () => {
     render(<ReferenceToolRail
       activeToolId="shields"
       expandedToolIds={['shields']}
+      homeHref="/"
       locale="en"
       onCollapseChange={vi.fn()}
       onToolChange={onToolChange}
@@ -68,12 +69,12 @@ describe('ReferenceToolRail', () => {
 
   it('keeps all reference tools in order and roves with backward, Home, and End keys', () => {
     const onToolChange = vi.fn();
-    render(<ReferenceToolRail activeToolId="shields" locale="en" onCollapseChange={vi.fn()} onToolChange={onToolChange} />);
+    render(<ReferenceToolRail activeToolId="shields" homeHref="/" locale="en" onCollapseChange={vi.fn()} onToolChange={onToolChange} />);
 
     const toolRail = screen.getByRole('tablist', { name: 'Coat maker tools' });
     expect(within(toolRail).getAllByRole('tab').map((tab) => tab.id)).toEqual([
       'coat-tab-position', 'coat-tab-shields', 'coat-tab-custom', 'coat-tab-charges', 'coat-tab-top',
-      'coat-tab-colors', 'coat-tab-tools', 'coat-tab-how-to', 'coat-tab-settings', 'coat-tab-flags', 'coat-tab-tokens',
+      'coat-tab-colors', 'coat-tab-tools', 'coat-tab-how-to', 'coat-tab-settings', 'coat-tab-flags',
     ]);
 
     const charges = screen.getByRole('tab', { name: 'Charges' });
@@ -91,41 +92,62 @@ describe('ReferenceToolRail', () => {
     expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Position' }));
 
     fireEvent.keyDown(document.activeElement as HTMLButtonElement, { key: 'End' });
-    expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Tokens' }));
-    expect(onToolChange).toHaveBeenLastCalledWith('tokens');
+    expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Flags' }));
+    expect(onToolChange).toHaveBeenLastCalledWith('flags');
+  });
+
+  it.each([
+    { expectedHref: '/', label: 'Tokens', locale: 'en' as const },
+    { expectedHref: '/zh', label: '符记', locale: 'zh' as const },
+  ])('renders $label as a localized homepage link that opens in a new tab', ({ expectedHref, label, locale }) => {
+    const onToolChange = vi.fn();
+    render(<ReferenceToolRail activeToolId="shields" homeHref={locale === 'en' ? '/' : '/zh'} locale={locale} onCollapseChange={vi.fn()} onToolChange={onToolChange} />);
+
+    const tokenLink = screen.getByRole('link', { name: label });
+    expect(tokenLink.getAttribute('href')).toBe(expectedHref);
+    expect(tokenLink.getAttribute('target')).toBe('_blank');
+    expect(tokenLink.getAttribute('rel')).toBe('noopener noreferrer');
+    expect(screen.queryByRole('tab', { name: label })).toBeNull();
+    tokenLink.addEventListener('click', (event) => event.preventDefault());
+    fireEvent.click(tokenLink);
+    expect(onToolChange).not.toHaveBeenCalled();
   });
 
   it('uses original geometric glyphs for every reference tool category', () => {
-    render(<ReferenceToolRail activeToolId="shields" locale="en" onCollapseChange={vi.fn()} onToolChange={vi.fn()} />);
+    render(<ReferenceToolRail activeToolId="shields" homeHref="/" locale="en" onCollapseChange={vi.fn()} onToolChange={vi.fn()} />);
 
     const toolRail = screen.getByRole('tablist', { name: 'Coat maker tools' });
     const glyphIds = within(toolRail).getAllByRole('tab').map((tab) => tab.querySelector('svg[data-tool-glyph]')?.getAttribute('data-tool-glyph'));
     expect(glyphIds).toEqual([
-      'position', 'shields', 'custom', 'charges', 'top', 'colors', 'tools', 'how-to', 'settings', 'flags', 'tokens',
+      'position', 'shields', 'custom', 'charges', 'top', 'colors', 'tools', 'how-to', 'settings', 'flags',
     ]);
+    expect(screen.getByRole('link', { name: 'Tokens' }).querySelector('svg[data-tool-glyph]')?.getAttribute('data-tool-glyph')).toBe('tokens');
   });
 
   it.each([
     {
       locale: 'en' as const,
       railName: 'Coat maker tools',
-      labels: ['Position', 'Shields', 'Custom', 'Charges', 'Top', 'Colors', 'Tools', 'How-to', 'Settings', 'Flags', 'Tokens'],
+      labels: ['Position', 'Shields', 'Custom', 'Charges', 'Top', 'Colors', 'Tools', 'How-to', 'Settings', 'Flags'],
+      tokenLabel: 'Tokens',
     },
     {
       locale: 'zh' as const,
       railName: '徽章制作工具',
-      labels: ['定位', '盾牌', '自定义', '图形', '顶部', '颜色', '工具', '使用说明', '设置', '旗帜', '符记'],
+      labels: ['定位', '盾牌', '自定义', '图形', '顶部', '颜色', '工具', '使用说明', '设置', '旗帜'],
+      tokenLabel: '符记',
     },
-  ])('renders the current reference order from $locale copy', ({ locale, railName, labels }) => {
-    render(<ReferenceToolRail activeToolId="shields" locale={locale} onCollapseChange={vi.fn()} onToolChange={vi.fn()} />);
+  ])('renders the current reference order from $locale copy', ({ locale, railName, labels, tokenLabel }) => {
+    render(<ReferenceToolRail activeToolId="shields" homeHref={locale === 'en' ? '/' : '/zh'} locale={locale} onCollapseChange={vi.fn()} onToolChange={vi.fn()} />);
 
     const toolRail = screen.getByRole('tablist', { name: railName });
     expect(within(toolRail).getAllByRole('tab').map((tab) => tab.textContent)).toEqual(labels);
+    expect(screen.getByRole('link', { name: tokenLabel })).toBeDefined();
   });
 
   it('reports a desktop rail collapse through its callback', () => {
     const onCollapseChange = vi.fn();
-    render(<ReferenceToolRail activeToolId="shields" locale="en" onCollapseChange={onCollapseChange} onToolChange={vi.fn()} />);
+    render(<ReferenceToolRail activeToolId="shields" homeHref="/" locale="en" onCollapseChange={onCollapseChange} onToolChange={vi.fn()} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Collapse tool panel' }));
 
@@ -137,6 +159,7 @@ describe('ReferenceToolRail', () => {
       activeToolId="shields"
       idPrefix="mobile-coat"
       isCollapsed
+      homeHref="/"
       locale="en"
       onCollapseChange={vi.fn()}
       onToolChange={vi.fn()}
@@ -155,6 +178,7 @@ describe('ReferenceToolRail', () => {
     render(<ReferenceToolRail
       activeToolId="shields"
       idPrefix="mobile-coat"
+      homeHref="/"
       locale="en"
       onCollapseChange={vi.fn()}
       onToolChange={onToolChange}

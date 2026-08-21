@@ -5,20 +5,17 @@ import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { GoogleAdSense } from '@/components/analytics/GoogleAdSense';
 import { MicrosoftClarity } from '@/components/analytics/MicrosoftClarity';
 import { I18nProvider } from '@/lib/i18n';
-import { getRequestNonce } from '@/lib/security/request-nonce';
 import { createLocaleLayoutMetadata, createSiteViewport, getHtmlLang } from '@/lib/site-metadata';
 import { DEFAULT_THEME } from '@/lib/theme';
 
 export const metadata: Metadata = createLocaleLayoutMetadata('en');
 export const viewport: Viewport = createSiteViewport();
 
-export default async function EnglishRootLayout({
+export default function EnglishRootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const nonce = await getRequestNonce();
-
   return (
     <html
       lang={getHtmlLang('en')}
@@ -27,12 +24,12 @@ export default async function EnglishRootLayout({
       suppressHydrationWarning
     >
       <head>
-        <GoogleAdSense nonce={nonce} />
+        <GoogleAdSense />
       </head>
       <body className="antialiased">
-        <MicrosoftClarity nonce={nonce} />
+        <MicrosoftClarity />
         <Suspense fallback={null}>
-          <GoogleAnalytics nonce={nonce} />
+          <GoogleAnalytics />
         </Suspense>
         <I18nProvider locale="en">{children}</I18nProvider>
       </body>

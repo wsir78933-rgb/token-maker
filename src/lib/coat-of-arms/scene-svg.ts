@@ -20,6 +20,7 @@ import { getFieldRegionPath } from './field-regions';
 import { renderExtendedFieldPattern } from './field-pattern';
 
 const SCENE_VIEW_BOX = '0 0 100 110';
+const TEXT_FONT_SIZE_SCENE_SCALE = 7;
 
 export interface CoatSceneSvgOptions {
   width: number;
@@ -91,7 +92,7 @@ function renderLayer(
     case 'top':
       return `${layerStart}${renderGeometryLayer(layer, project, layerIndex)}${layerEnd}`;
     case 'draw':
-      return `${layerStart}${renderTransformedLayer(`<path d="${layer.path}" fill="none" stroke="${layer.color}" stroke-width="${layer.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>`, layer.transform, layerIndex)}${layerEnd}`;
+      return `${layerStart}${renderTransformedLayer(`<path d="${layer.path}" fill="none" stroke="${layer.color}" stroke-width="${layer.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>`, layer.transform, layerIndex, layer.opacity ?? 1)}${layerEnd}`;
     case 'image':
       return `${layerStart}${renderImageLayer(project, layer.uploadId, layer.mimeType, layer.opacity, layer.transform, layerIndex)}${layerEnd}`;
     case 'text':
@@ -515,14 +516,20 @@ function renderChargeFieldPlacement(
   transform: CanvasTransform,
   layerIndex: number,
 ): string {
-  const shieldLayer = project.layers.find((layer) => layer.type === 'shield');
-  if (!shieldLayer || shieldLayer.type !== 'shield') throw new Error('Cannot clip a charge without a shield layer');
+  const targetShieldLayerId = transform.fieldShieldLayerId;
+  const shieldLayer = project.layers.find((layer) => layer.type === 'shield' && (targetShieldLayerId === undefined || layer.id === targetShieldLayerId));
+  if (!shieldLayer || shieldLayer.type !== 'shield') {
+    throw new Error(targetShieldLayerId
+      ? `Cannot clip a charge to shield layer: ${targetShieldLayerId}`
+      : 'Cannot clip a charge without a shield layer');
+  }
   const placement = transform.fieldPlacement ?? 'overall';
   const fieldRegionId = transform.fieldRegionId;
   const regionId = `coat-field-region-${layerIndex}`;
   const regionShape = fieldRegionId ? `<path d="${getFieldRegionPath(fieldRegionId)}"/>` : getFieldPlacementShape(placement);
   const regionMarkup = `<clipPath id="${regionId}">${regionShape}</clipPath>`;
-  const placementMarkup = `<g data-field-placement="${placement}"${fieldRegionId ? ` data-field-region="${fieldRegionId}"` : ''} clip-path="url(#${regionId})">${transformedMarkup}</g>`;
+  const shieldTargetAttribute = targetShieldLayerId ? ` data-field-shield-layer-id="${escapeXml(targetShieldLayerId)}"` : '';
+  const placementMarkup = `<g data-field-placement="${placement}"${fieldRegionId ? ` data-field-region="${fieldRegionId}"` : ''}${shieldTargetAttribute} clip-path="url(#${regionId})">${transformedMarkup}</g>`;
   if (shieldLayer.customMaskUploadId) {
     const customMaskUpload = project.uploads.find((upload) => upload.id === shieldLayer.customMaskUploadId);
     if (!customMaskUpload) throw new Error(`Invalid custom shield mask upload: ${shieldLayer.customMaskUploadId}`);
@@ -533,7 +540,8 @@ function renderChargeFieldPlacement(
   const shield = getCoatAsset(shieldLayer.assetId);
   if (shield.kind !== 'shield') throw new Error(`Invalid shield field clip asset: ${shieldLayer.assetId}`);
   const shieldClipId = `coat-charge-shield-clip-${layerIndex}`;
-  return `<defs><clipPath id="${shieldClipId}"><path d="${shield.svgPath}"/></clipPath>${regionMarkup}</defs><g clip-path="url(#${shieldClipId})">${placementMarkup}</g>`;
+  const shieldPath = shieldLayer.customOutlinePath ?? shield.svgPath;
+  return `<defs><clipPath id="${shieldClipId}"><path d="${shieldPath}"/></clipPath>${regionMarkup}</defs><g clip-path="url(#${shieldClipId})">${placementMarkup}</g>`;
 }
 
 function getFieldPlacementShape(fieldPlacement: NonNullable<CanvasTransform['fieldPlacement']>): string {
@@ -570,30 +578,43 @@ function renderTextLayer(layer: TextLayer, layerIndex: number, textPaths: string
   const textAnchor = layer.alignment === 'left' ? 'start' : layer.alignment === 'right' ? 'end' : 'middle';
   const x = layer.alignment === 'left' ? 8 : layer.alignment === 'right' ? 92 : 50;
   const safeText = escapeXml(layer.text);
-  const typographyAttributes = `font-family="${escapeXml(textFontStacks[layer.fontFamily ?? 'serif'])}" font-style="${layer.fontStyle ?? 'normal'}" font-weight="${layer.fontWeight ?? 'normal'}" font-size="${layer.fontSize}"`;
+  const typographyAttributes = `font-family="${escapeXml(textFontStacks[layer.fontFamily ?? 'serif'])}" font-style="${layer.fontStyle ?? 'normal'}" font-weight="${layer.fontWeight ?? 'normal'}" font-size="${layer.fontSize / TEXT_FONT_SIZE_SCENE_SCALE}"`;
+  const decorationAttributes = layer.underline ? ' text-decoration="underline"' : '';
+  const strokeAttributes = ` stroke="${escapeXml(layer.strokeColor ?? '#000000')}" stroke-width="${(layer.strokeWidth ?? 0) / TEXT_FONT_SIZE_SCENE_SCALE}" paint-order="stroke fill"`;
   if (layer.path.mode === 'none') {
-    return renderTransformedLayer(`<text x="${x}" y="102" fill="${layer.color}" ${typographyAttributes} text-anchor="${textAnchor}">${safeText}</text>`, layer.transform, layerIndex);
+    return renderTransformedLayer(`<text x="${x}" y="102" fill="${layer.color}"${decorationAttributes}${strokeAttributes} ${typographyAttributes} text-anchor="${textAnchor}">${safeText}</text>`, layer.transform, layerIndex);
   }
 
   const pathId = `coat-text-path-${layerIndex}`;
   textPaths.push(`<path id="${pathId}" d="${getTextPathData(layer)}" fill="none"/>`);
   const startOffset = layer.alignment === 'left' ? '0%' : layer.alignment === 'right' ? '100%' : '50%';
-  return renderTransformedLayer(`<text fill="${layer.color}" ${typographyAttributes} text-anchor="${textAnchor}"><textPath href="#${pathId}" startOffset="${startOffset}">${safeText}</textPath></text>`, layer.transform, layerIndex);
+  return renderTransformedLayer(`<text fill="${layer.color}"${decorationAttributes}${strokeAttributes} ${typographyAttributes} text-anchor="${textAnchor}"><textPath href="#${pathId}" startOffset="${startOffset}">${safeText}</textPath></text>`, layer.transform, layerIndex);
 }
 
 function getTextPathData(layer: TextLayer): string {
   switch (layer.path.mode) {
     case 'motto':
       return layer.path.curve === 'upper' ? 'M14 91 Q50 65 86 91' : 'M14 19 Q50 45 86 19';
-    case 'curve':
-      return layer.path.curve === 'upper' ? 'M10 72 Q50 30 90 72' : 'M10 38 Q50 80 90 38';
+    case 'curve': {
+      const startY = layer.path.curve === 'upper' ? 72 : 38;
+      const controlX = layer.path.controlX ?? 50;
+      const controlY = layer.path.controlY ?? (layer.path.curve === 'upper' ? 30 : 80);
+      return `M10 ${formatSceneNumber(startY)} Q${formatSceneNumber(controlX)} ${formatSceneNumber(controlY)} 90 ${formatSceneNumber(startY)}`;
+    }
     case 'ring':
-      return layer.path.curve === 'clockwise'
-        ? 'M50 10 A40 40 0 1 1 49.99 10'
-        : 'M50 10 A40 40 0 1 0 49.99 10';
+      if (layer.path.radius === undefined) {
+        return layer.path.curve === 'clockwise'
+          ? 'M50 10 A40 40 0 1 1 49.99 10'
+          : 'M50 10 A40 40 0 1 0 49.99 10';
+      }
+      return `M50 ${formatSceneNumber(50 - layer.path.radius)} A${formatSceneNumber(layer.path.radius)} ${formatSceneNumber(layer.path.radius)} 0 1 ${layer.path.curve === 'clockwise' ? 1 : 0} ${formatSceneNumber(49.99)} ${formatSceneNumber(50 - layer.path.radius)}`;
     case 'none':
       throw new Error('Text path data is not available for mode: none');
   }
+}
+
+function formatSceneNumber(value: number): string {
+  return Number(value.toFixed(4)).toString();
 }
 
 function renderTransform(transform: CanvasTransform): string {

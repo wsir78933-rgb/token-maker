@@ -221,7 +221,7 @@ describe('SelectedElementColourStrip', () => {
         if (command.type === 'replace-layer-colour' && command.layerId === shieldId) {
           throw new Error('Colour replacement rejected: #004e89');
         }
-        originalDispatch(command);
+        return originalDispatch(command);
       }),
     });
     renderStrip('en', projectWithText, [shieldId]);

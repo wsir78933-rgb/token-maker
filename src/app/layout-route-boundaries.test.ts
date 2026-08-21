@@ -11,18 +11,15 @@ vi.mock('@/lib/security/request-nonce', () => ({
 }));
 
 vi.mock('@/components/analytics/GoogleAdSense', () => ({
-  GoogleAdSense: ({ nonce }: { nonce: string }) =>
-    createElement('script', { 'data-analytics': 'adsense', 'data-nonce': nonce }),
+  GoogleAdSense: () => createElement('script', { 'data-analytics': 'adsense' }),
 }));
 
 vi.mock('@/components/analytics/GoogleAnalytics', () => ({
-  GoogleAnalytics: ({ nonce }: { nonce: string }) =>
-    createElement('script', { 'data-analytics': 'google-analytics', 'data-nonce': nonce }),
+  GoogleAnalytics: () => createElement('script', { 'data-analytics': 'google-analytics' }),
 }));
 
 vi.mock('@/components/analytics/MicrosoftClarity', () => ({
-  MicrosoftClarity: ({ nonce }: { nonce: string }) =>
-    createElement('script', { 'data-analytics': 'microsoft-clarity', 'data-nonce': nonce }),
+  MicrosoftClarity: () => createElement('script', { 'data-analytics': 'microsoft-clarity' }),
 }));
 
 vi.mock('@/lib/i18n', () => ({
@@ -53,7 +50,7 @@ function expectAnalyticsScripts(
   );
 
   expect(renderedAnalytics).toEqual(expectedAnalytics);
-  expect(markup).toContain('data-nonce="layout-request-nonce"');
+  expect(markup).not.toContain('data-nonce=');
 }
 
 function expectAdSenseScriptInDocumentHead(markup: string) {
@@ -77,7 +74,7 @@ describe('root layout route boundaries', () => {
     vi.resetModules();
   });
 
-  it('renders AdSense, Analytics, and Clarity in normal English and Chinese route roots', async () => {
+  it('renders analytics without a request nonce in cacheable English and Chinese route roots', async () => {
     const EnglishRootLayout = (await import('./(en)/layout')).default;
     const ChineseRootLayout = (await import('./(zh)/layout')).default;
 
@@ -94,6 +91,7 @@ describe('root layout route boundaries', () => {
     );
     expectAdSenseScriptInDocumentHead(englishMarkup);
     expectAdSenseScriptInDocumentHead(chineseMarkup);
+    expect(getRequestNonce).not.toHaveBeenCalled();
   });
 
   it('renders no analytics scripts or nonce lookup in public-share route roots', async () => {

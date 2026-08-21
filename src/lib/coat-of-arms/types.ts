@@ -27,7 +27,7 @@ export type FieldDivision =
   | 'paly'
   | 'bendy';
 
-export type FieldPattern = 'solid' | 'stripes' | 'dots' | 'checks' | 'lozengy' | 'crosses' | 'waves' | 'masoned' | 'honeycomb' | 'fretty' | 'scales' | 'chevronelly' | 'vair' | 'vair-in-pointe' | 'vair-in-pale' | 'paly-bendy' | 'barry-bendy' | 'gyronny' | 'papelonny' | 'seme';
+export type FieldPattern = 'solid' | 'barry' | 'paly' | 'bendy' | 'stripes' | 'dots' | 'checks' | 'lozengy' | 'crosses' | 'waves' | 'masoned' | 'honeycomb' | 'fretty' | 'scales' | 'chevronelly' | 'vair' | 'vair-in-pointe' | 'vair-in-pale' | 'paly-bendy' | 'barry-bendy' | 'gyronny' | 'papelonny' | 'seme';
 
 export type FieldStripeDirection = 'bend' | 'bend-sinister' | 'horizontal' | 'vertical';
 
@@ -219,6 +219,8 @@ export interface CanvasTransform {
   fieldPlacement?: FieldPlacement;
   /** Optional precise field region for new local charge clipping workflows. */
   fieldRegionId?: FieldRegionId;
+  /** Optional shield layer id that owns the field clipping target. */
+  fieldShieldLayerId?: string;
   /** Keeps a placed charge inside both the shield silhouette and selected region. */
   clipToField?: boolean;
   /** Optional to keep existing saved local documents compatible; absent means fully opaque. */
@@ -316,6 +318,8 @@ export interface DrawLayer extends CoatLayerBase {
   path: string;
   color: string;
   strokeWidth: number;
+  /** Opacity is optional for legacy saved drawings and defaults to fully opaque. */
+  opacity?: number;
   transform: CanvasTransform;
 }
 
@@ -339,6 +343,10 @@ export interface TextLayer extends CoatLayerBase {
   text: string;
   color: string;
   fontSize: number;
+  /** Optional styling fields preserve older text layers that predate toolbar styling. */
+  underline?: boolean;
+  strokeColor?: string;
+  strokeWidth?: number;
   /** Browser-safe local font families keep exported SVG deterministic without network font loading. */
   fontFamily?: TextFontFamily;
   /** Optional values retain the original normal browser text appearance for saved local projects. */
@@ -353,17 +361,46 @@ export interface TextLayer extends CoatLayerBase {
 export type TextAlignment = 'left' | 'center' | 'right';
 
 /** Closed local-only catalog. Each value resolves to a deterministic browser-safe SVG stack. */
-export const textFontFamilies = ['serif', 'display-serif', 'blackletter', 'sans-serif', 'monospace', 'cursive'] as const;
+export const textFontFamilies = [
+  'serif', 'display-serif', 'blackletter', 'sans-serif', 'monospace', 'cursive',
+  'cardinal', 'blackchancery', 'breitkopf', 'rockwell', 'carolus', 'liturgisch', 'norse', 'lohengrin',
+  'cormorant', 'georgia', 'palatino', 'baskerville', 'garamond', 'bookman', 'helvetica', 'avenir',
+  'futura', 'trebuchet', 'impact', 'verdana', 'courier', 'consolas', 'monaco', 'comic-sans',
+] as const;
 
 export type TextFontFamily = typeof textFontFamilies[number];
 
 export const textFontStacks: Readonly<Record<TextFontFamily, string>> = {
   serif: 'serif',
-  'display-serif': 'Georgia, "Times New Roman", serif',
-  blackletter: '"Old English Text MT", "Lucida Blackletter", serif',
+  'display-serif': 'serif',
+  blackletter: 'serif',
   'sans-serif': 'sans-serif',
   monospace: 'monospace',
   cursive: 'cursive',
+  cardinal: 'serif',
+  blackchancery: 'serif',
+  breitkopf: 'serif',
+  rockwell: 'serif',
+  carolus: 'serif',
+  liturgisch: 'serif',
+  norse: 'fantasy',
+  lohengrin: 'serif',
+  cormorant: 'serif',
+  georgia: 'serif',
+  palatino: 'serif',
+  baskerville: 'serif',
+  garamond: 'serif',
+  bookman: 'serif',
+  helvetica: 'sans-serif',
+  avenir: 'sans-serif',
+  futura: 'sans-serif',
+  trebuchet: 'sans-serif',
+  impact: 'fantasy',
+  verdana: 'sans-serif',
+  courier: 'monospace',
+  consolas: 'monospace',
+  monaco: 'monospace',
+  'comic-sans': 'cursive',
 };
 
 export type TextFontStyle = 'normal' | 'italic';
@@ -373,8 +410,8 @@ export type TextFontWeight = 'normal' | 'bold';
 export type TextPathPlacement =
   | { mode: 'none' }
   | { mode: 'motto'; curve: 'upper' | 'lower' }
-  | { mode: 'curve'; curve: 'upper' | 'lower' }
-  | { mode: 'ring'; curve: 'clockwise' | 'counterclockwise' };
+  | { mode: 'curve'; curve: 'upper' | 'lower'; controlX?: number; controlY?: number }
+  | { mode: 'ring'; curve: 'clockwise' | 'counterclockwise'; radius?: number };
 
 export type CoatLayer =
   | BackgroundLayer

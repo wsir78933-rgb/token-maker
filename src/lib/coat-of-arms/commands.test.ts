@@ -83,6 +83,52 @@ describe('coat project commands', () => {
     expect(updatedProject.layers.at(-1)).toMatchObject({ fontStyle: 'normal', fontWeight: 'normal' });
   });
 
+  it('enforces the 8-200 integer font size range at every text data boundary', () => {
+    const createTextCommand = (fontSize: number) => ({
+      type: 'add-text-layer' as const, text: 'SIZE', color: '#F5E6A1', fontSize,
+      alignment: 'center' as const, path: { mode: 'none' as const },
+    });
+    const project = createDefaultProject('en');
+
+    expect(() => applyProjectCommand(project, createTextCommand(7))).toThrow('Invalid text font size: 7');
+    expect(() => applyProjectCommand(project, createTextCommand(8))).not.toThrow();
+    expect(() => applyProjectCommand(project, createTextCommand(8.5))).toThrow('Invalid text font size: 8.5');
+    expect(() => applyProjectCommand(project, createTextCommand(200))).not.toThrow();
+    expect(() => applyProjectCommand(project, createTextCommand(201))).toThrow('Invalid text font size: 201');
+
+    const projectWithText = applyProjectCommand(project, createTextCommand(40));
+    const textLayer = projectWithText.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected text layer');
+    expect(() => applyProjectCommand(projectWithText, {
+      type: 'update-layer', layerId: textLayer.id, patch: { fontSize: 201 },
+    })).toThrow('Invalid text font size: 201');
+    const persistedInvalidProject = {
+      ...projectWithText,
+      layers: projectWithText.layers.map((layer) => layer.type === 'text' ? { ...layer, fontSize: 7 } : layer),
+    };
+    expect(() => assertCoatProject(persistedInvalidProject)).toThrow('Invalid text font size: 7');
+  });
+
+  it('persists underline and validated stroke styling on text layers', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'STROKE', color: '#F5E6A1', fontSize: 40,
+      underline: true, strokeColor: '#111111', strokeWidth: 2.5,
+      alignment: 'center', path: { mode: 'none' },
+    } as never);
+
+    expect(project.layers.at(-1)).toMatchObject({
+      type: 'text', underline: true, strokeColor: '#111111', strokeWidth: 2.5,
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected text layer');
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: textLayer.id, patch: { strokeWidth: -0.5 },
+    } as never)).toThrow('Invalid text stroke width: -0.5');
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: textLayer.id, patch: { strokeWidth: 1.25 },
+    } as never)).toThrow('Invalid text stroke width step: 1.25');
+  });
+
   it('adds a locally authored top ornament as an independently transformable layer', () => {
     const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
 
@@ -872,6 +918,44 @@ describe('coat project commands', () => {
       type: 'add-text-layer', text: 'Bad', color: '#FFFFFF', fontSize: 20,
       alignment: 'center', path: { mode: 'ring', curve: 'upper' },
     } as never)).toThrow('ring');
+  });
+
+  it('persists validated bezier control points and ring radii through text path patches', () => {
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'CURVE', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'curve', curve: 'upper' },
+    });
+    const curveLayer = project.layers.at(-1);
+    if (!curveLayer || curveLayer.type !== 'text') throw new Error('Expected curved text layer');
+    project = applyProjectCommand(project, {
+      type: 'update-layer', layerId: curveLayer.id,
+      patch: { path: { mode: 'curve', curve: 'upper', controlX: 42.5, controlY: 36.25 } },
+    });
+    expect(project.layers.at(-1)).toMatchObject({ path: { controlX: 42.5, controlY: 36.25 } });
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: curveLayer.id,
+      patch: { path: { mode: 'curve', curve: 'upper', controlX: 101, controlY: 36 } },
+    })).toThrow('101');
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: curveLayer.id,
+      patch: { path: { mode: 'curve', curve: 'upper', controlX: 42 } } as never,
+    })).toThrow('control point');
+
+    project = applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'ring', curve: 'clockwise' },
+    });
+    const ringLayer = project.layers.at(-1);
+    if (!ringLayer || ringLayer.type !== 'text') throw new Error('Expected ring text layer');
+    project = applyProjectCommand(project, {
+      type: 'update-layer', layerId: ringLayer.id,
+      patch: { path: { mode: 'ring', curve: 'clockwise', radius: 24.5 } },
+    });
+    expect(project.layers.at(-1)).toMatchObject({ path: { radius: 24.5 } });
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: ringLayer.id,
+      patch: { path: { mode: 'ring', curve: 'clockwise', radius: 51 } },
+    })).toThrow('51');
   });
 
   it('rejects unsupported text fonts instead of persisting browser-specific values', () => {

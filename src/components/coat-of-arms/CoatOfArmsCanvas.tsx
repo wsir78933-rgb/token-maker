@@ -2,14 +2,18 @@
 
 import {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
+  type DragEvent,
   type KeyboardEvent,
+  type MouseEvent,
   type PointerEvent,
   type RefObject,
 } from 'react';
+import { COAT_PROJECT_LIMITS } from '@/lib/coat-of-arms/commands';
 import { renderCoatSceneSvg } from '@/lib/coat-of-arms/scene-svg';
 import { appendFreehandPoint, createFreehandPath, type FreehandPoint } from '@/lib/coat-of-arms/drawing';
 import {
@@ -25,9 +29,10 @@ import {
   type CanvasSnapLayerTarget,
 } from '@/lib/coat-of-arms/canvas-snapping';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
-import type { CanvasTransform, CoatLayer, CoatLocale } from '@/lib/coat-of-arms/types';
+import type { CanvasTransform, CoatLayer, CoatLocale, TextLayer, TextPathPlacement } from '@/lib/coat-of-arms/types';
 import { getTransformSelectionCenter, scaleCanvasTransform, transformCanvasSelection, type TransformSelectionCenter } from '@/lib/coat-of-arms/transform';
-import { CanvasSelectionHandles } from './CanvasSelectionHandles';
+import { CanvasSelectionHandles, type CanvasTextPathHandle, type CanvasTextPathHandleKind } from './CanvasSelectionHandles';
+import { createTextCreationCommand, isTextCreationCardKind, TEXT_CREATION_DRAG_MIME, type TextCreationCardKind } from './text-creation-drag';
 import { useCoatKeyboardShortcuts } from './useCoatKeyboardShortcuts';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
@@ -64,6 +69,19 @@ interface DrawingInteraction {
   points: FreehandPoint[];
 }
 
+interface TextPathInteraction {
+  pointerId: number;
+  layerId: string;
+  kind: CanvasTextPathHandleKind;
+  startPath: TextPathPlacement;
+  startTransform: CanvasTransform;
+}
+
+interface TextPathPreview {
+  layerId: string;
+  path: TextPathPlacement;
+}
+
 export interface CoatOfArmsCanvasProps {
   disabled?: boolean;
   locale: CoatLocale;
@@ -88,9 +106,13 @@ export function CoatOfArmsCanvas({
   const canvasRef = useRef<HTMLDivElement>(null);
   const interactionRef = useRef<CanvasInteraction | null>(null);
   const drawingInteractionRef = useRef<DrawingInteraction | null>(null);
+  const textPathInteractionRef = useRef<TextPathInteraction | null>(null);
   const [transformPreview, setTransformPreview] = useState<TransformPreview | null>(null);
+  const [textPathPreview, setTextPathPreview] = useState<TextPathPreview | null>(null);
   const [snapGuides, setSnapGuides] = useState<CanvasSnapGuide[]>([]);
   const [drawingPreview, setDrawingPreview] = useState<FreehandPoint[] | null>(null);
+  const [inlineTextEdit, setInlineTextEdit] = useState<{ layerId: string; text: string } | null>(null);
+  const [inlineTextError, setInlineTextError] = useState<string | null>(null);
   const toScenePoint = useCanvasScenePoint(canvasRef);
   const {
     selection,
@@ -99,8 +121,13 @@ export function CoatOfArmsCanvas({
     adjustSelectedTransform,
   } = useCoatKeyboardShortcuts({ disabled });
   const sceneProject = useMemo(
-    () => transformPreview ? withPreviewTransforms(project, transformPreview.transforms) : project,
-    [project, transformPreview],
+    () => {
+      const transformedProject = transformPreview
+        ? withPreviewTransforms(project, transformPreview.transforms)
+        : project;
+      return textPathPreview ? withPreviewTextPath(transformedProject, textPathPreview) : transformedProject;
+    },
+    [project, textPathPreview, transformPreview],
   );
   const sceneSvg = useMemo(
     () => renderCoatSceneSvg(sceneProject, { width: project.canvas.width, height: project.canvas.height }),
@@ -114,7 +141,16 @@ export function CoatOfArmsCanvas({
   const selectedHandleCenter = selectedHandleTransforms.length > 0
     ? getTransformSelectionCenter(selectedHandleTransforms)
     : null;
+  const selectedTextPathLayer = selectedTransformLayers.length === 1 && selectedHandleLayer?.type === 'text'
+    ? sceneProject.layers.find((layer): layer is TextLayer => layer.id === selectedHandleLayer.id && layer.type === 'text')
+    : undefined;
+  const selectedTextPathHandle = selectedTextPathLayer && selectedHandleTransforms[0]
+    ? getTextPathHandle(selectedTextPathLayer, selectedHandleTransforms[0])
+    : null;
   const overlayLayers = getSelectedOverlayLayers(sceneProject.layers, selection);
+  const inlineTextLayer = inlineTextEdit
+    ? project.layers.find((layer): layer is TextLayer => layer.id === inlineTextEdit.layerId && layer.type === 'text')
+    : undefined;
   const overlayLayerKey = overlayLayers.map((layer) => layer.id).join(',');
   const fallbackSelectionBounds = overlayLayers.length > 0
     ? getTransformedSelectionBounds(overlayLayers.map((layer) => layer.transform))
@@ -122,17 +158,29 @@ export function CoatOfArmsCanvas({
   const [measuredSelectionBounds, setMeasuredSelectionBounds] = useState<SceneBounds | null>(null);
   const selectionBounds = measuredSelectionBounds ?? fallbackSelectionBounds;
 
+  useEffect(() => {
+    if (!inlineTextEdit || inlineTextLayer) return;
+    const resetTimer = window.setTimeout(() => {
+      setInlineTextEdit(null);
+      setInlineTextError(null);
+    }, 0);
+    return () => window.clearTimeout(resetTimer);
+  }, [inlineTextEdit, inlineTextLayer]);
+
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
     const overlayLayerIds = overlayLayerKey === '' ? [] : overlayLayerKey.split(',');
     if (!canvas || overlayLayerIds.length === 0) {
-      setMeasuredSelectionBounds((current) => current === null ? current : null);
+      if (measuredSelectionBounds !== null) {
+        const resetTimer = window.setTimeout(() => setMeasuredSelectionBounds(null), 0);
+        return () => window.clearTimeout(resetTimer);
+      }
       return;
     }
     const layerRects = overlayLayerIds.map((layerId) => readLayerClientRect(canvas, layerId));
     const nextBounds = sceneBoundsFromClientRects(canvas.getBoundingClientRect(), layerRects);
     setMeasuredSelectionBounds((current) => sceneBoundsEqual(current, nextBounds) ? current : nextBounds);
-  }, [overlayLayerKey, sceneSvg]);
+  }, [measuredSelectionBounds, overlayLayerKey, sceneSvg]);
 
   const beginInteraction = useCallback((
     event: PointerEvent<HTMLElement>,
@@ -163,6 +211,24 @@ export function CoatOfArmsCanvas({
     capturePointer(canvasRef.current, getPointerId(event));
     canvasRef.current?.focus();
   }, [project.layers, toScenePoint]);
+
+  const beginTextPathInteraction = useCallback((event: PointerEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (disabled || selectedTransformLayers.length !== 1 || !selectedHandleLayer || selectedHandleLayer.type !== 'text' || selectedHandleLayer.locked) return;
+    const kind = getTextPathHandleKind(selectedHandleLayer.path);
+    if (!kind) return;
+    textPathInteractionRef.current = {
+      pointerId: getPointerId(event),
+      layerId: selectedHandleLayer.id,
+      kind,
+      startPath: cloneTextPath(selectedHandleLayer.path),
+      startTransform: cloneTransform(selectedHandleLayer.transform),
+    };
+    setTextPathPreview({ layerId: selectedHandleLayer.id, path: cloneTextPath(selectedHandleLayer.path) });
+    capturePointer(canvasRef.current, getPointerId(event));
+    canvasRef.current?.focus();
+  }, [disabled, selectedHandleLayer, selectedTransformLayers.length]);
 
   const handlePointerDown = useCallback((event: PointerEvent<HTMLDivElement>) => {
     if (disabled) return;
@@ -209,12 +275,76 @@ export function CoatOfArmsCanvas({
     }
   }, [beginInteraction, disabled, drawingSettings.isActive, multiSelectEnabled, project.layers, selection, setSelection, toScenePoint]);
 
+  const handleDoubleClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
+    if (disabled) return;
+    const layerId = getLayerIdFromTarget(event.target);
+    if (!layerId) return;
+    const layer = project.layers.find((candidate): candidate is TextLayer => candidate.id === layerId && candidate.type === 'text');
+    if (!layer || layer.locked || layer.path.mode !== 'none') return;
+    setSelection([layer.id]);
+    setInlineTextError(null);
+    setInlineTextEdit({ layerId: layer.id, text: layer.text });
+    event.preventDefault();
+    event.stopPropagation();
+  }, [disabled, project.layers, setSelection]);
+
+  const addTextCardAtScenePoint = useCallback((kind: TextCreationCardKind, scenePoint: ScenePoint) => {
+    const result = dispatch(createTextCreationCommand(kind, copy.panels.textFeature.defaultObjectText, {
+      x: scenePoint.x - SCENE_WIDTH / 2,
+      y: scenePoint.y - SCENE_HEIGHT / 2,
+      scale: 1,
+      rotation: 0,
+    }));
+    if (!result.createdLayerId) throw new Error(`Unable to select dropped ${kind} text layer`);
+    setSelection([result.createdLayerId]);
+  }, [copy.panels.textFeature.defaultObjectText, dispatch, setSelection]);
+
+  const handleCanvasDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
+    if (!event.dataTransfer || !Array.from(event.dataTransfer.types).includes(TEXT_CREATION_DRAG_MIME)) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  }, []);
+
+  const handleCanvasDrop = useCallback((event: DragEvent<HTMLDivElement>) => {
+    if (!event.dataTransfer) return;
+    const kind = event.dataTransfer.getData(TEXT_CREATION_DRAG_MIME);
+    if (!isTextCreationCardKind(kind)) return;
+    event.preventDefault();
+    if (disabled) return;
+    addTextCardAtScenePoint(kind, toScenePoint(event));
+  }, [addTextCardAtScenePoint, disabled, toScenePoint]);
+
+  const commitInlineTextEdit = useCallback((text: string) => {
+    if (!inlineTextEdit) return;
+    const targetLayer = project.layers.find((layer): layer is TextLayer => layer.id === inlineTextEdit.layerId && layer.type === 'text');
+    if (!targetLayer || targetLayer.locked) {
+      setInlineTextEdit(null);
+      setInlineTextError(copy.panels.commandFailed(`Text layer is unavailable: ${inlineTextEdit.layerId}`));
+      return;
+    }
+    try {
+      assertInlineTextValue(text);
+      dispatch({ type: 'update-layer', layerId: inlineTextEdit.layerId, patch: { text } });
+      setInlineTextEdit(null);
+      setInlineTextError(null);
+    } catch (caught) {
+      const message = caught instanceof Error ? caught.message : String(caught);
+      setInlineTextError(copy.panels.commandFailed(message));
+    }
+  }, [copy.panels, dispatch, inlineTextEdit, project.layers]);
+
   const handlePointerMove = useCallback((event: PointerEvent<HTMLDivElement>) => {
     const drawingInteraction = drawingInteractionRef.current;
     if (drawingInteraction?.pointerId === getPointerId(event)) {
       const nextPoints = appendFreehandPoint(drawingInteraction.points, toScenePoint(event));
       drawingInteractionRef.current = { ...drawingInteraction, points: nextPoints };
       setDrawingPreview(nextPoints);
+      return;
+    }
+    const textPathInteraction = textPathInteractionRef.current;
+    if (textPathInteraction?.pointerId === getPointerId(event)) {
+      const nextPath = getNextTextPathInteractionPath(textPathInteraction, toScenePoint(event));
+      setTextPathPreview({ layerId: textPathInteraction.layerId, path: nextPath });
       return;
     }
     const interaction = interactionRef.current;
@@ -238,12 +368,22 @@ export function CoatOfArmsCanvas({
       releasePointer(canvasRef.current, drawingInteraction.pointerId);
       setDrawingPreview(null);
       if (nextPoints.length >= 2) {
-        dispatch({
+        const result = dispatch({
           type: 'add-drawing-layer', path: createFreehandPath(nextPoints),
-          color: drawingSettings.color, strokeWidth: drawingSettings.strokeWidth,
+          color: drawingSettings.color, strokeWidth: drawingSettings.strokeWidth, opacity: drawingSettings.opacity,
         });
-        const newestLayer = useCoatProjectStore.getState().project.layers.at(-1);
-        if (newestLayer?.type === 'draw') setSelection([newestLayer.id]);
+        if (result.createdLayerId) setSelection([result.createdLayerId]);
+      }
+      return;
+    }
+    const textPathInteraction = textPathInteractionRef.current;
+    if (textPathInteraction?.pointerId === getPointerId(event)) {
+      const nextPath = getNextTextPathInteractionPath(textPathInteraction, toScenePoint(event));
+      textPathInteractionRef.current = null;
+      releasePointer(canvasRef.current, textPathInteraction.pointerId);
+      setTextPathPreview(null);
+      if (!textPathsMatch(textPathInteraction.startPath, nextPath)) {
+        dispatch({ type: 'update-layer', layerId: textPathInteraction.layerId, patch: { path: nextPath } });
       }
       return;
     }
@@ -271,7 +411,7 @@ export function CoatOfArmsCanvas({
     } else if (updates.length > 1) {
       dispatch({ type: 'update-layers', updates });
     }
-  }, [dispatch, drawingSettings.color, drawingSettings.strokeWidth, setSelection, snappingEnabled, toScenePoint]);
+  }, [dispatch, drawingSettings.color, drawingSettings.opacity, drawingSettings.strokeWidth, setSelection, snappingEnabled, toScenePoint]);
 
   const cancelInteraction = useCallback((event: PointerEvent<HTMLDivElement>) => {
     const drawingInteraction = drawingInteractionRef.current;
@@ -280,6 +420,13 @@ export function CoatOfArmsCanvas({
       releasePointer(canvasRef.current, drawingInteraction.pointerId);
       setDrawingPreview(null);
       setSnapGuides([]);
+      return;
+    }
+    const textPathInteraction = textPathInteractionRef.current;
+    if (textPathInteraction?.pointerId === getPointerId(event)) {
+      textPathInteractionRef.current = null;
+      releasePointer(canvasRef.current, textPathInteraction.pointerId);
+      setTextPathPreview(null);
       return;
     }
     const interaction = interactionRef.current;
@@ -299,6 +446,13 @@ export function CoatOfArmsCanvas({
   }, [beginInteraction, selectedHandleLayer, selectedTransformLayers]);
 
   const cancelTransformInteraction = useCallback(() => {
+    const textPathInteraction = textPathInteractionRef.current;
+    if (textPathInteraction) {
+      textPathInteractionRef.current = null;
+      releasePointer(canvasRef.current, textPathInteraction.pointerId);
+      setTextPathPreview(null);
+      return true;
+    }
     const interaction = interactionRef.current;
     if (!interaction) return false;
     interactionRef.current = null;
@@ -348,7 +502,10 @@ export function CoatOfArmsCanvas({
       aria-disabled={disabled || undefined}
       aria-label={copy.canvas.label}
       className="coat-canvas relative w-full touch-none overflow-visible rounded-md border border-[color:var(--site-border-strong)] bg-[color:var(--site-panel-strong)] shadow-[var(--site-card-shadow)] outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--site-accent-strong)]"
+      onDragOver={handleCanvasDragOver}
+      onDrop={handleCanvasDrop}
       onKeyDown={handleCanvasKeyDown}
+      onDoubleClick={handleDoubleClick}
       onPointerCancel={cancelInteraction}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -359,7 +516,7 @@ export function CoatOfArmsCanvas({
     >
       <div className="absolute inset-0 overflow-hidden rounded-[inherit]" dangerouslySetInnerHTML={{ __html: sceneSvg }} />
       {drawingPreview && drawingPreview.length >= 2 ? <svg aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 110">
-        <path d={createFreehandPath(drawingPreview)} fill="none" stroke={drawingSettings.color} strokeLinecap="round" strokeLinejoin="round" strokeWidth={drawingSettings.strokeWidth} />
+        <path d={createFreehandPath(drawingPreview)} fill="none" opacity={drawingSettings.opacity} stroke={drawingSettings.color} strokeLinecap="round" strokeLinejoin="round" strokeWidth={drawingSettings.strokeWidth} />
       </svg> : null}
       {snapGuides.length > 0 ? <CanvasSnapGuides guides={snapGuides} /> : null}
       {selectionBounds ? (
@@ -367,12 +524,22 @@ export function CoatOfArmsCanvas({
           locale={locale}
           selectionBounds={selectionBounds}
           showTransformHandles={selectedHandleLayer !== undefined && selectedHandleCenter !== null}
+          textPathHandle={selectedTextPathHandle}
+          onTextPathPointerDown={beginTextPathInteraction}
           onResizeKeyDown={handleHandleKeyDown({ scale: 0.1 })}
           onResizePointerDown={beginHandleInteraction('resize')}
           onRotateKeyDown={handleHandleKeyDown({ rotation: 15 })}
           onRotatePointerDown={beginHandleInteraction('rotate')}
         />
       ) : null}
+      {inlineTextEdit && inlineTextLayer ? <InlineTextEditor
+        locale={locale}
+        textLayer={inlineTextLayer}
+        text={inlineTextEdit.text}
+        error={inlineTextError}
+        onCancel={() => { setInlineTextEdit(null); setInlineTextError(null); }}
+        onCommit={commitInlineTextEdit}
+      /> : null}
       <p className="sr-only" id="coat-canvas-help">
         {copy.canvas.help}
       </p>
@@ -399,6 +566,42 @@ function CanvasSnapGuides({ guides }: { guides: readonly CanvasSnapGuide[] }) {
       ))}
     </svg>
   );
+}
+
+function InlineTextEditor({ locale, text, textLayer, error, onCancel, onCommit }: { locale: CoatLocale; text: string; textLayer?: TextLayer; error: string | null; onCancel: () => void; onCommit: (text: string) => void }) {
+  const copy = getCoatWorkbenchCopy(locale).panels.textFeature.inline;
+  const [draftText, setDraftText] = useState(text);
+  const left = 50 + (textLayer?.transform.x ?? 0);
+  const top = ((102 + (textLayer?.transform.y ?? 0)) / SCENE_HEIGHT) * 100;
+  return <div className="absolute z-40" style={{ left: `${left}%`, top: `${top}%`, transform: 'translate(-50%, -100%)' }}>
+    <input
+      aria-label={copy.editor}
+      aria-invalid={error ? true : undefined}
+      autoFocus
+      className="min-w-[12rem] rounded border-2 border-[color:var(--coat-accent)] bg-white px-2 py-1 text-center text-base text-black shadow-lg outline-none"
+      maxLength={COAT_PROJECT_LIMITS.maxTextLength}
+      value={draftText}
+      onBlur={() => onCommit(draftText)}
+      onChange={(event) => setDraftText(event.target.value)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          onCommit(draftText);
+        } else if (event.key === 'Escape') {
+          event.preventDefault();
+          onCancel();
+        }
+      }}
+    />
+    {error ? <p role="alert" aria-live="polite" className="mt-1 max-w-[18rem] rounded bg-white px-2 py-1 text-xs text-red-700 shadow">{error}</p> : null}
+  </div>;
+}
+
+function assertInlineTextValue(text: string): void {
+  if (text.trim().length === 0) throw new Error(`Invalid text layer text: ${JSON.stringify(text)}`);
+  if (text.length > COAT_PROJECT_LIMITS.maxTextLength) {
+    throw new Error(`Invalid text layer length: ${text.length}; limit is ${COAT_PROJECT_LIMITS.maxTextLength}`);
+  }
 }
 
 /** The only client-to-scene coordinate conversion used by the canvas. */
@@ -627,6 +830,121 @@ function withPreviewTransforms(project: ReturnType<typeof useCoatProjectStore.ge
         : layer
     )),
   };
+}
+
+function withPreviewTextPath(
+  project: ReturnType<typeof useCoatProjectStore.getState>['project'],
+  preview: TextPathPreview,
+) {
+  return {
+    ...project,
+    layers: project.layers.map((layer) => (
+      layer.id === preview.layerId && layer.type === 'text'
+        ? { ...layer, path: cloneTextPath(preview.path) }
+        : layer
+    )),
+  };
+}
+
+function getTextPathHandle(layer: TextLayer, transform: CanvasTransform): CanvasTextPathHandle | null {
+  if (layer.path.mode === 'curve') {
+    const startY = layer.path.curve === 'upper' ? 72 : 38;
+    const controlPoint = {
+      x: layer.path.controlX ?? 50,
+      y: layer.path.controlY ?? (layer.path.curve === 'upper' ? 30 : 80),
+    };
+    return {
+      kind: 'curve-control',
+      point: applyTextPathTransform(controlPoint, transform),
+      guides: [
+        applyTextPathTransform({ x: 10, y: startY }, transform),
+        applyTextPathTransform({ x: 90, y: startY }, transform),
+      ],
+    };
+  }
+  if (layer.path.mode === 'ring') {
+    const radius = layer.path.radius ?? 40;
+    return {
+      kind: 'ring-radius',
+      point: applyTextPathTransform({ x: 50, y: 50 - radius }, transform),
+      guides: [applyTextPathTransform({ x: 50, y: 50 }, transform)],
+    };
+  }
+  return null;
+}
+
+function getTextPathHandleKind(path: TextPathPlacement): CanvasTextPathHandleKind | null {
+  if (path.mode === 'curve') return 'curve-control';
+  if (path.mode === 'ring') return 'ring-radius';
+  return null;
+}
+
+function getNextTextPathInteractionPath(
+  interaction: TextPathInteraction,
+  scenePoint: ScenePoint,
+): TextPathPlacement {
+  const localPoint = invertTextPathTransform(scenePoint, interaction.startTransform);
+  if (interaction.kind === 'curve-control' && interaction.startPath.mode === 'curve') {
+    return {
+      ...interaction.startPath,
+      controlX: clamp(localPoint.x, 0, SCENE_WIDTH),
+      controlY: clamp(localPoint.y, 0, SCENE_HEIGHT),
+    };
+  }
+  if (interaction.kind === 'ring-radius' && interaction.startPath.mode === 'ring') {
+    const radius = Math.hypot(localPoint.x - 50, localPoint.y - 50);
+    return { ...interaction.startPath, radius: clamp(radius, 10, 50) };
+  }
+  throw new Error(`Text path handle ${interaction.kind} does not match path mode: ${interaction.startPath.mode}`);
+}
+
+function applyTextPathTransform(point: ScenePoint, transform: CanvasTransform): ScenePoint {
+  const horizontalScale = (transform.scaleX ?? transform.scale) * (transform.flipHorizontal ? -1 : 1);
+  const verticalScale = (transform.scaleY ?? transform.scale) * (transform.flipVertical ? -1 : 1);
+  const scaledX = SCENE_WIDTH / 2 + (point.x - SCENE_WIDTH / 2) * horizontalScale;
+  const scaledY = SCENE_HEIGHT / 2 + (point.y - SCENE_HEIGHT / 2) * verticalScale;
+  const radians = transform.rotation * Math.PI / 180;
+  const cosine = Math.cos(radians);
+  const sine = Math.sin(radians);
+  return {
+    x: SCENE_WIDTH / 2 + (scaledX - SCENE_WIDTH / 2) * cosine - (scaledY - SCENE_HEIGHT / 2) * sine + transform.x,
+    y: SCENE_HEIGHT / 2 + (scaledX - SCENE_WIDTH / 2) * sine + (scaledY - SCENE_HEIGHT / 2) * cosine + transform.y,
+  };
+}
+
+function invertTextPathTransform(point: ScenePoint, transform: CanvasTransform): ScenePoint {
+  const horizontalScale = (transform.scaleX ?? transform.scale) * (transform.flipHorizontal ? -1 : 1);
+  const verticalScale = (transform.scaleY ?? transform.scale) * (transform.flipVertical ? -1 : 1);
+  const translatedX = point.x - transform.x - SCENE_WIDTH / 2;
+  const translatedY = point.y - transform.y - SCENE_HEIGHT / 2;
+  const radians = transform.rotation * Math.PI / 180;
+  const cosine = Math.cos(radians);
+  const sine = Math.sin(radians);
+  const unrotatedX = translatedX * cosine + translatedY * sine;
+  const unrotatedY = -translatedX * sine + translatedY * cosine;
+  return {
+    x: SCENE_WIDTH / 2 + unrotatedX / horizontalScale,
+    y: SCENE_HEIGHT / 2 + unrotatedY / verticalScale,
+  };
+}
+
+function cloneTextPath(path: TextPathPlacement): TextPathPlacement {
+  return { ...path };
+}
+
+function textPathsMatch(left: TextPathPlacement, right: TextPathPlacement): boolean {
+  if (left.mode !== right.mode) return false;
+  if (left.mode === 'none' || right.mode === 'none') return true;
+  if (left.curve !== right.curve) return false;
+  if (left.mode === 'curve' && right.mode === 'curve') {
+    return left.controlX === right.controlX && left.controlY === right.controlY;
+  }
+  if (left.mode === 'ring' && right.mode === 'ring') return left.radius === right.radius;
+  return true;
+}
+
+function clamp(value: number, minimum: number, maximum: number): number {
+  return Math.min(maximum, Math.max(minimum, value));
 }
 
 function transformsMatch(left: CanvasTransform, right: CanvasTransform): boolean {

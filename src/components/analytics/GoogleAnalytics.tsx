@@ -3,7 +3,6 @@
 import { useEffect, useRef } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
-import { requireCspNonce } from '@/lib/security/require-csp-nonce';
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -16,12 +15,7 @@ declare global {
   }
 }
 
-interface GoogleAnalyticsProps {
-  nonce: string;
-}
-
-export function GoogleAnalytics({ nonce }: GoogleAnalyticsProps) {
-  const requestNonce = requireCspNonce('GoogleAnalytics', nonce);
+export function GoogleAnalytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const hasTrackedInitialPage = useRef(false);
@@ -54,11 +48,10 @@ export function GoogleAnalytics({ nonce }: GoogleAnalyticsProps) {
   return (
     <>
       <Script
-        nonce={requestNonce}
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
         strategy="afterInteractive"
       />
-      <Script id="google-analytics" nonce={requestNonce} strategy="afterInteractive">
+      <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){window.dataLayer.push(arguments);}

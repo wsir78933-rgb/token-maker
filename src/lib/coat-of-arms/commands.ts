@@ -87,6 +87,8 @@ export type CoatLayerPatch = {
   fontFamily?: TextFontFamily;
   fontStyle?: TextFontStyle;
   fontWeight?: TextFontWeight;
+  underline?: boolean;
+  strokeColor?: string;
   colorReplacements?: Record<string, string>;
   opacity?: number;
   fill?: string;
@@ -97,6 +99,11 @@ export type CoatLayerPatch = {
   path?: TextPathPlacement;
   transform?: CanvasTransform;
 };
+
+export interface CoatPaletteColourReplacement {
+  fromColor: string;
+  toColor: string;
+}
 
 export type CoatProjectCommand =
   | { type: 'add-layer'; assetId: string; rasterVariantId?: CoatRasterVariantId }
@@ -126,9 +133,9 @@ export type CoatProjectCommand =
   | { type: 'set-custom-shield-outline'; layerId: string; path?: string }
   | { type: 'set-background'; assetId: string; motif?: FieldPattern; opacity?: number; fill?: string; gradient?: BackgroundGradient | null }
   | { type: 'set-canvas-size'; width: number; height: number }
-  | { type: 'add-drawing-layer'; path: string; color: string; strokeWidth: number; transform?: CanvasTransform }
+  | { type: 'add-drawing-layer'; path: string; color: string; strokeWidth: number; opacity?: number; transform?: CanvasTransform }
   | { type: 'set-project-name'; name: string }
-  | { type: 'add-text-layer'; text: string; color: string; fontSize: number; fontFamily?: TextFontFamily; fontStyle?: TextFontStyle; fontWeight?: TextFontWeight; alignment: TextAlignment; path: TextPathPlacement; transform?: CanvasTransform }
+  | { type: 'add-text-layer'; text: string; color: string; fontSize: number; fontFamily?: TextFontFamily; fontStyle?: TextFontStyle; fontWeight?: TextFontWeight; underline?: boolean; strokeColor?: string; strokeWidth?: number; alignment: TextAlignment; path: TextPathPlacement; transform?: CanvasTransform }
   | { type: 'remove-text-layer'; layerId: string }
   | { type: 'register-local-upload'; upload: LocalUpload }
   | { type: 'add-local-upload-images'; uploads: LocalUpload[] }
@@ -137,6 +144,7 @@ export type CoatProjectCommand =
   | { type: 'remove-image-layer'; layerId: string }
   | { type: 'replace-layer-colour'; layerId: string; fromColor: string; toColor: string }
   | { type: 'replace-all-colour'; fromColor: string; toColor: string }
+  | { type: 'replace-palette-colours'; replacements: CoatPaletteColourReplacement[] }
   | { type: 'add-custom-palette-color'; color: string }
   | { type: 'remove-custom-palette-color'; color: string };
 
@@ -224,6 +232,8 @@ export function applyProjectCommand(
       return replaceProjectLayerColour(project, command.layerId, command.fromColor, command.toColor);
     case 'replace-all-colour':
       return replaceAllColour(project, command.fromColor, command.toColor);
+    case 'replace-palette-colours':
+      return replacePaletteColours(project, command.replacements);
     case 'add-custom-palette-color':
       return addCustomPaletteColor(project, command.color);
     case 'remove-custom-palette-color':
@@ -706,11 +716,13 @@ function addDrawingLayer(
   assertDrawingPath(command.path);
   assertColor(command.color, 'drawing color');
   assertStrokeWidth(command.strokeWidth);
+  const opacity = command.opacity ?? 1;
+  assertOpacity(opacity, 'drawing opacity');
   const transform = command.transform ?? defaultTransform();
   assertTransform(transform);
   const layer: CoatLayer = {
     id: createLayerId(), type: 'draw', path: command.path, color: command.color,
-    strokeWidth: command.strokeWidth, transform: cloneCanvasTransform(transform), visible: true, locked: false, groupId: null,
+    strokeWidth: command.strokeWidth, opacity, transform: cloneCanvasTransform(transform), visible: true, locked: false, groupId: null,
   };
   return withLayers(project, [...project.layers, layer]);
 }
@@ -726,13 +738,19 @@ function addTextLayer(
 ): CoatProject {
   assertTextLength(command.text);
   assertColor(command.color, 'text layer color');
-  assertPositiveFiniteNumber(command.fontSize, 'text layer font size');
+  assertTextFontSize(command.fontSize);
   const fontFamily = command.fontFamily ?? 'serif';
   const fontStyle = command.fontStyle ?? 'normal';
   const fontWeight = command.fontWeight ?? 'normal';
+  const underline = command.underline ?? false;
+  const strokeColor = command.strokeColor ?? '#000000';
+  const strokeWidth = command.strokeWidth ?? 0;
   assertTextFontFamily(fontFamily);
   assertTextFontStyle(fontStyle);
   assertTextFontWeight(fontWeight);
+  assertTextUnderline(underline);
+  assertColor(strokeColor, 'text stroke color');
+  assertTextStrokeWidth(strokeWidth);
   assertTextAlignment(command.alignment);
   assertTextPath(command.path);
   const transform = command.transform ?? defaultTransform();
@@ -741,7 +759,9 @@ function addTextLayer(
     ...project.layers,
     {
       id: createLayerId(), type: 'text', text: command.text, color: command.color,
-      fontSize: command.fontSize, fontFamily, fontStyle, fontWeight, alignment: command.alignment, path: cloneTextPath(command.path),
+      fontSize: command.fontSize, fontFamily, fontStyle, fontWeight,
+      underline, strokeColor, strokeWidth,
+      alignment: command.alignment, path: cloneTextPath(command.path),
       transform: cloneCanvasTransform(transform), visible: true, locked: false, groupId: null,
     },
   ]);
@@ -835,7 +855,17 @@ function removeImageLayer(project: CoatProject, layerId: string): CoatProject {
 function replaceAllColour(project: CoatProject, fromColor: string, toColor: string): CoatProject {
   assertColor(fromColor, 'source color');
   assertColor(toColor, 'replacement color');
-  const replaceColor = (color: string) => (color.toUpperCase() === fromColor.toUpperCase() ? toColor : color);
+  return replaceProjectColours(project, new Map([[fromColor.toUpperCase(), toColor]]));
+}
+
+function replacePaletteColours(project: CoatProject, replacements: CoatPaletteColourReplacement[]): CoatProject {
+  assertPaletteColourReplacements(replacements);
+  const replacementBySource = new Map(replacements.map(({ fromColor, toColor }) => [fromColor.toUpperCase(), toColor]));
+  return replaceProjectColours(project, replacementBySource);
+}
+
+function replaceProjectColours(project: CoatProject, replacementBySource: ReadonlyMap<string, string>): CoatProject {
+  const replaceColor = (color: string) => replacementBySource.get(color.toUpperCase()) ?? color;
   const recoloredProject = withLayersAndGroups(project, project.layers.map((layer) => {
       if (layer.type === 'shield') {
         return {
@@ -850,6 +880,7 @@ function replaceAllColour(project: CoatProject, fromColor: string, toColor: stri
         return {
           ...layer,
           color: replaceColor(layer.color),
+          ...(layer.type === 'text' && layer.strokeColor ? { strokeColor: replaceColor(layer.strokeColor) } : {}),
           ...('colorReplacements' in layer && layer.colorReplacements ? {
             colorReplacements: Object.fromEntries(Object.entries(layer.colorReplacements).map(([sourceColor, replacementColor]) => [sourceColor, replaceColor(replacementColor)])),
           } : {}),
@@ -1049,7 +1080,7 @@ function assertProjectCommand(command: unknown): asserts command is CoatProjectC
     'add-layer', 'update-layer', 'update-layers', 'remove-layer', 'remove-layers', 'duplicate-layers', 'move-layer', 'set-layer-visibility',
     'set-layer-lock', 'set-layer-display-name', 'group-layers', 'ungroup-layers', 'set-group-opacity', 'align-layer-ids', 'distribute-layer-ids', 'move-layer-ids', 'set-layer-ids-visibility', 'set-layer-ids-lock', 'group-layer-ids', 'ungroup-layer-ids', 'set-layer-ids-opacity', 'resize-layer-ids', 'set-field', 'set-custom-shield-mask', 'set-custom-shield-outline', 'set-background', 'set-canvas-size', 'add-drawing-layer', 'set-project-name',
     'add-text-layer', 'remove-text-layer', 'register-local-upload', 'add-local-upload-images', 'remove-local-upload',
-    'add-image-layer', 'remove-image-layer', 'replace-layer-colour', 'replace-all-colour', 'add-custom-palette-color',
+    'add-image-layer', 'remove-image-layer', 'replace-layer-colour', 'replace-all-colour', 'replace-palette-colours', 'add-custom-palette-color',
     'remove-custom-palette-color',
   ]);
   if (!validTypes.has(command.type as CoatProjectCommand['type'])) {
@@ -1083,9 +1114,9 @@ function assertProjectCommand(command: unknown): asserts command is CoatProjectC
     'set-custom-shield-outline': ['type', 'layerId', 'path'],
     'set-background': ['type', 'assetId', 'motif', 'opacity', 'fill', 'gradient'],
     'set-canvas-size': ['type', 'width', 'height'],
-    'add-drawing-layer': ['type', 'path', 'color', 'strokeWidth', 'transform'],
+    'add-drawing-layer': ['type', 'path', 'color', 'strokeWidth', 'opacity', 'transform'],
     'set-project-name': ['type', 'name'],
-    'add-text-layer': ['type', 'text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'alignment', 'path', 'transform'],
+    'add-text-layer': ['type', 'text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'underline', 'strokeColor', 'strokeWidth', 'alignment', 'path', 'transform'],
     'remove-text-layer': ['type', 'layerId'],
     'register-local-upload': ['type', 'upload'],
     'add-local-upload-images': ['type', 'uploads'],
@@ -1094,6 +1125,7 @@ function assertProjectCommand(command: unknown): asserts command is CoatProjectC
     'remove-image-layer': ['type', 'layerId'],
     'replace-layer-colour': ['type', 'layerId', 'fromColor', 'toColor'],
     'replace-all-colour': ['type', 'fromColor', 'toColor'],
+    'replace-palette-colours': ['type', 'replacements'],
     'add-custom-palette-color': ['type', 'color'],
     'remove-custom-palette-color': ['type', 'color'],
   };
@@ -1107,8 +1139,8 @@ function assertLayerPatch(layer: CoatLayer, patch: unknown): asserts patch is Co
   const allowedPatchKeys: Record<CoatLayer['type'], readonly string[]> = {
     background: ['assetId', 'motif', 'opacity', 'fill'], shield: ['assetId', 'field', 'transform', 'colorReplacements'],
     ordinary: ['assetId', 'color', 'colorReplacements', 'transform'], charge: ['assetId', 'color', 'colorReplacements', 'transform'], top: ['assetId', 'color', 'colorReplacements', 'transform'],
-    draw: ['pathData', 'color', 'strokeWidth', 'transform'],
-    image: ['opacity', 'transform'], text: ['text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'alignment', 'path', 'transform'],
+    draw: ['pathData', 'color', 'strokeWidth', 'opacity', 'transform'],
+    image: ['opacity', 'transform'], text: ['text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'underline', 'strokeColor', 'strokeWidth', 'alignment', 'path', 'transform'],
   };
   for (const patchKey of Object.keys(patch)) {
     if (!allowedPatchKeys[layer.type].includes(patchKey)) {
@@ -1123,13 +1155,18 @@ function assertLayerPatch(layer: CoatLayer, patch: unknown): asserts patch is Co
   }
   if ('field' in patch) assertCoatField(patch.field);
   if ('text' in patch) assertTextLength(patch.text);
-  if ('fontSize' in patch) assertPositiveFiniteNumber(patch.fontSize, 'text layer font size');
+  if ('fontSize' in patch) assertTextFontSize(patch.fontSize);
   if ('fontFamily' in patch) assertTextFontFamily(patch.fontFamily);
   if ('fontStyle' in patch) assertTextFontStyle(patch.fontStyle);
   if ('fontWeight' in patch) assertTextFontWeight(patch.fontWeight);
-  if ('opacity' in patch) assertOpacity(patch.opacity, `${layer.type} layer opacity`);
+  if ('underline' in patch) assertTextUnderline(patch.underline);
+  if ('strokeColor' in patch) assertColor(patch.strokeColor, 'text stroke color');
+  if ('opacity' in patch) assertOpacity(patch.opacity, layer.type === 'draw' ? 'drawing opacity' : `${layer.type} layer opacity`);
   if ('fill' in patch) assertColor(patch.fill, 'background fill');
-  if ('strokeWidth' in patch) assertStrokeWidth(patch.strokeWidth);
+  if ('strokeWidth' in patch) {
+    if (layer.type === 'text') assertTextStrokeWidth(patch.strokeWidth);
+    else assertStrokeWidth(patch.strokeWidth);
+  }
   if ('pathData' in patch) assertDrawingPath(patch.pathData);
   if ('motif' in patch) assertFieldPattern(patch.motif);
   if ('alignment' in patch) assertTextAlignment(patch.alignment);
@@ -1160,8 +1197,8 @@ function assertCoatLayer(layer: unknown, uploadById: Map<string, LocalUpload>): 
       assertExactKeys(layer, ['id', 'type', 'assetId', 'rasterVariantId', 'color', 'colorReplacements', 'transform', 'visible', 'locked', 'groupId', 'displayName'], `${layer.type} layer`);
       assertNonEmptyString(layer.assetId, `${layer.type} layer asset id`); assertLayerAsset(layer.type, layer.assetId); if ('rasterVariantId' in layer) assertLayerRasterVariant(layer.assetId, layer.rasterVariantId); assertColor(layer.color, 'layer color'); if ('colorReplacements' in layer) assertAssetColorReplacements(layer.assetId, layer.colorReplacements); assertTransform(layer.transform); return;
     case 'draw':
-      assertExactKeys(layer, ['id', 'type', 'path', 'color', 'strokeWidth', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'draw layer');
-      assertDrawingPath(layer.path); assertColor(layer.color, 'drawing color'); assertStrokeWidth(layer.strokeWidth); assertTransform(layer.transform); return;
+      assertExactKeys(layer, ['id', 'type', 'path', 'color', 'strokeWidth', 'opacity', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'draw layer');
+      assertDrawingPath(layer.path); assertColor(layer.color, 'drawing color'); assertStrokeWidth(layer.strokeWidth); if ('opacity' in layer) assertOpacity(layer.opacity, 'drawing opacity'); assertTransform(layer.transform); return;
     case 'image':
       assertExactKeys(layer, ['id', 'type', 'source', 'uploadId', 'mimeType', 'opacity', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'image layer');
       assertNonEmptyString(layer.uploadId, 'local upload layer id');
@@ -1171,8 +1208,8 @@ function assertCoatLayer(layer: unknown, uploadById: Map<string, LocalUpload>): 
       assertOpacity(layer.opacity, 'image layer opacity');
       assertTransform(layer.transform); return;
     case 'text':
-      assertExactKeys(layer, ['id', 'type', 'text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'alignment', 'path', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'text layer');
-      assertTextLength(layer.text); assertColor(layer.color, 'text layer color'); assertPositiveFiniteNumber(layer.fontSize, 'text layer font size'); if ('fontFamily' in layer) assertTextFontFamily(layer.fontFamily); if ('fontStyle' in layer) assertTextFontStyle(layer.fontStyle); if ('fontWeight' in layer) assertTextFontWeight(layer.fontWeight); assertTextAlignment(layer.alignment); assertTextPath(layer.path); assertTransform(layer.transform); return;
+      assertExactKeys(layer, ['id', 'type', 'text', 'color', 'fontSize', 'underline', 'strokeColor', 'strokeWidth', 'fontFamily', 'fontStyle', 'fontWeight', 'alignment', 'path', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'text layer');
+      assertTextLength(layer.text); assertColor(layer.color, 'text layer color'); assertTextFontSize(layer.fontSize); if ('underline' in layer) assertTextUnderline(layer.underline); if ('strokeColor' in layer) assertColor(layer.strokeColor, 'text stroke color'); if ('strokeWidth' in layer) assertTextStrokeWidth(layer.strokeWidth); if ('fontFamily' in layer) assertTextFontFamily(layer.fontFamily); if ('fontStyle' in layer) assertTextFontStyle(layer.fontStyle); if ('fontWeight' in layer) assertTextFontWeight(layer.fontWeight); assertTextAlignment(layer.alignment); assertTextPath(layer.path); assertTransform(layer.transform); return;
   }
 }
 
@@ -1528,14 +1565,14 @@ function assertFieldOutline(outline: unknown): void {
   assertExactKeys(outline, ['visible', 'color', 'width'], 'shield outline');
   if (typeof outline.visible !== 'boolean') throw new Error(`Invalid shield outline visibility: ${String(outline.visible)}`);
   assertColor(outline.color, 'shield outline color');
-  if (typeof outline.width !== 'number' || !Number.isFinite(outline.width) || outline.width < 0.25 || outline.width > 10) {
+  if (typeof outline.width !== 'number' || !Number.isFinite(outline.width) || outline.width < 0 || outline.width > 25) {
     throw new Error(`Invalid shield outline width: ${String(outline.width)}`);
   }
 }
 
 function assertTransform(transform: unknown): void {
   if (!isRecord(transform)) throw new Error(`Invalid layer transform: ${String(transform)}`);
-  assertExactKeys(transform, ['x', 'y', 'scale', 'scaleX', 'scaleY', 'rotation', 'flipHorizontal', 'flipVertical', 'crop', 'fieldPlacement', 'fieldRegionId', 'clipToField', 'opacity'], 'layer transform');
+  assertExactKeys(transform, ['x', 'y', 'scale', 'scaleX', 'scaleY', 'rotation', 'flipHorizontal', 'flipVertical', 'crop', 'fieldPlacement', 'fieldRegionId', 'fieldShieldLayerId', 'clipToField', 'opacity'], 'layer transform');
   for (const transformKey of ['x', 'y', 'scale', 'rotation'] as const) {
     if (typeof transform[transformKey] !== 'number' || !Number.isFinite(transform[transformKey])) {
       throw new Error(`Invalid layer transform ${transformKey}: ${String(transform[transformKey])}`);
@@ -1553,6 +1590,7 @@ function assertTransform(transform: unknown): void {
   if ('crop' in transform) assertCanvasCrop(transform.crop);
   if ('fieldPlacement' in transform && !validFieldPlacements.includes(transform.fieldPlacement as FieldPlacement)) throw new Error(`Invalid field placement: ${String(transform.fieldPlacement)}`);
   if ('fieldRegionId' in transform && !validFieldRegionIds.includes(transform.fieldRegionId as FieldRegionId)) throw new Error(`Invalid field region id: ${String(transform.fieldRegionId)}`);
+  if ('fieldShieldLayerId' in transform) assertNonEmptyString(transform.fieldShieldLayerId, 'field shield layer id');
   if ('clipToField' in transform && typeof transform.clipToField !== 'boolean') throw new Error(`Invalid clip to field value: ${String(transform.clipToField)}`);
   if ('opacity' in transform) assertOpacity(transform.opacity, 'layer transform opacity');
 }
@@ -1580,7 +1618,7 @@ function assertCropCoordinate(value: unknown, label: string): number {
 }
 
 function assertStrokeWidth(strokeWidth: unknown): asserts strokeWidth is number {
-  if (typeof strokeWidth !== 'number' || !Number.isFinite(strokeWidth) || strokeWidth < 0.5 || strokeWidth > 20) {
+  if (typeof strokeWidth !== 'number' || !Number.isFinite(strokeWidth) || strokeWidth < 1 || strokeWidth > 100) {
     throw new Error(`Invalid drawing stroke width: ${String(strokeWidth)}`);
   }
 }
@@ -1628,6 +1666,23 @@ function assertTextLength(text: unknown): asserts text is string {
   }
 }
 
+function assertTextFontSize(fontSize: unknown): asserts fontSize is number {
+  if (typeof fontSize !== 'number' || !Number.isFinite(fontSize) || !Number.isInteger(fontSize) || fontSize < 8 || fontSize > 200) {
+    throw new Error(`Invalid text font size: ${String(fontSize)}`);
+  }
+}
+
+function assertTextUnderline(underline: unknown): asserts underline is boolean {
+  if (typeof underline !== 'boolean') throw new Error(`Invalid text underline: ${String(underline)}`);
+}
+
+function assertTextStrokeWidth(strokeWidth: unknown): asserts strokeWidth is number {
+  if (typeof strokeWidth !== 'number' || !Number.isFinite(strokeWidth) || strokeWidth < 0) {
+    throw new Error(`Invalid text stroke width: ${String(strokeWidth)}`);
+  }
+  if (!Number.isInteger(strokeWidth * 2)) throw new Error(`Invalid text stroke width step: ${String(strokeWidth)}`);
+}
+
 function assertGroupId(groupId: unknown): asserts groupId is string {
   if (typeof groupId !== 'string' || !/^[A-Za-z0-9_-]{1,120}$/.test(groupId)) {
     throw new Error(`Invalid layer group id: ${String(groupId)}`);
@@ -1636,6 +1691,22 @@ function assertGroupId(groupId: unknown): asserts groupId is string {
 
 function assertColor(color: unknown, label: string): asserts color is string {
   if (typeof color !== 'string' || !/^#[0-9A-Fa-f]{6}$/.test(color)) throw new Error(`Invalid ${label}: ${String(color)}`);
+}
+
+function assertPaletteColourReplacements(replacements: unknown): asserts replacements is CoatPaletteColourReplacement[] {
+  if (!Array.isArray(replacements) || replacements.length === 0) {
+    throw new Error(`Invalid palette colour replacements: ${String(replacements)}`);
+  }
+  const sourceColours = new Set<string>();
+  for (const replacement of replacements) {
+    if (!isRecord(replacement)) throw new Error(`Invalid palette colour replacement: ${String(replacement)}`);
+    assertExactKeys(replacement, ['fromColor', 'toColor'], 'palette colour replacement');
+    assertColor(replacement.fromColor, 'palette source color');
+    assertColor(replacement.toColor, 'palette replacement color');
+    const sourceColour = replacement.fromColor.toUpperCase();
+    if (sourceColours.has(sourceColour)) throw new Error(`Duplicate palette source color: ${replacement.fromColor}`);
+    sourceColours.add(sourceColour);
+  }
 }
 
 function assertBackgroundGradient(gradient: unknown): asserts gradient is BackgroundGradient {
@@ -1782,14 +1853,36 @@ function assertTextPath(path: unknown): asserts path is TextPathPlacement {
     return;
   }
   if (path.mode === 'motto' || path.mode === 'curve') {
-    assertExactKeys(path, ['mode', 'curve'], 'text path');
-    if (path.curve === 'upper' || path.curve === 'lower') return;
+    assertExactKeys(path, ['mode', 'curve', 'controlX', 'controlY'], 'text path');
+    if (path.curve !== 'upper' && path.curve !== 'lower') {
+      throw new Error(`Invalid text path: ${JSON.stringify(path)}`);
+    }
+    const hasControlX = 'controlX' in path;
+    const hasControlY = 'controlY' in path;
+    if (hasControlX !== hasControlY) {
+      throw new Error(`Invalid text path control point: ${JSON.stringify(path)}`);
+    }
+    if (hasControlX) {
+      assertTextPathNumber(path.controlX, 'control x', 0, 100);
+      assertTextPathNumber(path.controlY, 'control y', 0, 110);
+    }
+    return;
   }
   if (path.mode === 'ring') {
-    assertExactKeys(path, ['mode', 'curve'], 'text path');
-    if (path.curve === 'clockwise' || path.curve === 'counterclockwise') return;
+    assertExactKeys(path, ['mode', 'curve', 'radius'], 'text path');
+    if (path.curve !== 'clockwise' && path.curve !== 'counterclockwise') {
+      throw new Error(`Invalid text path: ${JSON.stringify(path)}`);
+    }
+    if ('radius' in path) assertTextPathNumber(path.radius, 'radius', 10, 50);
+    return;
   }
   throw new Error(`Invalid text path: ${JSON.stringify(path)}`);
+}
+
+function assertTextPathNumber(value: unknown, label: string, minimum: number, maximum: number): asserts value is number {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < minimum || value > maximum) {
+    throw new Error(`Invalid text path ${label}: ${String(value)}; expected ${minimum}-${maximum}`);
+  }
 }
 
 function assertNonEmptyString(value: unknown, label: string): asserts value is string {
@@ -1850,7 +1943,7 @@ function cloneLayerForDuplicate(layer: CoatLayer, newLayerId: string): CoatLayer
     case 'top':
       return { ...metadata, type: layer.type, assetId: layer.assetId, ...(layer.rasterVariantId ? { rasterVariantId: layer.rasterVariantId } : {}), color: layer.color, ...(layer.colorReplacements ? { colorReplacements: { ...layer.colorReplacements } } : {}), transform: cloneCanvasTransform(layer.transform) };
     case 'draw':
-      return { ...metadata, type: 'draw', path: layer.path, color: layer.color, strokeWidth: layer.strokeWidth, transform: cloneCanvasTransform(layer.transform) };
+      return { ...metadata, type: 'draw', path: layer.path, color: layer.color, strokeWidth: layer.strokeWidth, ...(layer.opacity === undefined ? {} : { opacity: layer.opacity }), transform: cloneCanvasTransform(layer.transform) };
     case 'image':
       return {
         ...metadata, type: 'image', source: 'local-upload', uploadId: layer.uploadId,
@@ -1859,6 +1952,9 @@ function cloneLayerForDuplicate(layer: CoatLayer, newLayerId: string): CoatLayer
     case 'text':
       return {
         ...metadata, type: 'text', text: layer.text, color: layer.color, fontSize: layer.fontSize,
+        ...(layer.underline === undefined ? {} : { underline: layer.underline }),
+        ...(layer.strokeColor === undefined ? {} : { strokeColor: layer.strokeColor }),
+        ...(layer.strokeWidth === undefined ? {} : { strokeWidth: layer.strokeWidth }),
         ...(layer.fontFamily ? { fontFamily: layer.fontFamily } : {}),
         ...(layer.fontStyle ? { fontStyle: layer.fontStyle } : {}),
         ...(layer.fontWeight ? { fontWeight: layer.fontWeight } : {}),

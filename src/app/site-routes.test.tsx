@@ -500,7 +500,8 @@ describe('coat maker routes', () => {
     expect(within(sharedTopbar).getByRole('link', { name: localeSwitchLabel }).getAttribute('href')).toBe(localeSwitchHref);
     const siteFooter = screen.getByRole('contentinfo');
     expect(within(siteFooter).getByRole('navigation', { name: PageComponent === ChineseCoatOfArmsMakerPage ? '页脚导航' : 'Footer navigation' })).toBeDefined();
-    expect(screen.getByRole('button', { name: exportLabel })).not.toBeNull();
+    const exportTrigger = screen.getByRole('button', { name: exportLabel });
+    expect(exportTrigger.getAttribute('aria-controls')).toBe('coat-export-options');
     expect(screen.queryByText(prohibitedReferenceBrand, { exact: false })).toBeNull();
   });
 });

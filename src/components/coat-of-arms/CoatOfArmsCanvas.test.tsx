@@ -1,12 +1,14 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, createEvent, fireEvent, render, screen } from '@testing-library/react';
 import { createDefaultProject } from '@/lib/coat-of-arms/assets';
 import { applyProjectCommand } from '@/lib/coat-of-arms/commands';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CoatProject } from '@/lib/coat-of-arms/types';
 import { CoatOfArmsCanvas } from './CoatOfArmsCanvas';
+import { TextMottoPanel } from './TextMottoPanel';
+import { TEXT_CREATION_DRAG_MIME } from './text-creation-drag';
 
 let nextId = 0;
 
@@ -79,16 +81,75 @@ function getTransformLayer(layerId: string) {
   return layer;
 }
 
+function createTextDragDataTransfer(kind: string): DataTransfer {
+  const values = new Map<string, string>();
+  values.set(TEXT_CREATION_DRAG_MIME, kind);
+  return {
+    dropEffect: 'none',
+    effectAllowed: 'all',
+    files: [],
+    items: [],
+    types: [TEXT_CREATION_DRAG_MIME],
+    clearData: () => values.clear(),
+    getData: (format: string) => values.get(format) ?? '',
+    setData: (format: string, value: string) => values.set(format, value),
+    setDragImage: () => undefined,
+  } as unknown as DataTransfer;
+}
+
+function renderTextDragSurface() {
+  useCoatProjectStore.getState().replaceProject(createCanvasProject());
+  const result = render(
+    <>
+      <TextMottoPanel locale="en" />
+      <CoatOfArmsCanvas locale="en" />
+    </>,
+  );
+  const canvas = screen.getByRole('application', { name: 'Coat of arms canvas' });
+  vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
+    x: 0, y: 0, left: 0, top: 0,
+    right: 100, bottom: 110, width: 100, height: 110,
+    toJSON: () => ({}),
+  });
+  return { ...result, canvas };
+}
+
 describe('CoatOfArmsCanvas', () => {
   beforeEach(() => {
     nextId = 0;
     vi.stubGlobal('crypto', { randomUUID: () => `generated-${nextId++}` });
-    useCoatProjectStore.getState().setDrawingSettings({ isActive: false, color: '#004E89', strokeWidth: 3 });
+    useCoatProjectStore.getState().setDrawingSettings({ isActive: false, color: '#004E89', strokeWidth: 3, opacity: 1 });
   });
 
   afterEach(() => {
     cleanup();
     vi.unstubAllGlobals();
+  });
+
+  it('creates and selects text at the scene position when a text card is dropped on the canvas', () => {
+    const { canvas } = renderTextDragSurface();
+    const card = screen.getByRole('button', { name: 'Curved Text' });
+    const dataTransfer = createTextDragDataTransfer('curved');
+
+    fireEvent.dragStart(card, { dataTransfer });
+    fireEvent.dragOver(canvas, { dataTransfer });
+    const dropEvent = createEvent.drop(canvas, { dataTransfer });
+    Object.defineProperties(dropEvent, {
+      clientX: { configurable: true, value: 20 },
+      clientY: { configurable: true, value: 30 },
+    });
+    fireEvent(canvas, dropEvent);
+
+    const droppedLayer = useCoatProjectStore.getState().project.layers.at(-1);
+    expect(droppedLayer).toMatchObject({
+      type: 'text',
+      path: { mode: 'curve', curve: 'upper' },
+      transform: { x: -30, scale: 1, rotation: 0 },
+    });
+    if (!droppedLayer || droppedLayer.type === 'background') throw new Error('Expected dropped text layer');
+    expect(droppedLayer.transform.y).toBeCloseTo(-25);
+    expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([droppedLayer?.id]);
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
   });
 
   it('previews a drag locally and records one update command when the pointer is released', () => {
@@ -348,7 +409,7 @@ describe('CoatOfArmsCanvas', () => {
   });
 
   it('adds one selected local vector drawing after a freehand canvas stroke', () => {
-    useCoatProjectStore.getState().setDrawingSettings({ isActive: true, color: '#004E89', strokeWidth: 3 });
+    useCoatProjectStore.getState().setDrawingSettings({ isActive: true, color: '#004E89', strokeWidth: 3, opacity: 1 });
     const { canvas } = renderCanvas();
 
     fireEvent.pointerDown(canvas, { clientX: 10, clientY: 20, pointerId: 4 });
@@ -410,6 +471,55 @@ describe('CoatOfArmsCanvas', () => {
       transform: { scale: 1.25, rotation: 90 },
     });
     expect(useCoatProjectStore.getState().history.past).toHaveLength(2);
+  });
+
+  it('shows a bezier control handle and dispatches the reshaped curve through the path command', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'curve', curve: 'upper' },
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected curved text layer');
+    const { canvas } = renderCanvas(project);
+    const textElement = canvas.querySelector(`[data-layer-id="${textLayer.id}"]`);
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected curved text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    const handle = screen.getByRole('button', { name: 'Adjust curved text control point' });
+    fireEvent.pointerDown(handle, { clientX: 50, clientY: 30, pointerId: 2 });
+    fireEvent.pointerMove(canvas, { clientX: 50, clientY: 45, pointerId: 2 });
+    expect((useCoatProjectStore.getState().project.layers.at(-1) as Extract<CoatProject['layers'][number], { type: 'text' }>).path).toEqual({ mode: 'curve', curve: 'upper' });
+    fireEvent.pointerUp(canvas, { clientX: 50, clientY: 45, pointerId: 2 });
+
+    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
+      path: { mode: 'curve', curve: 'upper', controlX: 50, controlY: 45 },
+    });
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('shows a ring radius handle and dispatches the adjusted radius through the path command', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'RING', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'ring', curve: 'clockwise' },
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected ring text layer');
+    const { canvas } = renderCanvas(project);
+    const textElement = canvas.querySelector(`[data-layer-id="${textLayer.id}"]`);
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected ring text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    const handle = screen.getByRole('button', { name: 'Adjust ring text radius' });
+    fireEvent.pointerDown(handle, { clientX: 50, clientY: 10, pointerId: 2 });
+    fireEvent.pointerMove(canvas, { clientX: 50, clientY: 20, pointerId: 2 });
+    fireEvent.pointerUp(canvas, { clientX: 50, clientY: 20, pointerId: 2 });
+
+    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
+      path: { mode: 'ring', curve: 'clockwise', radius: 30 },
+    });
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
   });
 
   it('does not expose crop handles on a selected layer', () => {
@@ -590,5 +700,93 @@ describe('CoatOfArmsCanvas', () => {
     expect(screen.getByLabelText('My Coat of Arms')).toBeDefined();
     expect(screen.getByText(/Arrow keys move selected layers/)).toBeDefined();
     expect(screen.getByText(/Copy, paste, group, ungroup/)).toBeDefined();
+  });
+
+  it('opens straight text for inline editing and commits on Enter or blur', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'ORIGINAL', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'none' },
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected text layer');
+    const { canvas } = renderCanvas({
+      ...project,
+      layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-1' } : layer),
+    });
+
+    const textElement = canvas.querySelector('[data-layer-id="text-1"]');
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected text scene element');
+    fireEvent.doubleClick(textElement);
+    const editor = screen.getByRole('textbox', { name: 'Edit text' });
+    fireEvent.change(editor, { target: { value: 'COMMITTED' } });
+    fireEvent.keyDown(editor, { key: 'Enter' });
+
+    expect(getLayer('text-1')).toMatchObject({ type: 'text', text: 'COMMITTED' });
+    expect(screen.queryByRole('textbox', { name: 'Edit text' })).toBeNull();
+
+    fireEvent.doubleClick(canvas.querySelector('[data-layer-id="text-1"]') as SVGElement);
+    const cancelledEditor = screen.getByRole('textbox', { name: 'Edit text' });
+    fireEvent.change(cancelledEditor, { target: { value: 'CANCELLED' } });
+    fireEvent.keyDown(cancelledEditor, { key: 'Escape' });
+    expect(getLayer('text-1')).toMatchObject({ type: 'text', text: 'COMMITTED' });
+
+    fireEvent.doubleClick(canvas.querySelector('[data-layer-id="text-1"]') as SVGElement);
+    const blurredEditor = screen.getByRole('textbox', { name: 'Edit text' });
+    fireEvent.change(blurredEditor, { target: { value: 'BLURRED' } });
+    fireEvent.blur(blurredEditor);
+    expect(getLayer('text-1')).toMatchObject({ type: 'text', text: 'BLURRED' });
+  });
+
+  it('keeps inline editing open and reports empty text validation errors', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'ORIGINAL', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'none' },
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected text layer');
+    const { canvas } = renderCanvas({ ...project, layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-empty' } : layer) });
+    fireEvent.doubleClick(canvas.querySelector('[data-layer-id="text-empty"]') as SVGElement);
+    const editor = screen.getByRole('textbox', { name: 'Edit text' });
+    fireEvent.change(editor, { target: { value: '' } });
+    fireEvent.keyDown(editor, { key: 'Enter' });
+
+    expect(screen.getByRole('alert').textContent).toMatch(/text layer text/i);
+    expect(screen.getByRole('textbox', { name: 'Edit text' })).toBeDefined();
+    expect(getLayer('text-empty')).toMatchObject({ text: 'ORIGINAL' });
+  });
+
+  it('keeps inline editing open and reports text over the 240-character limit', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'ORIGINAL', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'none' },
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected text layer');
+    const { canvas } = renderCanvas({ ...project, layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-long' } : layer) });
+    fireEvent.doubleClick(canvas.querySelector('[data-layer-id="text-long"]') as SVGElement);
+    const editor = screen.getByRole('textbox', { name: 'Edit text' });
+    expect(editor.getAttribute('maxlength')).toBe('240');
+    fireEvent.change(editor, { target: { value: 'A'.repeat(241) } });
+    fireEvent.keyDown(editor, { key: 'Enter' });
+
+    expect(screen.getByRole('alert').textContent).toContain('241');
+    expect(screen.getByRole('textbox', { name: 'Edit text' })).toBeDefined();
+    expect(getLayer('text-long')).toMatchObject({ text: 'ORIGINAL' });
+  });
+
+  it('clears inline editing when its text layer is deleted', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'ORIGINAL', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'none' },
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected text layer');
+    const { canvas } = renderCanvas({ ...project, layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-deleted' } : layer) });
+    fireEvent.doubleClick(canvas.querySelector('[data-layer-id="text-deleted"]') as SVGElement);
+    expect(screen.getByRole('textbox', { name: 'Edit text' })).toBeDefined();
+    act(() => useCoatProjectStore.getState().dispatch({ type: 'remove-layer', layerId: 'text-deleted' }));
+
+    expect(screen.queryByRole('textbox', { name: 'Edit text' })).toBeNull();
+    expect(screen.queryByRole('alert')).toBeNull();
   });
 });

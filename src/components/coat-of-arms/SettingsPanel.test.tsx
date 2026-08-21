@@ -22,14 +22,14 @@ describe('SettingsPanel', () => {
     useEditorPreferencesStore.setState({ preferences: getDefaultEditorPreferences() });
   });
 
-  it('applies the Instagram Story canvas preset and persists that browser-local preference', () => {
+  it('applies the 3:5 canvas preset and persists that browser-local preference', () => {
     render(<SettingsPanel locale="en" />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Instagram Story / TikTok' }));
+    fireEvent.click(screen.getByRole('button', { name: '3:5 (Germany, Nicaragua, Lithuania)' }));
 
-    expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1080, height: 1920 });
+    expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1800, height: 1080 });
     expect(JSON.parse(window.localStorage.getItem(EDITOR_PREFERENCES_STORAGE_KEY) ?? '')).toMatchObject({
-      canvasPreset: 'instagram-story',
+      canvasPreset: '3-5',
     });
   });
 
@@ -60,9 +60,9 @@ describe('SettingsPanel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
     fireEvent.change(screen.getByLabelText('Quality'), { target: { value: '3' } });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Instagram Story / TikTok' }));
+    fireEvent.click(screen.getByRole('button', { name: '3:5 (Germany, Nicaragua, Lithuania)' }));
 
-    expect(loadEditorPreferences()).toMatchObject({ canvasPreset: 'instagram-story', jpegQuality: 'ultra' });
+    expect(loadEditorPreferences()).toMatchObject({ canvasPreset: '3-5', jpegQuality: 'ultra' });
   });
 
   it('resets the unsaved editor project and local canvas preference', () => {
@@ -72,7 +72,7 @@ describe('SettingsPanel', () => {
       version: 1,
       appearance: 'dark',
       colorPickerMode: 'simple',
-      canvasPreset: 'instagram-story',
+      canvasPreset: '3-5',
       jpegQuality: 'high',
       customPalette: [],
       backgroundGradient: null,
@@ -106,19 +106,19 @@ describe('SettingsPanel', () => {
     expect(useEditorPreferencesStore.getState().preferences.colorPickerMode).toBe('advanced');
   });
 
-  it('applies the Facebook Image canvas preset', () => {
+  it('applies the 2:3 canvas preset', () => {
     render(<SettingsPanel locale="en" />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Facebook Image' }));
+    fireEvent.click(screen.getByRole('button', { name: '2:3 (Japan, France, Kenya)' }));
 
-    expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1200, height: 630 });
+    expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1620, height: 1080 });
   });
 
-  it('marks the Instagram Story preset as pressed after it is applied', () => {
+  it('marks the 3:5 canvas preset as pressed after it is applied', () => {
     render(<SettingsPanel locale="en" />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Instagram Story / TikTok' }));
+    fireEvent.click(screen.getByRole('button', { name: '3:5 (Germany, Nicaragua, Lithuania)' }));
 
-    expect(screen.getByRole('button', { name: 'Instagram Story / TikTok' }).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByRole('button', { name: '3:5 (Germany, Nicaragua, Lithuania)' }).getAttribute('aria-pressed')).toBe('true');
   });
 });

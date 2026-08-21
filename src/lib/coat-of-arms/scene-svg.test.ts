@@ -152,7 +152,7 @@ describe('coat scene SVG renderer', () => {
 
     const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
 
-    expect(svg).toContain('font-family="&quot;Old English Text MT&quot;, &quot;Lucida Blackletter&quot;, serif"');
+    expect(svg).toContain('font-family="serif"');
     expect(svg).toContain('font-style="italic"');
     expect(svg).toContain('font-weight="bold"');
   });
@@ -512,6 +512,36 @@ describe('coat scene SVG renderer', () => {
 
     expect(svg).toContain('A &lt; B &amp; C');
     expect(svg).not.toContain('A < B');
+  });
+
+  it('renders underline and stroke attributes for text layers', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'STYLED', color: '#B11F24', fontSize: 40,
+      underline: true, strokeColor: '#111111', strokeWidth: 2.5,
+      alignment: 'center', path: { mode: 'none' },
+    } as never);
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('text-decoration="underline"');
+    expect(svg).toContain('stroke="#111111"');
+    expect(svg).toContain(`stroke-width="${2.5 / 7}"`);
+  });
+
+  it('renders edited bezier control points and ring radii from the persisted text path model', () => {
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'curve', curve: 'upper', controlX: 38, controlY: 44 },
+    });
+    project = applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'RING', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'ring', curve: 'clockwise', radius: 28 },
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('M10 72 Q38 44 90 72');
+    expect(svg).toContain('M50 22 A28 28 0 1 1 49.99 22');
   });
 
   it('renders independent horizontal and vertical layer scaling', () => {

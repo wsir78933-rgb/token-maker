@@ -128,9 +128,10 @@ describe('CoatOfArmsPanels', () => {
     expect(screen.getByRole('heading', { name: 'Custom Shield Uploads' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Select escutcheon: Heater shield' })).toBeDefined();
     expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
-    expect(screen.getByRole('button', { name: 'Add motto' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Text' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Curved Text' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Ring Text' })).toBeDefined();
     expect(screen.getByRole('list', { name: 'Coat layers' })).toBeDefined();
-    expect((screen.getByLabelText('Motto text') as HTMLInputElement).value).toBe('FORTUNE FAVOURS');
   });
 
   it('uses Chinese-only panel labels and accessible controls', () => {
@@ -140,14 +141,17 @@ describe('CoatOfArmsPanels', () => {
     expect(screen.getByRole('heading', { name: '自定义盾形上传' })).toBeDefined();
     expect(screen.getByRole('button', { name: '选择盾形：熨斗盾' })).toBeDefined();
     expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
-    expect(screen.getByRole('button', { name: '添加格言' })).toBeDefined();
+    expect(screen.getByRole('button', { name: '文字' })).toBeDefined();
+    expect(screen.getByRole('button', { name: '弧形文字' })).toBeDefined();
+    expect(screen.getByRole('button', { name: '环形文字' })).toBeDefined();
     expect(screen.getByRole('list', { name: '徽章图层' })).toBeDefined();
   });
 
-  it('uses a Chinese default motto rather than the English default', () => {
+  it('uses Chinese text creation cards rather than English card labels', () => {
     renderPanels('zh');
 
-    expect((screen.getByLabelText('格言文字') as HTMLInputElement).value).toBe('勇气与荣耀');
+    expect(screen.getByRole('button', { name: '文字' })).toBeDefined();
+    expect(screen.queryByRole('button', { name: 'Text' })).toBeNull();
   });
 
   it('matches the displayed local upload limit before reading a file', () => {
@@ -276,12 +280,11 @@ describe('CoatOfArmsPanels', () => {
     fireEvent.change(screen.getByLabelText(/background motif/i), { target: { value: 'dots' } });
     fireEvent.click(screen.getByLabelText(/transparent export background/i));
     fireEvent.click(screen.getByLabelText(/background visible/i));
-    fireEvent.change(screen.getByLabelText(/motto text/i), { target: { value: 'FORTUNE' } });
-    fireEvent.click(screen.getByRole('button', { name: /add motto/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'Text' }));
 
     expect(getLayer(shield.id)).toMatchObject({ assetId: 'round-shield' });
     expect(useCoatProjectStore.getState().project.layers[0]).toMatchObject({ type: 'background', motif: 'dots', opacity: 0, visible: false });
-    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'text', text: 'FORTUNE' });
+    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'text', text: 'Double-click to edit' });
   });
 
   it('exposes a direct local custom shield upload control', () => {
@@ -380,16 +383,14 @@ describe('CoatOfArmsPanels', () => {
     expect(useCoatProjectStore.getState().project.layers[0]).toMatchObject({ type: 'background', motif: 'papelonny' });
   });
 
-  it('shows command validation errors from invalid colour and text inputs', () => {
+  it('shows command validation errors from an invalid custom colour input', () => {
     renderPanels();
 
     fireEvent.change(screen.getByLabelText(/custom palette colour/i), { target: { value: 'not-a-colour' } });
     fireEvent.click(screen.getByRole('button', { name: /save custom colour/i }));
     expect(screen.getByRole('alert').textContent).toMatch(/not-a-colour/i);
 
-    fireEvent.change(screen.getByLabelText(/typography size/i), { target: { value: '0' } });
-    fireEvent.click(screen.getByRole('button', { name: /add motto/i }));
-    expect(screen.getAllByRole('alert').at(-1)?.textContent).toMatch(/0/);
+    expect(screen.queryByLabelText(/typography size/i)).toBeNull();
   });
 
   it('keeps Chinese panel validation errors localized while preserving the invalid value', () => {
@@ -404,16 +405,13 @@ describe('CoatOfArmsPanels', () => {
     expect(alert.textContent).not.toContain('Invalid custom palette color');
   });
 
-  it('creates a ring text layer with its chosen typography controls', () => {
+  it('creates a ring text layer from the Ring Text card', () => {
     renderPanels();
 
-    fireEvent.change(screen.getByLabelText(/motto text/i), { target: { value: 'RING' } });
-    fireEvent.change(screen.getByLabelText(/typography size/i), { target: { value: '32' } });
-    fireEvent.change(screen.getByLabelText(/text path/i), { target: { value: 'ring-clockwise' } });
-    fireEvent.click(screen.getByRole('button', { name: /add motto/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'Ring Text' }));
 
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
-      type: 'text', text: 'RING', fontSize: 32, path: { mode: 'ring', curve: 'clockwise' },
+      type: 'text', fontSize: 40, path: { mode: 'ring', curve: 'clockwise' },
     });
   });
 
