@@ -7,7 +7,7 @@ import { getCoatAsset, getDefaultProjectName } from '@/lib/coat-of-arms/assets';
 import type { ShieldReferenceCategory } from '@/lib/coat-of-arms/reference-catalog';
 import { useEditorPreferencesStore } from '@/lib/coat-of-arms/editor-preferences-session';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
-import type { ChargeAssetCategory, CoatLocale, GeometryCoatAssetKind, TopAssetCategory } from '@/lib/coat-of-arms/types';
+import type { ChargeAssetCategory, CoatLocale, TopAssetCategory } from '@/lib/coat-of-arms/types';
 import { getHomeCopy, getNavLabels, getSiteConfig } from '@/lib/site-content';
 import { getLocalizedPath } from '@/lib/site-locale';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,7 @@ import { TargetFlagPalette } from './TargetFlagPalette';
 import { TextMottoPanel } from './TextMottoPanel';
 import { TextSelectionToolbar } from './TextSelectionToolbar';
 import { TopPanel } from './TopPanel';
+import { UploadPanel } from './UploadPanel';
 import { getCoatWorkbenchCopy, toolOrder, type ReferenceToolId } from './workbench-copy';
 
 interface CoatOfArmsMakerProps {
@@ -38,6 +39,7 @@ interface CoatOfArmsMakerProps {
 type TargetToolId = ReferenceToolId;
 type UtilityToolId = 'text' | 'draw' | 'random' | 'names';
 type PositionSectionId = 'arrange' | 'layers';
+type ChargesTreeChildId = ChargeAssetCategory | 'upload';
 const DEFAULT_SCENE_ZOOM = 0.47;
 
 const shieldTreeItems: readonly { assetId: ReferenceToolBranchGlyph }[] = [
@@ -108,8 +110,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const [selectedPositionSection, setSelectedPositionSection] = useState<PositionSectionId>('arrange');
   const [expandedToolIds, setExpandedToolIds] = useState<TargetToolId[]>(['shields']);
   const [selectedShieldTreeAssetId, setSelectedShieldTreeAssetId] = useState<ReferenceToolBranchGlyph>('heater-shield');
-  const [selectedChargeCategory, setSelectedChargeCategory] = useState<ChargeAssetCategory>('animal');
-  const [selectedChargeKind, setSelectedChargeKind] = useState<Extract<GeometryCoatAssetKind, 'charge' | 'ordinary'>>('charge');
+  const [selectedChargesTreeChild, setSelectedChargesTreeChild] = useState<ChargesTreeChildId>('animal');
   const [selectedTopCategory, setSelectedTopCategory] = useState<TopAssetCategory>('crown');
   const [selectedColorSection, setSelectedColorSection] = useState<ColorPanelSection>('used-colours');
   const [isDraftDismissed, setIsDraftDismissed] = useState(false);
@@ -126,7 +127,9 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     position: { id: 'position', content: getPositionSectionContent(selectedPositionSection, locale) },
     shields: { id: 'shields', content: <TargetShieldPalette activeCategory={shieldCategoryByTreeAssetId[selectedShieldTreeAssetId]} locale={locale} onActiveCategoryChange={(category) => setSelectedShieldTreeAssetId(shieldTreeAssetIdByCategory[category])} /> },
     custom: { id: 'custom', content: <ShieldFieldPanel locale={locale} /> },
-    charges: { id: 'charges', content: <ChargeAndOrdinaryPanel locale={locale} selectedChargeCategory={selectedChargeCategory} selectedKind={selectedChargeKind} /> },
+    charges: { id: 'charges', content: selectedChargesTreeChild === 'upload'
+      ? <UploadPanel locale={locale} />
+      : <ChargeAndOrdinaryPanel locale={locale} selectedChargeCategory={selectedChargesTreeChild} selectedKind="charge" /> },
     top: { id: 'top', content: <TopPanel locale={locale} selectedCategory={selectedTopCategory} /> },
     colors: { id: 'colors', content: <ColorBackgroundPanel locale={locale} sectionToFocus={selectedColorSection} /> },
     tools: { id: 'tools', content: <TargetUtilityPanel locale={locale}>{utilityContent}</TargetUtilityPanel> },
@@ -149,7 +152,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     shields: localizedShieldTreeItems.map((shape) => ({ glyph: shape.glyph, id: shape.assetId, label: shape.label })),
     charges: [
       ...chargeAssetCategories.map((category) => ({ id: category, label: copy.panels.chargeCategories[category] })),
-      { id: 'ordinaries', label: copy.panels.ordinaries },
+      { id: 'upload', label: copy.panels.chargesTreeUpload },
     ],
     top: topAssetCategories.map((category) => ({ id: category, label: copy.panels.topCategories[category] })),
     colors: [
@@ -256,12 +259,11 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
       setActiveUtilityId(childId);
     }
     if (toolId === 'charges') {
-      if (childId === 'ordinaries') {
-        setSelectedChargeKind('ordinary');
+      if (childId === 'upload') {
+        setSelectedChargesTreeChild('upload');
       } else {
         if (!isChargeAssetCategory(childId)) throw new Error(`Invalid tool tree charge category: ${childId}`);
-        setSelectedChargeKind('charge');
-        setSelectedChargeCategory(childId);
+        setSelectedChargesTreeChild(childId);
       }
     }
     if (toolId === 'top') {
@@ -312,7 +314,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
         </div>
         <div className="coat-target-editor-grid" data-tool-panel-collapsed={isToolPanelCollapsed}>
           <aside aria-label={copy.desktopTools} className="coat-target-left-panel hidden lg:flex" data-collapsed={isToolPanelCollapsed}>
-            <ReferenceToolRail activeToolId={activeTool.id} expandedToolIds={expandedToolIds} homeHref={homeHref} isCollapsed={isToolPanelCollapsed} locale={locale} onCollapseChange={() => setIsToolPanelCollapsed((value) => !value)} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} treeBranches={toolTreeBranches} />
+            <ReferenceToolRail activeToolId={activeTool.id} expandedToolIds={expandedToolIds} homeHref={homeHref} isCollapsed={isToolPanelCollapsed} locale={locale} onCollapseChange={() => setIsToolPanelCollapsed((value) => !value)} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleToolExpansion} selectedToolChildren={{ charges: selectedChargesTreeChild, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} treeBranches={toolTreeBranches} />
             {tools.map((tool) => tool.id === activeTool.id ? <section aria-labelledby={`coat-tab-${tool.id}`} className="coat-target-library-panel" id={`coat-panel-${tool.id}`} key={tool.id} role="tabpanel" tabIndex={0}>
               {tool.content}
             </section> : <section aria-labelledby={`coat-tab-${tool.id}`} hidden id={`coat-panel-${tool.id}`} key={tool.id} role="tabpanel" tabIndex={0} />)}
@@ -349,7 +351,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
             </div>
           </section>
         </div>
-        <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} homeHref={homeHref} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargeKind === 'ordinary' ? 'ordinaries' : selectedChargeCategory, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
+        <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} homeHref={homeHref} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargesTreeChild, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
       </div>
       {hasDraftRecoveryAction ? <section aria-label={copy.draftAvailable} className="coat-workbench-action-row coat-target-draft" role="status">
         {invalidDraftError ? <p role="alert">{copy.invalidDraftRecoveryDescription(invalidDraftError)}</p> : <p>{copy.draftRecoveryDescription}</p>}

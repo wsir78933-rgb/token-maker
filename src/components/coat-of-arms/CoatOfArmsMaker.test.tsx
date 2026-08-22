@@ -181,7 +181,14 @@ describe('CoatOfArmsMaker', () => {
     expect(getDesktopToolTreeItem('Draw')).toBeDefined();
     expect(getDesktopToolTreeItem('Random')).toBeDefined();
     expect(getDesktopToolTreeItem('Names')).toBeDefined();
-    expect(within(getDesktopToolRail()).queryByRole('button', { name: 'Upload' })).toBeNull();
+    fireEvent.click(getDesktopTool(/charges/i));
+    expect(getDesktopToolTreeItem('Animals')).toBeDefined();
+    expect(getDesktopToolTreeItem('Objects')).toBeDefined();
+    expect(getDesktopToolTreeItem('Plants')).toBeDefined();
+    expect(getDesktopToolTreeItem('Humans')).toBeDefined();
+    expect(getDesktopToolTreeItem('Symbols')).toBeDefined();
+    expect(getDesktopToolTreeItem('Upload')).toBeDefined();
+    expect(within(getDesktopToolRail()).queryByRole('button', { name: 'Ordinaries' })).toBeNull();
     expect(screen.queryByRole('tab', { name: 'Layers' })).toBeNull();
     fireEvent.click(getDesktopTool(/position/i));
     expect(getDesktopToolTreeItem('Arrange')).toBeDefined();
@@ -345,6 +352,7 @@ describe('CoatOfArmsMaker', () => {
     const coatMakerLink = screen.getByRole('link', { name: 'Coat Maker' });
     expect(coatMakerLink.getAttribute('href')).toBe('/coat-of-arms-maker');
     expect(coatMakerLink.getAttribute('data-active')).toBe('true');
+    expect(screen.getByRole('link', { name: 'Contact' }).getAttribute('href')).toBe('/contact');
     expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('href')).toBe('/blog');
     expect(screen.getByRole('link', { name: '中文' }).getAttribute('href')).toBe('/zh/coat-of-arms-maker');
     expect(screen.queryByRole('link', { name: 'Help Center' })).toBeNull();
@@ -395,6 +403,7 @@ describe('CoatOfArmsMaker', () => {
     const coatMakerLink = screen.getByRole('link', { name: '纹章制作器' });
     expect(coatMakerLink.getAttribute('href')).toBe('/zh/coat-of-arms-maker');
     expect(coatMakerLink.getAttribute('data-active')).toBe('true');
+    expect(screen.getByRole('link', { name: '联系' }).getAttribute('href')).toBe('/zh/contact');
     expect(screen.getByRole('link', { name: '博客' }).getAttribute('href')).toBe('/zh/blog');
     expect(screen.getByRole('link', { name: 'English' }).getAttribute('href')).toBe('/coat-of-arms-maker');
   });
@@ -512,6 +521,23 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.queryByLabelText('Charge category')).toBeNull();
     expect(screen.queryByRole('group', { name: 'Charge categories' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Add charge: Castle Tower' })).toBeDefined();
+  });
+
+  it('reveals the local crest uploader when Charges Upload is selected', () => {
+    renderWorkbench();
+
+    fireEvent.click(getDesktopTool('Charges'));
+    fireEvent.click(getDesktopToolTreeItem('Upload'));
+
+    const chargesPanel = getDesktopPanel('Charges');
+    expect(within(chargesPanel).getByRole('region', { name: 'Upload image' })).toBeDefined();
+    expect(within(chargesPanel).getByLabelText('Upload crest image')).toBeDefined();
+    expect(within(chargesPanel).queryByRole('button', { name: 'Add charge: Castle Tower' })).toBeNull();
+    expect(getDesktopToolTreeItem('Upload').getAttribute('aria-pressed')).toBe('true');
+
+    fireEvent.click(getDesktopToolTreeItem('Objects'));
+    expect(within(getDesktopPanel('Charges')).getByRole('button', { name: 'Add charge: Castle Tower' })).toBeDefined();
+    expect(within(getDesktopPanel('Charges')).queryByRole('region', { name: 'Upload image' })).toBeNull();
   });
 
   it('keeps material categories in the target left library and exposes layers without a right inspector dock', () => {
@@ -1095,6 +1121,8 @@ describe('CoatOfArmsMaker', () => {
 
     fireEvent.click(within(mobileToolRail).getByRole('tab', { name: 'Charges' }));
     expect(within(mobileToolRail).queryByRole('button', { name: 'French shield' })).toBeNull();
+    expect(within(mobileToolRail).getByRole('button', { name: 'Upload' })).toBeDefined();
+    expect(within(mobileToolRail).queryByRole('button', { name: 'Ordinaries' })).toBeNull();
     fireEvent.click(within(mobileToolRail).getByRole('button', { name: 'Objects' }));
     expect(within(drawer).getByRole('button', { name: 'Add charge: Castle Tower' })).toBeDefined();
   });
