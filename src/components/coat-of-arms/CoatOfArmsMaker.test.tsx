@@ -903,6 +903,14 @@ describe('CoatOfArmsMaker', () => {
     });
   });
 
+  it('surfaces stored editor preference load failures on the workbench chrome', async () => {
+    localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, '{');
+    renderWorkbench();
+
+    expect((await screen.findByRole('alert')).textContent).toBe('Editor action failed: Invalid editor preferences JSON: {');
+    expect(document.querySelector('main.coat-target-workbench')?.getAttribute('data-appearance')).toBe('dark');
+  });
+
   it('shows the invalid persisted export size and leaves the active project unchanged', async () => {
     const project = createDefaultProject('en');
     localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
@@ -916,8 +924,6 @@ describe('CoatOfArmsMaker', () => {
       backgroundGradient: null,
     }));
     renderWorkbench('en', project);
-
-    fireEvent.click(getExportTrigger());
 
     expect((await screen.findByRole('alert')).textContent).toContain('123');
     expect(useCoatProjectStore.getState().project).toEqual(project);

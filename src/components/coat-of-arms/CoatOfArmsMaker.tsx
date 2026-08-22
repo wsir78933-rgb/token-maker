@@ -120,6 +120,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const [sceneZoom, setSceneZoom] = useState(DEFAULT_SCENE_ZOOM);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [fullscreenError, setFullscreenError] = useState<string | null>(null);
+  const [storedPreferencesError, setStoredPreferencesError] = useState<string | null>(null);
   const isRecoveryCheckComplete = useHydrationComplete();
   const workbenchRef = useRef<HTMLElement>(null);
   const utilityContent = getUtilityContent(activeUtilityId, locale, randomizeProject);
@@ -177,8 +178,12 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const isWorkbenchBlocked = isRecoveryCheckPending || hasDraftRecoveryAction;
 
   useEffect(() => {
-    readStoredEditorPreferences();
-  }, []);
+    try {
+      readStoredEditorPreferences();
+    } catch (caught) {
+      setStoredPreferencesError(getCoatWorkbenchCopy(locale).panels.commandFailed(storedEditorPreferencesFailureMessage(caught)));
+    }
+  }, [locale]);
 
   useEffect(() => {
     const syncFullscreenState = () => {
@@ -301,6 +306,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
         navLinks={siteNavigationLinks}
         topbarClassName="z-50"
       />
+      {storedPreferencesError ? <p role="alert">{storedPreferencesError}</p> : null}
       <div
         aria-hidden={isWorkbenchBlocked || undefined}
         className="coat-workbench-content"
@@ -424,13 +430,14 @@ function isChargeAssetCategory(value: string): value is ChargeAssetCategory {
 }
 
 function readStoredEditorPreferences(): void {
-  try {
-    useEditorPreferencesStore.getState().loadFromBrowser();
-  } catch (caught) {
-    if (!(caught instanceof Error)) {
-      throw new Error(`Invalid stored editor preferences: ${String(caught)}`);
-    }
+  useEditorPreferencesStore.getState().loadFromBrowser();
+}
+
+function storedEditorPreferencesFailureMessage(caught: unknown): string {
+  if (!(caught instanceof Error)) {
+    throw new Error(`Invalid stored editor preferences: ${String(caught)}`);
   }
+  return caught.message;
 }
 
 function useHydrationComplete(): boolean {
