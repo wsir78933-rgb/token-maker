@@ -3,6 +3,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { chromium, type Page } from '@playwright/test';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
@@ -122,6 +123,133 @@ function cssDeclarationsForSelector(cssText: string, selector: string): string[]
       .filter((declaration) => declaration.length > 0);
   }
   throw new Error(`Missing CSS rule for selector: ${collapsedSelector}`);
+}
+
+function readCoatWorkbenchStyles(): string {
+  return readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
+}
+
+function cssDeclarationValue(declarations: string[], propertyName: string): string {
+  const matchedDeclaration = declarations.find((declaration) => {
+    const separatorIndex = declaration.indexOf(':');
+    return separatorIndex > 0 && declaration.slice(0, separatorIndex).trim() === propertyName;
+  });
+  if (!matchedDeclaration) {
+    throw new Error(`Missing CSS property ${propertyName} in declarations: ${declarations.join('; ') || '(empty)'}`);
+  }
+  return matchedDeclaration.slice(matchedDeclaration.indexOf(':') + 1).trim();
+}
+
+function coatWorkbenchRuleCss(workbenchStyles: string, selector: string): string {
+  const declarations = cssDeclarationsForSelector(workbenchStyles, selector);
+  if (declarations.length === 0) {
+    throw new Error(`CSS rule for selector ${selector} has no declarations`);
+  }
+  return `${selector} { ${declarations.join('; ')}; }`;
+}
+
+type DesktopArtboardFillFixture = {
+  viewportWidth: number;
+  viewportHeight: number;
+  wrapWidthPx: number;
+  wrapHeightPx: number;
+};
+
+type DesktopArtboardFillMeasurement = {
+  viewportHeight: number;
+  wrapHeight: number;
+  artboardHeight: number;
+  heightGap: number;
+};
+
+const DESKTOP_ARTBOARD_FILL_FIXTURES: DesktopArtboardFillFixture[] = [
+  { viewportWidth: 1512, viewportHeight: 738, wrapWidthPx: 800, wrapHeightPx: 549 },
+  { viewportWidth: 1512, viewportHeight: 600, wrapWidthPx: 800, wrapHeightPx: 419 },
+  { viewportWidth: 1512, viewportHeight: 500, wrapWidthPx: 800, wrapHeightPx: 419 },
+];
+
+function desktopArtboardFillDocument(options: {
+  wrapRuleCss: string;
+  artboardRuleCss: string;
+  wrapWidthPx: number;
+  wrapHeightPx: number;
+}): string {
+  return `<!doctype html>
+<html>
+<head>
+<style>
+* { box-sizing: border-box; }
+${options.wrapRuleCss}
+${options.artboardRuleCss}
+</style>
+</head>
+<body style="margin:0">
+  <div class="coat-target-workbench">
+    <div class="coat-target-artboard-wrap" style="width:${options.wrapWidthPx}px;height:${options.wrapHeightPx}px">
+      <div class="coat-target-artboard" style="--coat-canvas-aspect-ratio: 1; --coat-scene-zoom-level: 1"></div>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+async function measureDesktopArtboardFillOnPage(
+  page: Page,
+  fixture: DesktopArtboardFillFixture,
+  wrapRuleCss: string,
+  artboardRuleCss: string,
+): Promise<DesktopArtboardFillMeasurement> {
+  await page.setContent(desktopArtboardFillDocument({
+    wrapRuleCss,
+    artboardRuleCss,
+    wrapWidthPx: fixture.wrapWidthPx,
+    wrapHeightPx: fixture.wrapHeightPx,
+  }));
+  const measuredRects = await page.evaluate(() => {
+    const wrap = document.querySelector('.coat-target-artboard-wrap');
+    const artboard = document.querySelector('.coat-target-artboard');
+    if (!wrap) {
+      throw new Error('Missing .coat-target-artboard-wrap in desktop artboard fill fixture');
+    }
+    if (!artboard) {
+      throw new Error('Missing .coat-target-artboard in desktop artboard fill fixture');
+    }
+    const wrapRect = wrap.getBoundingClientRect();
+    const artboardRect = artboard.getBoundingClientRect();
+    return {
+      wrapHeight: wrapRect.height,
+      artboardHeight: artboardRect.height,
+    };
+  });
+  return {
+    viewportHeight: fixture.viewportHeight,
+    wrapHeight: measuredRects.wrapHeight,
+    artboardHeight: measuredRects.artboardHeight,
+    heightGap: measuredRects.wrapHeight - measuredRects.artboardHeight,
+  };
+}
+
+async function measureDesktopArtboardFillAcrossViewports(): Promise<DesktopArtboardFillMeasurement[]> {
+  const workbenchStyles = readCoatWorkbenchStyles();
+  const wrapRuleCss = coatWorkbenchRuleCss(workbenchStyles, '.coat-target-workbench .coat-target-artboard-wrap');
+  const artboardRuleCss = coatWorkbenchRuleCss(workbenchStyles, '.coat-target-workbench .coat-target-artboard');
+  const browser = await chromium.launch({ headless: true });
+  try {
+    const measurements: DesktopArtboardFillMeasurement[] = [];
+    for (const fixture of DESKTOP_ARTBOARD_FILL_FIXTURES) {
+      const page = await browser.newPage({
+        viewport: { width: fixture.viewportWidth, height: fixture.viewportHeight },
+      });
+      try {
+        measurements.push(await measureDesktopArtboardFillOnPage(page, fixture, wrapRuleCss, artboardRuleCss));
+      } finally {
+        await page.close();
+      }
+    }
+    return measurements;
+  } finally {
+    await browser.close();
+  }
 }
 
 function selectEditorUtility(label: string) {
@@ -384,10 +512,10 @@ describe('CoatOfArmsMaker', () => {
     const navigation = topbar.querySelector<HTMLElement>('nav');
 
     expect(topbar.className).toBe('site-topbar z-50');
-    expect(navigationContent?.className).toBe('mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8');
+    expect(navigationContent?.className).toBe('mx-auto max-w-6xl px-4 py-0 sm:px-6 lg:px-8');
     expect(brandTitle?.className).toBe('site-brand-title font-semibold text-base');
     expect(siteMark?.className).toBe('h-9 w-9 shrink-0 rounded-xl');
-    expect(navigation?.className).toBe('mt-3 flex flex-wrap items-center gap-2 sm:mt-4');
+    expect(navigation?.className).toBe('mt-0 flex flex-wrap items-center gap-2');
   });
 
   it.each([
@@ -432,6 +560,8 @@ describe('CoatOfArmsMaker', () => {
   it('uses the exact desktop editor geometry and preserves the mobile drawer contract', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
+    expect(workbenchStyles).toContain('.coat-target-workbench > .site-topbar {\n  font-family: var(--font-sans);\n  box-sizing: border-box;\n}');
+    expect(workbenchStyles).toContain('@media (min-width: 1024px) {\n  .coat-target-workbench > .site-topbar {\n    height: 99px;\n    min-height: 99px;\n    overflow: hidden;\n  }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-actionbar {\n  display: flex;\n  height: 50px;');
     expect(workbenchStyles).toContain('border-bottom: 1px solid #636363;\n  background: #474747;\n  padding: 8.5px;');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-export > div > button { width: 109.375px; height: 38.25px; }');
@@ -502,7 +632,7 @@ describe('CoatOfArmsMaker', () => {
     for (const label of ['Position', 'Charges', 'Top', 'Colors', 'Tools']) {
       expect(getDesktopTool(label).getAttribute('aria-expanded')).toBe('false');
     }
-    expect(getDesktopToolTreeItem('French shield')).toBeDefined();
+    expect(getDesktopToolTreeItem('French')).toBeDefined();
 
     fireEvent.click(getDesktopTool('Charges'));
     expect(getDesktopTool('Charges').getAttribute('aria-expanded')).toBe('true');
@@ -608,11 +738,11 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
     const initialShield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
 
-    fireEvent.click(getDesktopToolTreeItem('French shield'));
+    fireEvent.click(getDesktopToolTreeItem('French'));
 
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield'))
       .toEqual(initialShield);
-    expect(getDesktopToolTreeItem('French shield').getAttribute('aria-pressed')).toBe('true');
+    expect(getDesktopToolTreeItem('French').getAttribute('aria-pressed')).toBe('true');
     expect(within(getDesktopPanel('Shields')).getByRole('button', { name: 'Select shield: French shield material 001' })).toBeDefined();
   });
 
@@ -621,12 +751,12 @@ describe('CoatOfArmsMaker', () => {
     const initialShield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
 
     for (const treeLabel of [
-      'Kite shield',
-      'Heater shield',
-      'French shield',
-      'Banner shield',
-      'Round shield',
-      'Lozenge shield',
+      'Shield',
+      'Heater',
+      'French',
+      'Banner',
+      'Round',
+      'Lozenge',
     ] as const) {
       fireEvent.click(getDesktopToolTreeItem(treeLabel));
       expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield')).toEqual(initialShield);
@@ -634,10 +764,10 @@ describe('CoatOfArmsMaker', () => {
     }
   });
 
-  it('localizes every shield outline tree item from local asset names in Chinese', () => {
+  it('localizes every shield outline tree item with short Chinese labels', () => {
     renderWorkbench('zh');
 
-    for (const shieldName of ['鸢盾', '熨斗盾', '法式盾', '旗帜盾', '圆盾', '菱形盾']) {
+    for (const shieldName of ['盾', '熨斗', '法式', '旗帜', '圆', '菱形']) {
       expect(getDesktopToolTreeItem(shieldName)).toBeTruthy();
     }
   });
@@ -652,7 +782,7 @@ describe('CoatOfArmsMaker', () => {
     };
     renderWorkbench('en', lockedProject);
 
-    fireEvent.click(getDesktopToolTreeItem('French shield'));
+    fireEvent.click(getDesktopToolTreeItem('French'));
 
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield'))
       .toMatchObject({ assetId: 'heater-shield', locked: true });
@@ -1105,7 +1235,7 @@ describe('CoatOfArmsMaker', () => {
     toggleMobileToolPanel();
 
     const drawer = screen.getByRole('region', { name: 'Tools' });
-    for (const treeLabel of ['Kite shield', 'Heater shield', 'French shield', 'Banner shield', 'Round shield', 'Lozenge shield']) {
+    for (const treeLabel of ['Shield', 'Heater', 'French', 'Banner', 'Round', 'Lozenge']) {
       fireEvent.click(within(getMobileToolRail()).getByRole('button', { name: treeLabel }));
       expect(within(drawer).getAllByRole('button', { name: /^Select shield:/ }).length).toBeGreaterThan(0);
     }
@@ -1156,12 +1286,12 @@ describe('CoatOfArmsMaker', () => {
 
     const drawer = screen.getByRole('region', { name: 'Tools' });
     const mobileToolRail = getMobileToolRail();
-    fireEvent.click(within(mobileToolRail).getByRole('button', { name: 'French shield' }));
+    fireEvent.click(within(mobileToolRail).getByRole('button', { name: 'French' }));
     expect(useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield')).toMatchObject({ assetId: 'heater-shield' });
     expect(within(drawer).getByRole('button', { name: 'Select shield: French shield material 001' })).toBeDefined();
 
     fireEvent.click(within(mobileToolRail).getByRole('tab', { name: 'Charges' }));
-    expect(within(mobileToolRail).queryByRole('button', { name: 'French shield' })).toBeNull();
+    expect(within(mobileToolRail).queryByRole('button', { name: 'French' })).toBeNull();
     expect(within(mobileToolRail).getByRole('button', { name: 'Upload' })).toBeDefined();
     expect(within(mobileToolRail).queryByRole('button', { name: 'Ordinaries' })).toBeNull();
     fireEvent.click(within(mobileToolRail).getByRole('button', { name: 'Objects' }));
@@ -1176,7 +1306,7 @@ describe('CoatOfArmsMaker', () => {
 
     const mobileToolRail = getMobileToolRail();
     expect(within(mobileToolRail).getByRole('button', { name: 'Objects' })).toBeDefined();
-    expect(within(mobileToolRail).queryByRole('button', { name: 'French shield' })).toBeNull();
+    expect(within(mobileToolRail).queryByRole('button', { name: 'French' })).toBeNull();
   });
 
   it('focuses the matching colour panel section when a Colors tree child is selected', () => {
@@ -1290,10 +1420,20 @@ describe('CoatOfArmsMaker', () => {
   });
 
   it('uses the project canvas aspect ratio for the artboard and interaction canvas', () => {
-    const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const artboardDeclarations = cssDeclarationsForSelector(workbenchStyles, '.coat-target-workbench .coat-target-artboard');
+    const applicationDeclarations = cssDeclarationsForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-artboard [role='application']",
+    );
 
-    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-artboard { display: grid; width: min(30rem, calc((100svh - 12rem) * 0.91), calc(100vw - 28rem)); max-width: 96%; aspect-ratio: var(--coat-canvas-aspect-ratio);');
-    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-artboard [role='application'] { width: 100%; height: 100%; max-width: 100%; aspect-ratio: var(--coat-canvas-aspect-ratio);");
+    expect(cssDeclarationValue(artboardDeclarations, 'width')).toBe(
+      'min(100%, calc(100cqh * var(--coat-canvas-aspect-ratio)))',
+    );
+    expect(cssDeclarationValue(artboardDeclarations, 'max-height')).toBe('100%');
+    expect(cssDeclarationValue(artboardDeclarations, 'aspect-ratio')).toBe('var(--coat-canvas-aspect-ratio)');
+    expect(cssDeclarationValue(applicationDeclarations, 'aspect-ratio')).toBe('var(--coat-canvas-aspect-ratio)');
+    expect(workbenchStyles).not.toContain('--coat-editor-chrome-height:');
   });
 
   it('uses the 3:5 canvas preset dimensions for both canvas geometry and serialized SVG', () => {
@@ -1311,10 +1451,42 @@ describe('CoatOfArmsMaker', () => {
   });
 
   it('keeps the default artboard within a short desktop scene viewport', () => {
-    const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const wrapDeclarations = cssDeclarationsForSelector(workbenchStyles, '.coat-target-workbench .coat-target-artboard-wrap');
+    const artboardWidth = cssDeclarationValue(
+      cssDeclarationsForSelector(workbenchStyles, '.coat-target-workbench .coat-target-artboard'),
+      'width',
+    );
 
-    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-artboard-wrap { display: grid; min-height: 0; place-items: center; overflow: auto; padding: clamp(0.75rem, 2vh, 2rem)');
+    expect(cssDeclarationValue(wrapDeclarations, 'container-type')).toBe('size');
+    expect(cssDeclarationValue(wrapDeclarations, 'padding')).toBe('0 clamp(1.25rem, 6vw, 8rem)');
+    expect(artboardWidth).toContain('100cqh');
+    expect(artboardWidth).not.toContain('100svh');
   });
+
+  it('fills the wrap at 1512x738 and leaves no 108px blank at 1512x500 or 1512x600', async () => {
+    const measurements = await measureDesktopArtboardFillAcrossViewports();
+    const measurementByViewportHeight = new Map(
+      measurements.map((measurement) => [measurement.viewportHeight, measurement]),
+    );
+    const measurementAt738 = measurementByViewportHeight.get(738);
+    const measurementAt600 = measurementByViewportHeight.get(600);
+    const measurementAt500 = measurementByViewportHeight.get(500);
+    if (!measurementAt738) {
+      throw new Error(`Missing 1512x738 artboard fill measurement, got viewport heights: ${measurements.map((measurement) => measurement.viewportHeight).join(', ') || '(none)'}`);
+    }
+    if (!measurementAt600) {
+      throw new Error(`Missing 1512x600 artboard fill measurement, got viewport heights: ${measurements.map((measurement) => measurement.viewportHeight).join(', ') || '(none)'}`);
+    }
+    if (!measurementAt500) {
+      throw new Error(`Missing 1512x500 artboard fill measurement, got viewport heights: ${measurements.map((measurement) => measurement.viewportHeight).join(', ') || '(none)'}`);
+    }
+
+    expect(measurementAt738.artboardHeight).toBeGreaterThan(540);
+    expect(measurementAt738.heightGap).toBeLessThan(2);
+    expect(measurementAt600.heightGap).toBeLessThan(2);
+    expect(measurementAt500.heightGap).toBeLessThan(2);
+  }, 30_000);
 
   it('keeps zoomed artboard edges reachable and exposes a fullscreen control', () => {
     renderWorkbench();

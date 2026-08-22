@@ -30,7 +30,7 @@ import { TextMottoPanel } from './TextMottoPanel';
 import { TextSelectionToolbar } from './TextSelectionToolbar';
 import { TopPanel } from './TopPanel';
 import { UploadPanel } from './UploadPanel';
-import { getCoatWorkbenchCopy, toolOrder, type ReferenceToolId } from './workbench-copy';
+import { getCoatWorkbenchCopy, toolOrder, type CoatWorkbenchCopy, type ReferenceToolId } from './workbench-copy';
 
 interface CoatOfArmsMakerProps {
   locale: CoatLocale;
@@ -66,6 +66,14 @@ const shieldTreeAssetIdByCategory: Readonly<Record<ShieldReferenceCategory, Refe
   round: 'round-shield',
   lozenge: 'lozenge-shield',
 };
+
+function shieldTreeLabel(copy: CoatWorkbenchCopy, assetId: ReferenceToolBranchGlyph): string {
+  const label = copy.panels.shieldTreeLabels[assetId];
+  if (label.trim() === '') {
+    throw new Error(`Empty shield tree label for assetId: ${assetId}`);
+  }
+  return label;
+}
 const topAssetCategories: readonly TopAssetCategory[] = ['crown', 'mantle', 'supporter', 'other'];
 const chargeAssetCategories: readonly ChargeAssetCategory[] = ['animal', 'object', 'plant', 'human', 'symbol'];
 const utilityToolOrder: readonly UtilityToolId[] = ['text', 'draw', 'random', 'names'];
@@ -90,6 +98,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     { href: homeHref, label: navLabels.editor, isActive: false },
     { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller, isActive: false },
     { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker, isActive: true },
+    { href: getLocalizedPath(locale, '/contact'), label: navLabels.contact, isActive: false },
     { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog, isActive: false },
   ];
   const appearance = useEditorPreferencesStore((state) => state.preferences.appearance);
@@ -143,7 +152,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const localizedShieldTreeItems = shieldTreeItems.map((shape) => {
     const shieldAsset = getCoatAsset(shape.assetId);
     if (shieldAsset.kind !== 'shield') throw new Error(`Shield tree asset must be a shield: ${shape.assetId}`);
-    return { ...shape, glyph: shape.assetId, label: shieldAsset.name[locale] };
+    return { ...shape, glyph: shape.assetId, label: shieldTreeLabel(copy, shape.assetId) };
   });
   const toolTreeBranches: ReferenceToolTreeBranches = {
     position: [
@@ -299,10 +308,10 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
         brandName={siteConfig.name}
         brandSubtitle={homeCopy.heroEyebrow}
         brandTitleClassName="text-base"
-        contentClassName="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8"
+        contentClassName="mx-auto max-w-6xl px-4 py-0 sm:px-6 lg:px-8"
         localeSwitchHref={getLocalizedPath(nextLocale, '/coat-of-arms-maker')}
         localeSwitchLabel={navLabels.switchLocale}
-        navClassName="mt-3 flex flex-wrap items-center gap-2 sm:mt-4"
+        navClassName="mt-0 flex flex-wrap items-center gap-2"
         navLinks={siteNavigationLinks}
         topbarClassName="z-50"
       />

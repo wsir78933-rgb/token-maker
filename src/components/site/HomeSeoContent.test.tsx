@@ -3,7 +3,7 @@
 import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { HomeSeoContent } from './HomeSeoContent';
+import { HomeHero, HomeSeoContent } from './HomeSeoContent';
 
 describe('HomeSeoContent', () => {
   afterEach(() => {
@@ -139,4 +139,43 @@ describe('HomeSeoContent', () => {
     expect(screen.getByRole('heading', { level: 3, name: /what is a token stamp/i })).toBeDefined();
     expect(document.querySelector('script[type="application/ld+json"]')).toBeNull();
   });
+});
+
+describe('HomeHero', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it.each([
+    {
+      locale: 'en' as const,
+      contactLabel: 'Contact',
+      contactHref: '/contact',
+      blogLabel: 'Blog',
+    },
+    {
+      locale: 'zh' as const,
+      contactLabel: '联系',
+      contactHref: '/zh/contact',
+      blogLabel: '博客',
+    },
+  ])(
+    'places $contactLabel immediately before $blogLabel in the topbar',
+    ({ locale, contactLabel, contactHref, blogLabel }) => {
+      render(<HomeHero locale={locale} />);
+
+      const topbar = document.querySelector('.site-topbar');
+      if (!(topbar instanceof HTMLElement)) {
+        throw new Error('HomeHero topbar was not found');
+      }
+
+      const topbarQueries = within(topbar);
+      const contactLink = topbarQueries.getByRole('link', { name: contactLabel });
+      const blogLink = topbarQueries.getByRole('link', { name: blogLabel });
+      const topbarLinks = topbarQueries.getAllByRole('link');
+
+      expect(contactLink.getAttribute('href')).toBe(contactHref);
+      expect(topbarLinks.indexOf(contactLink) + 1).toBe(topbarLinks.indexOf(blogLink));
+    },
+  );
 });

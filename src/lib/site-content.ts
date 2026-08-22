@@ -263,6 +263,7 @@ export interface NavLabels {
   coatMakerBackToEditor: string;
   templates: string;
   blog: string;
+  contact: string;
   faq: string;
   privacy: string;
   switchLocale: string;
@@ -535,6 +536,7 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
     coatMakerBackToEditor: 'Back to the editor',
     templates: 'Templates',
     blog: 'Blog',
+    contact: 'Contact',
     faq: 'FAQ',
     privacy: 'Privacy',
     switchLocale: '中文',
@@ -546,6 +548,7 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
     coatMakerBackToEditor: '返回首页编辑器',
     templates: '模板页',
     blog: '博客',
+    contact: '联系',
     faq: '常见问题',
     privacy: '隐私',
     switchLocale: 'English',
