@@ -578,8 +578,9 @@ function setLayerDisplayName(project: CoatProject, layerId: string, displayName:
   if (trimmedDisplayName.length > 120) throw new Error(`Invalid layer display name: ${displayName}`);
   if (trimmedDisplayName.length === 0) {
     if (!('displayName' in layer)) return project;
-    const { displayName: _removedDisplayName, ...layerWithoutDisplayName } = layer;
-    return replaceLayer(project, layer.id, layerWithoutDisplayName as CoatLayer);
+    const layerWithoutDisplayName = { ...layer };
+    delete layerWithoutDisplayName.displayName;
+    return replaceLayer(project, layer.id, layerWithoutDisplayName);
   }
   return replaceLayer(project, layer.id, { ...layer, displayName: trimmedDisplayName });
 }
