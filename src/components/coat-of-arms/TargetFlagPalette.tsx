@@ -152,12 +152,12 @@ export function TargetFlagPalette({ locale }: { locale: CoatLocale }) {
           return <li key={preset.id}>
             <button
               aria-label={copy.usePreset(presetName)}
-              className="grid w-full gap-2 rounded border border-[color:var(--coat-line)] p-2 text-left"
+              className="coat-gallery-card grid w-full rounded border border-[color:var(--coat-line)] p-2 text-left"
               onClick={() => run({ type: 'set-field', layerId: shield.id, field: preset.createField() })}
               type="button"
             >
               <FlagPresetPreview presetId={preset.id} />
-              <span>{presetName}</span>
+              <span aria-hidden="true" className="coat-gallery-card-name">{presetName}</span>
             </button>
           </li>;
         })}

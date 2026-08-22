@@ -67,7 +67,7 @@ describe('SettingsPanel', () => {
 
   it('resets the unsaved editor project and local canvas preference', () => {
     const initialProject = useCoatProjectStore.getState().project;
-    useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     saveEditorPreferences({
       version: 1,
       appearance: 'dark',
@@ -84,7 +84,7 @@ describe('SettingsPanel', () => {
     const resetProject = useCoatProjectStore.getState().project;
     expect(resetProject.id).not.toBe(initialProject.id);
     expect(resetProject.canvas).toEqual({ width: 1200, height: 1200 });
-    expect(resetProject.layers.some((layer) => layer.type === 'charge' && layer.assetId === 'material-animal-lion-rampant')).toBe(false);
+    expect(resetProject.layers.some((layer) => layer.type === 'charge' && layer.assetId === 'material-animal-wolf-rampant')).toBe(false);
     expect(loadEditorPreferences().canvasPreset).toBe('square');
   });
 

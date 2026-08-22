@@ -59,7 +59,10 @@ describe('TargetFlagPalette', () => {
     render(<TargetFlagPalette locale="zh" />);
 
     expect(copy.presetName('nordic-cross')).toBe('北欧十字旗');
-    expect(screen.getByRole('button', { name: '使用北欧十字旗预设' })).toBeTruthy();
+    const nordicCard = screen.getByRole('button', { name: '使用北欧十字旗预设' });
+    expect(nordicCard).toBeTruthy();
+    expect(nordicCard.className).toContain('coat-gallery-card');
+    expect(nordicCard.querySelector('.coat-gallery-card-name')?.textContent).toBe('北欧十字旗');
     expect(() => copy.presetName('invalid-flag')).toThrow('Unknown flag preset: invalid-flag');
   });
 

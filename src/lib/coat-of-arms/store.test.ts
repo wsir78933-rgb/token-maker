@@ -94,7 +94,8 @@ describe('coat project history and Zustand bridge', () => {
     useCoatProjectStore.getState().randomizeProject(() => 0);
 
     expect(useCoatProjectStore.getState().project.layers.map((layer) => layer.type))
-      .toEqual(['background', 'shield', 'ordinary', 'charge']);
+      .toEqual(['background', 'shield', 'charge']);
+    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'charge', rasterTint: true });
     expect(useCoatProjectStore.getState().project.uploads).toEqual([]);
     expect(useCoatProjectStore.getState().readDraft()).toEqual(useCoatProjectStore.getState().project);
   });

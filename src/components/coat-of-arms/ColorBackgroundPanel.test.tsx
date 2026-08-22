@@ -95,7 +95,7 @@ describe('ColorBackgroundPanel', () => {
 
     const layers = useCoatProjectStore.getState().project.layers;
     expect(layers[0]).toMatchObject({ type: 'background' });
-    expect(layers[1]).toMatchObject({ type: 'charge', assetId: 'material-animal-lion-rampant' });
+    expect(layers[1]).toMatchObject({ type: 'charge', assetId: 'material-animal-wolf-rampant' });
     expect(layers[2]).toMatchObject({ type: 'shield' });
     expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([layers[1]?.id]);
   });

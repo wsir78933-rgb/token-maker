@@ -295,7 +295,7 @@ function createShowcaseLayers(
   const lion: ChargeLayer = {
     id: lionLayerId,
     type: 'charge',
-    assetId: 'material-animal-alligator-passant',
+    assetId: 'material-animal-wolf-rampant',
     color: '#8A451B',
     transform: { x: 0, y: 9, scale: 0.72, rotation: 0 },
     ...createDefaultLayerMetadata(),

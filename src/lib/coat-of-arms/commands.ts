@@ -27,6 +27,7 @@ import { fieldRegionIds } from './field-regions';
 import { assertFieldPatternConfig, fieldPatterns } from './field-pattern';
 import { assertFieldRegions } from './field-regions';
 import { createLocalCoatId } from './id';
+import { requireHeraldicSwatchGroup } from './heraldic-swatches';
 import { assertCustomShieldOutlinePath, normalizeCustomShieldOutlinePath } from './shield-outline';
 import { replaceEditableLayerColour } from './layer-colours';
 
@@ -90,6 +91,7 @@ export type CoatLayerPatch = {
   underline?: boolean;
   strokeColor?: string;
   colorReplacements?: Record<string, string>;
+  rasterTint?: boolean;
   opacity?: number;
   fill?: string;
   strokeWidth?: number;
@@ -284,42 +286,172 @@ export function assertCoatProject(project: unknown): asserts project is CoatProj
   assertGroupMemberships(project.layers, project.groups);
 }
 
+type HeraldicTinctureClass = 'metal' | 'colour';
+
+const RANDOM_COAT_METAL_HEXES = [
+  requireHeraldicSwatchHex('metals', 'or'),
+  requireHeraldicSwatchHex('metals', 'argent'),
+] as const;
+const RANDOM_COAT_COLOUR_HEXES = [
+  requireHeraldicSwatchHex('colours', 'sable'),
+  requireHeraldicSwatchHex('colours', 'gules'),
+  requireHeraldicSwatchHex('colours', 'azure'),
+  requireHeraldicSwatchHex('colours', 'vert'),
+] as const;
+const RANDOM_SOLID_FIELD_CHANCE = 0.7;
+const RANDOM_CHARGE_SCALE = 0.6;
+
 /** Creates a fully local project from the catalog; inject random for repeatable callers and tests. */
 export function createRandomCoatProject(
   locale: 'en' | 'zh',
   randomValue: RandomValueSource = Math.random,
 ): CoatProject {
   assertRandomValueSource(randomValue);
-  const fieldColors = ['#1855A5', '#B11F24', '#F5E6A1'];
-  const divisions: readonly FieldDivision[] = ['solid', 'per-pale', 'per-fess', 'per-bend', 'per-bend-sinister', 'per-chevron', 'quarterly', 'gyronny', 'tierced-per-pale', 'tierced-per-fess', 'per-saltire', 'barry', 'paly', 'bendy'];
-  const patterns: readonly FieldPattern[] = ['solid', 'stripes', 'dots', 'checks', 'lozengy', 'crosses', 'waves', 'masoned', 'honeycomb', 'fretty', 'scales'];
-  const background = pickRandom(listAssetsByKind('background'), randomValue, 'background asset');
-  const shield = pickRandom(listAssetsByKind('shield'), randomValue, 'shield asset');
-  const ordinary = pickRandom(listAssetsByKind('ordinary'), randomValue, 'ordinary asset');
-  const charge = pickRandom(listAssetsByKind('charge'), randomValue, 'charge asset');
-  const division = pickRandom(divisions, randomValue, 'field division');
-  const pattern = pickRandom(patterns, randomValue, 'field pattern');
-  const primaryColor = pickRandom(fieldColors, randomValue, 'field color');
-  const secondaryColor = pickRandom(fieldColors, randomValue, 'field color');
-  const field: CoatField = {
-    division,
-    pattern,
-    colors: division === 'solid' && pattern === 'solid' ? [primaryColor] : [primaryColor, secondaryColor],
-  };
-
-  let project = createDefaultProject(locale);
-  const baseShield = project.layers.find((layer) => layer.type === 'shield');
-  if (!baseShield) throw new Error('Random coat project is missing its base shield');
-  project = applyProjectCommand(project, {
-    type: 'set-background', assetId: background.id, motif: pattern, opacity: 1,
-  });
-  project = applyProjectCommand(project, {
-    type: 'update-layer', layerId: baseShield.id, patch: { assetId: shield.id, field },
-  });
-  project = applyProjectCommand(project, { type: 'add-layer', assetId: ordinary.id });
-  project = applyProjectCommand(project, { type: 'add-layer', assetId: charge.id });
+  const field = pickRandomShieldField(randomValue);
+  const charge = pickRandomTintedCharge(field.colors, randomValue);
+  const project = assembleRandomCoatProject(locale, field, charge);
   assertCoatProject(project);
   return project;
+}
+
+function pickRandomShieldField(randomValue: RandomValueSource): CoatField {
+  const division = pickRandomFieldDivision(randomValue);
+  const fieldClass = pickRandom(['metal', 'colour'] as const, randomValue, 'field tincture class');
+  const fieldHexes = hexesForTinctureClass(fieldClass);
+  if (division === 'solid') {
+    return { division: 'solid', pattern: 'solid', colors: [pickRandom(fieldHexes, randomValue, 'field color')] };
+  }
+  return { division, pattern: 'solid', colors: pickTwoDistinctHexes(fieldHexes, randomValue, 'field color') };
+}
+
+function pickRandomFieldDivision(randomValue: RandomValueSource): 'solid' | 'per-pale' | 'per-fess' {
+  const solidOrBipartition = readRandomUnit(randomValue, 'field division');
+  if (solidOrBipartition < RANDOM_SOLID_FIELD_CHANCE) return 'solid';
+  return pickRandom(['per-pale', 'per-fess'] as const, randomValue, 'field bipartition');
+}
+
+function pickRandomTintedCharge(
+  fieldColors: readonly string[],
+  randomValue: RandomValueSource,
+): { assetId: string; color: string } {
+  const chargeColor = pickRandomChargeColour(fieldColors, randomValue);
+  const chargeAsset = pickRandom(listAssetsByKind('charge'), randomValue, 'charge asset');
+  return { assetId: chargeAsset.id, color: chargeColor };
+}
+
+function pickRandomChargeColour(fieldColors: readonly string[], randomValue: RandomValueSource): string {
+  if (fieldColors.length === 0) throw new Error('Random shield field has no colors');
+  const fieldClass = tinctureClassOf(fieldColors[0]!);
+  for (const fieldColor of fieldColors) {
+    if (tinctureClassOf(fieldColor) !== fieldClass) {
+      throw new Error(`Field mixes metal and colour: ${fieldColors.join(', ')}`);
+    }
+  }
+  const chargeColor = pickRandom(
+    hexesForTinctureClass(oppositeTinctureClass(fieldClass)),
+    randomValue,
+    'charge color',
+  );
+  assertChargeContrastsField(fieldColors, chargeColor);
+  return chargeColor;
+}
+
+function assembleRandomCoatProject(
+  locale: 'en' | 'zh',
+  field: CoatField,
+  charge: { assetId: string; color: string },
+): CoatProject {
+  let project = createDefaultProject(locale);
+  const background = project.layers.find((layer) => layer.type === 'background');
+  const shield = project.layers.find((layer) => layer.type === 'shield');
+  if (!background || background.type !== 'background') {
+    throw new Error('Random coat project is missing its base background');
+  }
+  if (!shield || shield.type !== 'shield') {
+    throw new Error('Random coat project is missing its base shield');
+  }
+  project = applyProjectCommand(project, {
+    type: 'set-background',
+    assetId: background.assetId,
+    motif: 'solid',
+    opacity: 1,
+    fill: '#FFFFFF',
+  });
+  project = applyProjectCommand(project, {
+    type: 'update-layer',
+    layerId: shield.id,
+    patch: {
+      assetId: 'heater-shield',
+      field,
+      transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+    },
+  });
+  project = applyProjectCommand(project, { type: 'add-layer', assetId: charge.assetId });
+  const chargeLayer = project.layers.at(-1);
+  if (!chargeLayer || chargeLayer.type !== 'charge') {
+    throw new Error(`Random coat project did not add a charge layer from asset: ${charge.assetId}`);
+  }
+  return applyProjectCommand(project, {
+    type: 'update-layer',
+    layerId: chargeLayer.id,
+    patch: {
+      color: charge.color,
+      rasterTint: true,
+      transform: { x: 0, y: 0, scale: RANDOM_CHARGE_SCALE, rotation: 0 },
+    },
+  });
+}
+
+function pickTwoDistinctHexes(
+  choices: readonly string[],
+  randomValue: RandomValueSource,
+  label: string,
+): [string, string] {
+  if (choices.length < 2) throw new Error(`No local ${label} choices are available`);
+  const firstHex = pickRandom(choices, randomValue, label);
+  const remainingHexes = choices.filter((hex) => hex !== firstHex);
+  const secondHex = pickRandom(remainingHexes, randomValue, label);
+  if (secondHex === firstHex) throw new Error(`Field colors must be different: ${firstHex}`);
+  return [firstHex, secondHex];
+}
+
+function assertChargeContrastsField(fieldColors: readonly string[], chargeColor: string): void {
+  for (const fieldColor of fieldColors) {
+    if (fieldColor === chargeColor) {
+      throw new Error(`Charge color collides with field color: ${chargeColor}`);
+    }
+    if (tinctureClassOf(fieldColor) === tinctureClassOf(chargeColor)) {
+      throw new Error(`Charge color ${chargeColor} does not contrast with field color ${fieldColor}`);
+    }
+  }
+}
+
+function tinctureClassOf(hex: string): HeraldicTinctureClass {
+  if ((RANDOM_COAT_METAL_HEXES as readonly string[]).includes(hex)) return 'metal';
+  if ((RANDOM_COAT_COLOUR_HEXES as readonly string[]).includes(hex)) return 'colour';
+  throw new Error(`Unknown heraldic tincture: ${hex}`);
+}
+
+function oppositeTinctureClass(tinctureClass: HeraldicTinctureClass): HeraldicTinctureClass {
+  return tinctureClass === 'metal' ? 'colour' : 'metal';
+}
+
+function hexesForTinctureClass(tinctureClass: HeraldicTinctureClass): readonly string[] {
+  return tinctureClass === 'metal' ? RANDOM_COAT_METAL_HEXES : RANDOM_COAT_COLOUR_HEXES;
+}
+
+function requireHeraldicSwatchHex(groupId: 'metals' | 'colours', swatchId: string): string {
+  const swatch = requireHeraldicSwatchGroup(groupId).swatches.find((candidate) => candidate.id === swatchId);
+  if (!swatch) throw new Error(`Unknown heraldic swatch: ${swatchId}`);
+  return swatch.hex;
+}
+
+function readRandomUnit(randomValue: RandomValueSource, label: string): number {
+  const value = randomValue();
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value >= 1) {
+    throw new Error(`Invalid random value for ${label}: ${String(value)}`);
+  }
+  return value;
 }
 
 function addAssetLayer(
@@ -1138,7 +1270,7 @@ function assertLayerPatch(layer: CoatLayer, patch: unknown): asserts patch is Co
   }
   const allowedPatchKeys: Record<CoatLayer['type'], readonly string[]> = {
     background: ['assetId', 'motif', 'opacity', 'fill'], shield: ['assetId', 'field', 'transform', 'colorReplacements'],
-    ordinary: ['assetId', 'color', 'colorReplacements', 'transform'], charge: ['assetId', 'color', 'colorReplacements', 'transform'], top: ['assetId', 'color', 'colorReplacements', 'transform'],
+    ordinary: ['assetId', 'color', 'colorReplacements', 'rasterTint', 'transform'], charge: ['assetId', 'color', 'colorReplacements', 'rasterTint', 'transform'], top: ['assetId', 'color', 'colorReplacements', 'rasterTint', 'transform'],
     draw: ['pathData', 'color', 'strokeWidth', 'opacity', 'transform'],
     image: ['opacity', 'transform'], text: ['text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'underline', 'strokeColor', 'strokeWidth', 'alignment', 'path', 'transform'],
   };
@@ -1149,6 +1281,7 @@ function assertLayerPatch(layer: CoatLayer, patch: unknown): asserts patch is Co
   }
   if ('assetId' in patch) assertLayerAsset(layer.type, patch.assetId);
   if ('color' in patch) assertColor(patch.color, 'layer color');
+  if ('rasterTint' in patch) assertRasterTint(patch.rasterTint);
   if ('colorReplacements' in patch) {
     const layerForColourValidation = typeof patch.assetId === 'string' ? { ...layer, assetId: patch.assetId } : layer;
     assertLayerColorReplacements(layerForColourValidation, patch.colorReplacements);
@@ -1194,8 +1327,8 @@ function assertCoatLayer(layer: unknown, uploadById: Map<string, LocalUpload>): 
     case 'ordinary':
     case 'charge':
     case 'top':
-      assertExactKeys(layer, ['id', 'type', 'assetId', 'rasterVariantId', 'color', 'colorReplacements', 'transform', 'visible', 'locked', 'groupId', 'displayName'], `${layer.type} layer`);
-      assertNonEmptyString(layer.assetId, `${layer.type} layer asset id`); assertLayerAsset(layer.type, layer.assetId); if ('rasterVariantId' in layer) assertLayerRasterVariant(layer.assetId, layer.rasterVariantId); assertColor(layer.color, 'layer color'); if ('colorReplacements' in layer) assertAssetColorReplacements(layer.assetId, layer.colorReplacements); assertTransform(layer.transform); return;
+      assertExactKeys(layer, ['id', 'type', 'assetId', 'rasterVariantId', 'color', 'colorReplacements', 'rasterTint', 'transform', 'visible', 'locked', 'groupId', 'displayName'], `${layer.type} layer`);
+      assertNonEmptyString(layer.assetId, `${layer.type} layer asset id`); assertLayerAsset(layer.type, layer.assetId); if ('rasterVariantId' in layer) assertLayerRasterVariant(layer.assetId, layer.rasterVariantId); assertColor(layer.color, 'layer color'); if ('colorReplacements' in layer) assertAssetColorReplacements(layer.assetId, layer.colorReplacements); if ('rasterTint' in layer) assertRasterTint(layer.rasterTint); assertTransform(layer.transform); return;
     case 'draw':
       assertExactKeys(layer, ['id', 'type', 'path', 'color', 'strokeWidth', 'opacity', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'draw layer');
       assertDrawingPath(layer.path); assertColor(layer.color, 'drawing color'); assertStrokeWidth(layer.strokeWidth); if ('opacity' in layer) assertOpacity(layer.opacity, 'drawing opacity'); assertTransform(layer.transform); return;
@@ -1693,6 +1826,10 @@ function assertColor(color: unknown, label: string): asserts color is string {
   if (typeof color !== 'string' || !/^#[0-9A-Fa-f]{6}$/.test(color)) throw new Error(`Invalid ${label}: ${String(color)}`);
 }
 
+function assertRasterTint(rasterTint: unknown): asserts rasterTint is boolean {
+  if (typeof rasterTint !== 'boolean') throw new Error(`Invalid raster tint: ${String(rasterTint)}`);
+}
+
 function assertPaletteColourReplacements(replacements: unknown): asserts replacements is CoatPaletteColourReplacement[] {
   if (!Array.isArray(replacements) || replacements.length === 0) {
     throw new Error(`Invalid palette colour replacements: ${String(replacements)}`);
@@ -1938,10 +2075,10 @@ function cloneLayerForDuplicate(layer: CoatLayer, newLayerId: string): CoatLayer
     case 'shield':
       return { ...metadata, type: 'shield', assetId: layer.assetId, ...(layer.customMaskUploadId ? { customMaskUploadId: layer.customMaskUploadId } : {}), ...(layer.customOutlinePath ? { customOutlinePath: layer.customOutlinePath } : {}), ...(layer.colorReplacements ? { colorReplacements: { ...layer.colorReplacements } } : {}), field: cloneField(layer.field), transform: cloneCanvasTransform(layer.transform) };
     case 'ordinary':
-      return { ...metadata, type: 'ordinary', assetId: layer.assetId, color: layer.color, ...(layer.colorReplacements ? { colorReplacements: { ...layer.colorReplacements } } : {}), transform: cloneCanvasTransform(layer.transform) };
+      return { ...metadata, type: 'ordinary', assetId: layer.assetId, color: layer.color, ...(layer.colorReplacements ? { colorReplacements: { ...layer.colorReplacements } } : {}), ...(layer.rasterTint === undefined ? {} : { rasterTint: layer.rasterTint }), transform: cloneCanvasTransform(layer.transform) };
     case 'charge':
     case 'top':
-      return { ...metadata, type: layer.type, assetId: layer.assetId, ...(layer.rasterVariantId ? { rasterVariantId: layer.rasterVariantId } : {}), color: layer.color, ...(layer.colorReplacements ? { colorReplacements: { ...layer.colorReplacements } } : {}), transform: cloneCanvasTransform(layer.transform) };
+      return { ...metadata, type: layer.type, assetId: layer.assetId, ...(layer.rasterVariantId ? { rasterVariantId: layer.rasterVariantId } : {}), color: layer.color, ...(layer.colorReplacements ? { colorReplacements: { ...layer.colorReplacements } } : {}), ...(layer.rasterTint === undefined ? {} : { rasterTint: layer.rasterTint }), transform: cloneCanvasTransform(layer.transform) };
     case 'draw':
       return { ...metadata, type: 'draw', path: layer.path, color: layer.color, strokeWidth: layer.strokeWidth, ...(layer.opacity === undefined ? {} : { opacity: layer.opacity }), transform: cloneCanvasTransform(layer.transform) };
     case 'image':

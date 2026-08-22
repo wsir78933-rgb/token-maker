@@ -25,7 +25,7 @@ import { usePanelCommandError } from './usePanelCommandError';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
 const backgroundPatterns: readonly FieldPattern[] = fieldPatterns;
-const BACKGROUND_CHARGE_ASSET_ID = 'material-animal-lion-rampant';
+const BACKGROUND_CHARGE_ASSET_ID = 'material-animal-wolf-rampant';
 
 export type ColorPanelSection = 'used-colours' | 'palettes' | 'custom' | 'background';
 

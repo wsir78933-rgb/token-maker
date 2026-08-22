@@ -289,6 +289,8 @@ export interface OrdinaryLayer extends CoatLayerBase {
   color: string;
   /** Source-colour keyed overrides for authored multi-part SVG assets. */
   colorReplacements?: Record<string, string>;
+  /** When true, raster materials are recolored to `color` while dark outlines stay near-black. */
+  rasterTint?: boolean;
   transform: CanvasTransform;
 }
 
@@ -299,6 +301,8 @@ export interface ChargeLayer extends CoatLayerBase {
   rasterVariantId?: CoatRasterVariantId;
   color: string;
   colorReplacements?: Record<string, string>;
+  /** When true, raster materials are recolored to `color` while dark outlines stay near-black. */
+  rasterTint?: boolean;
   transform: CanvasTransform;
 }
 
@@ -309,6 +313,8 @@ export interface TopLayer extends CoatLayerBase {
   rasterVariantId?: CoatRasterVariantId;
   color: string;
   colorReplacements?: Record<string, string>;
+  /** When true, raster materials are recolored to `color` while dark outlines stay near-black. */
+  rasterTint?: boolean;
   transform: CanvasTransform;
 }
 

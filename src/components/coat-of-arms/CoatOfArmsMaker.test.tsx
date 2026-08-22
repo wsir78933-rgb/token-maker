@@ -498,7 +498,7 @@ describe('CoatOfArmsMaker', () => {
 
     expect(screen.queryByLabelText('Top category')).toBeNull();
     expect(screen.queryByRole('group', { name: 'Top ornament categories' })).toBeNull();
-    expect(screen.getByRole('button', { name: 'Add top ornament: Amber Mantle' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Add top ornament: Astrakhan Mantle' })).toBeDefined();
   });
 
   it('uses the Charges tree branch as the sole charge category control', () => {
@@ -726,9 +726,9 @@ describe('CoatOfArmsMaker', () => {
 
     selectDesktopTool('Top');
     revealAllGalleryCards('en');
-    fireEvent.click(screen.getByRole('button', { name: 'Add top ornament: Royal Crown' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add top ornament: Papal Crown' }));
 
-    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'material-crown-royal-crown' });
+    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'material-crown-papal-crown' });
   });
 
   it('generates an original local identity and can apply its project name', () => {
@@ -975,7 +975,7 @@ describe('CoatOfArmsMaker', () => {
     expect(undoButton.getAttribute('disabled')).not.toBeNull();
     expect(redoButton.getAttribute('disabled')).not.toBeNull();
 
-    act(() => useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'material-animal-lion-rampant' }));
+    act(() => useCoatProjectStore.getState().dispatch({ type: 'add-layer', assetId: 'material-animal-wolf-rampant' }));
     expect(undoButton.getAttribute('disabled')).toBeNull();
     expect(redoButton.getAttribute('disabled')).not.toBeNull();
 

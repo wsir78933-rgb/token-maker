@@ -155,7 +155,7 @@ export function ReferenceAssetGallery({
               <button
                 aria-label={copy.cardAction(section, cardName)}
                 aria-pressed={isSelected}
-                className="grid w-full gap-1 rounded border border-[color:var(--coat-line)] p-1 text-xs"
+                className="coat-gallery-card grid w-full rounded border border-[color:var(--coat-line)] p-1 text-xs"
                 onClick={() => {
                   if (controlledSelectedAssetId === undefined) {
                     setSelectedAssetId(entry.id);
@@ -173,7 +173,7 @@ export function ReferenceAssetGallery({
                     : <svg aria-hidden="true" className="aspect-[10/11] w-full" viewBox="0 0 100 110">
                       {entry.svgParts?.map((part, partIndex) => <path d={part.svgPath} fill={part.sourceColor} key={`${entry.id}-${partIndex}`} />)}
                     </svg>}
-                {presentation === 'standard' ? <span className="coat-reference-asset-gallery__caption">{cardName}</span> : null}
+                <span aria-hidden="true" className="coat-gallery-card-name coat-reference-asset-gallery__caption">{cardName}</span>
               </button>
             </li>
           );

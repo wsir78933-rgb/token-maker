@@ -21,7 +21,7 @@ function createToolbarProject(): CoatProject {
   };
   const withCharge = applyProjectCommand(withStableIds, {
     type: 'add-layer',
-    assetId: 'material-animal-lion-rampant',
+    assetId: 'material-animal-wolf-rampant',
   });
   return {
     ...withCharge,

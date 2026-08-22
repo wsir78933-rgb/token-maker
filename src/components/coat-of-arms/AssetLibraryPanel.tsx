@@ -25,31 +25,40 @@ export function AssetLibraryPanel({ kind, locale, search, onAdd, allowedAssetIds
     && (!normalizedSearch || getSearchableAssetText(asset).includes(normalizedSearch))
   ));
 
+  const libraryName = kind === 'charge' ? copy.charges : copy.ordinaries;
+
   return (
-    <ul aria-label={copy.assetLibrary(kind === 'charge' ? copy.charges : copy.ordinaries)} className="grid gap-2 sm:grid-cols-2">
-      {assets.map((asset) => (
-        <li key={asset.id}>
-          <button
-            aria-label={copy.addAsset(asset.name[locale])}
-            className="flex w-full min-w-0 items-center gap-2 rounded border border-[color:var(--site-border-soft)] p-2 text-left transition-colors hover:border-[color:var(--coat-accent)] hover:bg-[color:var(--coat-active)] focus-visible:border-[color:var(--coat-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--coat-accent)]"
-            onClick={() => onAdd(asset.id)}
-            type="button"
-          >
-            {asset.rasterSrc ? <img
-              alt=""
-              className="h-10 w-10 shrink-0 rounded bg-[color:var(--site-panel-strong)] object-contain p-1"
-              src={asset.rasterSrc}
-            /> : <svg
-              aria-hidden="true"
-              className="h-10 w-10 shrink-0 rounded bg-[color:var(--site-panel-strong)] p-1 text-[color:var(--site-accent-strong)]"
-              viewBox="0 0 100 110"
+    <ul aria-label={copy.assetLibrary(libraryName)} className="m-0 grid list-none grid-cols-3 gap-1 p-0">
+      {assets.map((asset) => {
+        const cardName = asset.name[locale];
+        return (
+          <li key={asset.id}>
+            <button
+              aria-label={copy.addAsset(cardName)}
+              className="coat-gallery-card grid w-full rounded border border-[color:var(--coat-line)] p-1 text-xs"
+              onClick={() => onAdd(asset.id)}
+              type="button"
             >
-              <path d={asset.svgPath} fill="currentColor" />
-            </svg>}
-            <span className="min-w-0 flex-1 truncate" title={asset.name[locale]}>{asset.name[locale]}</span>
-          </button>
-        </li>
-      ))}
+              {asset.rasterSrc ? <img
+                alt=""
+                className="aspect-[10/11] w-full object-contain"
+                decoding="async"
+                height={110}
+                loading="lazy"
+                src={asset.rasterSrc}
+                width={100}
+              /> : <svg
+                aria-hidden="true"
+                className="aspect-[10/11] w-full"
+                viewBox="0 0 100 110"
+              >
+                <path d={asset.svgPath} fill="currentColor" />
+              </svg>}
+              <span aria-hidden="true" className="coat-gallery-card-name">{cardName}</span>
+            </button>
+          </li>
+        );
+      })}
     </ul>
   );
 }

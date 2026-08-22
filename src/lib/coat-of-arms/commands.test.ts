@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createDefaultProject } from './assets';
 import { applyProjectCommand, assertCoatProject, COAT_PROJECT_LIMITS, createRandomCoatProject } from './commands';
+import { requireHeraldicSwatchGroup } from './heraldic-swatches';
 import { applyProjectHistoryCommand, createProjectHistory, redoProject, undoProject } from './store';
 import type { CoatLayer } from './types';
 
@@ -26,7 +27,7 @@ function createLocalSvgUpload(id: string) {
 }
 
 function createProjectWithMovableCharges() {
-  return ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower'].reduce(
+  return ['material-animal-wolf-rampant', 'material-symbol-shooting-star', 'material-object-castle-tower'].reduce(
     (project, assetId) => applyProjectCommand(project, { type: 'add-layer', assetId }),
     createDefaultProject('en'),
   );
@@ -35,6 +36,42 @@ function createProjectWithMovableCharges() {
 function getLayerTransformX(layer: CoatLayer): number {
   if (layer.type === 'background') throw new Error(`Expected movable layer: ${layer.id}`);
   return layer.transform.x;
+}
+
+function heraldicSwatchHex(groupId: 'metals' | 'colours', swatchId: string): string {
+  const swatch = requireHeraldicSwatchGroup(groupId).swatches.find((candidate) => candidate.id === swatchId);
+  if (!swatch) throw new Error(`Unknown heraldic swatch: ${swatchId}`);
+  return swatch.hex;
+}
+
+function sequentialRandomValues(values: number[]): () => number {
+  let nextIndex = 0;
+  return () => {
+    const value = values[nextIndex];
+    if (value === undefined) throw new Error(`Unexpected extra random draw at index: ${nextIndex}`);
+    nextIndex += 1;
+    return value;
+  };
+}
+
+function expectChargeToFollowTinctureRule(fieldColors: readonly string[], chargeColor: string): void {
+  const metalHexes = new Set(['or', 'argent'].map((swatchId) => heraldicSwatchHex('metals', swatchId)));
+  const colourHexes = new Set(['sable', 'gules', 'azure', 'vert'].map((swatchId) => heraldicSwatchHex('colours', swatchId)));
+  const fieldClasses = new Set(fieldColors.map((fieldColor) => {
+    if (metalHexes.has(fieldColor)) return 'metal';
+    if (colourHexes.has(fieldColor)) return 'colour';
+    throw new Error(`Unexpected field tincture: ${fieldColor}`);
+  }));
+  expect(fieldClasses.size).toBe(1);
+  if (metalHexes.has(chargeColor)) {
+    expect(fieldClasses.has('colour')).toBe(true);
+    return;
+  }
+  if (colourHexes.has(chargeColor)) {
+    expect(fieldClasses.has('metal')).toBe(true);
+    return;
+  }
+  throw new Error(`Unexpected charge tincture: ${chargeColor}`);
 }
 
 function requireShieldLayer(project: ReturnType<typeof createDefaultProject>, layerId: string) {
@@ -46,12 +83,12 @@ function requireShieldLayer(project: ReturnType<typeof createDefaultProject>, la
 describe('coat project commands', () => {
   it('persists a bundled static WebP material without adding a local upload', () => {
     const project = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'material-symbol-radiant-sun',
+      type: 'add-layer', assetId: 'material-symbol-eternal-flame',
     });
 
     expect(project.layers.at(-1)).toMatchObject({
       type: 'charge',
-      assetId: 'material-symbol-radiant-sun',
+      assetId: 'material-symbol-eternal-flame',
     });
     expect(project.layers.at(-1)).not.toHaveProperty('rasterVariantId');
     expect(project.uploads).toEqual([]);
@@ -130,9 +167,9 @@ describe('coat project commands', () => {
   });
 
   it('adds a locally authored top ornament as an independently transformable layer', () => {
-    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
+    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-papal-crown' });
 
-    expect(project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'material-crown-royal-crown', color: '#B11F24' });
+    expect(project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'material-crown-papal-crown', color: '#B11F24' });
   });
 
   it('persists independently positioned field ornaments inside the shield field', () => {
@@ -280,7 +317,7 @@ describe('coat project commands', () => {
   });
 
   it('rejects SVG part colour replacements for a bundled WebP material', () => {
-    const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
+    const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-papal-crown' });
     const crown = withCrown.layers.at(-1);
     if (!crown || crown.type !== 'top') throw new Error('Expected crown layer');
 
@@ -402,7 +439,7 @@ describe('coat project commands', () => {
 
   it('duplicates selected layer kinds with new ids without breaking group contiguity', () => {
     const project = createDefaultProject('en');
-    const withCharge = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    const withCharge = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const sourceLayerIds = withCharge.layers.map((layer) => layer.id);
 
     const duplicated = applyProjectCommand(withCharge, {
@@ -423,7 +460,7 @@ describe('coat project commands', () => {
 
   it('updates and removes multiple unlocked layers as one validated command', () => {
     const project = createDefaultProject('en');
-    const withCharges = ['material-animal-lion-rampant', 'material-symbol-eight-point-star'].reduce(
+    const withCharges = ['material-animal-wolf-rampant', 'material-symbol-shooting-star'].reduce(
       (currentProject, assetId) => applyProjectCommand(currentProject, { type: 'add-layer', assetId }),
       project,
     );
@@ -448,7 +485,7 @@ describe('coat project commands', () => {
     const withOrdinary = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-layer', assetId: 'material-ordinary-chevron',
     });
-    const withCharge = applyProjectCommand(withOrdinary, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    const withCharge = applyProjectCommand(withOrdinary, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const withText = applyProjectCommand(withCharge, {
       type: 'add-text-layer', text: 'FORTUNE', color: '#F5E6A1', fontSize: 24,
       alignment: 'center', path: { mode: 'curve', curve: 'upper' },
@@ -475,11 +512,11 @@ describe('coat project commands', () => {
     const initialProject = createDefaultProject('en');
     const once = applyProjectCommand(initialProject, {
       type: 'add-layer',
-      assetId: 'material-animal-lion-rampant',
+      assetId: 'material-animal-wolf-rampant',
     });
     const twice = applyProjectCommand(once, {
       type: 'add-layer',
-      assetId: 'material-animal-lion-rampant',
+      assetId: 'material-animal-wolf-rampant',
     });
 
     expect(twice.layers).toHaveLength(4);
@@ -496,7 +533,7 @@ describe('coat project commands', () => {
         {
           id: 'charge-1',
           type: 'charge' as const,
-          assetId: 'material-animal-lion-rampant',
+          assetId: 'material-animal-wolf-rampant',
           color: '#B11F24',
           transform: { x: 0, y: 0, scale: 1, rotation: 0 },
           visible: true,
@@ -538,7 +575,7 @@ describe('coat project commands', () => {
   });
 
   it('persists bounded crop and horizontal or vertical flip controls on an unlocked element', () => {
-    const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const lion = withLion.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
 
@@ -595,8 +632,8 @@ describe('coat project commands', () => {
   it('removes, reorders, toggles, and groups only requested unlocked layers', () => {
     const original = createDefaultProject('en');
     const withCharges = applyProjectCommand(
-      applyProjectCommand(original, { type: 'add-layer', assetId: 'material-animal-lion-rampant' }),
-      { type: 'add-layer', assetId: 'material-symbol-eight-point-star' },
+      applyProjectCommand(original, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' }),
+      { type: 'add-layer', assetId: 'material-symbol-shooting-star' },
     );
     const lionId = withCharges.layers[2]?.id;
     const starId = withCharges.layers[3]?.id;
@@ -642,7 +679,7 @@ describe('coat project commands', () => {
     const background = project.layers[0];
     const shield = project.layers[1];
     if (!background || !shield) throw new Error('Expected default base layers');
-    const withCharge = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    const withCharge = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const charge = withCharge.layers.at(-1);
     if (!charge) throw new Error('Expected added charge');
 
@@ -677,8 +714,8 @@ describe('coat project commands', () => {
 
   it('persists group opacity and removes metadata when a group dissolves', () => {
     const withCharges = applyProjectCommand(
-      applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' }),
-      { type: 'add-layer', assetId: 'material-symbol-eight-point-star' },
+      applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' }),
+      { type: 'add-layer', assetId: 'material-symbol-shooting-star' },
     );
     const layerIds = withCharges.layers.slice(-2).map((layer) => layer.id);
     const grouped = applyProjectCommand(withCharges, {
@@ -697,7 +734,7 @@ describe('coat project commands', () => {
   });
 
   it('rejects non-contiguous layer selection when creating a composited group', () => {
-    const withCharges = ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower'].reduce(
+    const withCharges = ['material-animal-wolf-rampant', 'material-symbol-shooting-star', 'material-object-castle-tower'].reduce(
       (project, assetId) => applyProjectCommand(project, { type: 'add-layer', assetId }),
       createDefaultProject('en'),
     );
@@ -812,7 +849,7 @@ describe('coat project commands', () => {
   });
 
   it('persists a charge field placement and clipping preference through its transform', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
 
@@ -826,7 +863,7 @@ describe('coat project commands', () => {
   });
 
   it('accepts every locally editable shield field region as a precise charge clipping target', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
 
@@ -880,7 +917,7 @@ describe('coat project commands', () => {
     const initialHistory = createProjectHistory(initialProject);
     const withCharge = applyProjectHistoryCommand(initialHistory, {
       type: 'add-layer',
-      assetId: 'material-animal-lion-rampant',
+      assetId: 'material-animal-wolf-rampant',
     });
     const undone = undoProject(withCharge);
     const redone = redoProject(undone);
@@ -1056,18 +1093,60 @@ describe('coat project commands', () => {
 
   it('creates a valid original random project from local assets with deterministic input', () => {
     const project = createRandomCoatProject('zh', () => 0);
+    const background = project.layers.find((layer) => layer.type === 'background');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    const charge = project.layers.find((layer) => layer.type === 'charge');
+    if (!background || background.type !== 'background' || !shield || shield.type !== 'shield' || !charge || charge.type !== 'charge') {
+      throw new Error('Expected background, shield, and charge layers');
+    }
 
     expect(project.locale).toBe('zh');
     expect(project.uploads).toEqual([]);
-    expect(project.layers.map((layer) => layer.type)).toEqual(['background', 'shield', 'ordinary', 'charge']);
-    expect(project.layers.every((layer) => !('source' in layer) || layer.source === 'local-upload')).toBe(true);
+    expect(project.layers.map((layer) => layer.type)).toEqual(['background', 'shield', 'charge']);
+    expect(project.layers.some((layer) => layer.type === 'ordinary')).toBe(false);
+    expect(background).toMatchObject({ motif: 'solid', fill: '#FFFFFF' });
+    expect(shield).toMatchObject({
+      assetId: 'heater-shield',
+      field: { division: 'solid', pattern: 'solid', colors: [heraldicSwatchHex('metals', 'or')] },
+      transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+    });
+    expect(charge).toMatchObject({
+      assetId: 'material-animal-aurochs-rampant',
+      color: heraldicSwatchHex('colours', 'sable'),
+      rasterTint: true,
+      transform: { x: 0, y: 0, scale: 0.6, rotation: 0 },
+    });
+    expectChargeToFollowTinctureRule(shield.field.colors, charge.color);
+    expect(assertCoatProject(project)).toBeUndefined();
+  });
+
+  it('builds a bipartite random field with two different same-class colours and a contrasting charge', () => {
+    const project = createRandomCoatProject('en', sequentialRandomValues([
+      0.7, 0, 0.5, 0, 0, 0, 0,
+    ]));
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    const charge = project.layers.find((layer) => layer.type === 'charge');
+    if (!shield || shield.type !== 'shield' || !charge || charge.type !== 'charge') {
+      throw new Error('Expected shield and charge layers');
+    }
+
+    expect(project.layers.map((layer) => layer.type)).toEqual(['background', 'shield', 'charge']);
+    expect(shield.assetId).toBe('heater-shield');
+    expect(shield.field).toMatchObject({
+      division: 'per-pale',
+      pattern: 'solid',
+      colors: [heraldicSwatchHex('colours', 'sable'), heraldicSwatchHex('colours', 'gules')],
+    });
+    expect(new Set(shield.field.colors).size).toBe(shield.field.colors.length);
+    expect(charge.rasterTint).toBe(true);
+    expectChargeToFollowTinctureRule(shield.field.colors, charge.color);
   });
 
   it('updates background settings and replaces matching colors across the project palette', () => {
     const project = createDefaultProject('en');
     const withPalette = applyProjectCommand(
       applyProjectCommand(project, { type: 'add-custom-palette-color', color: '#B11F24' }),
-      { type: 'add-layer', assetId: 'material-animal-lion-rampant' },
+      { type: 'add-layer', assetId: 'material-animal-wolf-rampant' },
     );
     const withBackground = applyProjectCommand(withPalette, {
       type: 'set-background', assetId: 'azure-background', motif: 'dots', opacity: 0.5,
@@ -1276,7 +1355,7 @@ describe('coat project commands', () => {
 
   it('normalizes a dissolved group and rejects regrouping that would make members non-contiguous', () => {
     const base = createDefaultProject('en');
-    const withCharges = ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower', 'material-animal-lion-rampant']
+    const withCharges = ['material-animal-wolf-rampant', 'material-symbol-shooting-star', 'material-object-castle-tower', 'material-animal-wolf-rampant']
       .reduce((project, assetId) => applyProjectCommand(project, { type: 'add-layer', assetId }), base);
     const chargeIds = withCharges.layers.slice(2).map((layer) => layer.id);
     const firstGroup = applyProjectCommand(withCharges, {
@@ -1545,5 +1624,54 @@ describe('coat project commands', () => {
     expect(() => applyProjectCommand(project, {
       type: 'set-layer-display-name', layerId: charge.id, displayName: 12 as never,
     })).toThrow('12');
+  });
+
+  it('round-trips rasterTint on geometry layers and rejects illegal values with the actual value', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-layer', assetId: 'material-symbol-alchemical-fire',
+    });
+    const charge = project.layers.at(-1);
+    if (!charge || charge.type !== 'charge') throw new Error('Expected raster charge layer');
+    expect(charge).not.toHaveProperty('rasterTint');
+
+    const tinted = applyProjectCommand(project, {
+      type: 'update-layer', layerId: charge.id, patch: { rasterTint: true },
+    });
+    expect(tinted.layers.at(-1)).toMatchObject({ rasterTint: true });
+
+    const duplicated = applyProjectCommand(tinted, {
+      type: 'duplicate-layers', sourceLayerIds: [charge.id], newLayerIds: ['tinted-charge-copy'],
+    });
+    expect(duplicated.layers.find((layer) => layer.id === 'tinted-charge-copy')).toMatchObject({
+      rasterTint: true,
+    });
+
+    const untinted = applyProjectCommand(tinted, {
+      type: 'update-layer', layerId: charge.id, patch: { rasterTint: false },
+    });
+    expect(untinted.layers.at(-1)).toMatchObject({ rasterTint: false });
+    expect(assertCoatProject(tinted)).toBeUndefined();
+    expect(assertCoatProject(untinted)).toBeUndefined();
+
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: charge.id, patch: { rasterTint: 'yes' as never },
+    })).toThrow('Invalid raster tint: yes');
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: charge.id, patch: { rasterTint: 1 as never },
+    })).toThrow('Invalid raster tint: 1');
+
+    const persistedInvalidProject = {
+      ...project,
+      layers: project.layers.map((layer) => (
+        layer.id === charge.id ? { ...layer, rasterTint: 'yes' as never } : layer
+      )),
+    };
+    expect(() => assertCoatProject(persistedInvalidProject)).toThrow('Invalid raster tint: yes');
+    expect(() => assertCoatProject({
+      ...project,
+      layers: project.layers.map((layer) => (
+        layer.id === charge.id ? { ...layer, rasterTint: null as never } : layer
+      )),
+    })).toThrow('Invalid raster tint: null');
   });
 });

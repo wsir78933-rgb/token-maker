@@ -8,7 +8,7 @@ import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import { ArrangePanel } from './ArrangePanel';
 
 function createProjectWithCharges() {
-  return ['material-animal-lion-rampant', 'material-symbol-eight-point-star'].reduce(
+  return ['material-animal-wolf-rampant', 'material-symbol-shooting-star'].reduce(
     (project, assetId) => applyProjectCommand(project, { type: 'add-layer', assetId }),
     createDefaultProject('en'),
   );

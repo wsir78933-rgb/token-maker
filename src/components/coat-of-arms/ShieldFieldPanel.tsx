@@ -17,7 +17,7 @@ const idleEscutcheonFill = '#5b5347';
 const fallbackFieldAccentColor = '#B11F24';
 const defaultShieldOutline = { visible: true, color: '#1E293B', width: 1.5 } as const;
 const defaultCustomLineWidth = 9;
-const embeddedChargeAssetId = 'material-animal-lion-rampant';
+const embeddedChargeAssetId = 'material-animal-wolf-rampant';
 
 const customFieldDivisionChoices: readonly { value: FieldDivision; labelKey: string }[] = [
   { value: 'solid', labelKey: 'solid' },

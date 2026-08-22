@@ -13,8 +13,8 @@ import { getCoatWorkbenchCopy } from './workbench-copy';
 let nextId = 0;
 
 function projectWithTwoRedLayers(): CoatProject {
-  const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
-  const withStar = applyProjectCommand(withLion, { type: 'add-layer', assetId: 'material-symbol-eight-point-star' });
+  const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+  const withStar = applyProjectCommand(withLion, { type: 'add-layer', assetId: 'material-symbol-shooting-star' });
   return {
     ...withStar,
     layers: withStar.layers.map((layer) => (
@@ -94,21 +94,21 @@ describe('CoatOfArmsPanels', () => {
     renderPanels();
     revealAllGalleryCards('en');
 
-    const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') });
+    const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Wolf Rampant') });
     expect(lionCard.querySelector('img')).not.toBeNull();
     fireEvent.click(lionCard);
 
-    expect(screen.getByRole('listitem', { name: /lion/i })).toBeDefined();
+    expect(screen.getByRole('listitem', { name: /wolf/i })).toBeDefined();
   });
 
-  it('adds the selected Lion Rampant WebP material as an independent layer', () => {
+  it('adds the selected Wolf Rampant WebP material as an independent layer', () => {
     renderPanels();
     revealAllGalleryCards('en');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add charge: Lion Rampant' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add charge: Wolf Rampant' }));
 
     expect(useCoatProjectStore.getState().project.layers.filter((layer) => (
-      layer.type === 'charge' && layer.assetId === 'material-animal-lion-rampant'
+      layer.type === 'charge' && layer.assetId === 'material-animal-wolf-rampant'
     ))).toHaveLength(1);
   });
 
@@ -127,7 +127,7 @@ describe('CoatOfArmsPanels', () => {
 
     expect(screen.getByRole('heading', { name: 'Custom Shield Uploads' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Select escutcheon: Heater shield' })).toBeDefined();
-    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
+    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Wolf Rampant') })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Text' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Curved Text' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Ring Text' })).toBeDefined();
@@ -140,7 +140,7 @@ describe('CoatOfArmsPanels', () => {
 
     expect(screen.getByRole('heading', { name: '自定义盾形上传' })).toBeDefined();
     expect(screen.getByRole('button', { name: '选择盾形：熨斗盾' })).toBeDefined();
-    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
+    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Wolf Rampant') })).toBeDefined();
     expect(screen.getByRole('button', { name: '文字' })).toBeDefined();
     expect(screen.getByRole('button', { name: '弧形文字' })).toBeDefined();
     expect(screen.getByRole('button', { name: '环形文字' })).toBeDefined();
@@ -188,7 +188,7 @@ describe('CoatOfArmsPanels', () => {
     fireEvent.click(screen.getByRole('button', { name: /add random charge/i }));
 
     expect(useCoatProjectStore.getState().project.layers.slice(-2)).toMatchObject([
-      { type: 'ordinary', assetId: 'material-ordinary-chevron' }, { type: 'charge', assetId: 'material-animal-alligator-passant' },
+      { type: 'ordinary', assetId: 'material-ordinary-chevron' }, { type: 'charge', assetId: 'material-animal-aurochs-rampant' },
     ]);
   });
 
@@ -200,7 +200,7 @@ describe('CoatOfArmsPanels', () => {
 
     const galleryCopy = getCoatWorkbenchCopy('en').palettes.referenceGallery;
     expect(screen.getByRole('button', { name: galleryCopy.cardAction('charge', 'Oak Leaf') })).toBeDefined();
-    expect(screen.queryByRole('button', { name: galleryCopy.cardAction('charge', 'Lion Rampant') })).toBeNull();
+    expect(screen.queryByRole('button', { name: galleryCopy.cardAction('charge', 'Wolf Rampant') })).toBeNull();
   });
 
   it('renders a searchable original charge as a gallery card', () => {
@@ -211,14 +211,14 @@ describe('CoatOfArmsPanels', () => {
 
     const galleryCopy = getCoatWorkbenchCopy('en').palettes.referenceGallery;
     expect(screen.getByRole('button', { name: galleryCopy.cardAction('charge', 'Oak Leaf') }).querySelector('img')).not.toBeNull();
-    expect(screen.queryByRole('button', { name: galleryCopy.cardAction('charge', 'Lion Rampant') })).toBeNull();
+    expect(screen.queryByRole('button', { name: galleryCopy.cardAction('charge', 'Wolf Rampant') })).toBeNull();
   });
 
   it('uses localized gallery action labels for bundled WebP charge cards in Chinese', () => {
     renderPanels('zh');
     revealAllGalleryCards('zh');
 
-    const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') });
+    const lionCard = screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Wolf Rampant') });
     expect(lionCard.querySelector('img')).not.toBeNull();
   });
 
@@ -227,7 +227,7 @@ describe('CoatOfArmsPanels', () => {
 
     fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: 'rampant' } });
 
-    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Lion Rampant') })).toBeDefined();
+    expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').palettes.referenceGallery.cardAction('charge', 'Wolf Rampant') })).toBeDefined();
   });
 
   it('updates every matching colour when the replace-colour action is confirmed', async () => {
@@ -259,7 +259,7 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('updates the whole layer colour for a static WebP ornament without exposing SVG part controls', () => {
-    const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
+    const withCrown = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-papal-crown' });
     const crown = withCrown.layers.at(-1);
     if (!crown || crown.type !== 'top') throw new Error('Expected crown layer');
     renderPanels(withCrown);
@@ -312,7 +312,7 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('does not expose crop editor controls for a selected layer', () => {
-    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const lion = project.layers.at(-1);
     if (!lion) throw new Error('Expected lion charge');
     renderPanels(project);
@@ -329,7 +329,7 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('sets a selected charge’s precise field region and clipping in the position controls', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const shield = project.layers.find((layer) => layer.type === 'shield');
     const lion = project.layers.at(-1);
     if (!shield || shield.type !== 'shield' || !lion || lion.type !== 'charge') throw new Error('Expected shield and lion charge');
@@ -348,7 +348,7 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('offers the current shield division’s detailed regions for local charge clipping', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const shield = project.layers.find((layer) => layer.type === 'shield');
     const lion = project.layers.at(-1);
     if (!shield || shield.type !== 'shield' || !lion || lion.type !== 'charge') throw new Error('Expected shield and lion charge');
@@ -416,7 +416,7 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('shows the group-contiguity command error instead of silently changing layers', async () => {
-    const project = ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower'].reduce(
+    const project = ['material-animal-wolf-rampant', 'material-symbol-shooting-star', 'material-object-castle-tower'].reduce(
       (current, assetId) => applyProjectCommand(current, { type: 'add-layer', assetId }),
       createDefaultProject('en'),
     );
@@ -432,8 +432,8 @@ describe('CoatOfArmsPanels', () => {
   });
 
   it('shows group opacity only for a selected single group and updates that group without changing layer opacity', () => {
-    const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
-    const withPair = applyProjectCommand(withLion, { type: 'add-layer', assetId: 'material-symbol-eight-point-star' });
+    const withLion = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+    const withPair = applyProjectCommand(withLion, { type: 'add-layer', assetId: 'material-symbol-shooting-star' });
     const groupLayerIds = withPair.layers.slice(-2).map((layer) => layer.id);
     const groupedProject = applyProjectCommand(withPair, {
       type: 'group-layers', groupId: 'opacity-group', layerIds: groupLayerIds,
@@ -459,55 +459,55 @@ describe('CoatOfArmsPanels', () => {
     renderPanels(projectWithTwoRedLayers());
 
     expect(screen.getByRole('list', { name: /coat layers/i })).toBeDefined();
-    expect(screen.getByRole('listitem', { name: /lion/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /move lion .*up/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /hide lion/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /lock lion/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /delete lion/i })).toBeDefined();
+    expect(screen.getByRole('listitem', { name: /wolf/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /move wolf .*up/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /hide wolf/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /lock wolf/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /delete wolf/i })).toBeDefined();
   });
 
   it('renames a layer from the list and uses the new name for later actions', () => {
     renderPanels(projectWithTwoRedLayers());
 
-    fireEvent.change(screen.getByLabelText('Rename Lion Rampant'), { target: { value: 'Dexter lion' } });
-    fireEvent.blur(screen.getByLabelText('Rename Lion Rampant'));
+    fireEvent.change(screen.getByLabelText('Rename Wolf Rampant'), { target: { value: 'Dexter lion' } });
+    fireEvent.blur(screen.getByLabelText('Rename Wolf Rampant'));
 
     const renamedLayer = useCoatProjectStore.getState().project.layers.find((layer) => (
-      'assetId' in layer && layer.assetId === 'material-animal-lion-rampant'
+      'assetId' in layer && layer.assetId === 'material-animal-wolf-rampant'
     ));
     expect(renamedLayer).toMatchObject({ displayName: 'Dexter lion' });
     expect(screen.getByRole('listitem', { name: 'Dexter lion' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Move Dexter lion up' })).toBeDefined();
-    expect(screen.queryByRole('button', { name: 'Move Lion Rampant up' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Move Wolf Rampant up' })).toBeNull();
   });
 
   it('moves a charge toward and away from the visual top in project paint order', () => {
     renderPanels(projectWithTwoRedLayers());
 
-    fireEvent.click(screen.getByRole('button', { name: 'Move Lion Rampant up' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Move Wolf Rampant up' }));
 
-    expect(findAssetLayerIndex('material-animal-lion-rampant')).toBe(3);
-    expect(findAssetLayerIndex('material-symbol-eight-point-star')).toBe(2);
+    expect(findAssetLayerIndex('material-animal-wolf-rampant')).toBe(3);
+    expect(findAssetLayerIndex('material-symbol-shooting-star')).toBe(2);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Move Lion Rampant down' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Move Wolf Rampant down' }));
 
-    expect(findAssetLayerIndex('material-animal-lion-rampant')).toBe(2);
-    expect(findAssetLayerIndex('material-symbol-eight-point-star')).toBe(3);
+    expect(findAssetLayerIndex('material-animal-wolf-rampant')).toBe(2);
+    expect(findAssetLayerIndex('material-symbol-shooting-star')).toBe(3);
   });
 
   it('moves a grouped layer as one contiguous block in the layer panel', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-symbol-eight-point-star' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-symbol-shooting-star' });
     project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-plant-oak-leaf' });
     const groupedLayerIds = project.layers.slice(2, 4).map((layer) => layer.id);
     project = applyProjectCommand(project, { type: 'group-layers', groupId: 'panel-group', layerIds: groupedLayerIds });
     renderPanels(project);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Move Lion Rampant up' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Move Wolf Rampant up' }));
 
     expect(useCoatProjectStore.getState().project.layers.slice(2).map((layer) => (
       'assetId' in layer ? layer.assetId : layer.type
-    ))).toEqual(['material-plant-oak-leaf', 'material-animal-lion-rampant', 'material-symbol-eight-point-star']);
+    ))).toEqual(['material-plant-oak-leaf', 'material-animal-wolf-rampant', 'material-symbol-shooting-star']);
   });
 
   it('rejects unsafe client upload metadata before it can dispatch an image command', async () => {

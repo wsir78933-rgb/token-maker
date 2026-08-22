@@ -107,7 +107,7 @@ describe('coat scene SVG renderer', () => {
 
   it('renders a bundled WebP charge inside the shield field clip', () => {
     const project = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'material-symbol-alchemical-air',
+      type: 'add-layer', assetId: 'material-symbol-alchemical-fire',
     } as never);
     const sun = project.layers.at(-1);
     if (!sun || sun.type !== 'charge') throw new Error('Expected bundled sun charge layer');
@@ -121,16 +121,16 @@ describe('coat scene SVG renderer', () => {
 
     expect(svg).toContain(`data-layer-id="${sun.id}"`);
     expect(svg).toContain('data-bundled-raster="true"');
-    expect(svg).toContain('href="/coat-assets/materials/symbols/alchemical-air.webp"');
+    expect(svg).toContain('href="/coat-assets/materials/symbols/alchemical-fire.webp"');
     expect(svg).toContain('coat-charge-shield-clip-2');
   });
 
   it('renders a layer sent backward immediately above the background', () => {
     let project = createDefaultProject('en');
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-alligator-passant' });
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-symbol-alchemical-air' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-symbol-alchemical-fire' });
     const background = project.layers.find((layer) => layer.type === 'background');
-    const lion = project.layers.find((layer) => layer.type === 'charge' && layer.assetId === 'material-animal-alligator-passant');
+    const lion = project.layers.find((layer) => layer.type === 'charge' && layer.assetId === 'material-animal-wolf-rampant');
     const shield = project.layers.find((layer) => layer.type === 'shield');
     if (!background || !lion || !shield) throw new Error('Expected background, shield, and golden lion layers');
 
@@ -158,7 +158,7 @@ describe('coat scene SVG renderer', () => {
   });
 
   it('renders a top ornament in its own positioned layer', () => {
-    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
+    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-papal-crown' });
     const topLayer = project.layers.at(-1);
     if (!topLayer || topLayer.type !== 'top') throw new Error('Expected top ornament layer');
 
@@ -166,11 +166,11 @@ describe('coat scene SVG renderer', () => {
 
     expect(svg).toContain(`data-layer-id="${topLayer.id}"`);
     expect(svg).toContain('data-bundled-raster="true"');
-    expect(svg).toContain('href="/coat-assets/materials/crowns/royal-crown.webp"');
+    expect(svg).toContain('href="/coat-assets/materials/crowns/papal-crown.webp"');
   });
 
   it('rejects SVG colour replacement requests for a WebP material', () => {
-    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-royal-crown' });
+    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-crown-papal-crown' });
     const crown = project.layers.at(-1);
     if (!crown || crown.type !== 'top') throw new Error('Expected top ornament layer');
     expect(() => applyProjectCommand(project, {
@@ -417,7 +417,7 @@ describe('coat scene SVG renderer', () => {
   });
 
   it('clips a charge to its selected shield field placement', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
     project = applyProjectCommand(project, {
@@ -434,7 +434,7 @@ describe('coat scene SVG renderer', () => {
   });
 
   it('clips a charge to a detailed local field region', () => {
-    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
     project = applyProjectCommand(project, {
@@ -477,9 +477,9 @@ describe('coat scene SVG renderer', () => {
     const withCharges = applyProjectCommand(
       applyProjectCommand(createDefaultProject('en'), {
         type: 'add-layer',
-        assetId: 'material-animal-lion-rampant',
+        assetId: 'material-animal-wolf-rampant',
       }),
-      { type: 'add-layer', assetId: 'material-symbol-eight-point-star' },
+      { type: 'add-layer', assetId: 'material-symbol-shooting-star' },
     );
     const project = {
       ...withCharges,
@@ -546,7 +546,7 @@ describe('coat scene SVG renderer', () => {
 
   it('renders independent horizontal and vertical layer scaling', () => {
     let project = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'material-animal-lion-rampant',
+      type: 'add-layer', assetId: 'material-animal-wolf-rampant',
     });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
@@ -562,7 +562,7 @@ describe('coat scene SVG renderer', () => {
 
   it('clips and flips a selected element without changing its source asset', () => {
     let project = applyProjectCommand(createDefaultProject('en'), {
-      type: 'add-layer', assetId: 'material-animal-lion-rampant',
+      type: 'add-layer', assetId: 'material-animal-wolf-rampant',
     });
     const lion = project.layers.at(-1);
     if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
@@ -595,8 +595,8 @@ describe('coat scene SVG renderer', () => {
     project = applyProjectCommand(project, {
       type: 'set-background', assetId: 'azure-background', motif: 'dots', opacity: 0.4,
     });
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-ordinary-bend' });
-    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-lion-rampant' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-ordinary-gusset' });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const ordinaryId = project.layers.at(-2)?.id;
     const chargeId = project.layers.at(-1)?.id;
     if (!ordinaryId || !chargeId) throw new Error('Expected ordinary and charge');
@@ -641,7 +641,7 @@ describe('coat scene SVG renderer', () => {
   });
 
   it('composites one contiguous group in one outer opacity wrapper while preserving layer order', () => {
-    let project = ['material-animal-lion-rampant', 'material-symbol-eight-point-star', 'material-object-castle-tower'].reduce(
+    let project = ['material-animal-wolf-rampant', 'material-symbol-shooting-star', 'material-object-castle-tower'].reduce(
       (currentProject, assetId) => applyProjectCommand(currentProject, { type: 'add-layer', assetId }),
       createDefaultProject('en'),
     );
@@ -711,5 +711,81 @@ describe('coat scene SVG renderer', () => {
 
     expect(() => renderCoatSceneSvg(project, { width: 0, height: 512 })).toThrow('width');
     expect(() => renderCoatSceneSvg(invalidProject, { width: 512, height: 512 })).toThrow('NaN');
+  });
+
+  it('leaves a raster charge unchanged when rasterTint is omitted or false', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-layer', assetId: 'material-symbol-alchemical-fire',
+    });
+    const charge = project.layers.at(-1);
+    if (!charge || charge.type !== 'charge') throw new Error('Expected raster charge layer');
+    const untintedSvg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+    const explicitFalseProject = applyProjectCommand(project, {
+      type: 'update-layer', layerId: charge.id, patch: { rasterTint: false },
+    });
+
+    expect(charge).not.toHaveProperty('rasterTint');
+    expect(untintedSvg).toContain('data-bundled-raster="true"');
+    expect(untintedSvg).toContain('href="/coat-assets/materials/symbols/alchemical-fire.webp"');
+    expect(untintedSvg).not.toContain('coat-raster-tint');
+    expect(untintedSvg).not.toContain('feColorMatrix');
+    expect(untintedSvg).not.toContain('feComponentTransfer');
+    expect(renderCoatSceneSvg(explicitFalseProject, { width: 512, height: 512 })).toBe(untintedSvg);
+  });
+
+  it('recolors a raster charge with a per-layer duotone filter when rasterTint is true', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-layer', assetId: 'material-symbol-alchemical-fire',
+    });
+    const charge = project.layers.at(-1);
+    if (!charge || charge.type !== 'charge') throw new Error('Expected raster charge layer');
+    const tintedProject = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: charge.id,
+      patch: { color: '#1855A5', rasterTint: true },
+    });
+
+    const svg = renderCoatSceneSvg(tintedProject, { width: 512, height: 512 });
+
+    expect(svg).toContain('filter id="coat-raster-tint-2"');
+    expect(svg).toContain('color-interpolation-filters="sRGB"');
+    expect(svg).toContain('<feColorMatrix type="saturate" values="0"/>');
+    expect(svg).toContain('<feFuncR type="table" tableValues="0.08 0.0941"/>');
+    expect(svg).toContain('<feFuncG type="table" tableValues="0.08 0.3333"/>');
+    expect(svg).toContain('<feFuncB type="table" tableValues="0.08 0.6471"/>');
+    expect(svg).toContain('<feFuncA type="identity"/>');
+    expect(svg).toContain('data-bundled-raster="true"');
+    expect(svg).toContain('href="/coat-assets/materials/symbols/alchemical-fire.webp"');
+    expect(svg).toContain('filter="url(#coat-raster-tint-2)"');
+    expect(svg).not.toContain('feFlood');
+  });
+
+  it('namespaces raster tint filters when two raster layers are recolored', () => {
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-layer', assetId: 'material-ordinary-gusset',
+    });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-crown-papal-crown' });
+    const ordinary = project.layers.find((layer) => layer.type === 'ordinary');
+    const top = project.layers.find((layer) => layer.type === 'top');
+    if (!ordinary || ordinary.type !== 'ordinary' || !top || top.type !== 'top') {
+      throw new Error('Expected raster ordinary and top layers');
+    }
+    project = applyProjectCommand(project, {
+      type: 'update-layers',
+      updates: [
+        { layerId: ordinary.id, patch: { rasterTint: true } },
+        { layerId: top.id, patch: { rasterTint: true } },
+      ],
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('filter id="coat-raster-tint-2"');
+    expect(svg).toContain('filter="url(#coat-raster-tint-2)"');
+    expect(svg).toContain('filter id="coat-raster-tint-3"');
+    expect(svg).toContain('filter="url(#coat-raster-tint-3)"');
+    expect(svg).toContain('data-bundled-raster="true"');
+    expect(svg).toContain('href="/coat-assets/materials/ordinaries/gusset.webp"');
+    expect(svg).toContain('href="/coat-assets/materials/crowns/papal-crown.webp"');
   });
 });

@@ -48,11 +48,11 @@ describe('ReferenceAssetGallery', () => {
     render(
       <ReferenceAssetGallery
         additionalEntries={[{
-          id: 'material-symbol-radiant-sun',
-          name: 'Radiant Sun',
-          nameZh: 'Radiant Sun',
-          searchTerms: ['radiant', 'sun'],
-          rasterSrc: '/coat-assets/materials/symbols/radiant-sun.webp',
+          id: 'material-symbol-eternal-flame',
+          name: 'Eternal Flame',
+          nameZh: 'Eternal Flame',
+          searchTerms: ['eternal', 'flame'],
+          rasterSrc: '/coat-assets/materials/symbols/eternal-flame.webp',
         }]}
         categories={['symbol']}
         locale="en"
@@ -61,12 +61,17 @@ describe('ReferenceAssetGallery', () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: 'radiant sun' } });
-    const sunCard = screen.getByRole('button', { name: 'Add charge: Radiant Sun' });
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search charges' }), { target: { value: 'eternal flame' } });
+    const sunCard = screen.getByRole('button', { name: 'Add charge: Eternal Flame' });
 
-    expect(sunCard.querySelector('img')?.getAttribute('src')).toBe('/coat-assets/materials/symbols/radiant-sun.webp');
+    expect(sunCard.querySelector('img')?.getAttribute('src')).toBe('/coat-assets/materials/symbols/eternal-flame.webp');
+    expect(sunCard.className).toContain('coat-gallery-card');
+    expect(sunCard.getAttribute('aria-label')).toBe('Add charge: Eternal Flame');
+    const hoverName = sunCard.querySelector('.coat-gallery-card-name');
+    expect(hoverName?.textContent).toBe('Eternal Flame');
+    expect(hoverName?.getAttribute('aria-hidden')).toBe('true');
     fireEvent.click(sunCard);
-    expect(onSelect).toHaveBeenCalledWith('material-symbol-radiant-sun');
+    expect(onSelect).toHaveBeenCalledWith('material-symbol-eternal-flame');
   });
 
   it('renders raster materials one page at a time and resets pagination after filter changes', () => {
@@ -170,16 +175,40 @@ describe('ReferenceAssetGallery', () => {
     expect(document.querySelector('.coat-target-search [data-search-glyph="true"]')).not.toBeNull();
   });
 
+  it('overlays compact card names on hover without a rest caption', () => {
+    render(
+      <ReferenceAssetGallery
+        additionalEntries={[{
+          id: 'heater-shield',
+          name: 'Heater shield',
+          nameZh: '熨斗盾',
+          searchTerms: ['heater'],
+          rasterSrc: '/coat-assets/materials/shields/heater.webp',
+        }]}
+        categories={['shield']}
+        locale="en"
+        onSelect={vi.fn()}
+        presentation="compact"
+        section="shield"
+        showCategoryFilter={false}
+      />,
+    );
+
+    const shieldCard = screen.getByRole('button', { name: 'Select shield: Heater shield' });
+    expect(shieldCard.className).toContain('coat-gallery-card');
+    expect(shieldCard.querySelector('.coat-gallery-card-name')?.textContent).toBe('Heater shield');
+  });
+
   it('matches a static WebP material by its name and terms', () => {
     const webpMaterial = {
-      id: 'material-animal-lion-rampant',
-      name: 'Lion Rampant',
-      nameZh: 'Lion Rampant',
-      searchTerms: ['lion', 'rampant'],
-      rasterSrc: '/coat-assets/materials/animals/lion-rampant.webp',
+      id: 'material-animal-wolf-rampant',
+      name: 'Wolf Rampant',
+      nameZh: 'Wolf Rampant',
+      searchTerms: ['wolf', 'rampant'],
+      rasterSrc: '/coat-assets/materials/animals/wolf-rampant.webp',
     };
 
-    expect(matchesCatalogSearch(webpMaterial, 'lion')).toBe(true);
+    expect(matchesCatalogSearch(webpMaterial, 'wolf')).toBe(true);
     expect(matchesCatalogSearch(webpMaterial, 'rampant')).toBe(true);
     expect(matchesCatalogSearch(webpMaterial, 'shield')).toBe(false);
   });

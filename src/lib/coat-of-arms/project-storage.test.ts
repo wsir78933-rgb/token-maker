@@ -56,4 +56,71 @@ describe('coat project local storage', () => {
 
     expect(loadProjectDraft()?.groups).toEqual([{ id: 'pair', opacity: 0.45 }]);
   });
+
+  it('round-trips rasterTint through a local draft without changing omitted layers', () => {
+    const baseProject = createDefaultProject('en');
+    const project = {
+      ...baseProject,
+      layers: [
+        ...baseProject.layers,
+        {
+          id: 'tinted-charge',
+          type: 'charge' as const,
+          assetId: 'material-symbol-alchemical-fire',
+          color: '#1855A5',
+          rasterTint: true,
+          transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+          visible: true,
+          locked: false,
+          groupId: null,
+        },
+        {
+          id: 'untinted-ordinary',
+          type: 'ordinary' as const,
+          assetId: 'material-ordinary-gusset',
+          color: '#B11F24',
+          rasterTint: false,
+          transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+          visible: true,
+          locked: false,
+          groupId: null,
+        },
+      ],
+    };
+    saveProjectDraft(project);
+
+    const loadedDraft = loadProjectDraft();
+    expect(loadedDraft).toEqual(project);
+    expect(loadedDraft?.layers.find((layer) => layer.id === 'tinted-charge')).toMatchObject({ rasterTint: true });
+    expect(loadedDraft?.layers.find((layer) => layer.id === 'untinted-ordinary')).toMatchObject({ rasterTint: false });
+    expect(loadedDraft?.layers.find((layer) => layer.type === 'shield')).not.toHaveProperty('rasterTint');
+  });
+
+  it('rejects a draft whose rasterTint is not a boolean', () => {
+    const baseProject = createDefaultProject('en');
+    const invalidDraft = JSON.stringify({
+      version: 1,
+      project: {
+        ...baseProject,
+        layers: [
+          ...baseProject.layers,
+          {
+            id: 'invalid-tint-charge',
+            type: 'charge',
+            assetId: 'material-symbol-alchemical-fire',
+            color: '#1855A5',
+            rasterTint: 'yes',
+            transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+            visible: true,
+            locked: false,
+            groupId: null,
+          },
+        ],
+      },
+    });
+    localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, invalidDraft);
+
+    expect(() => loadProjectDraft()).toThrow('Invalid raster tint: yes');
+    expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBe(invalidDraft);
+  });
 });

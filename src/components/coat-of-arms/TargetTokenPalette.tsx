@@ -12,11 +12,11 @@ import { getCoatWorkbenchCopy, tokenPaletteCategories, type TokenPaletteCategory
 
 type TokenAsset = Extract<CoatAsset, { kind: 'charge' }>;
 const featuredTokenAssetIds = new Set([
-  'material-animal-eagle-displayed',
-  'material-animal-lion-rampant',
-  'material-symbol-compass-rose',
-  'material-symbol-eight-point-star',
-  'material-symbol-crescent-moon',
+  'material-animal-griffin-rampant',
+  'material-animal-wolf-rampant',
+  'material-symbol-caduceus',
+  'material-symbol-shooting-star',
+  'material-symbol-sun-and-moon',
   'material-object-castle-tower',
   'material-object-mariner-anchor',
   'material-plant-fleur-de-lis',
@@ -79,6 +79,7 @@ export function TargetTokenPalette({ locale }: { locale: CoatLocale }) {
             : asset.name[locale];
           return <button
             aria-label={copy.addAsset(cardName)}
+            className="coat-gallery-card"
             key={`${asset.id}-${rasterVariant?.id ?? 'vector'}`}
             onClick={() => run(createTokenLayerCommand(asset.id, rasterVariant?.id))}
             type="button"
@@ -88,7 +89,7 @@ export function TargetTokenPalette({ locale }: { locale: CoatLocale }) {
               : asset.rasterSrc
                 ? <img alt="" src={asset.rasterSrc} />
               : <svg aria-hidden="true" viewBox="0 0 100 110"><path d={asset.svgPath} fill="#e9e9e9" /></svg>}
-            <span>{cardName}</span>
+            <span aria-hidden="true" className="coat-gallery-card-name">{cardName}</span>
           </button>
         })}
       </div>

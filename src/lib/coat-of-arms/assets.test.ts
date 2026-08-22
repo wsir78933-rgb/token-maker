@@ -12,11 +12,11 @@ const requiredChargeCategories: readonly ChargeAssetCategory[] = [
 
 describe('coat asset catalog', () => {
   it('exposes one bundled WebP material for every replacement category', () => {
-    const alligator = getCoatAsset('material-animal-alligator-passant');
-    if (alligator.kind !== 'charge') throw new Error(`Expected an animal charge, received ${alligator.kind}`);
+    const wolf = getCoatAsset('material-animal-wolf-rampant');
+    if (wolf.kind !== 'charge') throw new Error(`Expected an animal charge, received ${wolf.kind}`);
 
-    expect(alligator.rasterSrc).toBe('/coat-assets/materials/animals/alligator-passant.webp');
-    expect(alligator.svgPath).toBeUndefined();
+    expect(wolf.rasterSrc).toBe('/coat-assets/materials/animals/wolf-rampant.webp');
+    expect(wolf.svgPath).toBeUndefined();
   });
 
   it('creates the target editor showcase with local bundled layers', () => {
@@ -26,13 +26,13 @@ describe('coat asset catalog', () => {
       { type: 'background', fill: '#FFFFFF' },
       { type: 'shield', assetId: 'heater-shield', field: { division: 'solid', colors: ['#F6C700'] } },
       { type: 'charge', assetId: 'material-animal-dragon-passant', color: '#28753A' },
-      { type: 'charge', assetId: 'material-animal-alligator-passant', color: '#8A451B' },
+      { type: 'charge', assetId: 'material-animal-wolf-rampant', color: '#8A451B' },
     ]);
   });
 
   it('exposes a local shield and a local WebP charge without a remote source', () => {
     const shield = getCoatAsset('heater-shield');
-    const charge = getCoatAsset('material-animal-alligator-passant');
+    const charge = getCoatAsset('material-animal-wolf-rampant');
 
     expect(shield.kind).toBe('shield');
     expect(charge.kind).toBe('charge');
@@ -42,17 +42,17 @@ describe('coat asset catalog', () => {
 
   it('keeps the two default animal materials as distinct local WebP files', () => {
     const dragon = getCoatAsset('material-animal-dragon-passant');
-    const alligator = getCoatAsset('material-animal-alligator-passant');
+    const wolf = getCoatAsset('material-animal-wolf-rampant');
 
-    if (dragon.kind !== 'charge' || alligator.kind !== 'charge') {
-      throw new Error(`Expected charge assets, received ${dragon.kind} and ${alligator.kind}`);
+    if (dragon.kind !== 'charge' || wolf.kind !== 'charge') {
+      throw new Error(`Expected charge assets, received ${dragon.kind} and ${wolf.kind}`);
     }
 
     expect(dragon.rasterSrc).toBe('/coat-assets/materials/animals/dragon-passant.webp');
-    expect(alligator.rasterSrc).toBe('/coat-assets/materials/animals/alligator-passant.webp');
-    expect(dragon.rasterSrc).not.toBe(alligator.rasterSrc);
+    expect(wolf.rasterSrc).toBe('/coat-assets/materials/animals/wolf-rampant.webp');
+    expect(dragon.rasterSrc).not.toBe(wolf.rasterSrc);
     expect(dragon.sourceUrl).toBeUndefined();
-    expect(alligator.sourceUrl).toBeUndefined();
+    expect(wolf.sourceUrl).toBeUndefined();
   });
 
   it('rejects an unknown asset id with the invalid id in the error', () => {
@@ -76,9 +76,9 @@ describe('coat asset catalog', () => {
       kind: 'shield',
       staticImageSrc: '/coat-assets/materials/shields/heater/heater-002.svg',
     });
-    expect(listAssetsByKind('charge')).toHaveLength(500);
-    expect(listAssetsByKind('ordinary')).toHaveLength(100);
-    expect(listAssetsByKind('top')).toHaveLength(400);
+    expect(listAssetsByKind('charge')).toHaveLength(119);
+    expect(listAssetsByKind('ordinary')).toHaveLength(27);
+    expect(listAssetsByKind('top')).toHaveLength(57);
   });
 
   it('offers multiple local choices for every editor catalog category', () => {
@@ -92,10 +92,17 @@ describe('coat asset catalog', () => {
   it('stocks a broad original local charge catalogue for every editor category', () => {
     const charges = listAssetsByKind('charge');
 
-    expect(charges).toHaveLength(500);
+    expect(charges).toHaveLength(119);
 
+    const expectedChargeCounts: Record<ChargeAssetCategory, number> = {
+      animal: 18,
+      object: 35,
+      plant: 20,
+      human: 22,
+      symbol: 24,
+    };
     for (const category of requiredChargeCategories) {
-      expect(charges.filter((charge) => charge.category === category)).toHaveLength(100);
+      expect(charges.filter((charge) => charge.category === category)).toHaveLength(expectedChargeCounts[category]);
     }
 
     for (const charge of charges) {
@@ -107,11 +114,11 @@ describe('coat asset catalog', () => {
   });
 
   it('replaces the ordinary and exterior defaults with their WebP catalogues', () => {
-    expectRasterSource('material-ordinary-annulet', '/coat-assets/materials/ordinaries/annulet.webp');
-    expectRasterSource('material-crown-acorn-crown', '/coat-assets/materials/crowns/acorn-crown.webp');
-    expectRasterSource('material-mantle-amber-mantle', '/coat-assets/materials/mantles/amber-mantle.webp');
-    expectRasterSource('material-supporter-paired-alligators', '/coat-assets/materials/supporters/paired-alligators.webp');
-    expectRasterSource('material-other-barbute-helm', '/coat-assets/materials/other/barbute-helm.webp');
+    expectRasterSource('material-ordinary-billetty', '/coat-assets/materials/ordinaries/billetty.webp');
+    expectRasterSource('material-crown-archducal-coronet', '/coat-assets/materials/crowns/archducal-coronet.webp');
+    expectRasterSource('material-mantle-astrakhan-mantle', '/coat-assets/materials/mantles/astrakhan-mantle.webp');
+    expectRasterSource('material-supporter-paired-cockatrices', '/coat-assets/materials/supporters/paired-cockatrices.webp');
+    expectRasterSource('material-other-bascinet-helm', '/coat-assets/materials/other/bascinet-helm.webp');
   });
 
   it('includes locally authored French, banner, and lozenge shield outlines', () => {

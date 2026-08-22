@@ -21,6 +21,8 @@ import { renderExtendedFieldPattern } from './field-pattern';
 
 const SCENE_VIEW_BOX = '0 0 100 110';
 const TEXT_FONT_SIZE_SCENE_SCALE = 7;
+/** Lowest luminance in raster recoloring so dark outlines stay near-black instead of becoming a silhouette. */
+const RASTER_TINT_SHADOW_LEVEL = 0.08;
 
 export interface CoatSceneSvgOptions {
   width: number;
@@ -452,9 +454,9 @@ function renderGeometryLayer(
     throw new Error(`Invalid geometry layer asset: ${layer.assetId}`);
   }
   const geometryMarkup = hasStaticRasterSource(asset)
-    ? renderStaticRasterAsset(asset)
+    ? renderStaticRasterAsset(asset, layer, layerIndex)
     : isBundledRasterAsset(asset) && isBundledRasterLayer(layer)
-      ? renderBundledRasterAsset(asset, layer)
+      ? renderBundledRasterAsset(asset, layer, layerIndex)
       : renderVectorGeometryAsset(asset, layer);
   const transformedMarkup = renderTransformedLayer(geometryMarkup, layer.transform, layerIndex);
   if (layer.type !== 'charge' || !layer.transform.clipToField) return transformedMarkup;
@@ -469,8 +471,10 @@ function hasStaticRasterSource(
 
 function renderStaticRasterAsset(
   asset: Extract<ReturnType<typeof getCoatAsset>, { rasterSrc: string }>,
+  layer: Extract<CoatLayer, { type: 'ordinary' | 'charge' | 'top' }>,
+  layerIndex: number,
 ): string {
-  return `<image data-bundled-raster="true" href="${escapeXml(asset.rasterSrc)}" x="0" y="0" width="100" height="110" preserveAspectRatio="xMidYMid meet"/>`;
+  return renderRasterImageMarkup('data-bundled-raster="true"', asset.rasterSrc, layer, layerIndex);
 }
 
 function renderVectorGeometryAsset(
@@ -501,13 +505,49 @@ function isBundledRasterLayer(
 function renderBundledRasterAsset(
   asset: Extract<ReturnType<typeof getCoatAsset>, { kind: 'charge' | 'top' }>,
   layer: Extract<CoatLayer, { type: 'charge' | 'top' }>,
+  layerIndex: number,
 ): string {
   const rasterVariantId = layer.rasterVariantId ?? asset.rasterVariants![0].id;
   const rasterVariant = asset.rasterVariants!.find((variant) => variant.id === rasterVariantId);
   if (!rasterVariant) {
     throw new Error(`Invalid raster variant ${rasterVariantId} for asset: ${asset.id}`);
   }
-  return `<image data-bundled-raster-variant="${rasterVariant.id}" href="${escapeXml(rasterVariant.src)}" x="0" y="0" width="100" height="110" preserveAspectRatio="xMidYMid meet"/>`;
+  return renderRasterImageMarkup(
+    `data-bundled-raster-variant="${rasterVariant.id}"`,
+    rasterVariant.src,
+    layer,
+    layerIndex,
+  );
+}
+
+function renderRasterImageMarkup(
+  dataAttribute: string,
+  href: string,
+  layer: Extract<CoatLayer, { type: 'ordinary' | 'charge' | 'top' }>,
+  layerIndex: number,
+): string {
+  const tintFilterId = layer.rasterTint === true ? `coat-raster-tint-${layerIndex}` : null;
+  const filterAttribute = tintFilterId ? ` filter="url(#${tintFilterId})"` : '';
+  const imageMarkup = `<image ${dataAttribute} href="${escapeXml(href)}" x="0" y="0" width="100" height="110" preserveAspectRatio="xMidYMid meet"${filterAttribute}/>`;
+  if (!tintFilterId) return imageMarkup;
+  return `<defs>${renderRasterTintFilter(tintFilterId, layer.color)}</defs>${imageMarkup}`;
+}
+
+function renderRasterTintFilter(filterId: string, color: string): string {
+  const { red, green, blue } = hexColorToUnitRgb(color);
+  const shadowLevel = formatSceneNumber(RASTER_TINT_SHADOW_LEVEL);
+  return `<filter id="${filterId}" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="${shadowLevel} ${formatSceneNumber(red)}"/><feFuncG type="table" tableValues="${shadowLevel} ${formatSceneNumber(green)}"/><feFuncB type="table" tableValues="${shadowLevel} ${formatSceneNumber(blue)}"/><feFuncA type="identity"/></feComponentTransfer></filter>`;
+}
+
+function hexColorToUnitRgb(color: string): { red: number; green: number; blue: number } {
+  if (!/^#[0-9A-Fa-f]{6}$/.test(color)) {
+    throw new Error(`Invalid layer color: ${color}`);
+  }
+  return {
+    red: Number.parseInt(color.slice(1, 3), 16) / 255,
+    green: Number.parseInt(color.slice(3, 5), 16) / 255,
+    blue: Number.parseInt(color.slice(5, 7), 16) / 255,
+  };
 }
 
 function renderChargeFieldPlacement(
