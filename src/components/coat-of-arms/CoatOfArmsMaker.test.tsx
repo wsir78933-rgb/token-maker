@@ -109,6 +109,21 @@ function selectDesktopTool(label: string) {
   fireEvent.click(getDesktopTool(label));
 }
 
+function cssDeclarationsForSelector(cssText: string, selector: string): string[] {
+  const collapsedCss = cssText.replace(/\s+/g, ' ');
+  const collapsedSelector = selector.replace(/\s+/g, ' ').trim();
+  const rulePattern = /([^{]+)\{([^}]+)\}/g;
+  for (const match of collapsedCss.matchAll(rulePattern)) {
+    const selectorList = match[1].split(',').map((part) => part.trim());
+    if (!selectorList.includes(collapsedSelector)) continue;
+    return match[2]
+      .split(';')
+      .map((declaration) => declaration.trim())
+      .filter((declaration) => declaration.length > 0);
+  }
+  throw new Error(`Missing CSS rule for selector: ${collapsedSelector}`);
+}
+
 function selectEditorUtility(label: string) {
   const toolsTab = getDesktopTool(/tools/i);
   if (toolsTab.getAttribute('aria-expanded') !== 'true') {
@@ -495,9 +510,29 @@ describe('CoatOfArmsMaker', () => {
 
   it('keeps the selected desktop tree choice in the shared active treatment', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
+    const treeButtonDeclarations = cssDeclarationsForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-tool-tree-branch button',
+    );
+    const selectedTreeButtonDeclarations = cssDeclarationsForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true']",
+    );
 
-    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-tool-tree-branch button { display: flex; min-height: 1.75rem; align-items: center; gap: 0.5rem; border: 0; border-radius: 0.1875rem; background: transparent; color: var(--coat-text); padding: 0 0.5rem; text-align: left; font-family: inherit; font-size: 0.875rem; cursor: pointer; }');
-    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-tool-tree-branch button:hover,\n.coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true'] { background: #5a5a5a; }");
+    expect(treeButtonDeclarations).toEqual(expect.arrayContaining([
+      'min-height: 29.75px',
+      'gap: 8.5px',
+    ]));
+    expect(selectedTreeButtonDeclarations).toEqual(expect.arrayContaining([
+      'background: #5a5a5a',
+    ]));
+  });
+
+  it('gives clickable workbench controls a pointer cursor', () => {
+    const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
+
+    expect(workbenchStyles).toContain(".coat-target-workbench a,\n.coat-target-workbench button,\n.coat-target-workbench summary,\n.coat-target-workbench label,\n.coat-target-workbench select,\n.coat-target-workbench [role='button'],\n.coat-target-workbench [role='tab'],\n.coat-target-workbench [role='menuitem'],\n.coat-target-workbench input[type='checkbox'],\n.coat-target-workbench input[type='radio'],\n.coat-target-workbench input[type='file'],\n.coat-target-workbench input[type='color'],\n.coat-target-workbench input[type='range'] { cursor: pointer; }");
+    expect(workbenchStyles).toContain(".coat-target-workbench a[aria-disabled='true'],\n.coat-target-workbench button:disabled,\n.coat-target-workbench button[aria-disabled='true'],\n.coat-target-workbench [role='button']:disabled,\n.coat-target-workbench [role='button'][aria-disabled='true'],\n.coat-target-workbench [role='tab']:disabled,\n.coat-target-workbench [role='tab'][aria-disabled='true'],\n.coat-target-workbench [role='menuitem']:disabled,\n.coat-target-workbench [role='menuitem'][aria-disabled='true'] { cursor: not-allowed; }");
   });
 
   it('uses the Top tree branch as the sole top-ornament category control', () => {

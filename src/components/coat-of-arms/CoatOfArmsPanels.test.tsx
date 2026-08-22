@@ -7,7 +7,7 @@ import { applyProjectCommand, COAT_PROJECT_LIMITS } from '@/lib/coat-of-arms/com
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CoatProject } from '@/lib/coat-of-arms/types';
 import { CoatOfArmsPanels } from './CoatOfArmsPanels';
-import { createValidatedLocalUpload, validateLocalUploadFile } from './UploadPanel';
+import { createValidatedLocalUpload, extractStrictBase64, validateLocalUploadFile } from './UploadPanel';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
 let nextId = 0;
@@ -539,7 +539,9 @@ describe('CoatOfArmsPanels', () => {
 
     fireEvent.change(screen.getByLabelText(/upload crest image/i), { target: { files: [malformedSvg] } });
 
-    expect((await screen.findByRole('alert')).textContent).toMatch(/svg|xml|malformed/i);
+    const alertText = (await screen.findByRole('alert')).textContent ?? '';
+    expect(alertText).toMatch(/svg|xml|malformed/i);
+    expect(alertText).toContain('broken.svg');
     expect(useCoatProjectStore.getState().project.uploads).toHaveLength(0);
   });
 
@@ -550,8 +552,41 @@ describe('CoatOfArmsPanels', () => {
 
     fireEvent.change(screen.getByLabelText(/upload crest image/i), { target: { files: [corruptPng] } });
 
-    expect((await screen.findByRole('alert')).textContent).toMatch(/decode|image/i);
+    const alertText = (await screen.findByRole('alert')).textContent ?? '';
+    expect(alertText).toMatch(/decode|image/i);
+    expect(alertText).toContain('broken.png');
     expect(useCoatProjectStore.getState().project.uploads).toHaveLength(0);
+  });
+
+  it('includes the illegal Base64 fragment when upload decoding fails', () => {
+    const oversizedIllegalBase64 = `not base64!${'A'.repeat(200)}`;
+    expect(() => extractStrictBase64('data:image/png;base64,not base64!', 'image/png')).toThrow(
+      'Invalid upload Base64 data: not base64!',
+    );
+    try {
+      extractStrictBase64(`data:image/png;base64,${oversizedIllegalBase64}`, 'image/png');
+    } catch (caught) {
+      if (!(caught instanceof Error)) {
+        throw new Error(`Expected Error for illegal Base64, received: ${String(caught)}`);
+      }
+      expect(caught.message).toContain('not base64!');
+      expect(caught.message).not.toContain(oversizedIllegalBase64);
+      return;
+    }
+    throw new Error(`Expected extractStrictBase64 to reject oversized illegal Base64: ${oversizedIllegalBase64.slice(0, 24)}`);
+  });
+
+  it('includes the upload filename when SVG XML cannot be decoded', async () => {
+    const malformedSvg = new File(['<svg><path d="M0 0">'], 'broken.svg', { type: 'image/svg+xml' });
+    await expect(createValidatedLocalUpload(malformedSvg)).rejects.toThrow(/broken\.svg/);
+    await expect(createValidatedLocalUpload(malformedSvg)).rejects.toThrow(/image\/svg\+xml/);
+  });
+
+  it('includes the upload filename when a raster cannot be decoded', async () => {
+    vi.stubGlobal('createImageBitmap', async () => { throw new Error('image decode failed'); });
+    const corruptPng = new File([new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])], 'broken.png', { type: 'image/png' });
+    await expect(createValidatedLocalUpload(corruptPng)).rejects.toThrow(/broken\.png/);
+    await expect(createValidatedLocalUpload(corruptPng)).rejects.toThrow(/image\/png/);
   });
 
   it('decodes and adds a valid local raster image layer', async () => {

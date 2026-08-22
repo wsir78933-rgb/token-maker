@@ -15,6 +15,12 @@ const filenamePatternByMimeType: Record<LocalUploadMimeType, RegExp> = {
   'image/webp': /\.webp$/i,
   'image/svg+xml': /\.svg$/i,
 };
+const uploadDiagnosticMaxCharacters = 64;
+
+function boundedUploadDiagnostic(rawValue: string): string {
+  if (rawValue.length <= uploadDiagnosticMaxCharacters) return rawValue;
+  return `${rawValue.slice(0, uploadDiagnosticMaxCharacters)}…`;
+}
 
 export interface ClientLocalUploadFile {
   name: string;
@@ -41,10 +47,12 @@ export function validateLocalUploadFile(file: ClientLocalUploadFile): asserts fi
 
 export function extractStrictBase64(dataUrl: string, mimeType: LocalUploadMimeType): string {
   const prefix = `data:${mimeType};base64,`;
-  if (!dataUrl.startsWith(prefix)) throw new Error(`Invalid upload data URL for MIME type: ${mimeType}`);
+  if (!dataUrl.startsWith(prefix)) {
+    throw new Error(`Invalid upload data URL for MIME type: ${mimeType}: ${boundedUploadDiagnostic(dataUrl)}`);
+  }
   const base64 = dataUrl.slice(prefix.length);
   if (!base64 || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(base64)) {
-    throw new Error('Invalid upload Base64 data');
+    throw new Error(`Invalid upload Base64 data: ${boundedUploadDiagnostic(base64)}`);
   }
   return base64;
 }
@@ -74,22 +82,23 @@ function assertWellFormedSvg(base64: string): void {
   const svgText = new TextDecoder('utf-8', { fatal: true }).decode(decodeBase64Bytes(base64));
   const parsed = new DOMParser().parseFromString(svgText, 'image/svg+xml');
   if (parsed.querySelector('parsererror') || parsed.documentElement.localName.toLowerCase() !== 'svg') {
-    throw new Error('Invalid SVG XML document');
+    throw new Error(`Invalid SVG XML document: ${boundedUploadDiagnostic(svgText)}`);
   }
 }
 
 function decodeRasterDataUrl(dataUrl: string, mimeType: Exclude<LocalUploadMimeType, 'image/svg+xml'>): Promise<void> {
   const bytes = decodeBase64Bytes(extractStrictBase64(dataUrl, mimeType));
   const imageBlob = new Blob([Uint8Array.from(bytes)], { type: mimeType });
+  const decodeFailureMessage = `Unable to decode local ${mimeType} image: ${boundedUploadDiagnostic(dataUrl)}`;
   if (typeof globalThis.createImageBitmap === 'function') {
     return globalThis.createImageBitmap(imageBlob)
       .then((bitmap) => { bitmap.close(); })
-      .catch(() => { throw new Error(`Unable to decode local ${mimeType} image`); });
+      .catch(() => { throw new Error(decodeFailureMessage); });
   }
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => resolve();
-    image.onerror = () => reject(new Error(`Unable to decode local ${mimeType} image`));
+    image.onerror = () => reject(new Error(decodeFailureMessage));
     image.src = dataUrl;
   });
 }
@@ -104,14 +113,23 @@ export async function validateLocalUploadDecodability(dataUrl: string, mimeType:
   await decodeRasterDataUrl(dataUrl, mimeType);
 }
 
+function rethrowWithUploadFileContext(fileName: string, mimeType: LocalUploadMimeType, caught: unknown): never {
+  const causeMessage = caught instanceof Error ? caught.message : String(caught);
+  throw new Error(`Unable to decode upload ${fileName} (${mimeType}): ${causeMessage}`);
+}
+
 /** Reads one validated browser-local image into the project-safe upload format. */
 export async function createValidatedLocalUpload(file: File): Promise<LocalUpload> {
   validateLocalUploadFile(file);
   const mimeType = file.type as LocalUploadMimeType;
   const dataUrl = await readFileAsDataUrl(file);
-  const data = extractStrictBase64(dataUrl, mimeType);
-  await validateLocalUploadDecodability(dataUrl, mimeType);
-  return { id: createUploadId(), mimeType, encoding: 'base64', data };
+  try {
+    const data = extractStrictBase64(dataUrl, mimeType);
+    await validateLocalUploadDecodability(dataUrl, mimeType);
+    return { id: createUploadId(), mimeType, encoding: 'base64', data };
+  } catch (caught) {
+    rethrowWithUploadFileContext(file.name, mimeType, caught);
+  }
 }
 
 /** Validates a local image selection before adding all of its images in one project command. */
@@ -148,25 +166,35 @@ export function UploadPanel({ locale }: { locale: CoatLocale }) {
   };
 
   return (
-    <section aria-label={copy.uploadImage} className="space-y-2">
-      <h2>{copy.uploadImage}</h2>
-      <p>{copy.uploadDescription}</p>
-      <label>
-        {copy.uploadCrestImage}
-        <input aria-label={copy.uploadCrestImage} type="file" multiple accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" onChange={onFileChange} />
+    <section aria-label={copy.uploadImage}>
+      <h2 style={{ marginBottom: 0 }}>{copy.uploadImage}</h2>
+      <label className="coat-target-form-field">
+        <span>{copy.uploadCrestImage}</span>
+        <span className="coat-target-action-button coat-target-action-button--primary">
+          {copy.uploadCrestImage}
+          <input
+            className="coat-custom-shield-upload-input"
+            aria-label={copy.uploadCrestImage}
+            type="file"
+            multiple
+            accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml"
+            onChange={onFileChange}
+          />
+        </span>
       </label>
+      <p>{copy.uploadDescription}</p>
       {uploads.length > 0 ? (
-        <section aria-label={copy.localUploads}>
+        <section aria-label={copy.localUploads} className="coat-target-utility-output">
           <h3>{copy.localUploads}</h3>
-          <ul aria-label={copy.localUploads} className="space-y-2">
+          <ul aria-label={copy.localUploads}>
             {uploads.map((upload, index) => (
-              <li key={upload.id} aria-label={copy.localUploadItem(index, upload.mimeType)} className="flex items-center justify-between gap-2">
+              <li key={upload.id} aria-label={copy.localUploadItem(index, upload.mimeType)}>
                 <span>{copy.localUploadItem(index, upload.mimeType)}</span>
-                <span className="flex gap-2">
-                  <button type="button" aria-label={copy.addLocalImage(index)} onClick={() => addExistingUpload(upload.id)}>
+                <span className="coat-target-form-actions">
+                  <button className="coat-target-action-button" type="button" aria-label={copy.addLocalImage(index)} onClick={() => addExistingUpload(upload.id)}>
                     {copy.addLocalImage(index)}
                   </button>
-                  <button type="button" aria-label={copy.removeLocalUpload(index)} onClick={() => removeExistingUpload(upload.id)}>
+                  <button className="coat-target-action-button" type="button" aria-label={copy.removeLocalUpload(index)} onClick={() => removeExistingUpload(upload.id)}>
                     {copy.removeLocalUpload(index)}
                   </button>
                 </span>

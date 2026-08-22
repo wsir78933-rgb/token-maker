@@ -49,6 +49,9 @@ describe('NamePanel', () => {
 
     expect(generateButton.className).toContain('coat-target-action-button--primary');
     expect(generateButton.compareDocumentPosition(actionsHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByRole('button', { name: copy.useProjectName })).toBeDefined();
+    expect(screen.getByRole('button', { name: copy.addGeneratedMotto })).toBeDefined();
+    expect(panel.querySelector('.coat-target-name-language')).toBeDefined();
 
     fireEvent.click(screen.getByRole('button', { name: copy.useProjectName }));
     expect(useCoatProjectStore.getState().project.name).not.toBe('');

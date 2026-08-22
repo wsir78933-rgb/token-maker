@@ -80,11 +80,11 @@ export function ArrangePanel({ locale }: { locale: CoatLocale }) {
           <div className="coat-target-arrange-pair">
             <label>
               <span>X</span>
-              <input aria-label={copy.positionX} type="number" value={selectedLayer.transform.x} onChange={(event) => updateTransform({ x: Number(event.target.value) })} />
+              <input aria-label={copy.positionX} type="number" value={formatArrangeNumberForDisplay(selectedLayer.transform.x)} onChange={(event) => updateTransform({ x: readArrangeNumberInput(event.target.value) })} />
             </label>
             <label>
               <span>Y</span>
-              <input aria-label={copy.positionY} type="number" value={selectedLayer.transform.y} onChange={(event) => updateTransform({ y: Number(event.target.value) })} />
+              <input aria-label={copy.positionY} type="number" value={formatArrangeNumberForDisplay(selectedLayer.transform.y)} onChange={(event) => updateTransform({ y: readArrangeNumberInput(event.target.value) })} />
             </label>
           </div>
         </fieldset>
@@ -103,18 +103,18 @@ export function ArrangePanel({ locale }: { locale: CoatLocale }) {
           <div className="coat-target-arrange-pair">
             <label>
               <span>{copy.sizeWidth}</span>
-              <input aria-label={copy.positionWidth} type="number" min="1" step="1" value={(selectedLayer.transform.scaleX ?? selectedLayer.transform.scale) * 100} onChange={(event) => resizeSelectedLayer(Number(event.target.value), (selectedLayer.transform.scaleY ?? selectedLayer.transform.scale) * 100)} />
+              <input aria-label={copy.positionWidth} type="number" min="1" step="1" value={formatArrangeNumberForDisplay(scaleToPercent(selectedLayer.transform.scaleX ?? selectedLayer.transform.scale))} onChange={(event) => resizeSelectedLayer(readArrangeNumberInput(event.target.value), scaleToPercent(selectedLayer.transform.scaleY ?? selectedLayer.transform.scale))} />
             </label>
             <label>
               <span>{copy.sizeHeight}</span>
-              <input aria-label={copy.positionHeight} type="number" min="1" step="1" value={(selectedLayer.transform.scaleY ?? selectedLayer.transform.scale) * 100} onChange={(event) => resizeSelectedLayer((selectedLayer.transform.scaleX ?? selectedLayer.transform.scale) * 100, Number(event.target.value))} />
+              <input aria-label={copy.positionHeight} type="number" min="1" step="1" value={formatArrangeNumberForDisplay(scaleToPercent(selectedLayer.transform.scaleY ?? selectedLayer.transform.scale))} onChange={(event) => resizeSelectedLayer(scaleToPercent(selectedLayer.transform.scaleX ?? selectedLayer.transform.scale), readArrangeNumberInput(event.target.value))} />
             </label>
           </div>
         </fieldset>
         <fieldset className="coat-target-arrange-section">
           <legend>{copy.rotation}</legend>
           <label>
-            <input aria-label={copy.positionRotation} type="number" value={selectedLayer.transform.rotation} onChange={(event) => updateTransform({ rotation: Number(event.target.value) })} />
+            <input aria-label={copy.positionRotation} type="number" value={formatArrangeNumberForDisplay(selectedLayer.transform.rotation)} onChange={(event) => updateTransform({ rotation: readArrangeNumberInput(event.target.value) })} />
           </label>
         </fieldset>
         <fieldset className="coat-target-arrange-section">
@@ -128,7 +128,7 @@ export function ArrangePanel({ locale }: { locale: CoatLocale }) {
               max="1"
               step="0.05"
               value={selectedLayer.transform.opacity ?? 1}
-              onChange={(event) => run({ type: 'set-layer-ids-opacity', layerIds: [selectedLayer.id], opacity: Number(event.target.value) })}
+              onChange={(event) => run({ type: 'set-layer-ids-opacity', layerIds: [selectedLayer.id], opacity: readArrangeNumberInput(event.target.value) })}
             />
           </label>
         </fieldset>
@@ -158,4 +158,28 @@ function getSelectedTransformLayer(layers: CoatLayer[], selectedLayerIds: string
   if (selectedLayerIds.length !== 1) return null;
   const layer = layers.find((candidate) => candidate.id === selectedLayerIds[0]);
   return layer && layer.type !== 'background' && !layer.locked ? layer : null;
+}
+
+function scaleToPercent(scale: number): number {
+  return scale * 100;
+}
+
+/** Rounds only the visible input; store values stay full precision. */
+export function formatArrangeNumberForDisplay(value: number): string {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new Error(`Invalid arrange display number: ${String(value)}`);
+  }
+  return String(Math.round(value));
+}
+
+/** Parses a number input and fails immediately when the raw string is empty or not finite. */
+export function readArrangeNumberInput(rawValue: string): number {
+  if (rawValue.trim() === '') {
+    throw new Error(`Invalid arrange number input: ${rawValue}`);
+  }
+  const parsed = Number(rawValue);
+  if (!Number.isFinite(parsed)) {
+    throw new Error(`Invalid arrange number input: ${rawValue}`);
+  }
+  return parsed;
 }

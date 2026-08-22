@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { RefreshCw } from 'lucide-react';
 import {
   createCoatIdentity,
   generateCoatNames,
@@ -43,20 +44,19 @@ export function NamePanel({ locale }: { locale: CoatLocale }) {
       {error ? <p role="alert">{error}</p> : null}
       <div className="coat-target-form-fieldset-controls" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, auto)' }}>
         <label className="coat-target-form-field">
-          <span>{copy.nameGeneratorType}</span>
           <select aria-label={copy.nameGeneratorType} value={selectedType} onChange={(event) => changeGeneratorType(event.target.value)}>
             {nameGeneratorTypes.map((type) => <option key={type} value={type}>{copy.nameGeneratorTypes[type]}</option>)}
           </select>
         </label>
         <label className="coat-target-form-field">
-          <span>{copy.nameGeneratorLanguage}</span>
-          <select aria-label={copy.nameGeneratorLanguage} value={language} onChange={(event) => changeGeneratorLanguage(event.target.value)}>
+          <select className="coat-target-name-language" aria-label={copy.nameGeneratorLanguage} value={language} onChange={(event) => changeGeneratorLanguage(event.target.value)}>
             <option value="en">{copy.nameGeneratorLanguages.en}</option>
             <option value="de">{copy.nameGeneratorLanguages.de}</option>
           </select>
         </label>
       </div>
       <button className="coat-target-action-button coat-target-action-button--primary" type="button" onClick={generateNames}>
+        <RefreshCw aria-hidden="true" />
         {copy.generateNames(selectedTypeName)}
       </button>
       <section aria-label={copy.nameResults} className="coat-target-utility-output">
