@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultProject } from './assets';
 import { applyProjectCommand } from './commands';
-import { renderCoatSceneSvg } from './scene-svg';
+import { prefixCoatSceneSvgIds, renderCoatSceneSvg, withVisibleSceneSvgOverflow } from './scene-svg';
 import * as shieldMaterialPaints from './shield-material-paints';
 
 describe('coat scene SVG renderer', () => {
@@ -787,5 +787,53 @@ describe('coat scene SVG renderer', () => {
     expect(svg).toContain('data-bundled-raster="true"');
     expect(svg).toContain('href="/coat-assets/materials/ordinaries/gusset.webp"');
     expect(svg).toContain('href="/coat-assets/materials/crowns/papal-crown.webp"');
+  });
+
+  it('does not bake editor overflow into the export scene svg', () => {
+    const svg = renderCoatSceneSvg(createDefaultProject('en'), { width: 512, height: 512 });
+
+    expect(svg.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).toBe(true);
+    expect(svg).not.toContain('overflow="visible"');
+    expect(svg).not.toContain('id="coat-overflow-');
+  });
+
+  it('prefixes scene ids, url references, and textPath hrefs for a second in-document copy', () => {
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'curve', curve: 'upper' },
+    });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+    const prefixed = prefixCoatSceneSvgIds(svg, 'coat-overflow-');
+
+    expect(svg).toContain('id="coat-shield-clip-1"');
+    expect(svg).toContain('url(#coat-shield-clip-1)');
+    expect(svg).toContain('href="#coat-text-path-2"');
+    expect(prefixed).toContain('id="coat-overflow-coat-shield-clip-1"');
+    expect(prefixed).toContain('url(#coat-overflow-coat-shield-clip-1)');
+    expect(prefixed).toContain('id="coat-overflow-coat-text-path-2"');
+    expect(prefixed).toContain('href="#coat-overflow-coat-text-path-2"');
+    expect(prefixed).not.toContain('id="coat-shield-clip-1"');
+    expect(prefixed).not.toContain('url(#coat-shield-clip-1)');
+    expect(prefixed).not.toContain('href="#coat-text-path-2"');
+    expect(prefixed).toContain('data-layer-id=');
+    expect(prefixed).not.toContain('data-layer-id="coat-overflow-');
+  });
+
+  it('adds overflow visible on a copy without changing the original markup', () => {
+    const svg = renderCoatSceneSvg(createDefaultProject('en'), { width: 512, height: 512 });
+    const visible = withVisibleSceneSvgOverflow(svg);
+
+    expect(visible.startsWith('<svg overflow="visible" xmlns="http://www.w3.org/2000/svg"')).toBe(true);
+    expect(svg.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).toBe(true);
+    expect(svg).not.toContain('overflow="visible"');
+  });
+
+  it('rejects invalid overflow-copy inputs with the bad value', () => {
+    expect(() => prefixCoatSceneSvgIds('<div></div>', 'coat-overflow-')).toThrow('<div></div>');
+    expect(() => prefixCoatSceneSvgIds('<svg></svg>', '')).toThrow('""');
+    expect(() => prefixCoatSceneSvgIds('<svg></svg>', '1bad')).toThrow('"1bad"');
+    expect(() => withVisibleSceneSvgOverflow('not-svg')).toThrow('not-svg');
+    expect(() => withVisibleSceneSvgOverflow('<svg overflow="hidden"></svg>')).toThrow('overflow="hidden"');
   });
 });

@@ -16,10 +16,12 @@ function createCanvasProject(): CoatProject {
   const project = createDefaultProject('en');
   const withStableIds: CoatProject = {
     ...project,
-    layers: project.layers.map((layer, index) => ({
-      ...layer,
-      id: index === 0 ? 'background-1' : 'shield-1',
-    })),
+    canvas: { width: 1200, height: 1200 },
+    layers: project.layers.map((layer, index) => {
+      if (index === 0) return { ...layer, id: 'background-1' };
+      if (layer.type !== 'shield') return layer;
+      return { ...layer, id: 'shield-1', transform: { ...layer.transform, scale: 1 } };
+    }),
   };
   const withCharge = applyProjectCommand(withStableIds, {
     type: 'add-layer',
@@ -28,7 +30,9 @@ function createCanvasProject(): CoatProject {
   return {
     ...withCharge,
     layers: withCharge.layers.map((layer) => (
-      layer.type === 'charge' ? { ...layer, id: 'charge-1' } : layer
+      layer.type === 'charge'
+        ? { ...layer, id: 'charge-1', transform: { ...layer.transform, scale: 1 } }
+        : layer
     )),
   };
 }
@@ -591,7 +595,7 @@ describe('CoatOfArmsCanvas', () => {
           return { ...layer, transform: { ...layer.transform, scaleX: 2, scaleY: 0.5 } };
         }
         return layer.id === secondCharge.id && layer.type !== 'background'
-          ? { ...layer, id: 'charge-2', transform: { ...layer.transform, x: 10 } }
+          ? { ...layer, id: 'charge-2', transform: { ...layer.transform, x: 10, scale: 1 } }
           : layer;
       }),
     };
@@ -788,5 +792,67 @@ describe('CoatOfArmsCanvas', () => {
 
     expect(screen.queryByRole('textbox', { name: 'Edit text' })).toBeNull();
     expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('fades only off-artboard pixels and keeps in-canvas pixels fully opaque and unclipped', () => {
+    const { canvas } = renderCanvas(createCanvasProject(), false, false);
+    const overflowPass = canvas.querySelector('[data-coat-scene-pass="overflow"]');
+    const artboardPass = canvas.querySelector('[data-coat-scene-pass="artboard"]');
+    if (!(overflowPass instanceof HTMLElement) || !(artboardPass instanceof HTMLElement)) {
+      throw new Error('Expected overflow and artboard scene passes');
+    }
+
+    expect(overflowPass.style.opacity).toBe('0.5');
+    expect(overflowPass.className).toContain('overflow-visible');
+    expect(overflowPass.className).toContain('pointer-events-none');
+    expect(overflowPass.getAttribute('aria-hidden')).toBe('true');
+    expect(artboardPass.className).toContain('overflow-hidden');
+    expect(artboardPass.style.opacity).toBe('');
+    expect(overflowPass.nextElementSibling).toBe(artboardPass);
+    expect(
+      overflowPass.compareDocumentPosition(artboardPass) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+
+    const overflowSvg = overflowPass.querySelector('svg');
+    const artboardSvg = artboardPass.querySelector('svg');
+    if (!(overflowSvg instanceof SVGElement) || !(artboardSvg instanceof SVGElement)) {
+      throw new Error('Expected a scene SVG in each pass');
+    }
+    expect(overflowSvg.getAttribute('overflow')).toBe('visible');
+    expect(overflowSvg.getAttribute('aria-hidden')).toBe('true');
+    expect(artboardSvg.getAttribute('overflow')).toBeNull();
+
+    const overflowCharge = overflowPass.querySelector('[data-layer-id="charge-1"]');
+    const artboardCharge = artboardPass.querySelector('[data-layer-id="charge-1"]');
+    if (!(overflowCharge instanceof SVGElement) || !(artboardCharge instanceof SVGElement)) {
+      throw new Error('Expected charge in both scene passes');
+    }
+    expect(overflowCharge.querySelector('g[opacity]')?.getAttribute('opacity')).toBe('1');
+    expect(artboardCharge.querySelector('g[opacity]')?.getAttribute('opacity')).toBe('1');
+    expect(getTransformLayer('charge-1').transform.opacity ?? 1).toBe(1);
+
+    expect(overflowPass.innerHTML).toContain('id="coat-overflow-');
+    expect(artboardPass.innerHTML).toContain('id="coat-shield-clip-1"');
+    expect(artboardPass.innerHTML).not.toContain('id="coat-overflow-');
+    expect(overflowPass.innerHTML).not.toContain('data-layer-id="coat-overflow-');
+
+    fireEvent.pointerDown(artboardCharge, { clientX: 10, clientY: 55, pointerId: 1 });
+    fireEvent.pointerMove(canvas, { clientX: 90, clientY: 55, pointerId: 1 });
+
+    const overflowChargeAfterDrag = overflowPass.querySelector('[data-layer-id="charge-1"] g[transform]');
+    const artboardChargeAfterDrag = artboardPass.querySelector('[data-layer-id="charge-1"] g[transform]');
+    if (!(overflowChargeAfterDrag instanceof SVGElement) || !(artboardChargeAfterDrag instanceof SVGElement)) {
+      throw new Error('Expected preview transforms on both scene passes');
+    }
+    expect(overflowChargeAfterDrag.getAttribute('transform')).toContain('translate(80');
+    expect(artboardChargeAfterDrag.getAttribute('transform')).toContain('translate(80');
+    expect(overflowPass.style.opacity).toBe('0.5');
+    expect(artboardPass.className).toContain('overflow-hidden');
+
+    const handles = canvas.querySelector('[data-resize-handle]');
+    if (!(handles instanceof HTMLElement)) throw new Error('Expected selection handles');
+    expect(handles.compareDocumentPosition(overflowPass) & Node.DOCUMENT_POSITION_PRECEDING).toBeGreaterThan(0);
+    expect(handles.compareDocumentPosition(artboardPass) & Node.DOCUMENT_POSITION_PRECEDING).toBeGreaterThan(0);
+    expect(handles.style.opacity).toBe('');
   });
 });

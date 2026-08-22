@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createCoatMakerShowcaseProject, createDefaultProject, getCoatAsset, listAssetsByKind, listShieldSilhouetteAssets, requireShieldSilhouetteAssetId } from './assets';
+import { createCoatMakerShowcaseProject, createDefaultProject, createInitialCoatProject, getCoatAsset, listAssetsByKind, listShieldSilhouetteAssets, requireShieldSilhouetteAssetId } from './assets';
 import type { ChargeAssetCategory } from './types';
 
 const requiredChargeCategories: readonly ChargeAssetCategory[] = [
@@ -22,12 +22,24 @@ describe('coat asset catalog', () => {
   it('creates the target editor showcase with local bundled layers', () => {
     const project = createCoatMakerShowcaseProject('en');
 
+    expect(project.canvas).toEqual({ width: 1800, height: 1080 });
     expect(project.layers).toMatchObject([
       { type: 'background', fill: '#FFFFFF' },
-      { type: 'shield', assetId: 'heater-shield', field: { division: 'solid', colors: ['#F6C700'] } },
+      { type: 'shield', assetId: 'heater-shield', field: { division: 'solid', colors: ['#F6C700'] }, transform: { x: 0, y: 0, scale: 0.935, rotation: 0 } },
       { type: 'charge', assetId: 'material-animal-dragon-passant', color: '#28753A' },
       { type: 'charge', assetId: 'material-animal-wolf-rampant', color: '#8A451B' },
     ]);
+  });
+
+  it('creates the initial coat-maker document on the 3:5 canvas with a smaller default heater', () => {
+    const project = createInitialCoatProject();
+
+    expect(project.canvas).toEqual({ width: 1800, height: 1080 });
+    expect(project.layers[1]).toMatchObject({
+      type: 'shield',
+      assetId: 'heater-shield',
+      transform: { x: 0, y: 0, scale: 0.935, rotation: 0 },
+    });
   });
 
   it('exposes a local shield and a local WebP charge without a remote source', () => {
@@ -221,7 +233,7 @@ describe('coat asset catalog', () => {
 
     expect(project.locale).toBe('zh');
     expect(project.name).toBe('我的徽章');
-    expect(project.canvas).toEqual({ width: 1200, height: 1200 });
+    expect(project.canvas).toEqual({ width: 1800, height: 1080 });
     expect(project.palette).toEqual([]);
     expect(project.uploads).toEqual([]);
     expect(project.layers).toEqual([
@@ -244,7 +256,7 @@ describe('coat asset catalog', () => {
           colors: ['#1855A5'],
           pattern: 'solid',
         },
-        transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+        transform: { x: 0, y: 0, scale: 0.935, rotation: 0 },
         visible: true,
         locked: false,
         groupId: null,

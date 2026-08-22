@@ -257,6 +257,16 @@ export function getAssetColorSources(assetId: string): string[] {
   return [...new Set(asset.svgParts.map((part) => part.sourceColor))];
 }
 
+/** Product default canvas. Matches Settings preset 3-5. */
+export const DEFAULT_COAT_CANVAS_WIDTH = 1800;
+export const DEFAULT_COAT_CANVAS_HEIGHT = 1080;
+
+/** Default heater height ≈ 90% of an 1800×1080 canvas. */
+export const DEFAULT_SHIELD_SCALE = 0.935;
+
+/** Newly placed library shield/ordinary/charge/top. Longer side ≈ 60% of canvas height. */
+export const NEWLY_PLACED_LIBRARY_ASSET_SCALE = 0.6;
+
 export function createDefaultProject(locale: CoatLocale): CoatProject {
   return createProjectWithIds(locale, {
     project: createLocalCoatId(),
@@ -350,7 +360,7 @@ function createProjectWithIds(
     id: ids.project,
     locale,
     name: getDefaultProjectName(locale),
-    canvas: { width: 1200, height: 1200 },
+    canvas: { width: DEFAULT_COAT_CANVAS_WIDTH, height: DEFAULT_COAT_CANVAS_HEIGHT },
     palette: [],
     uploads: [],
     groups: [],
@@ -377,7 +387,7 @@ function createCenteredTransform(): CanvasTransform {
   return {
     x: 0,
     y: 0,
-    scale: 1,
+    scale: DEFAULT_SHIELD_SCALE,
     rotation: 0,
   };
 }

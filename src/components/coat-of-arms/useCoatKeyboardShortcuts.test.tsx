@@ -20,9 +20,15 @@ function createKeyboardProject(): CoatProject {
   const withSecondCharge = applyProjectCommand(withFirstCharge, { type: 'add-layer', assetId: 'material-symbol-shooting-star' });
   return {
     ...withSecondCharge,
-    layers: withSecondCharge.layers.map((layer, index) => (
-      index === 2 ? { ...layer, id: 'charge-1' } : index === 3 ? { ...layer, id: 'charge-2' } : layer
-    )),
+    layers: withSecondCharge.layers.map((layer, index) => {
+      if (index === 2 && layer.type === 'charge') {
+        return { ...layer, id: 'charge-1', transform: { ...layer.transform, scale: 1 } };
+      }
+      if (index === 3 && layer.type === 'charge') {
+        return { ...layer, id: 'charge-2', transform: { ...layer.transform, scale: 1 } };
+      }
+      return layer;
+    }),
   };
 }
 

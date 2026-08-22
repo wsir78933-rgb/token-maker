@@ -14,7 +14,7 @@ import {
   type RefObject,
 } from 'react';
 import { COAT_PROJECT_LIMITS } from '@/lib/coat-of-arms/commands';
-import { renderCoatSceneSvg } from '@/lib/coat-of-arms/scene-svg';
+import { prefixCoatSceneSvgIds, renderCoatSceneSvg, withVisibleSceneSvgOverflow } from '@/lib/coat-of-arms/scene-svg';
 import { appendFreehandPoint, createFreehandPath, type FreehandPoint } from '@/lib/coat-of-arms/drawing';
 import {
   getTransformedLayerBounds,
@@ -38,6 +38,9 @@ import { getCoatWorkbenchCopy } from './workbench-copy';
 
 const SCENE_WIDTH = 100;
 const SCENE_HEIGHT = 110;
+/** Off-artboard copy only. Matches coamaker beige veil alpha 0.5 over #f0ece2. */
+const OFF_CANVAS_OVERFLOW_OPACITY = 0.5;
+const OVERFLOW_SCENE_ID_PREFIX = 'coat-overflow-';
 
 type InteractionMode = 'drag' | 'resize' | 'rotate';
 
@@ -132,6 +135,10 @@ export function CoatOfArmsCanvas({
   const sceneSvg = useMemo(
     () => renderCoatSceneSvg(sceneProject, { width: project.canvas.width, height: project.canvas.height }),
     [project.canvas.height, project.canvas.width, sceneProject],
+  );
+  const overflowSceneSvg = useMemo(
+    () => createOverflowSceneMarkup(sceneSvg),
+    [sceneSvg],
   );
   const selectedTransformLayers = getSelectedTransformLayers(project.layers, selection);
   const selectedHandleLayer = selectedTransformLayers[0];
@@ -514,7 +521,18 @@ export function CoatOfArmsCanvas({
       style={{ '--coat-canvas-aspect-ratio': `${project.canvas.width} / ${project.canvas.height}` } as React.CSSProperties}
       tabIndex={disabled ? -1 : 0}
     >
-      <div className="absolute inset-0 overflow-hidden rounded-[inherit]" dangerouslySetInnerHTML={{ __html: sceneSvg }} />
+      <div
+        aria-hidden="true"
+        className="coat-canvas-overflow-fade pointer-events-none absolute inset-0 overflow-visible"
+        data-coat-scene-pass="overflow"
+        dangerouslySetInnerHTML={{ __html: overflowSceneSvg }}
+        style={{ opacity: OFF_CANVAS_OVERFLOW_OPACITY }}
+      />
+      <div
+        className="absolute inset-0 overflow-hidden rounded-[inherit]"
+        data-coat-scene-pass="artboard"
+        dangerouslySetInnerHTML={{ __html: sceneSvg }}
+      />
       {drawingPreview && drawingPreview.length >= 2 ? <svg aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 110">
         <path d={createFreehandPath(drawingPreview)} fill="none" opacity={drawingSettings.opacity} stroke={drawingSettings.color} strokeLinecap="round" strokeLinejoin="round" strokeWidth={drawingSettings.strokeWidth} />
       </svg> : null}
@@ -545,6 +563,24 @@ export function CoatOfArmsCanvas({
       </p>
     </div>
   );
+}
+
+function createOverflowSceneMarkup(sceneSvg: string): string {
+  return hideOverflowSceneSvgFromAssistiveTech(
+    withVisibleSceneSvgOverflow(prefixCoatSceneSvgIds(sceneSvg, OVERFLOW_SCENE_ID_PREFIX)),
+  );
+}
+
+function hideOverflowSceneSvgFromAssistiveTech(svgMarkup: string): string {
+  const withoutRole = svgMarkup.replace(' role="img"', '');
+  const withoutLabel = withoutRole.replace(/ aria-label="[^"]*"/, '');
+  if (withoutLabel.includes(' role="img"') || withoutLabel.includes(' aria-label="')) {
+    throw new Error(`Overflow scene SVG still exposes accessibility attributes: ${withoutLabel.slice(0, 120)}`);
+  }
+  if (!withoutLabel.startsWith('<svg overflow="visible"')) {
+    throw new Error(`Overflow scene SVG is missing visible overflow: ${withoutLabel.slice(0, 80)}`);
+  }
+  return withoutLabel.replace(/^<svg overflow="visible"/, '<svg overflow="visible" aria-hidden="true"');
 }
 
 function CanvasSnapGuides({ guides }: { guides: readonly CanvasSnapGuide[] }) {

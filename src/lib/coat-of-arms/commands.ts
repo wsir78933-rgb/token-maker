@@ -1,4 +1,11 @@
-import { createDefaultProject, getAssetColorSources, getCoatAsset, listAssetsByKind } from './assets';
+import {
+  createDefaultProject,
+  DEFAULT_SHIELD_SCALE,
+  getAssetColorSources,
+  getCoatAsset,
+  listAssetsByKind,
+  NEWLY_PLACED_LIBRARY_ASSET_SCALE,
+} from './assets';
 import { textFontFamilies } from './types';
 import type {
   BackgroundGradient,
@@ -383,7 +390,7 @@ function assembleRandomCoatProject(
     patch: {
       assetId: 'heater-shield',
       field,
-      transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+      transform: { x: 0, y: 0, scale: DEFAULT_SHIELD_SCALE, rotation: 0 },
     },
   });
   project = applyProjectCommand(project, { type: 'add-layer', assetId: charge.assetId });
@@ -1087,7 +1094,7 @@ function createAssetLayer(
         type: 'shield',
         assetId: asset.id,
         field: { division: 'solid', colors: ['#1855A5'], pattern: 'solid' },
-        transform: defaultTransform(),
+        transform: newlyPlacedLibraryAssetTransform(),
       };
     case 'ordinary':
       if (rasterVariantId !== undefined) throw new Error(`Asset does not support a raster variant: ${asset.id}`);
@@ -1096,7 +1103,7 @@ function createAssetLayer(
         type: 'ordinary',
         assetId: asset.id,
         color: '#B11F24',
-        transform: defaultTransform(),
+        transform: newlyPlacedLibraryAssetTransform(),
       };
     case 'charge':
     case 'top':
@@ -1107,7 +1114,7 @@ function createAssetLayer(
         assetId: asset.id,
         ...(selectedRasterVariantId ? { rasterVariantId: selectedRasterVariantId } : {}),
         color: '#B11F24',
-        transform: defaultTransform(),
+        transform: newlyPlacedLibraryAssetTransform(),
       };
     case 'pattern':
       throw new Error(`Asset cannot be added as a layer: ${asset.id}`);
@@ -2143,6 +2150,10 @@ function uniqueColors(colors: string[]): string[] {
 
 function defaultTransform() {
   return { x: 0, y: 0, scale: 1, rotation: 0 };
+}
+
+function newlyPlacedLibraryAssetTransform() {
+  return { x: 0, y: 0, scale: NEWLY_PLACED_LIBRARY_ASSET_SCALE, rotation: 0 };
 }
 
 function createLayerId(): string {

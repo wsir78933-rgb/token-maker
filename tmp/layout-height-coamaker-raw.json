@@ -1,0 +1,214 @@
+{
+  "url": "https://coamaker.com/",
+  "date": "2026-08-22",
+  "method": "ego-browser getBoundingClientRect + getComputedStyle + App-BrsK35bl.css",
+  "viewport": {
+    "innerWidth": 1496,
+    "innerHeight": 756,
+    "clientWidth": 1481,
+    "clientHeight": 756,
+    "visualViewport": {
+      "width": 1481,
+      "height": 756,
+      "scale": 1
+    },
+    "dpr": 2,
+    "outerWidth": 1512,
+    "outerHeight": 859,
+    "rootFont": "17px",
+    "scrollX": 0,
+    "scrollY": 0,
+    "scrollWidth": 1481,
+    "scrollHeight": 1465,
+    "hasVerticalScrollbar": true,
+    "scrollbarWidthPx": 15,
+    "hasHorizontalScrollbar": false
+  },
+  "100vh": {
+    "htmlHeight": "1465.14px",
+    "htmlMinHeight": "0px",
+    "htmlOverflowY": "visible",
+    "htmlIs100vh": false,
+    "bodyHeight": "1465.14px",
+    "bodyMinHeight": "0px",
+    "bodyOverflowY": "auto",
+    "bodyPaddingBottom": "154px",
+    "bodyIs100vh": false,
+    "pageMinHeight": "756px",
+    "pageMinHeightCss": "100vh",
+    "pageHeight": "1311.14px",
+    "pageIsExactly100vh": false,
+    "editorIs100vh": false,
+    "editorHeightCss": "88vh via --fc-app-viewport-height",
+    "editorHeightPx": 665.2734375,
+    "editorMaxHeightPx": 665.28,
+    "eightyEightVhPx": 665.28,
+    "oneHundredVhMinusHeader": 657
+  },
+  "cssSource": {
+    "file": "https://coamaker.com/wp-content/coamakerbasic/static-vite/v20260809-200439/assets/App-BrsK35bl.css",
+    "desktop": "#coaroot{--fc-app-viewport-height:88vh;height:var(--fc-app-viewport-height)!important;max-height:var(--fc-app-viewport-height)!important;overflow:hidden!important}",
+    "mobileMax1024": "#coaroot{--fc-wordpress-mobile-header-height:80px;--fc-app-viewport-height:calc(100vh - var(--fc-wordpress-mobile-header-height))}",
+    "mobileSvh": "@supports (height:100svh) @media (width<=1024px) calc(100svh - 80px)"
+  },
+  "bandsTopToBottom": [
+    {
+      "id": "cross-site-strip",
+      "sel": "header.elementor-location-header > .elementor-element-ba9694c / nav.coa-other-sites",
+      "y": 0,
+      "h": 28,
+      "w": 1481,
+      "bg": "rgb(0, 0, 0)",
+      "padding": "5px 5px 5px 25px",
+      "note": "product header row 1"
+    },
+    {
+      "id": "product-nav",
+      "sel": "header.elementor-location-header > .elementor-element-5edbb134",
+      "y": 28,
+      "h": 71,
+      "w": 1481,
+      "bg": "rgb(43, 43, 43)",
+      "padding": "10px",
+      "note": "product header row 2, logo+nav+Login+Go Pro"
+    },
+    {
+      "id": "product-header-total",
+      "sel": "header.elementor-location-header",
+      "y": 0,
+      "h": 99,
+      "w": 1481,
+      "bg": "transparent (children painted)",
+      "note": "28+71"
+    },
+    {
+      "id": "editor-top-bar",
+      "sel": ".coa-top-bar.h-\\[50px\\]",
+      "y": 99,
+      "h": 50,
+      "w": 1481,
+      "bg": "rgb(71, 71, 71)",
+      "borderBottom": "1px solid rgb(99, 99, 99)",
+      "padding": "0 8.5px",
+      "note": "editor second-row toolbar, Export on the right"
+    },
+    {
+      "id": "canvas-toolbar",
+      "sel": ".coa-toolbar",
+      "y": 149,
+      "h": 40,
+      "w": 1021,
+      "x": 460,
+      "bg": "rgb(71, 71, 71)",
+      "minHeight": "40px",
+      "borderBottom": "1px solid var(--color-border)",
+      "padding": "0 8px",
+      "note": "undo/redo/link + Multi-Select; spans workspace not full page"
+    },
+    {
+      "id": "canvas-stage-wrap",
+      "sel": ".coa-workspace > flex-1 wrap / .coa-canvas-scroll",
+      "y": 189,
+      "h": 575.2734375,
+      "w": 1021,
+      "x": 460,
+      "bg": "rgb(240, 236, 226)",
+      "padding": "0",
+      "note": "flex:1 remainder of workspace"
+    },
+    {
+      "id": "fabric-canvas",
+      "sel": "canvas.lower-canvas / .canvas-container",
+      "y": 189,
+      "h": 575,
+      "w": 1009,
+      "x": 466,
+      "buffer": {
+        "w": 2018,
+        "h": 1150
+      },
+      "padTop": 0,
+      "padBottom": 0.27,
+      "padLeft": 6,
+      "padRight": 6,
+      "note": "6px L/R from scrollbar-gutter:stable both-edges, not CSS padding"
+    },
+    {
+      "id": "zoom-overlay",
+      "sel": ".coa-zoom-controls",
+      "y": 716.27,
+      "h": 36,
+      "w": 220,
+      "x": 1249,
+      "pos": "absolute",
+      "bottom": "12px",
+      "right": "12px",
+      "note": "overlay, does not reduce canvas layout height"
+    },
+    {
+      "id": "google-anchor-overlay",
+      "sel": "ins.adsbygoogle-noablate",
+      "y": 525,
+      "h": 231,
+      "w": 1332.9,
+      "x": 74.05,
+      "pos": "fixed",
+      "z": 2147483647,
+      "note": "ad overlay height only; does not consume editor layout"
+    },
+    {
+      "id": "sidebar-ad-slot",
+      "sel": ".flag-top-ad / ins.adsbygoogle",
+      "y": 157,
+      "h": 184,
+      "w": 277,
+      "x": 170,
+      "pos": "static",
+      "note": "inside left library panel, not a horizontal chrome band"
+    },
+    {
+      "id": "page-footer",
+      "sel": "footer.elementor-location-footer",
+      "y": 764.27,
+      "h": 546.8671875,
+      "w": 1481,
+      "note": "below fold at scrollY=0"
+    },
+    {
+      "id": "body-padding-bottom",
+      "sel": "body",
+      "h": 154,
+      "note": "padding-bottom 154px below footer; page-level ad reservation"
+    }
+  ],
+  "editor": {
+    "root": "#coaroot.reactapp.viteapp",
+    "y": 99,
+    "h": 665.2734375,
+    "overflowPastViewportPx": 8.27,
+    "appContainer": {
+      "sel": ".coa-app-container",
+      "y": 149,
+      "h": 615.2734375
+    },
+    "workspace": {
+      "sel": ".coa-workspace",
+      "x": 460,
+      "y": 149,
+      "w": 1021,
+      "h": 615.2734375
+    },
+    "leftChrome": {
+      "railW": 170,
+      "panelW": 289,
+      "proSidePanelW": 460,
+      "h": 615.2734375,
+      "y": 149
+    }
+  },
+  "visibleAtScroll0": {
+    "canvasVisibleInViewportPx": 567,
+    "canvasCoveredByFixedAdPx": 231,
+    "canvasUncoveredByAdPx": 336
+  }
+}

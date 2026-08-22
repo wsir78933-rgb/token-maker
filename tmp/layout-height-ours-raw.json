@@ -1,0 +1,110 @@
+{
+  "measuredAt": "2026-08-22",
+  "oursUrl": "http://localhost:3000/coat-of-arms-maker",
+  "competitorUrl": "https://coamaker.com/",
+  "draftOverlay": {
+    "initiallyInert": true,
+    "action": "clicked Discard draft",
+    "after": { "inert": false, "draftPresent": false }
+  },
+  "ours": {
+    "viewport": {
+      "innerWidth": 1512,
+      "innerHeight": 738,
+      "dpr": 2,
+      "rootFont": "16px",
+      "documentElementClientH": 738,
+      "documentElementScrollH": 2468
+    },
+    "chromeSum": {
+      "topbar": 128.77,
+      "actionbar": 50,
+      "canvasToolbar": 40,
+      "total": 218.77,
+      "remainingForSceneBody": 519.23,
+      "artboardWrapH": 519.23,
+      "artboardWrapPaddingTop": 14.76,
+      "artboardWrapPaddingBottom": 14.76,
+      "artboardWrapPaddingY": 29.52,
+      "artboardWrapPaddingX": 90.72,
+      "wrapInnerH": 489.71,
+      "artboardH": 480,
+      "canvasH": 478,
+      "canvasVsViewportRatio": 0.6477
+    },
+    "artboardWidthCandidates": {
+      "30rem": 480,
+      "(100svh - 12rem) * 0.91": 496.86,
+      "100vw - 28rem": 1064,
+      "computedWidth": 480,
+      "bindingConstraint": "30rem"
+    },
+    "topbarRows": {
+      "outer": 128.77,
+      "innerPaddingY": 16,
+      "brandRow": 40,
+      "navMarginTop": 16,
+      "navRow": 39.77,
+      "borderBottom": 1
+    },
+    "stack": [
+      { "sel": ".site-topbar", "h": 128.77, "top": 0, "bottom": 128.77 },
+      { "sel": ".coat-target-actionbar", "h": 50, "top": 128.77, "bottom": 178.77 },
+      { "sel": ".coat-target-canvas-toolbar", "h": 40, "top": 178.77, "bottom": 218.77 },
+      { "sel": ".coat-target-artboard-wrap", "h": 519.23, "top": 218.77, "bottom": 738 },
+      { "sel": ".coat-target-artboard", "h": 480, "top": 238.38, "bottom": 718.38 },
+      { "sel": ".coat-canvas", "h": 478, "top": 239.38, "bottom": 717.38 },
+      { "sel": ".coat-target-zoom", "h": 36, "position": "absolute", "top": 680.41, "bottom": 716.41 }
+    ],
+    "heightChain": {
+      "html": { "display": "block", "h": 2468, "clientH": 738 },
+      "body": { "display": "block", "h": 2468 },
+      "coatMakerPage": { "display": "block", "minHeight": "738px", "h": 2468 },
+      "workbench": {
+        "display": "grid",
+        "height": "738px",
+        "minHeight": "608px",
+        "overflow": "hidden",
+        "flex": "0 0 auto",
+        "gridTemplateRows": "128.766px 609.234px"
+      },
+      "workbenchContent": {
+        "display": "grid",
+        "height": "609.234px",
+        "gridTemplateRows": "50px 559.234px"
+      },
+      "scene": {
+        "display": "grid",
+        "height": "559.234px",
+        "gridTemplateRows": "40px 519.234px",
+        "overflow": "hidden"
+      }
+    },
+    "belowWorkbench": {
+      "seo": { "h": 1371, "top": 738, "bottom": 2109 },
+      "footer": { "h": 359, "top": 2109, "bottom": 2468 }
+    },
+    "bottomBarInEditor": false,
+    "mobileDrawerDisplay": "none"
+  },
+  "competitor": {
+    "viewport": {
+      "innerWidth": 1496,
+      "innerHeight": 756,
+      "dpr": 2,
+      "rootFont": "17px",
+      "documentElementScrollH": 1431
+    },
+    "stack": [
+      { "sel": "header.elementor-location-header", "h": 99, "top": 0, "bottom": 99, "notes": "28px other-sites + 71px main nav" },
+      { "sel": ".coa-top-bar.h-[50px]", "h": 50, "top": 99, "bottom": 149 },
+      { "sel": ".coa-toolbar", "h": 40, "top": 149, "bottom": 189 },
+      { "sel": ".coa-canvas-scroll / .lower-canvas", "h": 575, "top": 189, "bottom": 764, "w": 1009 },
+      { "sel": ".coa-zoom-controls", "h": 36, "position": "absolute", "top": 716.3, "bottom": 752.3 }
+    ],
+    "chromeTotal": 189,
+    "canvasVsViewportRatio": 0.7606,
+    "footerBelowEditor": { "h": 546.9, "top": 764.3 },
+    "bottomBarInEditor": false
+  }
+}

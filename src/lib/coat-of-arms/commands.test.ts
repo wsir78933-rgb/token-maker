@@ -89,6 +89,7 @@ describe('coat project commands', () => {
     expect(project.layers.at(-1)).toMatchObject({
       type: 'charge',
       assetId: 'material-symbol-eternal-flame',
+      transform: { x: 0, y: 0, scale: 0.6, rotation: 0 },
     });
     expect(project.layers.at(-1)).not.toHaveProperty('rasterVariantId');
     expect(project.uploads).toEqual([]);
@@ -103,6 +104,7 @@ describe('coat project commands', () => {
 
     expect(project.layers.at(-1)).toMatchObject({
       type: 'text', fontFamily: 'blackletter', fontStyle: 'italic', fontWeight: 'bold',
+      transform: { x: 0, y: 0, scale: 1, rotation: 0 },
     });
     expect(() => applyProjectCommand(project, {
       type: 'add-text-layer', text: 'HONOUR', color: '#F5E6A1', fontSize: 18,
@@ -431,6 +433,7 @@ describe('coat project commands', () => {
 
     expect(project.layers.at(-1)).toMatchObject({
       type: 'draw', path: 'M 10 20 L 30 40 L 50 60', color: '#004E89', strokeWidth: 3,
+      transform: { x: 0, y: 0, scale: 1, rotation: 0 },
     });
     expect(() => applyProjectCommand(project, {
       type: 'add-drawing-layer', path: 'M 10 20" onload="alert(1)', color: '#004E89', strokeWidth: 3,
@@ -508,6 +511,13 @@ describe('coat project commands', () => {
     );
     expect(duplicated.layers.slice(-sourceLayerIds.length).every((layer) => !layer.locked && layer.groupId === null)).toBe(true);
   });
+  it('places extra library shields at the library scale instead of the default heater scale', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'round-shield' });
+
+    expect(project.layers[1]).toMatchObject({ type: 'shield', assetId: 'heater-shield', transform: { scale: 0.935 } });
+    expect(project.layers.at(-1)).toMatchObject({ type: 'shield', assetId: 'round-shield', transform: { x: 0, y: 0, scale: 0.6, rotation: 0 } });
+  });
+
   it('creates unique independent instances when the same charge is added twice', () => {
     const initialProject = createDefaultProject('en');
     const once = applyProjectCommand(initialProject, {
@@ -570,7 +580,7 @@ describe('coat project commands', () => {
       transform: { x: 20, y: -12, scale: 1.25, rotation: 15 },
     });
     expect(project.layers[1]).toMatchObject({
-      transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+      transform: { x: 0, y: 0, scale: 0.935, rotation: 0 },
     });
   });
 
@@ -1108,7 +1118,7 @@ describe('coat project commands', () => {
     expect(shield).toMatchObject({
       assetId: 'heater-shield',
       field: { division: 'solid', pattern: 'solid', colors: [heraldicSwatchHex('metals', 'or')] },
-      transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+      transform: { x: 0, y: 0, scale: 0.935, rotation: 0 },
     });
     expect(charge).toMatchObject({
       assetId: 'material-animal-aurochs-rampant',

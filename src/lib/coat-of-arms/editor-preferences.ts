@@ -42,7 +42,7 @@ const defaultEditorPreferences: EditorPreferences = {
   version: EDITOR_PREFERENCES_VERSION,
   appearance: 'dark',
   colorPickerMode: 'simple',
-  canvasPreset: 'square',
+  canvasPreset: '3-5',
   exportSize: 1024,
   jpegQuality: 'high',
   customPalette: [],

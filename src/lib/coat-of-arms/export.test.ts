@@ -65,10 +65,10 @@ describe('coat export quality and dimensions', () => {
     expect(() => getCoatExportQualityForSize(1080)).toThrow('1080');
   });
 
-  it('formats a square default project at 512 like CoaMaker', () => {
+  it('formats the 3:5 default project at 512 from the canvas aspect ratio', () => {
     const project = createDefaultProject('en');
 
-    expect(formatCoatExportDimensionsLabel(getCoatExportDimensions(project, 512))).toBe('512 × 512 px');
+    expect(formatCoatExportDimensionsLabel(getCoatExportDimensions(project, 512))).toBe('512 × 307 px');
   });
 
   it('maps Instagram 1080×1920 at 1024 to 576×1024', () => {
@@ -180,7 +180,7 @@ describe('coat export helpers', () => {
     expect(pdf.type).toBe('application/pdf');
     expect(pdf.size).toBeGreaterThan(0);
     expect(jsPdfInstances[0]?.addImage).toHaveBeenCalledWith(
-      'data:image/png;base64,cG5n', 'PNG', 0, 0, 512, 512,
+      'data:image/png;base64,cG5n', 'PNG', 0, 0, 512, 307,
     );
   });
 

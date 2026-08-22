@@ -48,6 +48,53 @@ export function renderCoatSceneSvg(
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${options.width}" height="${options.height}" viewBox="${SCENE_VIEW_BOX}" role="img" aria-label="${escapeXml(project.name)}" preserveAspectRatio="xMidYMid meet">${definitions}${layerMarkup}</svg>`;
 }
 
+/**
+ * Makes a second in-document copy of a scene SVG safe by prefixing local ids
+ * and their url()/href references. Export still uses {@link renderCoatSceneSvg}.
+ */
+export function prefixCoatSceneSvgIds(svgMarkup: string, idPrefix: string): string {
+  assertSceneSvgMarkup(svgMarkup);
+  assertSceneSvgIdPrefix(idPrefix);
+
+  const discoveredIds: string[] = [];
+  for (const match of svgMarkup.matchAll(/(?<=[\s<])id="([^"]+)"/g)) {
+    const originalId = match[1];
+    if (originalId === undefined || originalId.trim().length === 0) {
+      throw new Error(`Invalid SVG id in scene markup: ${JSON.stringify(originalId)}`);
+    }
+    discoveredIds.push(originalId);
+  }
+  const uniqueIds = [...new Set(discoveredIds)].sort((leftId, rightId) => rightId.length - leftId.length);
+  let prefixedMarkup = svgMarkup;
+  for (const originalId of uniqueIds) {
+    const prefixedId = `${idPrefix}${originalId}`;
+    prefixedMarkup = prefixedMarkup.replace(
+      new RegExp(`(?<=[\\s<])id="${escapeRegExp(originalId)}"`, 'g'),
+      `id="${prefixedId}"`,
+    );
+    prefixedMarkup = prefixedMarkup.replace(
+      new RegExp(`url\\(#${escapeRegExp(originalId)}\\)`, 'g'),
+      `url(#${prefixedId})`,
+    );
+    prefixedMarkup = prefixedMarkup.replaceAll(`href="#${originalId}"`, `href="#${prefixedId}"`);
+  }
+  return prefixedMarkup;
+}
+
+/** Lets overflowing layer pixels paint outside the viewBox on the editor fade copy. */
+export function withVisibleSceneSvgOverflow(svgMarkup: string): string {
+  assertSceneSvgMarkup(svgMarkup);
+  const openingTagEnd = svgMarkup.indexOf('>');
+  if (openingTagEnd === -1) {
+    throw new Error(`Invalid scene SVG markup: missing tag close in ${svgMarkup.slice(0, 80)}`);
+  }
+  const openingTag = svgMarkup.slice(0, openingTagEnd + 1);
+  if (/\boverflow\s*=/.test(openingTag)) {
+    throw new Error(`Scene SVG already has overflow: ${openingTag}`);
+  }
+  return svgMarkup.replace(/^<svg\b/, '<svg overflow="visible"');
+}
+
 function renderLayerSegments(project: CoatProject, textPaths: string[]): string {
   const segments: string[] = [];
   let layerIndex = 0;
@@ -683,6 +730,18 @@ function contrastColor(color: string): '#FFFFFF' | '#000000' {
   const green = Number.parseInt(color.slice(3, 5), 16);
   const blue = Number.parseInt(color.slice(5, 7), 16);
   return red * 299 + green * 587 + blue * 114 > 150_000 ? '#000000' : '#FFFFFF';
+}
+
+function assertSceneSvgMarkup(svgMarkup: unknown): asserts svgMarkup is string {
+  if (typeof svgMarkup !== 'string' || !svgMarkup.startsWith('<svg')) {
+    throw new Error(`Invalid scene SVG markup: ${String(svgMarkup).slice(0, 80)}`);
+  }
+}
+
+function assertSceneSvgIdPrefix(idPrefix: unknown): asserts idPrefix is string {
+  if (typeof idPrefix !== 'string' || !/^[A-Za-z][A-Za-z0-9_-]*$/.test(idPrefix)) {
+    throw new Error(`Invalid scene SVG id prefix: ${JSON.stringify(idPrefix)}`);
+  }
 }
 
 function assertSceneOptions(options: unknown): asserts options is CoatSceneSvgOptions {

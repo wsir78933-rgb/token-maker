@@ -68,7 +68,7 @@ describe('coat project history and Zustand bridge', () => {
     expect(() => { shield.field.colors[0] = '#B11F24'; }).toThrow();
     expect(() => { shield.transform.x = 99; }).toThrow();
     expect(history.present.layers[1]).toMatchObject({
-      field: { colors: ['#1855A5'] }, transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+      field: { colors: ['#1855A5'] }, transform: { x: 0, y: 0, scale: 0.935, rotation: 0 },
     });
   });
 

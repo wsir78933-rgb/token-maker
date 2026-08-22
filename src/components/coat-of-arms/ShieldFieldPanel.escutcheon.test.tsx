@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, it } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { createDefaultProject, listShieldSilhouetteAssets } from '@/lib/coat-of-arms/assets';
+import { createDefaultProject, listShieldSilhouetteAssets, NEWLY_PLACED_LIBRARY_ASSET_SCALE } from '@/lib/coat-of-arms/assets';
 import { applyProjectCommand } from '@/lib/coat-of-arms/commands';
 import { resolveFieldRegions } from '@/lib/coat-of-arms/field-regions';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
@@ -177,8 +177,18 @@ describe('ShieldFieldPanel escutcheon chrome', () => {
     const addedCharge = useCoatProjectStore.getState().project.layers.at(-1);
     expect(addedCharge).toMatchObject({
       type: 'charge',
-      transform: { fieldShieldLayerId: shieldId, fieldRegionId: 'overall', clipToField: true },
+      transform: {
+        scale: NEWLY_PLACED_LIBRARY_ASSET_SCALE,
+        fieldShieldLayerId: shieldId,
+        fieldRegionId: 'overall',
+        clipToField: true,
+      },
     });
+    if (!addedCharge || addedCharge.type !== 'charge') {
+      throw new Error(`Expected added escutcheon charge, got: ${addedCharge?.type ?? 'missing layer'}`);
+    }
+    expect(addedCharge.transform.scale).toBe(NEWLY_PLACED_LIBRARY_ASSET_SCALE);
+    expect(NEWLY_PLACED_LIBRARY_ASSET_SCALE).toBe(0.6);
     expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([shieldId]);
   });
 
@@ -228,7 +238,13 @@ describe('ShieldFieldPanel escutcheon chrome', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Add Charge' }));
 
     const addedCharge = useCoatProjectStore.getState().project.layers.at(-1);
-    expect(addedCharge).toMatchObject({ type: 'charge', transform: { fieldShieldLayerId: secondShield.id } });
+    expect(addedCharge).toMatchObject({
+      type: 'charge',
+      transform: {
+        scale: NEWLY_PLACED_LIBRARY_ASSET_SCALE,
+        fieldShieldLayerId: secondShield.id,
+      },
+    });
     expect(screen.getByLabelText('Editing: Escutcheon 2')).toBeDefined();
   });
 

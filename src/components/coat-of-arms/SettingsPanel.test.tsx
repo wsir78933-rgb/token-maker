@@ -25,6 +25,7 @@ describe('SettingsPanel', () => {
   it('applies the 3:5 canvas preset and persists that browser-local preference', () => {
     render(<SettingsPanel locale="en" />);
 
+    fireEvent.click(screen.getByRole('button', { name: '1:1 (Switzerland, Vatican City)' }));
     fireEvent.click(screen.getByRole('button', { name: '3:5 (Germany, Nicaragua, Lithuania)' }));
 
     expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1800, height: 1080 });
@@ -33,13 +34,21 @@ describe('SettingsPanel', () => {
     });
   });
 
+  it('applies the 1:1 canvas preset when clicked', () => {
+    render(<SettingsPanel locale="en" />);
+
+    fireEvent.click(screen.getByRole('button', { name: '1:1 (Switzerland, Vatican City)' }));
+
+    expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1080, height: 1080 });
+  });
+
   it('keeps invalid manual dimensions out of the project and exposes their value as an error', () => {
     render(<SettingsPanel locale="en" />);
 
     fireEvent.change(screen.getByLabelText('Width'), { target: { value: '4097' } });
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
 
-    expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1200, height: 1200 });
+    expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1800, height: 1080 });
     expect(screen.getByRole('alert').textContent).toContain('4097');
   });
 
@@ -72,7 +81,7 @@ describe('SettingsPanel', () => {
       version: 1,
       appearance: 'dark',
       colorPickerMode: 'simple',
-      canvasPreset: '3-5',
+      canvasPreset: 'square',
       jpegQuality: 'high',
       customPalette: [],
       backgroundGradient: null,
@@ -83,9 +92,9 @@ describe('SettingsPanel', () => {
 
     const resetProject = useCoatProjectStore.getState().project;
     expect(resetProject.id).not.toBe(initialProject.id);
-    expect(resetProject.canvas).toEqual({ width: 1200, height: 1200 });
+    expect(resetProject.canvas).toEqual({ width: 1800, height: 1080 });
     expect(resetProject.layers.some((layer) => layer.type === 'charge' && layer.assetId === 'material-animal-wolf-rampant')).toBe(false);
-    expect(loadEditorPreferences().canvasPreset).toBe('square');
+    expect(loadEditorPreferences().canvasPreset).toBe('3-5');
   });
 
   it('persists light appearance through the browser document and the session store', () => {
@@ -117,6 +126,7 @@ describe('SettingsPanel', () => {
   it('marks the 3:5 canvas preset as pressed after it is applied', () => {
     render(<SettingsPanel locale="en" />);
 
+    fireEvent.click(screen.getByRole('button', { name: '1:1 (Switzerland, Vatican City)' }));
     fireEvent.click(screen.getByRole('button', { name: '3:5 (Germany, Nicaragua, Lithuania)' }));
 
     expect(screen.getByRole('button', { name: '3:5 (Germany, Nicaragua, Lithuania)' }).getAttribute('aria-pressed')).toBe('true');

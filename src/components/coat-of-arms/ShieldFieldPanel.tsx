@@ -2,7 +2,7 @@
 
 import { useState, type ChangeEvent } from 'react';
 import { ChevronDown, Pencil, Plus } from 'lucide-react';
-import { listShieldSilhouetteAssets, requireShieldSilhouetteAssetId } from '@/lib/coat-of-arms/assets';
+import { listShieldSilhouetteAssets, NEWLY_PLACED_LIBRARY_ASSET_SCALE, requireShieldSilhouetteAssetId } from '@/lib/coat-of-arms/assets';
 import { buildFieldInteriorMarkup } from '@/lib/coat-of-arms/field';
 import { getFieldRegionIds, resolveFieldRegions } from '@/lib/coat-of-arms/field-regions';
 import type { CoatProjectCommand } from '@/lib/coat-of-arms/commands';
@@ -227,7 +227,7 @@ function addChargeToEscutcheon(
   const scopedTransform = {
     x: 0,
     y: 0,
-    scale: 1,
+    scale: NEWLY_PLACED_LIBRARY_ASSET_SCALE,
     rotation: 0,
     fieldShieldLayerId: shield.id,
     fieldPlacement: 'overall' as const,

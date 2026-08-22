@@ -1,5 +1,192 @@
 # WORKLOG
 
+## 交接单 · 2026-08-22 22:02 CST · Cursor Grok coordinator
+
+### 本次目标
+
+Orca `run_91e479b6b9cf`：三件 coamaker 对齐——画板外 overflow 只淡出越界部分；默认画布 1800×1080 横图；默认盾 + 新放图库资产更小。颜色保持（artboard `#fff`，stage `#f0ece2`）。不改 chrome 99/50/40。不抄广告/付费墙文案。不 push。
+
+用户选择：A 默认画布 1800×1080；B 同时缩小默认盾 **和** 新放图库资产；overflow 只淡越界部分（不是整层）。
+
+### 已完成
+
+- Overflow：双 SVG（画板内不透明；画板外 opacity 0.5 米色 veil）。
+- 默认画布 1800×1080，preset `3-5`。`1:1` preset 仍是 1080×1080。
+- `DEFAULT_SHIELD_SCALE` **0.935**；`NEWLY_PLACED_LIBRARY_ASSET_SCALE` **0.6**。上传 / 手绘 / 文字仍 scale 1。
+- Worker 自报（本交接班未再跑）：overflow + scene-svg **74 passed**；canvas/scale 相关 **225 passed**；11 个测试文件 review **281 passed**；test-proof holes（叠层顺序 + escutcheon scale）**48 passed**；实现 typecheck 通过。实机 `http://localhost:3000/coat-of-arms-maker` 视觉 **4/4 PASS**（`tmp/visual-canvas-align-verify.md`）。
+- 未提交：本次 `src/` 改动 + `WORKLOG.md` + `tmp/` recon/visual。`main` 比 `origin/main` 超此前 6 个 commit，外加这些未提交文件。本班不 commit、不 push。
+
+未提交的 `src/`（本次产品项）：
+
+- `src/app/globals.css`
+- `src/components/coat-of-arms/CoatOfArmsCanvas.tsx` + `.test.tsx`
+- `src/components/coat-of-arms/ColorBackgroundPanel.test.tsx`
+- `src/components/coat-of-arms/ExportMenu.test.tsx`
+- `src/components/coat-of-arms/SettingsPanel.test.tsx`
+- `src/components/coat-of-arms/ShieldFieldPanel.tsx` + `.escutcheon.test.tsx`
+- `src/components/coat-of-arms/useCoatKeyboardShortcuts.test.tsx`
+- `src/lib/coat-of-arms/assets.ts` + `.test.ts`
+- `src/lib/coat-of-arms/commands.ts` + `.test.ts`
+- `src/lib/coat-of-arms/editor-preferences.ts`
+- `src/lib/coat-of-arms/export.test.ts`
+- `src/lib/coat-of-arms/scene-svg.ts` + `.test.ts`
+- `src/lib/coat-of-arms/store.test.ts`
+
+### 做到一半
+
+无。三件产品项都做完。
+
+### 下一步
+
+- 用户若要上远程，再自行 commit/push。本班未 commit、未 push。
+- 残留：`CoatOfArmsMaker.test.tsx` 的 3:5 点击在默认改成 `3-5` 后变成同义反复。
+- 不要把 `1512×738` 画布从 ~547 缩回 480。
+- 不要抄 coamaker 广告。
+
+### 踩过的坑
+
+- 本机必须用 `http://localhost:3000/coat-of-arms-maker`，不要 `127.0.0.1`。草稿 overlay 会把 workbench 设成 `inert`，量之前先关掉。
+- Overflow 是叠两份 SVG，不是整层 opacity。
+- 不要用乘法去改 `RANDOM_CHARGE_SCALE`。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsCanvas.test.tsx src/lib/coat-of-arms/scene-svg.test.ts
+pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsCanvas.test.tsx src/components/coat-of-arms/ShieldFieldPanel.escutcheon.test.tsx
+pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsCanvas.test.tsx src/components/coat-of-arms/ColorBackgroundPanel.test.tsx src/components/coat-of-arms/ExportMenu.test.tsx src/components/coat-of-arms/SettingsPanel.test.tsx src/components/coat-of-arms/ShieldFieldPanel.escutcheon.test.tsx src/components/coat-of-arms/useCoatKeyboardShortcuts.test.tsx src/lib/coat-of-arms/assets.test.ts src/lib/coat-of-arms/commands.test.ts src/lib/coat-of-arms/export.test.ts src/lib/coat-of-arms/scene-svg.test.ts src/lib/coat-of-arms/store.test.ts
+pnpm typecheck
+```
+
+页面：`http://localhost:3000/coat-of-arms-maker`（localhost，关掉草稿 overlay）。
+
+- 默认画布 1800×1080，preset 3-5；1:1 仍 1080×1080
+- 默认金盾约 canvas 高度 90%；新放图库资产 scale 0.6
+- 拖出画板：板内不透明，板外 50% 米色 veil；选框/手柄仍可用
+- chrome 仍 topbar 99 / actionbar 50 / toolbar 40
+- artboard `#fff`，stage `#f0ece2`
+
+Worker 自报数字：overflow+scene-svg **74**；canvas/scale **225**；11 文件 review **281**；叠层+escutcheon **48**；typecheck 通过；视觉 **4/4 PASS**。本交接班未再跑。
+
+---
+
+## 交接单 · 2026-08-22 20:49 CST · Cursor Grok
+
+### 本次目标
+
+把未提交的编辑器高度、Shields 树短名、Contact 导航按用户选 C 存档，再写交接单。不 push。
+
+### 已完成
+
+- 提交 `263841f`（未 push；`main` 比 `origin/main` 超 6 个 commit）。含：工作台顶栏桌面 99px；画板宽度 `min(100%, calc(100cqh * aspect-ratio))`，wrap `container-type: size`、垂直 padding 0；Shields 树短名（EN: Shield/Heater/French/Banner/Round/Lozenge；ZH: 盾/熨斗/法式/旗帜/圆/菱形）；Contact 进顶栏（maker / InnerPageChrome / HomeHero）和对应测试。
+- 未进提交：`WORKLOG.md`、`tmp/`。
+- 高度编排 `run_d0b9d2919a1e` 6 个任务均为 completed；inbox 空。短视口空白已按 wrap 实测高度修掉。
+- 更早已提交且仍未 push：`f0b03b9` Arrange/Names/Upload chrome；`849c04b` prefs 加载失败不再静默；`29ab291` Charges→Upload；`5f3c744` 树 hover + pointer；`968eaa6` 清层名 unused binding。
+
+### 做到一半
+
+无产品半成品。工作区只剩本文件与未跟踪的 `tmp/` 测量图/报告。
+
+### 下一步
+
+- 用户若要上远程，再 push；本班未 push。
+- 不要把 `1512×738` 画布从 ~547 缩回 480；不要改 actionbar 50px / canvas-toolbar 40px。
+- Contact 页本身是否还要补内容：本班只加了导航链接，未改联系页正文。
+
+### 踩过的坑
+
+- 画板用独立的 `100svh - 189` 会和工作台 `min-height: 38rem` 打架：`1512×500` 时 wrap 与 artboard 曾差约 108px。要对齐 wrap 的 `100cqh`，不要复制一份 svh 公式。
+- 本机编辑器必须用 `http://localhost:3000/coat-of-arms-maker`，不要 `127.0.0.1`。草稿 overlay 会把 workbench 设成 `inert`，量高度前先关掉。
+- 几何回归不要只 `toContain` 整段 `globals.css`；jsdom 量不到，现有测试用已有 `@playwright/test` 夹具（未加新依赖）。
+- 不要抄 coamaker 广告、付费墙、文案。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsMaker.test.tsx
+pnpm typecheck
+```
+
+页面：`http://localhost:3000/coat-of-arms-maker`（无草稿 overlay）。桌面顶栏 99 / actionbar 50 / toolbar 40。无草稿时：
+
+- `1512×738`：wrap 549 / artboard 549 / canvas 547，高度差 0
+- `1512×500` 与 `1512×600`：wrap 与 artboard 高度差 0（不再是 108px）
+- Shields 树显示短名；图库仍是全名（如 Kite shield）
+- 顶栏 Contact 在 Blog 前
+
+上次 worker 自报：该 vitest 文件 96 passed；`pnpm typecheck` 通过。本交接班未再跑一遍。
+
+---
+
+## 交接单 · 2026-08-22 20:45 CST · Grok worker
+
+### 本次目标
+
+对照 `tmp/layout-height-code-review.md`，只修已验证的短视口画板空白：画板跟 `.coat-target-artboard-wrap` 实际高度走，不再用独立的 `100svh - 189`。不提交。
+
+### 已完成
+
+- `.coat-target-artboard-wrap` 设 `container-type: size`；`.coat-target-artboard` 宽度改为 `min(100%, calc(100cqh * var(--coat-canvas-aspect-ratio)))`，保留 aspect-ratio / `max-width` / `max-height`。去掉未再使用的 `--coat-editor-chrome-height`。
+- 未改 actionbar 50px、canvas-toolbar 40px、Shields 短名、Upload、Contact/SEO。
+- `CoatOfArmsMaker.test.tsx`：用规则声明而不是整段 `toContain`；并用已有 Playwright 量 1512×738 / 600 / 500 夹具几何（jsdom 量不到）。禁止 `100svh` 回潮。
+
+### 做到一半
+
+无。
+
+### 下一步
+
+未提交。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsMaker.test.tsx
+pnpm typecheck
+```
+
+实机 `http://localhost:3000/coat-of-arms-maker`（localhost，不用 127.0.0.1），无草稿 overlay：
+
+- `1512×738`：wrap **549** / artboard **549** / canvas **547**，高度差 **0**（未缩回 480）
+- `1512×600`：wrap **419** / artboard **419**，高度差 **0**（原 8px）
+- `1512×500`：wrap **419** / artboard **419**，高度差 **0**（原 108px）
+- chrome 仍是 topbar 99 / actionbar 50 / toolbar 40
+
+vitest：1 file / **96 tests passed**（含短视口几何 4230ms）。`pnpm typecheck` 通过。
+
+---
+
+## 交接单 · 2026-08-22 20:20 CST · Grok worker
+
+### 本次目标
+
+按 `tmp/layout-height-coamaker-recon.md`、`tmp/layout-height-ours-recon.md` 把 coat-maker 编辑器上下 chrome / 画布垂直空间对齐竞品计算高度。只改 recon 点名的高度 token。不提交。
+
+### 已完成
+
+- `.coat-target-workbench > .site-topbar` 锁 **99px**（padding 8.5px，nav `margin-top: 0`）。Maker 顶栏 class 去掉 `py-4` / `mt-4`。CONTACT 链接仍在。
+- `.coat-target-actionbar` **50px**、`.coat-target-canvas-toolbar` / scene 第一行 **40px** 未改。
+- `.coat-target-artboard-wrap` 垂直 padding 改为 **0**，左右 clamp 保留。
+- `.coat-target-artboard` 去掉 `30rem` 方卡：`width: min(100%, calc((100svh - 189px) * aspect-ratio))`，`max-height: 100%`。189 = 99+50+40。
+- 更新 `CoatOfArmsMaker.test.tsx` 锁死字符串。未改 Contact/SEO、Shields 短名、Arrange/Names/Upload、cursor。
+
+### 做到一半
+
+无。桌面 `1512×738` 已量：topbar 99 / actionbar 50 / toolbar 40 / wrap 垂直 padding 0 / artboard 549 / canvas 547（74.1% 视口）。手机 390 顶栏长到 141.68，导航未裁切。
+
+### 下一步
+
+未提交。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsMaker.test.tsx
+pnpm typecheck
+```
+
+---
+
 ## 交接单 · 2026-08-22 19:10 CST · Grok worker
 
 ### 本次目标

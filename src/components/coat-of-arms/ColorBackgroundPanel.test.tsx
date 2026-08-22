@@ -82,6 +82,7 @@ describe('ColorBackgroundPanel', () => {
   it('applies a canvas size preset from the Background panel', () => {
     render(<ColorBackgroundPanel locale="en" sectionToFocus="background" />);
 
+    fireEvent.change(screen.getByLabelText('Canvas Size'), { target: { value: 'square' } });
     fireEvent.change(screen.getByLabelText('Canvas Size'), { target: { value: '3-5' } });
 
     expect(useCoatProjectStore.getState().project.canvas).toEqual({ width: 1800, height: 1080 });

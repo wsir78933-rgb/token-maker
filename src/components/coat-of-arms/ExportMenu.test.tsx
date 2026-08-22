@@ -41,11 +41,11 @@ describe('ExportMenu', () => {
     render(<ExportMenu locale="en" project={createDefaultProject('en')} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
-    expect(screen.getByText('1024 × 1024 px')).toBeDefined();
+    expect(screen.getByText('1024 × 614 px')).toBeDefined();
 
     fireEvent.change(screen.getByLabelText('Quality'), { target: { value: '0' } });
 
-    expect(screen.getByText('256 × 256 px')).toBeDefined();
+    expect(screen.getByText('256 × 154 px')).toBeDefined();
   });
 
   it('shows Download PNG as the default primary action', () => {
