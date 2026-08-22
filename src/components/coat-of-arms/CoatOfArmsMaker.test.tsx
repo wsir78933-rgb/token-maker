@@ -487,7 +487,8 @@ describe('CoatOfArmsMaker', () => {
   it('keeps the selected desktop tree choice in the shared active treatment', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
-    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true'] { margin-right: 0.4rem; border-radius: 0.5rem; background: var(--coat-active); }");
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-tool-tree-branch button { display: flex; min-height: 1.75rem; align-items: center; gap: 0.5rem; border: 0; border-radius: 0.1875rem; background: transparent; color: var(--coat-text); padding: 0 0.5rem; text-align: left; font-family: inherit; font-size: 0.875rem; cursor: pointer; }');
+    expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-tool-tree-branch button:hover,\n.coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true'] { background: #5a5a5a; }");
   });
 
   it('uses the Top tree branch as the sole top-ornament category control', () => {
