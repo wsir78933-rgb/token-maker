@@ -47,6 +47,7 @@ import {
   DND_LANGUAGES_COVER_PATH,
   DND_STATS_COVER_PATH,
   DND_PALADIN_COVER_PATH,
+  DND_FIGHTER_COVER_PATH,
   PLAYERS_HANDBOOK_DND_5E_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
@@ -135,6 +136,7 @@ import { dndLanguagesArticleHtml, dndLanguagesArticleHtmlZh } from '@/lib/blog-p
 import { dndStatsArticleHtml, dndStatsArticleHtmlZh } from '@/lib/blog-posts/dnd-stats';
 import { dndArtificerArticleHtml, dndArtificerArticleHtmlZh } from '@/lib/blog-posts/dnd-artificer';
 import { dndPaladinArticleHtml, dndPaladinArticleHtmlZh } from '@/lib/blog-posts/dnd-paladin';
+import { dndFighterArticleHtml, dndFighterArticleHtmlZh } from '@/lib/blog-posts/dnd-fighter';
 import {
   playersHandbookDnd5eArticleHtml,
   playersHandbookDnd5eArticleHtmlZh,
@@ -207,6 +209,7 @@ const DND_STATS_UPDATED_AT = '2026-08-15';
 const DND_ARTIFICER_UPDATED_AT = '2026-08-17';
 const DND_PALADIN_UPDATED_AT = '2026-08-18';
 const PLAYERS_HANDBOOK_DND_5E_UPDATED_AT = '2026-08-19';
+const DND_FIGHTER_UPDATED_AT = '2026-08-23';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -233,6 +236,107 @@ export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   },
 };
 
+
+const dndFighterArticle: BlogPost = {
+  slug: 'dnd-fighter',
+  title: 'DnD Fighter Guide: Build a Level 1 Fighter and Plan Every Turn',
+  seoTitle: 'DnD Fighter Guide: Strength or Dexterity? Choose First',
+  metaDescription:
+    'Compare Strength and Dexterity Fighter paths, pick armor and weapons that fit, and finish a focused 2024 character without splitting your best score.',
+  excerpt:
+    'Finish a level 1 Fighter with a clear ability, armor, weapon, Fighting Style, and Weapon Mastery plan, then take a clean first combat turn.',
+  publishedAt: DND_FIGHTER_UPDATED_AT,
+  updatedAt: DND_FIGHTER_UPDATED_AT,
+  readTime: '11 min read',
+  coverLabel: 'Fighter Guide',
+  coverImage: DND_FIGHTER_COVER_PATH,
+  coverAlt:
+    'DnD Fighter guide cover showing an armored frontline warrior token, shield, sword, dice, and VTT grid markers on a tabletop map',
+  bodyHtml: dndFighterArticleHtml,
+  faqItems: [
+    {
+      question: 'Is Fighter a good class for a DnD beginner?',
+      answer:
+        "Yes. The Fighter's basic turn can stay direct: move, choose a target, and attack. Champion keeps later choices lighter, while Battle Master, Eldritch Knight, and Psi Warrior let a player add more tactical or magical complexity.",
+    },
+    {
+      question: 'Should a Fighter use Strength or Dexterity?',
+      answer:
+        'Use Strength for heavy melee weapons, heavy armor, and Athletics. Use Dexterity for bows, Finesse weapons, Initiative, Dexterity skills, and light armor. Raise the ability that powers the attacks you plan to make most often.',
+    },
+    {
+      question: 'What is the best Fighting Style for a Fighter?',
+      answer:
+        'There is no universal best choice. Archery supports ranged accuracy, Defense works with any armored setup, Dueling supports a one-handed weapon, and Protection supports an adjacent ally. Match the style to a job the character performs every round.',
+    },
+    {
+      question: 'How many attacks does a Fighter get?',
+      answer:
+        'A Fighter normally makes one attack with the Attack action at levels 1-4, two at levels 5-10, three at levels 11-19, and four at level 20. Action Surge can provide another action, but it is a limited resource.',
+    },
+    {
+      question: 'Can a DnD Fighter cast spells?',
+      answer:
+        'An Eldritch Knight can cast spells through its subclass features. Other Fighters can gain limited magic from feats or multiclassing. Under the 2024 rules, the extra action from Action Surge cannot be the Magic action.',
+    },
+    {
+      question: 'What changed for Fighter in the 2024 rules?',
+      answer:
+        'The largest changes include Weapon Mastery, more uses for Second Wind, Tactical Mind, Tactical Shift, a stronger Indomitable, and Studied Attacks. Action Surge also gained a restriction that prevents its extra action from being the Magic action.',
+    },
+  ],
+  relatedSlugs: ['dnd-stats', 'dnd-armor-guide', 'dnd-glaive', 'dnd-classes-explained'],
+};
+
+const dndFighterArticleZh: BlogPost = {
+  slug: 'dnd-fighter',
+  title: 'DND 战士指南：从 1 级建卡到每回合行动计划',
+  seoTitle: 'DND 战士指南：力量还是敏捷？先把路线选对',
+  metaDescription:
+    '对比力量与敏捷战士的玩法，选择合适的护甲和武器，完成一套目标明确、不浪费主要属性的 2024 版角色配置。',
+  excerpt:
+    '按力量或敏捷路线完成 1 级战士的护甲、武器、战斗风格和武器精通配置，再用清楚的回合计划安排走位、攻击与第二风。',
+  publishedAt: DND_FIGHTER_UPDATED_AT,
+  updatedAt: DND_FIGHTER_UPDATED_AT,
+  readTime: '11 分钟阅读',
+  coverLabel: '战士指南',
+  coverImage: DND_FIGHTER_COVER_PATH,
+  coverAlt: 'DND 战士指南封面图：一名持盾持剑的前排战士 Token，周围有骰子与 VTT 网格标记',
+  bodyHtml: dndFighterArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND 战士适合新手吗？',
+      answer:
+        '适合。战士的基础回合可以很直接：移动、选择目标、攻击。冠军让后续选择更轻量，战斗大师、奥法骑士和灵能战士则让玩家加入更多战术或魔法复杂度。',
+    },
+    {
+      question: '战士该用力量还是敏捷？',
+      answer:
+        '重型近战武器、重甲和运动适合力量；弓、灵巧武器、先攻、敏捷技能和轻甲适合敏捷。提高你最常使用的攻击所依赖的属性。',
+    },
+    {
+      question: '战士最好的战斗风格是什么？',
+      answer:
+        '没有放之四海皆准的最佳选择。箭术帮助远程命中，防御适合任何穿甲配置，决斗适合单手武器，保护则帮助相邻队友。让战斗风格匹配角色每回合都会履行的职责。',
+    },
+    {
+      question: '战士能攻击几次？',
+      answer:
+        '战士在 1 至 4 级使用攻击动作时通常攻击一次，5 至 10 级两次，11 至 19 级三次，20 级四次。动作如潮可以提供另一个动作，但它是有限资源。',
+    },
+    {
+      question: 'DND 战士能施法吗？',
+      answer:
+        '奥法骑士通过子职业能力施法。其他战士可以通过专长或多职业获得有限魔法。2024 规则下，动作如潮提供的额外动作不能执行魔法动作。',
+    },
+    {
+      question: '2024 规则里的战士改了什么？',
+      answer:
+        '最大的变化包括武器精通、第二风的更多用途、战术思维、战术转移、更强的不屈和研习攻击。动作如潮也新增限制，额外动作不能执行魔法动作。',
+    },
+  ],
+  relatedSlugs: ['dnd-stats', 'dnd-armor-guide', 'dnd-glaive', 'dnd-classes-explained'],
+};
 
 const dndClassesArticle: BlogPost = {
   slug: 'dnd-classes-explained',
@@ -4197,10 +4301,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

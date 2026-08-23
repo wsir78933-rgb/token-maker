@@ -41,7 +41,9 @@ const DND_STATS_SLUG = 'dnd-stats';
 const DND_ARTIFICER_SLUG = 'dnd-artificer';
 const DND_PALADIN_SLUG = 'dnd-paladin';
 const PLAYERS_HANDBOOK_DND_5E_SLUG = 'players-handbook-dnd-5e';
+const DND_FIGHTER_SLUG = 'dnd-fighter';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_FIGHTER_SLUG,
   PLAYERS_HANDBOOK_DND_5E_SLUG,
   DND_PALADIN_SLUG,
   DND_ARTIFICER_SLUG,
@@ -51,8 +53,8 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DND_ALIGNMENT_CHART_SLUG,
   DND_RACES_SLUG,
   DND_SHATTER_5E_SLUG,
-  DND_GNOME_NAMES_SLUG,
 ];
+const SECOND_BLOG_PAGE_START_SLUGS = [DND_GNOME_NAMES_SLUG, DND_MAUL_SLUG];
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -1882,15 +1884,13 @@ describe('paladin 2024 spells dnd blog post', () => {
     expect(getBlogPageCount('en')).toBe(5);
     expect(getBlogPageCount('zh')).toBe(5);
 
-    expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual([
-      DND_MAUL_SLUG,
-      DND_QUARTERSTAFF_SLUG,
-    ]);
+    expect(getBlogPostsForPage('en', 2).map((post) => post.slug).slice(0, 2)).toEqual(
+      SECOND_BLOG_PAGE_START_SLUGS,
+    );
 
-    expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual([
-      DND_MAUL_SLUG,
-      DND_QUARTERSTAFF_SLUG,
-    ]);
+    expect(getBlogPostsForPage('zh', 2).map((post) => post.slug).slice(0, 2)).toEqual(
+      SECOND_BLOG_PAGE_START_SLUGS,
+    );
   });
 
   test('publishes the paladin 2024 spells article in English and Chinese', () => {

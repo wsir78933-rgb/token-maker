@@ -52,6 +52,7 @@ const DND_MEANING_SLUG = 'dnd-meaning';
 const DND_LANGUAGES_SLUG = 'dnd-languages';
 const DND_STATS_SLUG = 'dnd-stats';
 const DND_ARTIFICER_SLUG = 'dnd-artificer';
+const DND_FIGHTER_SLUG = 'dnd-fighter';
 const PLAYERS_HANDBOOK_DND_5E_SLUG = 'players-handbook-dnd-5e';
 
 function getStructuredDataTypes(value: unknown): string[] {
@@ -521,6 +522,11 @@ describe('blog static routes', () => {
   it('emits bilingual dnd artificer detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_ARTIFICER_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_ARTIFICER_SLUG });
+  });
+
+  it('emits bilingual dnd fighter detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_FIGHTER_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_FIGHTER_SLUG });
   });
 
   it('emits bilingual dnd stats detail params', () => {

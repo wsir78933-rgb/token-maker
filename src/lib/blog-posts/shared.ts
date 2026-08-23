@@ -48,6 +48,7 @@ export const DND_MEANING_COVER_PATH = '/blog/covers/en/dnd-meaning-guide.webp';
 export const DND_LANGUAGES_COVER_PATH = '/blog/covers/en/dnd-languages-guide.webp';
 export const DND_STATS_COVER_PATH = '/blog/covers/en/dnd-stats-guide.webp';
 export const DND_PALADIN_COVER_PATH = '/blog/covers/en/dnd-paladin-guide.webp';
+export const DND_FIGHTER_COVER_PATH = '/blog/covers/en/dnd-fighter-guide.webp';
 export const PLAYERS_HANDBOOK_DND_5E_COVER_PATH =
   '/blog/covers/en/players-handbook-dnd-5e-guide.webp';
 
@@ -120,6 +121,8 @@ export const DND_SHATTER_5E_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-shatter-5e/shatter-video-placeholder.webp';
 export const DND_PALADIN_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-paladin/dnd-paladin-video-placeholder.webp';
+export const DND_FIGHTER_TURN_PLAN_IMAGE_PATH =
+  '/blog/inline/dnd-fighter/fighter-turn-plan.webp';
 export const PLAYERS_HANDBOOK_DND_5E_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/players-handbook-dnd-5e/players-handbook-video-placeholder.webp';
 
