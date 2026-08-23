@@ -4,11 +4,15 @@ import { generateCoatNames, nameGeneratorTypes } from './name-generator';
 describe('coat name generator', () => {
   it('provides a distinct list for every competitor generator type', () => {
     for (const type of nameGeneratorTypes) {
-      const names = generateCoatNames(type, 'en', 8, () => 0.1);
-      expect(names).toHaveLength(8);
+      const names = generateCoatNames(type, 'en', 5, () => 0.1);
+      expect(names).toHaveLength(5);
       expect(new Set(names).size).toBe(names.length);
       expect(names.every((name) => name.length > 0)).toBe(true);
     }
+  });
+
+  it('defaults to five generated names', () => {
+    expect(generateCoatNames('city', 'en')).toHaveLength(5);
   });
 
   it('uses German word banks independently of the page locale', () => {

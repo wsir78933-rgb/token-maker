@@ -6,6 +6,7 @@ import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
 import { getCoatAsset, getDefaultProjectName } from '@/lib/coat-of-arms/assets';
 import type { ShieldReferenceCategory } from '@/lib/coat-of-arms/reference-catalog';
 import { useEditorPreferencesStore } from '@/lib/coat-of-arms/editor-preferences-session';
+import { hydrateLocalUploadBlobsForProject } from '@/lib/coat-of-arms/project-storage';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { ChargeAssetCategory, CoatLocale, TopAssetCategory } from '@/lib/coat-of-arms/types';
 import { getHomeCopy, getNavLabels, getSiteConfig } from '@/lib/site-content';
@@ -130,6 +131,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [fullscreenError, setFullscreenError] = useState<string | null>(null);
   const [storedPreferencesError, setStoredPreferencesError] = useState<string | null>(null);
+  const [draftActionError, setDraftActionError] = useState<string | null>(null);
   const isRecoveryCheckComplete = useHydrationComplete();
   const workbenchRef = useRef<HTMLElement>(null);
   const utilityContent = getUtilityContent(activeUtilityId, locale, randomizeProject);
@@ -208,15 +210,28 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
     if (isInitialDocument) initializeShowcaseProject(locale);
   }, [hasDraftRecoveryAction, initializeShowcaseProject, isInitialDocument, isRecoveryCheckComplete, locale]);
 
-  const restoreDraft = () => {
+  const restoreDraft = async () => {
     if (!recoverableDraft) return;
-    replaceProject(recoverableDraft);
-    setIsDraftDismissed(true);
+    try {
+      if (recoverableDraft.uploads.some((upload) => upload.encoding === 'indexed-db')) {
+        await hydrateLocalUploadBlobsForProject(recoverableDraft);
+      }
+      await replaceProject(recoverableDraft);
+      setDraftActionError(null);
+      setIsDraftDismissed(true);
+    } catch (caught) {
+      setDraftActionError(copy.panels.commandFailed(caught instanceof Error ? caught.message : String(caught)));
+    }
   };
-  const removeDraft = () => {
-    discardDraft();
-    setIsDraftDismissed(true);
-    initializeShowcaseProject(locale);
+  const removeDraft = async () => {
+    try {
+      await discardDraft();
+      setDraftActionError(null);
+      setIsDraftDismissed(true);
+      initializeShowcaseProject(locale);
+    } catch (caught) {
+      setDraftActionError(copy.panels.commandFailed(caught instanceof Error ? caught.message : String(caught)));
+    }
   };
   const selectTool = (nextToolId: TargetToolId) => {
     setActiveToolId(nextToolId);
@@ -370,6 +385,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
       </div>
       {hasDraftRecoveryAction ? <section aria-label={copy.draftAvailable} className="coat-workbench-action-row coat-target-draft" role="status">
         {invalidDraftError ? <p role="alert">{copy.invalidDraftRecoveryDescription(invalidDraftError)}</p> : <p>{copy.draftRecoveryDescription}</p>}
+        {draftActionError ? <p role="alert">{draftActionError}</p> : null}
         {hasRecoverableDraft ? <Button type="button" onClick={restoreDraft}>{copy.restoreDraft}</Button> : null}
         <Button type="button" variant="outline" onClick={removeDraft}>{copy.discardDraft}</Button>
       </section> : null}
@@ -383,7 +399,7 @@ function getPositionSectionContent(section: PositionSectionId, locale: CoatLocal
   throw new Error(`Unexpected position section: ${section}`);
 }
 
-function getUtilityContent(activeUtilityId: UtilityToolId, locale: CoatLocale, onRandomizeProject: () => void): ReactNode {
+function getUtilityContent(activeUtilityId: UtilityToolId, locale: CoatLocale, onRandomizeProject: () => Promise<void>): ReactNode {
   if (activeUtilityId === 'text') return <TextMottoPanel locale={locale} />;
   if (activeUtilityId === 'draw') return <DrawPanel locale={locale} />;
   if (activeUtilityId === 'random') return <RandomPanel locale={locale} onRandomizeProject={onRandomizeProject} />;
@@ -396,15 +412,25 @@ function TargetUtilityPanel({ children, locale }: { children: ReactNode; locale:
   return <section aria-label={copy.shell.editorUtilities} className="coat-target-utility-panel">{children}</section>;
 }
 
-function RandomPanel({ locale, onRandomizeProject }: { locale: CoatLocale; onRandomizeProject: () => void }) {
+function RandomPanel({ locale, onRandomizeProject }: { locale: CoatLocale; onRandomizeProject: () => Promise<void> }) {
   const copy = getCoatWorkbenchCopy(locale);
+  const [randomizeError, setRandomizeError] = useState<string | null>(null);
+  const randomizeCoat = async () => {
+    try {
+      await onRandomizeProject();
+      setRandomizeError(null);
+    } catch (caught) {
+      setRandomizeError(copy.panels.commandFailed(caught instanceof Error ? caught.message : String(caught)));
+    }
+  };
   return (
     <section aria-label={copy.utilityTabs.random} className="coat-target-random-panel">
       <p>{copy.randomizeDescription}</p>
-      <button className="coat-target-randomize" type="button" onClick={() => onRandomizeProject()}>
+      <button className="coat-target-randomize" type="button" onClick={randomizeCoat}>
         <Shuffle aria-hidden="true" />
         <span>{copy.randomizeProject}</span>
       </button>
+      {randomizeError ? <p role="alert">{randomizeError}</p> : null}
     </section>
   );
 }

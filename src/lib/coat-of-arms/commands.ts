@@ -74,8 +74,8 @@ export const COAT_PROJECT_LIMITS = {
   maxCanvasDimension: 4096,
   maxLayerCount: 64,
   maxLocalUploadCount: 8,
-  maxLocalUploadBytes: 262_144,
-  maxTotalLocalUploadBytes: 524_288,
+  maxLocalUploadBytes: 8_388_608,
+  maxTotalLocalUploadBytes: 16_777_216,
   maxTextLength: 240,
 } as const;
 
@@ -918,7 +918,7 @@ function registerLocalUpload(project: CoatProject, upload: LocalUpload): CoatPro
   if (project.uploads.some((candidate) => candidate.id === upload.id)) {
     throw new Error(`Duplicate local upload id: ${upload.id}`);
   }
-  const nextProject = { ...project, uploads: [...project.uploads, { ...upload }] };
+  const nextProject = { ...project, uploads: [...project.uploads, cloneLocalUpload(upload)] };
   assertCoatProject(nextProject);
   return nextProject;
 }
@@ -939,7 +939,7 @@ function addLocalUploadImages(project: CoatProject, uploads: LocalUpload[]): Coa
   }
   const projectWithUploads: CoatProject = {
     ...project,
-    uploads: [...project.uploads, ...uploads.map((upload) => ({ ...upload }))],
+    uploads: [...project.uploads, ...uploads.map(cloneLocalUpload)],
   };
   assertCoatProject(projectWithUploads);
   const nextLayerCount = project.layers.length + uploads.length;
@@ -1356,38 +1356,96 @@ function assertCoatLayer(layer: unknown, uploadById: Map<string, LocalUpload>): 
 
 function assertLocalUpload(upload: unknown): number {
   if (!isRecord(upload)) throw new Error(`Invalid local upload: ${String(upload)}`);
+  if (upload.encoding === 'base64') return assertBase64LocalUpload(upload);
+  if (upload.encoding === 'indexed-db') return assertIndexedDbLocalUpload(upload);
+  throw new Error(`Invalid local upload encoding: ${String(upload.encoding)}`);
+}
+
+function assertBase64LocalUpload(upload: Record<string, unknown>): number {
   assertExactKeys(upload, ['id', 'mimeType', 'encoding', 'data'], 'local upload');
-  assertNonEmptyString(upload.id, 'local upload id'); assertMimeType(upload.mimeType);
-  if (upload.encoding !== 'base64') throw new Error(`Invalid local upload encoding: ${String(upload.encoding)}`);
-  const uploadBytes = decodeLocalUploadBase64(upload.data);
-  if (uploadBytes.length > COAT_PROJECT_LIMITS.maxLocalUploadBytes) {
-    throw new Error(`Invalid local upload bytes: ${uploadBytes.length}; limit is ${COAT_PROJECT_LIMITS.maxLocalUploadBytes}`);
+  assertNonEmptyString(upload.id, 'local upload id');
+  assertMimeType(upload.mimeType);
+  if (typeof upload.data !== 'string' || !isStrictNonEmptyBase64(upload.data)) {
+    throw new Error(`Invalid local upload data: ${String(upload.data)}`);
   }
+  const decodedByteLength = decodedBase64ByteLength(upload.data);
+  if (decodedByteLength > COAT_PROJECT_LIMITS.maxLocalUploadBytes) {
+    throw new Error(`Invalid local upload bytes: ${decodedByteLength}; limit is ${COAT_PROJECT_LIMITS.maxLocalUploadBytes}`);
+  }
+  const uploadBytes = decodeTrustedBase64String(upload.data);
   assertLocalUploadContent(upload.mimeType, uploadBytes);
   return uploadBytes.length;
 }
 
-function decodeLocalUploadBase64(data: unknown): Uint8Array {
-  if (typeof data !== 'string' || !isStrictNonEmptyBase64(data)) {
-    throw new Error(`Invalid local upload data: ${String(data)}`);
+function assertIndexedDbLocalUpload(upload: Record<string, unknown>): number {
+  assertExactKeys(upload, ['id', 'mimeType', 'encoding', 'byteLength'], 'local upload');
+  assertNonEmptyString(upload.id, 'local upload id');
+  assertMimeType(upload.mimeType);
+  const byteLength = upload.byteLength;
+  if (typeof byteLength !== 'number' || !Number.isSafeInteger(byteLength) || byteLength <= 0) {
+    throw new Error(`Invalid local upload byteLength: ${String(byteLength)}`);
   }
-  if (typeof globalThis.atob === 'function') {
-    try {
-      const binaryData = globalThis.atob(data);
-      return Uint8Array.from(binaryData, (character) => character.charCodeAt(0));
-    } catch {
-      throw new Error(`Invalid local upload data: ${data}`);
-    }
+  if (byteLength > COAT_PROJECT_LIMITS.maxLocalUploadBytes) {
+    throw new Error(`Invalid local upload bytes: ${byteLength}; limit is ${COAT_PROJECT_LIMITS.maxLocalUploadBytes}`);
   }
+  return byteLength;
+}
+
+function cloneLocalUpload(upload: LocalUpload): LocalUpload {
+  if (upload.encoding === 'base64') {
+    return {
+      id: upload.id,
+      mimeType: upload.mimeType,
+      encoding: 'base64',
+      data: upload.data,
+    };
+  }
+  return {
+    id: upload.id,
+    mimeType: upload.mimeType,
+    encoding: 'indexed-db',
+    byteLength: upload.byteLength,
+  };
+}
+
+function decodeTrustedBase64String(data: string): Uint8Array {
   const nodeBuffer = (globalThis as unknown as {
     Buffer?: { from: (value: string, encoding: 'base64') => Uint8Array };
   }).Buffer;
   if (nodeBuffer) return Uint8Array.from(nodeBuffer.from(data, 'base64'));
-  throw new Error('Base64 decoder is unavailable for local upload data');
+  if (typeof globalThis.atob !== 'function') {
+    throw new Error('Base64 decoder is unavailable for local upload data');
+  }
+  let binaryData: string;
+  try {
+    binaryData = globalThis.atob(data);
+  } catch {
+    throw new Error(`Invalid local upload data: ${data}`);
+  }
+  const uploadBytes = new Uint8Array(binaryData.length);
+  for (let index = 0; index < binaryData.length; index += 1) {
+    uploadBytes[index] = binaryData.charCodeAt(index);
+  }
+  return uploadBytes;
 }
 
+function decodedBase64ByteLength(data: string): number {
+  const paddingCount = data.endsWith('==') ? 2 : data.endsWith('=') ? 1 : 0;
+  return (data.length / 4) * 3 - paddingCount;
+}
+
+const BASE64_ALPHABET_CHUNK = /^[A-Za-z0-9+/]+$/;
+const BASE64_ALPHABET_CHUNK_SIZE = 4096;
+
 function isStrictNonEmptyBase64(data: string): boolean {
-  return data.length > 0 && /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(data);
+  if (data.length === 0 || data.length % 4 !== 0) return false;
+  const paddingCount = data.endsWith('==') ? 2 : data.endsWith('=') ? 1 : 0;
+  const payloadLength = data.length - paddingCount;
+  for (let offset = 0; offset < payloadLength; offset += BASE64_ALPHABET_CHUNK_SIZE) {
+    const chunkEnd = Math.min(offset + BASE64_ALPHABET_CHUNK_SIZE, payloadLength);
+    if (!BASE64_ALPHABET_CHUNK.test(data.slice(offset, chunkEnd))) return false;
+  }
+  return true;
 }
 
 function assertLocalUploadContent(mimeType: unknown, uploadBytes: Uint8Array): void {

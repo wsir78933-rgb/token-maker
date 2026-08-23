@@ -1,13 +1,17 @@
+// @vitest-environment jsdom
+
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultProject } from './assets';
 import { applyProjectCommand } from './commands';
 import { fieldRegionDivisionLinePath } from './field-division-line';
 import { getFieldRegionPath } from './field-regions';
+import { clearLocalUploadBlobMemoryForTests, putLocalUploadBlob } from './local-upload-blobs';
 import { prefixCoatSceneSvgIds, renderCoatSceneSvg, withVisibleSceneSvgOverflow } from './scene-svg';
 import * as shieldMaterialPaints from './shield-material-paints';
 
 describe('coat scene SVG renderer', () => {
   afterEach(() => {
+    clearLocalUploadBlobMemoryForTests();
     vi.restoreAllMocks();
   });
   it('renders a selected bundled SVG shield material as inlined authored markup', () => {
@@ -803,6 +807,46 @@ describe('coat scene SVG renderer', () => {
     expect(svg).toContain('href="data:image/png;base64,iVBORw0KGgo="');
     expect(svg).toContain('id="coat-text-path-');
     expect(svg).toContain('<textPath href="#coat-text-path-');
+  });
+
+  it('renders an indexed-db local upload from the in-memory data URL', async () => {
+    const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3]);
+    await putLocalUploadBlob({
+      uploadId: 'indexed-png',
+      mimeType: 'image/png',
+      fileName: 'tiny.png',
+      blob: new Blob([pngBytes], { type: 'image/png' }),
+    });
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'register-local-upload',
+      upload: {
+        id: 'indexed-png',
+        mimeType: 'image/png',
+        encoding: 'indexed-db',
+        byteLength: pngBytes.byteLength,
+      },
+    });
+    project = applyProjectCommand(project, { type: 'add-image-layer', uploadId: 'indexed-png', opacity: 1 });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('data:image/png;base64,');
+    expect(svg).not.toContain('blob:');
+  });
+
+  it('rejects an indexed-db local upload whose data URL is missing from memory', () => {
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'register-local-upload',
+      upload: {
+        id: 'missing-indexed-png',
+        mimeType: 'image/png',
+        encoding: 'indexed-db',
+        byteLength: 12,
+      },
+    });
+    project = applyProjectCommand(project, { type: 'add-image-layer', uploadId: 'missing-indexed-png', opacity: 1 });
+
+    expect(() => renderCoatSceneSvg(project, { width: 512, height: 512 })).toThrow('missing-indexed-png');
   });
 
   it('composites one contiguous group in one outer opacity wrapper while preserving layer order', () => {

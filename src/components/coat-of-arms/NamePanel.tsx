@@ -1,26 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { Clipboard, RefreshCw } from 'lucide-react';
 import {
-  createCoatIdentity,
   generateCoatNames,
   nameGeneratorTypes,
   type NameGeneratorLanguage,
   type NameGeneratorType,
 } from '@/lib/coat-of-arms/name-generator';
 import type { CoatLocale } from '@/lib/coat-of-arms/types';
-import { usePanelCommandError } from './usePanelCommandError';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
-/** Generates a list of local names while keeping project identity mutations secondary. */
+/** Generates local names, copies them to the clipboard, and keeps a saved-name list. */
 export function NamePanel({ locale }: { locale: CoatLocale }) {
   const copy = getCoatWorkbenchCopy(locale).panels;
   const [selectedType, setSelectedType] = useState<NameGeneratorType>('city');
   const [language, setLanguage] = useState<NameGeneratorLanguage>('en');
-  const [generatedNames, setGeneratedNames] = useState(() => generateCoatNames('city', 'en'));
-  const [identity, setIdentity] = useState(() => createCoatIdentity(locale));
-  const { error, run } = usePanelCommandError(locale);
+  const [generatedNames, setGeneratedNames] = useState<string[]>([]);
+  const [savedNames, setSavedNames] = useState<string[]>([]);
+  const [copyError, setCopyError] = useState<string | null>(null);
+  const [copiedNotice, setCopiedNotice] = useState<string | null>(null);
 
   const changeGeneratorType = (value: string) => {
     assertNameGeneratorTypeValue(value);
@@ -36,13 +35,31 @@ export function NamePanel({ locale }: { locale: CoatLocale }) {
     setGeneratedNames(generateCoatNames(selectedType, language));
   };
 
+  const copyGeneratedName = async (name: string) => {
+    try {
+      await writeGeneratedNameToClipboard(name);
+    } catch (caught) {
+      setCopiedNotice(null);
+      setCopyError(copy.commandFailed(caught instanceof Error ? caught.message : String(caught)));
+      return;
+    }
+    setCopyError(null);
+    setCopiedNotice(copy.nameCopied(name));
+    setSavedNames((currentSavedNames) => addSavedNameIfMissing(currentSavedNames, name));
+  };
+
+  const removeSavedName = (name: string) => {
+    setSavedNames((currentSavedNames) => currentSavedNames.filter((savedName) => savedName !== name));
+  };
+
   const selectedTypeName = copy.nameGeneratorTypes[selectedType];
 
   return (
     <section aria-label={copy.names} className="coat-target-utility-form coat-target-name-form">
       <h2 style={{ marginBottom: 0 }}>{copy.names}</h2>
-      {error ? <p role="alert">{error}</p> : null}
-      <div className="coat-target-form-fieldset-controls" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, auto)' }}>
+      {copyError ? <p role="alert">{copyError}</p> : null}
+      {copiedNotice ? <p role="status">{copiedNotice}</p> : null}
+      <div className="coat-target-form-fieldset-controls">
         <label className="coat-target-form-field">
           <select aria-label={copy.nameGeneratorType} value={selectedType} onChange={(event) => changeGeneratorType(event.target.value)}>
             {nameGeneratorTypes.map((type) => <option key={type} value={type}>{copy.nameGeneratorTypes[type]}</option>)}
@@ -60,26 +77,63 @@ export function NamePanel({ locale }: { locale: CoatLocale }) {
         {copy.generateNames(selectedTypeName)}
       </button>
       <section aria-label={copy.nameResults} className="coat-target-utility-output">
-        <h3>{copy.nameResults}</h3>
-        <ol>
-          {generatedNames.map((name) => <li key={name}>{name}</li>)}
+        <ol aria-label={copy.nameResults}>
+          {generatedNames.map((name) => (
+            <li key={name}>
+              <span>{name}</span>
+              <button
+                className="coat-target-name-copy"
+                type="button"
+                aria-label={copy.copyGeneratedName(name)}
+                onClick={() => {
+                  void copyGeneratedName(name);
+                }}
+              >
+                <Clipboard aria-hidden="true" />
+              </button>
+            </li>
+          ))}
         </ol>
       </section>
-      <section aria-label={copy.identityActions} className="coat-target-utility-output">
-        <h3>{copy.identityActions}</h3>
-        <p><span>{copy.generatedProjectName}: </span><strong>{identity.projectName}</strong></p>
-        <p><span>{copy.generatedMotto}: </span><strong>{identity.motto}</strong></p>
-        <div className="coat-target-form-actions">
-          <button className="coat-target-action-button" type="button" onClick={() => setIdentity(createCoatIdentity(locale))}>{copy.generateIdentity}</button>
-          <button className="coat-target-action-button" type="button" onClick={() => run({ type: 'set-project-name', name: identity.projectName })}>{copy.useProjectName}</button>
-          <button className="coat-target-action-button" type="button" onClick={() => run({
-            type: 'add-text-layer', text: identity.motto, color: '#1E293B', fontSize: 10,
-            alignment: 'center', path: { mode: 'motto', curve: 'upper' },
-          })}>{copy.addGeneratedMotto}</button>
-        </div>
-      </section>
+      {savedNames.length > 0 ? (
+        <section aria-label={copy.savedNames} className="coat-target-name-saved">
+          <h3>{copy.savedNames}</h3>
+          <ul>
+            {savedNames.map((name) => (
+              <li key={name}>
+                <span>{name}</span>
+                <button type="button" aria-label={copy.removeSavedName(name)} onClick={() => removeSavedName(name)}>×</button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </section>
   );
+}
+
+async function writeGeneratedNameToClipboard(name: string): Promise<void> {
+  assertCopyableName(name);
+  const clipboard = globalThis.navigator?.clipboard;
+  if (!clipboard || typeof clipboard.writeText !== 'function') {
+    throw new Error(`Clipboard copy is unavailable for name: ${name}`);
+  }
+  try {
+    await clipboard.writeText(name);
+  } catch (caught) {
+    const reason = caught instanceof Error ? caught.message : String(caught);
+    throw new Error(`Failed to copy name ${name}: ${reason}`);
+  }
+}
+
+function addSavedNameIfMissing(currentSavedNames: readonly string[], name: string): string[] {
+  return currentSavedNames.includes(name) ? [...currentSavedNames] : [...currentSavedNames, name];
+}
+
+function assertCopyableName(name: unknown): asserts name is string {
+  if (typeof name !== 'string' || name.length === 0) {
+    throw new Error(`Invalid generated name: ${String(name)}`);
+  }
 }
 
 function assertNameGeneratorTypeValue(value: string): asserts value is NameGeneratorType {

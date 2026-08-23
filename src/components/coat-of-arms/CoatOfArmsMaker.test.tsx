@@ -923,15 +923,25 @@ describe('CoatOfArmsMaker', () => {
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'top', assetId: 'material-crown-papal-crown' });
   });
 
-  it('generates an original local identity and can apply its project name', () => {
+  it('generates five local names and copies one into saved names', async () => {
     vi.spyOn(Math, 'random').mockReturnValue(0);
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
     renderWorkbench();
 
     selectEditorUtility('Names');
-    fireEvent.click(screen.getByRole('button', { name: 'Generate identity' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Use project name' }));
-
-    expect(useCoatProjectStore.getState().project.name).toBe('House Alder');
+    const panel = within(getDesktopPanel('Tools')).getByRole('region', { name: 'Names' });
+    expect(within(panel).queryAllByRole('listitem')).toHaveLength(0);
+    fireEvent.click(within(panel).getByRole('button', { name: 'Generate City Names' }));
+    const generatedList = within(panel).getByRole('list', { name: 'Generated names' });
+    expect(within(generatedList).getAllByRole('listitem')).toHaveLength(5);
+    fireEvent.click(within(panel).getByRole('button', { name: 'Copy name Alder Harbor' }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith('Alder Harbor'));
+    expect(within(panel).getByText('Saved Names')).toBeDefined();
+    expect(within(panel).getByRole('button', { name: 'Remove saved name Alder Harbor' })).toBeDefined();
   });
 
   it('contains no account or paid-tier action', () => {
@@ -1560,7 +1570,7 @@ describe('CoatOfArmsMaker', () => {
     expect(useCoatProjectStore.getState().project.id).not.toBe(projectIdBeforeRandomize);
   });
 
-  it('offers an explicit English draft recovery choice without overwriting a named project', () => {
+  it('offers an explicit English draft recovery choice without overwriting a named project', async () => {
     const namedProject = { ...createDefaultProject('en'), id: 'named-project', name: 'Named project' };
     const draft = { ...createDefaultProject('en'), id: 'draft-project', name: 'Recovered draft' };
     useCoatProjectStore.getState().replaceProject(namedProject);
@@ -1576,10 +1586,12 @@ describe('CoatOfArmsMaker', () => {
     expect(useCoatProjectStore.getState().project.name).toBe('Named project');
     expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBe(JSON.stringify({ version: 1, project: draft }));
     fireEvent.click(screen.getByRole('button', { name: 'Restore draft' }));
-    expectWorkbenchProjectNameToBeNonHeading('Recovered draft');
+    await waitFor(() => {
+      expectWorkbenchProjectNameToBeNonHeading('Recovered draft');
+    });
   });
 
-  it('keeps a malformed browser draft until the user explicitly discards it', () => {
+  it('keeps a malformed browser draft until the user explicitly discards it', async () => {
     localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, '{');
 
     render(<CoatOfArmsMaker locale="en" />);
@@ -1591,7 +1603,9 @@ describe('CoatOfArmsMaker', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Discard draft' }));
 
-    expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBeNull();
+    await waitFor(() => {
+      expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBeNull();
+    });
   });
 
   it('does not offer recovery for the draft created by the current editing session', () => {
@@ -1605,7 +1619,7 @@ describe('CoatOfArmsMaker', () => {
     expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).not.toBeNull();
   });
 
-  it('protects a cross-locale recovery draft from global shortcuts until the user restores or discards it', () => {
+  it('protects a cross-locale recovery draft from global shortcuts until the user restores or discards it', async () => {
     const crossLocaleDraft = { ...createDefaultProject('en'), id: 'en-draft', name: 'English recovery draft' };
     const serializedDraft = JSON.stringify({ version: 1, project: crossLocaleDraft });
     localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, serializedDraft);
@@ -1616,7 +1630,9 @@ describe('CoatOfArmsMaker', () => {
     fireEvent.keyDown(window, { key: 'z', ctrlKey: true });
     expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBe(serializedDraft);
     fireEvent.click(screen.getByRole('button', { name: '恢复草稿' }));
-    expectWorkbenchProjectNameToBeNonHeading('English recovery draft');
+    await waitFor(() => {
+      expectWorkbenchProjectNameToBeNonHeading('English recovery draft');
+    });
   });
 
   it('does not mistake the active session draft for a recovery candidate after remount', () => {
@@ -1629,7 +1645,7 @@ describe('CoatOfArmsMaker', () => {
     expectWorkbenchProjectNameToBeNonHeading('Active session project');
   });
 
-  it('uses Chinese draft recovery controls and lets the user discard the draft', () => {
+  it('uses Chinese draft recovery controls and lets the user discard the draft', async () => {
     const draft = { ...createDefaultProject('zh'), id: 'zh-draft-project', name: '待恢复草稿' };
     localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, JSON.stringify({ version: 1, project: draft }));
 
@@ -1638,9 +1654,38 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.getByRole('status', { name: '发现草稿' })).toBeDefined();
     expect(screen.getByRole('button', { name: '恢复草稿' })).toBeDefined();
     fireEvent.click(screen.getByRole('button', { name: '丢弃草稿' }));
-    expect(screen.queryByRole('status', { name: '发现草稿' })).toBeNull();
+    await waitFor(() => {
+      expect(screen.queryByRole('status', { name: '发现草稿' })).toBeNull();
+    });
     expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBeNull();
     expectWorkbenchProjectNameToBeNonHeading('我的徽章');
+  });
+
+  it('keeps the draft overlay when restoring an indexed-db draft fails to hydrate', async () => {
+    const uploadId = 'hydrate-fail';
+    const draft = {
+      ...createDefaultProject('en'),
+      id: 'draft-indexed',
+      name: 'Indexed draft',
+      uploads: [
+        {
+          id: uploadId,
+          mimeType: 'image/png' as const,
+          encoding: 'indexed-db' as const,
+          byteLength: 8,
+        },
+      ],
+    };
+    localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, JSON.stringify({ version: 1, project: draft }));
+
+    render(<CoatOfArmsMaker locale="en" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Restore draft' }));
+
+    expect((await screen.findByRole('alert')).textContent).toContain(uploadId);
+    expect(screen.getByRole('button', { name: 'Restore draft' })).toBeDefined();
+    expect(screen.getByRole('status', { name: 'Draft available' })).toBeDefined();
+    expect(useCoatProjectStore.getState().project.uploads).toEqual([]);
+    expect(useCoatProjectStore.getState().project.name).not.toBe('Indexed draft');
   });
 
   it('creates the Chinese default project when the untouched initial store first mounts in Chinese', () => {

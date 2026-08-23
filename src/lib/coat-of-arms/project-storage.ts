@@ -1,5 +1,11 @@
 import { assertCoatProject } from './commands';
-import type { CoatProject } from './types';
+import {
+  clearLocalUploadBlobStore,
+  deleteLocalUploadBlobs,
+  getLocalUploadBlob,
+  requireLocalUploadDataUrl,
+} from './local-upload-blobs';
+import type { CoatProject, LocalUpload } from './types';
 
 export const COAT_PROJECT_DRAFT_STORAGE_KEY = 'coat-of-arms-maker-draft';
 export const MAX_COAT_PROJECT_DOCUMENT_BYTES = 1_048_576;
@@ -10,9 +16,12 @@ export type CoatProjectDraftInspection =
   | { status: 'available'; project: CoatProject }
   | { status: 'invalid'; error: string };
 
+type IndexedDbLocalUpload = Extract<LocalUpload, { encoding: 'indexed-db' }>;
+
 /** Writes a recoverable work-in-progress document to the draft key. */
 export function saveProjectDraft(project: CoatProject): void {
   assertCoatProject(project);
+  assertIndexedDbUploadsCachedForSave(project);
   const serializedDraft = JSON.stringify({ version: PROJECT_DOCUMENT_VERSION, project });
   assertSerializedProjectByteLength(serializedDraft);
   getBrowserStorage().setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, serializedDraft);
@@ -48,12 +57,53 @@ export function inspectProjectDraft(): CoatProjectDraftInspection {
   }
 }
 
-export function discardProjectDraft(): void {
+export async function discardProjectDraft(): Promise<void> {
+  const serializedDraft = getBrowserStorage().getItem(COAT_PROJECT_DRAFT_STORAGE_KEY);
+  if (serializedDraft === null) return;
+
+  let loadedProject: CoatProject | null;
+  try {
+    loadedProject = loadProjectDraft();
+  } catch {
+    await clearLocalUploadBlobStore();
+    getBrowserStorage().removeItem(COAT_PROJECT_DRAFT_STORAGE_KEY);
+    return;
+  }
+
+  const indexedDbUploadIds = loadedProject === null
+    ? []
+    : indexedDbUploadsInProject(loadedProject).map((upload) => upload.id);
+  if (indexedDbUploadIds.length > 0) {
+    await deleteLocalUploadBlobs(indexedDbUploadIds);
+  }
   getBrowserStorage().removeItem(COAT_PROJECT_DRAFT_STORAGE_KEY);
+}
+
+/** Loads IndexedDB blobs into memory so SVG render can read data URLs. */
+export async function hydrateLocalUploadBlobsForProject(project: CoatProject): Promise<void> {
+  assertCoatProject(project);
+  for (const upload of indexedDbUploadsInProject(project)) {
+    const blob = await getLocalUploadBlob(upload.id);
+    if (blob.size !== upload.byteLength) {
+      throw new Error(
+        `Invalid local upload byteLength for ${upload.id}: ${upload.byteLength}; blob.size is ${blob.size}`,
+      );
+    }
+  }
 }
 
 export function hasCoatProjectBrowserStorage(): boolean {
   return typeof globalThis.localStorage !== 'undefined';
+}
+
+function assertIndexedDbUploadsCachedForSave(project: CoatProject): void {
+  for (const upload of indexedDbUploadsInProject(project)) {
+    requireLocalUploadDataUrl(upload.id);
+  }
+}
+
+function indexedDbUploadsInProject(project: CoatProject): IndexedDbLocalUpload[] {
+  return project.uploads.filter((upload): upload is IndexedDbLocalUpload => upload.encoding === 'indexed-db');
 }
 
 function assertSerializedProjectByteLength(serializedProject: string): void {

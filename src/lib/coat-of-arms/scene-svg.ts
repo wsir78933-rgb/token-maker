@@ -1,5 +1,6 @@
 import { getCoatAsset } from './assets';
 import { assertCoatProject } from './commands';
+import { requireLocalUploadDataUrl } from './local-upload-blobs';
 import { getShieldMaterialSvgMarkup, isShieldMaterialAssetId } from './shield-material-paints';
 import { applySvgPaintReplacements } from './svg-paint-colours';
 import { textFontStacks } from './types';
@@ -13,6 +14,7 @@ import type {
   FieldPattern,
   FieldPlacement,
   FieldRegionId,
+  LocalUpload,
   ShieldLayer,
   TextLayer,
 } from './types';
@@ -277,7 +279,7 @@ function renderCustomShieldLayer(layer: ShieldLayer, project: CoatProject, layer
   if (!maskUpload) throw new Error(`Invalid custom shield mask upload: ${layer.customMaskUploadId}`);
   const maskId = `coat-custom-shield-mask-${layerIndex}`;
   const outlineFilterId = `coat-custom-shield-outline-${layerIndex}`;
-  const maskHref = `data:${maskUpload.mimeType};base64,${maskUpload.data}`;
+  const maskHref = localUploadHref(maskUpload);
   const outline = layer.field.outline ?? { visible: true, color: '#1E293B', width: 1.5 };
   const outlineFilterMarkup = outline.visible
     ? `<filter id="${outlineFilterId}" x="-10" y="-10" width="120" height="130" filterUnits="userSpaceOnUse"><feMorphology in="SourceAlpha" operator="dilate" radius="${outline.width}" result="coat-outline-expanded"/><feComposite in="coat-outline-expanded" in2="SourceAlpha" operator="out" result="coat-outline-shape"/><feFlood flood-color="${outline.color}" result="coat-outline-colour"/><feComposite in="coat-outline-colour" in2="coat-outline-shape" operator="in"/></filter>`
@@ -623,7 +625,7 @@ function renderChargeFieldPlacement(
     const customMaskUpload = project.uploads.find((upload) => upload.id === shieldLayer.customMaskUploadId);
     if (!customMaskUpload) throw new Error(`Invalid custom shield mask upload: ${shieldLayer.customMaskUploadId}`);
     const customMaskId = `coat-charge-shield-mask-${layerIndex}`;
-    const customMaskMarkup = `<mask id="${customMaskId}" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse"><image href="data:${customMaskUpload.mimeType};base64,${customMaskUpload.data}" x="0" y="0" width="100" height="110" preserveAspectRatio="xMidYMid meet"/></mask>`;
+    const customMaskMarkup = `<mask id="${customMaskId}" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse"><image href="${localUploadHref(customMaskUpload)}" x="0" y="0" width="100" height="110" preserveAspectRatio="xMidYMid meet"/></mask>`;
     return `<defs>${customMaskMarkup}${regionMarkup}</defs><g mask="url(#${customMaskId})">${placementMarkup}</g>`;
   }
   const shield = getCoatAsset(shieldLayer.assetId);
@@ -690,8 +692,23 @@ function renderImageLayer(
   if (!upload || upload.mimeType !== mimeType) {
     throw new Error(`Invalid local upload layer: ${uploadId}`);
   }
-  const href = `data:${upload.mimeType};base64,${upload.data}`;
+  const href = localUploadHref(upload);
   return renderTransformedLayer(`<image href="${href}" x="0" y="0" width="100" height="110" preserveAspectRatio="xMidYMid meet"/>`, transform, layerIndex, opacity);
+}
+
+function localUploadHref(upload: LocalUpload): string {
+  const uploadId = upload.id;
+  if (upload.encoding === 'base64') {
+    if (typeof upload.data !== 'string' || upload.data.length === 0) {
+      throw new Error(`Invalid local upload data: ${String(upload.data)}; uploadId is ${uploadId}`);
+    }
+    return `data:${upload.mimeType};base64,${upload.data}`;
+  }
+  if (upload.encoding === 'indexed-db') {
+    return requireLocalUploadDataUrl(uploadId);
+  }
+  const encoding = (upload as { encoding: unknown }).encoding;
+  throw new Error(`Invalid local upload encoding: ${String(encoding)}; uploadId is ${uploadId}`);
 }
 
 function renderTextLayer(layer: TextLayer, layerIndex: number, textPaths: string[]): string {

@@ -1097,7 +1097,8 @@ describe('coat project commands', () => {
   it('rejects text and local upload resources above the configured project limits', () => {
     const project = createDefaultProject('en');
     const tooLongText = 'A'.repeat(241);
-    const tooLargePng = new Uint8Array(262_145);
+    const tooLargeByteCount = COAT_PROJECT_LIMITS.maxLocalUploadBytes + 1;
+    const tooLargePng = new Uint8Array(tooLargeByteCount);
     tooLargePng.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
     const tooLargePngBase64 = encodeBytesBase64(tooLargePng);
 
@@ -1108,7 +1109,58 @@ describe('coat project commands', () => {
     expect(() => applyProjectCommand(project, {
       type: 'register-local-upload',
       upload: { id: 'too-large-png', mimeType: 'image/png', encoding: 'base64', data: tooLargePngBase64 },
-    })).toThrow('262145; limit is 262144');
+    })).toThrow(`${tooLargeByteCount}; limit is ${COAT_PROJECT_LIMITS.maxLocalUploadBytes}`);
+  });
+
+  it('registers an indexed-db local upload without embedding image bytes', () => {
+    const project = createDefaultProject('en');
+    const indexedUpload = {
+      id: 'indexed-png',
+      mimeType: 'image/png' as const,
+      encoding: 'indexed-db' as const,
+      byteLength: 1024,
+    };
+
+    const registered = applyProjectCommand(project, {
+      type: 'register-local-upload',
+      upload: indexedUpload,
+    });
+
+    expect(registered.uploads).toEqual([indexedUpload]);
+    expect(registered.uploads[0]).not.toHaveProperty('data');
+  });
+
+  it.each([
+    0,
+    -1,
+    COAT_PROJECT_LIMITS.maxLocalUploadBytes + 1,
+  ])('rejects an indexed-db local upload whose byteLength is %s', (byteLength) => {
+    const project = createDefaultProject('en');
+
+    expect(() => applyProjectCommand(project, {
+      type: 'register-local-upload',
+      upload: {
+        id: 'indexed-png',
+        mimeType: 'image/png',
+        encoding: 'indexed-db',
+        byteLength,
+      },
+    })).toThrow(String(byteLength));
+  });
+
+  it('rejects an indexed-db local upload that still carries a data field', () => {
+    const project = createDefaultProject('en');
+
+    expect(() => applyProjectCommand(project, {
+      type: 'register-local-upload',
+      upload: {
+        id: 'indexed-png',
+        mimeType: 'image/png',
+        encoding: 'indexed-db',
+        byteLength: 1024,
+        data: 'AAAA',
+      } as never,
+    })).toThrow('data');
   });
 
   it('rejects an oversized local upload selection without changing the original project', () => {

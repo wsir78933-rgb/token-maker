@@ -8,6 +8,7 @@ import { buildFieldInteriorMarkup } from '@/lib/coat-of-arms/field';
 import { getFieldPatternConfigControls, resolveFieldPatternConfig, type FieldPatternConfigControl } from '@/lib/coat-of-arms/field-pattern';
 import { getFieldRegionIds, resolveFieldRegions } from '@/lib/coat-of-arms/field-regions';
 import type { CoatProjectCommand } from '@/lib/coat-of-arms/commands';
+import { deleteLocalUploadBlob } from '@/lib/coat-of-arms/local-upload-blobs';
 import { useCoatProjectStore, type CoatProjectDispatchResult } from '@/lib/coat-of-arms/store';
 import type {
   CoatField,
@@ -1068,10 +1069,13 @@ export function ShieldFieldPanel({ locale }: { locale: CoatLocale }) {
     if (!file) return;
     try {
       setCustomShieldUploadStatus(null);
-      const upload = await createValidatedLocalUpload(file);
-      if (!run({ type: 'register-local-upload', upload })) return;
+      const created = await createValidatedLocalUpload(file);
+      if (!run({ type: 'register-local-upload', upload: created.upload })) {
+        await deleteLocalUploadBlob(created.upload.id);
+        return;
+      }
       if (shield.customOutlinePath && !run({ type: 'set-custom-shield-outline', layerId: shield.id })) return;
-      if (!run({ type: 'set-custom-shield-mask', layerId: shield.id, uploadId: upload.id })) return;
+      if (!run({ type: 'set-custom-shield-mask', layerId: shield.id, uploadId: created.upload.id })) return;
       setCustomShieldUploadStatus(copy.customShieldMaskAdded(file.name));
     } catch (caught) { reportError(caught); }
   };

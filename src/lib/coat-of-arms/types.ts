@@ -429,12 +429,19 @@ export type CoatLayer =
   | ImageLayer
   | TextLayer;
 
-export interface LocalUpload {
-  id: string;
-  mimeType: LocalUploadMimeType;
-  encoding: 'base64';
-  data: string;
-}
+export type LocalUpload =
+  | {
+      id: string;
+      mimeType: LocalUploadMimeType;
+      encoding: 'base64';
+      data: string;
+    }
+  | {
+      id: string;
+      mimeType: LocalUploadMimeType;
+      encoding: 'indexed-db';
+      byteLength: number;
+    };
 
 export interface CoatProject {
   id: string;

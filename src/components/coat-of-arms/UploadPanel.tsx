@@ -3,6 +3,7 @@
 import { useState, type ChangeEvent } from 'react';
 import { COAT_PROJECT_LIMITS } from '@/lib/coat-of-arms/commands';
 import { createLocalCoatId } from '@/lib/coat-of-arms/id';
+import { deleteLocalUploadBlobs, putLocalUploadBlob } from '@/lib/coat-of-arms/local-upload-blobs';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CoatLocale, LocalUpload, LocalUploadMimeType } from '@/lib/coat-of-arms/types';
 import { usePanelCommandError } from './usePanelCommandError';
@@ -41,7 +42,7 @@ export function validateLocalUploadFile(file: ClientLocalUploadFile): asserts fi
     throw new Error(`Upload filename does not match MIME type: ${file.name}`);
   }
   if (!Number.isSafeInteger(file.size) || file.size <= 0 || file.size > COAT_PROJECT_LIMITS.maxLocalUploadBytes) {
-    throw new Error(`Invalid upload file size: ${file.size}`);
+    throw new Error(`Invalid upload file size: ${file.size}; fileName is ${file.name}; mimeType is ${file.type}`);
   }
 }
 
@@ -84,6 +85,35 @@ function assertWellFormedSvg(base64: string): void {
   if (parsed.querySelector('parsererror') || parsed.documentElement.localName.toLowerCase() !== 'svg') {
     throw new Error(`Invalid SVG XML document: ${boundedUploadDiagnostic(svgText)}`);
   }
+  assertSafeLocalSvg(svgText);
+}
+
+function assertSafeLocalSvg(svgText: string): void {
+  const normalizedSvg = svgText.replace(/^\uFEFF/, '').trimStart();
+  if (!/^<svg(?:\s|>)/i.test(normalizedSvg)) {
+    throw new Error('Invalid local SVG content: expected <svg document');
+  }
+  if (/<!DOCTYPE\b|<!ENTITY\b|\bENTITY\b/i.test(normalizedSvg)) {
+    throw new Error('Unsafe local SVG content: declaration');
+  }
+  if (/&(?:#\d+|#x[0-9a-f]+|[a-z][a-z0-9]+);/i.test(normalizedSvg)) {
+    throw new Error('Unsafe local SVG content: XML entity');
+  }
+  if (/<\/?(?:script|foreignObject|image|use|feImage|audio|video|iframe|object|embed)\b/i.test(normalizedSvg)) {
+    throw new Error('Unsafe local SVG content: non-geometry element');
+  }
+  if (/\bon[a-z]+\s*=/i.test(normalizedSvg)) {
+    throw new Error('Unsafe local SVG content: event handler attribute');
+  }
+  if (/\b(?:(?:xlink\s*:)?href|src)\s*=/i.test(normalizedSvg)) {
+    throw new Error('Unsafe local SVG content: resource reference attribute');
+  }
+  if (/<style\b|\bstyle\s*=/i.test(normalizedSvg) || /url\s*\(/i.test(normalizedSvg) || /@import\b/i.test(normalizedSvg)) {
+    throw new Error('Unsafe local SVG content: CSS dependency');
+  }
+  if (/\b(?:https?|file|javascript|data)\s*:|\/\//i.test(normalizedSvg.replace(/\bxmlns\s*=\s*(['"])[^'"]*\1/ig, ''))) {
+    throw new Error('Unsafe local SVG content: external protocol');
+  }
 }
 
 function decodeRasterDataUrl(dataUrl: string, mimeType: Exclude<LocalUploadMimeType, 'image/svg+xml'>): Promise<void> {
@@ -113,23 +143,81 @@ export async function validateLocalUploadDecodability(dataUrl: string, mimeType:
   await decodeRasterDataUrl(dataUrl, mimeType);
 }
 
-function rethrowWithUploadFileContext(fileName: string, mimeType: LocalUploadMimeType, caught: unknown): never {
+function rethrowWithUploadFileContext(
+  fileName: string,
+  mimeType: LocalUploadMimeType,
+  fileSize: number,
+  caught: unknown,
+): never {
   const causeMessage = caught instanceof Error ? caught.message : String(caught);
-  throw new Error(`Unable to decode upload ${fileName} (${mimeType}): ${causeMessage}`);
+  throw new Error(`Unable to decode upload ${fileName} (${mimeType}, ${fileSize} bytes): ${causeMessage}`);
+}
+
+export interface CreatedValidatedLocalUpload {
+  upload: LocalUpload;
+  originalFileBytes: number;
+  storedFileBytes: number;
 }
 
 /** Reads one validated browser-local image into the project-safe upload format. */
-export async function createValidatedLocalUpload(file: File): Promise<LocalUpload> {
+export async function createValidatedLocalUpload(file: File): Promise<CreatedValidatedLocalUpload> {
   validateLocalUploadFile(file);
   const mimeType = file.type as LocalUploadMimeType;
+  const originalFileBytes = file.size;
   const dataUrl = await readFileAsDataUrl(file);
   try {
-    const data = extractStrictBase64(dataUrl, mimeType);
     await validateLocalUploadDecodability(dataUrl, mimeType);
-    return { id: createUploadId(), mimeType, encoding: 'base64', data };
   } catch (caught) {
-    rethrowWithUploadFileContext(file.name, mimeType, caught);
+    rethrowWithUploadFileContext(file.name, mimeType, originalFileBytes, caught);
   }
+  const uploadId = createUploadId();
+  try {
+    await putLocalUploadBlob({ uploadId, mimeType, fileName: file.name, blob: file });
+  } catch (caught) {
+    const causeMessage = caught instanceof Error ? caught.message : String(caught);
+    throw new Error(
+      `Unable to persist local upload ${uploadId}; fileName is ${file.name}; mimeType is ${mimeType}; byteLength is ${originalFileBytes}; ${causeMessage}`,
+    );
+  }
+  return {
+    upload: { id: uploadId, mimeType, encoding: 'indexed-db', byteLength: originalFileBytes },
+    originalFileBytes,
+    storedFileBytes: originalFileBytes,
+  };
+}
+
+async function createValidatedLocalUploads(files: readonly File[]): Promise<CreatedValidatedLocalUpload[]> {
+  const createdUploads: CreatedValidatedLocalUpload[] = [];
+  try {
+    for (const file of files) {
+      try {
+        createdUploads.push(await createValidatedLocalUpload(file));
+      } catch (caught) {
+        const causeMessage = caught instanceof Error ? caught.message : String(caught);
+        throw new Error(`Unable to store local upload ${file.name}; ${causeMessage}`);
+      }
+    }
+    return createdUploads;
+  } catch (caught) {
+    if (createdUploads.length > 0) {
+      await deleteLocalUploadBlobs(createdUploads.map((created) => created.upload.id));
+    }
+    throw caught;
+  }
+}
+
+function statusAfterLocalUploads(
+  copy: ReturnType<typeof getCoatWorkbenchCopy>['panels'],
+  files: readonly File[],
+  createdUploads: readonly CreatedValidatedLocalUpload[],
+): string {
+  if (files.length !== createdUploads.length) {
+    throw new Error(`Local upload status file count mismatch: ${files.length} files, ${createdUploads.length} uploads`);
+  }
+  if (createdUploads.length === 1) {
+    return copy.localImageAdded(files[0]!.name);
+  }
+  return copy.localImagesAdded(createdUploads.length);
 }
 
 /** Validates a local image selection before adding all of its images in one project command. */
@@ -144,10 +232,12 @@ export function UploadPanel({ locale }: { locale: CoatLocale }) {
     if (files.length === 0) return;
     try {
       setStatus(null);
-      const validatedUploads = await Promise.all(files.map(createValidatedLocalUpload));
-      // The command validation is the state boundary: it verifies every byte signature and safe SVG parsing before mutating state.
-      if (!run({ type: 'add-local-upload-images', uploads: validatedUploads })) return;
-      setStatus(files.length === 1 ? copy.localImageAdded(files[0]!.name) : copy.localImagesAdded(files.length));
+      const createdUploads = await createValidatedLocalUploads(files);
+      if (!run({ type: 'add-local-upload-images', uploads: createdUploads.map((created) => created.upload) })) {
+        await deleteLocalUploadBlobs(createdUploads.map((created) => created.upload.id));
+        return;
+      }
+      setStatus(statusAfterLocalUploads(copy, files, createdUploads));
     } catch (caught) {
       reportError(caught);
     }

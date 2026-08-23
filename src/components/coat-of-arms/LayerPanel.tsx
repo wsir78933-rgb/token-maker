@@ -7,6 +7,7 @@ import { useEffect, useState, type DragEvent, type KeyboardEvent } from 'react';
 import { Eye, EyeOff, GripVertical, Lock, LockOpen, Search, X } from 'lucide-react';
 import { getCoatAsset } from '@/lib/coat-of-arms/assets';
 import { createLocalCoatId } from '@/lib/coat-of-arms/id';
+import { requireLocalUploadDataUrl } from '@/lib/coat-of-arms/local-upload-blobs';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CoatLayer, CoatLocale, LocalUpload } from '@/lib/coat-of-arms/types';
 import { usePanelCommandError } from './usePanelCommandError';
@@ -249,7 +250,7 @@ function LayerThumbnail({
   if (layer.type === 'image') {
     const upload = uploads.find((candidate) => candidate.id === layer.uploadId);
     if (!upload) throw new Error(`Unknown local upload id: ${layer.uploadId}`);
-    return <img alt="" src={`data:${upload.mimeType};base64,${upload.data}`} />;
+    return <img alt="" src={localUploadThumbnailSrc(upload)} />;
   }
   if (layer.type === 'text') {
     return <span aria-hidden="true">{layer.text.slice(0, 1) || name.slice(0, 1)}</span>;
@@ -270,6 +271,25 @@ function LayerThumbnail({
     return <svg aria-hidden="true" viewBox="0 0 100 110"><path d={asset.svgPath} fill={fill} /></svg>;
   }
   return <span aria-hidden="true">{name.slice(0, 1)}</span>;
+}
+
+function localUploadThumbnailSrc(upload: LocalUpload): string {
+  const { id, encoding } = upload;
+  if (encoding === 'base64') {
+    if (upload.data.length === 0) {
+      throw new Error(`Missing local upload data: ${id} encoding=${encoding}`);
+    }
+    return `data:${upload.mimeType};base64,${upload.data}`;
+  }
+  if (encoding === 'indexed-db') {
+    try {
+      return requireLocalUploadDataUrl(id);
+    } catch (caught) {
+      const cause = caught instanceof Error ? caught.message : String(caught);
+      throw new Error(`Cannot resolve local upload href: ${id} encoding=${encoding}; ${cause}`);
+    }
+  }
+  throw new Error(`Unexpected local upload encoding: ${id} encoding=${String(encoding)}`);
 }
 
 function getAssetRasterSrc(asset: ReturnType<typeof getCoatAsset>, layer: CoatLayer): string | undefined {

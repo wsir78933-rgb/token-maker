@@ -7,6 +7,7 @@ import {
   type CoatProjectCommand,
   type RandomValueSource,
 } from './commands';
+import { deleteLocalUploadBlobsNotInProjects } from './local-upload-blobs';
 import {
   discardProjectDraft,
   hasCoatProjectBrowserStorage,
@@ -45,15 +46,15 @@ export interface CoatProjectStore {
   dispatch: (command: CoatProjectCommand) => CoatProjectDispatchResult;
   undo: () => void;
   redo: () => void;
-  replaceProject: (project: CoatProject) => void;
+  replaceProject: (project: CoatProject) => Promise<void>;
   initializeLocale: (locale: CoatLocale) => void;
   initializeShowcaseProject: (locale: CoatLocale) => void;
   hydrateDraft: (locale: CoatLocale) => boolean;
   readDraft: () => CoatProject | null;
   inspectDraft: () => CoatProjectDraftInspection;
   saveDraft: () => void;
-  discardDraft: () => void;
-  randomizeProject: (randomValue?: RandomValueSource) => void;
+  discardDraft: () => Promise<void>;
+  randomizeProject: (randomValue?: RandomValueSource) => Promise<void>;
 }
 
 export function createProjectHistory(project: CoatProject): CoatProjectHistory {
@@ -159,6 +160,7 @@ export const useCoatProjectStore = create<CoatProjectStore>()((set, get) => {
       const nextHistory = createProjectHistory(project);
       persistProjectDraft(nextHistory.present);
       set({ history: nextHistory, project: nextHistory.present, isInitialDocument: false, selectedLayerIds: [] });
+      return deleteLocalUploadBlobsNotInProjects(projectsInHistory(nextHistory));
     },
     initializeLocale: (locale) => {
       assertCoatLocale(locale);
@@ -196,20 +198,29 @@ export const useCoatProjectStore = create<CoatProjectStore>()((set, get) => {
     saveDraft: () => {
       if (hasCoatProjectBrowserStorage()) saveProjectDraft(get().project);
     },
-    discardDraft: () => {
-      if (hasCoatProjectBrowserStorage()) discardProjectDraft();
+    discardDraft: async () => {
+      const remainingProjects = projectsInHistory(get().history);
+      if (hasCoatProjectBrowserStorage()) {
+        await discardProjectDraft();
+      }
+      await deleteLocalUploadBlobsNotInProjects(remainingProjects);
     },
     randomizeProject: (randomValue) => {
       const randomProject = createRandomCoatProject(get().project.locale, randomValue);
       const randomHistory = createProjectHistory(randomProject);
       persistProjectDraft(randomHistory.present);
       set({ history: randomHistory, project: randomHistory.present, isInitialDocument: false, selectedLayerIds: [] });
+      return deleteLocalUploadBlobsNotInProjects(projectsInHistory(randomHistory));
     },
   };
 });
 
 function persistProjectDraft(project: CoatProject): void {
   if (hasCoatProjectBrowserStorage()) saveProjectDraft(project);
+}
+
+function projectsInHistory(history: CoatProjectHistory): CoatProject[] {
+  return [...history.past, history.present, ...history.future];
 }
 
 function findCreatedLayerId(

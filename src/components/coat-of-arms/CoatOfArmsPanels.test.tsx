@@ -4,6 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { createDefaultProject } from '@/lib/coat-of-arms/assets';
 import { applyProjectCommand, COAT_PROJECT_LIMITS } from '@/lib/coat-of-arms/commands';
+import * as localUploadBlobs from '@/lib/coat-of-arms/local-upload-blobs';
+import { clearLocalUploadBlobMemoryForTests, getLocalUploadBlob, putLocalUploadBlob } from '@/lib/coat-of-arms/local-upload-blobs';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CoatProject } from '@/lib/coat-of-arms/types';
 import { CoatOfArmsPanels } from './CoatOfArmsPanels';
@@ -70,6 +72,23 @@ function findAssetLayerIndex(assetId: string): number {
   ));
 }
 
+const pngMagicBytes = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+const formerlyCompressedPngBytes = 262_145;
+const rejectedUploadBytes = 8_388_609;
+
+function pngFileOfByteLength(byteLength: number, fileName: string = 'huge.png'): File {
+  if (!Number.isSafeInteger(byteLength) || byteLength < pngMagicBytes.length) {
+    throw new Error(`Invalid PNG test file byteLength: ${byteLength}`);
+  }
+  const bytes = new Uint8Array(byteLength);
+  bytes.set(pngMagicBytes);
+  return new File([bytes], fileName, { type: 'image/png' });
+}
+
+function stubRasterDecode(): void {
+  vi.stubGlobal('createImageBitmap', async () => ({ close: () => undefined }));
+}
+
 function revealAllGalleryCards(locale: 'en' | 'zh') {
   const loadMoreLabel = locale === 'zh' ? '加载更多' : 'Load more';
   while (true) {
@@ -87,7 +106,9 @@ describe('CoatOfArmsPanels', () => {
 
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
+    clearLocalUploadBlobMemoryForTests();
   });
 
   it('adds a charge from the library and exposes it in layers', async () => {
@@ -157,14 +178,14 @@ describe('CoatOfArmsPanels', () => {
   it('matches the displayed local upload limit before reading a file', () => {
     renderPanels('en');
 
-    expect(screen.getByText(/maximum 256 KB/i)).toBeDefined();
+    expect(screen.getByText(/maximum 8 MB/i)).toBeDefined();
     expect(() => validateLocalUploadFile({
       name: 'oversized.png', type: 'image/png', size: COAT_PROJECT_LIMITS.maxLocalUploadBytes + 1,
     })).toThrow(`Invalid upload file size: ${COAT_PROJECT_LIMITS.maxLocalUploadBytes + 1}`);
 
     cleanup();
     renderPanels('zh');
-    expect(screen.getByText(/最大 256 KB/)).toBeDefined();
+    expect(screen.getByText(/最大 8 MB/)).toBeDefined();
   });
 
   it('creates a browser-local custom shield upload from a validated SVG file', async () => {
@@ -172,9 +193,13 @@ describe('CoatOfArmsPanels', () => {
       '<svg xmlns="http://www.w3.org/2000/svg"><rect width="100" height="110" fill="white"/></svg>',
     ], 'shield-mask.svg', { type: 'image/svg+xml' });
 
-    await expect(createValidatedLocalUpload(file)).resolves.toMatchObject({
-      id: 'panel-id-0', mimeType: 'image/svg+xml', encoding: 'base64',
+    const created = await createValidatedLocalUpload(file);
+    expect(created).toMatchObject({
+      upload: { id: 'panel-id-0', mimeType: 'image/svg+xml', encoding: 'indexed-db', byteLength: file.size },
+      originalFileBytes: file.size,
+      storedFileBytes: file.size,
     });
+    expect(created.upload).not.toHaveProperty('data');
   });
 
   it('searches the ordinary catalogue and adds a random local charge', () => {
@@ -309,6 +334,25 @@ describe('CoatOfArmsPanels', () => {
       expect(getLayer(shield.id)).toMatchObject({ type: 'shield', customMaskUploadId: uploadedMaskId });
     });
     expect(useCoatProjectStore.getState().project.uploads).toHaveLength(1);
+  });
+
+  it('shows the added-image status after storing an original custom shield mask', async () => {
+    stubRasterDecode();
+    renderPanels();
+    const png = pngFileOfByteLength(formerlyCompressedPngBytes, 'shield-mask.png');
+
+    fireEvent.change(screen.getByLabelText('Upload custom shield mask'), { target: { files: [png] } });
+
+    expect((await screen.findByRole('status')).textContent).toBe(
+      getCoatWorkbenchCopy('en').panels.customShieldMaskAdded(png.name),
+    );
+    expect(useCoatProjectStore.getState().project.uploads).toHaveLength(1);
+    expect(useCoatProjectStore.getState().project.uploads[0]).toMatchObject({
+      encoding: 'indexed-db',
+      mimeType: 'image/png',
+      byteLength: png.size,
+    });
+    expect(useCoatProjectStore.getState().project.uploads[0]).not.toHaveProperty('data');
   });
 
   it('does not expose crop editor controls for a selected layer', () => {
@@ -589,6 +633,55 @@ describe('CoatOfArmsPanels', () => {
     await expect(createValidatedLocalUpload(corruptPng)).rejects.toThrow(/image\/png/);
   });
 
+  it('stores a raster within the upload limit as an indexed-db upload without a data field', async () => {
+    stubRasterDecode();
+    const png = new File([new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])], 'crest.png', { type: 'image/png' });
+
+    const created = await createValidatedLocalUpload(png);
+    expect(created).toMatchObject({
+      upload: { mimeType: 'image/png', encoding: 'indexed-db', byteLength: png.size },
+      originalFileBytes: png.size,
+      storedFileBytes: png.size,
+    });
+    expect(created.upload).not.toHaveProperty('data');
+  });
+
+  it('still rejects an oversized SVG instead of compressing it', async () => {
+    const oversizedSvg = new File(
+      [new Uint8Array(COAT_PROJECT_LIMITS.maxLocalUploadBytes + 1)],
+      'huge.svg',
+      { type: 'image/svg+xml' },
+    );
+
+    await expect(createValidatedLocalUpload(oversizedSvg)).rejects.toThrow(
+      `Invalid upload file size: ${COAT_PROJECT_LIMITS.maxLocalUploadBytes + 1}`,
+    );
+  });
+
+  it('stores a 262145-byte PNG as an original indexed-db upload without compressing it', async () => {
+    stubRasterDecode();
+    const png = pngFileOfByteLength(formerlyCompressedPngBytes, 'crest.png');
+
+    const created = await createValidatedLocalUpload(png);
+
+    expect(created.originalFileBytes).toBe(png.size);
+    expect(created.storedFileBytes).toBe(png.size);
+    expect(created.upload).toMatchObject({
+      mimeType: 'image/png',
+      encoding: 'indexed-db',
+      byteLength: png.size,
+    });
+    expect(created.upload).not.toHaveProperty('data');
+  });
+
+  it('rejects an 8388609-byte upload without compressing it', async () => {
+    const tooLargePng = pngFileOfByteLength(rejectedUploadBytes, 'huge.png');
+
+    await expect(createValidatedLocalUpload(tooLargePng)).rejects.toThrow(
+      `Invalid upload file size: ${rejectedUploadBytes}`,
+    );
+  });
+
   it('decodes and adds a valid local raster image layer', async () => {
     vi.stubGlobal('createImageBitmap', async () => ({ close: () => undefined }));
     renderPanels();
@@ -598,6 +691,39 @@ describe('CoatOfArmsPanels', () => {
 
     expect((await screen.findByRole('status')).textContent).toMatch(/added local image/i);
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({ type: 'image', mimeType: 'image/png' });
+  });
+
+  it('shows the added-image status after storing an original PNG in indexed-db', async () => {
+    stubRasterDecode();
+    renderPanels();
+    const png = pngFileOfByteLength(formerlyCompressedPngBytes, 'crest.png');
+
+    fireEvent.change(screen.getByLabelText(/upload crest image/i), { target: { files: [png] } });
+
+    expect((await screen.findByRole('status')).textContent).toBe(
+      getCoatWorkbenchCopy('en').panels.localImageAdded(png.name),
+    );
+    expect(useCoatProjectStore.getState().project.uploads).toHaveLength(1);
+    expect(useCoatProjectStore.getState().project.uploads[0]).toMatchObject({
+      encoding: 'indexed-db',
+      mimeType: 'image/png',
+      byteLength: png.size,
+    });
+    expect(useCoatProjectStore.getState().project.uploads[0]).not.toHaveProperty('data');
+  });
+
+  it('rejects an oversized SVG from the upload control without writing an upload', async () => {
+    renderPanels();
+    const oversizedSvg = new File(
+      [new Uint8Array(COAT_PROJECT_LIMITS.maxLocalUploadBytes + 1)],
+      'huge.svg',
+      { type: 'image/svg+xml' },
+    );
+
+    fireEvent.change(screen.getByLabelText(/upload crest image/i), { target: { files: [oversizedSvg] } });
+
+    expect((await screen.findByRole('alert')).textContent).toContain(String(COAT_PROJECT_LIMITS.maxLocalUploadBytes + 1));
+    expect(useCoatProjectStore.getState().project.uploads).toHaveLength(0);
   });
 
   it('adds every selected local image in one atomic upload action', async () => {
@@ -637,6 +763,33 @@ describe('CoatOfArmsPanels', () => {
     expect(useCoatProjectStore.getState().project.uploads).toHaveLength(0);
     expect(useCoatProjectStore.getState().project.layers.filter((layer) => layer.type === 'image')).toHaveLength(0);
     expect(useCoatProjectStore.getState().history.past).toHaveLength(0);
+    await expect(getLocalUploadBlob('panel-id-0')).rejects.toThrow('panel-id-0');
+  });
+
+  it('deletes blobs already put in a batch when a later put throws', async () => {
+    stubRasterDecode();
+    const originalPut = localUploadBlobs.putLocalUploadBlob;
+    let putCount = 0;
+    vi.spyOn(localUploadBlobs, 'putLocalUploadBlob').mockImplementation(async (input) => {
+      putCount += 1;
+      if (putCount >= 2) {
+        throw new Error(
+          `Unable to persist local upload ${input.uploadId}; fileName is ${input.fileName}; byteLength is ${input.blob.size}`,
+        );
+      }
+      return originalPut(input);
+    });
+    renderPanels();
+    const firstPng = pngFileOfByteLength(16, 'first.png');
+    const secondPng = pngFileOfByteLength(16, 'second.png');
+
+    fireEvent.change(screen.getByLabelText(/upload crest image/i), { target: { files: [firstPng, secondPng] } });
+
+    const alertText = (await screen.findByRole('alert')).textContent ?? '';
+    expect(alertText).toContain('second.png');
+    expect(alertText).toMatch(/panel-id-/);
+    expect(useCoatProjectStore.getState().project.uploads).toHaveLength(0);
+    await expect(getLocalUploadBlob('panel-id-0')).rejects.toThrow('panel-id-0');
   });
 
   it('reuses an existing local upload as another image layer', () => {
@@ -693,4 +846,39 @@ describe('CoatOfArmsPanels', () => {
     expect(screen.getByRole('listitem', { name: 'Local upload 1 (image/svg+xml)' })).toBeDefined();
     expect(useCoatProjectStore.getState().project.uploads.map((upload) => upload.id)).toEqual(['referenced-crest']);
   });
+
+  it('deletes the blob when register-local-upload fails after put', async () => {
+    stubRasterDecode();
+    const fullProject = await projectWithIndexedDbUploadCount(COAT_PROJECT_LIMITS.maxLocalUploadCount);
+    renderPanels(fullProject);
+    const png = new File([new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])], 'overflow.png', { type: 'image/png' });
+
+    fireEvent.change(screen.getByLabelText(/upload custom shield mask/i), { target: { files: [png] } });
+
+    expect((await screen.findByRole('alert')).textContent).toContain(String(COAT_PROJECT_LIMITS.maxLocalUploadCount));
+    expect(useCoatProjectStore.getState().project.uploads).toHaveLength(COAT_PROJECT_LIMITS.maxLocalUploadCount);
+    await expect(getLocalUploadBlob('panel-id-0')).rejects.toThrow('panel-id-0');
+  });
 });
+
+async function projectWithIndexedDbUploadCount(count: number): Promise<CoatProject> {
+  const uploads: CoatProject['uploads'] = [];
+  for (let index = 0; index < count; index += 1) {
+    const uploadId = `quota-upload-${index}`;
+    const bytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, index + 1]);
+    const blob = new Blob([bytes], { type: 'image/png' });
+    await putLocalUploadBlob({
+      uploadId,
+      mimeType: 'image/png',
+      fileName: `${uploadId}.png`,
+      blob,
+    });
+    uploads.push({
+      id: uploadId,
+      mimeType: 'image/png',
+      encoding: 'indexed-db',
+      byteLength: blob.size,
+    });
+  }
+  return { ...createDefaultProject('en'), uploads };
+}
