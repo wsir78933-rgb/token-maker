@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { getCoatAsset } from './assets';
+import { fieldRegionDivisionLinePath } from './field-division-line';
 import { buildFieldSvg } from './field';
 import { getFieldRegionIds, getFieldRegionPath, resolveFieldRegions } from './field-regions';
 import type { CoatField } from './types';
@@ -36,6 +37,32 @@ describe('shield field SVG', () => {
     expect(fieldSvg).toContain('fill="#1855A5"');
     expect(fieldSvg).toContain('data-field-region-pattern-scale="0.5"');
     expect(fieldSvg).not.toContain('#111111');
+  });
+
+  it('clips independently patterned per-pale regions to the configured wavy division line', () => {
+    const divisionLine = { style: 'wavy' as const, frequency: 3, amplitude: 7 };
+    const fieldSvg = buildFieldSvg(
+      {
+        division: 'per-pale',
+        colors: ['#111111', '#222222'],
+        pattern: 'solid',
+        divisionLine,
+        regions: {
+          dexter: { colors: ['#B11F24', '#F5E6A1'], pattern: 'dots', patternScale: 1 },
+          sinister: { colors: ['#1855A5', '#FFFFFF'], pattern: 'checks', patternScale: 1 },
+        },
+      } as never,
+      'M0 0 H100 V110 H0 Z',
+    );
+
+    const dexterClipPath = fieldRegionDivisionLinePath('per-pale', 'dexter', divisionLine);
+    expect(fieldSvg).toContain(`<path d="${dexterClipPath}"`);
+    expect(fieldSvg).not.toContain('M0 0H50V110');
+    expect(fieldSvg).toContain('data-field-region-pattern="dots"');
+    expect(fieldSvg).toContain('data-field-region-pattern="checks"');
+    expect(fieldSvg).toContain('data-field-division-line-style="wavy"');
+    expect(fieldSvg).toContain('data-field-division-line-frequency="3"');
+    expect(fieldSvg).toContain('data-field-division-line-amplitude="7"');
   });
 
   it.each([
@@ -183,6 +210,13 @@ describe('shield field SVG', () => {
     expect(() => buildFieldSvg({ division: 'per-pale', colors: ['#B11F24', '#F5E6A1'], pattern: 'solid', regions: { dexter: { colors: ['#B11F24', '#F5E6A1'], pattern: 'seme', patternConfig: { symbolSize: 0 } } } } as never, shieldPath)).toThrow('Invalid field region pattern configuration dexter');
     expect(() => buildFieldSvg({ division: 'per-fess', colors: ['#B11F24', '#F5E6A1'], pattern: 'solid', regions: { dexter: { colors: ['#B11F24'], pattern: 'solid' } } } as never, shieldPath)).toThrow('Invalid field region dexter for division per-fess');
     expect(() => buildFieldSvg({ division: 'bendy', colors: ['#B11F24', '#F5E6A1'], pattern: 'solid', regions: { 'bend-1': { colors: ['#B11F24'], pattern: 'solid', patternScale: 5 } } } as never, shieldPath)).toThrow('Invalid field region pattern scale bend-1: 5');
+    expect(() => buildFieldSvg({
+      division: 'quarterly',
+      colors: ['#B11F24', '#F5E6A1'],
+      pattern: 'solid',
+      regions: { q1: { colors: ['#B11F24'], pattern: 'solid' } },
+      divisionLine: { style: 'wavy', frequency: 3, amplitude: 7 },
+    } as never, shieldPath)).toThrow('Field regions do not support a configurable division line: quarterly');
   });
 
   it('rejects field colors that can inject SVG markup', () => {

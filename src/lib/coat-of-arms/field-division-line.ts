@@ -1,4 +1,5 @@
-import type { FieldDivision, FieldDivisionLine, FieldDivisionLineStyle } from './types';
+import { getFieldRegionPath } from './field-regions';
+import type { FieldDivision, FieldDivisionLine, FieldDivisionLineStyle, FieldRegionId } from './types';
 
 export const fieldDivisionLineStyles: readonly FieldDivisionLineStyle[] = [
   'straight',
@@ -29,6 +30,26 @@ export function supportsFieldDivisionLine(division: FieldDivision): boolean {
 }
 
 /**
+ * Closed clip path for one field region, following the configured division
+ * line. Straight style reuses the authored region path; other styles close
+ * around the same private boundary geometry used by the two-colour renderer.
+ */
+export function fieldRegionDivisionLinePath(
+  division: FieldDivision,
+  regionId: FieldRegionId,
+  divisionLine: FieldDivisionLine,
+): string {
+  if (regionId === 'overall') return getFieldRegionPath('overall');
+  const usesSecondaryPath = regionUsesSecondaryDivisionPath(division, regionId);
+  if (divisionLine.style === 'straight') return getFieldRegionPath(regionId);
+
+  const boundaryPoints = buildBoundaryPoints(division, divisionLine);
+  return usesSecondaryPath
+    ? buildSecondaryPath(division, boundaryPoints)
+    : buildComplementPath(division, boundaryPoints);
+}
+
+/**
  * Renders a two-colour field whose boundary is a locally authored heraldic
  * line. Undefined leaves callers to use their unchanged default geometry.
  */
@@ -56,6 +77,7 @@ export function buildHeraldicLinePoints(
   end: HeraldicLinePoint,
   divisionLine: FieldDivisionLine,
 ): HeraldicLinePoint[] {
+  assertHeraldicLineMeasurements(divisionLine);
   const xDistance = end.x - start.x;
   const yDistance = end.y - start.y;
   const lineLength = Math.hypot(xDistance, yDistance);
@@ -106,7 +128,49 @@ function getLineOffset(
     case 'embattled-grady': return amplitude * (Math.floor(cycleFraction * 4) - 1.5) / 1.5;
     case 'urdy': return -amplitude * triangularWave;
     case 'embattled-in-crosses': return amplitude * (cycleFraction < 0.25 || (cycleFraction >= 0.5 && cycleFraction < 0.75) ? -1 : 1);
+    default:
+      throw new Error(`Unknown field division line style: ${String(style)}`);
   }
+}
+
+function assertHeraldicLineMeasurements(divisionLine: FieldDivisionLine): void {
+  assertKnownDivisionLineStyle(divisionLine.style);
+  assertDivisionLineRange(divisionLine.frequency, 'frequency', 1, 30);
+  assertDivisionLineRange(divisionLine.amplitude, 'amplitude', 1, 20);
+}
+
+function assertKnownDivisionLineStyle(style: FieldDivisionLineStyle): void {
+  if (!fieldDivisionLineStyles.includes(style)) {
+    throw new Error(`Unknown field division line style: ${String(style)}`);
+  }
+}
+
+function assertDivisionLineRange(value: number, label: string, minimum: number, maximum: number): void {
+  if (!Number.isFinite(value) || value < minimum || value > maximum) {
+    throw new Error(`Invalid field division line ${label}: ${String(value)}`);
+  }
+}
+
+function regionUsesSecondaryDivisionPath(division: FieldDivision, regionId: FieldRegionId): boolean {
+  switch (division) {
+    case 'per-pale':
+      if (regionId === 'sinister') return true;
+      if (regionId === 'dexter') return false;
+      break;
+    case 'per-fess':
+      if (regionId === 'base') return true;
+      if (regionId === 'chief') return false;
+      break;
+    case 'per-bend':
+      if (regionId === 'bend-upper') return true;
+      if (regionId === 'bend-lower') return false;
+      break;
+    case 'per-bend-sinister':
+      if (regionId === 'bend-sinister-upper') return true;
+      if (regionId === 'bend-sinister-lower') return false;
+      break;
+  }
+  throw new Error(`Unsupported field division line region ${regionId} for division ${division}`);
 }
 
 function buildSecondaryPath(division: FieldDivision, boundaryPoints: HeraldicLinePoint[]): string {
@@ -120,6 +184,21 @@ function buildSecondaryPath(division: FieldDivision, boundaryPoints: HeraldicLin
       return `M100 0 L0 0 L0 110 L${reverseBoundary} Z`;
     case 'per-bend-sinister':
       return `M0 0 L100 0 L100 110 L${reverseBoundary} Z`;
+    default: throw new Error(`Unsupported configured field division: ${division}`);
+  }
+}
+
+function buildComplementPath(division: FieldDivision, boundaryPoints: HeraldicLinePoint[]): string {
+  const boundary = boundaryPoints.map(toSvgPoint).join(' L');
+  switch (division) {
+    case 'per-pale':
+      return `M${boundary} L0 110 L0 0 Z`;
+    case 'per-fess':
+      return `M${boundary} L100 0 L0 0 Z`;
+    case 'per-bend':
+      return `M${boundary} L100 110 Z`;
+    case 'per-bend-sinister':
+      return `M${boundary} L0 110 Z`;
     default: throw new Error(`Unsupported configured field division: ${division}`);
   }
 }

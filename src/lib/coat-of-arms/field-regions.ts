@@ -1,5 +1,6 @@
-import type { CoatField, FieldDivision, FieldPattern, FieldRegionId, FieldRegionStyle } from './types';
+import { supportsFieldDivisionLine } from './field-division-line';
 import { assertFieldPatternConfig } from './field-pattern';
+import type { CoatField, FieldDivision, FieldPattern, FieldRegionId, FieldRegionStyle } from './types';
 
 export interface ResolvedFieldRegion {
   id: FieldRegionId;
@@ -114,7 +115,7 @@ export function assertFieldRegions(
 ): void {
   if (regions === undefined) return;
   if (!isRecord(regions)) throw new Error(`Invalid field regions: ${String(regions)}`);
-  if (divisionLine !== undefined) {
+  if (divisionLine !== undefined && !supportsFieldDivisionLine(division)) {
     throw new Error(`Field regions do not support a configurable division line: ${division}`);
   }
 

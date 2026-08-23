@@ -858,6 +858,38 @@ describe('coat project commands', () => {
     })).toThrow('21');
   });
 
+  it('persists a per-pale field with a wavy division line and independent regions', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers[1];
+    if (!shield || shield.type !== 'shield') throw new Error('Expected default shield layer');
+
+    const configured = applyProjectCommand(project, {
+      type: 'set-field',
+      layerId: shield.id,
+      field: {
+        division: 'per-pale',
+        colors: ['#111111', '#222222'],
+        pattern: 'solid',
+        divisionLine: { style: 'wavy', frequency: 3, amplitude: 7 },
+        regions: {
+          dexter: { colors: ['#B11F24', '#F5E6A1'], pattern: 'dots' },
+          sinister: { colors: ['#1855A5', '#FFFFFF'], pattern: 'checks' },
+        },
+      },
+    });
+
+    expect(configured.layers[1]).toMatchObject({
+      field: {
+        division: 'per-pale',
+        divisionLine: { style: 'wavy', frequency: 3, amplitude: 7 },
+        regions: {
+          dexter: { colors: ['#B11F24', '#F5E6A1'], pattern: 'dots' },
+          sinister: { colors: ['#1855A5', '#FFFFFF'], pattern: 'checks' },
+        },
+      },
+    });
+  });
+
   it('persists a charge field placement and clipping preference through its transform', () => {
     let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const lion = project.layers.at(-1);

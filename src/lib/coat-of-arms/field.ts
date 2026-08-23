@@ -1,5 +1,5 @@
-import type { CoatField, FieldDivision, FieldPattern, FieldPatternConfig } from './types';
-import { renderConfiguredFieldDivision } from './field-division-line';
+import type { CoatField, FieldDivision, FieldDivisionLine, FieldPattern, FieldPatternConfig, FieldRegionId } from './types';
+import { fieldRegionDivisionLinePath, renderConfiguredFieldDivision } from './field-division-line';
 import { assertFieldPatternConfig, fieldPatterns, getFieldPatternConfigAttribute, renderExtendedFieldPattern, resolveFieldPatternConfig } from './field-pattern';
 import { assertFieldRegions, getFieldRegionPath, resolveFieldRegions } from './field-regions';
 
@@ -100,15 +100,35 @@ function getFieldColors(projectField: CoatField): string[] {
 
 function buildRegionalFieldMarkup(projectField: CoatField, clipPathId: string): string {
   return resolveFieldRegions(projectField).map(({ id, style }) => {
-    const regionPath = getFieldRegionPath(id);
+    const regionPath = resolveRegionClipPath(projectField.division, id, projectField.divisionLine);
     const regionClipId = `${clipPathId}-region-${id}`;
     const [baseColor] = style.colors;
     const patternMarkup = buildPatternOverlay(style.pattern, style.colors, style.patternConfig);
     const patternTransform = style.patternScale === 1
       ? ''
       : ` transform="translate(50 55) scale(${style.patternScale}) translate(-50 -55)"`;
-    return `<defs><clipPath id="${regionClipId}"><path d="${regionPath}"/></clipPath></defs><g data-field-region="${id}" data-field-region-pattern="${style.pattern}" data-field-region-pattern-scale="${style.patternScale}"><path d="${regionPath}" fill="${baseColor}"/><g clip-path="url(#${regionClipId})"${patternTransform}>${patternMarkup}</g></g>`;
+    return `<defs><clipPath id="${regionClipId}"><path d="${regionPath}"/></clipPath></defs><g data-field-region="${id}" data-field-region-pattern="${style.pattern}" data-field-region-pattern-scale="${style.patternScale}"${fieldDivisionLineAttributes(projectField.divisionLine)}><path d="${regionPath}" fill="${baseColor}"/><g clip-path="url(#${regionClipId})"${patternTransform}>${patternMarkup}</g></g>`;
   }).join('');
+}
+
+function resolveRegionClipPath(
+  division: FieldDivision,
+  regionId: FieldRegionId,
+  divisionLine: FieldDivisionLine | undefined,
+): string {
+  if (divisionLine === undefined) return getFieldRegionPath(regionId);
+  return fieldRegionDivisionLinePath(division, regionId, divisionLine);
+}
+
+function fieldDivisionLineAttributes(divisionLine: FieldDivisionLine | undefined): string {
+  if (divisionLine === undefined) return '';
+  const { style, frequency, amplitude } = divisionLine;
+  if (style === undefined || frequency === undefined || amplitude === undefined) {
+    throw new Error(
+      `Field division line is missing style, frequency, or amplitude: style ${String(style)}, frequency ${String(frequency)}, amplitude ${String(amplitude)}`,
+    );
+  }
+  return ` data-field-division-line-style="${style}" data-field-division-line-frequency="${frequency}" data-field-division-line-amplitude="${amplitude}"`;
 }
 
 function assertCoatField(projectField: CoatField): void {

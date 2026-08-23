@@ -11,12 +11,14 @@ import type {
   CoatProject,
   FieldOrnament,
   FieldPattern,
+  FieldPlacement,
+  FieldRegionId,
   ShieldLayer,
   TextLayer,
 } from './types';
-import { buildHeraldicLinePoints } from './field-division-line';
+import { buildHeraldicLinePoints, fieldRegionDivisionLinePath, supportsFieldDivisionLine } from './field-division-line';
 import { buildFieldInteriorMarkup } from './field';
-import { getFieldRegionPath } from './field-regions';
+import { getFieldRegionIds, getFieldRegionPath } from './field-regions';
 import { renderExtendedFieldPattern } from './field-pattern';
 
 const SCENE_VIEW_BOX = '0 0 100 110';
@@ -613,7 +615,7 @@ function renderChargeFieldPlacement(
   const placement = transform.fieldPlacement ?? 'overall';
   const fieldRegionId = transform.fieldRegionId;
   const regionId = `coat-field-region-${layerIndex}`;
-  const regionShape = fieldRegionId ? `<path d="${getFieldRegionPath(fieldRegionId)}"/>` : getFieldPlacementShape(placement);
+  const regionShape = getChargeFieldClipShape(shieldLayer.field, fieldRegionId, placement);
   const regionMarkup = `<clipPath id="${regionId}">${regionShape}</clipPath>`;
   const shieldTargetAttribute = targetShieldLayerId ? ` data-field-shield-layer-id="${escapeXml(targetShieldLayerId)}"` : '';
   const placementMarkup = `<g data-field-placement="${placement}"${fieldRegionId ? ` data-field-region="${fieldRegionId}"` : ''}${shieldTargetAttribute} clip-path="url(#${regionId})">${transformedMarkup}</g>`;
@@ -631,7 +633,38 @@ function renderChargeFieldPlacement(
   return `<defs><clipPath id="${shieldClipId}"><path d="${shieldPath}"/></clipPath>${regionMarkup}</defs><g clip-path="url(#${shieldClipId})">${placementMarkup}</g>`;
 }
 
-function getFieldPlacementShape(fieldPlacement: NonNullable<CanvasTransform['fieldPlacement']>): string {
+function getChargeFieldClipShape(
+  field: CoatField,
+  fieldRegionId: FieldRegionId | undefined,
+  fieldPlacement: FieldPlacement,
+): string {
+  if (fieldRegionId !== undefined) {
+    return `<path d="${getChargeFieldRegionClipPath(field, fieldRegionId)}"/>`;
+  }
+  return getChargeFieldPlacementClipShape(field, fieldPlacement);
+}
+
+function getChargeFieldRegionClipPath(field: CoatField, fieldRegionId: FieldRegionId): string {
+  const divisionLineRegionPath = getMatchingDivisionLineRegionPath(field, fieldRegionId);
+  if (divisionLineRegionPath === undefined) return getFieldRegionPath(fieldRegionId);
+  return divisionLineRegionPath;
+}
+
+function getChargeFieldPlacementClipShape(field: CoatField, fieldPlacement: FieldPlacement): string {
+  const divisionLineRegionPath = getMatchingDivisionLineRegionPath(field, fieldPlacement);
+  if (divisionLineRegionPath === undefined) return getFieldPlacementShape(fieldPlacement);
+  return `<path d="${divisionLineRegionPath}"/>`;
+}
+
+function getMatchingDivisionLineRegionPath(field: CoatField, regionId: FieldRegionId): string | undefined {
+  if (field.divisionLine === undefined) return undefined;
+  if (regionId === 'overall') return undefined;
+  if (!supportsFieldDivisionLine(field.division)) return undefined;
+  if (!getFieldRegionIds(field.division).includes(regionId)) return undefined;
+  return fieldRegionDivisionLinePath(field.division, regionId, field.divisionLine);
+}
+
+function getFieldPlacementShape(fieldPlacement: FieldPlacement): string {
   switch (fieldPlacement) {
     case 'overall': return '<rect x="0" y="0" width="100" height="110"/>';
     case 'dexter': return '<rect x="0" y="0" width="50" height="110"/>';

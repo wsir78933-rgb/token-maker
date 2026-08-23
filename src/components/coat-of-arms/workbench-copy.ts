@@ -15,6 +15,26 @@ export type SelectionResizeHandle =
   | 'southwest'
   | 'west';
 
+export type CustomFieldRegionId =
+  | 'dexter'
+  | 'sinister'
+  | 'chief'
+  | 'base'
+  | 'bend-upper'
+  | 'bend-lower'
+  | 'bend-sinister-upper'
+  | 'bend-sinister-lower'
+  | 'chevron-chief'
+  | 'chevron-base'
+  | 'q1'
+  | 'q2'
+  | 'q3'
+  | 'q4'
+  | 'saltire-chief'
+  | 'saltire-dexter'
+  | 'saltire-sinister'
+  | 'saltire-base';
+
 const chineseResizeHandleNames: Record<SelectionResizeHandle, string> = {
   northwest: '左上',
   north: '上',
@@ -347,6 +367,11 @@ export interface CoatWorkbenchCopy {
     lineWidth: string;
     lineWidthValue: (width: number) => string;
     showBorder: string;
+    bendSinister: string;
+    keepPatternToField: string;
+    overallOnTop: string;
+    divisionLineStyle: string;
+    customFieldRegionSectionNames: Record<CustomFieldRegionId, string>;
     fieldDivision: string;
     fieldVariation: string;
     fieldPatternControl: (pattern: string, control: string) => string;
@@ -616,6 +641,11 @@ type CustomFieldPanelCopy = Pick<CoatWorkbenchCopy['panels'],
   | 'lineWidth'
   | 'lineWidthValue'
   | 'showBorder'
+  | 'bendSinister'
+  | 'keepPatternToField'
+  | 'overallOnTop'
+  | 'divisionLineStyle'
+  | 'customFieldRegionSectionNames'
 >;
 
 const customFieldPanelCopyByLocale: Record<CoatLocale, CustomFieldPanelCopy> = {
@@ -627,6 +657,27 @@ const customFieldPanelCopyByLocale: Record<CoatLocale, CustomFieldPanelCopy> = {
     embeddedColors: 'Colors', embeddedColorSwatch: (color) => `Escutcheon colour: ${color}`,
     embeddedCharges: 'Charges', addChargeToEscutcheon: 'Add Charge', lineWidth: 'Line Width',
     lineWidthValue: (width) => `${width}px`, showBorder: 'Show Border',
+    bendSinister: 'Bend Sinister', keepPatternToField: 'Keep pattern to field', overallOnTop: 'Overall (on top)', divisionLineStyle: 'Division Line Style',
+    customFieldRegionSectionNames: {
+      dexter: 'Dexter (Left Side)',
+      sinister: 'Sinister (Right Side)',
+      chief: 'Chief (Upper Half)',
+      base: 'Base (Lower Half)',
+      'bend-upper': 'Dexter (Upper Left)',
+      'bend-lower': 'Sinister (Lower Right)',
+      'bend-sinister-upper': 'Sinister (Upper Right)',
+      'bend-sinister-lower': 'Dexter (Lower Left)',
+      'chevron-chief': 'Chief (Upper Section)',
+      'chevron-base': 'Base (Chevron Section)',
+      q1: 'Quarter 1 (Upper Left)',
+      q2: 'Quarter 2 (Upper Right)',
+      q3: 'Quarter 3 (Lower Left)',
+      q4: 'Quarter 4 (Lower Right)',
+      'saltire-chief': 'Chief (Top)',
+      'saltire-dexter': 'Dexter (Left)',
+      'saltire-sinister': 'Sinister (Right)',
+      'saltire-base': 'Base (Bottom)',
+    },
   },
   zh: {
     divisionOfField: '底纹分割', overallFieldTarget: '整体',
@@ -636,6 +687,27 @@ const customFieldPanelCopyByLocale: Record<CoatLocale, CustomFieldPanelCopy> = {
     embeddedColors: '颜色', embeddedColorSwatch: (color) => `盾形颜色：${color}`,
     embeddedCharges: '构件', addChargeToEscutcheon: '添加徽记', lineWidth: '边框宽度',
     lineWidthValue: (width) => `${width}px`, showBorder: '显示边框',
+    bendSinister: '反斜向分割', keepPatternToField: '纹样限制在分区内', overallOnTop: '整体（叠上）', divisionLineStyle: '分割线样式',
+    customFieldRegionSectionNames: {
+      dexter: '左半',
+      sinister: '右半',
+      chief: '上半',
+      base: '下半',
+      'bend-upper': '左上',
+      'bend-lower': '右下',
+      'bend-sinister-upper': '右上',
+      'bend-sinister-lower': '左下',
+      'chevron-chief': '人字上方',
+      'chevron-base': '人字下方',
+      q1: '第一象限',
+      q2: '第二象限',
+      q3: '第三象限',
+      q4: '第四象限',
+      'saltire-chief': '上方',
+      'saltire-dexter': '左侧',
+      'saltire-sinister': '右侧',
+      'saltire-base': '下方',
+    },
   },
 };
 

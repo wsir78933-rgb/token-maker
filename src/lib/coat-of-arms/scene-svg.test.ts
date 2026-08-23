@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultProject } from './assets';
 import { applyProjectCommand } from './commands';
+import { fieldRegionDivisionLinePath } from './field-division-line';
+import { getFieldRegionPath } from './field-regions';
 import { prefixCoatSceneSvgIds, renderCoatSceneSvg, withVisibleSceneSvgOverflow } from './scene-svg';
 import * as shieldMaterialPaints from './shield-material-paints';
 
@@ -447,6 +449,169 @@ describe('coat scene SVG renderer', () => {
 
     expect(svg).toContain('data-field-region="bend-lower"');
     expect(svg).toContain('<path d="M100 0V110H0Z"/>');
+  });
+
+  it('clips a charge to the wavy per-pale dexter path instead of the straight clip', () => {
+    let project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const wavyDivisionLine = { style: 'wavy', frequency: 3, amplitude: 7 } as const;
+    project = applyProjectCommand(project, {
+      type: 'set-field',
+      layerId: shield.id,
+      field: {
+        ...shield.field,
+        division: 'per-pale',
+        colors: ['#1855A5', '#F5E6A1'],
+        divisionLine: wavyDivisionLine,
+      } as never,
+    });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+    const lion = project.layers.at(-1);
+    if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
+    project = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: lion.id,
+      patch: { transform: { ...lion.transform, fieldRegionId: 'dexter', clipToField: true } } as never,
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+    const wavyDexterPath = fieldRegionDivisionLinePath('per-pale', 'dexter', wavyDivisionLine);
+
+    expect(svg).toContain('data-field-region="dexter"');
+    expect(svg).toContain(`<path d="${wavyDexterPath}"/>`);
+    expect(svg).not.toContain('M0 0H50V110H0Z');
+  });
+
+  it('clips an overall charge to the full field when a wavy division line is configured', () => {
+    let project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const wavyDivisionLine = { style: 'wavy', frequency: 3, amplitude: 7 } as const;
+    project = applyProjectCommand(project, {
+      type: 'set-field',
+      layerId: shield.id,
+      field: {
+        ...shield.field,
+        division: 'per-pale',
+        colors: ['#1855A5', '#F5E6A1'],
+        divisionLine: wavyDivisionLine,
+      } as never,
+    });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+    const lion = project.layers.at(-1);
+    if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
+    project = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: lion.id,
+      patch: { transform: { ...lion.transform, fieldRegionId: 'overall', clipToField: true } } as never,
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+    const overallFieldPath = getFieldRegionPath('overall');
+    const chargeRegionClip = svg.match(/<clipPath id="coat-field-region-\d+">([\s\S]*?)<\/clipPath>/)?.[1];
+
+    expect(svg).toContain('data-field-region="overall"');
+    expect(chargeRegionClip).toBe(`<path d="${overallFieldPath}"/>`);
+    expect(overallFieldPath).toBe('M0 0H100V110H0Z');
+    expect(chargeRegionClip).not.toContain('H50');
+  });
+
+  it('clips a legacy dexter placement to the wavy per-pale path instead of a straight rect', () => {
+    let project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const wavyDivisionLine = { style: 'wavy', frequency: 3, amplitude: 7 } as const;
+    project = applyProjectCommand(project, {
+      type: 'set-field',
+      layerId: shield.id,
+      field: {
+        ...shield.field,
+        division: 'per-pale',
+        colors: ['#1855A5', '#F5E6A1'],
+        divisionLine: wavyDivisionLine,
+      } as never,
+    });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+    const lion = project.layers.at(-1);
+    if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
+    project = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: lion.id,
+      patch: { transform: { ...lion.transform, fieldPlacement: 'dexter', clipToField: true } } as never,
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+    const wavyDexterPath = fieldRegionDivisionLinePath('per-pale', 'dexter', wavyDivisionLine);
+    const chargeRegionClip = svg.match(/<clipPath id="coat-field-region-\d+">([\s\S]*?)<\/clipPath>/)?.[1];
+
+    expect(svg).toContain('data-field-placement="dexter"');
+    expect(svg).not.toContain('data-field-region=');
+    expect(chargeRegionClip).toBe(`<path d="${wavyDexterPath}"/>`);
+    expect(chargeRegionClip).not.toContain('width="50" height="110"');
+    expect(svg).not.toContain('<rect x="0" y="0" width="50" height="110"/>');
+  });
+
+  it('keeps a straight chief placement clip when the wavy division is per-pale', () => {
+    let project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    project = applyProjectCommand(project, {
+      type: 'set-field',
+      layerId: shield.id,
+      field: {
+        ...shield.field,
+        division: 'per-pale',
+        colors: ['#1855A5', '#F5E6A1'],
+        divisionLine: { style: 'wavy', frequency: 3, amplitude: 7 },
+      } as never,
+    });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+    const lion = project.layers.at(-1);
+    if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
+    project = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: lion.id,
+      patch: { transform: { ...lion.transform, fieldPlacement: 'chief', clipToField: true } } as never,
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('data-field-placement="chief"');
+    expect(svg).toContain('<rect x="0" y="0" width="100" height="36.667"/>');
+  });
+
+  it('keeps a leftover dexter charge clip after switching a wavy field from per-pale to per-fess', () => {
+    let project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const wavyDivisionLine = { style: 'wavy', frequency: 3, amplitude: 7 } as const;
+    project = applyProjectCommand(project, {
+      type: 'set-field',
+      layerId: shield.id,
+      field: {
+        ...shield.field,
+        division: 'per-fess',
+        colors: ['#1855A5', '#F5E6A1'],
+        divisionLine: wavyDivisionLine,
+      } as never,
+    });
+    project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
+    const lion = project.layers.at(-1);
+    if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
+    project = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: lion.id,
+      patch: { transform: { ...lion.transform, fieldRegionId: 'dexter', clipToField: true } } as never,
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+    const leftoverDexterPath = getFieldRegionPath('dexter');
+    const chargeRegionClip = svg.match(/<clipPath id="coat-field-region-\d+">([\s\S]*?)<\/clipPath>/)?.[1];
+
+    expect(svg).toContain('data-field-region="dexter"');
+    expect(leftoverDexterPath).toBe('M0 0H50V110H0Z');
+    expect(chargeRegionClip).toBe(`<path d="${leftoverDexterPath}"/>`);
   });
 
   it('renders the local custom background fill and its selected motif', () => {
