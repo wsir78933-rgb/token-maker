@@ -62,6 +62,21 @@ describe('ColorBackgroundPanel', () => {
     expect(screen.queryByRole('alert')).toBeNull();
   });
 
+  it('renders background colour controls when the project has no shield layer', () => {
+    const project = createDefaultProject('en');
+    const shieldCountBeforeFilter = project.layers.filter((layer) => layer.type === 'shield').length;
+    if (shieldCountBeforeFilter === 0) {
+      throw new Error(`Expected default project to include a shield layer before filtering, got: ${shieldCountBeforeFilter}`);
+    }
+    const layers = project.layers.filter((layer) => layer.type !== 'shield');
+    useCoatProjectStore.getState().replaceProject({ ...project, layers });
+    render(<ColorBackgroundPanel locale="en" />);
+
+    expect(screen.getByRole('region', { name: 'Colours & background' })).toBeDefined();
+    expect(screen.getByLabelText('Custom background colour')).toBeDefined();
+    expect(useCoatProjectStore.getState().project.layers.filter((layer) => layer.type === 'background')).toHaveLength(1);
+  });
+
   it('applies a background colour swatch and the Transparent button without changing the library asset', () => {
     render(<ColorBackgroundPanel locale="en" sectionToFocus="background" />);
 

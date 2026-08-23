@@ -5,6 +5,7 @@ import {
   EDITOR_PREFERENCES_STORAGE_KEY,
   getMatchingEditorCanvasPresetId,
   loadEditorPreferences,
+  requireEditorAppearance,
   saveEditorPreferences,
   updateEditorPreferences,
 } from './editor-preferences';
@@ -123,6 +124,40 @@ describe('editor preferences', () => {
     expect(loadEditorPreferences().canvasPreset).toBe('custom');
   });
 
+  it('accepts a stored dark appearance', () => {
+    window.localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
+      version: 1,
+      appearance: 'dark',
+      colorPickerMode: 'simple',
+      canvasPreset: 'square',
+      exportSize: 1024,
+      jpegQuality: 'high',
+      customPalette: [],
+      backgroundGradient: null,
+    }));
+
+    expect(loadEditorPreferences().appearance).toBe('dark');
+    expect(requireEditorAppearance('dark')).toBe('dark');
+  });
+
+  it('rewrites a retired light appearance to dark on load', () => {
+    window.localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
+      version: 1,
+      appearance: 'light',
+      colorPickerMode: 'simple',
+      canvasPreset: 'square',
+      exportSize: 1024,
+      jpegQuality: 'high',
+      customPalette: [],
+      backgroundGradient: null,
+    }));
+
+    expect(loadEditorPreferences().appearance).toBe('dark');
+    expect(JSON.parse(window.localStorage.getItem(EDITOR_PREFERENCES_STORAGE_KEY) ?? '')).toMatchObject({
+      appearance: 'dark',
+    });
+  });
+
   it('rejects an invalid appearance with its value', () => {
     expect(() => saveEditorPreferences({
       version: 1,
@@ -132,7 +167,22 @@ describe('editor preferences', () => {
       jpegQuality: 'high',
       customPalette: [],
       backgroundGradient: null,
-    })).toThrow('neon');
+    })).toThrow('Invalid editor appearance: neon');
+    window.localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
+      version: 1,
+      appearance: 'neon',
+      colorPickerMode: 'simple',
+      canvasPreset: 'square',
+      exportSize: 1024,
+      jpegQuality: 'high',
+      customPalette: [],
+      backgroundGradient: null,
+    }));
+    expect(() => loadEditorPreferences()).toThrow('Invalid editor appearance: neon');
+  });
+
+  it('rejects writing the retired light appearance with its value', () => {
+    expect(() => requireEditorAppearance('light')).toThrow('Invalid editor appearance: light');
   });
 
   it('matches a competitor canvas preset by exact width and height', () => {

@@ -28,6 +28,19 @@ function renderDefaultEnglishPanel() {
   render(<ShieldFieldPanel locale="en" />);
 }
 
+function projectWithoutShieldLayers(locale: 'en' | 'zh' = 'en') {
+  const project = createDefaultProject(locale);
+  const shieldCountBeforeFilter = project.layers.filter((layer) => layer.type === 'shield').length;
+  if (shieldCountBeforeFilter === 0) {
+    throw new Error(`Expected default project to include a shield layer before filtering, got: ${shieldCountBeforeFilter}`);
+  }
+  const layers = project.layers.filter((layer) => layer.type !== 'shield');
+  if (!layers.some((layer) => layer.type === 'background')) {
+    throw new Error('Expected a background layer to remain after removing shields');
+  }
+  return { ...project, layers };
+}
+
 function listDivisionThumbButtons() {
   return within(screen.getByRole('region', { name: 'Division of the Field' })).getAllByRole('button');
 }
@@ -466,5 +479,45 @@ describe('ShieldFieldPanel escutcheon chrome', () => {
     expect(previewMarkup).toContain('#B11F24');
     expect(previewMarkup).not.toContain('#A0822B');
     expect(previewMarkup).not.toContain('#98343A');
+  });
+
+  it('shows the empty shield copy and adds a heater escutcheon back', () => {
+    useCoatProjectStore.getState().replaceProject(projectWithoutShieldLayers('en'));
+    render(<ShieldFieldPanel locale="en" />);
+
+    const panel = screen.getByRole('region', { name: 'Shield & field' });
+    expect(within(panel).getByText('No shield layer.')).toBeDefined();
+    expect(within(panel).queryByLabelText('Editing: Escutcheon 1')).toBeNull();
+    expect(within(panel).queryByRole('region', { name: 'Division of the Field' })).toBeNull();
+    const addEscutcheonButton = within(panel).getByRole('button', { name: 'Add New Escutcheon' });
+    expect(addEscutcheonButton.classList.contains('coat-escutcheon-add-button')).toBe(true);
+
+    fireEvent.click(addEscutcheonButton);
+
+    const addedShield = listShieldLayers()[0];
+    if (!addedShield || addedShield.type !== 'shield') {
+      throw new Error(`Expected a heater shield after adding, got: ${addedShield?.type ?? 'missing layer'}`);
+    }
+    expect(listShieldLayers()).toHaveLength(1);
+    expect(addedShield.assetId).toBe('heater-shield');
+    expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([addedShield.id]);
+    expect(screen.getByLabelText('Editing: Escutcheon 1')).toBeDefined();
+    expect(useCoatProjectStore.getState().project.layers.some((layer) => layer.type === 'background')).toBe(true);
+  });
+
+  it('localizes the empty shield copy and add control in Chinese', () => {
+    useCoatProjectStore.getState().replaceProject(projectWithoutShieldLayers('zh'));
+    render(<ShieldFieldPanel locale="zh" />);
+
+    const panel = screen.getByRole('region', { name: '盾牌与底纹' });
+    expect(within(panel).getByText('没有盾牌图层。')).toBeDefined();
+    fireEvent.click(within(panel).getByRole('button', { name: '添加新盾形' }));
+
+    const addedShield = listShieldLayers()[0];
+    if (!addedShield || addedShield.type !== 'shield') {
+      throw new Error(`Expected a heater shield after adding from Chinese empty state, got: ${addedShield?.type ?? 'missing layer'}`);
+    }
+    expect(addedShield.assetId).toBe('heater-shield');
+    expect(screen.getByLabelText('正在编辑：盾形 1')).toBeDefined();
   });
 });

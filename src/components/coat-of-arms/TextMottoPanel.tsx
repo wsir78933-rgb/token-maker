@@ -20,7 +20,7 @@ export function TextMottoPanel({ locale }: { locale: CoatLocale }) {
   const setSelectedLayerIds = useCoatProjectStore((state) => state.setSelectedLayerIds);
 
   const addTextCard = (kind: TextCreationCardKind) => {
-    const result = runWithResult(createTextCreationCommand(kind, copy.textFeature.defaultObjectText));
+    const result = runWithResult(createTextCreationCommand(kind, copy.textFeature.cards[kind].defaultText));
     if (!result) return;
     if (!result.createdLayerId) {
       reportError(new Error(`Unable to select created ${kind} text layer`));

@@ -16,9 +16,10 @@ export const editorCanvasPresets = [
 ] as const;
 
 const retiredEditorCanvasPresetIds = ['portrait', 'landscape', 'instagram-story', 'facebook-image', 'twitter-image', 'pinterest'] as const;
+const retiredEditorAppearance = 'light';
 
 export type EditorCanvasPresetId = typeof editorCanvasPresets[number]['id'] | 'custom';
-export type EditorAppearance = 'dark' | 'light';
+export type EditorAppearance = 'dark';
 export type EditorColorPickerMode = 'simple' | 'advanced';
 export type EditorJpegQuality = 'low' | 'medium' | 'high' | 'ultra';
 export const editorExportSizes = [256, 512, 1024, 2048] as const;
@@ -118,7 +119,7 @@ export function getMatchingEditorCanvasPresetId(width: number, height: number): 
 }
 
 export function requireEditorAppearance(value: unknown): EditorAppearance {
-  if (value !== 'dark' && value !== 'light') {
+  if (value !== 'dark') {
     throw new Error(`Invalid editor appearance: ${String(value)}`);
   }
   return value;
@@ -143,7 +144,8 @@ function versionOnePreferencesNeedFieldMigration(preferences: Record<string, unk
   return !Object.hasOwn(preferences, 'exportSize')
     || !Object.hasOwn(preferences, 'appearance')
     || !Object.hasOwn(preferences, 'colorPickerMode')
-    || retiredEditorCanvasPresetIds.includes(preferences.canvasPreset as typeof retiredEditorCanvasPresetIds[number]);
+    || retiredEditorCanvasPresetIds.includes(preferences.canvasPreset as typeof retiredEditorCanvasPresetIds[number])
+    || preferences.appearance === retiredEditorAppearance;
 }
 
 function migrateVersionZeroEditorPreferences(preferences: Record<string, unknown>): EditorPreferences {
@@ -165,7 +167,9 @@ function migrateVersionZeroEditorPreferences(preferences: Record<string, unknown
 function migrateVersionOneEditorPreferences(preferences: Record<string, unknown>): EditorPreferences {
   const migratedPreferences: EditorPreferences = {
     ...preferences,
-    appearance: Object.hasOwn(preferences, 'appearance') ? preferences.appearance : 'dark',
+    appearance: Object.hasOwn(preferences, 'appearance')
+      ? migrateLoadedEditorAppearance(preferences.appearance)
+      : 'dark',
     colorPickerMode: Object.hasOwn(preferences, 'colorPickerMode') ? preferences.colorPickerMode : 'simple',
     canvasPreset: retiredEditorCanvasPresetIds.includes(preferences.canvasPreset as typeof retiredEditorCanvasPresetIds[number])
       ? 'custom'
@@ -174,6 +178,10 @@ function migrateVersionOneEditorPreferences(preferences: Record<string, unknown>
   } as EditorPreferences;
   assertEditorPreferences(migratedPreferences);
   return migratedPreferences;
+}
+
+function migrateLoadedEditorAppearance(value: unknown): unknown {
+  return value === retiredEditorAppearance ? 'dark' : value;
 }
 
 function assertCurrentEditorPreferences(preferences: unknown): EditorPreferences {

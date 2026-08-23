@@ -1356,18 +1356,6 @@
   font-family: var(--font-sans);
 }
 
-.coat-target-workbench[data-appearance='light'] {
-  --coat-stage: #ececee;
-  --coat-toolbar: #f3f3f5;
-  --coat-panel: #f7f7f8;
-  --coat-panel-raised: #ffffff;
-  --coat-line: #d4d4d8;
-  --coat-active: #e4e4e7;
-  --coat-text: #18181b;
-  --coat-muted: #52525b;
-  background: #f4f4f5;
-}
-
 .coat-maker-page > .coat-target-workbench {
   height: 100svh;
   flex: none;

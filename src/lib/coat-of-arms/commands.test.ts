@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { createDefaultProject } from './assets';
-import { applyProjectCommand, assertCoatProject, COAT_PROJECT_LIMITS, createRandomCoatProject } from './commands';
+import { applyProjectCommand, assertCoatProject, COAT_PROJECT_LIMITS, createRandomCoatProject, migrateLegacyTextPath } from './commands';
 import { requireHeraldicSwatchGroup } from './heraldic-swatches';
 import { applyProjectHistoryCommand, createProjectHistory, redoProject, undoProject } from './store';
-import type { CoatLayer } from './types';
+import type { CoatLayer, CoatProject, TextPathPlacement } from './types';
 
 function encodeUtf8Base64(value: string): string {
   return btoa(String.fromCharCode(...new TextEncoder().encode(value)));
@@ -78,6 +78,52 @@ function requireShieldLayer(project: ReturnType<typeof createDefaultProject>, la
   const shield = project.layers.find((layer) => layer.id === layerId);
   if (!shield || shield.type !== 'shield') throw new Error(`Expected shield layer: ${layerId}`);
   return shield;
+}
+
+const UPPER_CURVE_TEXT_PATH = {
+  mode: 'curve',
+  startX: 10,
+  startY: 72,
+  controlX: 50,
+  controlY: 30,
+  endX: 90,
+  endY: 72,
+} as const satisfies TextPathPlacement;
+
+const OUTWARD_RING_TEXT_PATH = {
+  mode: 'ring',
+  radius: 40,
+  facing: 'out',
+  layout: 'full',
+  spacing: 'natural',
+} as const satisfies TextPathPlacement;
+
+function createPersistedTextLayer(
+  layerId: string,
+  path: Record<string, unknown>,
+  extras: Record<string, unknown> = {},
+) {
+  return {
+    id: layerId,
+    type: 'text' as const,
+    text: 'ARMS',
+    color: '#FFFFFF',
+    fontSize: 20,
+    alignment: 'center' as const,
+    path,
+    transform: { x: 0, y: 0, scale: 1, rotation: 0 },
+    visible: true,
+    locked: false,
+    groupId: null,
+    ...extras,
+  };
+}
+
+function projectWithPersistedTextLayers(
+  base: CoatProject,
+  layers: ReturnType<typeof createPersistedTextLayer>[],
+): CoatProject {
+  return { ...base, layers: [...base.layers, ...layers] } as CoatProject;
 }
 
 describe('coat project commands', () => {
@@ -491,7 +537,7 @@ describe('coat project commands', () => {
     const withCharge = applyProjectCommand(withOrdinary, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const withText = applyProjectCommand(withCharge, {
       type: 'add-text-layer', text: 'FORTUNE', color: '#F5E6A1', fontSize: 24,
-      alignment: 'center', path: { mode: 'curve', curve: 'upper' },
+      alignment: 'center', path: UPPER_CURVE_TEXT_PATH,
     });
     const withUpload = applyProjectCommand(withText, {
       type: 'register-local-upload',
@@ -684,7 +730,7 @@ describe('coat project commands', () => {
     expect(removed.layers.map((layer) => layer.id)).not.toContain(lionId);
   });
 
-  it('keeps a base shield and background while allowing a non-base layer to be removed', () => {
+  it('keeps a required background while allowing the last shield or a non-base layer to be removed', () => {
     const project = createDefaultProject('en');
     const background = project.layers[0];
     const shield = project.layers[1];
@@ -694,32 +740,76 @@ describe('coat project commands', () => {
     if (!charge) throw new Error('Expected added charge');
 
     expect(() => applyProjectCommand(project, { type: 'remove-layer', layerId: background.id }))
-      .toThrow(`base background layer: ${background.id}`);
-    expect(() => applyProjectCommand(project, { type: 'remove-layer', layerId: shield.id }))
-      .toThrow(`base shield layer: ${shield.id}`);
+      .toThrow(`Cannot remove the sole base background layer: ${background.id}`);
+    const withoutShield = applyProjectCommand(project, { type: 'remove-layer', layerId: shield.id });
+    expect(withoutShield.layers.filter((layer) => layer.type === 'shield')).toHaveLength(0);
+    expect(withoutShield.layers.filter((layer) => layer.type === 'background')).toHaveLength(1);
+    expect(() => assertCoatProject(withoutShield)).not.toThrow();
     expect(applyProjectCommand(withCharge, { type: 'remove-layer', layerId: charge.id }).layers)
       .toHaveLength(2);
   });
 
-  it('rejects imported project data that omits its required base shield or background', () => {
+  it('rejects imported project data that omits its required background, but allows zero shields', () => {
     const project = createDefaultProject('en');
     const withoutBackground = { ...project, layers: project.layers.filter((layer) => layer.type !== 'background') };
     const withoutShield = { ...project, layers: project.layers.filter((layer) => layer.type !== 'shield') };
 
     expect(() => assertCoatProject(withoutBackground)).toThrow('base background layer');
-    expect(() => assertCoatProject(withoutShield)).toThrow('base shield layer');
+    expect(() => assertCoatProject(withoutShield)).not.toThrow();
   });
 
-  it('allows removing one shield only after another shield exists', () => {
+  it('allows removing every remaining shield, including the last one', () => {
     const project = createDefaultProject('en');
     const baseShield = project.layers[1];
     if (!baseShield) throw new Error('Expected default shield');
     const withSecondShield = applyProjectCommand(project, { type: 'add-layer', assetId: 'round-shield' });
+    const extraShield = withSecondShield.layers.at(-1);
+    if (!extraShield) throw new Error('Expected extra shield');
 
-    expect(applyProjectCommand(withSecondShield, {
+    const withoutFirstShield = applyProjectCommand(withSecondShield, {
       type: 'remove-layer',
       layerId: baseShield.id,
-    }).layers.filter((layer) => layer.type === 'shield')).toHaveLength(1);
+    });
+    expect(withoutFirstShield.layers.filter((layer) => layer.type === 'shield')).toHaveLength(1);
+
+    const withoutShields = applyProjectCommand(withoutFirstShield, {
+      type: 'remove-layers',
+      layerIds: [extraShield.id],
+    });
+    expect(withoutShields.layers.filter((layer) => layer.type === 'shield')).toHaveLength(0);
+    expect(() => assertCoatProject(withoutShields)).not.toThrow();
+  });
+
+  it('rejects removing the last background through remove-layer and remove-layers', () => {
+    const project = createDefaultProject('en');
+    const background = project.layers.find((layer) => layer.type === 'background');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!background || !shield) throw new Error('Expected default base layers');
+
+    expect(() => applyProjectCommand(project, { type: 'remove-layer', layerId: background.id }))
+      .toThrow(`Cannot remove the sole base background layer: ${background.id}`);
+    expect(() => applyProjectCommand(project, { type: 'remove-layers', layerIds: [background.id, shield.id] }))
+      .toThrow(`Cannot remove the sole base background layer: ${background.id}`);
+  });
+
+  it('removes a shield that references a custom mask without deleting the upload', () => {
+    const project = createDefaultProject('en');
+    const shield = project.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected shield layer');
+    const withUpload = applyProjectCommand(project, {
+      type: 'register-local-upload',
+      upload: {
+        id: 'deletable-custom-shield-mask', mimeType: 'image/svg+xml', encoding: 'base64',
+        data: 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTEwIiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==',
+      },
+    });
+    const masked = applyProjectCommand(withUpload, {
+      type: 'set-custom-shield-mask', layerId: shield.id, uploadId: 'deletable-custom-shield-mask',
+    });
+    const withoutShield = applyProjectCommand(masked, { type: 'remove-layer', layerId: shield.id });
+
+    expect(withoutShield.layers.some((layer) => layer.id === shield.id)).toBe(false);
+    expect(withoutShield.uploads).toEqual(masked.uploads);
   });
 
   it('persists group opacity and removes metadata when a group dissolves', () => {
@@ -996,45 +1086,153 @@ describe('coat project commands', () => {
     expect(() => applyProjectCommand(project, {
       type: 'add-text-layer', text: 'Bad', color: '#FFFFFF', fontSize: 20,
       alignment: 'center', path: { mode: 'ring', curve: 'upper' },
-    } as never)).toThrow('ring');
+    } as never)).toThrow('curve');
   });
 
-  it('persists validated bezier control points and ring radii through text path patches', () => {
+  it('persists validated three-point curves and ring placements through text path patches', () => {
     let project = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-text-layer', text: 'CURVE', color: '#FFFFFF', fontSize: 20,
-      alignment: 'center', path: { mode: 'curve', curve: 'upper' },
+      alignment: 'center', path: UPPER_CURVE_TEXT_PATH,
     });
     const curveLayer = project.layers.at(-1);
     if (!curveLayer || curveLayer.type !== 'text') throw new Error('Expected curved text layer');
+    const editedCurvePath = {
+      mode: 'curve' as const,
+      startX: 10,
+      startY: 72,
+      controlX: 42.5,
+      controlY: 36.25,
+      endX: 90,
+      endY: 72,
+    };
     project = applyProjectCommand(project, {
       type: 'update-layer', layerId: curveLayer.id,
-      patch: { path: { mode: 'curve', curve: 'upper', controlX: 42.5, controlY: 36.25 } },
+      patch: { path: editedCurvePath },
     });
-    expect(project.layers.at(-1)).toMatchObject({ path: { controlX: 42.5, controlY: 36.25 } });
+    expect(project.layers.at(-1)).toMatchObject({ path: editedCurvePath });
     expect(() => applyProjectCommand(project, {
       type: 'update-layer', layerId: curveLayer.id,
-      patch: { path: { mode: 'curve', curve: 'upper', controlX: 101, controlY: 36 } },
+      patch: { path: { ...editedCurvePath, controlX: 101 } },
     })).toThrow('101');
     expect(() => applyProjectCommand(project, {
       type: 'update-layer', layerId: curveLayer.id,
-      patch: { path: { mode: 'curve', curve: 'upper', controlX: 42 } } as never,
-    })).toThrow('control point');
+      patch: { path: { mode: 'curve', startX: 10, startY: 72, controlX: 42, endX: 90, endY: 72 } } as never,
+    })).toThrow('control y');
 
     project = applyProjectCommand(project, {
       type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
-      alignment: 'center', path: { mode: 'ring', curve: 'clockwise' },
+      alignment: 'center', path: OUTWARD_RING_TEXT_PATH,
     });
     const ringLayer = project.layers.at(-1);
     if (!ringLayer || ringLayer.type !== 'text') throw new Error('Expected ring text layer');
+    const editedRingPath = { ...OUTWARD_RING_TEXT_PATH, radius: 24.5 };
     project = applyProjectCommand(project, {
       type: 'update-layer', layerId: ringLayer.id,
-      patch: { path: { mode: 'ring', curve: 'clockwise', radius: 24.5 } },
+      patch: { path: editedRingPath },
     });
-    expect(project.layers.at(-1)).toMatchObject({ path: { radius: 24.5 } });
+    expect(project.layers.at(-1)).toMatchObject({ path: editedRingPath });
     expect(() => applyProjectCommand(project, {
       type: 'update-layer', layerId: ringLayer.id,
-      patch: { path: { mode: 'ring', curve: 'clockwise', radius: 51 } },
+      patch: { path: { ...OUTWARD_RING_TEXT_PATH, radius: 51 } },
     })).toThrow('51');
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: ringLayer.id,
+      patch: { path: { ...OUTWARD_RING_TEXT_PATH, facing: 'sideways' } } as never,
+    })).toThrow('sideways');
+  });
+
+  it('migrates saved curve and ring documents into the in-memory placement', () => {
+    const persistedProject = projectWithPersistedTextLayers(createDefaultProject('en'), [
+      createPersistedTextLayer('legacy-upper-curve', { mode: 'curve', curve: 'upper' }),
+      createPersistedTextLayer('legacy-lower-curve', {
+        mode: 'curve', curve: 'lower', controlX: 42.5, controlY: 36.25,
+      }),
+      createPersistedTextLayer('legacy-clockwise-ring', { mode: 'ring', curve: 'clockwise' }),
+      createPersistedTextLayer('legacy-counterclockwise-ring', {
+        mode: 'ring', curve: 'counterclockwise', radius: 24.5,
+      }),
+    ]);
+
+    expect(assertCoatProject(persistedProject)).toBeUndefined();
+
+    const upperCurve = persistedProject.layers.find((layer) => layer.id === 'legacy-upper-curve');
+    const lowerCurve = persistedProject.layers.find((layer) => layer.id === 'legacy-lower-curve');
+    const clockwiseRing = persistedProject.layers.find((layer) => layer.id === 'legacy-clockwise-ring');
+    const counterclockwiseRing = persistedProject.layers.find((layer) => layer.id === 'legacy-counterclockwise-ring');
+    if (
+      !upperCurve || upperCurve.type !== 'text'
+      || !lowerCurve || lowerCurve.type !== 'text'
+      || !clockwiseRing || clockwiseRing.type !== 'text'
+      || !counterclockwiseRing || counterclockwiseRing.type !== 'text'
+    ) {
+      throw new Error('Expected migrated text layers');
+    }
+
+    expect(upperCurve.path).toEqual(UPPER_CURVE_TEXT_PATH);
+    expect(upperCurve.path).not.toHaveProperty('curve');
+    expect(lowerCurve.path).toEqual({
+      mode: 'curve', startX: 10, startY: 38, controlX: 42.5, controlY: 36.25, endX: 90, endY: 38,
+    });
+    expect(clockwiseRing.path).toEqual(OUTWARD_RING_TEXT_PATH);
+    expect(counterclockwiseRing.path).toEqual({
+      mode: 'ring', radius: 24.5, facing: 'in', layout: 'full', spacing: 'natural',
+    });
+    expect(migrateLegacyTextPath({ mode: 'curve', curve: 'upper' })).toEqual(UPPER_CURVE_TEXT_PATH);
+    expect(migrateLegacyTextPath({ mode: 'ring', curve: 'clockwise' })).toEqual(OUTWARD_RING_TEXT_PATH);
+  });
+
+  it('rejects legacy curve and ring shapes on write', () => {
+    const project = createDefaultProject('en');
+    expect(() => applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'CURVE', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'curve', curve: 'upper' },
+    })).toThrow('curve');
+    expect(() => applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'ring', curve: 'clockwise' },
+    })).toThrow('curve');
+  });
+
+  it('enforces the 8-100 scene-unit boxWidth range only on straight text', () => {
+    const project = createDefaultProject('en');
+    const withBox = applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'WIDTH', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'none' }, boxWidth: 48,
+    });
+    expect(withBox.layers.at(-1)).toMatchObject({ boxWidth: 48, path: { mode: 'none' } });
+    expect(() => applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'WIDTH', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'none' }, boxWidth: 8,
+    })).not.toThrow();
+    expect(() => applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'WIDTH', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'none' }, boxWidth: 100,
+    })).not.toThrow();
+    expect(() => applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'WIDTH', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'none' }, boxWidth: 7,
+    })).toThrow('Invalid text box width: 7; expected 8-100 scene units');
+    expect(() => applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'WIDTH', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'none' }, boxWidth: 101,
+    })).toThrow('Invalid text box width: 101; expected 8-100 scene units');
+    expect(() => applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'WIDTH', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: UPPER_CURVE_TEXT_PATH, boxWidth: 48,
+    })).toThrow('Invalid text box width for path mode: curve; boxWidth is 48');
+
+    const textLayer = withBox.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected text layer');
+    expect(() => applyProjectCommand(withBox, {
+      type: 'update-layer', layerId: textLayer.id, patch: { boxWidth: 7 },
+    })).toThrow('Invalid text box width: 7; expected 8-100 scene units');
+
+    const persistedInvalidBox = projectWithPersistedTextLayers(createDefaultProject('en'), [
+      createPersistedTextLayer('invalid-box', { mode: 'none' }, { boxWidth: 7 }),
+    ]);
+    expect(() => assertCoatProject(persistedInvalidBox)).toThrow(
+      'Invalid text box width: 7; expected 8-100 scene units',
+    );
   });
 
   it('rejects unsupported text fonts instead of persisting browser-specific values', () => {

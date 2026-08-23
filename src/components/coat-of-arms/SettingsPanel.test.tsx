@@ -97,13 +97,16 @@ describe('SettingsPanel', () => {
     expect(loadEditorPreferences().canvasPreset).toBe('3-5');
   });
 
-  it('persists light appearance through the browser document and the session store', () => {
+  it('does not render a Light appearance button and keeps Dark as dark', () => {
     render(<SettingsPanel locale="en" />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Light' }));
+    expect(screen.queryByRole('button', { name: 'Light' })).toBeNull();
+    const darkButton = screen.getByRole('button', { name: 'Dark' });
 
-    expect(loadEditorPreferences().appearance).toBe('light');
-    expect(useEditorPreferencesStore.getState().preferences.appearance).toBe('light');
+    fireEvent.click(darkButton);
+
+    expect(loadEditorPreferences().appearance).toBe('dark');
+    expect(useEditorPreferencesStore.getState().preferences.appearance).toBe('dark');
   });
 
   it('persists advanced color picker mode through the browser document and the session store', () => {

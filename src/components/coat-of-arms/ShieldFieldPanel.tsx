@@ -1060,7 +1060,24 @@ export function ShieldFieldPanel({ locale }: { locale: CoatLocale }) {
   const { error, reportError, run, runWithResult } = usePanelCommandError(locale);
   const [customShieldUploadStatus, setCustomShieldUploadStatus] = useState<string | null>(null);
   const editedEscutcheon = resolveEditedShield(project.layers, selectedLayerIds);
-  if (!editedEscutcheon) return <section aria-label={copy.shieldAndField}><p>{copy.noShieldLayer}</p></section>;
+  if (!editedEscutcheon) {
+    return (
+      <section aria-label={copy.shieldAndField}>
+        {error ? <p role="alert">{error}</p> : null}
+        <p>{copy.noShieldLayer}</p>
+        <button
+          className="coat-escutcheon-add-button"
+          type="button"
+          onClick={() => {
+            try { addNewEscutcheon(runWithResult, setSelectedLayerIds); } catch (caught) { reportError(caught); }
+          }}
+        >
+          <Plus aria-hidden="true" />
+          {addNewEscutcheonLabel}
+        </button>
+      </section>
+    );
+  }
   const { shield, ordinal: editedEscutcheonOrdinal } = editedEscutcheon;
 
   const onCustomShieldMaskFileChange = async (event: ChangeEvent<HTMLInputElement>) => {

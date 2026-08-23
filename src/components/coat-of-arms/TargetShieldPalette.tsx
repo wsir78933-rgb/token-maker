@@ -42,7 +42,14 @@ export function TargetShieldPalette({
   const [uncontrolledActiveCategory, setUncontrolledActiveCategory] = useState<ShieldReferenceCategory>('heater');
   const activeCategory = controlledActiveCategory ?? uncontrolledActiveCategory;
   const shield = project.layers.find((layer) => layer.type === 'shield');
-  if (!shield || shield.type !== 'shield') throw new Error('Shield palette requires a project shield layer');
+  if (!shield || shield.type !== 'shield') {
+    return (
+      <section aria-label={copy.palettes.shield.library} className="coat-target-shield-library">
+        {error ? <p role="alert">{error}</p> : null}
+        <p>{copy.panels.noShieldLayer}</p>
+      </section>
+    );
+  }
   const entries = listReferenceCatalogEntries('shield', activeCategory).map((entry) => ({
     id: entry.id,
     name: entry.name,

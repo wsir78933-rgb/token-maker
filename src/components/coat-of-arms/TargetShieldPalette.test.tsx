@@ -49,4 +49,19 @@ describe('TargetShieldPalette', () => {
     expect(listTargetShieldPaletteAssets()).toHaveLength(240);
     expect(listTargetShieldPaletteAssets().some((asset) => asset.id === 'shield-001')).toBe(true);
   });
+
+  it('shows the empty shield library copy when the project has no shield layer', () => {
+    const project = createDefaultProject('en');
+    const shieldCountBeforeFilter = project.layers.filter((layer) => layer.type === 'shield').length;
+    if (shieldCountBeforeFilter === 0) {
+      throw new Error(`Expected default project to include a shield layer before filtering, got: ${shieldCountBeforeFilter}`);
+    }
+    const layers = project.layers.filter((layer) => layer.type !== 'shield');
+    useCoatProjectStore.getState().replaceProject({ ...project, layers });
+    render(<TargetShieldPalette locale="en" />);
+
+    expect(screen.getByRole('region', { name: 'Shield library' })).toBeDefined();
+    expect(screen.getByText('No shield layer.')).toBeDefined();
+    expect(screen.queryByRole('button', { name: /^Select shield:/ })).toBeNull();
+  });
 });

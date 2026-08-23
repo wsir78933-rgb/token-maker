@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { LayoutGrid, Moon, SlidersHorizontal, Sun } from 'lucide-react';
+import { LayoutGrid, Moon, SlidersHorizontal } from 'lucide-react';
 import {
   editorCanvasPresets,
   getDefaultEditorPreferences,
@@ -132,15 +132,6 @@ function AppearanceControls({
         >
           <Moon aria-hidden="true" className="h-4 w-4" />
           {copy.appearanceDark}
-        </button>
-        <button
-          aria-pressed={appearance === 'light'}
-          className={segmentedOptionClassName(appearance === 'light')}
-          type="button"
-          onClick={() => onAppearanceChange('light')}
-        >
-          <Sun aria-hidden="true" className="h-4 w-4" />
-          {copy.appearanceLight}
         </button>
       </div>
     </section>

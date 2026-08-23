@@ -439,6 +439,96 @@ describe('coat scene SVG renderer', () => {
     expect(svg).toContain('<rect x="0" y="0" width="100" height="36.667"/>');
   });
 
+  it('renders a background-only project that has no shield', () => {
+    const project = createDefaultProject('en');
+    const background = project.layers.find((layer) => layer.type === 'background');
+    if (!background) throw new Error('Expected background layer');
+    const withoutShield = {
+      ...project,
+      layers: project.layers.filter((layer) => layer.type !== 'shield'),
+    };
+
+    const svg = renderCoatSceneSvg(withoutShield, { width: 512, height: 512 });
+
+    expect(withoutShield.layers.map((layer) => layer.type)).toEqual(['background']);
+    expect(svg.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).toBe(true);
+    expect(svg).toContain(`data-layer-id="${background.id}"`);
+    expect(svg).toContain('<rect width="100" height="110" fill="#F5E6A1"/>');
+    expect(svg).not.toContain('coat-shield-clip');
+  });
+
+  it('draws an unclipped charge when clipToField is set and the project has no shield', () => {
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-layer', assetId: 'material-animal-wolf-rampant',
+    });
+    const lion = project.layers.at(-1);
+    if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
+    project = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: lion.id,
+      patch: { transform: { ...lion.transform, clipToField: true } } as never,
+    });
+    const withoutShield = {
+      ...project,
+      layers: project.layers.filter((layer) => layer.type !== 'shield'),
+    };
+
+    const svg = renderCoatSceneSvg(withoutShield, { width: 512, height: 512 });
+
+    expect(svg).toContain(`data-layer-id="${lion.id}"`);
+    expect(svg).not.toContain('coat-charge-shield-clip');
+    expect(svg).not.toContain('coat-field-region-');
+    expect(svg).not.toContain('data-field-placement');
+  });
+
+  it('rejects clipping a charge to a missing fieldShieldLayerId including that id', () => {
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-layer', assetId: 'material-animal-wolf-rampant',
+    });
+    const lion = project.layers.at(-1);
+    if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
+    const missingShieldLayerId = 'missing-field-shield';
+    project = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: lion.id,
+      patch: {
+        transform: {
+          ...lion.transform,
+          clipToField: true,
+          fieldShieldLayerId: missingShieldLayerId,
+        },
+      } as never,
+    });
+
+    expect(() => renderCoatSceneSvg(project, { width: 512, height: 512 })).toThrow(missingShieldLayerId);
+  });
+
+  it('rejects a missing fieldShieldLayerId when the project also has no shield', () => {
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-layer', assetId: 'material-animal-wolf-rampant',
+    });
+    const lion = project.layers.at(-1);
+    if (!lion || lion.type !== 'charge') throw new Error('Expected lion charge');
+    const missingShieldLayerId = 'gone-shield-layer';
+    project = applyProjectCommand(project, {
+      type: 'update-layer',
+      layerId: lion.id,
+      patch: {
+        transform: {
+          ...lion.transform,
+          clipToField: true,
+          fieldShieldLayerId: missingShieldLayerId,
+        },
+      } as never,
+    });
+    const withoutShield = {
+      ...project,
+      layers: project.layers.filter((layer) => layer.type !== 'shield'),
+    };
+
+    expect(() => renderCoatSceneSvg(withoutShield, { width: 512, height: 512 })).toThrow(missingShieldLayerId);
+  });
+
   it('clips a charge to a detailed local field region', () => {
     let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const lion = project.layers.at(-1);
@@ -700,17 +790,140 @@ describe('coat scene SVG renderer', () => {
   it('renders edited bezier control points and ring radii from the persisted text path model', () => {
     let project = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
-      alignment: 'center', path: { mode: 'curve', curve: 'upper', controlX: 38, controlY: 44 },
+      alignment: 'center', path: {
+        mode: 'curve', startX: 10, startY: 72, controlX: 38, controlY: 44, endX: 90, endY: 72,
+      },
     });
     project = applyProjectCommand(project, {
       type: 'add-text-layer', text: 'RING', color: '#B11F24', fontSize: 40,
-      alignment: 'center', path: { mode: 'ring', curve: 'clockwise', radius: 28 },
+      alignment: 'center', path: {
+        mode: 'ring', radius: 28, facing: 'out', layout: 'full', spacing: 'natural',
+      },
     });
 
     const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
 
     expect(svg).toContain('M10 72 Q38 44 90 72');
     expect(svg).toContain('M50 22 A28 28 0 1 1 49.99 22');
+  });
+
+  it('renders a three-point quadratic curve from the text path control points', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: {
+        mode: 'curve', startX: 12, startY: 70, controlX: 41.5, controlY: 33.25, endX: 88, endY: 69,
+      },
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('d="M12 70 Q41.5 33.25 88 69"');
+    expect(svg).toContain('<textPath href="#coat-text-path-');
+  });
+
+  it('sets textLength on straight text from boxWidth in scene units', () => {
+    const withBox = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'WIDTH', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'none' }, boxWidth: 48,
+    });
+    const withoutBox = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'WIDTH', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'none' },
+    });
+
+    const withBoxSvg = renderCoatSceneSvg(withBox, { width: 512, height: 512 });
+    const withoutBoxSvg = renderCoatSceneSvg(withoutBox, { width: 512, height: 512 });
+
+    expect(withBoxSvg).toContain('textLength="48"');
+    expect(withBoxSvg).toContain('lengthAdjust="spacing"');
+    expect(withoutBoxSvg).not.toContain('textLength=');
+    expect(withoutBoxSvg).not.toContain('lengthAdjust=');
+  });
+
+  it('spreads ring text along the path length when spacing is even', () => {
+    const evenRing = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'even',
+      },
+    });
+    const naturalRing = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'natural',
+      },
+    });
+
+    const evenSvg = renderCoatSceneSvg(evenRing, { width: 512, height: 512 });
+    const naturalSvg = renderCoatSceneSvg(naturalRing, { width: 512, height: 512 });
+
+    expect(evenSvg).toContain(`textLength="${Number((2 * Math.PI * 40).toFixed(4))}"`);
+    expect(evenSvg).toContain('lengthAdjust="spacing"');
+    expect(naturalSvg).not.toContain('textLength=');
+    expect(naturalSvg).not.toContain('lengthAdjust=');
+  });
+
+  it('reverses ring sweep for inward facing text and draws a short arc for arc layout', () => {
+    const inwardFull = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'IN', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'ring', radius: 40, facing: 'in', layout: 'full', spacing: 'natural',
+      },
+    });
+    const outwardArc = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'ARC', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'ring', radius: 40, facing: 'out', layout: 'arc', spacing: 'natural',
+      },
+    });
+    const inwardArc = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'ARC', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'ring', radius: 40, facing: 'in', layout: 'arc', spacing: 'even',
+      },
+    });
+
+    const inwardFullSvg = renderCoatSceneSvg(inwardFull, { width: 512, height: 512 });
+    const outwardArcSvg = renderCoatSceneSvg(outwardArc, { width: 512, height: 512 });
+    const inwardArcSvg = renderCoatSceneSvg(inwardArc, { width: 512, height: 512 });
+
+    expect(inwardFullSvg).toContain('M50 10 A40 40 0 1 0 49.99 10');
+    expect(outwardArcSvg).toContain('M90 50 A40 40 0 0 1 10 50');
+    expect(outwardArcSvg).not.toContain('A40 40 0 1 1 49.99');
+    expect(inwardArcSvg).toContain('M10 50 A40 40 0 0 1 90 50');
+    expect(inwardArcSvg).not.toContain('M10 50 A40 40 0 0 0 90 50');
+    expect(inwardArcSvg).toContain(`textLength="${Number((Math.PI * 40).toFixed(4))}"`);
+  });
+
+  it('draws inward arc text through the north point at the default ring radius', () => {
+    const inwardArc = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'ring', radius: 18, facing: 'in', layout: 'arc', spacing: 'natural',
+      },
+    });
+
+    const svg = renderCoatSceneSvg(inwardArc, { width: 512, height: 512 });
+
+    expect(svg).toContain('M32 50 A18 18 0 0 1 68 50');
+    expect(svg).not.toContain('M32 50 A18 18 0 0 0 68 50');
+  });
+
+  it('rejects an unknown text path mode including the received value', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'ARMS', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'none' },
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected text layer');
+    const invalidProject = {
+      ...project,
+      layers: project.layers.map((layer) => (
+        layer.id === textLayer.id ? { ...layer, path: { mode: 'spiral' } } : layer
+      )),
+    };
+
+    expect(() => renderCoatSceneSvg(invalidProject as never, { width: 512, height: 512 })).toThrow('spiral');
   });
 
   it('renders independent horizontal and vertical layer scaling', () => {
@@ -786,8 +999,8 @@ describe('coat scene SVG renderer', () => {
     project = applyProjectCommand(project, { type: 'add-image-layer', uploadId: 'local-mark', opacity: 0.5 });
     for (const path of [
       { mode: 'motto', curve: 'upper' },
-      { mode: 'curve', curve: 'lower' },
-      { mode: 'ring', curve: 'clockwise' },
+      { mode: 'curve', startX: 10, startY: 38, controlX: 50, controlY: 80, endX: 90, endY: 38 },
+      { mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'natural' },
     ] as const) {
       project = applyProjectCommand(project, {
         type: 'add-text-layer', text: 'Arms', color: '#F5E6A1', fontSize: 9,
@@ -889,7 +1102,7 @@ describe('coat scene SVG renderer', () => {
     let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'round-shield' });
     for (const path of [
       { mode: 'motto', curve: 'upper' },
-      { mode: 'ring', curve: 'counterclockwise' },
+      { mode: 'ring', radius: 40, facing: 'in', layout: 'full', spacing: 'natural' },
     ] as const) {
       project = applyProjectCommand(project, {
         type: 'add-text-layer', text: 'Arms', color: '#F5E6A1', fontSize: 10,
@@ -1009,7 +1222,9 @@ describe('coat scene SVG renderer', () => {
   it('prefixes scene ids, url references, and textPath hrefs for a second in-document copy', () => {
     let project = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
-      alignment: 'center', path: { mode: 'curve', curve: 'upper' },
+      alignment: 'center', path: {
+        mode: 'curve', startX: 10, startY: 72, controlX: 50, controlY: 30, endX: 90, endY: 72,
+      },
     });
     project = applyProjectCommand(project, { type: 'add-layer', assetId: 'material-animal-wolf-rampant' });
     const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });

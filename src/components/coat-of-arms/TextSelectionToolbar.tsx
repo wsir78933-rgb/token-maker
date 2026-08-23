@@ -6,9 +6,19 @@ import { createLocalCoatId } from '@/lib/coat-of-arms/id';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CoatLayerPatch } from '@/lib/coat-of-arms/commands';
 import { assertTextFontAvailable, listTextFontOptions } from '@/lib/coat-of-arms/text-font-registry';
-import type { CoatLocale, TextAlignment, TextFontFamily, TextLayer } from '@/lib/coat-of-arms/types';
+import type { CoatLocale, TextAlignment, TextFontFamily, TextLayer, TextPathFacing, TextPathLayout, TextPathPlacement, TextPathSpacing } from '@/lib/coat-of-arms/types';
 import { usePanelCommandError } from './usePanelCommandError';
 import { getCoatWorkbenchCopy } from './workbench-copy';
+
+type EditableRingTextPath = {
+  mode: 'ring';
+  radius: number;
+  facing: TextPathFacing;
+  layout: TextPathLayout;
+  spacing: TextPathSpacing;
+};
+
+type RingToolbarCopy = ReturnType<typeof getCoatWorkbenchCopy>['panels']['textFeature']['toolbar'];
 
 function getSelectedTextLayer(project: ReturnType<typeof useCoatProjectStore.getState>['project'], selectedLayerIds: string[]): TextLayer | null {
   if (selectedLayerIds.length !== 1) return null;
@@ -38,6 +48,17 @@ function requireTextAlignment(value: string): TextAlignment {
   return value;
 }
 
+function requireEditableRingPath(path: TextPathPlacement): EditableRingTextPath {
+  if (path.mode !== 'ring') throw new Error(`Invalid ring toolbar path mode: ${path.mode}`);
+  if (!('facing' in path) || !('layout' in path) || !('spacing' in path) || typeof path.radius !== 'number') {
+    throw new Error(`Invalid ring text path: ${JSON.stringify(path)}`);
+  }
+  if (path.facing !== 'in' && path.facing !== 'out') throw new Error(`Invalid text path facing: ${String(path.facing)}`);
+  if (path.layout !== 'full' && path.layout !== 'arc') throw new Error(`Invalid text path layout: ${String(path.layout)}`);
+  if (path.spacing !== 'natural' && path.spacing !== 'even') throw new Error(`Invalid text path spacing: ${String(path.spacing)}`);
+  return { mode: 'ring', radius: path.radius, facing: path.facing, layout: path.layout, spacing: path.spacing };
+}
+
 /** Contextual live controls for one selected text layer. */
 export function TextSelectionToolbar({ locale }: { locale: CoatLocale }) {
   const copy = getCoatWorkbenchCopy(locale);
@@ -54,6 +75,7 @@ export function TextSelectionToolbar({ locale }: { locale: CoatLocale }) {
   const strokeColor = selectedTextLayer.strokeColor ?? '#000000';
   const strokeWidth = selectedTextLayer.strokeWidth ?? 0;
   const canEdit = !selectedTextLayer.locked;
+  const ringPath = selectedTextLayer.path.mode === 'ring' ? requireEditableRingPath(selectedTextLayer.path) : null;
 
   const updateSelectedText = (patch: CoatLayerPatch): boolean => {
     if (!canEdit) return false;
@@ -75,6 +97,13 @@ export function TextSelectionToolbar({ locale }: { locale: CoatLocale }) {
   };
   const updateAlignment = (value: string) => {
     try { updateSelectedText({ alignment: requireTextAlignment(value) }); } catch (caught) { reportError(caught); }
+  };
+  const updateRingPath = (path: EditableRingTextPath) => {
+    try {
+      updateSelectedText({ path: requireEditableRingPath(path) });
+    } catch (caught) {
+      reportError(caught);
+    }
   };
   const toggleLock = () => {
     run({ type: 'set-layer-lock', layerId: selectedTextLayer.id, locked: !selectedTextLayer.locked });
@@ -106,14 +135,20 @@ export function TextSelectionToolbar({ locale }: { locale: CoatLocale }) {
         <span className="sr-only">{textCopy.toolbar.textColour}</span>
         <input aria-label={`${textCopy.toolbar.textColour} picker`} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" disabled={!canEdit} type="color" value={selectedTextLayer.color.toLowerCase()} onChange={(event) => { updateSelectedText({ color: event.target.value }); }} />
       </label>
-      <ToolbarToggle label={textCopy.toolbar.bold} pressed={selectedTextLayer.fontWeight === 'bold'} disabled={!canEdit} onClick={() => updateSelectedText({ fontWeight: selectedTextLayer.fontWeight === 'bold' ? 'normal' : 'bold' })}><Bold aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
-      <ToolbarToggle label={textCopy.toolbar.italic} pressed={selectedTextLayer.fontStyle === 'italic'} disabled={!canEdit} onClick={() => updateSelectedText({ fontStyle: selectedTextLayer.fontStyle === 'italic' ? 'normal' : 'italic' })}><Italic aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
-      <ToolbarToggle label={textCopy.toolbar.underline} pressed={selectedTextLayer.underline === true} disabled={!canEdit} onClick={() => updateSelectedText({ underline: selectedTextLayer.underline !== true })}><Underline aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
-      <div aria-label={textCopy.toolbar.alignment} className="inline-flex items-center gap-0.5" role="group">
-        <ToolbarToggle label={textCopy.toolbar.left} pressed={selectedTextLayer.alignment === 'left'} disabled={!canEdit} onClick={() => updateAlignment('left')}><AlignLeft aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
-        <ToolbarToggle label={textCopy.toolbar.center} pressed={selectedTextLayer.alignment === 'center'} disabled={!canEdit} onClick={() => updateAlignment('center')}><AlignCenter aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
-        <ToolbarToggle label={textCopy.toolbar.right} pressed={selectedTextLayer.alignment === 'right'} disabled={!canEdit} onClick={() => updateAlignment('right')}><AlignRight aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
-      </div>
+      {ringPath ? (
+        <RingPathControls copy={textCopy.toolbar} disabled={!canEdit} path={ringPath} onPathChange={updateRingPath} />
+      ) : (
+        <>
+          <ToolbarToggle label={textCopy.toolbar.bold} pressed={selectedTextLayer.fontWeight === 'bold'} disabled={!canEdit} onClick={() => updateSelectedText({ fontWeight: selectedTextLayer.fontWeight === 'bold' ? 'normal' : 'bold' })}><Bold aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
+          <ToolbarToggle label={textCopy.toolbar.italic} pressed={selectedTextLayer.fontStyle === 'italic'} disabled={!canEdit} onClick={() => updateSelectedText({ fontStyle: selectedTextLayer.fontStyle === 'italic' ? 'normal' : 'italic' })}><Italic aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
+          <ToolbarToggle label={textCopy.toolbar.underline} pressed={selectedTextLayer.underline === true} disabled={!canEdit} onClick={() => updateSelectedText({ underline: selectedTextLayer.underline !== true })}><Underline aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
+          <div aria-label={textCopy.toolbar.alignment} className="inline-flex items-center gap-0.5" role="group">
+            <ToolbarToggle label={textCopy.toolbar.left} pressed={selectedTextLayer.alignment === 'left'} disabled={!canEdit} onClick={() => updateAlignment('left')}><AlignLeft aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
+            <ToolbarToggle label={textCopy.toolbar.center} pressed={selectedTextLayer.alignment === 'center'} disabled={!canEdit} onClick={() => updateAlignment('center')}><AlignCenter aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
+            <ToolbarToggle label={textCopy.toolbar.right} pressed={selectedTextLayer.alignment === 'right'} disabled={!canEdit} onClick={() => updateAlignment('right')}><AlignRight aria-hidden="true" className="h-4 w-4" /></ToolbarToggle>
+          </div>
+        </>
+      )}
       <div className="relative shrink-0">
         <ToolbarToggle label={textCopy.toolbar.styles} pressed={stylesOpen} disabled={!canEdit} onClick={() => setStylesOpen((open) => !open)}><span aria-hidden="true" className="text-base">T</span></ToolbarToggle>
         {stylesOpen ? <div aria-label={textCopy.toolbar.styles} className="absolute right-0 top-full z-50 mt-1 grid w-64 gap-2 rounded-md border border-[color:var(--coat-line)] bg-[color:var(--coat-panel)] p-3 shadow-xl" role="dialog">
@@ -132,6 +167,34 @@ export function TextSelectionToolbar({ locale }: { locale: CoatLocale }) {
   );
 }
 
-function ToolbarToggle({ children, disabled, label, onClick, pressed }: { children: ReactNode; disabled: boolean; label: string; onClick: () => void; pressed?: boolean }) {
-  return <button aria-label={label} aria-pressed={pressed} className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded border border-transparent text-[color:var(--coat-text)] hover:border-[color:var(--coat-line)] hover:bg-[color:var(--coat-active)] disabled:cursor-not-allowed disabled:opacity-40" disabled={disabled} type="button" onClick={onClick}>{children}</button>;
+function RingPathControls({
+  copy,
+  disabled,
+  onPathChange,
+  path,
+}: {
+  copy: RingToolbarCopy;
+  disabled: boolean;
+  onPathChange: (path: EditableRingTextPath) => void;
+  path: EditableRingTextPath;
+}) {
+  const replaceRingPath = (patch: Partial<Pick<EditableRingTextPath, 'facing' | 'layout' | 'spacing'>>): EditableRingTextPath => ({
+    mode: 'ring',
+    radius: path.radius,
+    facing: patch.facing ?? path.facing,
+    layout: patch.layout ?? path.layout,
+    spacing: patch.spacing ?? path.spacing,
+  });
+  return (
+    <div className="inline-flex items-center gap-0.5" role="group">
+      <ToolbarToggle label={copy.in.ariaLabel} pressed={path.facing === 'in'} disabled={disabled} className="min-w-9 px-1.5 text-xs font-semibold" onClick={() => onPathChange(replaceRingPath({ facing: 'in' }))}>{copy.in.label}</ToolbarToggle>
+      <ToolbarToggle label={copy.out.ariaLabel} pressed={path.facing === 'out'} disabled={disabled} className="min-w-9 px-1.5 text-xs font-semibold" onClick={() => onPathChange(replaceRingPath({ facing: 'out' }))}>{copy.out.label}</ToolbarToggle>
+      <ToolbarToggle label={copy.arc.ariaLabel} pressed={path.layout === 'arc'} disabled={disabled} className="min-w-9 px-1.5 text-xs font-semibold" onClick={() => onPathChange(replaceRingPath({ layout: path.layout === 'arc' ? 'full' : 'arc' }))}>{copy.arc.label}</ToolbarToggle>
+      <ToolbarToggle label={copy.even.ariaLabel} pressed={path.spacing === 'even'} disabled={disabled} className="min-w-9 px-1.5 text-xs font-semibold" onClick={() => onPathChange(replaceRingPath({ spacing: path.spacing === 'even' ? 'natural' : 'even' }))}>{copy.even.label}</ToolbarToggle>
+    </div>
+  );
+}
+
+function ToolbarToggle({ children, className, disabled, label, onClick, pressed }: { children: ReactNode; className?: string; disabled: boolean; label: string; onClick: () => void; pressed?: boolean }) {
+  return <button aria-label={label} aria-pressed={pressed} className={`inline-flex h-9 shrink-0 items-center justify-center rounded border border-transparent text-[color:var(--coat-text)] hover:border-[color:var(--coat-line)] hover:bg-[color:var(--coat-active)] disabled:cursor-not-allowed disabled:opacity-40 ${className ?? 'w-9'}`} disabled={disabled} type="button" onClick={onClick}>{children}</button>;
 }

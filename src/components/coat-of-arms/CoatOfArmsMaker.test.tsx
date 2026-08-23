@@ -33,6 +33,19 @@ function renderWorkbench(locale: 'en' | 'zh' = 'en', project = createDefaultProj
   return render(<CoatOfArmsMaker locale={locale} />);
 }
 
+function projectWithoutShieldLayers(locale: 'en' | 'zh' = 'en') {
+  const project = createDefaultProject(locale);
+  const shieldCountBeforeFilter = project.layers.filter((layer) => layer.type === 'shield').length;
+  if (shieldCountBeforeFilter === 0) {
+    throw new Error(`Expected default project to include a shield layer before filtering, got: ${shieldCountBeforeFilter}`);
+  }
+  const layers = project.layers.filter((layer) => layer.type !== 'shield');
+  if (!layers.some((layer) => layer.type === 'background')) {
+    throw new Error('Expected a background layer to remain after removing shields');
+  }
+  return { ...project, layers };
+}
+
 function expectWorkbenchProjectNameToBeNonHeading(expectedProjectName: string) {
   const workbench = screen.getByRole('main');
   expect(within(workbench).queryByRole('heading', { name: expectedProjectName })).toBeNull();
@@ -1061,23 +1074,6 @@ describe('CoatOfArmsMaker', () => {
     expect(document.querySelector('main.coat-target-workbench')?.getAttribute('data-appearance')).toBe('dark');
   });
 
-  it('hydrates light workbench chrome from the stored editor preferences document', async () => {
-    localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, JSON.stringify({
-      version: 1,
-      appearance: 'light',
-      colorPickerMode: 'simple',
-      canvasPreset: 'square',
-      jpegQuality: 'high',
-      customPalette: [],
-      backgroundGradient: null,
-    }));
-    renderWorkbench();
-
-    await waitFor(() => {
-      expect(document.querySelector('main.coat-target-workbench')?.getAttribute('data-appearance')).toBe('light');
-    });
-  });
-
   it('surfaces stored editor preference load failures on the workbench chrome', async () => {
     localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, '{');
     renderWorkbench();
@@ -1710,6 +1706,63 @@ describe('CoatOfArmsMaker', () => {
       locale: 'en',
       name: 'Keep these arms',
     });
+  });
+
+  it('keeps remaining editor surfaces usable with 0 shields and adds a heater shield back', () => {
+    renderWorkbench('en', projectWithoutShieldLayers('en'));
+
+    expect(screen.getByRole('region', { name: 'Coat scene' })).toBeDefined();
+    expect(document.querySelector('.coat-target-artboard')).not.toBeNull();
+    const shieldsPanel = getDesktopPanel('Shields');
+    expect(within(shieldsPanel).getByRole('region', { name: 'Shield library' })).toBeDefined();
+    expect(within(shieldsPanel).getByText('No shield layer.')).toBeDefined();
+    expect(within(shieldsPanel).queryByRole('button', { name: /^Select shield:/ })).toBeNull();
+
+    fireEvent.click(getDesktopTool('Custom'));
+    const emptyCustomPanel = getDesktopPanel('Custom');
+    expect(within(emptyCustomPanel).getByRole('region', { name: 'Shield & field' })).toBeDefined();
+    expect(within(emptyCustomPanel).getByText('No shield layer.')).toBeDefined();
+    expect(within(emptyCustomPanel).queryByRole('region', { name: 'Division of the Field' })).toBeNull();
+    expect(within(emptyCustomPanel).getByRole('button', { name: 'Add New Escutcheon' }).classList.contains('coat-escutcheon-add-button')).toBe(true);
+
+    fireEvent.click(getDesktopTool('Colors'));
+    expect(within(getDesktopPanel('Colors')).getByRole('region', { name: 'Used colours' })).toBeDefined();
+    fireEvent.click(getDesktopToolTreeItem('Background'));
+    expect(within(getDesktopPanel('Colors')).getByRole('region', { name: 'Background Color' })).toBeDefined();
+    expect(within(getDesktopPanel('Colors')).getByLabelText('Custom background colour')).toBeDefined();
+
+    fireEvent.click(getDesktopTool('Flags'));
+    expect(within(getDesktopPanel('Flags')).getByText('No shield layer.')).toBeDefined();
+    expect(within(getDesktopPanel('Flags')).queryByRole('button', { name: 'Use Nordic cross flag preset' })).toBeNull();
+
+    fireEvent.click(getDesktopTool('Custom'));
+    fireEvent.click(within(getDesktopPanel('Custom')).getByRole('button', { name: 'Add New Escutcheon' }));
+
+    const addedShield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
+    if (!addedShield || addedShield.type !== 'shield') {
+      throw new Error(`Expected a heater shield after adding from empty Custom, got: ${addedShield?.type ?? 'missing layer'}`);
+    }
+    expect(addedShield.assetId).toBe('heater-shield');
+    expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([addedShield.id]);
+    expect(within(getDesktopPanel('Custom')).getByLabelText('Editing: Escutcheon 1')).toBeDefined();
+    expect(useCoatProjectStore.getState().project.layers.filter((layer) => layer.type === 'background')).toHaveLength(1);
+  });
+
+  it('localizes the empty Custom shield panel in Chinese and adds a heater shield back', () => {
+    renderWorkbench('zh', projectWithoutShieldLayers('zh'));
+
+    fireEvent.click(getDesktopTool('自定义'));
+    const customPanel = getDesktopPanel('自定义');
+    expect(within(customPanel).getByRole('region', { name: '盾牌与底纹' })).toBeDefined();
+    expect(within(customPanel).getByText('没有盾牌图层。')).toBeDefined();
+    fireEvent.click(within(customPanel).getByRole('button', { name: '添加新盾形' }));
+
+    const addedShield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
+    if (!addedShield || addedShield.type !== 'shield') {
+      throw new Error(`Expected a heater shield after adding from Chinese Custom, got: ${addedShield?.type ?? 'missing layer'}`);
+    }
+    expect(addedShield.assetId).toBe('heater-shield');
+    expect(within(getDesktopPanel('自定义')).getByLabelText('正在编辑：盾形 1')).toBeDefined();
   });
 
 });

@@ -106,6 +106,7 @@ export type CoatLayerPatch = {
   motif?: FieldPattern;
   alignment?: TextAlignment;
   path?: TextPathPlacement;
+  boxWidth?: number;
   transform?: CanvasTransform;
 };
 
@@ -144,7 +145,7 @@ export type CoatProjectCommand =
   | { type: 'set-canvas-size'; width: number; height: number }
   | { type: 'add-drawing-layer'; path: string; color: string; strokeWidth: number; opacity?: number; transform?: CanvasTransform }
   | { type: 'set-project-name'; name: string }
-  | { type: 'add-text-layer'; text: string; color: string; fontSize: number; fontFamily?: TextFontFamily; fontStyle?: TextFontStyle; fontWeight?: TextFontWeight; underline?: boolean; strokeColor?: string; strokeWidth?: number; alignment: TextAlignment; path: TextPathPlacement; transform?: CanvasTransform }
+  | { type: 'add-text-layer'; text: string; color: string; fontSize: number; fontFamily?: TextFontFamily; fontStyle?: TextFontStyle; fontWeight?: TextFontWeight; underline?: boolean; strokeColor?: string; strokeWidth?: number; alignment: TextAlignment; path: TextPathPlacement; boxWidth?: number; transform?: CanvasTransform }
   | { type: 'remove-text-layer'; layerId: string }
   | { type: 'register-local-upload'; upload: LocalUpload }
   | { type: 'add-local-upload-images'; uploads: LocalUpload[] }
@@ -893,6 +894,9 @@ function addTextLayer(
   assertTextStrokeWidth(strokeWidth);
   assertTextAlignment(command.alignment);
   assertTextPath(command.path);
+  if ('boxWidth' in command) {
+    assertTextBoxWidth(command.boxWidth, command.path.mode);
+  }
   const transform = command.transform ?? defaultTransform();
   assertTransform(transform);
   return withLayers(project, [
@@ -902,6 +906,7 @@ function addTextLayer(
       fontSize: command.fontSize, fontFamily, fontStyle, fontWeight,
       underline, strokeColor, strokeWidth,
       alignment: command.alignment, path: cloneTextPath(command.path),
+      ...('boxWidth' in command ? { boxWidth: command.boxWidth } : {}),
       transform: cloneCanvasTransform(transform), visible: true, locked: false, groupId: null,
     },
   ]);
@@ -1150,23 +1155,23 @@ function getUnlockedLayer(project: CoatProject, layerId: string): CoatLayer {
 }
 
 function assertBaseLayerCanBeRemoved(project: CoatProject, removedLayers: CoatLayer[]): void {
-  for (const baseLayerType of ['background', 'shield'] as const) {
-    const remainingLayerCount = project.layers.filter((layer) => (
-      layer.type === baseLayerType && !removedLayers.some((removedLayer) => removedLayer.id === layer.id)
-    )).length;
-    if (remainingLayerCount === 0) {
-      const removedBaseLayer = removedLayers.find((layer) => layer.type === baseLayerType);
-      throw new Error(`Cannot remove the sole base ${baseLayerType} layer: ${removedBaseLayer?.id}`);
-    }
+  const remainingBackgroundCount = project.layers.filter((layer) => (
+    layer.type === 'background' && !removedLayers.some((removedLayer) => removedLayer.id === layer.id)
+  )).length;
+  if (remainingBackgroundCount > 0) return;
+  const removedBackground = removedLayers.find((layer) => layer.type === 'background');
+  if (!removedBackground) {
+    throw new Error(
+      `Cannot leave a project with 0 background layers; remaining background count: ${remainingBackgroundCount}; removed layer ids: ${JSON.stringify(removedLayers.map((layer) => layer.id))}`,
+    );
   }
+  throw new Error(`Cannot remove the sole base ${removedBackground.type} layer: ${removedBackground.id}`);
 }
 
 function assertRequiredBaseLayers(layers: CoatLayer[]): void {
-  for (const baseLayerType of ['background', 'shield'] as const) {
-    const baseLayerCount = layers.filter((layer) => layer.type === baseLayerType).length;
-    if (baseLayerCount === 0) {
-      throw new Error(`Invalid project base ${baseLayerType} layer count: ${baseLayerCount}; minimum is 1`);
-    }
+  const backgroundCount = layers.filter((layer) => layer.type === 'background').length;
+  if (backgroundCount === 0) {
+    throw new Error(`Invalid project base background layer count: ${backgroundCount}; minimum is 1`);
   }
 }
 
@@ -1256,7 +1261,7 @@ function assertProjectCommand(command: unknown): asserts command is CoatProjectC
     'set-canvas-size': ['type', 'width', 'height'],
     'add-drawing-layer': ['type', 'path', 'color', 'strokeWidth', 'opacity', 'transform'],
     'set-project-name': ['type', 'name'],
-    'add-text-layer': ['type', 'text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'underline', 'strokeColor', 'strokeWidth', 'alignment', 'path', 'transform'],
+    'add-text-layer': ['type', 'text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'underline', 'strokeColor', 'strokeWidth', 'alignment', 'path', 'boxWidth', 'transform'],
     'remove-text-layer': ['type', 'layerId'],
     'register-local-upload': ['type', 'upload'],
     'add-local-upload-images': ['type', 'uploads'],
@@ -1280,7 +1285,7 @@ function assertLayerPatch(layer: CoatLayer, patch: unknown): asserts patch is Co
     background: ['assetId', 'motif', 'opacity', 'fill'], shield: ['assetId', 'field', 'transform', 'colorReplacements'],
     ordinary: ['assetId', 'color', 'colorReplacements', 'rasterTint', 'transform'], charge: ['assetId', 'color', 'colorReplacements', 'rasterTint', 'transform'], top: ['assetId', 'color', 'colorReplacements', 'rasterTint', 'transform'],
     draw: ['pathData', 'color', 'strokeWidth', 'opacity', 'transform'],
-    image: ['opacity', 'transform'], text: ['text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'underline', 'strokeColor', 'strokeWidth', 'alignment', 'path', 'transform'],
+    image: ['opacity', 'transform'], text: ['text', 'color', 'fontSize', 'fontFamily', 'fontStyle', 'fontWeight', 'underline', 'strokeColor', 'strokeWidth', 'alignment', 'path', 'boxWidth', 'transform'],
   };
   for (const patchKey of Object.keys(patch)) {
     if (!allowedPatchKeys[layer.type].includes(patchKey)) {
@@ -1312,6 +1317,10 @@ function assertLayerPatch(layer: CoatLayer, patch: unknown): asserts patch is Co
   if ('motif' in patch) assertFieldPattern(patch.motif);
   if ('alignment' in patch) assertTextAlignment(patch.alignment);
   if ('path' in patch) assertTextPath(patch.path);
+  if ('boxWidth' in patch) {
+    const nextPath = 'path' in patch ? patch.path : layer.type === 'text' ? layer.path : { mode: 'none' };
+    assertTextBoxWidth(patch.boxWidth, isRecord(nextPath) ? nextPath.mode : nextPath);
+  }
   if ('transform' in patch) assertTransform(patch.transform);
 }
 
@@ -1349,8 +1358,12 @@ function assertCoatLayer(layer: unknown, uploadById: Map<string, LocalUpload>): 
       assertOpacity(layer.opacity, 'image layer opacity');
       assertTransform(layer.transform); return;
     case 'text':
-      assertExactKeys(layer, ['id', 'type', 'text', 'color', 'fontSize', 'underline', 'strokeColor', 'strokeWidth', 'fontFamily', 'fontStyle', 'fontWeight', 'alignment', 'path', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'text layer');
-      assertTextLength(layer.text); assertColor(layer.color, 'text layer color'); assertTextFontSize(layer.fontSize); if ('underline' in layer) assertTextUnderline(layer.underline); if ('strokeColor' in layer) assertColor(layer.strokeColor, 'text stroke color'); if ('strokeWidth' in layer) assertTextStrokeWidth(layer.strokeWidth); if ('fontFamily' in layer) assertTextFontFamily(layer.fontFamily); if ('fontStyle' in layer) assertTextFontStyle(layer.fontStyle); if ('fontWeight' in layer) assertTextFontWeight(layer.fontWeight); assertTextAlignment(layer.alignment); assertTextPath(layer.path); assertTransform(layer.transform); return;
+      assertExactKeys(layer, ['id', 'type', 'text', 'color', 'fontSize', 'underline', 'strokeColor', 'strokeWidth', 'fontFamily', 'fontStyle', 'fontWeight', 'alignment', 'path', 'boxWidth', 'transform', 'visible', 'locked', 'groupId', 'displayName'], 'text layer');
+      assertTextLength(layer.text); assertColor(layer.color, 'text layer color'); assertTextFontSize(layer.fontSize); if ('underline' in layer) assertTextUnderline(layer.underline); if ('strokeColor' in layer) assertColor(layer.strokeColor, 'text stroke color'); if ('strokeWidth' in layer) assertTextStrokeWidth(layer.strokeWidth); if ('fontFamily' in layer) assertTextFontFamily(layer.fontFamily); if ('fontStyle' in layer) assertTextFontStyle(layer.fontStyle); if ('fontWeight' in layer) assertTextFontWeight(layer.fontWeight); assertTextAlignment(layer.alignment);
+      const migratedPath = migrateLegacyTextPath(layer.path);
+      // History snapshots are frozen; skip assignment when the path is already in-memory shape.
+      if (migratedPath !== layer.path) layer.path = migratedPath;
+      assertTextPath(layer.path); if ('boxWidth' in layer) assertTextBoxWidth(layer.boxWidth, isRecord(layer.path) ? layer.path.mode : layer.path); assertTransform(layer.transform); return;
   }
 }
 
@@ -2049,37 +2062,87 @@ function assertAssetColorReplacements(assetId: string, colorReplacements: unknow
   }
 }
 
+/** Rewrites saved curve/ring documents into the in-memory placement. Writes must already be the new shape. */
+export function migrateLegacyTextPath(path: unknown): unknown {
+  if (!isRecord(path)) return path;
+  if (path.mode === 'curve' && (path.curve === 'upper' || path.curve === 'lower') && !('startX' in path)) {
+    assertExactKeys(path, ['mode', 'curve', 'controlX', 'controlY'], 'text path');
+    const startY = path.curve === 'upper' ? 72 : 38;
+    const defaultControlY = path.curve === 'upper' ? 30 : 80;
+    return {
+      mode: 'curve',
+      startX: 10,
+      startY,
+      controlX: path.controlX ?? 50,
+      controlY: path.controlY ?? defaultControlY,
+      endX: 90,
+      endY: startY,
+    };
+  }
+  if (
+    path.mode === 'ring'
+    && (path.curve === 'clockwise' || path.curve === 'counterclockwise')
+    && !('facing' in path)
+  ) {
+    assertExactKeys(path, ['mode', 'curve', 'radius'], 'text path');
+    return {
+      mode: 'ring',
+      radius: path.radius ?? 40,
+      facing: path.curve === 'clockwise' ? 'out' : 'in',
+      layout: 'full',
+      spacing: 'natural',
+    };
+  }
+  return path;
+}
+
 function assertTextPath(path: unknown): asserts path is TextPathPlacement {
   if (!isRecord(path) || typeof path.mode !== 'string') throw new Error(`Invalid text path: ${String(path)}`);
   if (path.mode === 'none') {
     assertExactKeys(path, ['mode'], 'text path');
     return;
   }
-  if (path.mode === 'motto' || path.mode === 'curve') {
-    assertExactKeys(path, ['mode', 'curve', 'controlX', 'controlY'], 'text path');
+  if (path.mode === 'motto') {
+    assertExactKeys(path, ['mode', 'curve'], 'text path');
     if (path.curve !== 'upper' && path.curve !== 'lower') {
       throw new Error(`Invalid text path: ${JSON.stringify(path)}`);
     }
-    const hasControlX = 'controlX' in path;
-    const hasControlY = 'controlY' in path;
-    if (hasControlX !== hasControlY) {
-      throw new Error(`Invalid text path control point: ${JSON.stringify(path)}`);
-    }
-    if (hasControlX) {
-      assertTextPathNumber(path.controlX, 'control x', 0, 100);
-      assertTextPathNumber(path.controlY, 'control y', 0, 110);
-    }
+    return;
+  }
+  if (path.mode === 'curve') {
+    assertExactKeys(path, ['mode', 'startX', 'startY', 'controlX', 'controlY', 'endX', 'endY'], 'text path');
+    assertTextPathNumber(path.startX, 'start x', 0, 100);
+    assertTextPathNumber(path.startY, 'start y', 0, 110);
+    assertTextPathNumber(path.controlX, 'control x', 0, 100);
+    assertTextPathNumber(path.controlY, 'control y', 0, 110);
+    assertTextPathNumber(path.endX, 'end x', 0, 100);
+    assertTextPathNumber(path.endY, 'end y', 0, 110);
     return;
   }
   if (path.mode === 'ring') {
-    assertExactKeys(path, ['mode', 'curve', 'radius'], 'text path');
-    if (path.curve !== 'clockwise' && path.curve !== 'counterclockwise') {
-      throw new Error(`Invalid text path: ${JSON.stringify(path)}`);
+    assertExactKeys(path, ['mode', 'radius', 'facing', 'layout', 'spacing'], 'text path');
+    assertTextPathNumber(path.radius, 'radius', 10, 50);
+    if (path.facing !== 'in' && path.facing !== 'out') {
+      throw new Error(`Invalid text path facing: ${String(path.facing)}`);
     }
-    if ('radius' in path) assertTextPathNumber(path.radius, 'radius', 10, 50);
+    if (path.layout !== 'full' && path.layout !== 'arc') {
+      throw new Error(`Invalid text path layout: ${String(path.layout)}`);
+    }
+    if (path.spacing !== 'natural' && path.spacing !== 'even') {
+      throw new Error(`Invalid text path spacing: ${String(path.spacing)}`);
+    }
     return;
   }
   throw new Error(`Invalid text path: ${JSON.stringify(path)}`);
+}
+
+function assertTextBoxWidth(boxWidth: unknown, pathMode: unknown): asserts boxWidth is number {
+  if (pathMode !== 'none') {
+    throw new Error(`Invalid text box width for path mode: ${String(pathMode)}; boxWidth is ${String(boxWidth)}`);
+  }
+  if (typeof boxWidth !== 'number' || !Number.isFinite(boxWidth) || boxWidth < 8 || boxWidth > 100) {
+    throw new Error(`Invalid text box width: ${String(boxWidth)}; expected 8-100 scene units`);
+  }
 }
 
 function assertTextPathNumber(value: unknown, label: string, minimum: number, maximum: number): asserts value is number {
@@ -2161,13 +2224,14 @@ function cloneLayerForDuplicate(layer: CoatLayer, newLayerId: string): CoatLayer
         ...(layer.fontFamily ? { fontFamily: layer.fontFamily } : {}),
         ...(layer.fontStyle ? { fontStyle: layer.fontStyle } : {}),
         ...(layer.fontWeight ? { fontWeight: layer.fontWeight } : {}),
+        ...(layer.boxWidth === undefined ? {} : { boxWidth: layer.boxWidth }),
         alignment: layer.alignment, path: cloneTextPath(layer.path), transform: cloneCanvasTransform(layer.transform),
       };
   }
 }
 
 function cloneTextPath(path: TextPathPlacement): TextPathPlacement {
-  return { ...path } as TextPathPlacement;
+  return { ...path };
 }
 
 function cloneCanvasTransform(transform: CanvasTransform): CanvasTransform {

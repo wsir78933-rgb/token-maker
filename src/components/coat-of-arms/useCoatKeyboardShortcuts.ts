@@ -187,9 +187,7 @@ function getUnlockedSelectedLayers(layers: CoatLayer[], selection: string[]): Co
 
 function canRemoveSelectedLayers(projectLayers: CoatLayer[], selectedLayers: CoatLayer[]): boolean {
   const selectedLayerIds = new Set(selectedLayers.map((layer) => layer.id));
-  return ['background', 'shield'].every((baseLayerType) => projectLayers.some((layer) => (
-    layer.type === baseLayerType && !selectedLayerIds.has(layer.id)
-  )));
+  return projectLayers.some((layer) => layer.type === 'background' && !selectedLayerIds.has(layer.id));
 }
 
 function isLayer(layer: CoatLayer | undefined): layer is CoatLayer {

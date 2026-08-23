@@ -1,5 +1,101 @@
 # WORKLOG
 
+## 交接单 · 2026-08-23 11:30 CST · Cursor Grok
+
+### 本次目标
+
+纹章制作器：大图按原样上传（方案 A，浏览器 IndexedDB，不上云），以及 Tools → Names 对齐 coamaker 对照组（5 张可复制卡片 + Saved Names，去掉额外 identity）。不改 chrome 99/50/40。不抄 PRO/广告文案。本交接班只写交接单；用户已确认把产品改动存档。
+
+### 已完成
+
+- 新上传走 `encoding: 'indexed-db'` + `byteLength`，原 File 进 IndexedDB（库名 `coat-of-arms-local-upload-blobs`）。草稿 JSON 仍 ≤1 MB，不再塞大图 Base64。限额 **8_388_608** / **16_777_216** / 最多 8 个。旧草稿 `encoding: 'base64'` 仍能校验。
+- 已删除 canvas 自动压缩路径（`local-upload-compress` 未进 git）。`createValidatedLocalUpload` 不再缩小 PNG。
+- Names：默认生成 5 条；空列表直到 Generate；卡片可复制；Saved Names；identity UI 与 `createCoatIdentity` 等已删。
+- Codex 复审 High：`void deleteLocalUploadBlob` 破坏 undo、失败 register 留下孤儿 blob、restore 无 catch、无效草稿 `catch { return [] }`。Grok 已修：remove 不删 blob（undo 要留）、replace/randomize/discard 删未引用 blob、失败 put/register 回滚、restore 可见报错、无效草稿 discard 清整个 blob store。
+- 浏览器（ego-browser，`http://localhost:3000/coat-of-arms-maker`，先 Discard draft）自定义盾形 **2,282,558** 字节 PNG：**6/6 PASS**。状态无 Compressed；href 仍 720×792；草稿 JSON 约 1247 字节且 `byteLength: 2282558`；刷新 Restore 仍清晰；>8 MB 报 `Invalid upload file size: 8388609`。报告 `tmp/visual-idb-upload-verify.md`（未进 git）。
+- 存档：`c3928d2`（24 files，`main` 比 `origin/main` 超 1）。**未 push**。`WORKLOG.md` 与 `tmp/` 未进该 commit。
+- Worker 自报（本交接班提交后未再跑）：blobs 13；commands 88；scene-svg 相关 98；panels 54；Fail Fast 修复 5 文件 98 tests；`pnpm typecheck` exit 0。
+
+### 做到一半
+
+- `workbench-copy` 仍有未使用的 `localUploadCompressed`。
+- `CoatOfArmsMaker.test.tsx` 里约 3 条 CSS 画板几何失败，worker 归因于已有 `globals.css`（Names 表单），不是 IndexedDB。全量 `pnpm test` 此前非全绿。
+- 没有单独用 indexed-db 上传跑导出 PNG/JPEG 的测试。
+- 大图以内嵌 data URL 画在 SVG 里（避免 blob: 套进 data: SVG 导致导出画布污染）；整页 CDP 截图曾超时。
+- Orca Run `run_4262b8039656`（IndexedDB）与更早的 `run_43a09352b9fb`（压缩/Names）可能仍绑着旧 worker 终端；agy 文案任务 `agent_prompt_stalled`，改由 Grok 完成。
+
+### 下一步
+
+- 用户若要发布：`git push`（需另说）。不要把 `WORKLOG.md` 放进产品 commit。
+- 可选：删 `localUploadCompressed`；补 indexed-db 导出测试；修 Names/`globals.css` 相关 CSS 测试。
+- 自定义盾形仍是亮度遮罩：画布上颜色是底纹透出来的，不是星云原色。原图像素不再被 ×0.7 砸碎。
+
+### 踩过的坑
+
+- 只用 `http://localhost:3000/coat-of-arms-maker`，不要 `127.0.0.1`。草稿 overlay 会 `inert` 工作台，量之前 Discard。
+- 把 2.2 MB PNG 压进 256 KB：PNG 无质量旋钮，只能反复 ×0.7，星云软边变成脏遮罩。
+- 方案 A 不是上云，是本机 IndexedDB；localStorage 1 MB 装不下原文件。
+- `agy` 派发两次 `agent_prompt_stalled`；失败 dispatch 的 `worker_done` 会被 `dispatch_capability_invalid` 拒绝，文件可能已经改了。
+- `store.dispatch` 里 `void deleteLocalUploadBlob` 会先清内存再删 IDB，undo 后 `requireLocalUploadDataUrl` 失败。
+- 不要抄 coamaker PRO / ads / `City Names` / 把语言选项改成 EN/DE 标签（本次 Names 未改词库语言标签）。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/lib/coat-of-arms/local-upload-blobs.test.ts src/lib/coat-of-arms/commands.test.ts src/lib/coat-of-arms/project-storage.test.ts src/lib/coat-of-arms/store.test.ts src/lib/coat-of-arms/scene-svg.test.ts src/components/coat-of-arms/CoatOfArmsPanels.test.tsx src/components/coat-of-arms/LayerPanel.test.tsx src/components/coat-of-arms/NamePanel.test.tsx
+pnpm typecheck
+```
+
+页面：`http://localhost:3000/coat-of-arms-maker`（localhost；关掉草稿 overlay）→ Custom Shield Upload 传一张 >256 KB 且 ≤8 MB 的 PNG，状态不应出现 Compressed，画布边缘不应发方发脏。刷新后 Restore draft 图还在。Tools → Names：Generate 出 5 张卡，Copy 后出现 Saved Names。chrome 仍 99/50/40。
+
+---
+
+## 交接单 · 2026-08-23 08:43 CST · Cursor Grok
+
+### 本次目标
+
+Custom 盾面：分割线样式（Wavy 等）与分区花纹（如左侧 Barry）同时保存、同时画出来。Orca `run_91e479b6b9cf` 编排多 agent；不抄 PRO/广告；chrome 仍 99/50/40。本交接班只写交接单，不新开功能。
+
+### 已完成
+
+- 引擎允许 `per-pale` / `per-fess` / `per-bend` / `per-bend-sinister` 同时有 `regions` 和 `divisionLine`。区域裁切走 `fieldRegionDivisionLinePath`，不是直缝 `H50`。
+- Custom 改一侧花纹或 Frequency/Amplitude 不再互相删字段；换分割类型仍清旧区域；Straight / 不支持线样式的分割仍去掉 `divisionLine`。
+- Custom A UI（此前同 run）：亮色分割图标、Bend Sinister、Division Line Style、分区 accordion、Keep pattern to field。
+- 徽记：Overall `fieldRegionId=overall` 裁整盾，不抛错；仅有 `fieldPlacement` 的旧徽记在匹配分割上也跟波浪缝；Pale 上 Dexter 徽记再改成 Fess 时不再因过期 `dexter` 崩画布（`getMatchingDivisionLineRegionPath`）。
+- 代码在 `df602c2`（message `最新`，2026-08-23 08:40 +0800）。工作区干净。`HEAD` = `origin/main` = `df602c24171d7e6ad70f148f793bdfb5f7cd9443`。上一笔 `b8c71dc`（`2`）是画板 overflow 淡出 + 默认 1800×1080 + 缩放 0.935/0.6。
+- Worker 当时自报：`field-division-line` 9；`field`+`commands`+line 150；`scene-svg` 46；escutcheon 24；`pnpm typecheck` exit 0。目检 `http://localhost:3000/coat-of-arms-maker`（Discard draft）Per Pale + Wavy + 左 Barry + 改 Frequency **3/3 PASS**。报告/图在 commit 里：`tmp/visual-division-line-regions.md` 及 `-01/-02/-03` png。本交接班未再跑命令。
+
+### 做到一半
+
+无产品半截。Orca 任务 `task_1e82a8c5d0ba`（Codex 复审 High-fix）当时卡在启动 MCP，没有 `worker_done`；Grok 已另做复审（无剩余 High）。过夜后该 Codex 终端是否仍开着，本班未查。
+
+### 下一步
+
+- 用户若要 B 范围再单开：Chevron Edge/Point Y、Gyron 6–16、Add Color、barry Pieces。不要抄 PRO。
+- 共存测试仍以 per-pale 为主；per-fess / per-bend 几何已实现，覆盖较薄。
+- `CoatOfArmsMaker.test.tsx` 点 3:5 再断言 1800×1080，默认改成 3-5 后同义反复。另有 3 条 CSS 几何失败（当时全量里 3 条，非本次 Custom 引入）。
+- 不要把 `WORKLOG.md` 放进产品 commit。本文件未随 `df602c2` 提交。
+
+### 踩过的坑
+
+- 只用 `http://localhost:3000/coat-of-arms-maker`，不要 `127.0.0.1`。草稿 overlay 会把 workbench 设成 `inert`，量之前 Discard/关草稿。
+- 旧引擎 `assertFieldRegions` 禁止 `regions`+`divisionLine` 并存；Custom 保存一侧会删另一侧。竞品是两边都留。
+- Custom Overall 加徽记带 `fieldRegionId=overall`，曾对波浪线调用 `fieldRegionDivisionLinePath` 抛 `Unsupported field division line region overall`。
+- Pale→Fess 后 `divisionLine` 仍在、charge 仍 `dexter`，曾把 `CoatOfArmsCanvas` 卸掉。
+- 第一次 `worker-release` T4 grok 会卡住；重跑才释放成功。不要因 `check --wait` 超时杀还在干活的 worker。
+- 不要抄 coamaker「Upload … with PRO」/ Upgrade。Show Border 不是付费墙。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/lib/coat-of-arms/field-division-line.test.ts src/lib/coat-of-arms/field.test.ts src/lib/coat-of-arms/commands.test.ts src/lib/coat-of-arms/scene-svg.test.ts src/components/coat-of-arms/ShieldFieldPanel.escutcheon.test.tsx
+pnpm typecheck
+```
+
+页面：`http://localhost:3000/coat-of-arms-maker`（localhost；关掉草稿 overlay）→ Custom → Per Pale → Division Line Style **Wavy** → Dexter (Left Side) **Barry** → 改 Frequency。左 Barry、右另一色、缝仍是波浪。Overall Add Charge 不应白屏。chrome 仍 99/50/40。
+
+---
+
 ## 交接单 · 2026-08-22 22:02 CST · Cursor Grok coordinator
 
 ### 本次目标

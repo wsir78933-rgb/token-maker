@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { cleanup, render, screen } from '@testing-library/react';
-import { createDefaultProject } from '@/lib/coat-of-arms/assets';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { createDefaultProject, getCoatAsset } from '@/lib/coat-of-arms/assets';
 import { applyProjectCommand } from '@/lib/coat-of-arms/commands';
 import {
   clearLocalUploadBlobMemoryForTests,
@@ -79,6 +79,28 @@ describe('LayerPanel', () => {
       'Cannot resolve local upload href: indexed-png encoding=indexed-db; Unknown local upload data URL: indexed-png',
     );
   });
+
+  it('deletes the sole shield from the layer row', () => {
+    const { id: shieldId, name: shieldName } = requireDefaultNamedLayer('shield');
+    render(<LayerPanel locale="en" />);
+
+    fireEvent.click(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').panels.deleteLayer(shieldName) }));
+
+    expect(useCoatProjectStore.getState().project.layers.some((layer) => layer.id === shieldId)).toBe(false);
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('keeps the sole background and surfaces the engine rejection', () => {
+    const { id: backgroundId, name: backgroundName } = requireDefaultNamedLayer('background');
+    render(<LayerPanel locale="en" />);
+
+    fireEvent.click(screen.getByRole('button', { name: getCoatWorkbenchCopy('en').panels.deleteLayer(backgroundName) }));
+
+    expect(useCoatProjectStore.getState().project.layers.some((layer) => layer.id === backgroundId)).toBe(true);
+    expect(screen.getByRole('alert').textContent).toBe(
+      `Editor action failed: Cannot remove the sole base background layer: ${backgroundId}`,
+    );
+  });
 });
 
 function projectWithImageUpload(upload: LocalUpload): CoatProject {
@@ -92,6 +114,12 @@ function projectWithImageUpload(upload: LocalUpload): CoatProject {
 function renderLayerPanel(project: CoatProject) {
   useCoatProjectStore.getState().replaceProject(project);
   return render(<LayerPanel locale="en" />);
+}
+
+function requireDefaultNamedLayer(type: 'background' | 'shield'): { id: string; name: string } {
+  const layer = useCoatProjectStore.getState().project.layers.find((candidate) => candidate.type === type);
+  if (!layer || !('assetId' in layer)) throw new Error(`Expected a default ${type} layer with an asset id`);
+  return { id: layer.id, name: getCoatAsset(layer.assetId).name.en };
 }
 
 function imageLayerThumbnail(): HTMLImageElement {

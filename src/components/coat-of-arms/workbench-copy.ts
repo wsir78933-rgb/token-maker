@@ -288,7 +288,10 @@ export interface CoatWorkbenchCopy {
     resizeSelectedLayer: string;
     resizeSelectedLayerHandle: (handle: SelectionResizeHandle) => string;
     adjustCurvedTextHandle: string;
+    adjustCurvedTextStartHandle: string;
+    adjustCurvedTextEndHandle: string;
     adjustRingTextHandle: string;
+    adjustStraightTextWidthHandle: (side: 'left' | 'right') => string;
     rotateSelectedLayer: string;
     duplicateSelectedElement: string;
     flipSelectedElementHorizontally: string;
@@ -461,7 +464,6 @@ export interface CoatWorkbenchCopy {
     settings: string;
     appearance: string;
     appearanceDark: string;
-    appearanceLight: string;
     colorPicker: string;
     colorPickerSimple: string;
     colorPickerAdvanced: string;
@@ -595,7 +597,7 @@ export interface CoatWorkbenchCopy {
     localDrawing: string;
     textFeature: {
       creationHint: string;
-      cards: Record<'text' | 'curved' | 'ring', { title: string; description: string }>;
+      cards: Record<'text' | 'curved' | 'ring', { title: string; description: string; defaultText: string }>;
       defaultObjectText: string;
       toolbar: {
         font: string;
@@ -613,6 +615,10 @@ export interface CoatWorkbenchCopy {
         styles: string;
         strokeColour: string;
         strokeWidth: string;
+        in: { label: string; ariaLabel: string };
+        out: { label: string; ariaLabel: string };
+        arc: { label: string; ariaLabel: string };
+        even: { label: string; ariaLabel: string };
         lock: string;
         unlock: string;
         hide: string;
@@ -716,28 +722,38 @@ const textFeatureCopyByLocale: Record<CoatLocale, TextFeatureCopy> = {
   en: {
     creationHint: 'Click to add or drag onto the canvas. Edit text in the toolbar.',
     cards: {
-      text: { title: 'Text', description: 'Editable text box — double-click to edit' },
-      curved: { title: 'Curved Text', description: 'Text along a bezier curve — drag handles to shape' },
-      ring: { title: 'Ring Text', description: 'Text in a circle — drag handle to adjust' },
+      text: { title: 'Text', description: 'Editable text box — double-click to edit', defaultText: 'Double-click to edit' },
+      curved: { title: 'Curved Text', description: 'Text along a bezier curve — drag handles to shape', defaultText: 'Curved Text' },
+      ring: { title: 'Ring Text', description: 'Text in a circle — drag handle to adjust', defaultText: 'Ring Text' },
     },
     defaultObjectText: 'Double-click to edit',
     toolbar: {
       font: 'Font', fontSize: 'Font size', decreaseFontSize: 'Decrease font size', increaseFontSize: 'Increase font size',
-      textColour: 'Text colour', bold: 'Bold', italic: 'Italic', underline: 'Underline', alignment: 'Text alignment', left: 'Left', center: 'Center', right: 'Right', styles: 'Styles', strokeColour: 'Stroke colour', strokeWidth: 'Stroke width', lock: 'Lock', unlock: 'Unlock', hide: 'Hide', show: 'Show', duplicate: 'Duplicate', delete: 'Delete',
+      textColour: 'Text colour', bold: 'Bold', italic: 'Italic', underline: 'Underline', alignment: 'Text alignment', left: 'Left', center: 'Center', right: 'Right', styles: 'Styles', strokeColour: 'Stroke colour', strokeWidth: 'Stroke width',
+      in: { label: 'IN', ariaLabel: 'Face text inward' },
+      out: { label: 'OUT', ariaLabel: 'Face text outward' },
+      arc: { label: 'ARC', ariaLabel: 'Arc text' },
+      even: { label: 'EVEN', ariaLabel: 'Space letters evenly' },
+      lock: 'Lock', unlock: 'Unlock', hide: 'Hide', show: 'Show', duplicate: 'Duplicate', delete: 'Delete',
     },
     inline: { editor: 'Edit text', commit: 'Commit text edit', cancel: 'Cancel text edit' },
   },
   zh: {
     creationHint: '点击添加或拖到画布上。在工具栏中编辑文字。',
     cards: {
-      text: { title: '文字', description: '可编辑文字框——双击即可编辑' },
-      curved: { title: '弧形文字', description: '沿贝塞尔曲线排列——拖动控制柄调整形状' },
-      ring: { title: '环形文字', description: '文字排列成圆形——拖动控制柄调整' },
+      text: { title: '文字', description: '可编辑文字框——双击即可编辑', defaultText: '双击编辑' },
+      curved: { title: '弧形文字', description: '沿贝塞尔曲线排列——拖动控制柄调整形状', defaultText: '弧形文字' },
+      ring: { title: '环形文字', description: '文字排列成圆形——拖动控制柄调整', defaultText: '环形文字' },
     },
     defaultObjectText: '双击编辑',
     toolbar: {
       font: '字体', fontSize: '字号', decreaseFontSize: '减小字号', increaseFontSize: '增大字号',
-      textColour: '文字颜色', bold: '粗体', italic: '斜体', underline: '下划线', alignment: '文字对齐', left: '左对齐', center: '居中', right: '右对齐', styles: '样式', strokeColour: '描边颜色', strokeWidth: '描边宽度', lock: '锁定', unlock: '解锁', hide: '隐藏', show: '显示', duplicate: '复制', delete: '删除',
+      textColour: '文字颜色', bold: '粗体', italic: '斜体', underline: '下划线', alignment: '文字对齐', left: '左对齐', center: '居中', right: '右对齐', styles: '样式', strokeColour: '描边颜色', strokeWidth: '描边宽度',
+      in: { label: '朝内', ariaLabel: '文字朝内排列' },
+      out: { label: '朝外', ariaLabel: '文字朝外排列' },
+      arc: { label: '弧', ariaLabel: '弧形排列' },
+      even: { label: '均匀', ariaLabel: '均匀分布文字' },
+      lock: '锁定', unlock: '解锁', hide: '隐藏', show: '显示', duplicate: '复制', delete: '删除',
     },
     inline: { editor: '编辑文字', commit: '确认文字编辑', cancel: '取消文字编辑' },
   },
@@ -799,7 +815,10 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
       resizeSelectedLayer: 'Resize selected layer',
       resizeSelectedLayerHandle: (handle) => `Resize selected layer ${handle}`,
       adjustCurvedTextHandle: 'Adjust curved text control point',
+      adjustCurvedTextStartHandle: 'Adjust curved text start point',
+      adjustCurvedTextEndHandle: 'Adjust curved text end point',
       adjustRingTextHandle: 'Adjust ring text radius',
+      adjustStraightTextWidthHandle: (side) => `Adjust straight text width ${side}`,
       rotateSelectedLayer: 'Rotate selected layer',
       duplicateSelectedElement: 'Duplicate selected element',
       flipSelectedElementHorizontally: 'Flip selected element horizontally',
@@ -822,7 +841,7 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
       fieldPatterns: { solid: 'Solid', barry: 'Barry', paly: 'Paly', bendy: 'Bendy', stripes: 'Stripes', dots: 'Dots', checks: 'Chequy', lozengy: 'Lozengy', crosses: 'Crosses', waves: 'Waves', masoned: 'Masoned', honeycomb: 'Honeycomb', fretty: 'Fretty', scales: 'Scales', chevronelly: 'Chevronelly', vair: 'Vair', 'vair-in-pointe': 'Vair in pointe', 'vair-in-pale': 'Vair in pale', 'paly-bendy': 'Paly bendy', 'barry-bendy': 'Barry bendy', gyronny: 'Gyronny', papelonny: 'Papelonny', seme: 'Semé' },
       ordinariesAndCharges: 'Ordinaries & charges', libraryCategory: 'Library category', charges: 'Charges', chargeCategory: 'Charge category', chargeCategories: { animal: 'Animals', object: 'Objects', plant: 'Plants', human: 'Humans', symbol: 'Symbols' }, chargesTreeUpload: 'Upload', shieldTreeLabels: { 'kite-shield': 'Shield', 'heater-shield': 'Heater', 'french-shield': 'French', 'banner-shield': 'Banner', 'round-shield': 'Round', 'lozenge-shield': 'Lozenge' }, ordinaries: 'Ordinaries', searchLibrary: 'Search library', addRandom: (kind) => `Add random ${kind}`, noLocalAssets: (kind) => `No local ${kind} assets are available`, assetLibrary: (kind) => `${kind} library`, addAsset: (name) => `Add ${name}`, previewAsset: (name) => `Preview ${name}`,
       top: 'Top ornaments', topCategory: 'Top category', topLibrary: 'Top ornament library', topCategories: { mantle: 'Mantles', crown: 'Crowns', supporter: 'Supporters', other: 'Other' },
-      settings: 'Settings', appearance: 'Appearance', appearanceDark: 'Dark', appearanceLight: 'Light', colorPicker: 'Color picker', colorPickerSimple: 'Simple', colorPickerAdvanced: 'Advanced', colorPickerHelp: 'Simple shows a continuous swatch grid with an always-visible color picker. Advanced groups swatches by heraldic category.', heraldicSwatchGroups: { metals: 'Metals', colours: 'Colours', stains: 'Stains', other: 'Other' }, canvasSize: 'Canvas Size', canvasWidth: 'Width', canvasHeight: 'Height', applyCanvasSize: 'Apply', resetEditor: 'Reset editor', canvasPresets: 'Canvas presets', canvasPresetNames: { square: '1:1 (Switzerland, Vatican City)', '8-11': '8:11 (Israel)', '7-10': '7:10 (Brazil)', '2-3': '2:3 (Japan, France, Kenya)', '5-8': '5:8 (Poland, Sweden, Palau)', '3-5': '3:5 (Germany, Nicaragua, Lithuania)', '10-19': '10:19 (USA)', '1-2': '1:2 (UK, North Korea, USSR)' }, canvasPresetSize: (width, height) => `${width} x ${height}`,
+      settings: 'Settings', appearance: 'Appearance', appearanceDark: 'Dark', colorPicker: 'Color picker', colorPickerSimple: 'Simple', colorPickerAdvanced: 'Advanced', colorPickerHelp: 'Simple shows a continuous swatch grid with an always-visible color picker. Advanced groups swatches by heraldic category.', heraldicSwatchGroups: { metals: 'Metals', colours: 'Colours', stains: 'Stains', other: 'Other' }, canvasSize: 'Canvas Size', canvasWidth: 'Width', canvasHeight: 'Height', applyCanvasSize: 'Apply', resetEditor: 'Reset editor', canvasPresets: 'Canvas presets', canvasPresetNames: { square: '1:1 (Switzerland, Vatican City)', '8-11': '8:11 (Israel)', '7-10': '7:10 (Brazil)', '2-3': '2:3 (Japan, France, Kenya)', '5-8': '5:8 (Poland, Sweden, Palau)', '3-5': '3:5 (Germany, Nicaragua, Lithuania)', '10-19': '10:19 (USA)', '1-2': '1:2 (UK, North Korea, USSR)' }, canvasPresetSize: (width, height) => `${width} x ${height}`,
       draw: 'Draw', drawingColour: 'Brush colour', drawingStrokeWidth: 'Brush size', drawOnCanvas: 'Draw on canvas', enableDrawingMode: 'Enable Drawing Mode', drawingOpacity: 'Opacity', previewStroke: 'Preview', drawHelp: 'Draw freehand on your canvas. Each stroke becomes an editable element.',
       names: 'Names', nameGeneratorType: 'Name type', nameGeneratorLanguage: 'Language', nameGeneratorLanguages: { en: 'English', de: 'German' }, nameGeneratorTypes: { city: 'City', cult: 'Cult', demon: 'Demon', dragon: 'Dragon', dwarf: 'Dwarf', elven: 'Elven', 'fantasy-kingdom': 'Fantasy Kingdom', gods: 'Gods', knight: 'Knight', orc: 'Orc', 'pirate-ship': 'Pirate Ship', realm: 'Realm', 'roman-province': 'Roman Province', tavern: 'Tavern' }, nameResults: 'Generated names', generateNames: (typeName) => `Generate ${typeName} Names`, copyGeneratedName: (name) => `Copy name ${name}`, savedNames: 'Saved Names', removeSavedName: (name) => `Remove saved name ${name}`, nameCopied: (name) => `Copied ${name}`,
       coloursAndBackground: 'Colours & background', usedColours: 'Used colours', colorTreeUsed: 'Used', colorPalettes: 'Palettes', colorCustom: 'Custom', usedColoursHint: 'Click any swatch to change every instance of that color on the canvas.', usedColourSwatch: (color) => `Used colour: ${color}`, setPaletteAsDefault: 'Set as default', addPalette: 'Add', defaultPaletteBadge: 'Default', paletteGroupHeadings: { metals: 'Metals', colors: 'Colors', 'other-colors': 'Other Colors', extra: 'Extra' }, paletteSwatch: (paletteName, swatchName, hex) => `${paletteName} ${swatchName} (${hex})`, customColorPalettes: 'Custom Color Palettes', customColorPalettesHelp: 'Create and save your own color palettes.', selectElementToApplyColour: 'Select an element to apply a colour.', background: 'Background', customPaletteColour: 'Custom palette colour', saveCustomColour: 'Save custom colour', replaceColourFrom: 'Replace colour from', replaceColourWith: 'Replace colour with', replaceAllColours: 'Replace all colours', backgroundColour: 'Background Color', customBackgroundColour: 'Custom background colour', backgroundGradient: 'Background gradient', backgroundGradientAngle: 'Background gradient angle', backgroundGradientStartColour: 'Background gradient start colour', backgroundGradientEndColour: 'Background gradient end colour', applyBackgroundGradient: 'Apply background gradient', backgroundMotif: 'Background motif', backgroundOpacity: 'Background opacity', transparentBackground: 'Transparent', transparentExportBackground: 'Transparent export background', backgroundVisible: 'Background visible', backgroundLayers: 'Background Layers', noBackgroundLayers: 'No background layers yet.', addBackgroundCharge: 'Add Charge', backgroundColourSwatch: (color) => `Background colour: ${color}`, perLayerColours: 'Per-layer colours', colourForLayer: (layerId) => `Colour for ${layerId}`, colourForAssetPart: (layerId, sourceColor) => `Colour for ${layerId} part ${sourceColor}`,
@@ -886,7 +905,10 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
       resizeSelectedLayer: '调整所选图层大小',
       resizeSelectedLayerHandle: (handle) => `调整所选图层大小（${chineseResizeHandleNames[handle]}）`,
       adjustCurvedTextHandle: '调整弧形文字控制点',
+      adjustCurvedTextStartHandle: '调整弧形文字起点',
+      adjustCurvedTextEndHandle: '调整弧形文字终点',
       adjustRingTextHandle: '调整环形文字半径',
+      adjustStraightTextWidthHandle: (side) => `调整普通文字宽度（${side === 'left' ? '左' : '右'}）`,
       rotateSelectedLayer: '旋转所选图层',
       duplicateSelectedElement: '复制选中元素',
       flipSelectedElementHorizontally: '水平翻转选中元素',
@@ -909,7 +931,7 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
       fieldPatterns: { solid: '纯色', barry: '横条', paly: '竖条', bendy: '斜条', stripes: '条纹', dots: '圆点', checks: '棋盘格', lozengy: '菱格', crosses: '十字', waves: '波浪', masoned: '砌石纹', honeycomb: '蜂巢纹', fretty: '交织纹', scales: '鳞片纹', chevronelly: '连续人字纹', vair: '松鼠皮纹', 'vair-in-pointe': '尖角松鼠皮纹', 'vair-in-pale': '纵向松鼠皮纹', 'paly-bendy': '竖斜复合条纹', 'barry-bendy': '横斜复合条纹', gyronny: '放射纹', papelonny: '扇贝纹', seme: '散点纹' },
       ordinariesAndCharges: '饰带与徽记', libraryCategory: '素材类别', charges: '徽记', chargeCategory: '徽记类别', chargeCategories: { animal: '动物', object: '物件', plant: '植物', human: '人物', symbol: '符号' }, chargesTreeUpload: '上传', shieldTreeLabels: { 'kite-shield': '盾', 'heater-shield': '熨斗', 'french-shield': '法式', 'banner-shield': '旗帜', 'round-shield': '圆', 'lozenge-shield': '菱形' }, ordinaries: '饰带', searchLibrary: '搜索素材', addRandom: (kind) => `随机添加${kind}`, noLocalAssets: (kind) => `没有可用的本地${kind}素材`, assetLibrary: (kind) => `${kind}素材库`, addAsset: (name) => `添加${name}`, previewAsset: (name) => `预览素材：${name}`,
       top: '顶部装饰', topCategory: '顶部类别', topLibrary: '顶部装饰素材库', topCategories: { mantle: '斗篷', crown: '冠冕', supporter: '护持者', other: '其他' },
-      settings: '设置', appearance: '外观', appearanceDark: '深色', appearanceLight: '浅色', colorPicker: '取色器', colorPickerSimple: '简单', colorPickerAdvanced: '高级', colorPickerHelp: '简单模式用连续色板，并始终显示取色器。高级模式按纹章类别分组色板。', heraldicSwatchGroups: { metals: '金属色', colours: '正色', stains: '染色', other: '其他' }, canvasSize: '画布尺寸', canvasWidth: '宽度', canvasHeight: '高度', applyCanvasSize: '应用', resetEditor: '重置编辑器', canvasPresets: '画布预设', canvasPresetNames: { square: '1:1（瑞士、梵蒂冈）', '8-11': '8:11（以色列）', '7-10': '7:10（巴西）', '2-3': '2:3（日本、法国、肯尼亚）', '5-8': '5:8（波兰、瑞典、帕劳）', '3-5': '3:5（德国、尼加拉瓜、立陶宛）', '10-19': '10:19（美国）', '1-2': '1:2（英国、朝鲜、苏联）' }, canvasPresetSize: (width, height) => `${width} x ${height}`,
+      settings: '设置', appearance: '外观', appearanceDark: '深色', colorPicker: '取色器', colorPickerSimple: '简单', colorPickerAdvanced: '高级', colorPickerHelp: '简单模式用连续色板，并始终显示取色器。高级模式按纹章类别分组色板。', heraldicSwatchGroups: { metals: '金属色', colours: '正色', stains: '染色', other: '其他' }, canvasSize: '画布尺寸', canvasWidth: '宽度', canvasHeight: '高度', applyCanvasSize: '应用', resetEditor: '重置编辑器', canvasPresets: '画布预设', canvasPresetNames: { square: '1:1（瑞士、梵蒂冈）', '8-11': '8:11（以色列）', '7-10': '7:10（巴西）', '2-3': '2:3（日本、法国、肯尼亚）', '5-8': '5:8（波兰、瑞典、帕劳）', '3-5': '3:5（德国、尼加拉瓜、立陶宛）', '10-19': '10:19（美国）', '1-2': '1:2（英国、朝鲜、苏联）' }, canvasPresetSize: (width, height) => `${width} x ${height}`,
       draw: '绘制', drawingColour: '画笔颜色', drawingStrokeWidth: '画笔大小', drawOnCanvas: '在画布上绘制', enableDrawingMode: '启用绘制模式', drawingOpacity: '不透明度', previewStroke: '预览', drawHelp: '在画布上自由绘制。每条笔迹都会成为可编辑元素。',
       names: '命名', nameGeneratorType: '名称类型', nameGeneratorLanguage: '语言', nameGeneratorLanguages: { en: '英语', de: '德语' }, nameGeneratorTypes: { city: '城市', cult: '教派', demon: '恶魔', dragon: '巨龙', dwarf: '矮人', elven: '精灵', 'fantasy-kingdom': '幻想王国', gods: '诸神', knight: '骑士', orc: '兽人', 'pirate-ship': '海盗船', realm: '领域', 'roman-province': '罗马行省', tavern: '酒馆' }, nameResults: '生成的名称', generateNames: (typeName) => `生成${typeName}名称`, copyGeneratedName: (name) => `复制名称 ${name}`, savedNames: '已保存的名称', removeSavedName: (name) => `移除已保存的名称 ${name}`, nameCopied: (name) => `已复制 ${name}`,
       coloursAndBackground: '颜色与背景', usedColours: '已用颜色', colorTreeUsed: '已用', colorPalettes: '调色板', colorCustom: '自定义', usedColoursHint: '点击色块，即可替换画布上所有相同颜色。', usedColourSwatch: (color) => `已用颜色：${color}`, setPaletteAsDefault: '设为默认', addPalette: '添加', defaultPaletteBadge: '默认', paletteGroupHeadings: { metals: '金属色', colors: '颜色', 'other-colors': '其他颜色', extra: '额外' }, paletteSwatch: (paletteName, swatchName, hex) => `${paletteName} ${swatchName}（${hex}）`, customColorPalettes: '自定义调色板', customColorPalettesHelp: '创建并保存你自己的调色板。', selectElementToApplyColour: '请先选中一个元素，再应用颜色。', background: '背景', customPaletteColour: '自定义调色板颜色', saveCustomColour: '保存自定义颜色', replaceColourFrom: '替换来源颜色', replaceColourWith: '替换为颜色', replaceAllColours: '替换全部颜色', backgroundColour: '背景颜色', customBackgroundColour: '自定义背景颜色', backgroundGradient: '背景渐变', backgroundGradientAngle: '背景渐变角度', backgroundGradientStartColour: '背景渐变起始颜色', backgroundGradientEndColour: '背景渐变结束颜色', applyBackgroundGradient: '应用背景渐变', backgroundMotif: '背景纹样', backgroundOpacity: '背景不透明度', transparentBackground: '透明', transparentExportBackground: '透明导出背景', backgroundVisible: '显示背景', backgroundLayers: '背景图层', noBackgroundLayers: '还没有背景图层。', addBackgroundCharge: '添加徽记', backgroundColourSwatch: (color) => `背景颜色：${color}`, perLayerColours: '各图层颜色', colourForLayer: (layerId) => `图层 ${layerId} 的颜色`, colourForAssetPart: (layerId, sourceColor) => `图层 ${layerId} 色块 ${sourceColor}`,

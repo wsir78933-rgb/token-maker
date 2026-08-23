@@ -17,6 +17,7 @@ import type {
   LocalUpload,
   ShieldLayer,
   TextLayer,
+  TextPathPlacement,
 } from './types';
 import { buildHeraldicLinePoints, fieldRegionDivisionLinePath, supportsFieldDivisionLine } from './field-division-line';
 import { buildFieldInteriorMarkup } from './field';
@@ -608,11 +609,15 @@ function renderChargeFieldPlacement(
   layerIndex: number,
 ): string {
   const targetShieldLayerId = transform.fieldShieldLayerId;
-  const shieldLayer = project.layers.find((layer) => layer.type === 'shield' && (targetShieldLayerId === undefined || layer.id === targetShieldLayerId));
+  const shieldLayer = project.layers.find((layer) => (
+    layer.type === 'shield'
+    && (targetShieldLayerId === undefined || layer.id === targetShieldLayerId)
+  ));
   if (!shieldLayer || shieldLayer.type !== 'shield') {
-    throw new Error(targetShieldLayerId
-      ? `Cannot clip a charge to shield layer: ${targetShieldLayerId}`
-      : 'Cannot clip a charge without a shield layer');
+    if (targetShieldLayerId !== undefined) {
+      throw new Error(`Cannot clip a charge to shield layer: ${targetShieldLayerId}`);
+    }
+    return transformedMarkup;
   }
   const placement = transform.fieldPlacement ?? 'overall';
   const fieldRegionId = transform.fieldRegionId;
@@ -718,36 +723,94 @@ function renderTextLayer(layer: TextLayer, layerIndex: number, textPaths: string
   const typographyAttributes = `font-family="${escapeXml(textFontStacks[layer.fontFamily ?? 'serif'])}" font-style="${layer.fontStyle ?? 'normal'}" font-weight="${layer.fontWeight ?? 'normal'}" font-size="${layer.fontSize / TEXT_FONT_SIZE_SCENE_SCALE}"`;
   const decorationAttributes = layer.underline ? ' text-decoration="underline"' : '';
   const strokeAttributes = ` stroke="${escapeXml(layer.strokeColor ?? '#000000')}" stroke-width="${(layer.strokeWidth ?? 0) / TEXT_FONT_SIZE_SCENE_SCALE}" paint-order="stroke fill"`;
+  const lengthAdjustAttributes = getTextLengthAdjustAttributes(layer);
   if (layer.path.mode === 'none') {
-    return renderTransformedLayer(`<text x="${x}" y="102" fill="${layer.color}"${decorationAttributes}${strokeAttributes} ${typographyAttributes} text-anchor="${textAnchor}">${safeText}</text>`, layer.transform, layerIndex);
+    return renderTransformedLayer(`<text x="${x}" y="102" fill="${layer.color}"${decorationAttributes}${strokeAttributes} ${typographyAttributes} text-anchor="${textAnchor}"${lengthAdjustAttributes}>${safeText}</text>`, layer.transform, layerIndex);
   }
 
   const pathId = `coat-text-path-${layerIndex}`;
   textPaths.push(`<path id="${pathId}" d="${getTextPathData(layer)}" fill="none"/>`);
   const startOffset = layer.alignment === 'left' ? '0%' : layer.alignment === 'right' ? '100%' : '50%';
-  return renderTransformedLayer(`<text fill="${layer.color}"${decorationAttributes}${strokeAttributes} ${typographyAttributes} text-anchor="${textAnchor}"><textPath href="#${pathId}" startOffset="${startOffset}">${safeText}</textPath></text>`, layer.transform, layerIndex);
+  return renderTransformedLayer(`<text fill="${layer.color}"${decorationAttributes}${strokeAttributes} ${typographyAttributes} text-anchor="${textAnchor}"${lengthAdjustAttributes}><textPath href="#${pathId}" startOffset="${startOffset}">${safeText}</textPath></text>`, layer.transform, layerIndex);
+}
+
+function getTextLengthAdjustAttributes(layer: TextLayer): string {
+  if (layer.path.mode === 'none') {
+    if (layer.boxWidth === undefined) return '';
+    return ` textLength="${formatSceneNumber(layer.boxWidth)}" lengthAdjust="spacing"`;
+  }
+  if (layer.path.mode === 'ring' && 'spacing' in layer.path && layer.path.spacing === 'even') {
+    return ` textLength="${formatSceneNumber(getRingPathLength(layer.path))}" lengthAdjust="spacing"`;
+  }
+  return '';
 }
 
 function getTextPathData(layer: TextLayer): string {
-  switch (layer.path.mode) {
-    case 'motto':
-      return layer.path.curve === 'upper' ? 'M14 91 Q50 65 86 91' : 'M14 19 Q50 45 86 19';
-    case 'curve': {
-      const startY = layer.path.curve === 'upper' ? 72 : 38;
-      const controlX = layer.path.controlX ?? 50;
-      const controlY = layer.path.controlY ?? (layer.path.curve === 'upper' ? 30 : 80);
-      return `M10 ${formatSceneNumber(startY)} Q${formatSceneNumber(controlX)} ${formatSceneNumber(controlY)} 90 ${formatSceneNumber(startY)}`;
-    }
-    case 'ring':
-      if (layer.path.radius === undefined) {
-        return layer.path.curve === 'clockwise'
-          ? 'M50 10 A40 40 0 1 1 49.99 10'
-          : 'M50 10 A40 40 0 1 0 49.99 10';
-      }
-      return `M50 ${formatSceneNumber(50 - layer.path.radius)} A${formatSceneNumber(layer.path.radius)} ${formatSceneNumber(layer.path.radius)} 0 1 ${layer.path.curve === 'clockwise' ? 1 : 0} ${formatSceneNumber(49.99)} ${formatSceneNumber(50 - layer.path.radius)}`;
-    case 'none':
-      throw new Error('Text path data is not available for mode: none');
+  const path = layer.path;
+  if (path.mode === 'motto') return getMottoTextPathData(path.curve);
+  if (path.mode === 'curve') return getCurveTextPathData(path);
+  if (path.mode === 'ring') return getRingTextPathData(path);
+  if (path.mode === 'none') throw new Error('Text path data is not available for mode: none');
+  throw new Error(`Invalid text path mode: ${String((path as { mode: unknown }).mode)}`);
+}
+
+function getMottoTextPathData(curve: 'upper' | 'lower'): string {
+  if (curve === 'upper') return 'M14 91 Q50 65 86 91';
+  if (curve === 'lower') return 'M14 19 Q50 45 86 19';
+  throw new Error(`Invalid motto curve: ${String(curve)}`);
+}
+
+function getCurveTextPathData(path: Extract<TextPathPlacement, { mode: 'curve' }>): string {
+  if (!('startX' in path) || typeof path.startX !== 'number') {
+    throw new Error(`Invalid curve text path: missing startX; path is ${JSON.stringify(path)}`);
   }
+  return `M${formatSceneNumber(path.startX)} ${formatSceneNumber(path.startY)} Q${formatSceneNumber(path.controlX)} ${formatSceneNumber(path.controlY)} ${formatSceneNumber(path.endX)} ${formatSceneNumber(path.endY)}`;
+}
+
+function getRingTextPathData(path: Extract<TextPathPlacement, { mode: 'ring' }>): string {
+  if (!('facing' in path) || (path.facing !== 'in' && path.facing !== 'out')) {
+    throw new Error(`Invalid ring text path facing: ${String('facing' in path ? path.facing : undefined)}; path is ${JSON.stringify(path)}`);
+  }
+  if (typeof path.radius !== 'number') {
+    throw new Error(`Invalid ring text path radius: ${String(path.radius)}`);
+  }
+  const sweepFlag = path.facing === 'out' ? 1 : 0;
+  const radius = path.radius;
+  const formattedRadius = formatSceneNumber(radius);
+  if (path.layout === 'full') {
+    return `M50 ${formatSceneNumber(50 - radius)} A${formattedRadius} ${formattedRadius} 0 1 ${sweepFlag} ${formatSceneNumber(49.99)} ${formatSceneNumber(50 - radius)}`;
+  }
+  if (path.layout === 'arc') {
+    return getRingArcTextPathData(radius, formattedRadius, path.facing);
+  }
+  throw new Error(`Invalid text path layout: ${String(path.layout)}`);
+}
+
+function getRingArcTextPathData(
+  radius: number,
+  formattedRadius: string,
+  facing: 'in' | 'out',
+): string {
+  const leftX = formatSceneNumber(50 - radius);
+  const rightX = formatSceneNumber(50 + radius);
+  switch (facing) {
+    case 'in':
+      // North semicircle, west → east, so glyphs stay upright along the upper half.
+      return `M${leftX} 50 A${formattedRadius} ${formattedRadius} 0 0 1 ${rightX} 50`;
+    case 'out':
+      return `M${rightX} 50 A${formattedRadius} ${formattedRadius} 0 0 1 ${leftX} 50`;
+    default:
+      throw new Error(`Invalid ring text path facing: ${String(facing)}`);
+  }
+}
+
+function getRingPathLength(path: Extract<TextPathPlacement, { mode: 'ring' }>): number {
+  if (!('layout' in path) || typeof path.radius !== 'number') {
+    throw new Error(`Invalid even ring text path: ${JSON.stringify(path)}`);
+  }
+  if (path.layout === 'full') return 2 * Math.PI * path.radius;
+  if (path.layout === 'arc') return Math.PI * path.radius;
+  throw new Error(`Invalid text path layout: ${String(path.layout)}`);
 }
 
 function formatSceneNumber(value: number): string {

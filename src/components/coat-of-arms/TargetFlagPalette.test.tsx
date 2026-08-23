@@ -66,6 +66,27 @@ describe('TargetFlagPalette', () => {
     expect(() => copy.presetName('invalid-flag')).toThrow('Unknown flag preset: invalid-flag');
   });
 
+  it('uses the same selected and unselected colors as settings segmented options', () => {
+    render(<TargetFlagPalette locale="en" />);
+
+    const selectedCategory = screen.getByRole('button', { name: 'Cross flags' });
+    const unselectedCategory = screen.getByRole('button', { name: 'Tricolours' });
+
+    expect(selectedCategory.getAttribute('aria-pressed')).toBe('true');
+    expect(selectedCategory.className).toContain('coat-active');
+    expect(selectedCategory.className).toContain('coat-accent');
+    expect(unselectedCategory.getAttribute('aria-pressed')).toBe('false');
+    expect(unselectedCategory.className).toContain('coat-panel-raised');
+
+    fireEvent.click(unselectedCategory);
+
+    expect(unselectedCategory.getAttribute('aria-pressed')).toBe('true');
+    expect(unselectedCategory.className).toContain('coat-active');
+    expect(unselectedCategory.className).toContain('coat-accent');
+    expect(selectedCategory.getAttribute('aria-pressed')).toBe('false');
+    expect(selectedCategory.className).toContain('coat-panel-raised');
+  });
+
   it('filters the local flag library by category and search term before applying a preset', () => {
     render(<TargetFlagPalette locale="en" />);
 
@@ -77,5 +98,19 @@ describe('TargetFlagPalette', () => {
     const shield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
     if (!shield || shield.type !== 'shield') throw new Error('Expected project shield layer');
     expect(shield.field?.ornaments?.[0]?.id).toBe('flag-nordic-cross');
+  });
+
+  it('shows the empty flag library copy when the project has no shield layer', () => {
+    const project = createDefaultProject('en');
+    const shieldCountBeforeFilter = project.layers.filter((layer) => layer.type === 'shield').length;
+    if (shieldCountBeforeFilter === 0) {
+      throw new Error(`Expected default project to include a shield layer before filtering, got: ${shieldCountBeforeFilter}`);
+    }
+    const layers = project.layers.filter((layer) => layer.type !== 'shield');
+    useCoatProjectStore.getState().replaceProject({ ...project, layers });
+    render(<TargetFlagPalette locale="en" />);
+
+    expect(screen.getByText(getCoatWorkbenchCopy('en').panels.noShieldLayer)).toBeDefined();
+    expect(screen.queryByRole('button', { name: 'Use Nordic cross flag preset' })).toBeNull();
   });
 });

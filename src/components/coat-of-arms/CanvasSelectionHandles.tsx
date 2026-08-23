@@ -1,11 +1,17 @@
 'use client';
 
 import type { KeyboardEvent, PointerEvent } from 'react';
-import type { SceneBounds } from '@/lib/coat-of-arms/selection-bounds';
-import { getSelectionOverlayCenter } from '@/lib/coat-of-arms/selection-bounds';
+import {
+  getSelectionOverlayCenter,
+  SELECTION_SCENE_HEIGHT,
+  SELECTION_SCENE_WIDTH,
+  type SceneBounds,
+} from '@/lib/coat-of-arms/selection-bounds';
 import type { CoatLocale } from '@/lib/coat-of-arms/types';
 import { CanvasSelectionToolbar } from './CanvasSelectionToolbar';
 import { getCoatWorkbenchCopy, type SelectionResizeHandle } from './workbench-copy';
+
+const HANDLE_COLOR = '#7eb6ff';
 
 const RESIZE_HANDLES: ReadonlyArray<{
   handle: SelectionResizeHandle;
@@ -21,37 +27,73 @@ const RESIZE_HANDLES: ReadonlyArray<{
   { handle: 'west', className: 'left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize' },
 ];
 
-export type CanvasTextPathHandleKind = 'curve-control' | 'ring-radius';
+export type CanvasTextPathHandleKind = 'curve-start' | 'curve-control' | 'curve-end' | 'ring-radius';
+export type CanvasTextBoxWidthHandleSide = 'left' | 'right';
+
+export interface CanvasScenePoint {
+  x: number;
+  y: number;
+}
 
 export interface CanvasTextPathHandle {
   kind: CanvasTextPathHandleKind;
-  point: { x: number; y: number };
-  guides: readonly { x: number; y: number }[];
+  point: CanvasScenePoint;
 }
+
+export type CanvasTextPathGuide =
+  | {
+      mode: 'curve';
+      handles: readonly CanvasTextPathHandle[];
+      curve: {
+        start: CanvasScenePoint;
+        control: CanvasScenePoint;
+        end: CanvasScenePoint;
+      };
+    }
+  | {
+      mode: 'ring';
+      handles: readonly CanvasTextPathHandle[];
+      ring: {
+        center: CanvasScenePoint;
+        radius: number;
+      };
+    };
 
 export interface CanvasSelectionHandlesProps {
   locale: CoatLocale;
   selectionBounds: SceneBounds;
-  showTransformHandles: boolean;
+  showResizeHandles: boolean;
+  showRotateHandle: boolean;
+  showTextBoxWidthHandles: boolean;
+  showBoundingRect?: boolean;
+  showSelectionToolbar?: boolean;
   onResizePointerDown: (event: PointerEvent<HTMLButtonElement>) => void;
   onRotatePointerDown: (event: PointerEvent<HTMLButtonElement>) => void;
   onResizeKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => void;
   onRotateKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => void;
-  textPathHandle?: CanvasTextPathHandle | null;
-  onTextPathPointerDown?: (event: PointerEvent<HTMLButtonElement>) => void;
+  onTextBoxWidthPointerDown?: (event: PointerEvent<HTMLButtonElement>, side: CanvasTextBoxWidthHandleSide) => void;
+}
+
+export interface CanvasTextPathOverlayProps {
+  locale: CoatLocale;
+  overlay: CanvasTextPathGuide;
+  onPointerDown?: (event: PointerEvent<HTMLButtonElement>, kind: CanvasTextPathHandleKind) => void;
 }
 
 /** Visual controls only. The canvas owns pointer conversion and command dispatch. */
 export function CanvasSelectionHandles({
   locale,
   selectionBounds,
-  showTransformHandles,
+  showResizeHandles,
+  showRotateHandle,
+  showTextBoxWidthHandles,
+  showBoundingRect = true,
+  showSelectionToolbar = true,
   onResizePointerDown,
   onRotatePointerDown,
   onResizeKeyDown,
   onRotateKeyDown,
-  textPathHandle = null,
-  onTextPathPointerDown,
+  onTextBoxWidthPointerDown,
 }: CanvasSelectionHandlesProps) {
   const copy = getCoatWorkbenchCopy(locale).canvas;
   const selectionCenter = getSelectionOverlayCenter(selectionBounds);
@@ -65,13 +107,13 @@ export function CanvasSelectionHandles({
       data-selection-y={selectionCenter.y}
       style={{
         left: `${selectionBounds.x}%`,
-        top: `${(selectionBounds.y / 110) * 100}%`,
+        top: `${(selectionBounds.y / SELECTION_SCENE_HEIGHT) * 100}%`,
         width: `${selectionBounds.width}%`,
-        height: `${(selectionBounds.height / 110) * 100}%`,
+        height: `${(selectionBounds.height / SELECTION_SCENE_HEIGHT) * 100}%`,
       }}
     >
-      <div className="absolute inset-0 border-2 border-[#7eb6ff]" />
-      {showTransformHandles ? (
+      {showBoundingRect ? <div className="absolute inset-0 border-2 border-[#7eb6ff]" /> : null}
+      {showResizeHandles ? (
         <>
           {RESIZE_HANDLES.map(({ handle, className }) => (
             <button
@@ -86,6 +128,10 @@ export function CanvasSelectionHandles({
               <span className="pointer-events-none h-[13px] w-[13px] rounded-[1px] border-2 border-[#7eb6ff] bg-white" />
             </button>
           ))}
+        </>
+      ) : null}
+      {showRotateHandle ? (
+        <>
           <span
             aria-hidden="true"
             className="pointer-events-none absolute left-1/2 top-0 h-3 w-0.5 -translate-x-1/2 -translate-y-3 bg-[#7eb6ff]"
@@ -101,51 +147,185 @@ export function CanvasSelectionHandles({
           </button>
         </>
       ) : null}
-      {textPathHandle ? (
-        <>
-          <svg
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
-            preserveAspectRatio="none"
-            viewBox={`${selectionBounds.x} ${selectionBounds.y} ${selectionBounds.width} ${selectionBounds.height}`}
-          >
-            {textPathHandle.guides.map((guidePoint) => (
-              <line
-                key={`${guidePoint.x}-${guidePoint.y}`}
-                stroke="#7eb6ff"
-                strokeDasharray="3 3"
-                strokeWidth="0.75"
-                vectorEffect="non-scaling-stroke"
-                x1={textPathHandle.point.x}
-                x2={guidePoint.x}
-                y1={textPathHandle.point.y}
-                y2={guidePoint.y}
-              />
-            ))}
-          </svg>
-          <button
-            aria-label={textPathHandle.kind === 'curve-control' ? copy.adjustCurvedTextHandle : copy.adjustRingTextHandle}
-            className="pointer-events-auto absolute z-40 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#7eb6ff] bg-white shadow-sm"
-            data-text-path-handle={textPathHandle.kind}
-            style={scenePointToOverlayStyle(textPathHandle.point, selectionBounds)}
-            type="button"
-            onPointerDown={onTextPathPointerDown}
-          >
-            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#7eb6ff]" />
-          </button>
-        </>
+      {showTextBoxWidthHandles ? (
+        <TextBoxWidthHandles
+          locale={locale}
+          onPointerDown={requireTextBoxWidthPointerDown(onTextBoxWidthPointerDown)}
+        />
       ) : null}
-      <CanvasSelectionToolbar locale={locale} />
+      {showSelectionToolbar ? <CanvasSelectionToolbar locale={locale} /> : null}
     </div>
   );
 }
 
-function scenePointToOverlayStyle(
-  point: { x: number; y: number },
-  selectionBounds: SceneBounds,
-): { left: string; top: string } {
+/** Path guides and handles in scene coordinates. Parent is the canvas artboard. */
+export function CanvasTextPathOverlay({
+  locale,
+  overlay,
+  onPointerDown,
+}: CanvasTextPathOverlayProps) {
+  const copy = getCoatWorkbenchCopy(locale).canvas;
+  const handlePointerDown = requireTextPathPointerDown(onPointerDown);
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
+      style={{ containerType: 'size' }}
+    >
+      <div
+        className="relative h-full w-auto max-h-full max-w-full"
+        data-text-path-meet-box=""
+        style={textPathMeetBoxStyle()}
+      >
+        <TextPathGuideSvg overlay={overlay} />
+        {overlay.handles.map((handle) => (
+          <button
+            aria-label={textPathHandleAriaLabel(copy, handle.kind)}
+            className="pointer-events-auto absolute z-40 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#7eb6ff] bg-white shadow-sm"
+            data-text-path-handle={handle.kind}
+            key={handle.kind}
+            style={scenePointToOverlayStyle(handle.point)}
+            type="button"
+            onPointerDown={(event) => handlePointerDown(event, handle.kind)}
+          >
+            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#7eb6ff]" />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Same letterbox as SVG `xMidYMid meet` on a 100×110 viewBox. */
+function textPathMeetBoxStyle(): { aspectRatio: string; width: string; height: string } {
   return {
-    left: `${((point.x - selectionBounds.x) / selectionBounds.width) * 100}%`,
-    top: `${((point.y - selectionBounds.y) / selectionBounds.height) * 100}%`,
+    aspectRatio: `${SELECTION_SCENE_WIDTH} / ${SELECTION_SCENE_HEIGHT}`,
+    width: `min(100cqw, calc(100cqh * ${SELECTION_SCENE_WIDTH} / ${SELECTION_SCENE_HEIGHT}))`,
+    height: `min(100cqh, calc(100cqw * ${SELECTION_SCENE_HEIGHT} / ${SELECTION_SCENE_WIDTH}))`,
+  };
+}
+
+function TextPathGuideSvg({ overlay }: { overlay: CanvasTextPathGuide }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+      preserveAspectRatio="xMidYMid meet"
+      viewBox={`0 0 ${SELECTION_SCENE_WIDTH} ${SELECTION_SCENE_HEIGHT}`}
+    >
+      {overlay.mode === 'curve' ? (
+        <path
+          d={`M${overlay.curve.start.x} ${overlay.curve.start.y} Q${overlay.curve.control.x} ${overlay.curve.control.y} ${overlay.curve.end.x} ${overlay.curve.end.y}`}
+          data-text-path-guide="curve"
+          fill="none"
+          stroke={HANDLE_COLOR}
+          strokeDasharray="3 3"
+          strokeWidth="0.75"
+          vectorEffect="non-scaling-stroke"
+        />
+      ) : (
+        <circle
+          cx={overlay.ring.center.x}
+          cy={overlay.ring.center.y}
+          data-text-path-guide="ring"
+          fill="none"
+          r={overlay.ring.radius}
+          stroke={HANDLE_COLOR}
+          strokeDasharray="3 3"
+          strokeWidth="0.75"
+          vectorEffect="non-scaling-stroke"
+        />
+      )}
+    </svg>
+  );
+}
+
+function TextBoxWidthHandles({
+  locale,
+  onPointerDown,
+}: {
+  locale: CoatLocale;
+  onPointerDown: (event: PointerEvent<HTMLButtonElement>, side: CanvasTextBoxWidthHandleSide) => void;
+}) {
+  const copy = getCoatWorkbenchCopy(locale).canvas;
+  return (
+    <>
+      <TextBoxWidthHandleButton
+        ariaLabel={copy.adjustStraightTextWidthHandle('left')}
+        side="left"
+        className="left-0 -translate-x-1/2"
+        onPointerDown={onPointerDown}
+      />
+      <TextBoxWidthHandleButton
+        ariaLabel={copy.adjustStraightTextWidthHandle('right')}
+        side="right"
+        className="right-0 translate-x-1/2"
+        onPointerDown={onPointerDown}
+      />
+    </>
+  );
+}
+
+function TextBoxWidthHandleButton({
+  ariaLabel,
+  side,
+  className,
+  onPointerDown,
+}: {
+  ariaLabel: string;
+  side: CanvasTextBoxWidthHandleSide;
+  className: string;
+  onPointerDown: (event: PointerEvent<HTMLButtonElement>, side: CanvasTextBoxWidthHandleSide) => void;
+}) {
+  return (
+    <button
+      aria-label={ariaLabel}
+      className={`pointer-events-auto absolute top-1/2 z-30 flex h-10 w-6 -translate-y-1/2 cursor-ew-resize items-center justify-center ${className}`}
+      data-text-box-width-handle={side}
+      type="button"
+      onPointerDown={(event) => onPointerDown(event, side)}
+    >
+      <span aria-hidden="true" className="pointer-events-none h-8 w-1.5 rounded-sm bg-[#7eb6ff]" />
+    </button>
+  );
+}
+
+function textPathHandleAriaLabel(
+  copy: ReturnType<typeof getCoatWorkbenchCopy>['canvas'],
+  kind: CanvasTextPathHandleKind,
+): string {
+  switch (kind) {
+    case 'curve-start':
+      return copy.adjustCurvedTextStartHandle;
+    case 'curve-control':
+      return copy.adjustCurvedTextHandle;
+    case 'curve-end':
+      return copy.adjustCurvedTextEndHandle;
+    case 'ring-radius':
+      return copy.adjustRingTextHandle;
+  }
+}
+
+function requireTextPathPointerDown(
+  onPointerDown: CanvasTextPathOverlayProps['onPointerDown'],
+): (event: PointerEvent<HTMLButtonElement>, kind: CanvasTextPathHandleKind) => void {
+  if (!onPointerDown) {
+    throw new Error('Missing text path pointer handler');
+  }
+  return onPointerDown;
+}
+
+function requireTextBoxWidthPointerDown(
+  onTextBoxWidthPointerDown: CanvasSelectionHandlesProps['onTextBoxWidthPointerDown'],
+): (event: PointerEvent<HTMLButtonElement>, side: CanvasTextBoxWidthHandleSide) => void {
+  if (!onTextBoxWidthPointerDown) {
+    throw new Error('Missing text box width pointer handler');
+  }
+  return onTextBoxWidthPointerDown;
+}
+
+function scenePointToOverlayStyle(point: CanvasScenePoint): { left: string; top: string } {
+  return {
+    left: `${(point.x / SELECTION_SCENE_WIDTH) * 100}%`,
+    top: `${(point.y / SELECTION_SCENE_HEIGHT) * 100}%`,
   };
 }

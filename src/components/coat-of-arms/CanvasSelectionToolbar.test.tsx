@@ -6,19 +6,23 @@ import { createDefaultProject } from '@/lib/coat-of-arms/assets';
 import { applyProjectCommand } from '@/lib/coat-of-arms/commands';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { CoatProject } from '@/lib/coat-of-arms/types';
-import { CanvasSelectionToolbar } from './CanvasSelectionToolbar';
+import { CanvasSelectionToolbar, type SelectionToolbarPlacement } from './CanvasSelectionToolbar';
 
 let nextId = 0;
 
-function createToolbarProject(): CoatProject {
+function createBaseLayerProject(): CoatProject {
   const project = createDefaultProject('en');
-  const withStableIds: CoatProject = {
+  return {
     ...project,
     layers: project.layers.map((layer, index) => ({
       ...layer,
       id: index === 0 ? 'background-1' : 'shield-1',
     })),
   };
+}
+
+function createToolbarProject(): CoatProject {
+  const withStableIds = createBaseLayerProject();
   const withCharge = applyProjectCommand(withStableIds, {
     type: 'add-layer',
     assetId: 'material-animal-wolf-rampant',
@@ -31,10 +35,15 @@ function createToolbarProject(): CoatProject {
   };
 }
 
-function renderToolbar(project: CoatProject, selectedLayerIds: string[], locale: 'en' | 'zh' = 'en') {
+function renderToolbar(
+  project: CoatProject,
+  selectedLayerIds: string[],
+  locale: 'en' | 'zh' = 'en',
+  placement?: SelectionToolbarPlacement,
+) {
   useCoatProjectStore.getState().replaceProject(project);
   useCoatProjectStore.getState().setSelectedLayerIds(selectedLayerIds);
-  return render(<CanvasSelectionToolbar locale={locale} />);
+  return render(<CanvasSelectionToolbar locale={locale} placement={placement} />);
 }
 
 function getLayer(layerId: string) {
@@ -95,6 +104,28 @@ describe('CanvasSelectionToolbar', () => {
     expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([]);
   });
 
+  it('deletes the sole selected shield and clears the selection', () => {
+    renderToolbar(createBaseLayerProject(), ['shield-1']);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete selected element' }));
+
+    expect(useCoatProjectStore.getState().project.layers.some((layer) => layer.id === 'shield-1')).toBe(false);
+    expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([]);
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('keeps the sole background and surfaces the engine rejection', () => {
+    renderToolbar(createBaseLayerProject(), ['background-1']);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete selected element' }));
+
+    expect(useCoatProjectStore.getState().project.layers.some((layer) => layer.id === 'background-1')).toBe(true);
+    expect(useCoatProjectStore.getState().selectedLayerIds).toEqual(['background-1']);
+    expect(screen.getByRole('alert').textContent).toBe(
+      'Editor action failed: Cannot remove the sole base background layer: background-1',
+    );
+  });
+
   it('locks and unlocks the selected layer', () => {
     renderToolbar(createToolbarProject(), ['charge-1']);
 
@@ -123,6 +154,49 @@ describe('CanvasSelectionToolbar', () => {
 
     expect(screen.getByRole('button', { name: 'Duplicate selected element' })).toHaveProperty('disabled', true);
     expect(screen.getByRole('button', { name: 'Unlock selected element' })).toHaveProperty('disabled', false);
+  });
+
+  it('anchors above the selection box by default', () => {
+    renderToolbar(createToolbarProject(), ['charge-1']);
+
+    const toolbar = screen.getByRole('toolbar', { name: 'Selected element actions' });
+    expect(toolbar.className).toContain('bottom-full');
+    expect(toolbar.className).toContain('mb-9');
+    expect(toolbar.className).not.toContain('top-2');
+  });
+
+  it('pins to the artboard top instead of the selection box', () => {
+    renderToolbar(createToolbarProject(), ['charge-1'], 'en', 'artboard-top');
+
+    const toolbar = screen.getByRole('toolbar', { name: 'Selected element actions' });
+    expect(toolbar.className).not.toContain('bottom-full');
+    expect(toolbar.className).toContain('left-1/2');
+    expect(toolbar.className).toContain('top-2');
+    expect(toolbar.className).toContain('pointer-events-auto');
+  });
+
+  it('pins to the artboard bottom instead of the selection box', () => {
+    renderToolbar(createToolbarProject(), ['charge-1'], 'en', 'artboard-bottom');
+
+    const toolbar = screen.getByRole('toolbar', { name: 'Selected element actions' });
+    expect(toolbar.className).not.toContain('bottom-full');
+    expect(toolbar.className).not.toContain('top-2');
+    expect(toolbar.className).toContain('left-1/2');
+    expect(toolbar.className).toContain('top-auto');
+    expect(toolbar.className).toContain('bottom-2');
+    expect(toolbar.className).toContain('pointer-events-auto');
+  });
+
+  it('throws the unsupported placement value', () => {
+    useCoatProjectStore.getState().replaceProject(createToolbarProject());
+    useCoatProjectStore.getState().setSelectedLayerIds(['charge-1']);
+
+    expect(() => render(
+      <CanvasSelectionToolbar
+        locale="en"
+        placement={'side' as SelectionToolbarPlacement}
+      />,
+    )).toThrow('Unsupported selection toolbar placement: side');
   });
 
   it('uses Chinese action labels on the Chinese workbench', () => {

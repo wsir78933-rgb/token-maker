@@ -120,7 +120,12 @@ export function TargetFlagPalette({ locale }: { locale: CoatLocale }) {
   const [search, setSearch] = useState('');
 
   if (!shield || shield.type !== 'shield') {
-    throw new Error('Flag palette requires a project shield layer');
+    return (
+      <section aria-label={copy.library}>
+        {error ? <p role="alert">{error}</p> : null}
+        <p>{getCoatWorkbenchCopy(locale).panels.noShieldLayer}</p>
+      </section>
+    );
   }
   const visiblePresets = flagPresets.filter((preset) => preset.category === activeCategory && matchesFlagPreset(preset, search));
 
@@ -134,7 +139,7 @@ export function TargetFlagPalette({ locale }: { locale: CoatLocale }) {
       <div aria-label={copy.categoryFilter} className="flex flex-wrap gap-1" role="group">
         {flagPresetCategories.map((category) => <button
           aria-pressed={activeCategory === category}
-          className={`rounded border border-[color:var(--coat-line)] px-2 py-1 text-xs ${activeCategory === category ? 'bg-[color:var(--coat-line)] text-[color:var(--coat-panel)]' : ''}`}
+          className={`rounded px-2 py-1 text-xs ${activeCategory === category ? 'bg-[color:var(--coat-active)] text-[color:var(--coat-accent)]' : 'bg-[color:var(--coat-panel-raised)] text-[color:var(--coat-text)]'}`}
           key={category}
           onClick={() => setActiveCategory(category)}
           type="button"

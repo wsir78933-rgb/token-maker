@@ -18,8 +18,16 @@ import type { CoatLayer, CoatLocale } from '@/lib/coat-of-arms/types';
 import { usePanelCommandError } from './usePanelCommandError';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
+export type SelectionToolbarPlacement = 'above-selection' | 'artboard-top' | 'artboard-bottom';
+
 /** Floating selected-element actions. The canvas owns overlay placement. */
-export function CanvasSelectionToolbar({ locale }: { locale: CoatLocale }) {
+export function CanvasSelectionToolbar({
+  locale,
+  placement = 'above-selection',
+}: {
+  locale: CoatLocale;
+  placement?: SelectionToolbarPlacement;
+}) {
   const copy = getCoatWorkbenchCopy(locale);
   const project = useCoatProjectStore((state) => state.project);
   const selectedLayerIds = useCoatProjectStore((state) => state.selectedLayerIds);
@@ -85,7 +93,7 @@ export function CanvasSelectionToolbar({ locale }: { locale: CoatLocale }) {
   return (
     <div
       aria-label={copy.canvas.selectedLayerToolbar}
-      className="pointer-events-auto absolute bottom-full left-1/2 z-30 mb-9 flex -translate-x-1/2 flex-col items-center gap-1"
+      className={selectionToolbarPlacementClass(placement)}
       data-coat-editor-overlay="selection-toolbar"
       role="toolbar"
       onPointerDown={stopOverlayPointer}
@@ -192,6 +200,19 @@ function ToolbarIconButton({
       <span className="inline-flex h-4 w-4 items-center justify-center [&_svg]:h-4 [&_svg]:w-4">{children}</span>
     </button>
   );
+}
+
+function selectionToolbarPlacementClass(placement: SelectionToolbarPlacement): string {
+  if (placement === 'above-selection') {
+    return 'pointer-events-auto absolute bottom-full left-1/2 z-30 mb-9 flex -translate-x-1/2 flex-col items-center gap-1';
+  }
+  if (placement === 'artboard-top') {
+    return 'pointer-events-auto absolute left-1/2 top-2 z-20 flex -translate-x-1/2 flex-col items-center gap-1';
+  }
+  if (placement === 'artboard-bottom') {
+    return 'pointer-events-auto absolute bottom-2 left-1/2 top-auto z-20 flex -translate-x-1/2 flex-col items-center gap-1';
+  }
+  throw new Error(`Unsupported selection toolbar placement: ${String(placement)}`);
 }
 
 function hasTransform(layer: CoatLayer): layer is Exclude<CoatLayer, { type: 'background' }> {

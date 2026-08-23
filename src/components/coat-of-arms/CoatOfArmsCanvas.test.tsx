@@ -4,11 +4,35 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, createEvent, fireEvent, render, screen } from '@testing-library/react';
 import { createDefaultProject } from '@/lib/coat-of-arms/assets';
 import { applyProjectCommand } from '@/lib/coat-of-arms/commands';
+import { SELECTION_SCENE_HEIGHT, SELECTION_SCENE_WIDTH } from '@/lib/coat-of-arms/selection-bounds';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
-import type { CoatProject } from '@/lib/coat-of-arms/types';
-import { CoatOfArmsCanvas } from './CoatOfArmsCanvas';
+import type { CoatProject, TextPathPlacement } from '@/lib/coat-of-arms/types';
+import {
+  CoatOfArmsCanvas,
+  getNextTextBoxWidth,
+  getNextTextPathInteractionPath,
+  toTextPathMeetBoxScenePoint,
+} from './CoatOfArmsCanvas';
 import { TextMottoPanel } from './TextMottoPanel';
 import { TEXT_CREATION_DRAG_MIME } from './text-creation-drag';
+
+const UPPER_CURVE_TEXT_PATH = {
+  mode: 'curve',
+  startX: 10,
+  startY: 72,
+  controlX: 50,
+  controlY: 30,
+  endX: 90,
+  endY: 72,
+} as const satisfies TextPathPlacement;
+
+const OUTWARD_RING_TEXT_PATH = {
+  mode: 'ring',
+  radius: 40,
+  facing: 'out',
+  layout: 'full',
+  spacing: 'natural',
+} as const satisfies TextPathPlacement;
 
 let nextId = 0;
 
@@ -79,10 +103,57 @@ function getLayer(layerId: string) {
   return layer;
 }
 
+function stubTextPathMeetBox(
+  canvas: HTMLElement,
+  rect: { left: number; top: number; width: number; height: number } = { left: 0, top: 0, width: 100, height: 110 },
+): { left: number; top: number; width: number; height: number } {
+  const meetBox = canvas.querySelector('[data-text-path-meet-box]');
+  if (!(meetBox instanceof HTMLElement)) {
+    throw new Error(`Text path meet box is missing: ${String(meetBox)}`);
+  }
+  const box = {
+    x: rect.left,
+    y: rect.top,
+    left: rect.left,
+    top: rect.top,
+    width: rect.width,
+    height: rect.height,
+    right: rect.left + rect.width,
+    bottom: rect.top + rect.height,
+    toJSON: () => box,
+  };
+  vi.spyOn(meetBox, 'getBoundingClientRect').mockReturnValue(box as DOMRect);
+  return rect;
+}
+
+function letterboxMeetRect(
+  artboardWidth: number,
+  artboardHeight: number,
+): { left: number; top: number; width: number; height: number } {
+  const scale = Math.min(artboardWidth / SELECTION_SCENE_WIDTH, artboardHeight / SELECTION_SCENE_HEIGHT);
+  const width = SELECTION_SCENE_WIDTH * scale;
+  const height = SELECTION_SCENE_HEIGHT * scale;
+  return {
+    left: (artboardWidth - width) / 2,
+    top: (artboardHeight - height) / 2,
+    width,
+    height,
+  };
+}
+
 function getTransformLayer(layerId: string) {
   const layer = getLayer(layerId);
   if (layer.type === 'background') throw new Error(`Expected a transform layer: ${layerId}`);
   return layer;
+}
+
+function selectedLayerBoundingRect() {
+  const selection = screen.getByLabelText('Selected layer controls');
+  return [...selection.children].find((node) => (
+    node instanceof HTMLElement
+    && node.className.includes('inset-0')
+    && node.className.includes('border-2')
+  ));
 }
 
 function createTextDragDataTransfer(kind: string): DataTransfer {
@@ -147,12 +218,45 @@ describe('CoatOfArmsCanvas', () => {
     const droppedLayer = useCoatProjectStore.getState().project.layers.at(-1);
     expect(droppedLayer).toMatchObject({
       type: 'text',
-      path: { mode: 'curve', curve: 'upper' },
+      text: 'Curved Text',
+      fontSize: 50,
+      path: {
+        mode: 'curve',
+      },
       transform: { x: -30, scale: 1, rotation: 0 },
     });
     if (!droppedLayer || droppedLayer.type === 'background') throw new Error('Expected dropped text layer');
     expect(droppedLayer.transform.y).toBeCloseTo(-25);
     expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([droppedLayer?.id]);
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('places dropped straight text so the SVG baseline lands on the drop point', () => {
+    const { canvas } = renderTextDragSurface();
+    const card = screen.getByRole('button', { name: /^Text$/ });
+    const dataTransfer = createTextDragDataTransfer('text');
+
+    fireEvent.dragStart(card, { dataTransfer });
+    fireEvent.dragOver(canvas, { dataTransfer });
+    const dropEvent = createEvent.drop(canvas, { dataTransfer });
+    Object.defineProperties(dropEvent, {
+      clientX: { configurable: true, value: 50 },
+      clientY: { configurable: true, value: 55 },
+    });
+    fireEvent(canvas, dropEvent);
+
+    const droppedLayer = useCoatProjectStore.getState().project.layers.at(-1);
+    expect(droppedLayer).toMatchObject({
+      type: 'text',
+      text: 'Double-click to edit',
+      fontSize: 40,
+      path: { mode: 'none' },
+      boxWidth: 57,
+      transform: { x: 0, scale: 1, rotation: 0 },
+    });
+    if (!droppedLayer || droppedLayer.type !== 'text') throw new Error(`Expected dropped straight text layer, got: ${JSON.stringify(droppedLayer)}`);
+    expect(droppedLayer.transform.y).toBe(-47);
+    expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([droppedLayer.id]);
     expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
   });
 
@@ -477,10 +581,10 @@ describe('CoatOfArmsCanvas', () => {
     expect(useCoatProjectStore.getState().history.past).toHaveLength(2);
   });
 
-  it('shows a bezier control handle and dispatches the reshaped curve through the path command', () => {
+  it('shows three curve handles on a dashed path and dispatches the dragged control point', () => {
     const project = applyProjectCommand(createCanvasProject(), {
       type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
-      alignment: 'center', path: { mode: 'curve', curve: 'upper' },
+      alignment: 'center', path: UPPER_CURVE_TEXT_PATH,
     });
     const textLayer = project.layers.at(-1);
     if (!textLayer || textLayer.type !== 'text') throw new Error('Expected curved text layer');
@@ -490,22 +594,79 @@ describe('CoatOfArmsCanvas', () => {
 
     fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
     fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    stubTextPathMeetBox(canvas);
+    expect(canvas.querySelectorAll('[data-resize-handle]')).toHaveLength(0);
+    expect(screen.queryByRole('button', { name: 'Rotate selected layer' })).toBeNull();
+    expect(selectedLayerBoundingRect()).toBeUndefined();
+    expect(canvas.querySelectorAll('[data-text-path-handle]')).toHaveLength(3);
+    expect(canvas.querySelector('[data-text-path-handle="curve-start"]')).not.toBeNull();
+    expect(canvas.querySelector('[data-text-path-handle="curve-end"]')).not.toBeNull();
+    expect(canvas.querySelector('[data-text-path-meet-box]')).not.toBeNull();
+    const toolbar = screen.getByRole('toolbar', { name: 'Selected element actions' });
+    const controls = screen.getByLabelText('Selected layer controls');
+    expect(controls.contains(toolbar)).toBe(false);
+    expect(canvas.contains(toolbar)).toBe(true);
+    expect(toolbar.className).not.toContain('bottom-full');
+    expect(toolbar.className).not.toContain('top-2');
+    expect(toolbar.className).toContain('top-auto');
+    expect(toolbar.className).toContain('bottom-2');
+    const guide = canvas.querySelector('[data-text-path-guide="curve"]');
+    expect(guide?.getAttribute('d')).toBe('M10 72 Q50 30 90 72');
+    expect(guide?.getAttribute('stroke')).toBe('#7eb6ff');
+    expect(guide?.getAttribute('stroke-dasharray')).toBe('3 3');
+    expect(guide?.closest('svg')?.getAttribute('viewBox')).toBe('0 0 100 110');
+
     const handle = screen.getByRole('button', { name: 'Adjust curved text control point' });
+    expect(toolbar.contains(handle)).toBe(false);
     fireEvent.pointerDown(handle, { clientX: 50, clientY: 30, pointerId: 2 });
     fireEvent.pointerMove(canvas, { clientX: 50, clientY: 45, pointerId: 2 });
-    expect((useCoatProjectStore.getState().project.layers.at(-1) as Extract<CoatProject['layers'][number], { type: 'text' }>).path).toEqual({ mode: 'curve', curve: 'upper' });
+    expect((useCoatProjectStore.getState().project.layers.at(-1) as Extract<CoatProject['layers'][number], { type: 'text' }>).path).toEqual(UPPER_CURVE_TEXT_PATH);
     fireEvent.pointerUp(canvas, { clientX: 50, clientY: 45, pointerId: 2 });
 
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
-      path: { mode: 'curve', curve: 'upper', controlX: 50, controlY: 45 },
+      path: { ...UPPER_CURVE_TEXT_PATH, controlX: 50, controlY: 45 },
     });
     expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
   });
 
-  it('shows a ring radius handle and dispatches the adjusted radius through the path command', () => {
+  it('writes start and end coordinates from their own curve handles', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: UPPER_CURVE_TEXT_PATH,
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected curved text layer');
+    const { canvas } = renderCanvas(project);
+    const textElement = canvas.querySelector(`[data-layer-id="${textLayer.id}"]`);
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected curved text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    stubTextPathMeetBox(canvas);
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust curved text start point' }), {
+      clientX: 10, clientY: 72, pointerId: 2,
+    });
+    fireEvent.pointerMove(canvas, { clientX: 18, clientY: 80, pointerId: 2 });
+    fireEvent.pointerUp(canvas, { clientX: 18, clientY: 80, pointerId: 2 });
+    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
+      path: { ...UPPER_CURVE_TEXT_PATH, startX: 18, startY: 80 },
+    });
+
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust curved text end point' }), {
+      clientX: 90, clientY: 72, pointerId: 3,
+    });
+    fireEvent.pointerMove(canvas, { clientX: 82, clientY: 64, pointerId: 3 });
+    fireEvent.pointerUp(canvas, { clientX: 82, clientY: 64, pointerId: 3 });
+    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
+      path: { ...UPPER_CURVE_TEXT_PATH, startX: 18, startY: 80, endX: 82, endY: 64 },
+    });
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(2);
+  });
+
+  it('shows a dashed ring and dispatches the adjusted radius through the path command', () => {
     const project = applyProjectCommand(createCanvasProject(), {
       type: 'add-text-layer', text: 'RING', color: '#B11F24', fontSize: 40,
-      alignment: 'center', path: { mode: 'ring', curve: 'clockwise' },
+      alignment: 'center', path: OUTWARD_RING_TEXT_PATH,
     });
     const textLayer = project.layers.at(-1);
     if (!textLayer || textLayer.type !== 'text') throw new Error('Expected ring text layer');
@@ -515,15 +676,302 @@ describe('CoatOfArmsCanvas', () => {
 
     fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
     fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    stubTextPathMeetBox(canvas);
+    expect(canvas.querySelectorAll('[data-resize-handle]')).toHaveLength(0);
+    expect(screen.queryByRole('button', { name: 'Rotate selected layer' })).toBeNull();
+    expect(selectedLayerBoundingRect()).toBeUndefined();
+    expect(canvas.querySelectorAll('[data-text-path-handle]')).toHaveLength(1);
+    const toolbar = screen.getByRole('toolbar', { name: 'Selected element actions' });
+    const controls = screen.getByLabelText('Selected layer controls');
+    expect(controls.contains(toolbar)).toBe(false);
+    expect(canvas.contains(toolbar)).toBe(true);
+    expect(toolbar.className).not.toContain('bottom-full');
+    expect(toolbar.className).not.toContain('top-2');
+    expect(toolbar.className).toContain('top-auto');
+    expect(toolbar.className).toContain('bottom-2');
+    const guide = canvas.querySelector('[data-text-path-guide="ring"]');
+    expect(guide?.getAttribute('r')).toBe('40');
+    expect(guide?.getAttribute('stroke')).toBe('#7eb6ff');
+    expect(guide?.getAttribute('stroke-dasharray')).toBe('3 3');
+    expect(guide?.closest('svg')?.getAttribute('viewBox')).toBe('0 0 100 110');
     const handle = screen.getByRole('button', { name: 'Adjust ring text radius' });
+    expect(toolbar.contains(handle)).toBe(false);
     fireEvent.pointerDown(handle, { clientX: 50, clientY: 10, pointerId: 2 });
     fireEvent.pointerMove(canvas, { clientX: 50, clientY: 20, pointerId: 2 });
     fireEvent.pointerUp(canvas, { clientX: 50, clientY: 20, pointerId: 2 });
 
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
-      path: { mode: 'ring', curve: 'clockwise', radius: 30 },
+      path: { ...OUTWARD_RING_TEXT_PATH, radius: 30 },
     });
     expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('saturates an out-of-range ring radius instead of throwing', () => {
+    const ringInteraction = {
+      pointerId: 1,
+      layerId: 'text-ring',
+      kind: 'ring-radius' as const,
+      startPath: OUTWARD_RING_TEXT_PATH,
+      startTransform: { x: 0, y: 0, scale: 1, rotation: 0 },
+    };
+    expect(getNextTextPathInteractionPath(ringInteraction, { x: 50, y: 50 })).toMatchObject({ radius: 10 });
+    expect(getNextTextPathInteractionPath(ringInteraction, { x: 50, y: -5 })).toMatchObject({ radius: 50 });
+    expect(() => getNextTextPathInteractionPath(ringInteraction, { x: Number.NaN, y: 10 }))
+      .toThrow('Invalid text path radius: NaN; expected 10-50');
+  });
+
+  it('saturates out-of-range curve handle coordinates instead of throwing', () => {
+    const startInteraction = {
+      pointerId: 1,
+      layerId: 'text-curve',
+      kind: 'curve-start' as const,
+      startPath: UPPER_CURVE_TEXT_PATH,
+      startTransform: { x: 0, y: 0, scale: 1, rotation: 0 },
+    };
+    expect(getNextTextPathInteractionPath(startInteraction, { x: -1, y: 80 })).toMatchObject({
+      startX: 0, startY: 80,
+    });
+    expect(getNextTextPathInteractionPath(startInteraction, { x: 101, y: 111 })).toMatchObject({
+      startX: 100, startY: 110,
+    });
+    expect(() => getNextTextPathInteractionPath(startInteraction, { x: Number.NaN, y: 72 }))
+      .toThrow('Invalid text path start x: NaN; expected 0-100');
+  });
+
+  it('saturates an out-of-range text box width instead of throwing', () => {
+    const widthInteraction = {
+      pointerId: 1,
+      layerId: 'text-width',
+      side: 'right' as const,
+      startBoxWidth: 40,
+      startPoint: { x: 70, y: 55 },
+    };
+    expect(getNextTextBoxWidth(widthInteraction, { x: 200, y: 55 })).toBe(100);
+    expect(getNextTextBoxWidth(widthInteraction, { x: 0, y: 55 })).toBe(8);
+    expect(() => getNextTextBoxWidth(widthInteraction, { x: Number.NaN, y: 55 }))
+      .toThrow('Invalid text box width: NaN; expected 8-100 scene units');
+  });
+
+  it('writes boxWidth from the straight-text width handles without scaling the layer', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'WIDTH', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'none' }, boxWidth: 40,
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected straight text layer');
+    const { canvas } = renderCanvas({
+      ...project,
+      layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-width' } : layer),
+    });
+    const textElement = canvas.querySelector('[data-layer-id="text-width"]');
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected straight text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    expect(canvas.querySelectorAll('[data-text-box-width-handle]')).toHaveLength(2);
+    expect(canvas.querySelectorAll('[data-resize-handle]')).toHaveLength(0);
+    expect(screen.getByRole('button', { name: 'Rotate selected layer' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Adjust straight text width left' })).toBeDefined();
+    expect(selectedLayerBoundingRect()).toBeDefined();
+    expect(canvas.querySelector('[data-text-path-guide]')).toBeNull();
+    const toolbar = screen.getByRole('toolbar', { name: 'Selected element actions' });
+    const controls = screen.getByLabelText('Selected layer controls');
+    expect(controls.contains(toolbar)).toBe(true);
+    expect(toolbar.className).toContain('bottom-full');
+
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust straight text width right' }), {
+      clientX: 70, clientY: 55, pointerId: 2,
+    });
+    fireEvent.pointerMove(canvas, { clientX: 85, clientY: 55, pointerId: 2 });
+    expect(getLayer('text-width')).toMatchObject({ type: 'text', boxWidth: 40, transform: { scale: 1 } });
+    fireEvent.pointerUp(canvas, { clientX: 85, clientY: 55, pointerId: 2 });
+
+    expect(getLayer('text-width')).toMatchObject({
+      type: 'text',
+      boxWidth: 55,
+      transform: { scale: 1, x: 0, y: 0 },
+    });
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('clamps a ring radius dragged past the scene and still releases the pointer', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'RING', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: OUTWARD_RING_TEXT_PATH,
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected ring text layer');
+    const { canvas } = renderCanvas({
+      ...project,
+      layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-ring' } : layer),
+    });
+    const setPointerCapture = vi.fn();
+    const releasePointerCapture = vi.fn();
+    Object.defineProperties(canvas, {
+      setPointerCapture: { configurable: true, value: setPointerCapture },
+      releasePointerCapture: { configurable: true, value: releasePointerCapture },
+    });
+    const textElement = canvas.querySelector('[data-layer-id="text-ring"]');
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected ring text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    stubTextPathMeetBox(canvas);
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust ring text radius' }), {
+      clientX: 50, clientY: 10, pointerId: 2,
+    });
+    fireEvent.pointerMove(canvas, { clientX: 50, clientY: -5, pointerId: 2 });
+    fireEvent.pointerUp(canvas, { clientX: 50, clientY: -5, pointerId: 2 });
+
+    expect(getLayer('text-ring')).toMatchObject({ path: { ...OUTWARD_RING_TEXT_PATH, radius: 50 } });
+    expect(releasePointerCapture).toHaveBeenCalledWith(2);
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('clamps a curve start dragged 1px off the artboard instead of throwing', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: UPPER_CURVE_TEXT_PATH,
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected curved text layer');
+    const { canvas } = renderCanvas({
+      ...project,
+      layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-curve' } : layer),
+    });
+    const textElement = canvas.querySelector('[data-layer-id="text-curve"]');
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected curved text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    stubTextPathMeetBox(canvas);
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust curved text start point' }), {
+      clientX: 10, clientY: 72, pointerId: 2,
+    });
+    fireEvent.pointerMove(canvas, { clientX: -1, clientY: 72, pointerId: 2 });
+    fireEvent.pointerUp(canvas, { clientX: -1, clientY: 72, pointerId: 2 });
+
+    expect(getLayer('text-curve')).toMatchObject({
+      path: { ...UPPER_CURVE_TEXT_PATH, startX: 0, startY: 72 },
+    });
+  });
+
+  it('writes a curve start from the meet box letterbox, not the stretched artboard', () => {
+    const artboard = { width: 1800, height: 1080 };
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'CURVE', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: UPPER_CURVE_TEXT_PATH,
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected curved text layer');
+    const { canvas } = renderCanvas({
+      ...project,
+      layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-curve' } : layer),
+    }, false, undefined, artboard);
+    const textElement = canvas.querySelector('[data-layer-id="text-curve"]');
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected curved text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 900, clientY: 540, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 900, clientY: 540, pointerId: 1 });
+    const meetRect = stubTextPathMeetBox(canvas, letterboxMeetRect(artboard.width, artboard.height));
+    const clientX = meetRect.left + (18 / SELECTION_SCENE_WIDTH) * meetRect.width;
+    const clientY = meetRect.top + (80 / SELECTION_SCENE_HEIGHT) * meetRect.height;
+    const naiveArtboardX = (clientX / artboard.width) * SELECTION_SCENE_WIDTH;
+    expect(Math.abs(naiveArtboardX - 18)).toBeGreaterThan(10);
+
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust curved text start point' }), {
+      clientX, clientY, pointerId: 2,
+    });
+    fireEvent.pointerMove(canvas, { clientX, clientY, pointerId: 2 });
+    fireEvent.pointerUp(canvas, { clientX, clientY, pointerId: 2 });
+
+    const written = getLayer('text-curve');
+    if (written.type !== 'text' || written.path.mode !== 'curve' || !('startX' in written.path) || !('startY' in written.path)) {
+      throw new Error(`Expected written curve path, got: ${JSON.stringify(written)}`);
+    }
+    expect(written.path.startX).toBeCloseTo(18, 10);
+    expect(written.path.startY).toBeCloseTo(80, 10);
+    expect(written.path.startX).not.toBeCloseTo(naiveArtboardX, 0);
+  });
+
+  it('throws when the text path meet box is missing or has no size', () => {
+    const canvas = document.createElement('div');
+    expect(() => toTextPathMeetBoxScenePoint(null, { clientX: 10, clientY: 20 }))
+      .toThrow('Canvas element is unavailable for text path pointer conversion');
+    expect(() => toTextPathMeetBoxScenePoint(canvas, { clientX: 10, clientY: 20 }))
+      .toThrow('Text path meet box is missing: null');
+
+    const meetBox = document.createElement('div');
+    meetBox.setAttribute('data-text-path-meet-box', '');
+    canvas.appendChild(meetBox);
+    vi.spyOn(meetBox, 'getBoundingClientRect').mockReturnValue({
+      x: 12,
+      y: 8,
+      left: 12,
+      top: 8,
+      width: 0,
+      height: -3,
+      right: 12,
+      bottom: 5,
+      toJSON: () => ({}),
+    } as DOMRect);
+    expect(() => toTextPathMeetBoxScenePoint(canvas, { clientX: 10, clientY: 20 }))
+      .toThrow('Invalid text path meet box bounds: 0x-3');
+  });
+
+  it('clamps a straight-text width drag past 100 without throwing', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'WIDTH', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: { mode: 'none' }, boxWidth: 40,
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected straight text layer');
+    const { canvas } = renderCanvas({
+      ...project,
+      layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-width' } : layer),
+    });
+    const textElement = canvas.querySelector('[data-layer-id="text-width"]');
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected straight text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust straight text width right' }), {
+      clientX: 70, clientY: 55, pointerId: 2,
+    });
+    fireEvent.pointerMove(canvas, { clientX: 200, clientY: 55, pointerId: 2 });
+    fireEvent.pointerUp(canvas, { clientX: 200, clientY: 55, pointerId: 2 });
+
+    expect(getLayer('text-width')).toMatchObject({ type: 'text', boxWidth: 100, transform: { scale: 1 } });
+  });
+
+  it('clamps the missing boxWidth estimate to 100 so old straight text can still drag width', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer',
+      text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+      color: '#B11F24',
+      fontSize: 40,
+      alignment: 'center',
+      path: { mode: 'none' },
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected straight text layer');
+    expect('boxWidth' in textLayer).toBe(false);
+    const { canvas } = renderCanvas({
+      ...project,
+      layers: project.layers.map((layer) => layer.id === textLayer.id ? { ...layer, id: 'text-legacy-width' } : layer),
+    });
+    const textElement = canvas.querySelector('[data-layer-id="text-legacy-width"]');
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected straight text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust straight text width right' }), {
+      clientX: 70, clientY: 55, pointerId: 2,
+    });
+    fireEvent.pointerMove(canvas, { clientX: 60, clientY: 55, pointerId: 2 });
+    fireEvent.pointerUp(canvas, { clientX: 60, clientY: 55, pointerId: 2 });
+
+    expect(getLayer('text-legacy-width')).toMatchObject({ type: 'text', boxWidth: 90 });
   });
 
   it('does not expose crop handles on a selected layer', () => {

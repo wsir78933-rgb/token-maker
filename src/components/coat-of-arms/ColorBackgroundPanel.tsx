@@ -61,7 +61,7 @@ function getBackgroundFillLayer(layers: CoatLayer[]): BackgroundLayer {
 
 function getBackgroundDecorationLayers(layers: CoatLayer[]): CoatLayer[] {
   const shieldIndex = layers.findIndex((layer) => layer.type === 'shield');
-  if (shieldIndex === -1) throw new Error('Missing shield layer');
+  if (shieldIndex === -1) return [];
   return layers.slice(1, shieldIndex).filter((layer) => layer.type !== 'background');
 }
 

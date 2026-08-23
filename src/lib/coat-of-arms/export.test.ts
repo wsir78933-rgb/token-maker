@@ -308,6 +308,50 @@ describe('coat export helpers', () => {
     }
   });
 
+  it('prints a background-only project that has no shield', () => {
+    const project = createDefaultProject('en');
+    const background = project.layers.find((layer) => layer.type === 'background');
+    if (!background) throw new Error('Expected background layer');
+    const withoutShield = {
+      ...project,
+      layers: project.layers.filter((layer) => layer.type !== 'shield'),
+    };
+    const popup = createPopup();
+    vi.stubGlobal('window', { open: () => popup });
+
+    printCoatScene(withoutShield, 512);
+
+    const writtenHtml = String(popup.document.write.mock.calls[0]?.[0]);
+    expect(writtenHtml).toContain(`data-layer-id="${background.id}"`);
+    expect(writtenHtml).toContain('#F5E6A1');
+    expect(writtenHtml).not.toContain('coat-shield-clip');
+  });
+
+  it('exports PNG from a background-only project that has no shield', async () => {
+    const project = createDefaultProject('en');
+    const background = project.layers.find((layer) => layer.type === 'background');
+    if (!background) throw new Error('Expected background layer');
+    const withoutShield = {
+      ...project,
+      layers: project.layers.filter((layer) => layer.type !== 'shield'),
+    };
+    const svgBlobs: Blob[] = [];
+    installCanvasBrowser({
+      onObjectUrlBlob: (blob) => {
+        svgBlobs.push(blob);
+      },
+    });
+
+    const png = await exportCoatPng(withoutShield, 512);
+
+    expect(png).toBeInstanceOf(Blob);
+    expect(svgBlobs).toHaveLength(1);
+    const svg = await svgBlobs[0]!.text();
+    expect(svg).toContain(`data-layer-id="${background.id}"`);
+    expect(svg).toContain('#F5E6A1');
+    expect(svg).not.toContain('coat-shield-clip');
+  });
+
   it('rejects JPEG transparent background with true and the quality number before canvas work', async () => {
     await expect(exportCoatJpeg(createDefaultProject('en'), 512, 0.73, { transparentBackground: true }))
       .rejects.toThrow(/true[\s\S]*0\.73|0\.73[\s\S]*true/);

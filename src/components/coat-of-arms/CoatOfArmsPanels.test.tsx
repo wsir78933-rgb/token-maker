@@ -60,6 +60,19 @@ function renderPanels(localeOrProject: 'en' | 'zh' | CoatProject = 'en', project
   return render(<CoatOfArmsPanels locale={locale} />);
 }
 
+function projectWithoutShieldLayers(locale: 'en' | 'zh' = 'en'): CoatProject {
+  const project = createDefaultProject(locale);
+  const shieldCountBeforeFilter = project.layers.filter((layer) => layer.type === 'shield').length;
+  if (shieldCountBeforeFilter === 0) {
+    throw new Error(`Expected default project to include a shield layer before filtering, got: ${shieldCountBeforeFilter}`);
+  }
+  const layers = project.layers.filter((layer) => layer.type !== 'shield');
+  if (!layers.some((layer) => layer.type === 'background')) {
+    throw new Error('Expected a background layer to remain after removing shields');
+  }
+  return { ...project, layers };
+}
+
 function getLayer(layerId: string) {
   const layer = useCoatProjectStore.getState().project.layers.find((candidate) => candidate.id === layerId);
   if (!layer) throw new Error(`Expected layer ${layerId}`);
@@ -455,7 +468,10 @@ describe('CoatOfArmsPanels', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Ring Text' }));
 
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
-      type: 'text', fontSize: 40, path: { mode: 'ring', curve: 'clockwise' },
+      type: 'text',
+      text: 'Ring Text',
+      fontSize: 50,
+      path: { mode: 'ring', radius: 18, facing: 'in', layout: 'arc', spacing: 'natural' },
     });
   });
 
@@ -858,6 +874,32 @@ describe('CoatOfArmsPanels', () => {
     expect((await screen.findByRole('alert')).textContent).toContain(String(COAT_PROJECT_LIMITS.maxLocalUploadCount));
     expect(useCoatProjectStore.getState().project.uploads).toHaveLength(COAT_PROJECT_LIMITS.maxLocalUploadCount);
     await expect(getLocalUploadBlob('panel-id-0')).rejects.toThrow('panel-id-0');
+  });
+
+  it('shows the empty shield panel, keeps background undeletable, and adds a heater shield back', () => {
+    renderPanels(projectWithoutShieldLayers('en'));
+
+    const shieldPanel = screen.getByRole('region', { name: 'Shield & field' });
+    expect(within(shieldPanel).getByText('No shield layer.')).toBeDefined();
+    expect(within(shieldPanel).queryByRole('region', { name: 'Division of the Field' })).toBeNull();
+    expect(screen.getByLabelText('Custom background colour')).toBeDefined();
+    expect(useCoatProjectStore.getState().project.layers.filter((layer) => layer.type === 'shield')).toHaveLength(0);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Ivory' }));
+    expect(screen.getByRole('alert').textContent).toContain('Cannot remove the sole base background layer');
+    expect(useCoatProjectStore.getState().project.layers.filter((layer) => layer.type === 'background')).toHaveLength(1);
+    expect(useCoatProjectStore.getState().project.layers.filter((layer) => layer.type === 'shield')).toHaveLength(0);
+
+    fireEvent.click(within(shieldPanel).getByRole('button', { name: 'Add New Escutcheon' }));
+
+    const addedShield = useCoatProjectStore.getState().project.layers.find((layer) => layer.type === 'shield');
+    if (!addedShield || addedShield.type !== 'shield') {
+      throw new Error(`Expected a heater shield after adding from empty panels, got: ${addedShield?.type ?? 'missing layer'}`);
+    }
+    expect(addedShield.assetId).toBe('heater-shield');
+    expect(useCoatProjectStore.getState().selectedLayerIds).toEqual([addedShield.id]);
+    expect(screen.getByLabelText('Editing: Escutcheon 1')).toBeDefined();
+    expect(useCoatProjectStore.getState().project.layers.filter((layer) => layer.type === 'background')).toHaveLength(1);
   });
 });
 

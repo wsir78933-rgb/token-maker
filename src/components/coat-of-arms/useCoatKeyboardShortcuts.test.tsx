@@ -122,13 +122,23 @@ describe('useCoatKeyboardShortcuts', () => {
     expect(useCoatProjectStore.getState().history.past).toHaveLength(0);
   });
 
-  it('keeps the sole base shield selected when keyboard deletion is attempted', () => {
+  it('removes the sole shield with keyboard deletion', () => {
     renderShortcuts(['shield-1']);
 
     fireEvent.keyDown(window, { key: 'Delete' });
 
-    expect(useCoatProjectStore.getState().project.layers.map((layer) => layer.id)).toContain('shield-1');
-    expect(screen.getByTestId('selection').textContent).toBe('shield-1');
+    expect(useCoatProjectStore.getState().project.layers.map((layer) => layer.id)).not.toContain('shield-1');
+    expect(screen.getByTestId('selection').textContent).toBe('');
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('keeps the sole background selected when keyboard deletion is attempted', () => {
+    renderShortcuts(['background-1']);
+
+    fireEvent.keyDown(window, { key: 'Backspace' });
+
+    expect(useCoatProjectStore.getState().project.layers.map((layer) => layer.id)).toContain('background-1');
+    expect(screen.getByTestId('selection').textContent).toBe('background-1');
     expect(useCoatProjectStore.getState().history.past).toHaveLength(0);
   });
 

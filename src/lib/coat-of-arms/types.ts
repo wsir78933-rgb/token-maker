@@ -359,12 +359,21 @@ export interface TextLayer extends CoatLayerBase {
   fontStyle?: TextFontStyle;
   /** Optional values retain the original normal browser text appearance for saved local projects. */
   fontWeight?: TextFontWeight;
+  /**
+   * Optional SVG textLength in scene units. Only valid when path.mode is none.
+   * Range is 8–100, matching the 100-wide scene; absent keeps default text width.
+   */
+  boxWidth?: number;
   alignment: TextAlignment;
   path: TextPathPlacement;
   transform: CanvasTransform;
 }
 
 export type TextAlignment = 'left' | 'center' | 'right';
+
+export type TextPathFacing = 'in' | 'out';
+export type TextPathLayout = 'full' | 'arc';
+export type TextPathSpacing = 'natural' | 'even';
 
 /** Closed local-only catalog. Each value resolves to a deterministic browser-safe SVG stack. */
 export const textFontFamilies = [
@@ -416,7 +425,29 @@ export type TextFontWeight = 'normal' | 'bold';
 export type TextPathPlacement =
   | { mode: 'none' }
   | { mode: 'motto'; curve: 'upper' | 'lower' }
+  | {
+      mode: 'curve';
+      startX: number;
+      startY: number;
+      controlX: number;
+      controlY: number;
+      endX: number;
+      endY: number;
+      /** Absent after migrateLegacyTextPath; kept so saved-document unions still type-check. */
+      curve?: undefined;
+    }
+  | {
+      mode: 'ring';
+      radius: number;
+      facing: TextPathFacing;
+      layout: TextPathLayout;
+      spacing: TextPathSpacing;
+      /** Absent after migrateLegacyTextPath; kept so saved-document unions still type-check. */
+      curve?: undefined;
+    }
+  /** Saved documents only; migrateLegacyTextPath rewrites this before the project stays in memory. */
   | { mode: 'curve'; curve: 'upper' | 'lower'; controlX?: number; controlY?: number }
+  /** Saved documents only; migrateLegacyTextPath rewrites this before the project stays in memory. */
   | { mode: 'ring'; curve: 'clockwise' | 'counterclockwise'; radius?: number };
 
 export type CoatLayer =
