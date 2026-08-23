@@ -94,5 +94,6 @@ function toTextPathPlacement(kind: TextCreationCardKind): TextPathPlacement {
     facing: 'in',
     layout: 'arc',
     spacing: 'natural',
+    startAngle: 0,
   };
 }

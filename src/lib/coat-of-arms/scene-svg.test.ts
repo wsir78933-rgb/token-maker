@@ -6,7 +6,14 @@ import { applyProjectCommand } from './commands';
 import { fieldRegionDivisionLinePath } from './field-division-line';
 import { getFieldRegionPath } from './field-regions';
 import { clearLocalUploadBlobMemoryForTests, putLocalUploadBlob } from './local-upload-blobs';
-import { prefixCoatSceneSvgIds, renderCoatSceneSvg, withVisibleSceneSvgOverflow } from './scene-svg';
+import {
+  prefixCoatSceneSvgIds,
+  renderCoatSceneSvg,
+  ringTextPointFromStartAngle,
+  ringTextStartAngleFromPoint,
+  straightTextLocalRotateOrigin,
+  withVisibleSceneSvgOverflow,
+} from './scene-svg';
 import * as shieldMaterialPaints from './shield-material-paints';
 
 describe('coat scene SVG renderer', () => {
@@ -797,7 +804,7 @@ describe('coat scene SVG renderer', () => {
     project = applyProjectCommand(project, {
       type: 'add-text-layer', text: 'RING', color: '#B11F24', fontSize: 40,
       alignment: 'center', path: {
-        mode: 'ring', radius: 28, facing: 'out', layout: 'full', spacing: 'natural',
+        mode: 'ring', radius: 28, facing: 'out', layout: 'full', spacing: 'natural', startAngle: 0,
       },
     });
 
@@ -840,17 +847,82 @@ describe('coat scene SVG renderer', () => {
     expect(withoutBoxSvg).not.toContain('lengthAdjust=');
   });
 
+  it('rotates default straight text around the local text anchor instead of the shield centre', () => {
+    const project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'ARMS', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: { mode: 'none' },
+      transform: { x: 0, y: -47, scale: 1, rotation: 90 },
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+    const rotateOrigin = straightTextLocalRotateOrigin('center');
+
+    expect(rotateOrigin).toEqual({ x: 50, y: 102 });
+    expect(svg).toContain('<text x="50" y="102"');
+    expect(svg).toContain(`translate(0 -47) rotate(90 ${rotateOrigin.x} ${rotateOrigin.y})`);
+    expect(svg).not.toContain('rotate(90 50 55)');
+  });
+
+  it('uses the alignment x as the straight text rotate origin', () => {
+    const leftProject = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'LEFT', color: '#FFFFFF', fontSize: 20,
+      alignment: 'left', path: { mode: 'none' },
+      transform: { x: 0, y: -47, scale: 1, rotation: 90 },
+    });
+    const rightProject = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'RIGHT', color: '#FFFFFF', fontSize: 20,
+      alignment: 'right', path: { mode: 'none' },
+      transform: { x: 0, y: -47, scale: 1, rotation: 90 },
+    });
+
+    const leftSvg = renderCoatSceneSvg(leftProject, { width: 512, height: 512 });
+    const rightSvg = renderCoatSceneSvg(rightProject, { width: 512, height: 512 });
+
+    expect(straightTextLocalRotateOrigin('left')).toEqual({ x: 8, y: 102 });
+    expect(straightTextLocalRotateOrigin('right')).toEqual({ x: 92, y: 102 });
+    expect(leftSvg).toContain('rotate(90 8 102)');
+    expect(rightSvg).toContain('rotate(90 92 102)');
+    expect(leftSvg).not.toContain('rotate(90 50 55)');
+    expect(rightSvg).not.toContain('rotate(90 50 55)');
+  });
+
+  it('keeps curve and ring text rotation around the shield centre', () => {
+    let project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'CURVE', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'curve', startX: 10, startY: 72, controlX: 38, controlY: 44, endX: 90, endY: 72,
+      },
+      transform: { x: 0, y: 0, scale: 1, rotation: 90 },
+    });
+    project = applyProjectCommand(project, {
+      type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'ring', radius: 28, facing: 'out', layout: 'full', spacing: 'natural', startAngle: 0,
+      },
+      transform: { x: 0, y: 0, scale: 1, rotation: 90 },
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+
+    expect(svg).toContain('rotate(90 50 55)');
+    expect(svg).not.toContain('rotate(90 50 102)');
+  });
+
+  it('rejects an unknown alignment when resolving the straight text rotate origin', () => {
+    expect(() => straightTextLocalRotateOrigin('justify' as never)).toThrow('justify');
+  });
+
   it('spreads ring text along the path length when spacing is even', () => {
     const evenRing = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
       alignment: 'center', path: {
-        mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'even',
+        mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'even', startAngle: 0,
       },
     });
     const naturalRing = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
       alignment: 'center', path: {
-        mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'natural',
+        mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'natural', startAngle: 0,
       },
     });
 
@@ -867,19 +939,19 @@ describe('coat scene SVG renderer', () => {
     const inwardFull = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-text-layer', text: 'IN', color: '#FFFFFF', fontSize: 20,
       alignment: 'center', path: {
-        mode: 'ring', radius: 40, facing: 'in', layout: 'full', spacing: 'natural',
+        mode: 'ring', radius: 40, facing: 'in', layout: 'full', spacing: 'natural', startAngle: 0,
       },
     });
     const outwardArc = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-text-layer', text: 'ARC', color: '#FFFFFF', fontSize: 20,
       alignment: 'center', path: {
-        mode: 'ring', radius: 40, facing: 'out', layout: 'arc', spacing: 'natural',
+        mode: 'ring', radius: 40, facing: 'out', layout: 'arc', spacing: 'natural', startAngle: 0,
       },
     });
     const inwardArc = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-text-layer', text: 'ARC', color: '#FFFFFF', fontSize: 20,
       alignment: 'center', path: {
-        mode: 'ring', radius: 40, facing: 'in', layout: 'arc', spacing: 'even',
+        mode: 'ring', radius: 40, facing: 'in', layout: 'arc', spacing: 'even', startAngle: 0,
       },
     });
 
@@ -899,7 +971,7 @@ describe('coat scene SVG renderer', () => {
     const inwardArc = applyProjectCommand(createDefaultProject('en'), {
       type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
       alignment: 'center', path: {
-        mode: 'ring', radius: 18, facing: 'in', layout: 'arc', spacing: 'natural',
+        mode: 'ring', radius: 18, facing: 'in', layout: 'arc', spacing: 'natural', startAngle: 0,
       },
     });
 
@@ -907,6 +979,33 @@ describe('coat scene SVG renderer', () => {
 
     expect(svg).toContain('M32 50 A18 18 0 0 1 68 50');
     expect(svg).not.toContain('M32 50 A18 18 0 0 0 68 50');
+  });
+
+  it('rotates ring text around the circle from startAngle', () => {
+    const fullAtRight = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'natural', startAngle: 90,
+      },
+    });
+    const inwardArcAtRight = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-text-layer', text: 'RING', color: '#FFFFFF', fontSize: 20,
+      alignment: 'center', path: {
+        mode: 'ring', radius: 40, facing: 'in', layout: 'arc', spacing: 'natural', startAngle: 90,
+      },
+    });
+
+    const fullSvg = renderCoatSceneSvg(fullAtRight, { width: 512, height: 512 });
+    const arcSvg = renderCoatSceneSvg(inwardArcAtRight, { width: 512, height: 512 });
+
+    expect(fullSvg).toContain('M90 50 A40 40 0 1 1 90 49.99');
+    expect(arcSvg).toContain('M50 10 A40 40 0 0 1 50 90');
+    expect(ringTextPointFromStartAngle(40, 0)).toEqual({ x: 50, y: 10 });
+    expect(ringTextPointFromStartAngle(40, 90).x).toBeCloseTo(90, 10);
+    expect(ringTextPointFromStartAngle(40, 90).y).toBeCloseTo(50, 10);
+    expect(ringTextStartAngleFromPoint(50, 10)).toBe(0);
+    expect(ringTextStartAngleFromPoint(90, 50)).toBe(90);
+    expect(ringTextStartAngleFromPoint(10, 50)).toBe(270);
   });
 
   it('rejects an unknown text path mode including the received value', () => {
@@ -1000,7 +1099,7 @@ describe('coat scene SVG renderer', () => {
     for (const path of [
       { mode: 'motto', curve: 'upper' },
       { mode: 'curve', startX: 10, startY: 38, controlX: 50, controlY: 80, endX: 90, endY: 38 },
-      { mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'natural' },
+      { mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'natural', startAngle: 0 },
     ] as const) {
       project = applyProjectCommand(project, {
         type: 'add-text-layer', text: 'Arms', color: '#F5E6A1', fontSize: 9,
@@ -1102,7 +1201,7 @@ describe('coat scene SVG renderer', () => {
     let project = applyProjectCommand(createDefaultProject('en'), { type: 'add-layer', assetId: 'round-shield' });
     for (const path of [
       { mode: 'motto', curve: 'upper' },
-      { mode: 'ring', radius: 40, facing: 'in', layout: 'full', spacing: 'natural' },
+      { mode: 'ring', radius: 40, facing: 'in', layout: 'full', spacing: 'natural', startAngle: 0 },
     ] as const) {
       project = applyProjectCommand(project, {
         type: 'add-text-layer', text: 'Arms', color: '#F5E6A1', fontSize: 10,

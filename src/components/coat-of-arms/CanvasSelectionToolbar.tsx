@@ -204,7 +204,7 @@ function ToolbarIconButton({
 
 function selectionToolbarPlacementClass(placement: SelectionToolbarPlacement): string {
   if (placement === 'above-selection') {
-    return 'pointer-events-auto absolute bottom-full left-1/2 z-30 mb-9 flex -translate-x-1/2 flex-col items-center gap-1';
+    return 'pointer-events-auto absolute bottom-full left-1/2 z-30 mb-14 flex -translate-x-1/2 flex-col items-center gap-1';
   }
   if (placement === 'artboard-top') {
     return 'pointer-events-auto absolute left-1/2 top-2 z-20 flex -translate-x-1/2 flex-col items-center gap-1';

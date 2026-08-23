@@ -10,7 +10,7 @@ import { TextSelectionToolbar } from './TextSelectionToolbar';
 import { getCoatWorkbenchCopy } from './workbench-copy';
 
 const DEFAULT_RING_PATH = {
-  mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'natural',
+  mode: 'ring', radius: 40, facing: 'out', layout: 'full', spacing: 'natural', startAngle: 0,
 } as const satisfies TextPathPlacement;
 
 const UPPER_CURVE_PATH = {
@@ -205,5 +205,20 @@ describe('TextSelectionToolbar', () => {
     expect(arc).toHaveProperty('disabled', true);
     expect(even).toHaveProperty('disabled', true);
     expect(getTextLayer(textLayerId).path).toEqual(DEFAULT_RING_PATH);
+  });
+
+  it('keeps ring startAngle when toggling IN, OUT, ARC, and EVEN', () => {
+    const rotatedRingPath = { ...DEFAULT_RING_PATH, startAngle: 90 };
+    const textLayerId = createSelectedTextProject(rotatedRingPath);
+    render(<TextSelectionToolbar locale="en" />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Face text inward' }));
+    expect(getTextLayer(textLayerId).path).toEqual({ ...rotatedRingPath, facing: 'in' });
+    fireEvent.click(screen.getByRole('button', { name: 'Arc text' }));
+    expect(getTextLayer(textLayerId).path).toEqual({ ...rotatedRingPath, facing: 'in', layout: 'arc' });
+    fireEvent.click(screen.getByRole('button', { name: 'Space letters evenly' }));
+    expect(getTextLayer(textLayerId).path).toEqual({
+      ...rotatedRingPath, facing: 'in', layout: 'arc', spacing: 'even',
+    });
   });
 });

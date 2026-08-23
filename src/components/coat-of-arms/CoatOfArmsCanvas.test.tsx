@@ -14,7 +14,7 @@ import {
   toTextPathMeetBoxScenePoint,
 } from './CoatOfArmsCanvas';
 import { TextMottoPanel } from './TextMottoPanel';
-import { TEXT_CREATION_DRAG_MIME } from './text-creation-drag';
+import { createTextCreationCommand, TEXT_CREATION_DRAG_MIME } from './text-creation-drag';
 
 const UPPER_CURVE_TEXT_PATH = {
   mode: 'curve',
@@ -32,6 +32,7 @@ const OUTWARD_RING_TEXT_PATH = {
   facing: 'out',
   layout: 'full',
   spacing: 'natural',
+  startAngle: 0,
 } as const satisfies TextPathPlacement;
 
 let nextId = 0;
@@ -101,6 +102,27 @@ function getLayer(layerId: string) {
   const layer = useCoatProjectStore.getState().project.layers.find((candidate) => candidate.id === layerId);
   if (!layer) throw new Error(`Expected layer: ${layerId}`);
   return layer;
+}
+
+function stubStraightTextGlyphRect(canvas: HTMLElement, layerId: string): void {
+  const glyphRect = {
+    x: 21.5,
+    y: 50,
+    left: 21.5,
+    top: 50,
+    right: 78.5,
+    bottom: 60,
+    width: 57,
+    height: 10,
+    toJSON: () => ({}),
+  } as DOMRect;
+  const paintedLayers = canvas.querySelectorAll(`[data-layer-id="${layerId}"]`);
+  if (paintedLayers.length === 0) {
+    throw new Error(`Expected painted straight text layer: ${layerId}`);
+  }
+  paintedLayers.forEach((paintedLayer) => {
+    vi.spyOn(paintedLayer, 'getBoundingClientRect').mockReturnValue(glyphRect);
+  });
 }
 
 function stubTextPathMeetBox(
@@ -576,7 +598,7 @@ describe('CoatOfArmsCanvas', () => {
     fireEvent.pointerUp(canvas, { clientX: 50, clientY: 105, pointerId: 3 });
 
     expect(getLayer('charge-1')).toMatchObject({
-      transform: { scale: 1.25, rotation: 90 },
+      transform: { scale: 1.25, rotation: 45 },
     });
     expect(useCoatProjectStore.getState().history.past).toHaveLength(2);
   });
@@ -607,6 +629,7 @@ describe('CoatOfArmsCanvas', () => {
     expect(controls.contains(toolbar)).toBe(false);
     expect(canvas.contains(toolbar)).toBe(true);
     expect(toolbar.className).not.toContain('bottom-full');
+    expect(toolbar.className).not.toContain('mb-14');
     expect(toolbar.className).not.toContain('top-2');
     expect(toolbar.className).toContain('top-auto');
     expect(toolbar.className).toContain('bottom-2');
@@ -686,6 +709,7 @@ describe('CoatOfArmsCanvas', () => {
     expect(controls.contains(toolbar)).toBe(false);
     expect(canvas.contains(toolbar)).toBe(true);
     expect(toolbar.className).not.toContain('bottom-full');
+    expect(toolbar.className).not.toContain('mb-14');
     expect(toolbar.className).not.toContain('top-2');
     expect(toolbar.className).toContain('top-auto');
     expect(toolbar.className).toContain('bottom-2');
@@ -694,7 +718,7 @@ describe('CoatOfArmsCanvas', () => {
     expect(guide?.getAttribute('stroke')).toBe('#7eb6ff');
     expect(guide?.getAttribute('stroke-dasharray')).toBe('3 3');
     expect(guide?.closest('svg')?.getAttribute('viewBox')).toBe('0 0 100 110');
-    const handle = screen.getByRole('button', { name: 'Adjust ring text radius' });
+    const handle = screen.getByRole('button', { name: 'Adjust ring text radius and position' });
     expect(toolbar.contains(handle)).toBe(false);
     fireEvent.pointerDown(handle, { clientX: 50, clientY: 10, pointerId: 2 });
     fireEvent.pointerMove(canvas, { clientX: 50, clientY: 20, pointerId: 2 });
@@ -702,6 +726,32 @@ describe('CoatOfArmsCanvas', () => {
 
     expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
       path: { ...OUTWARD_RING_TEXT_PATH, radius: 30 },
+    });
+    expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('rotates ring text around the circle when the handle is dragged sideways', () => {
+    const project = applyProjectCommand(createCanvasProject(), {
+      type: 'add-text-layer', text: 'RING', color: '#B11F24', fontSize: 40,
+      alignment: 'center', path: OUTWARD_RING_TEXT_PATH,
+    });
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected ring text layer');
+    const { canvas } = renderCanvas(project);
+    const textElement = canvas.querySelector(`[data-layer-id="${textLayer.id}"]`);
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected ring text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    stubTextPathMeetBox(canvas);
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust ring text radius and position' }), {
+      clientX: 50, clientY: 10, pointerId: 2,
+    });
+    fireEvent.pointerMove(canvas, { clientX: 90, clientY: 50, pointerId: 2 });
+    fireEvent.pointerUp(canvas, { clientX: 90, clientY: 50, pointerId: 2 });
+
+    expect(useCoatProjectStore.getState().project.layers.at(-1)).toMatchObject({
+      path: { ...OUTWARD_RING_TEXT_PATH, radius: 40, startAngle: 90 },
     });
     expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
   });
@@ -714,8 +764,10 @@ describe('CoatOfArmsCanvas', () => {
       startPath: OUTWARD_RING_TEXT_PATH,
       startTransform: { x: 0, y: 0, scale: 1, rotation: 0 },
     };
-    expect(getNextTextPathInteractionPath(ringInteraction, { x: 50, y: 50 })).toMatchObject({ radius: 10 });
-    expect(getNextTextPathInteractionPath(ringInteraction, { x: 50, y: -5 })).toMatchObject({ radius: 50 });
+    expect(getNextTextPathInteractionPath(ringInteraction, { x: 50, y: 50 })).toMatchObject({ radius: 10, startAngle: 0 });
+    expect(getNextTextPathInteractionPath(ringInteraction, { x: 50, y: -5 })).toMatchObject({ radius: 50, startAngle: 0 });
+    expect(getNextTextPathInteractionPath(ringInteraction, { x: 90, y: 50 })).toMatchObject({ radius: 40, startAngle: 90 });
+    expect(getNextTextPathInteractionPath(ringInteraction, { x: 10, y: 50 })).toMatchObject({ radius: 40, startAngle: 270 });
     expect(() => getNextTextPathInteractionPath(ringInteraction, { x: Number.NaN, y: 10 }))
       .toThrow('Invalid text path radius: NaN; expected 10-50');
   });
@@ -778,6 +830,7 @@ describe('CoatOfArmsCanvas', () => {
     const controls = screen.getByLabelText('Selected layer controls');
     expect(controls.contains(toolbar)).toBe(true);
     expect(toolbar.className).toContain('bottom-full');
+    expect(toolbar.className).toContain('mb-14');
 
     fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust straight text width right' }), {
       clientX: 70, clientY: 55, pointerId: 2,
@@ -792,6 +845,42 @@ describe('CoatOfArmsCanvas', () => {
       transform: { scale: 1, x: 0, y: 0 },
     });
     expect(useCoatProjectStore.getState().history.past).toHaveLength(1);
+  });
+
+  it('rotates selected straight text around the measured glyph box instead of the transform origin', () => {
+    const project = applyProjectCommand(
+      createCanvasProject(),
+      createTextCreationCommand('text', 'Double-click to edit'),
+    );
+    const textLayer = project.layers.at(-1);
+    if (!textLayer || textLayer.type !== 'text') throw new Error('Expected straight text layer');
+    expect(textLayer.transform).toMatchObject({ x: 0, y: -47, rotation: 0 });
+    const { canvas } = renderCanvas({
+      ...project,
+      layers: project.layers.map((layer) => (
+        layer.id === textLayer.id ? { ...layer, id: 'text-rotate' } : layer
+      )),
+    });
+    const textElement = canvas.querySelector('[data-layer-id="text-rotate"]');
+    if (!(textElement instanceof SVGElement)) throw new Error('Expected straight text scene element');
+
+    fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
+    fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
+    stubStraightTextGlyphRect(canvas, 'text-rotate');
+
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Rotate selected layer' }), {
+      clientX: 50, clientY: 40, pointerId: 2,
+    });
+    fireEvent.pointerMove(canvas, { clientX: 70, clientY: 55, pointerId: 2 });
+    fireEvent.pointerUp(canvas, { clientX: 70, clientY: 55, pointerId: 2 });
+
+    const rotated = getLayer('text-rotate');
+    if (rotated.type !== 'text') {
+      throw new Error(`Expected rotated straight text layer, got: ${JSON.stringify(rotated)}`);
+    }
+    expect(rotated.transform.rotation).toBeCloseTo(45);
+    expect(rotated.transform.x).toBe(0);
+    expect(rotated.transform.y).toBe(-47);
   });
 
   it('clamps a ring radius dragged past the scene and still releases the pointer', () => {
@@ -817,7 +906,7 @@ describe('CoatOfArmsCanvas', () => {
     fireEvent.pointerDown(textElement, { clientX: 50, clientY: 55, pointerId: 1 });
     fireEvent.pointerCancel(canvas, { clientX: 50, clientY: 55, pointerId: 1 });
     stubTextPathMeetBox(canvas);
-    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust ring text radius' }), {
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Adjust ring text radius and position' }), {
       clientX: 50, clientY: 10, pointerId: 2,
     });
     fireEvent.pointerMove(canvas, { clientX: 50, clientY: -5, pointerId: 2 });

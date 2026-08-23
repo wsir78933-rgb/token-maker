@@ -442,13 +442,25 @@ export type TextPathPlacement =
       facing: TextPathFacing;
       layout: TextPathLayout;
       spacing: TextPathSpacing;
+      /** 0 at the top, clockwise degrees. The overlay handle sits on this angle. */
+      startAngle: number;
       /** Absent after migrateLegacyTextPath; kept so saved-document unions still type-check. */
       curve?: undefined;
     }
   /** Saved documents only; migrateLegacyTextPath rewrites this before the project stays in memory. */
   | { mode: 'curve'; curve: 'upper' | 'lower'; controlX?: number; controlY?: number }
   /** Saved documents only; migrateLegacyTextPath rewrites this before the project stays in memory. */
-  | { mode: 'ring'; curve: 'clockwise' | 'counterclockwise'; radius?: number };
+  | { mode: 'ring'; curve: 'clockwise' | 'counterclockwise'; radius?: number }
+  /** Saved documents only; migrateLegacyTextPath fills startAngle: 0. */
+  | {
+      mode: 'ring';
+      radius: number;
+      facing: TextPathFacing;
+      layout: TextPathLayout;
+      spacing: TextPathSpacing;
+      startAngle?: undefined;
+      curve?: undefined;
+    };
 
 export type CoatLayer =
   | BackgroundLayer

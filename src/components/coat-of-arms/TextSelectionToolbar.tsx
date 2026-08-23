@@ -16,6 +16,7 @@ type EditableRingTextPath = {
   facing: TextPathFacing;
   layout: TextPathLayout;
   spacing: TextPathSpacing;
+  startAngle: number;
 };
 
 type RingToolbarCopy = ReturnType<typeof getCoatWorkbenchCopy>['panels']['textFeature']['toolbar'];
@@ -56,7 +57,17 @@ function requireEditableRingPath(path: TextPathPlacement): EditableRingTextPath 
   if (path.facing !== 'in' && path.facing !== 'out') throw new Error(`Invalid text path facing: ${String(path.facing)}`);
   if (path.layout !== 'full' && path.layout !== 'arc') throw new Error(`Invalid text path layout: ${String(path.layout)}`);
   if (path.spacing !== 'natural' && path.spacing !== 'even') throw new Error(`Invalid text path spacing: ${String(path.spacing)}`);
-  return { mode: 'ring', radius: path.radius, facing: path.facing, layout: path.layout, spacing: path.spacing };
+  if (!('startAngle' in path) || typeof path.startAngle !== 'number' || !Number.isFinite(path.startAngle)) {
+    throw new Error(`Invalid ring text path startAngle: ${String('startAngle' in path ? path.startAngle : undefined)}; path is ${JSON.stringify(path)}`);
+  }
+  return {
+    mode: 'ring',
+    radius: path.radius,
+    facing: path.facing,
+    layout: path.layout,
+    spacing: path.spacing,
+    startAngle: path.startAngle,
+  };
 }
 
 /** Contextual live controls for one selected text layer. */
@@ -184,6 +195,7 @@ function RingPathControls({
     facing: patch.facing ?? path.facing,
     layout: patch.layout ?? path.layout,
     spacing: patch.spacing ?? path.spacing,
+    startAngle: path.startAngle,
   });
   return (
     <div className="inline-flex items-center gap-0.5" role="group">

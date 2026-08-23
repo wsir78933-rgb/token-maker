@@ -14,9 +14,18 @@ import {
   type RefObject,
 } from 'react';
 import { COAT_PROJECT_LIMITS } from '@/lib/coat-of-arms/commands';
-import { prefixCoatSceneSvgIds, renderCoatSceneSvg, withVisibleSceneSvgOverflow } from '@/lib/coat-of-arms/scene-svg';
+import {
+  prefixCoatSceneSvgIds,
+  renderCoatSceneSvg,
+  RING_TEXT_CENTER_X,
+  RING_TEXT_CENTER_Y,
+  ringTextPointFromStartAngle,
+  ringTextStartAngleFromPoint,
+  withVisibleSceneSvgOverflow,
+} from '@/lib/coat-of-arms/scene-svg';
 import { appendFreehandPoint, createFreehandPath, type FreehandPoint } from '@/lib/coat-of-arms/drawing';
 import {
+  getSelectionOverlayCenter,
   getTransformedLayerBounds,
   getTransformedSelectionBounds,
   sceneBoundsEqual,
@@ -127,6 +136,8 @@ const TEXT_BOX_WIDTH_MIN = 8;
 const TEXT_BOX_WIDTH_MAX = 100;
 const TEXT_PATH_RADIUS_MIN = 10;
 const TEXT_PATH_RADIUS_MAX = 50;
+/** Pointer angle around the rotate handle is 1:1 without this; 0.5 means a full mouse circle turns the layer halfway. */
+const ROTATE_HANDLE_POINTER_ANGLE_SCALE = 0.5;
 
 export interface CoatOfArmsCanvasProps {
   disabled?: boolean;
@@ -255,7 +266,8 @@ export function CoatOfArmsCanvas({
   ) => {
     const startPoint = toScenePoint(event);
     const interactionLayerIds = interactionLayers.map((interactionLayer) => interactionLayer.id);
-    const selectionCenter = getTransformSelectionCenter(interactionLayers.map((interactionLayer) => interactionLayer.transform));
+    const startSelectionBounds = getPaintedSelectionBounds(canvasRef.current, interactionLayers);
+    const selectionCenter = selectionCenterForCanvasGesture(mode, interactionLayers, startSelectionBounds);
     interactionRef.current = {
       mode,
       pointerId: getPointerId(event),
@@ -269,7 +281,7 @@ export function CoatOfArmsCanvas({
       ])),
       selectionCenter,
       startAngle: getAngleFromScenePoint(startPoint, toSceneSelectionPoint(selectionCenter)),
-      startSelectionBounds: getPaintedSelectionBounds(canvasRef.current, interactionLayers),
+      startSelectionBounds,
       snapLayerTargets: getSnapLayerTargets(canvasRef.current, project.layers, interactionLayerIds),
     };
     setSnapGuides([]);
@@ -900,6 +912,29 @@ function getPointerId(event: Pick<PointerEvent<HTMLElement>, 'pointerId'>): numb
   return event.pointerId ?? 0;
 }
 
+function isSingleStraightTextLayer(
+  layers: readonly Exclude<CoatLayer, { type: 'background' }>[],
+): boolean {
+  if (layers.length !== 1) return false;
+  const layer = layers[0];
+  if (layer === undefined) {
+    throw new Error(`Cannot inspect a missing selected layer for straight text rotate; layer count is ${layers.length}`);
+  }
+  return layer.type === 'text' && layer.path.mode === 'none';
+}
+
+/** Straight text rotates around the painted glyph box; everything else keeps the transform origin. */
+function selectionCenterForCanvasGesture(
+  mode: InteractionMode,
+  interactionLayers: readonly Exclude<CoatLayer, { type: 'background' }>[],
+  paintedSelectionBounds: SceneBounds,
+): TransformSelectionCenter {
+  if (mode === 'rotate' && isSingleStraightTextLayer(interactionLayers)) {
+    return getSelectionOverlayCenter(paintedSelectionBounds);
+  }
+  return getTransformSelectionCenter(interactionLayers.map((layer) => layer.transform));
+}
+
 function getNextTransform(interaction: CanvasInteraction, currentPoint: ScenePoint): CanvasTransform {
   switch (interaction.mode) {
     case 'drag':
@@ -913,7 +948,10 @@ function getNextTransform(interaction: CanvasInteraction, currentPoint: ScenePoi
     case 'rotate':
       return {
         ...interaction.startTransform,
-        rotation: interaction.startTransform.rotation + getAngleFromScenePoint(currentPoint, toSceneSelectionPoint(interaction.selectionCenter)) - interaction.startAngle,
+        rotation: interaction.startTransform.rotation + rotateHandlePointerDelta(
+          interaction.startAngle,
+          getAngleFromScenePoint(currentPoint, toSceneSelectionPoint(interaction.selectionCenter)),
+        ),
       };
   }
 }
@@ -924,6 +962,16 @@ function toSceneSelectionPoint(selectionCenter: TransformSelectionCenter): Scene
 
 function getAngleFromScenePoint(point: ScenePoint, center: ScenePoint): number {
   return Math.atan2(point.y - center.y, point.x - center.x) * 180 / Math.PI;
+}
+
+function rotateHandlePointerDelta(startAngle: number, currentAngle: number): number {
+  if (typeof startAngle !== 'number' || !Number.isFinite(startAngle)) {
+    throw new Error(`Invalid rotate-handle start angle: ${String(startAngle)}`);
+  }
+  if (typeof currentAngle !== 'number' || !Number.isFinite(currentAngle)) {
+    throw new Error(`Invalid rotate-handle pointer angle: ${String(currentAngle)}`);
+  }
+  return (currentAngle - startAngle) * ROTATE_HANDLE_POINTER_ANGLE_SCALE;
 }
 
 function getNextTransforms(interaction: CanvasInteraction, currentPoint: ScenePoint): Record<string, CanvasTransform> {
@@ -1100,8 +1148,11 @@ function getTextPathOverlay(layer: TextLayer, transform: CanvasTransform): Canva
   }
   if (layer.path.mode === 'ring') {
     const path = requireEditableRingPath(layer.path, 'ring-radius');
-    const center = applyTextPathTransform({ x: 50, y: 50 }, transform);
-    const radiusPoint = applyTextPathTransform({ x: 50, y: 50 - path.radius }, transform);
+    const center = applyTextPathTransform({ x: RING_TEXT_CENTER_X, y: RING_TEXT_CENTER_Y }, transform);
+    const radiusPoint = applyTextPathTransform(
+      ringTextPointFromStartAngle(path.radius, path.startAngle),
+      transform,
+    );
     return {
       mode: 'ring',
       handles: [{ kind: 'ring-radius', point: radiusPoint }],
@@ -1177,8 +1228,12 @@ function getNextCurveEndPath(interaction: TextPathInteraction, scenePoint: Scene
 function getNextRingRadiusPath(interaction: TextPathInteraction, scenePoint: ScenePoint): TextPathPlacement {
   const startPath = requireEditableRingPath(interaction.startPath, interaction.kind);
   const localPoint = invertTextPathTransform(scenePoint, interaction.startTransform);
-  const radius = Math.hypot(localPoint.x - 50, localPoint.y - 50);
-  return { ...startPath, radius: saturateTextPathRadius(radius) };
+  const radius = Math.hypot(localPoint.x - RING_TEXT_CENTER_X, localPoint.y - RING_TEXT_CENTER_Y);
+  return {
+    ...startPath,
+    radius: saturateTextPathRadius(radius),
+    startAngle: ringTextStartAngleFromPoint(localPoint.x, localPoint.y),
+  };
 }
 
 export function getNextTextBoxWidth(interaction: TextBoxWidthInteraction, scenePoint: ScenePoint): number {
@@ -1203,6 +1258,7 @@ interface EditableRingPath {
   facing: TextPathFacing;
   layout: TextPathLayout;
   spacing: TextPathSpacing;
+  startAngle: number;
 }
 
 function requireEditableCurvePath(path: TextPathPlacement, handleKind: string): EditableCurvePath {
@@ -1234,7 +1290,10 @@ function isEditableRingPath(path: TextPathPlacement): path is EditableRingPath {
     && 'layout' in path
     && (path.layout === 'full' || path.layout === 'arc')
     && 'spacing' in path
-    && (path.spacing === 'natural' || path.spacing === 'even');
+    && (path.spacing === 'natural' || path.spacing === 'even')
+    && 'startAngle' in path
+    && typeof path.startAngle === 'number'
+    && Number.isFinite(path.startAngle);
 }
 
 function requireEditableRingPath(path: TextPathPlacement, handleKind: string): EditableRingPath {
@@ -1345,7 +1404,8 @@ function textPathsMatch(left: TextPathPlacement, right: TextPathPlacement): bool
     return left.radius === right.radius
       && left.facing === right.facing
       && left.layout === right.layout
-      && left.spacing === right.spacing;
+      && left.spacing === right.spacing
+      && left.startAngle === right.startAngle;
   }
   return false;
 }

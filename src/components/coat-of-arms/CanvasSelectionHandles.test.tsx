@@ -340,6 +340,7 @@ describe('CanvasSelectionHandles', () => {
     const toolbar = screen.getByRole('toolbar', { name: 'Selected element actions' });
     expect(controls.contains(toolbar)).toBe(true);
     expect(toolbar.className).toContain('bottom-full');
+    expect(toolbar.className).toContain('mb-14');
   });
 
   it('omits the floating toolbar from the selection box when hidden', () => {
@@ -453,7 +454,7 @@ describe('CanvasTextPathOverlay', () => {
     const onPointerDown = vi.fn();
     renderTextPathOverlay(ringOverlay, onPointerDown);
 
-    expect(screen.getByRole('button', { name: 'Adjust ring text radius' }).getAttribute('data-text-path-handle')).toBe('ring-radius');
+    expect(screen.getByRole('button', { name: 'Adjust ring text radius and position' }).getAttribute('data-text-path-handle')).toBe('ring-radius');
     const guide = document.querySelector('[data-text-path-guide="ring"]');
     expect(guide?.getAttribute('cx')).toBe('50');
     expect(guide?.getAttribute('cy')).toBe('50');

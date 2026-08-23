@@ -80,6 +80,7 @@ describe('TextMottoPanel', () => {
           facing: 'in',
           layout: 'arc',
           spacing: 'natural',
+          startAngle: 0,
         },
       },
     ]);

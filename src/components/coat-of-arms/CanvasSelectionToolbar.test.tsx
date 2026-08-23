@@ -161,7 +161,7 @@ describe('CanvasSelectionToolbar', () => {
 
     const toolbar = screen.getByRole('toolbar', { name: 'Selected element actions' });
     expect(toolbar.className).toContain('bottom-full');
-    expect(toolbar.className).toContain('mb-9');
+    expect(toolbar.className).toContain('mb-14');
     expect(toolbar.className).not.toContain('top-2');
   });
 

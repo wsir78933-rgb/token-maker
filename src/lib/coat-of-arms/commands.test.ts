@@ -96,6 +96,7 @@ const OUTWARD_RING_TEXT_PATH = {
   facing: 'out',
   layout: 'full',
   spacing: 'natural',
+  startAngle: 0,
 } as const satisfies TextPathPlacement;
 
 function createPersistedTextLayer(
@@ -1139,6 +1140,20 @@ describe('coat project commands', () => {
       type: 'update-layer', layerId: ringLayer.id,
       patch: { path: { ...OUTWARD_RING_TEXT_PATH, facing: 'sideways' } } as never,
     })).toThrow('sideways');
+    const rotatedRingPath = { ...OUTWARD_RING_TEXT_PATH, startAngle: 90 };
+    project = applyProjectCommand(project, {
+      type: 'update-layer', layerId: ringLayer.id,
+      patch: { path: rotatedRingPath },
+    });
+    expect(project.layers.at(-1)).toMatchObject({ path: rotatedRingPath });
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: ringLayer.id,
+      patch: { path: { ...OUTWARD_RING_TEXT_PATH, startAngle: 361 } },
+    })).toThrow('Invalid text path startAngle: 361; expected 0-360');
+    expect(() => applyProjectCommand(project, {
+      type: 'update-layer', layerId: ringLayer.id,
+      patch: { path: { ...OUTWARD_RING_TEXT_PATH, startAngle: -1 } },
+    })).toThrow('Invalid text path startAngle: -1; expected 0-360');
   });
 
   it('migrates saved curve and ring documents into the in-memory placement', () => {
@@ -1175,10 +1190,15 @@ describe('coat project commands', () => {
     });
     expect(clockwiseRing.path).toEqual(OUTWARD_RING_TEXT_PATH);
     expect(counterclockwiseRing.path).toEqual({
-      mode: 'ring', radius: 24.5, facing: 'in', layout: 'full', spacing: 'natural',
+      mode: 'ring', radius: 24.5, facing: 'in', layout: 'full', spacing: 'natural', startAngle: 0,
     });
     expect(migrateLegacyTextPath({ mode: 'curve', curve: 'upper' })).toEqual(UPPER_CURVE_TEXT_PATH);
     expect(migrateLegacyTextPath({ mode: 'ring', curve: 'clockwise' })).toEqual(OUTWARD_RING_TEXT_PATH);
+    expect(migrateLegacyTextPath({
+      mode: 'ring', radius: 18, facing: 'in', layout: 'arc', spacing: 'natural',
+    })).toEqual({
+      mode: 'ring', radius: 18, facing: 'in', layout: 'arc', spacing: 'natural', startAngle: 0,
+    });
   });
 
   it('rejects legacy curve and ring shapes on write', () => {

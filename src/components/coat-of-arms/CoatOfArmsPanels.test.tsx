@@ -471,7 +471,7 @@ describe('CoatOfArmsPanels', () => {
       type: 'text',
       text: 'Ring Text',
       fontSize: 50,
-      path: { mode: 'ring', radius: 18, facing: 'in', layout: 'arc', spacing: 'natural' },
+      path: { mode: 'ring', radius: 18, facing: 'in', layout: 'arc', spacing: 'natural', startAngle: 0 },
     });
   });
 

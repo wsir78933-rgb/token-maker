@@ -16,6 +16,7 @@ import type {
   FieldRegionId,
   LocalUpload,
   ShieldLayer,
+  TextAlignment,
   TextLayer,
   TextPathPlacement,
 } from './types';
@@ -26,6 +27,10 @@ import { renderExtendedFieldPattern } from './field-pattern';
 
 const SCENE_VIEW_BOX = '0 0 100 110';
 const TEXT_FONT_SIZE_SCENE_SCALE = 7;
+/** Shield-centre pivot used by every layer except straight text. */
+const SCENE_LAYER_ROTATE_ORIGIN = { x: 50, y: 55 };
+/** Matches the authored straight `<text y>` in scene units. */
+const STRAIGHT_TEXT_LOCAL_Y = 102;
 /** Lowest luminance in raster recoloring so dark outlines stay near-black instead of becoming a silhouette. */
 const RASTER_TINT_SHADOW_LEVEL = 0.08;
 
@@ -716,16 +721,24 @@ function localUploadHref(upload: LocalUpload): string {
   throw new Error(`Invalid local upload encoding: ${String(encoding)}; uploadId is ${uploadId}`);
 }
 
+/** Local SVG rotate pivot for straight text. x follows alignment; y matches `<text y>`. */
+export function straightTextLocalRotateOrigin(alignment: TextAlignment): { x: number; y: number } {
+  if (alignment === 'left') return { x: 8, y: STRAIGHT_TEXT_LOCAL_Y };
+  if (alignment === 'center') return { x: 50, y: STRAIGHT_TEXT_LOCAL_Y };
+  if (alignment === 'right') return { x: 92, y: STRAIGHT_TEXT_LOCAL_Y };
+  throw new Error(`Invalid straight text alignment: ${String(alignment)}`);
+}
+
 function renderTextLayer(layer: TextLayer, layerIndex: number, textPaths: string[]): string {
   const textAnchor = layer.alignment === 'left' ? 'start' : layer.alignment === 'right' ? 'end' : 'middle';
-  const x = layer.alignment === 'left' ? 8 : layer.alignment === 'right' ? 92 : 50;
   const safeText = escapeXml(layer.text);
   const typographyAttributes = `font-family="${escapeXml(textFontStacks[layer.fontFamily ?? 'serif'])}" font-style="${layer.fontStyle ?? 'normal'}" font-weight="${layer.fontWeight ?? 'normal'}" font-size="${layer.fontSize / TEXT_FONT_SIZE_SCENE_SCALE}"`;
   const decorationAttributes = layer.underline ? ' text-decoration="underline"' : '';
   const strokeAttributes = ` stroke="${escapeXml(layer.strokeColor ?? '#000000')}" stroke-width="${(layer.strokeWidth ?? 0) / TEXT_FONT_SIZE_SCENE_SCALE}" paint-order="stroke fill"`;
   const lengthAdjustAttributes = getTextLengthAdjustAttributes(layer);
   if (layer.path.mode === 'none') {
-    return renderTransformedLayer(`<text x="${x}" y="102" fill="${layer.color}"${decorationAttributes}${strokeAttributes} ${typographyAttributes} text-anchor="${textAnchor}"${lengthAdjustAttributes}>${safeText}</text>`, layer.transform, layerIndex);
+    const rotateOrigin = straightTextLocalRotateOrigin(layer.alignment);
+    return renderTransformedLayer(`<text x="${rotateOrigin.x}" y="${rotateOrigin.y}" fill="${layer.color}"${decorationAttributes}${strokeAttributes} ${typographyAttributes} text-anchor="${textAnchor}"${lengthAdjustAttributes}>${safeText}</text>`, layer.transform, layerIndex, 1, rotateOrigin);
   }
 
   const pathId = `coat-text-path-${layerIndex}`;
@@ -767,6 +780,41 @@ function getCurveTextPathData(path: Extract<TextPathPlacement, { mode: 'curve' }
   return `M${formatSceneNumber(path.startX)} ${formatSceneNumber(path.startY)} Q${formatSceneNumber(path.controlX)} ${formatSceneNumber(path.controlY)} ${formatSceneNumber(path.endX)} ${formatSceneNumber(path.endY)}`;
 }
 
+/** Ring path is centered in the 100-wide scene, slightly above the 110-tall shield midpoint. */
+export const RING_TEXT_CENTER_X = 50;
+export const RING_TEXT_CENTER_Y = 50;
+/** Tiny CCW offset so a full-circle SVG arc is not a zero-length A command. */
+const RING_TEXT_FULL_END_OFFSET = 0.01;
+
+/** Polar point on the ring. startAngle is 0 at the top, clockwise, in degrees. */
+export function ringTextPointFromStartAngle(radius: number, startAngle: number): { x: number; y: number } {
+  if (typeof radius !== 'number' || !Number.isFinite(radius)) {
+    throw new Error(`Invalid ring text radius: ${String(radius)}`);
+  }
+  if (typeof startAngle !== 'number' || !Number.isFinite(startAngle)) {
+    throw new Error(`Invalid ring text startAngle: ${String(startAngle)}`);
+  }
+  const radians = startAngle * Math.PI / 180;
+  return {
+    x: RING_TEXT_CENTER_X + radius * Math.sin(radians),
+    y: RING_TEXT_CENTER_Y - radius * Math.cos(radians),
+  };
+}
+
+/** Inverse of ringTextPointFromStartAngle. Returns 0 inclusive through 360 exclusive. */
+export function ringTextStartAngleFromPoint(x: number, y: number): number {
+  if (typeof x !== 'number' || !Number.isFinite(x)) {
+    throw new Error(`Invalid ring text point x: ${String(x)}`);
+  }
+  if (typeof y !== 'number' || !Number.isFinite(y)) {
+    throw new Error(`Invalid ring text point y: ${String(y)}`);
+  }
+  const degrees = Math.atan2(x - RING_TEXT_CENTER_X, RING_TEXT_CENTER_Y - y) * 180 / Math.PI;
+  const wrapped = degrees % 360;
+  const positive = wrapped < 0 ? wrapped + 360 : wrapped;
+  return positive === 360 ? 0 : positive;
+}
+
 function getRingTextPathData(path: Extract<TextPathPlacement, { mode: 'ring' }>): string {
   if (!('facing' in path) || (path.facing !== 'in' && path.facing !== 'out')) {
     throw new Error(`Invalid ring text path facing: ${String('facing' in path ? path.facing : undefined)}; path is ${JSON.stringify(path)}`);
@@ -774,34 +822,52 @@ function getRingTextPathData(path: Extract<TextPathPlacement, { mode: 'ring' }>)
   if (typeof path.radius !== 'number') {
     throw new Error(`Invalid ring text path radius: ${String(path.radius)}`);
   }
+  if (!('startAngle' in path) || typeof path.startAngle !== 'number' || !Number.isFinite(path.startAngle)) {
+    throw new Error(`Invalid ring text path startAngle: ${String('startAngle' in path ? path.startAngle : undefined)}; path is ${JSON.stringify(path)}`);
+  }
   const sweepFlag = path.facing === 'out' ? 1 : 0;
   const radius = path.radius;
   const formattedRadius = formatSceneNumber(radius);
   if (path.layout === 'full') {
-    return `M50 ${formatSceneNumber(50 - radius)} A${formattedRadius} ${formattedRadius} 0 1 ${sweepFlag} ${formatSceneNumber(49.99)} ${formatSceneNumber(50 - radius)}`;
+    return getRingFullTextPathData(radius, formattedRadius, sweepFlag, path.startAngle);
   }
   if (path.layout === 'arc') {
-    return getRingArcTextPathData(radius, formattedRadius, path.facing);
+    return getRingArcTextPathData(radius, formattedRadius, path.facing, path.startAngle);
   }
   throw new Error(`Invalid text path layout: ${String(path.layout)}`);
+}
+
+function getRingFullTextPathData(
+  radius: number,
+  formattedRadius: string,
+  sweepFlag: 0 | 1,
+  startAngle: number,
+): string {
+  const startPoint = ringTextPointFromStartAngle(radius, startAngle);
+  const endPoint = ringFullCircleEndPoint(radius, startAngle);
+  return `M${formatSceneNumber(startPoint.x)} ${formatSceneNumber(startPoint.y)} A${formattedRadius} ${formattedRadius} 0 1 ${sweepFlag} ${formatSceneNumber(endPoint.x)} ${formatSceneNumber(endPoint.y)}`;
+}
+
+function ringFullCircleEndPoint(radius: number, startAngle: number): { x: number; y: number } {
+  const startPoint = ringTextPointFromStartAngle(radius, startAngle);
+  const radians = startAngle * Math.PI / 180;
+  return {
+    x: startPoint.x - RING_TEXT_FULL_END_OFFSET * Math.cos(radians),
+    y: startPoint.y - RING_TEXT_FULL_END_OFFSET * Math.sin(radians),
+  };
 }
 
 function getRingArcTextPathData(
   radius: number,
   formattedRadius: string,
   facing: 'in' | 'out',
+  startAngle: number,
 ): string {
-  const leftX = formatSceneNumber(50 - radius);
-  const rightX = formatSceneNumber(50 + radius);
-  switch (facing) {
-    case 'in':
-      // North semicircle, west → east, so glyphs stay upright along the upper half.
-      return `M${leftX} 50 A${formattedRadius} ${formattedRadius} 0 0 1 ${rightX} 50`;
-    case 'out':
-      return `M${rightX} 50 A${formattedRadius} ${formattedRadius} 0 0 1 ${leftX} 50`;
-    default:
-      throw new Error(`Invalid ring text path facing: ${String(facing)}`);
-  }
+  const startOffset = facing === 'in' ? 270 : 90;
+  const endOffset = facing === 'in' ? 90 : 270;
+  const startPoint = ringTextPointFromStartAngle(radius, startOffset + startAngle);
+  const endPoint = ringTextPointFromStartAngle(radius, endOffset + startAngle);
+  return `M${formatSceneNumber(startPoint.x)} ${formatSceneNumber(startPoint.y)} A${formattedRadius} ${formattedRadius} 0 0 1 ${formatSceneNumber(endPoint.x)} ${formatSceneNumber(endPoint.y)}`;
 }
 
 function getRingPathLength(path: Extract<TextPathPlacement, { mode: 'ring' }>): number {
@@ -817,21 +883,30 @@ function formatSceneNumber(value: number): string {
   return Number(value.toFixed(4)).toString();
 }
 
-function renderTransform(transform: CanvasTransform): string {
+function renderTransform(
+  transform: CanvasTransform,
+  rotateOrigin: { x: number; y: number } = SCENE_LAYER_ROTATE_ORIGIN,
+): string {
   const horizontalScale = (transform.scaleX ?? transform.scale) * (transform.flipHorizontal ? -1 : 1);
   const verticalScale = (transform.scaleY ?? transform.scale) * (transform.flipVertical ? -1 : 1);
   const hasIndependentAxes = transform.scaleX !== undefined || transform.scaleY !== undefined || transform.flipHorizontal || transform.flipVertical;
   const scale = hasIndependentAxes ? `${horizontalScale} ${verticalScale}` : String(transform.scale);
-  return `translate(${transform.x} ${transform.y}) rotate(${transform.rotation} 50 55) translate(50 55) scale(${scale}) translate(-50 -55)`;
+  return `translate(${transform.x} ${transform.y}) rotate(${transform.rotation} ${rotateOrigin.x} ${rotateOrigin.y}) translate(50 55) scale(${scale}) translate(-50 -55)`;
 }
 
-function renderTransformedLayer(content: string, transform: CanvasTransform, layerIndex: number, baseOpacity = 1): string {
+function renderTransformedLayer(
+  content: string,
+  transform: CanvasTransform,
+  layerIndex: number,
+  baseOpacity = 1,
+  rotateOrigin: { x: number; y: number } = SCENE_LAYER_ROTATE_ORIGIN,
+): string {
   const cropId = transform.crop ? `coat-crop-${layerIndex}` : null;
   const cropMarkup = transform.crop && cropId
     ? `<defs><clipPath id="${cropId}"><rect x="${transform.crop.x}" y="${transform.crop.y}" width="${transform.crop.width}" height="${transform.crop.height}"/></clipPath></defs>`
     : '';
   const clippedContent = cropId ? `<g clip-path="url(#${cropId})">${content}</g>` : content;
-  return `<g opacity="${baseOpacity * getTransformOpacity(transform)}" transform="${renderTransform(transform)}">${cropMarkup}${clippedContent}</g>`;
+  return `<g opacity="${baseOpacity * getTransformOpacity(transform)}" transform="${renderTransform(transform, rotateOrigin)}">${cropMarkup}${clippedContent}</g>`;
 }
 
 function getTransformOpacity(transform: CanvasTransform): number {

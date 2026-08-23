@@ -2091,6 +2091,18 @@ export function migrateLegacyTextPath(path: unknown): unknown {
       facing: path.curve === 'clockwise' ? 'out' : 'in',
       layout: 'full',
       spacing: 'natural',
+      startAngle: 0,
+    };
+  }
+  if (path.mode === 'ring' && 'facing' in path && !('startAngle' in path)) {
+    assertExactKeys(path, ['mode', 'radius', 'facing', 'layout', 'spacing'], 'text path');
+    return {
+      mode: 'ring',
+      radius: path.radius,
+      facing: path.facing,
+      layout: path.layout,
+      spacing: path.spacing,
+      startAngle: 0,
     };
   }
   return path;
@@ -2120,8 +2132,9 @@ function assertTextPath(path: unknown): asserts path is TextPathPlacement {
     return;
   }
   if (path.mode === 'ring') {
-    assertExactKeys(path, ['mode', 'radius', 'facing', 'layout', 'spacing'], 'text path');
+    assertExactKeys(path, ['mode', 'radius', 'facing', 'layout', 'spacing', 'startAngle'], 'text path');
     assertTextPathNumber(path.radius, 'radius', 10, 50);
+    assertTextPathNumber(path.startAngle, 'startAngle', 0, 360);
     if (path.facing !== 'in' && path.facing !== 'out') {
       throw new Error(`Invalid text path facing: ${String(path.facing)}`);
     }
