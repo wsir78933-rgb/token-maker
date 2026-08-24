@@ -54,6 +54,7 @@ const DND_STATS_SLUG = 'dnd-stats';
 const DND_ARTIFICER_SLUG = 'dnd-artificer';
 const DND_FIGHTER_SLUG = 'dnd-fighter';
 const PLAYERS_HANDBOOK_DND_5E_SLUG = 'players-handbook-dnd-5e';
+const DND_CHARACTER_SHEET_SLUG = 'dnd-character-sheet';
 
 function getStructuredDataTypes(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -527,6 +528,15 @@ describe('blog static routes', () => {
   it('emits bilingual dnd fighter detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_FIGHTER_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_FIGHTER_SLUG });
+  });
+
+  it('emits bilingual dnd character sheet detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({
+      slug: DND_CHARACTER_SHEET_SLUG,
+    });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({
+      slug: DND_CHARACTER_SHEET_SLUG,
+    });
   });
 
   it('emits bilingual dnd stats detail params', () => {

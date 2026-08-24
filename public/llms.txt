@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [Fill a DnD Character Sheet in Creation Order, Not Top Down](https://www.tokenmaker.one/blog/dnd-character-sheet): Fill a 2024 character sheet in creation order: class, origin, scores, then AC, HP, attacks, and spells, with one finished level 1 Cleric as the example.
 - [DnD Fighter Guide: Build a Level 1 Fighter and Plan Every Turn](https://www.tokenmaker.one/blog/dnd-fighter): Build a level 1 Fighter with the right ability, armor, weapon, Fighting Style, Weapon Mastery, and a clear first combat turn.
 - [D&D Player's Handbook: Choose 5e (2014) or 5.5e (2024)](https://www.tokenmaker.one/blog/players-handbook-dnd-5e): Choose the handbook that matches the campaign, keep the two rulesets separate, use official free rules, and prepare only what session one needs.
 - [DnD Paladin Turn Plan: When to Heal, Smite, or Protect](https://www.tokenmaker.one/blog/dnd-paladin): Use a simple combat decision tree for attacks, Lay on Hands, Divine Smite, concentration, and positioning without wasting your action economy.
@@ -73,6 +74,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 角色卡：按创角顺序填写，不要从上往下填](https://www.tokenmaker.one/zh/blog/dnd-character-sheet): 按 2024 创角顺序填角色卡：先职业、出身和属性，再算护甲等级、生命值、攻击和法术，并用一名 1 级人类侍僧牧师走完第一页。
 - [DND《玩家手册》怎么选：5e 与 5.5e 版本指南](https://www.tokenmaker.one/zh/blog/players-handbook-dnd-5e): 按战役版本选择《玩家手册》，分清 2014 年 5e 与 2024 年 5.5e 的建卡边界，并使用官方免费规则完成首场游戏准备。
 - [DND 战士指南：从 1 级建卡到每回合行动计划](https://www.tokenmaker.one/zh/blog/dnd-fighter): 从力量或敏捷路线完成 1 级战士的护甲、武器、战斗风格和武器精通配置，再用清楚的回合计划安排走位、攻击与第二风。
 - [龙与地下城圣武士回合计划：何时治疗、惩击或保护队友？](https://www.tokenmaker.one/zh/blog/dnd-paladin): 用简单的战斗决策流程安排攻击、圣疗、神圣惩击、维持专注与站位，在治疗、爆发和保护队友之间做出清楚选择，避免浪费行动资源。

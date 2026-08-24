@@ -49,6 +49,7 @@ import {
   DND_PALADIN_COVER_PATH,
   DND_FIGHTER_COVER_PATH,
   PLAYERS_HANDBOOK_DND_5E_COVER_PATH,
+  DND_CHARACTER_SHEET_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -141,6 +142,10 @@ import {
   playersHandbookDnd5eArticleHtml,
   playersHandbookDnd5eArticleHtmlZh,
 } from '@/lib/blog-posts/players-handbook-dnd-5e';
+import {
+  dndCharacterSheetArticleHtml,
+  dndCharacterSheetArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-character-sheet';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -210,6 +215,7 @@ const DND_ARTIFICER_UPDATED_AT = '2026-08-17';
 const DND_PALADIN_UPDATED_AT = '2026-08-18';
 const PLAYERS_HANDBOOK_DND_5E_UPDATED_AT = '2026-08-19';
 const DND_FIGHTER_UPDATED_AT = '2026-08-23';
+const DND_CHARACTER_SHEET_UPDATED_AT = '2026-08-24';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -236,6 +242,127 @@ export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   },
 };
 
+
+const dndCharacterSheetArticle: BlogPost = {
+  slug: 'dnd-character-sheet',
+  title: 'Fill a DnD Character Sheet in Creation Order, Not Top Down',
+  seoTitle: 'Fill a DnD Character Sheet in Creation Order, Not Top Down',
+  metaDescription:
+    'Start with class, origin, and ability scores, then complete combat and spell boxes so session one is not a scavenger hunt across empty fields.',
+  excerpt:
+    'Fill a 2024 character sheet in creation order: class, origin, scores, then AC, HP, attacks, and spells, with one finished level 1 Cleric as the example.',
+  publishedAt: DND_CHARACTER_SHEET_UPDATED_AT,
+  updatedAt: DND_CHARACTER_SHEET_UPDATED_AT,
+  readTime: '14 min read',
+  coverLabel: 'Character Sheet Guide',
+  coverImage: DND_CHARACTER_SHEET_COVER_PATH,
+  coverAlt:
+    'A blank D&D character sheet beside a pencil, a twenty-sided die, and a circular portrait token',
+  bodyHtml: dndCharacterSheetArticleHtml,
+  faqItems: [
+    {
+      question: 'What is a D&amp;D character sheet?',
+      answer:
+        'A D&amp;D character sheet is the form that records one player character: name, class, origin, ability scores, modifiers, skills, combat numbers, features, equipment, and spells. The 2024 rules treat paper, a digital builder, or plain notes as a character sheet as long as the details are there during play.',
+    },
+    {
+      question: 'Is there an official character sheet for Dungeons &amp; Dragons?',
+      answer:
+        'Yes. Wizards of the Coast and D&amp;D Beyond publish official PDFs. The 2014 sheet is a fillable three-page PDF. The 2024 sheet is a two-page print PDF. D&amp;D Beyond also hosts premade printable packets and a digital character builder.',
+    },
+    {
+      question: 'How do you fill out a D&amp;D character sheet?',
+      answer:
+        'Use the creation order in the approved handbook. For 2024: choose a class, determine background and species, generate and assign ability scores, choose an alignment, then fill AC, HP, attacks, and spells from those choices. Do not start at the name field.',
+    },
+    {
+      question: 'What is the difference between the 2014 and 2024 character sheets?',
+      answer:
+        'The 2024 sheet is two pages, leads with ability modifiers, groups skills with their abilities, replaces Race with Species, replaces Inspiration with Heroic Inspiration, and adds space for Weapon Mastery. The 2014 sheet is three pages and still uses the older labels.',
+    },
+    {
+      question: 'What is the best D&amp;D character sheet?',
+      answer:
+        "The best sheet is the official form that matches the table's rules year, filled in so combat numbers are already totaled. After that, pick paper, a fillable 2014 PDF, a print 2024 PDF, or a digital VTT sheet based on how the group plays, not on a universal ranking.",
+    },
+    {
+      question: 'Can I use a 2014 sheet in a 2024 game?',
+      answer:
+        'Yes, if you relabel Race as Species, track Heroic Inspiration, and write Weapon Mastery and Origin feats into leftover space. A first-time player should use the 2024 form instead of translating boxes mid-session.',
+    },
+    {
+      question: 'Where do I download a fillable D&amp;D character sheet PDF?',
+      answer:
+        'The official 2014 sheet is fillable. Download it from Wizards of the Coast. The official 2024 sheet is a print PDF on D&amp;D Beyond. Fan-made fillable 2024 files exist; they are not official Wizards forms.',
+    },
+    {
+      question: 'Do I need a digital character sheet for Roll20 or Foundry?',
+      answer:
+        'No. A paper sheet plus a map token is enough. Many online tables prefer the VTT\'s built-in sheet because it rolls attacks from the same window. Export a Token Maker PNG either way so the figure on the grid matches the person on the sheet.',
+    },
+  ],
+  relatedSlugs: ['dnd-stats', 'players-handbook-dnd-5e', 'dnd-classes-explained', 'dnd-races'],
+};
+
+const dndCharacterSheetArticleZh: BlogPost = {
+  slug: 'dnd-character-sheet',
+  title: 'DND 角色卡：按创角顺序填写，不要从上往下填',
+  seoTitle: 'DND 角色卡：按创角顺序填写，不要从上往下填',
+  metaDescription:
+    '先填职业、出身和属性值，再把护甲等级、生命值、先攻、攻击加值和法术栏算完。第一次开团就不用在空格子里到处找数字；2014 可填表和 2024 打印表要按桌面年份选对。',
+  excerpt:
+    '按 2024 创角顺序填角色卡：先职业、出身和属性，再算护甲等级、生命值、攻击和法术，并用一名 1 级人类侍僧牧师走完第一页。',
+  publishedAt: DND_CHARACTER_SHEET_UPDATED_AT,
+  updatedAt: DND_CHARACTER_SHEET_UPDATED_AT,
+  readTime: '14 分钟阅读',
+  coverLabel: '角色卡指南',
+  coverImage: DND_CHARACTER_SHEET_COVER_PATH,
+  coverAlt: '一张空白的龙与地下城角色卡，旁边放着铅笔、二十面骰和圆形肖像 Token',
+  bodyHtml: dndCharacterSheetArticleHtmlZh,
+  faqItems: [
+    {
+      question: '什么是 D&amp;D 角色卡？',
+      answer:
+        'D&amp;D 角色卡记录一名玩家角色：名字、职业、出身、属性值、调整值、技能、战斗数字、特性、装备和法术。2024 规则里，纸卡、电子构筑器或普通笔记都可以当角色卡，只要开局时这些细节在。',
+    },
+    {
+      question: '龙与地下城有官方角色卡吗？',
+      answer:
+        '有。威世智和 D&amp;D Beyond 发布官方 PDF。2014 角色卡是三页可填 PDF。2024 角色卡是两页打印 PDF。D&amp;D Beyond 还有预制打印包和电子角色构筑器。',
+    },
+    {
+      question: 'D&amp;D 角色卡怎么填？',
+      answer:
+        '按获准手册里的创角顺序。2024：先选职业，再定背景和物种，生成并分配属性值，选阵营，然后用这些选择填写护甲等级、生命值、攻击和法术。不要从名字栏开始。',
+    },
+    {
+      question: '2014 和 2024 角色卡有什么区别？',
+      answer:
+        '2024 角色卡是两页，调整值放在显眼位置，技能跟对应属性放在一起，种族改成物种，激励改成英勇激励，并留了武器精通。2014 角色卡是三页，仍用旧标签。',
+    },
+    {
+      question: '最好的 D&amp;D 角色卡是哪一种？',
+      answer:
+        '最好的是和桌子规则年份匹配的官方表格，并且战斗数字已经算完。然后按团怎么玩，在纸卡、2014 可填 PDF、2024 打印 PDF 或 VTT 电子卡之间选，而不是找一个通用第一名。',
+    },
+    {
+      question: '2024 规则能用 2014 角色卡吗？',
+      answer:
+        '能，只要把种族改标成物种，追踪英勇激励，并把武器精通和出身专长写进空白处。第一次填卡的人应直接用 2024 表格，不要在开局过程中现场翻译格子。',
+    },
+    {
+      question: '去哪里下载可填的 D&amp;D 角色卡 PDF？',
+      answer:
+        '官方 2014 角色卡可填，从威世智下载。官方 2024 角色卡是 D&amp;D Beyond 上的打印 PDF。民间有可填的 2024 文件，它们不是威世智官方表格。',
+    },
+    {
+      question: '在 Roll20 或 Foundry 必须用电子角色卡吗？',
+      answer:
+        '不必。纸卡加地图 Token 就够。很多线上桌子更喜欢 VTT 自带角色卡，因为攻击可以从同一个窗口掷。无论用哪种卡，都导出一份 Token Maker 的 PNG，让格子上的人跟卡上的人是同一个。',
+    },
+  ],
+  relatedSlugs: ['dnd-stats', 'players-handbook-dnd-5e', 'dnd-classes-explained', 'dnd-races'],
+};
 
 const dndFighterArticle: BlogPost = {
   slug: 'dnd-fighter',
@@ -4301,10 +4428,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

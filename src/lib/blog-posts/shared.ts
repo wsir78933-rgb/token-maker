@@ -51,6 +51,8 @@ export const DND_PALADIN_COVER_PATH = '/blog/covers/en/dnd-paladin-guide.webp';
 export const DND_FIGHTER_COVER_PATH = '/blog/covers/en/dnd-fighter-guide.webp';
 export const PLAYERS_HANDBOOK_DND_5E_COVER_PATH =
   '/blog/covers/en/players-handbook-dnd-5e-guide.webp';
+export const DND_CHARACTER_SHEET_COVER_PATH =
+  '/blog/covers/en/dnd-character-sheet-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -125,6 +127,10 @@ export const DND_FIGHTER_TURN_PLAN_IMAGE_PATH =
   '/blog/inline/dnd-fighter/fighter-turn-plan.webp';
 export const PLAYERS_HANDBOOK_DND_5E_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/players-handbook-dnd-5e/players-handbook-video-placeholder.webp';
+export const DND_CHARACTER_SHEET_INLINE_IMAGE_PATH =
+  '/blog/inline/dnd-character-sheet/dnd-character-sheet-2014-vs-2024-forms.webp';
+export const DND_CHARACTER_SHEET_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-character-sheet/dnd-character-sheet-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -194,6 +200,8 @@ export const DND_PALADIN_2024_CHANGES_URL =
   'https://www.dndbeyond.com/posts/1749-2024-paladin-vs-2014-paladin-whats-new';
 export const DND_PALADIN_OATHS_GUIDE_URL = 'https://pages.roll20.net/guide-to-paladin-oaths';
 export const DND_PALADIN_VIDEO_URL = 'https://www.youtube.com/watch?v=Ch5vWBPCrl0';
+export const DND_CHARACTER_SHEET_VIDEO_URL = 'https://www.youtube.com/watch?v=IVAJrYOOtwI';
+export const DND_CHARACTER_SHEET_VIDEO_ID = 'IVAJrYOOtwI';
 export const DND_2024_CASTING_SPELLS_RULES_URL = 'https://roll20.net/compendium/dnd5e/Rules%3ACasting%20Spells';
 export const PALADIN_2024_SPELLS_DND_VIDEO_URL = 'https://www.youtube.com/watch?v=_vx-oqXOabw';
 export const DND_HEX_2024_RULES_URL = 'https://www.dndbeyond.com/spells/2618988-hex';
@@ -401,6 +409,20 @@ export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/squ
 export const ZH_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('zh', '/templates/square-token-maker');
 export const EN_DICE_ROLLER_PATH = getLocalizedPath('en', '/dice-roller-dnd');
 export const ZH_DICE_ROLLER_PATH = getLocalizedPath('zh', '/dice-roller-dnd');
+export const EN_COAT_OF_ARMS_MAKER_PATH = getLocalizedPath('en', '/coat-of-arms-maker');
+export const ZH_COAT_OF_ARMS_MAKER_PATH = getLocalizedPath('zh', '/coat-of-arms-maker');
+export const EN_DND_LANGUAGES_PATH = getLocalizedPath('en', '/blog/dnd-languages');
+export const ZH_DND_LANGUAGES_PATH = getLocalizedPath('zh', '/blog/dnd-languages');
+export const EN_PLAYERS_HANDBOOK_DND_5E_PATH = getLocalizedPath(
+  'en',
+  '/blog/players-handbook-dnd-5e',
+);
+export const ZH_PLAYERS_HANDBOOK_DND_5E_PATH = getLocalizedPath(
+  'zh',
+  '/blog/players-handbook-dnd-5e',
+);
+export const EN_DND_CHARACTER_SHEET_PATH = getLocalizedPath('en', '/blog/dnd-character-sheet');
+export const ZH_DND_CHARACTER_SHEET_PATH = getLocalizedPath('zh', '/blog/dnd-character-sheet');
 
 export function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src: string; alt: string }): string {
   const thumb = thumbnail?.src ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;

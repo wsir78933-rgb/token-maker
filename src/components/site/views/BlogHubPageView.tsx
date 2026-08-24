@@ -11,13 +11,12 @@ import {
   formatBlogUpdatedAt,
   getBlogHubDescription,
   getBlogHubTitle,
+  getBlogHubPageContent,
   getBlogPageCount,
   getBlogPagePath,
   getBlogPlaceholderCopy,
   getBlogPostPath,
   getBlogPosts,
-  getBlogPostsForPage,
-  getFeaturedBlogPost,
 } from '@/lib/blog-content';
 import { getNavLabels } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
@@ -314,8 +313,7 @@ export function BlogHubPageView({
   const copy = copyByLocale[locale];
   const placeholderCopy = getBlogPlaceholderCopy(locale);
   const allPosts = getBlogPosts(locale);
-  const featuredPost = getFeaturedBlogPost(locale);
-  const gridPosts = getBlogPostsForPage(locale, page);
+  const { featuredPost, gridPosts } = getBlogHubPageContent(locale, page);
   const totalPages = getBlogPageCount(locale);
   const currentPath = page === 1 ? '/blog' : `/blog/page/${page}`;
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);

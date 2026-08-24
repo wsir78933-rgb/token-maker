@@ -79,6 +79,31 @@ export function getBlogPostsForPage(locale: SiteLocale, page: number) {
   return regularPosts.slice(startIndex, startIndex + BLOG_POSTS_PER_PAGE);
 }
 
+export function getBlogHubPageContent(locale: SiteLocale, page = 1) {
+  const pagePosts = getBlogPostsForPage(locale, page);
+
+  if (page <= 1) {
+    return {
+      featuredPost: getFeaturedBlogPost(locale),
+      gridPosts: pagePosts,
+    };
+  }
+
+  if (!pagePosts[0]) {
+    throw new Error(`Unable to resolve blog page content for locale=${locale}, page=${page}.`);
+  }
+
+  const featuredPost = getBlogPostsForPage(locale, page - 1)[0];
+  if (!featuredPost) {
+    throw new Error(`Unable to resolve blog page content for locale=${locale}, page=${page}.`);
+  }
+
+  return {
+    featuredPost,
+    gridPosts: pagePosts,
+  };
+}
+
 export function getBlogPagePath(locale: SiteLocale, page: number) {
   const normalizedPage = Math.max(1, page);
   return getLocalizedPath(locale, normalizedPage === 1 ? '/blog' : `/blog/page/${normalizedPage}`);
@@ -106,12 +131,24 @@ export function getBlogHubTitle(locale: SiteLocale, page = 1) {
 export function getBlogHubDescription(locale: SiteLocale) {
   return blogHubCopyByLocale[locale].description;
 }
+
+export function getBlogHubPageDescription(locale: SiteLocale, page = 1) {
+  if (page <= 1) {
+    return getBlogHubDescription(locale);
+  }
+
+  const { featuredPost } = getBlogHubPageContent(locale, page);
+
+  return locale === 'zh'
+    ? `Token Maker 博客第 ${page} 页以「${featuredPost.coverLabel}」为起点，汇集 DND 指南、桌面工具与 Token 制作资源。`
+    : `Page ${page} of the Token Maker blog features ${featuredPost.coverLabel}, with practical D&D guides, tabletop tools, and token-making resources for game prep.`;
+}
 export function createBlogHubMetadata(locale: SiteLocale, page = 1): Metadata {
   const siteConfig = getSiteConfig(locale);
   const path = page === 1 ? '/blog' : `/blog/page/${page}`;
   const localizedPath = getLocalizedPath(locale, path);
   const title = getBlogHubTitle(locale, page);
-  const description = getBlogHubDescription(locale);
+  const description = getBlogHubPageDescription(locale, page);
 
   return {
     metadataBase: new URL(getSiteUrl()),
@@ -187,7 +224,7 @@ export function buildBlogHubStructuredData(locale: SiteLocale, page = 1) {
   const siteConfig = getSiteConfig(locale);
   const path = page === 1 ? '/blog' : `/blog/page/${page}`;
   const title = getBlogHubTitle(locale, page);
-  const description = getBlogHubDescription(locale);
+  const description = getBlogHubPageDescription(locale, page);
 
   return {
     '@context': 'https://schema.org',

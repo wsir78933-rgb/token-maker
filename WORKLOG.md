@@ -1,5 +1,53 @@
 # WORKLOG
 
+## 交接单 · 2026-08-23 22:21 CST · Grok CLI
+
+### 本次目标
+
+纹章制作器 Tools → Text / Curved Text / Ring Text 的**实际画布用法**对齐 coamaker（不抄 PRO/广告）。本会话后半：环形手柄「往外拉放大、绕圈转位置」；直线文字「字不动、头顶点旋转」；旋转拖动太快要减半。不改 chrome 99/50/40。用户后来说推 GitHub，并把 `tmp/` 验证文件也提交。
+
+### 已完成
+
+- **环形文字极坐标手柄**：`startAngle`（0=正上、顺时针度）。往外拉改 `radius`（10–50）；绕圆拖改文字在环上的位置。IN/OUT/ARC/EVEN 切换会保留 `startAngle`。旧稿无该字段时 migrate 成 `0`。默认仍 `radius: 18, facing: 'in', layout: 'arc', spacing: 'natural', startAngle: 0`。
+- **直线文字原地转**：SVG `rotate` 绕文字锚点 `(alignment x, 102)`，不是盾心 `(50, 55)`。导出 `straightTextLocalRotateOrigin`。拖头顶旋转点时手势绕测量字盒中心算角度；`transform.x/y` 不因旋转被甩走。抓住字仍可挪；左右拉宽仍在。
+- **工具条不挡旋转点**：`above-selection` 从 `mb-9` 改成 `mb-14`。弧/环仍用 `artboard-bottom`。
+- **旋转拖动手感减半**：`ROTATE_HANDLE_POINTER_ANGLE_SCALE = 0.5`。直线文字和 charge/盾共用。键盘逗号/句号仍每次 15°。
+- **GitHub**：`main` 已与 `origin/main` 同步。相关提交：`38934c0`（文字工具）、`d88248c`（D&D Fighter 博客，同工作区一并推的）、`f1880ce`（`tmp/` 截图 + T5 审查 md）。工作区干净。
+- **子代理**：用户要求移除后，本仓库里本会话/此前徽章编排留下的 grok/agy 标签已关。当前这扇 Grok 与 `Cursor ready` 未关。
+- Orca Run `run_5d10607509d9`（直线原地转）任务均 completed。收件箱 check 多次为 0 条。
+
+### 做到一半
+
+- **左右对齐直线文字**：SVG 绕锚点 x=8 或 92 转；手势绕整段字盒中心。居中没问题。审查 Medium，未改。
+- **90° 单测**：`x/y` 不变并不能单独证明枢轴（旧盾心旋转也能绿）；真正锁 SVG 的是 `scene-svg.test.ts` 的 `rotate(90 50 102)`。
+- **Cardinal 字体**：工具条显示 Display Serif / 系统回退，不是竞品黑信体。上一轮范围外。
+- **其它残留（更早班）**：`CoatOfArmsMaker.test.tsx` 约 3 条 CSS 画板几何失败；`last-shield` / `fieldShieldLayerId` High；Settings 深色半宽；自定义盾仍是亮度遮罩不是原图。
+- `workbench-copy` 仍可能有未使用的 `localUploadCompressed`（上一条交接单，本班未再核对该符号）。
+
+### 下一步
+
+- 用户若还要左/右对齐也绕整段字中心转：再对齐范围后改 `straightTextLocalRotateOrigin` 与手势枢轴，使二者同一点。
+- 若还要更慢/更快旋转：只改 `ROTATE_HANDLE_POINTER_ANGLE_SCALE`（现 0.5）。
+- 不要把 `WORKLOG.md` 放进产品 commit。`tmp/` 已经在 `f1880ce`。
+- 不要默认再开一堆 Orca worker；用户刚要求清掉子代理。
+
+### 踩过的坑
+
+- 只用 `http://localhost:3000/coat-of-arms-maker`，不要 `127.0.0.1`。进页先 **Discard draft**，否则 workbench `inert`。
+- 直线文字画在 `y=102`，默认 `transform.y=-47`。`rotate(θ 50 55)` 会把字甩到约 `(3,8)`。必须绕 `(50, 102)`（居中）。
+- 旋转点离字盒很近（约 `-translate-y-8`），1:1 角度映射会显得极快；减半是方案 A。
+- `agy` 派发易 `agent_prompt_stalled`；失败 dispatch 的 `worker_done` 会被 capability revoked 拒收，文件可能已经改了。
+- `worker-release` 对 `user_takeover` / `external_terminal` 关不掉进程；用户明确要求移除后用 `orca terminal close --tab`。
+- 编排 check 提示「有 N 条消息」但 inbox 已 ack 时会是 0 条，属旧通知。
+
+### 怎么验证
+
+- 命令：`pnpm exec vitest run src/lib/coat-of-arms/scene-svg.test.ts src/lib/coat-of-arms/commands.test.ts src/components/coat-of-arms/CoatOfArmsCanvas.test.tsx src/components/coat-of-arms/CanvasSelectionToolbar.test.tsx src/components/coat-of-arms/TextSelectionToolbar.test.tsx src/components/coat-of-arms/text-creation-drag.test.ts`；`pnpm typecheck`。
+- 页面：`http://localhost:3000/coat-of-arms-maker` → Discard draft → Tools → Text。
+  - **文字**：点卡，拖头顶白点应原地慢慢转；抓住字能挪；左右蓝条能拉宽；工具条不压住旋转点。
+  - **环形文字**：点卡，往外拉圆变大，绕虚线圆拖字跟着转位置。IN/OUT/ARC/EVEN 还在。
+- 截图：`tmp/ring-polar-*.png`、`tmp/straight-rotate-*.png`。审查：`tmp/t5-straight-text-rotate-review.md`。
+
 ## 交接单 · 2026-08-23 11:30 CST · Cursor Grok
 
 ### 本次目标
