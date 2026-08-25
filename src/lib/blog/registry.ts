@@ -50,6 +50,7 @@ import {
   DND_FIGHTER_COVER_PATH,
   PLAYERS_HANDBOOK_DND_5E_COVER_PATH,
   DND_CHARACTER_SHEET_COVER_PATH,
+  DND_CLASSES_COMPARISON_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -146,6 +147,10 @@ import {
   dndCharacterSheetArticleHtml,
   dndCharacterSheetArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-character-sheet';
+import {
+  dndClassesComparisonArticleHtml,
+  dndClassesComparisonArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-classes-comparison';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -216,6 +221,7 @@ const DND_PALADIN_UPDATED_AT = '2026-08-18';
 const PLAYERS_HANDBOOK_DND_5E_UPDATED_AT = '2026-08-19';
 const DND_FIGHTER_UPDATED_AT = '2026-08-23';
 const DND_CHARACTER_SHEET_UPDATED_AT = '2026-08-24';
+const DND_CLASSES_COMPARISON_UPDATED_AT = '2026-08-25';
 
 export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   en: {
@@ -242,6 +248,128 @@ export const placeholderCopyByLocale: Record<SiteLocale, PlaceholderCopy> = {
   },
 };
 
+
+const dndClassesComparisonArticle: BlogPost = {
+  slug: 'dnd-classes-comparison',
+  title: 'DND Classes Compared: All 13 by Party Job and First Combat Turn',
+  seoTitle: 'DND Classes Compared: 13 Choices, First Combat Turn',
+  metaDescription:
+    'Compare all 13 DND classes by party job and first combat turn. Separate the 12 PHB classes from Artificer without a power ranking.',
+  excerpt:
+    'There are 12 classes in the 2024 Player\'s Handbook, or 13 with official Artificer. Compare them by party job and the first combat turn at level 1.',
+  publishedAt: DND_CLASSES_COMPARISON_UPDATED_AT,
+  updatedAt: DND_CLASSES_COMPARISON_UPDATED_AT,
+  readTime: '13 min read',
+  coverLabel: 'Class Comparison',
+  coverImage: DND_CLASSES_COMPARISON_COVER_PATH,
+  coverAlt:
+    'Five adventurers at a ruined chapel doorway on the first combat turn: a rogue at the wall, a fighter blocking a goblin, a cleric kneeling to heal, a wizard casting from a book, and an Artificer with a copper gauntlet standing apart, with circular VTT tokens and a blank character sheet on the table.',
+  bodyHtml: dndClassesComparisonArticleHtml,
+  faqItems: [
+    {
+      question: 'What are the 13 DND classes?',
+      answer:
+        'They are Artificer, Barbarian, Bard, Cleric, Druid, Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, and Wizard. The 2024 Player\'s Handbook contains 12 of them. Artificer is the official thirteenth class and comes from Eberron material.',
+    },
+    {
+      question: 'What are the 12 basic Dungeons &amp; Dragons classes?',
+      answer:
+        'The handbook roster is Barbarian, Bard, Cleric, Druid, Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, and Wizard. Those class names are the same in the 2014 and 2024 Player\'s Handbooks, although many features changed between versions.',
+    },
+    {
+      question: 'What are all the official DND classes?',
+      answer:
+        'The official fifth-edition core set contains those 13 classes. A DM may also allow playtest material such as Psion or third-party options such as Blood Hunter, but neither belongs to the official 13.',
+    },
+    {
+      question: 'What are some cool DND classes?',
+      answer:
+        'Start with the fantasy you want to play on the first turn. Warlock brings the pact, Paladin the oath, and Bard the inspiration die. Monk fights unarmed. Druid gets the promise of Wild Shape, though that feature begins at level 2 in the 2024 rules. The coolest choice is the turn you are eager to take, not whichever name sits highest on someone else\'s tier list.',
+    },
+    {
+      question: 'Do I need one of each DND class in the party?',
+      answer:
+        'No. A party needs its practical jobs covered, not one copy of every class. Several characters can share a job; the risk is leaving a job empty.',
+    },
+    {
+      question: 'Which DND classes are easiest for a first character?',
+      answer:
+        'The official 2024 overview labels Fighter and Rogue Low complexity. Barbarian, Cleric, Paladin, Ranger, and Wizard are Average. Those are good places to start if you want fewer decisions on each turn. Fighter is the simplest class to lock in when you have no stronger preference.',
+    },
+    {
+      question: 'When do I pick a subclass?',
+      answer:
+        'A 2024 character who starts at level 1 usually chooses a subclass upon reaching level 3, unless the class text on the sheet says otherwise. If the campaign begins at level 3 or above, the Free Basic Rules tell you to record the subclass during creation.',
+    },
+    {
+      question: 'Is Artificer one of the DND classes in the 2024 Player\'s Handbook?',
+      answer:
+        'No. Artificer is an official class available on D&amp;D Beyond, but it is not one of the 12 classes in the 2024 Player\'s Handbook. Ask the DM whether <em>Eberron: Forge of the Artificer</em> is allowed in the campaign.',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-classes-ranked', 'dnd-character-sheet', 'dnd-fighter'],
+};
+
+const dndClassesComparisonArticleZh: BlogPost = {
+  slug: 'dnd-classes-comparison',
+  title: 'DND职业有哪些：用队伍职责和第1回合对照全部13个官方职业',
+  seoTitle: 'DND职业有哪些：5e官方13个职业对照第1回合动作，先分清2024手册12个与奇械师再写你的角色卡',
+  metaDescription:
+    '先回答DND职业有哪些：2024《玩家手册》12个，加上奇械师共13个官方职业。再按前排、恢复、技能、奥术四项职责和第1回合动作对照，写下职业名。这页不做强度排名，不把奇械师写进2024手册，写完职业再去做能看清的VTT Token，并在开团前写上你的角色卡。',
+  excerpt:
+    '先回答 DND职业有哪些：2024《玩家手册》12 个，加上奇械师共 13 个官方职业。按队伍职责和第 1 回合对照后写下职业名。',
+  publishedAt: DND_CLASSES_COMPARISON_UPDATED_AT,
+  updatedAt: DND_CLASSES_COMPARISON_UPDATED_AT,
+  readTime: '13 分钟阅读',
+  coverLabel: '职业对照',
+  coverImage: DND_CLASSES_COMPARISON_COVER_PATH,
+  coverAlt:
+    '五名冒险者在破败礼拜堂门口打第一回合：贴墙的游荡者、门口持盾挡住地精的战士、跪地治疗的牧师、翻书施法的法师，以及戴护目镜、铜臂甲、单独站开的奇械师；前景桌上是空白角色卡和圆形 VTT 代币。',
+  bodyHtml: dndClassesComparisonArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND职业有哪些？',
+      answer:
+        '官方第五版共有 13 个核心职业：奇械师、野蛮人、吟游诗人、牧师、德鲁伊、战士、武僧、圣武士、游侠、游荡者、术士、契术师和法师。其中 12 个收入 2024《玩家手册》，奇械师是来自艾伯伦书目的官方第 13 个职业。',
+    },
+    {
+      question: '12 个基础职业是哪些？',
+      answer:
+        '手册里的 12 个 <strong>DND 职业</strong> 是野蛮人、吟游诗人、牧师、德鲁伊、战士、武僧、圣武士、游侠、游荡者、术士、契术师和法师。2014 与 2024 的职业名单相同，但名单内的 1 级特性有不少变化。',
+    },
+    {
+      question: '官方 DND 职业全部有哪些？',
+      answer:
+        '官方核心就是上面的 13 个。试玩中的灵能者和第三方血猎手可以在 DM 允许时加入游戏，但它们不属于官方 13 个职业。',
+    },
+    {
+      question: '新手第一张卡写哪个？',
+      answer:
+        '2024 总览把战士和游荡者列为低复杂度，野蛮人、牧师、圣武士、游侠、法师列为中。想让第一张卡少一些回合决策，可以先从这些职业里选；如果没有特别偏好，战士最容易直接开玩。',
+    },
+    {
+      question: '队伍必须每种职业都有吗？',
+      answer:
+        '不必。队伍需要的是四项职责都有人照看，不是每个职业各来一个。两名角色可以承担同一职责，真正麻烦的是整项职责没人管。',
+    },
+    {
+      question: '子职业什么时候选？',
+      answer:
+        '按 2024 规则从 1 级开卡时，多数职业到 3 级才选择子职业，除非具体职业条目另有说明。如果战役直接从 3 级或更高开始，免费基础规则要求在创建角色时就写下子职业。',
+    },
+    {
+      question: '奇械师算 2024《玩家手册》里的职业吗？',
+      answer:
+        '不算。奇械师是官方职业，也能在 D&amp;D Beyond 上创建，但它不在 2024《玩家手册》的 12 个职业之中。开卡前问清 DM 是否允许《Eberron: Forge of the Artificer》。',
+    },
+    {
+      question: '术士和契术师谁是谁？',
+      answer:
+        'Sorcerer 是术士，力量来自天生魔法；Warlock 是契术师，力量来自契约。遇到把 Warlock 译成术士的中文资料时，先看英文名，再往角色卡上写。',
+    },
+  ],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-classes-ranked', 'dnd-character-sheet', 'dnd-fighter'],
+};
 
 const dndCharacterSheetArticle: BlogPost = {
   slug: 'dnd-character-sheet',
@@ -4428,10 +4556,10 @@ const rapierDndArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

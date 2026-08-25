@@ -12,13 +12,13 @@ import {
 
 describe('blog pagination capacity', () => {
   it.each(['en', 'zh'] as const)(
-    'keeps the new non-featured character sheet guide first on page one',
+    'keeps the new non-featured class comparison guide first on page one',
     (locale) => {
       expect(getBlogPageCount(locale)).toBe(5);
       expect([1, 2, 3, 4, 5].map((page) => getBlogPostsForPage(locale, page).length)).toEqual(
-        [10, 10, 10, 10, 9],
+        [10, 10, 10, 10, 10],
       );
-      expect(getBlogPostsForPage(locale, 1)[0]?.slug).toBe('dnd-character-sheet');
+      expect(getBlogPostsForPage(locale, 1)[0]?.slug).toBe('dnd-classes-comparison');
     },
   );
 

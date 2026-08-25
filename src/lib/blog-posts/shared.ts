@@ -53,6 +53,8 @@ export const PLAYERS_HANDBOOK_DND_5E_COVER_PATH =
   '/blog/covers/en/players-handbook-dnd-5e-guide.webp';
 export const DND_CHARACTER_SHEET_COVER_PATH =
   '/blog/covers/en/dnd-character-sheet-guide.webp';
+export const DND_CLASSES_COMPARISON_COVER_PATH =
+  '/blog/covers/en/dnd-classes-comparison-cover.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -131,6 +133,10 @@ export const DND_CHARACTER_SHEET_INLINE_IMAGE_PATH =
   '/blog/inline/dnd-character-sheet/dnd-character-sheet-2014-vs-2024-forms.webp';
 export const DND_CHARACTER_SHEET_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-character-sheet/dnd-character-sheet-video-placeholder.webp';
+export const DND_CLASSES_COMPARISON_TOKEN_ROW_PATH =
+  '/blog/inline/dnd-classes-comparison/class-token-row.webp';
+export const DND_CLASSES_COMPARISON_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-classes-comparison/dnd-classes-cleric-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -202,6 +208,8 @@ export const DND_PALADIN_OATHS_GUIDE_URL = 'https://pages.roll20.net/guide-to-pa
 export const DND_PALADIN_VIDEO_URL = 'https://www.youtube.com/watch?v=Ch5vWBPCrl0';
 export const DND_CHARACTER_SHEET_VIDEO_URL = 'https://www.youtube.com/watch?v=IVAJrYOOtwI';
 export const DND_CHARACTER_SHEET_VIDEO_ID = 'IVAJrYOOtwI';
+export const DND_CLASSES_COMPARISON_VIDEO_URL = 'https://www.youtube.com/watch?v=y84OYRwzZU8';
+export const DND_CLASSES_COMPARISON_VIDEO_ID = 'y84OYRwzZU8';
 export const DND_2024_CASTING_SPELLS_RULES_URL = 'https://roll20.net/compendium/dnd5e/Rules%3ACasting%20Spells';
 export const PALADIN_2024_SPELLS_DND_VIDEO_URL = 'https://www.youtube.com/watch?v=_vx-oqXOabw';
 export const DND_HEX_2024_RULES_URL = 'https://www.dndbeyond.com/spells/2618988-hex';
@@ -278,6 +286,9 @@ export const DND_FLUMPH_2024_ROLL20_URL =
 export const DND_FLUMPH_AIDEDD_URL = 'https://www.aidedd.org/dnd/monstres.php?vo=flumph';
 export const DND_2024_CHARACTER_CREATION_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/creating-a-character';
+export const DND_2024_CHARACTER_CLASSES_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes';
+export const DND_BEYOND_CLASSES_CATALOG_URL = 'https://www.dndbeyond.com/classes';
 export const DND_LANGUAGES_2014_SRD_URL = 'https://5thsrd.org/character/languages/';
 export const DND_2024_CHARACTER_ORIGINS_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/character-origins';
@@ -423,6 +434,16 @@ export const ZH_PLAYERS_HANDBOOK_DND_5E_PATH = getLocalizedPath(
 );
 export const EN_DND_CHARACTER_SHEET_PATH = getLocalizedPath('en', '/blog/dnd-character-sheet');
 export const ZH_DND_CHARACTER_SHEET_PATH = getLocalizedPath('zh', '/blog/dnd-character-sheet');
+export const EN_DND_CLASSES_COMPARISON_PATH = getLocalizedPath('en', '/blog/dnd-classes-comparison');
+export const ZH_DND_CLASSES_COMPARISON_PATH = getLocalizedPath('zh', '/blog/dnd-classes-comparison');
+export const EN_DND_CLASSES_RANKED_PATH = getLocalizedPath('en', '/blog/dnd-classes-ranked');
+export const ZH_DND_CLASSES_RANKED_PATH = getLocalizedPath('zh', '/blog/dnd-classes-ranked');
+export const EN_DND_FIGHTER_PATH = getLocalizedPath('en', '/blog/dnd-fighter');
+export const ZH_DND_FIGHTER_PATH = getLocalizedPath('zh', '/blog/dnd-fighter');
+export const EN_DND_PALADIN_PATH = getLocalizedPath('en', '/blog/dnd-paladin');
+export const ZH_DND_PALADIN_PATH = getLocalizedPath('zh', '/blog/dnd-paladin');
+export const EN_DND_ARTIFICER_PATH = getLocalizedPath('en', '/blog/dnd-artificer');
+export const ZH_DND_ARTIFICER_PATH = getLocalizedPath('zh', '/blog/dnd-artificer');
 
 export function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src: string; alt: string }): string {
   const thumb = thumbnail?.src ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
