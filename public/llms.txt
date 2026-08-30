@@ -23,6 +23,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DnD Druid: Build a Level 1 Caster, Then Unlock Wild Shape at Level 2](https://www.tokenmaker.one/blog/dnd-druid): A DnD Druid is a Wisdom caster who borrows tools from the land: control, emergency healing, and later a Beast form. The fantasy is usually the bear. Session one is not about the bear.
+- [DnD Backgrounds: Which Origin Fits the Year You Play?](https://www.tokenmaker.one/blog/dnd-backgrounds): A Dungeons & Dragons background is the occupation and place that shaped the character before the first adventure.
 - [DND Classes Compared: All 13 by Party Job and First Combat Turn](https://www.tokenmaker.one/blog/dnd-classes-comparison): There are 12 classes in the 2024 Player's Handbook, or 13 with official Artificer. Compare them by party job and the first combat turn at level 1.
 - [Fill a DnD Character Sheet in Creation Order, Not Top Down](https://www.tokenmaker.one/blog/dnd-character-sheet): Fill a 2024 character sheet in creation order: class, origin, scores, then AC, HP, attacks, and spells, with one finished level 1 Cleric as the example.
 - [DnD Fighter Guide: Build a Level 1 Fighter and Plan Every Turn](https://www.tokenmaker.one/blog/dnd-fighter): Build a level 1 Fighter with the right ability, armor, weapon, Fighting Style, Weapon Mastery, and a clear first combat turn.
@@ -75,6 +77,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 德鲁伊指南：先定职责，再准备法术与荒野变形](https://www.tokenmaker.one/zh/blog/dnd-druid): 先确认 2014 或 2024 规则，再按队伍职责安排感知、体质、训练路线、准备法术和荒野变形。本文给出 1 级建卡顺序、版本差异表与不会卡住的回合计划。
+- [DND 5E 背景怎么选：先定规则版本，再把过去写进冒险](https://www.tokenmaker.one/zh/blog/dnd-backgrounds): 先分清 2014 与 2024 背景规则，再用技能缺口、起源专长和故事钩子筛选，让角色的过去不只写在卡上，也会在战役里继续发生作用。
 - [DND职业有哪些：用队伍职责和第1回合对照全部13个官方职业](https://www.tokenmaker.one/zh/blog/dnd-classes-comparison): 先回答 DND职业有哪些：2024《玩家手册》12 个，加上奇械师共 13 个官方职业。按队伍职责和第 1 回合对照后写下职业名。
 - [DND 角色卡：按创角顺序填写，不要从上往下填](https://www.tokenmaker.one/zh/blog/dnd-character-sheet): 按 2024 创角顺序填角色卡：先职业、出身和属性，再算护甲等级、生命值、攻击和法术，并用一名 1 级人类侍僧牧师走完第一页。
 - [DND《玩家手册》怎么选：5e 与 5.5e 版本指南](https://www.tokenmaker.one/zh/blog/players-handbook-dnd-5e): 按战役版本选择《玩家手册》，分清 2014 年 5e 与 2024 年 5.5e 的建卡边界，并使用官方免费规则完成首场游戏准备。

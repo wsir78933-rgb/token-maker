@@ -2,9 +2,7 @@
 
 import { useEffect } from 'react';
 import { useI18n } from '@/lib/i18n';
-import { Undo2, Redo2 } from 'lucide-react';
 import { useHistoryStore } from '@/lib/store/history';
-import { Button } from '@/components/ui/button';
 import { SiteMark } from '@/components/site/SiteMark';
 import { deleteCurrentEditorSelection } from '@/components/editor/editor-store-hooks';
 
@@ -81,29 +79,6 @@ export function Header() {
               </span>
             </div>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/70 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-full text-muted-foreground hover:bg-accent hover:text-foreground"
-            disabled={history.past.length === 0}
-            onClick={history.undo}
-            title={`${t('undo')} (Cmd+Z)`}
-          >
-            <Undo2 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-full text-muted-foreground hover:bg-accent hover:text-foreground"
-            disabled={history.future.length === 0}
-            onClick={history.redo}
-            title={`${t('redo')} (Cmd+Shift+Z)`}
-          >
-            <Redo2 className="h-4 w-4" />
-          </Button>
         </div>
       </div>
     </header>

@@ -51,6 +51,8 @@ import {
   PLAYERS_HANDBOOK_DND_5E_COVER_PATH,
   DND_CHARACTER_SHEET_COVER_PATH,
   DND_CLASSES_COMPARISON_COVER_PATH,
+  DND_BACKGROUNDS_COVER_PATH,
+  DND_DRUID_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -151,6 +153,11 @@ import {
   dndClassesComparisonArticleHtml,
   dndClassesComparisonArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-classes-comparison';
+import {
+  dndBackgroundsArticleHtml,
+  dndBackgroundsArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-backgrounds';
+import { dndDruidArticleHtml, dndDruidArticleHtmlZh } from '@/lib/blog-posts/dnd-druid';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -4555,11 +4562,207 @@ const rapierDndArticleZh: BlogPost = {
   relatedSlugs: ['dnd-dagger', 'dnd-mace', 'dnd-classes-explained', 'dnd-armor-guide'],
 };
 
+const DND_DRUID_UPDATED_AT = '2026-08-28';
+
+const dndDruidArticle: BlogPost = {
+  slug: 'dnd-druid',
+  title: 'DnD Druid: Build a Level 1 Caster, Then Unlock Wild Shape at Level 2',
+  seoTitle: 'DnD Druid: Level 1 Is Spells; Wild Shape Starts at 2',
+  metaDescription:
+    'Confirm the table year, finish a level 1 Druid sheet around Wisdom and prepared spells, and keep Wild Shape off the first combat round.',
+  excerpt:
+    'A DnD Druid is a Wisdom caster who borrows tools from the land: control, emergency healing, and later a Beast form. The fantasy is usually the bear. Session one is not about the bear.',
+  publishedAt: DND_DRUID_UPDATED_AT,
+  updatedAt: DND_DRUID_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Druid Guide',
+  coverImage: DND_DRUID_COVER_PATH,
+  coverAlt:
+    'A tabletop Druid caster token with a staff and holly beside a unused beast-form token on a VTT grid',
+  bodyHtml: dndDruidArticleHtml,
+  faqItems: [
+    {
+      question: 'Does a DnD Druid Wild Shape at level 1?',
+      answer:
+        'No. Wild Shape is a Druid level 2 feature in the 2014 rules and in the 2024 rules. Level 1 is spellcasting. On a 2024 sheet you also choose Primal Order. Waiting for a Beast on the first round wastes the turn you already have.',
+    },
+    {
+      question: 'What are the best stats for a Druid?',
+      answer:
+        'Wisdom is the spellcasting ability. Constitution is the usual second priority for hit points and concentration. Dexterity helps Initiative and light-armor Armor Class. Strength matters mainly if you took the 2024 Warden kit and expect to swing a martial weapon.',
+    },
+    {
+      question: 'Should a 2024 Druid pick Magician or Warden?',
+      answer:
+        'There is no universal best Primal Order. Magician adds a cantrip and a boost to Arcana or Nature checks. Warden adds martial weapons and medium armor. Pick the kit that matches the first-turn job you wrote, not a circle you cannot take until level 3.',
+    },
+    {
+      question: 'Can a 2014 Druid wear metal armor?',
+      answer:
+        'The 2014 class text says druids will not wear armor or use shields made of metal. Medium armor is still on the proficiency list when it is not metal. A 2024 Warden is a different kit; do not import the metal sentence onto a 2024 sheet unless the DM kept that table rule.',
+    },
+    {
+      question: 'When do I choose Circle of the Moon?',
+      answer:
+        'At Druid level 2 on a 2014 sheet, and at Druid level 3 on a 2024 sheet. Moon is the subclass for a player whose combat plan is the Beast form. It is a poor reason to skip Wisdom, prepared spells, and a default caster turn at level 1.',
+    },
+    {
+      question: 'Can I use a 2014 Druid in a 2024 campaign?',
+      answer:
+        'Ask the DM. D&D Beyond still supports both rulesets. A table using the 2024 class should decide the exact source and compatibility rules before character creation. Do not keep the most generous Wild Shape sentence from each year.',
+    },
+  ],
+  relatedSlugs: ['dnd-druid-spells', 'dnd-classes-explained', 'dnd-stats', 'dnd-fighter'],
+};
+
+const dndDruidArticleZh: BlogPost = {
+  slug: 'dnd-druid',
+  title: 'DND 德鲁伊指南：先定职责，再准备法术与荒野变形',
+  seoTitle:
+    'DND 德鲁伊完整指南：1级建卡、感知、准备法术、荒野变形、新手回合计划与2014/2024规则差异',
+  metaDescription:
+    '面向第一次接触 DND 德鲁伊的中文职业指南，按规则版本、队伍职责、感知与体质、Primal Order、准备法术和荒野变形完成 1 级建卡，并用短表对照 2014 与 2024 的动作、恢复、形态和生命值规则，再给出开战前专注、第一回合与常见错误的可执行清单。',
+  excerpt:
+    '先确认 2014 或 2024 规则，再按队伍职责安排感知、体质、训练路线、准备法术和荒野变形。本文给出 1 级建卡顺序、版本差异表与不会卡住的回合计划。',
+  publishedAt: DND_DRUID_UPDATED_AT,
+  updatedAt: DND_DRUID_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '德鲁伊指南',
+  coverImage: DND_DRUID_COVER_PATH,
+  coverAlt: '自然施法者在战术地图前比较法术与野兽形态',
+  bodyHtml: dndDruidArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND 德鲁伊适合新手吗？',
+      answer:
+        '适合愿意提前做小卡的玩家。先固定队伍职责、常用法术场景和两三种形态，实际回合就不会被完整法术表拖慢。',
+    },
+    {
+      question: '2024 德鲁伊最重要的属性是什么？',
+      answer: '感知是主要属性，也是德鲁伊的施法属性。体质通常排在后面，其他属性再按技能和角色概念分配。',
+    },
+    {
+      question: '荒野形态里可以施法吗？',
+      answer:
+        '低级德鲁伊不可以在野兽形态中施法，不过变形不会自动打断已经建立的专注。先施法还是先变形，需要在行动前决定。',
+    },
+    {
+      question: '2014 与 2024 的荒野变形能混用吗？',
+      answer: '不能。两版的启动动作、次数恢复、形态记录与生命值处理都不同。建卡时标明版本，并只抄对应规则。',
+    },
+    {
+      question: '职业指南会列出所有德鲁伊法术吗？',
+      answer:
+        '不会。本页处理职业职责、建卡、荒野变形和回合顺序；具体准备列表与法术选择留在独立的德鲁伊法术指南中。',
+    },
+  ],
+  relatedSlugs: ['dnd-druid-spells', 'dnd-classes-explained', 'dnd-stats', 'dnd-fighter'],
+};
+
+const DND_BACKGROUNDS_UPDATED_AT = '2026-08-26';
+
+const dndBackgroundsArticle: BlogPost = {
+  slug: 'dnd-backgrounds',
+  title: 'DnD Backgrounds: Which Origin Fits the Year You Play?',
+  seoTitle: 'DnD Backgrounds: Check 2014 or 2024 Before You Pick',
+  metaDescription:
+    'Start with the table year. Then pick a 2014 feature or a 2024 Origin feat, scores, and skills so the background matches the character sheet.',
+  excerpt:
+    'A Dungeons & Dragons background is the occupation and place that shaped the character before the first adventure.',
+  publishedAt: DND_BACKGROUNDS_UPDATED_AT,
+  updatedAt: DND_BACKGROUNDS_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'DND BACKGROUNDS',
+  coverImage: DND_BACKGROUNDS_COVER_PATH,
+  coverAlt:
+    'A candlelit Dungeons and Dragons character sheet between a 2014 feature card and a 2024 origin card, with circular VTT tokens in front',
+  bodyHtml: dndBackgroundsArticleHtml,
+  faqItems: [
+    {
+      question: 'What does a DnD background give you?',
+      answer:
+        'On 2024 rules it gives three listed ability scores to raise, a specified Origin feat, two skills, one tool, and either a gear pack or 50 GP. On 2014 rules it gives two skills, tools or languages, starting gear, a feature, and suggested personality tables. Always match the grant to the year on the sheet.',
+    },
+    {
+      question: "How many backgrounds are in the 2024 Player's Handbook?",
+      answer:
+        'Sixteen. The 2024 Free Rules include full text for Acolyte, Criminal, Sage, and Soldier. The other twelve are in the Player\'s Handbook. Expansion books add more names; ask which sources the campaign allows before you treat a catalog dump as the core list.',
+    },
+    {
+      question: 'Do 2024 backgrounds increase ability scores?',
+      answer:
+        'Yes. Each 2024 background lists three scores. Increase one by 2 and a different one by 1, or increase all three by 1. None of those increases can raise a score above 20. In 2024, species does not supply those increases.',
+    },
+    {
+      question: 'Can I use a 2014 background in a 2024 game?',
+      answer:
+        'Yes, if the Dungeon Master allows it. Official conversion says you assign the three ability score points, ignore an old race increase if you also brought an older species, and gain an Origin feat of your choice when the old card has no feat. Do not keep two full score packages.',
+    },
+    {
+      question: 'What is a DnD Origin feat?',
+      answer:
+        'An Origin feat is the 2024 talent attached to a background, such as Alert, Crafter, Healer, Lucky, Magic Initiate, Musician, Savage Attacker, Skilled, Tavern Brawler, or Tough. Humans also gain an extra Origin feat from the species trait. It is not the same as a 2014 background feature.',
+    },
+    {
+      question: 'What is the best DnD background for a beginner?',
+      answer:
+        'The best first pick is one whose job you can say in one sentence and whose numbers you can copy without mixing years. Soldier, Sage, Acolyte, and Criminal are printed in the 2024 Free Rules, so they are easy to check. There is no universal strongest origin.',
+    },
+  ],
+  relatedSlugs: ['dnd-character-sheet', 'dnd-stats', 'dnd-alignment-chart', 'players-handbook-dnd-5e'],
+};
+
+const dndBackgroundsArticleZh: BlogPost = {
+  slug: 'dnd-backgrounds',
+  title: 'DND 5E 背景怎么选：先定规则版本，再把过去写进冒险',
+  seoTitle:
+    'DND 5E 背景不是职业附属：先分清 2014 与 2024，再补齐技能、专长和能推动冒险的完整过去',
+  metaDescription:
+    '先确认你的团使用 2014 还是 2024 规则，再按技能缺口、起源专长与角色动机选择 DND 5E 背景。本文给出对照表、五步筛选法、自定义边界和可直接套用的故事问题，帮助你完成既符合规则、又会在战役里持续发挥作用的角色过去，并用两种示例说明怎样与 DM 快速确认。',
+  excerpt:
+    '先分清 2014 与 2024 背景规则，再用技能缺口、起源专长和故事钩子筛选，让角色的过去不只写在卡上，也会在战役里继续发生作用。',
+  publishedAt: DND_BACKGROUNDS_UPDATED_AT,
+  updatedAt: DND_BACKGROUNDS_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '背景选择指南',
+  coverImage: DND_BACKGROUNDS_COVER_PATH,
+  coverAlt: '一名冒险者在酒馆桌边对照 2014 与 2024 规则，挑选适合角色的 DND 5E 背景',
+  bodyHtml: dndBackgroundsArticleHtmlZh,
+  faqItems: [
+    {
+      question: 'DND 5E 背景和职业有什么区别？',
+      answer:
+        '职业描述角色成为冒险者后训练出的核心能力，背景描述此前最重要的生活经历。两者会在技能或主题上交叉，但背景不等于副职业，也不该额外塞入职业等级才会获得的能力。',
+    },
+    {
+      question: 'DND 5E 背景有唯一最强选择吗？',
+      answer:
+        '没有脱离版本、职业和队伍的统一答案。先看规则组件是否合法，再看它是否补足常用任务，最后确认故事钩子会不会进入战役。只在真空里比较单项收益，容易忽略实际出场次数。',
+    },
+    {
+      question: '2014 背景可以自定义吗？',
+      answer:
+        '可以。官方基础规则允许选择任意两项技能，并合计选择两项工具熟练或语言，也可以调整装备取得方式；背景特性的替换或新创内容应与 DM 一起完成。',
+    },
+    {
+      question: '2024 背景可以直接套用 2014 的自定义规则吗？',
+      answer:
+        '不要默认可以。2024 背景有自己的能力值、起源专长、技能、工具和装备结构。若要使用旧书背景或自定义方案，应先查看团里采用的规则来源，并让 DM 明确确认。',
+    },
+    {
+      question: '背景与职业给了同一个熟练怎么办？',
+      answer:
+        '在 2014 规则中，从两个来源重复获得同一种熟练时，可改选同类的另一项熟练。使用 2024 规则时，按该版角色创建规则和 DM 的说明处理，不要自行跨版本替换。',
+    },
+  ],
+  relatedSlugs: ['dnd-character-sheet', 'dnd-stats', 'dnd-alignment-chart', 'players-handbook-dnd-5e'],
+};
+
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };

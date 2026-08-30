@@ -33,6 +33,8 @@ const DND_PALADIN_SLUG = 'dnd-paladin';
 const PLAYERS_HANDBOOK_DND_5E_SLUG = 'players-handbook-dnd-5e';
 const DND_CHARACTER_SHEET_SLUG = 'dnd-character-sheet';
 const DND_CLASSES_COMPARISON_SLUG = 'dnd-classes-comparison';
+const DND_BACKGROUNDS_SLUG = 'dnd-backgrounds';
+const DND_DRUID_SLUG = 'dnd-druid';
 
 function findSitemapEntry(url: string) {
   const sitemapEntry = sitemap().find((entry) => entry.url === url);
@@ -45,6 +47,48 @@ function findSitemapEntry(url: string) {
 }
 
 describe('blog sitemap entries', () => {
+  test('includes bilingual dnd druid routes with alternates', () => {
+    const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_DRUID_SLUG}`);
+    const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_DRUID_SLUG}`);
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_DRUID_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_DRUID_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_DRUID_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-28'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-28'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
+  test('includes bilingual dnd backgrounds routes with alternates', () => {
+    const englishEntry = findSitemapEntry(
+      `https://www.tokenmaker.one/blog/${DND_BACKGROUNDS_SLUG}`,
+    );
+    const chineseEntry = findSitemapEntry(
+      `https://www.tokenmaker.one/zh/blog/${DND_BACKGROUNDS_SLUG}`,
+    );
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_BACKGROUNDS_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_BACKGROUNDS_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_BACKGROUNDS_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-26'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-26'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes bilingual dnd classes comparison routes with alternates', () => {
     const englishEntry = findSitemapEntry(
       `https://www.tokenmaker.one/blog/${DND_CLASSES_COMPARISON_SLUG}`,
@@ -529,12 +573,33 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/5',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-08-25'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-28'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-25'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-28'));
+    expect(chineseEntry.changeFrequency).toBe('weekly');
+    expect(chineseEntry.priority).toBe(0.55);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
+  test('keeps sixth blog hub pages current after publishing the backgrounds guide', () => {
+    const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/6');
+    const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/6');
+
+    const expectedAlternates = {
+      'x-default': 'https://www.tokenmaker.one/blog/page/6',
+      'en-US': 'https://www.tokenmaker.one/blog/page/6',
+      'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/6',
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-08-28'));
+    expect(englishEntry.changeFrequency).toBe('weekly');
+    expect(englishEntry.priority).toBe(0.55);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-28'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);

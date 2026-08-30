@@ -56,6 +56,8 @@ const DND_FIGHTER_SLUG = 'dnd-fighter';
 const PLAYERS_HANDBOOK_DND_5E_SLUG = 'players-handbook-dnd-5e';
 const DND_CHARACTER_SHEET_SLUG = 'dnd-character-sheet';
 const DND_CLASSES_COMPARISON_SLUG = 'dnd-classes-comparison';
+const DND_BACKGROUNDS_SLUG = 'dnd-backgrounds';
+const DND_DRUID_SLUG = 'dnd-druid';
 
 function getStructuredDataTypes(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -549,6 +551,16 @@ describe('blog static routes', () => {
     });
   });
 
+  it('emits bilingual dnd backgrounds detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_BACKGROUNDS_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_BACKGROUNDS_SLUG });
+  });
+
+  it('emits bilingual dnd druid detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_DRUID_SLUG });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_DRUID_SLUG });
+  });
+
   it('emits bilingual dnd stats detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_STATS_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_STATS_SLUG });
@@ -632,5 +644,10 @@ describe('blog static routes', () => {
   it('emits bilingual fifth-page pagination params', () => {
     expect(generateEnglishBlogPaginationStaticParams()).toContainEqual({ page: '5' });
     expect(generateChineseBlogPaginationStaticParams()).toContainEqual({ page: '5' });
+  });
+
+  it('emits bilingual sixth-page pagination params', () => {
+    expect(generateEnglishBlogPaginationStaticParams()).toContainEqual({ page: '6' });
+    expect(generateChineseBlogPaginationStaticParams()).toContainEqual({ page: '6' });
   });
 });

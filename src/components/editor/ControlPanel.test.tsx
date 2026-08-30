@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen, fireEvent } from '@testing-library/react';
 
 import { useEditorStore } from '@/lib/store/editor-store';
+import { useHistoryStore } from '@/lib/store/history';
 
 const i18nMockState = vi.hoisted(() => ({
   locale: 'en' as 'en' | 'zh',
@@ -25,6 +26,7 @@ import { ControlPanel } from './ControlPanel';
 
 function resetStore() {
   useEditorStore.getState().resetAll();
+  useHistoryStore.getState().clearHistory();
 }
 
 describe('ControlPanel', () => {
@@ -203,6 +205,31 @@ describe('ControlPanel', () => {
     const clearBtns = screen.getAllByTitle('clearWorkspace');
     fireEvent.click(clearBtns[0]);
     expect(useEditorStore.getState().imageElement).toBeNull();
+  });
+
+  it('renders undo, redo, and clear workspace in the same footer group', () => {
+    render(<ControlPanel />);
+
+    const undoButton = screen.getByTitle('undo (Cmd+Z)');
+    const redoButton = screen.getByTitle('redo (Cmd+Shift+Z)');
+    const clearButton = screen.getByTitle('clearWorkspace');
+
+    expect(undoButton.parentElement).toBe(redoButton.parentElement);
+    expect(undoButton.parentElement).toBe(clearButton.parentElement);
+  });
+
+  it('undoes the last committed editor snapshot from the footer undo button', () => {
+    const initialScale = useEditorStore.getState().imageScale;
+    useEditorStore.getState().setImageScale(initialScale + 0.5);
+    useHistoryStore.getState().commit();
+
+    render(<ControlPanel />);
+
+    const undoButton = screen.getByTitle('undo (Cmd+Z)');
+    expect(undoButton.closest('button')?.disabled).toBe(false);
+    fireEvent.click(undoButton);
+
+    expect(useEditorStore.getState().imageScale).toBe(initialScale);
   });
 
   it('calls resetPosition when reset button is clicked', () => {

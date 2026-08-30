@@ -55,6 +55,8 @@ export const DND_CHARACTER_SHEET_COVER_PATH =
   '/blog/covers/en/dnd-character-sheet-guide.webp';
 export const DND_CLASSES_COMPARISON_COVER_PATH =
   '/blog/covers/en/dnd-classes-comparison-cover.webp';
+export const DND_BACKGROUNDS_COVER_PATH = '/blog/covers/en/dnd-backgrounds-guide.webp';
+export const DND_DRUID_COVER_PATH = '/blog/covers/en/dnd-druid-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -137,6 +139,13 @@ export const DND_CLASSES_COMPARISON_TOKEN_ROW_PATH =
   '/blog/inline/dnd-classes-comparison/class-token-row.webp';
 export const DND_CLASSES_COMPARISON_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-classes-comparison/dnd-classes-cleric-video-placeholder.webp';
+export const DND_BACKGROUNDS_INLINE_IMAGE_PATH =
+  '/blog/inline/dnd-backgrounds/dnd-backgrounds-selection-flow.webp';
+export const DND_BACKGROUNDS_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-backgrounds/dnd-backgrounds-video-placeholder.webp';
+export const DND_DRUID_TURN_PLAN_IMAGE_PATH = '/blog/inline/dnd-druid/druid-turn-plan.webp';
+export const DND_DRUID_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-druid/dnd-druid-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -210,6 +219,10 @@ export const DND_CHARACTER_SHEET_VIDEO_URL = 'https://www.youtube.com/watch?v=IV
 export const DND_CHARACTER_SHEET_VIDEO_ID = 'IVAJrYOOtwI';
 export const DND_CLASSES_COMPARISON_VIDEO_URL = 'https://www.youtube.com/watch?v=y84OYRwzZU8';
 export const DND_CLASSES_COMPARISON_VIDEO_ID = 'y84OYRwzZU8';
+export const DND_BACKGROUNDS_VIDEO_URL = 'https://www.youtube.com/watch?v=vyg5jJrZ42s';
+export const DND_BACKGROUNDS_VIDEO_ID = 'vyg5jJrZ42s';
+export const DND_DRUID_VIDEO_URL = 'https://www.youtube.com/watch?v=WMo_gCRMSfA';
+export const DND_DRUID_VIDEO_ID = 'WMo_gCRMSfA';
 export const DND_2024_CASTING_SPELLS_RULES_URL = 'https://roll20.net/compendium/dnd5e/Rules%3ACasting%20Spells';
 export const PALADIN_2024_SPELLS_DND_VIDEO_URL = 'https://www.youtube.com/watch?v=_vx-oqXOabw';
 export const DND_HEX_2024_RULES_URL = 'https://www.dndbeyond.com/spells/2618988-hex';
@@ -444,6 +457,10 @@ export const EN_DND_PALADIN_PATH = getLocalizedPath('en', '/blog/dnd-paladin');
 export const ZH_DND_PALADIN_PATH = getLocalizedPath('zh', '/blog/dnd-paladin');
 export const EN_DND_ARTIFICER_PATH = getLocalizedPath('en', '/blog/dnd-artificer');
 export const ZH_DND_ARTIFICER_PATH = getLocalizedPath('zh', '/blog/dnd-artificer');
+export const EN_DND_BACKGROUNDS_PATH = getLocalizedPath('en', '/blog/dnd-backgrounds');
+export const ZH_DND_BACKGROUNDS_PATH = getLocalizedPath('zh', '/blog/dnd-backgrounds');
+export const EN_DND_DRUID_PATH = getLocalizedPath('en', '/blog/dnd-druid');
+export const ZH_DND_DRUID_PATH = getLocalizedPath('zh', '/blog/dnd-druid');
 
 export function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src: string; alt: string }): string {
   const thumb = thumbnail?.src ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;

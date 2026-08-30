@@ -6,8 +6,9 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Layers, RotateCcw, Trash2 } from 'lucide-react';
+import { Layers, Redo2, RotateCcw, Trash2, Undo2 } from 'lucide-react';
 import { useBatchStore } from '@/lib/store/batch-store';
+import { useHistoryStore } from '@/lib/store/history';
 import { trackUseBatchMode } from '@/lib/analytics';
 import {
   EDITOR_FONT_DEFINITIONS,
@@ -45,6 +46,7 @@ export function ControlPanel() {
     resetPosition,
     clearImage,
   } = useControlPanelState();
+  const history = useHistoryStore();
   const imageScaleLabelId = useId();
   const fontSizeLabelId = useId();
   const fontFamilyInputId = useId();
@@ -281,26 +283,48 @@ export function ControlPanel() {
 
       {/* ── 底部固定操作栏 ── */}
       <div className="shrink-0 border-t border-border bg-card/92 p-4 shadow-[0_-10px_40px_-15px_var(--workspace-shadow-color)]">
-        <div className="flex flex-col gap-2 min-[380px]:flex-row">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 w-9 shrink-0 p-0 text-muted-foreground hover:text-foreground"
+              disabled={history.past.length === 0}
+              onClick={history.undo}
+              title={`${t('undo')} (Cmd+Z)`}
+            >
+              <Undo2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 w-9 shrink-0 p-0 text-muted-foreground hover:text-foreground"
+              disabled={history.future.length === 0}
+              onClick={history.redo}
+              title={`${t('redo')} (Cmd+Shift+Z)`}
+            >
+              <Redo2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 flex-1 gap-1.5 text-xs text-destructive hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+              onClick={clearImage}
+              title={t('clearWorkspace')}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              {t('clearWorkspace')}
+            </Button>
+          </div>
           <Button
             variant="outline"
             size="sm"
-            className="h-9 flex-1 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+            className="h-9 w-full gap-1.5 text-xs text-muted-foreground hover:text-foreground"
             onClick={resetPosition}
             title={t('resetPosition')}
           >
             <RotateCcw className="h-3.5 w-3.5" />
             {t('resetPosition')}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 flex-1 gap-1.5 text-xs text-destructive hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
-            onClick={clearImage}
-            title={t('clearWorkspace')}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            {t('clearWorkspace')}
           </Button>
         </div>
         <div className="my-3 border-t border-border/40" />

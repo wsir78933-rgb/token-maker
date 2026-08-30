@@ -12,13 +12,13 @@ import {
 
 describe('blog pagination capacity', () => {
   it.each(['en', 'zh'] as const)(
-    'keeps the new non-featured class comparison guide first on page one',
+    'keeps the new non-featured druid class guide first on page one',
     (locale) => {
-      expect(getBlogPageCount(locale)).toBe(5);
-      expect([1, 2, 3, 4, 5].map((page) => getBlogPostsForPage(locale, page).length)).toEqual(
-        [10, 10, 10, 10, 10],
+      expect(getBlogPageCount(locale)).toBe(6);
+      expect([1, 2, 3, 4, 5, 6].map((page) => getBlogPostsForPage(locale, page).length)).toEqual(
+        [10, 10, 10, 10, 10, 2],
       );
-      expect(getBlogPostsForPage(locale, 1)[0]?.slug).toBe('dnd-classes-comparison');
+      expect(getBlogPostsForPage(locale, 1)[0]?.slug).toBe('dnd-druid');
     },
   );
 
