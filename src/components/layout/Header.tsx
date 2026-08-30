@@ -37,19 +37,9 @@ export function Header() {
         }
       }
 
-      // 匹配 Cmd/Ctrl + Z (撤销)，或加上 Shift (重做)，或者 Ctrl+Y
-      if (e.metaKey || e.ctrlKey) {
-        if (e.key === 'z') {
-           e.preventDefault();
-           if (e.shiftKey) {
-             history.redo();
-           } else {
-             history.undo();
-           }
-        } else if (e.key === 'y') {
-           e.preventDefault();
-           history.redo();
-        }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        history.undo();
       }
     };
     window.addEventListener('keydown', handleKeyDown);

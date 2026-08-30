@@ -211,7 +211,7 @@ describe('ControlPanel', () => {
     render(<ControlPanel />);
 
     const undoButton = screen.getByTitle('undo (Cmd+Z)');
-    const redoButton = screen.getByTitle('redo (Cmd+Shift+Z)');
+    const redoButton = screen.getByTitle('redo');
     const clearButton = screen.getByTitle('clearWorkspace');
 
     expect(undoButton.parentElement).toBe(redoButton.parentElement);

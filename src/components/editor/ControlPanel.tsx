@@ -301,7 +301,7 @@ export function ControlPanel() {
               className="h-9 w-9 shrink-0 p-0 text-muted-foreground hover:text-foreground"
               disabled={history.future.length === 0}
               onClick={history.redo}
-              title={`${t('redo')} (Cmd+Shift+Z)`}
+              title={t('redo')}
             >
               <Redo2 className="h-3.5 w-3.5" />
             </Button>

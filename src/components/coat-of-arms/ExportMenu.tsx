@@ -22,6 +22,7 @@ import {
   type EditorPreferences,
 } from '@/lib/coat-of-arms/editor-preferences';
 import { sanitizeCoatFileBaseName } from '@/lib/coat-of-arms/file-name';
+import { uploadCoatExportToCloud } from '@/lib/coat-of-arms/cloud-export/client-upload';
 import type { CoatLocale, CoatProject } from '@/lib/coat-of-arms/types';
 import { Button } from '@/components/ui/button';
 import { getCoatWorkbenchCopy } from './workbench-copy';
@@ -152,6 +153,30 @@ function getCoatExportRenderOptions(transparentBackground: boolean): { transpare
   return { transparentBackground };
 }
 
+async function createCoatExportBlob(
+  fileType: CoatExportFileType,
+  project: CoatProject,
+  size: CoatExportSize,
+  quality: CoatExportQuality,
+  renderOptions: { transparentBackground: boolean },
+): Promise<Blob> {
+  if (fileType === 'png') return exportCoatPng(project, size, renderOptions);
+  if (fileType === 'jpeg') return exportCoatJpeg(project, size, coatJpegEncoderQualityByLevel[quality]);
+  if (fileType === 'pdf') return exportCoatPdf(project, size, renderOptions);
+  throw new Error(`Unsupported coat export file type: ${String(fileType)}`);
+}
+
+function getCoatExportDownloadFileName(
+  baseName: string,
+  size: CoatExportSize,
+  fileType: CoatExportFileType,
+): string {
+  if (fileType === 'png') return `${baseName}-${size}.png`;
+  if (fileType === 'jpeg') return `${baseName}-${size}.jpg`;
+  if (fileType === 'pdf') return `${baseName}-${size}.pdf`;
+  throw new Error(`Unsupported coat export file type: ${String(fileType)}`);
+}
+
 /** UI for existing local export primitives, with its own popup focus lifecycle. */
 export function ExportMenu({ locale, menuId, project }: ExportMenuProps) {
   const copy = getCoatWorkbenchCopy(locale);
@@ -242,22 +267,31 @@ export function ExportMenu({ locale, menuId, project }: ExportMenuProps) {
     if (nextFileType === 'jpeg') setTransparentBackground(false);
   };
 
-  const downloadSelectedExport = async () => {
-    const { size, quality } = readLatestExportPreferences();
-    const renderOptions = getCoatExportRenderOptions(transparentBackground);
-    if (fileType === 'png') {
-      downloadCoatBlob(await exportCoatPng(project, size, renderOptions), `${baseName}-${size}.png`);
-      return;
+  const downloadSelectedExportThenUpload = async () => {
+    try {
+      setError(null);
+      const { size, quality } = readLatestExportPreferences();
+      const renderOptions = getCoatExportRenderOptions(transparentBackground);
+      const { width, height } = getCoatExportDimensions(project, size);
+      const exportedBlob = await createCoatExportBlob(fileType, project, size, quality, renderOptions);
+      downloadCoatBlob(exportedBlob, getCoatExportDownloadFileName(baseName, size, fileType));
+      setStatus(getDownloadSuccessMessage(fileType, copy));
+      try {
+        await uploadCoatExportToCloud({
+          file: exportedBlob,
+          fileType,
+          width,
+          height,
+          locale,
+        });
+        setStatus(`${getDownloadSuccessMessage(fileType, copy)} ${copy.cloudExportSaved}`);
+      } catch (uploadCaught) {
+        setError(copy.cloudExportFailed(getErrorMessage(uploadCaught)));
+      }
+    } catch (caught) {
+      setStatus(null);
+      setError(copy.exportOperationFailed(getErrorMessage(caught)));
     }
-    if (fileType === 'jpeg') {
-      downloadCoatBlob(await exportCoatJpeg(project, size, coatJpegEncoderQualityByLevel[quality]), `${baseName}-${size}.jpg`);
-      return;
-    }
-    if (fileType === 'pdf') {
-      downloadCoatBlob(await exportCoatPdf(project, size, renderOptions), `${baseName}-${size}.pdf`);
-      return;
-    }
-    throw new Error(`Unsupported coat export file type: ${String(fileType)}`);
   };
 
   const shareSelectedPng = async () => {
@@ -336,7 +370,7 @@ export function ExportMenu({ locale, menuId, project }: ExportMenuProps) {
         <Button
           className="coat-workbench-export-download"
           type="button"
-          onClick={() => void runExport(downloadSelectedExport, getDownloadSuccessMessage(fileType, copy))}
+          onClick={() => void downloadSelectedExportThenUpload()}
         ><Download aria-hidden="true" /><span>{copy.downloadExport(fileType)}</span></Button>
         <div className="coat-workbench-export-secondary">
           <Button type="button" variant="outline" onClick={() => void runExport(shareSelectedPng, copy.imageShared)}><Share2 aria-hidden="true" /><span>{copy.exportShare}</span></Button>

@@ -202,6 +202,8 @@ export interface CoatWorkbenchCopy {
   printOpened: string;
   batchExported: string;
   exportOperationFailed: (message: string) => string;
+  cloudExportSaved: string;
+  cloudExportFailed: (message: string) => string;
   randomizeProject: string;
   randomizeDescription: string;
   randomizeUnavailable: string;
@@ -772,6 +774,8 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
     print: 'Print locally', exportBatch: 'Export batch ZIP', pngExported: 'PNG exported locally.', jpegExported: 'JPG exported locally.', imageCopied: 'Image copied to clipboard.', imageShared: 'Native share sheet opened.', pdfExported: 'PDF exported locally.',
     printOpened: 'Print view opened locally.', batchExported: 'Batch ZIP exported locally.',
     exportOperationFailed: (message) => `Export failed: ${message}`,
+    cloudExportSaved: 'Export saved.',
+    cloudExportFailed: (message) => `Cloud save failed: ${message}`,
     randomizeProject: 'Create Random Coat of Arms', randomizeDescription: 'Click on the button to generate random coats of arms. Edit the designs until they fit your needs.', randomizeUnavailable: 'Project randomization is not available yet.',
     draftAvailable: 'Draft available', draftRecoveryDescription: 'A local draft is available. Your current project stays unchanged until you restore it.', invalidDraftRecoveryDescription: (message) => `The local draft could not be recovered: ${message}. It has been preserved until you discard it.`, restoreDraft: 'Restore draft', discardDraft: 'Discard draft',
     toolTabs: { position: 'Position', shields: 'Shields', custom: 'Custom', charges: 'Charges', top: 'Top', colors: 'Colors', tools: 'Tools', 'how-to': 'How-to', settings: 'Settings', flags: 'Flags' },
@@ -862,6 +866,8 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
     print: '本地打印', exportBatch: '导出批量 ZIP', pngExported: 'PNG 已导出到本地。', jpegExported: 'JPG 已导出到本地。', imageCopied: '图片已复制到剪贴板。', imageShared: '已打开系统分享面板。', pdfExported: 'PDF 已导出到本地。',
     printOpened: '本地打印视图已打开。', batchExported: '批量 ZIP 已导出到本地。',
     exportOperationFailed: (message) => formatChineseFailure('导出失败', '请检查浏览器下载设置后重试', message),
+    cloudExportSaved: '已保存。',
+    cloudExportFailed: (message) => formatChineseFailure('云端保存失败', '请稍后重试', message),
     randomizeProject: '随机生成徽章', randomizeDescription: '点击按钮随机生成一枚徽章。生成后可以继续修改，直到符合你的需要。', randomizeUnavailable: '项目随机生成功能暂不可用。',
     draftAvailable: '发现草稿', draftRecoveryDescription: '发现本地草稿。恢复前不会更改当前项目。', invalidDraftRecoveryDescription: (message) => formatChineseFailure('本地草稿无法恢复', '草稿已保留，请确认后丢弃', message), restoreDraft: '恢复草稿', discardDraft: '丢弃草稿',
     toolTabs: { position: '定位', shields: '盾牌', custom: '自定义', charges: '图形', top: '顶部', colors: '颜色', tools: '工具', 'how-to': '使用说明', settings: '设置', flags: '旗帜' },
