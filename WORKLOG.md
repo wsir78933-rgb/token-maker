@@ -1,6 +1,91 @@
 # WORKLOG
 
+## 交接单 · 2026-08-30 10:25 CST · Cursor Grok
+
+### 本次目标
+
+纹章编辑器点 Download 后：本地下载同一份 PNG/JPEG/PDF，并静默上传到现有 R2 桶 `tokenmaker-shares` 的 `coats/` 前缀。界面只报成功/失败，不给链接。不改 Token `/api/share`。顺带把上一班 Token 左下角撤销/重做（去掉重做快捷键）一并存档。
+
+### 已完成
+
+- 纹章云导出已实现并提交：`2ec8b2c`（未 push）。`main` 比 `origin/main` 超前 1。
+- 新模块 `src/lib/coat-of-arms/cloud-export/`：常量、服务端校验（矩形最长边 256/512/1024/2048）、R2 `PutObject`（只回 `{ key }`）、浏览器 `POST /api/coat-export`。
+- 新接口 `src/app/api/coat-export/route.ts`：同源、限流 key `coat-export:ip`、成功 `{ ok: true }`，无 URL/key。
+- `ExportMenu` Download 先 `downloadCoatBlob` 再上传；失败保留本地下载并 `cloudExportFailed`。Share/Print 不上传。文案在 `workbench-copy.ts`。
+- R2 密钥只在服务端 `getShareStorageEnv()` 读取，未进客户端。
+- Token 撤销/重做：左下角 ControlPanel 同一组；Header 只保留 Cmd/Ctrl+Z 撤销，已删 Shift+Z / Ctrl+Y 重做。同在 `2ec8b2c`。
+- 编排 Run `run_82aaab715ffb`：agy 常量/文案，grok 校验/R2/UI/复核，Codex 写 API。复核 vitest 6 文件 59 通过。
+- `WORKLOG.md` 未进该提交。
+
+### 做到一半
+
+- 纹章 SEO 改动**未存档**（用户选 C，排除）：`coat-maker-seo-copy.ts`、`coat-maker-seo-schema.ts`、`CoatMakerSeoContent.tsx`、`CoatMakerSeoContent.test.tsx`、`src/app/site-routes.test.tsx`。内容是把 metadata title/description 改成跟 heading/introduction 对齐，与云导出无关，未做完整验收。
+- `tmp/t7-coat-cloud-export-review.md` 未提交（复核草稿）。
+- 未在浏览器实点 Download（会打到真实 R2）。未跑全量 `pnpm typecheck` / `pnpm lint` / `pnpm test`。
+- 未 push。
+
+### 下一步
+
+- 若要上线：先 `git push`（需用户明确授权）。生产需已有 R2 与 Upstash 环境变量（与 Token share 同一套）。
+- SEO 那 5 个文件：单独决定提交、还原或继续改，不要和 `2ec8b2c` 混在一起。
+- 可选：补复核里的低优先级测试缺口（非法 PDF 头、重编码后超 5MB 的 413、route 层 jpeg/pdf 透传）。
+- 可选：本地点一次 `/coat-of-arms-maker` Download，到 R2 控制台确认出现 `coats/`。
+
+### 踩过的坑
+
+- 现有 `/api/share` 只收正方形 PNG，纹章是长方形，不能复用该接口校验。
+- R2「文件夹」只是前缀；控制台不必预建 `coats/`。
+- 复用 agy 终端派 T4 时 `agent_prompt_stalled`（CLI 问卷挡住），已改新 grok 重试。
+- 工作区曾同时存在另一班 Token 撤销改动和 SEO 改动；提交时按用户 C 拆开，只装云导出 + Token 快捷键。
+- 客户端看不到对象 URL；文件仍在公开域上，知道 key 就能打开。
+
+### 怎么验证
+
+- `pnpm exec vitest run src/lib/coat-of-arms/cloud-export src/app/api/coat-export src/components/coat-of-arms/ExportMenu.test.tsx`（复核时 59 passed）
+- `pnpm exec vitest run src/components/layout/Header.test.tsx src/components/editor/ControlPanel.test.tsx`
+- 页面：`/coat-of-arms-maker` 打开 Export → Download PNG/JPG/PDF，应本地下载；菜单出现 `Export saved.` / `已保存。` 且无 URL。R2 桶根下应出现 `coats/`。Share/Print 不应新增对象。
+- Token 编辑器：左下角撤销/重做/清空同一行；Cmd+Z 撤销；Cmd+Shift+Z / Ctrl+Y 不重做。
+
+## 交接单 · 2026-08-30 09:54 CST · Cursor Grok
+
+### 本次目标
+
+Token 编辑器：把「清空工作区」和「撤销 / 重做」放到一起。用户更正为**左下角 ControlPanel 底栏**，不是顶栏右侧。随后要求去掉重做快捷键（Cmd+Shift+Z / Ctrl+Y），保留 Cmd+Z 撤销和左下角重做按钮。
+
+### 已完成
+
+- 左下角同一组：撤销、重做、清空。下一行「重置位置」，分隔线下落「批量模式」。文件：`src/components/editor/ControlPanel.tsx`。
+- 顶栏不再放这三个按钮。`Header` 仍处理 Delete/Backspace 删选中，以及 **Cmd/Ctrl+Z（无 Shift）撤销**。已删除 Shift+Z 与 Ctrl+Y 重做。文件：`src/components/layout/Header.tsx`。
+- 重做按钮 `title` 现为 `t('redo')`，不再写 `(Cmd+Shift+Z)`。
+- 测试：`Header.test.tsx` 断言顶栏无三按钮，并覆盖 meta/ctrl+z 会 undo、shift+z 与 ctrl+y 不 redo。`ControlPanel.test.tsx` 按 `getByTitle('redo')` 找按钮。
+- Orca Run `run_95ed4360eccc`：grok 改、Codex 查。T1/T2 曾按右上角做错；T3–T6 因需求更正取消；T7/T8 纠偏到左下角；T11 `pnpm typecheck` / `pnpm lint` / 当时 19 测通过；T13 去重做快捷键；T14 Codex 要求补键盘测；T15 补完后 Header 6 + ControlPanel 15 = **21 通过**。
+- **未存档**：用户选 B，这 4 个编辑器文件未 commit、未 push。`WORKLOG.md` 不进产品提交。
+
+### 做到一半
+
+- 工作区还有**本次范围外**未提交：`src/components/coat-of-arms/workbench-copy.ts`（已改）、未跟踪 `src/lib/coat-of-arms/cloud-export/`。本班未核对其内容。
+- 本终端仍绑定 Orca Run `run_95ed4360eccc`（objective 仍写着已废弃的「方案 A 顶栏」）。相关 worker 已 release。
+- 用户曾回 A（只提交 4 个编辑器文件），随后改口 B，因此没有 commit。
+
+### 下一步
+
+- 若要存档：只加 `Header.tsx`、`Header.test.tsx`、`ControlPanel.tsx`、`ControlPanel.test.tsx`。不要把 `WORKLOG.md`、徽章文件、`cloud-export/` 塞进这次提交。不要默认 push。
+- 不要把清空/撤销再挪回顶栏。
+- 徽章相关脏文件与旧 WORKLOG 里的 coat-of-arms 残留，本班未处理。
+
+### 踩过的坑
+
+- 截图红箭头方向歧义：第一轮按「清空进顶栏」做了。`architecture-boundaries.test.ts` 禁止 Header 出现 `@/lib/store/editor-store`；T1 因此架构测试红，T7 去掉顶栏按钮后恢复绿。
+- Codex 曾指出 Cmd+Shift+Z 的 `key` 可能是大写 `Z`。用户不要重做快捷键，已整段删掉，不是改大小写。
+- 开工口令用户写成「开始知悉」再补「执行」；本班按执行处理。
+
+### 怎么验证
+
+- 命令：`pnpm exec vitest run src/components/layout/Header.test.tsx src/components/editor/ControlPanel.test.tsx src/lib/architecture-boundaries.test.ts`；可选 `pnpm typecheck`、`pnpm lint`。
+- 页面：Token 编辑器（不要用徽章页）。左下角应看到撤销、重做、清空同一行；顶栏没有这三个按钮。改一处后 Cmd+Z 应撤销；Cmd+Shift+Z / Ctrl+Y 不应重做；点左下角重做按钮应能重做。
+
 ## 交接单 · 2026-08-23 22:21 CST · Grok CLI
+
 
 ### 本次目标
 

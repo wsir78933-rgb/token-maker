@@ -1,0 +1,39 @@
+{
+  "pass": true,
+  "en": {
+    "firstOpened": true,
+    "firstAnswerVisible": true,
+    "exclusiveOk": true,
+    "screenshot": {
+      "filePath": "/Users/wusir/Desktop/开发项目集合/token-maker-app/tmp/ego-faq-open-en-desktop.png",
+      "bytes": 60993
+    },
+    "openAfterFirst": [
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    "openAfterSecond": [
+      false,
+      true,
+      false,
+      false,
+      false
+    ],
+    "answer0": "Yes. You can create and export a design in the browser without a paid plan.",
+    "hit0": "(no-id:H3)"
+  },
+  "zh": {
+    "zhOpened": true,
+    "openAfter": [
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    "answer0": "可以。你可以直接在浏览器中创建和导出设计，不需要付费方案。"
+  }
+}

@@ -8,7 +8,7 @@ export function buildCoatMakerWebApplicationStructuredData(locale: SiteLocale, l
   return {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    name: copy.heading,
+    name: copy.metadataTitle,
     applicationCategory: 'DesignApplication',
     operatingSystem: 'Any',
     offers: {

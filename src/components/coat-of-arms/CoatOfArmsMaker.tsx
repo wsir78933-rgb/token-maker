@@ -317,7 +317,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   };
 
   return (
-    <main aria-label={copy.workspace} className="coat-workbench coat-target-workbench" data-appearance={appearance} ref={workbenchRef}>
+    <main id="coat-editor-workspace" aria-label={copy.workspace} className="coat-workbench coat-target-workbench" data-appearance={appearance} ref={workbenchRef}>
       <ContentSiteTopbar
         brandHref={homeHref + '#editor-workspace'}
         brandName={siteConfig.name}

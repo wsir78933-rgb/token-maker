@@ -86,6 +86,12 @@ describe('CoatOfArmsMaker server render', () => {
     expect(markup.indexOf('site-topbar')).toBeLessThan(markup.indexOf('coat-workbench-content'));
   });
 
+  it('exposes the editor workspace hash targeted by the page CTA', () => {
+    const markup = renderWithoutBrowserApiAccess();
+
+    expect(markup).toContain('id="coat-editor-workspace"');
+  });
+
   it('renders the default project name as non-heading text', () => {
     const markup = renderToString(<CoatOfArmsMaker locale="zh" />);
 

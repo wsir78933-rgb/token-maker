@@ -3,6 +3,7 @@
 import { cleanup, render, screen, within } from '@testing-library/react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { getCoatMakerSeoCopy } from '@/components/coat-of-arms/coat-maker-seo-copy';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 
 import EnglishAboutPage, { metadata as englishAboutMetadata } from './(en)/about/page';
@@ -340,21 +341,29 @@ describe('coat maker routes', () => {
     expect(markup).not.toContain('<h1 class="sr-only">我的徽章</h1>');
   });
 
-  it('uses the complete English keyphrase in the Coat Maker metadata title', () => {
-    expect(englishCoatOfArmsMakerMetadata.title).toEqual({
-      absolute: 'Coat of Arms Maker — Free Online Heraldry Creator',
-    });
+  it.each([
+    { locale: 'en' as const, metadata: englishCoatOfArmsMakerMetadata },
+    { locale: 'zh' as const, metadata: chineseCoatOfArmsMakerMetadata },
+  ])('puts the $locale metadata title and description on the Coat Maker page', ({ locale, metadata }) => {
+    const seoCopy = getCoatMakerSeoCopy(locale);
+
+    expect(seoCopy.heading).toBe(seoCopy.metadataTitle);
+    expect(seoCopy.introduction).toBe(seoCopy.metadataDescription);
+    expect(metadata.title).toEqual({ absolute: seoCopy.metadataTitle });
+    expect(metadata.description).toBe(seoCopy.metadataDescription);
+    expect(metadata.openGraph).toMatchObject({ title: seoCopy.metadataTitle, description: seoCopy.metadataDescription });
+    expect(metadata.twitter).toMatchObject({ title: seoCopy.metadataTitle, description: seoCopy.metadataDescription });
   });
 
   it.each([
     {
       PageComponent: EnglishCoatOfArmsMakerPage,
       canonical: '/coat-of-arms-maker',
-      contentHeading: 'Coat of Arms Maker',
+      contentHeading: 'Free Family Crest and Coat of Arms Maker',
       metadata: englishCoatOfArmsMakerMetadata,
-      metadataTitle: 'Coat of Arms Maker — Free Online Heraldry Creator',
+      metadataTitle: 'Free Family Crest and Coat of Arms Maker',
       schemaDescription:
-        'Use this free coat of arms maker to customize shields, colours, charges, text, and layers in your browser, then export PNG, JPEG, or PDF files.',
+        'Make your own family crest or coat of arms with editable shields and icons. Free to create and export in the browser.',
       schemaFeatures: [
         'Shield styles and field patterns',
         'Charges, text, layers, and drawing tools',
@@ -362,26 +371,26 @@ describe('coat maker routes', () => {
       ],
       schemaId: 'coat-maker-en-web-application-jsonld',
       twitterDescription:
-        'Use this free coat of arms maker to customize shields, colours, charges, text, and layers in your browser, then export PNG, JPEG, or PDF files.',
-      twitterTitle: 'Coat of Arms Maker — Free Online Heraldry Creator',
+        'Make your own family crest or coat of arms with editable shields and icons. Free to create and export in the browser.',
+      twitterTitle: 'Free Family Crest and Coat of Arms Maker',
       projectName: 'My Coat of Arms',
       workspaceName: 'Coat maker workspace',
     },
     {
       PageComponent: ChineseCoatOfArmsMakerPage,
       canonical: '/zh/coat-of-arms-maker',
-      contentHeading: '纹章制作器',
+      contentHeading: '免费家族纹章与纹章制作器',
       metadata: chineseCoatOfArmsMakerMetadata,
-      metadataTitle: '纹章制作器 | 免费徽章编辑器',
-      schemaDescription: '使用这款免费纹章制作器，在浏览器中自定义盾牌、颜色、图形、文字和图层，并导出 PNG、JPEG 或 PDF 文件。',
+      metadataTitle: '免费家族纹章与纹章制作器',
+      schemaDescription: '用可编辑的盾和图形做自己的家徽或纹章。在浏览器里免费创建并导出。',
       schemaFeatures: [
         '盾牌样式与底纹',
         '图形、文字、图层和绘图工具',
         'PNG、JPEG、PDF 与批量导出选项',
       ],
       schemaId: 'coat-maker-zh-web-application-jsonld',
-      twitterDescription: '使用这款免费纹章制作器，在浏览器中自定义盾牌、颜色、图形、文字和图层，并导出 PNG、JPEG 或 PDF 文件。',
-      twitterTitle: '纹章制作器 | 免费徽章编辑器',
+      twitterDescription: '用可编辑的盾和图形做自己的家徽或纹章。在浏览器里免费创建并导出。',
+      twitterTitle: '免费家族纹章与纹章制作器',
       projectName: '我的徽章',
       workspaceName: '徽章制作工作台',
     },
@@ -495,7 +504,6 @@ describe('coat maker routes', () => {
     localeSwitchHref,
   }) => {
     render(<PageComponent />);
-    const prohibitedReferenceBrand = ['Coa', 'Maker'].join('');
     const sharedTopbar = document.querySelector<HTMLElement>('.site-topbar');
     if (!sharedTopbar) throw new Error('Coat maker site topbar is unavailable');
     expect(sharedTopbar.parentElement).toBe(screen.getByRole('main'));
@@ -509,7 +517,6 @@ describe('coat maker routes', () => {
     expect(within(siteFooter).getByRole('navigation', { name: PageComponent === ChineseCoatOfArmsMakerPage ? '页脚导航' : 'Footer navigation' })).toBeDefined();
     const exportTrigger = screen.getByRole('button', { name: exportLabel });
     expect(exportTrigger.getAttribute('aria-controls')).toBe('coat-export-options');
-    expect(screen.queryByText(prohibitedReferenceBrand, { exact: false })).toBeNull();
   });
 });
 

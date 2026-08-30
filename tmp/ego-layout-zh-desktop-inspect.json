@@ -1,0 +1,393 @@
+{
+  "url": "http://127.0.0.1:3001/zh/coat-of-arms-maker",
+  "vw": 1280,
+  "vh": 800,
+  "docW": 1265,
+  "docH": 4364,
+  "overflowX": false,
+  "h1": "免费家族纹章与纹章制作器",
+  "h2s": [
+    "这个纹章制作器适合完成的工作",
+    "三步完成纹章设计",
+    "完成设计所需的工具",
+    "为什么选择我们的纹章制作器",
+    "从一面盾开始，做出属于你的标志",
+    "常见问题",
+    "继续创作"
+  ],
+  "imgs": [
+    {
+      "src": "/coat-of-arms-maker/use-cases/tabletop-houses.webp",
+      "complete": true,
+      "nw": 1254,
+      "dw": 492,
+      "dh": 277,
+      "broken": false
+    },
+    {
+      "src": "/coat-of-arms-maker/use-cases/guild-badges.webp",
+      "complete": true,
+      "nw": 1254,
+      "dw": 492,
+      "dh": 277,
+      "broken": false
+    },
+    {
+      "src": "/coat-of-arms-maker/use-cases/fantasy-banners.webp",
+      "complete": true,
+      "nw": 1254,
+      "dw": 492,
+      "dh": 277,
+      "broken": false
+    },
+    {
+      "src": "/coat-of-arms-maker/use-cases/worldbuilding-maps.webp",
+      "complete": true,
+      "nw": 1254,
+      "dw": 492,
+      "dh": 277,
+      "broken": false
+    }
+  ],
+  "table": {
+    "display": "table",
+    "theadDisplay": "table-header-group",
+    "w": 1086,
+    "overflow": false,
+    "headerCells": [
+      {
+        "i": 0,
+        "text": "",
+        "bg": "rgba(255, 255, 255, 0.03)",
+        "color": "rgb(250, 250, 249)",
+        "display": "table-cell",
+        "w": 174
+      },
+      {
+        "i": 1,
+        "text": "我们的纹章制作器",
+        "bg": "rgba(215, 180, 106, 0.14)",
+        "color": "rgb(241, 212, 146)",
+        "display": "table-cell",
+        "w": 348
+      },
+      {
+        "i": 2,
+        "text": "CoaMaker",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(168, 162, 158)",
+        "display": "table-cell",
+        "w": 282
+      },
+      {
+        "i": 3,
+        "text": "Roll for Fantasy",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(168, 162, 158)",
+        "display": "table-cell",
+        "w": 282
+      }
+    ],
+    "bodyRows": [
+      {
+        "ri": 0,
+        "cells": [
+          {
+            "i": 0,
+            "tag": "TH",
+            "text": "开始",
+            "dataLabel": null,
+            "bg": "rgba(255, 255, 255, 0.03)",
+            "color": "rgb(250, 250, 249)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 174,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(250, 250, 249)"
+          },
+          {
+            "i": 1,
+            "tag": "TD",
+            "text": "打开即在画布上，免登录、免付费墙，直接开画。",
+            "dataLabel": "我们的纹章制作器",
+            "bg": "rgba(215, 180, 106, 0.08)",
+            "color": "rgb(245, 245, 244)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 348,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(245, 245, 244)"
+          },
+          {
+            "i": 2,
+            "tag": "TD",
+            "text": "也是打开即用，但免费界面已有广告、顶栏 Go Pro，以及编辑器内的 Upgrade Now 升级卡。",
+            "dataLabel": "CoaMaker",
+            "bg": "rgba(0, 0, 0, 0)",
+            "color": "rgb(168, 162, 158)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 282,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(168, 162, 158)"
+          },
+          {
+            "i": 3,
+            "tag": "TD",
+            "text": "内嵌加载，免登录、免付费墙。",
+            "dataLabel": "Roll for Fantasy",
+            "bg": "rgba(0, 0, 0, 0)",
+            "color": "rgb(168, 162, 158)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 282,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(168, 162, 158)"
+          }
+        ]
+      },
+      {
+        "ri": 1,
+        "cells": [
+          {
+            "i": 0,
+            "tag": "TH",
+            "text": "编辑",
+            "dataLabel": null,
+            "bg": "rgba(255, 255, 255, 0.043)",
+            "color": "rgb(250, 250, 249)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 174,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(250, 250, 249)"
+          },
+          {
+            "i": 1,
+            "tag": "TD",
+            "text": "本地图片免费用，无 PRO 门槛，另有盾形、底纹、图形、文字、图层与绘图工具。",
+            "dataLabel": "我们的纹章制作器",
+            "bg": "rgba(215, 180, 106, 0.11)",
+            "color": "rgb(245, 245, 244)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 348,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(245, 245, 244)"
+          },
+          {
+            "i": 2,
+            "tag": "TD",
+            "text": "上传自有图片、自定义盾形轮廓、额外元素包都要 PRO。",
+            "dataLabel": "CoaMaker",
+            "bg": "rgba(255, 255, 255, 0.02)",
+            "color": "rgb(168, 162, 158)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 282,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(168, 162, 158)"
+          },
+          {
+            "i": 3,
+            "tag": "TD",
+            "text": "在仅 248×275 的小画布上选盾、冠饰和配色来拼，且其图片不得用于另一个纹章制作器。",
+            "dataLabel": "Roll for Fantasy",
+            "bg": "rgba(255, 255, 255, 0.02)",
+            "color": "rgb(168, 162, 158)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 282,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(168, 162, 158)"
+          }
+        ]
+      },
+      {
+        "ri": 2,
+        "cells": [
+          {
+            "i": 0,
+            "tag": "TH",
+            "text": "导出",
+            "dataLabel": null,
+            "bg": "rgba(255, 255, 255, 0.03)",
+            "color": "rgb(250, 250, 249)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 174,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(250, 250, 249)"
+          },
+          {
+            "i": 1,
+            "tag": "TD",
+            "text": "一键真导出 PNG、JPEG、PDF，同一菜单还有打印与批量 ZIP。",
+            "dataLabel": "我们的纹章制作器",
+            "bg": "rgba(215, 180, 106, 0.08)",
+            "color": "rgb(245, 245, 244)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 348,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(245, 245, 244)"
+          },
+          {
+            "i": 2,
+            "tag": "TD",
+            "text": "导出对话框对当前设计提供 PNG、JPG、PDF、打印和分享。",
+            "dataLabel": "CoaMaker",
+            "bg": "rgba(0, 0, 0, 0)",
+            "color": "rgb(168, 162, 158)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 282,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(168, 162, 158)"
+          },
+          {
+            "i": 3,
+            "tag": "TD",
+            "text": "导出是\"Turn to image\"后右键保存；实测点击后无图、无下载链接，失败时只建议截图。",
+            "dataLabel": "Roll for Fantasy",
+            "bg": "rgba(0, 0, 0, 0)",
+            "color": "rgb(168, 162, 158)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 282,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(168, 162, 158)"
+          }
+        ]
+      },
+      {
+        "ri": 3,
+        "cells": [
+          {
+            "i": 0,
+            "tag": "TH",
+            "text": "账号",
+            "dataLabel": null,
+            "bg": "rgba(255, 255, 255, 0.043)",
+            "color": "rgb(250, 250, 249)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 174,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(250, 250, 249)"
+          },
+          {
+            "i": 1,
+            "tag": "TD",
+            "text": "免登录、免付费墙，本地优先，浏览器草稿刷新后可恢复。",
+            "dataLabel": "我们的纹章制作器",
+            "bg": "rgba(215, 180, 106, 0.11)",
+            "color": "rgb(245, 245, 244)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 348,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(245, 245, 244)"
+          },
+          {
+            "i": 2,
+            "tag": "TD",
+            "text": "保存设计、模板、上传都在 PRO 后面，免费编辑器有广告，默认授权为非商用。",
+            "dataLabel": "CoaMaker",
+            "bg": "rgba(255, 255, 255, 0.02)",
+            "color": "rgb(168, 162, 158)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 282,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(168, 162, 158)"
+          },
+          {
+            "i": 3,
+            "tag": "TD",
+            "text": "无付费墙，但页面投广告并请访客赞助，商用还需站方许可。",
+            "dataLabel": "Roll for Fantasy",
+            "bg": "rgba(255, 255, 255, 0.02)",
+            "color": "rgb(168, 162, 158)",
+            "padding": "16px 18.4px",
+            "va": "top",
+            "display": "table-cell",
+            "w": 282,
+            "h": 105,
+            "overflowRight": false,
+            "beforeContent": "none",
+            "beforeDisplay": "inline",
+            "beforeColor": "rgb(168, 162, 158)"
+          }
+        ]
+      }
+    ],
+    "box": {
+      "x": 89.5,
+      "y": 2588.796875,
+      "w": 1086,
+      "h": 476
+    }
+  },
+  "faqCount": 5
+}
