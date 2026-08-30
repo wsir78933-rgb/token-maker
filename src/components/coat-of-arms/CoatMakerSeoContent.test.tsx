@@ -68,7 +68,7 @@ describe('CoatMakerSeoContent', () => {
   it.each([
     {
       locale: 'en' as const,
-      heading: 'Free Family Crest and Coat of Arms Maker',
+      heading: 'Coat of Arms Maker: Free Online Fantasy and Guild Badges',
       verifiedCapability: 'Shield styles, field patterns, charges, text, layers, and drawing tools',
       editorCtaEmphasis: 'Keep shaping the shield, field, symbols, and text',
       faqQuestion: 'Is this coat of arms maker free to use?',
@@ -79,7 +79,7 @@ describe('CoatMakerSeoContent', () => {
     },
     {
       locale: 'zh' as const,
-      heading: '免费家族纹章与纹章制作器',
+      heading: '纹章制作器：免费在线做奇幻与公会徽章',
       verifiedCapability: '盾牌样式、底纹、图形、文字、图层和绘图工具',
       editorCtaEmphasis: '盾形、底纹、图形和文字都可以继续调整',
       faqQuestion: '纹章制作器可以免费使用吗？',

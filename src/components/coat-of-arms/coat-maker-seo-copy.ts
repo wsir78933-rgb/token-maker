@@ -27,11 +27,12 @@ export interface CoatMakerSeoComparisonRow {
   cellText: readonly string[];
 }
 
-const englishTitle = 'Free Family Crest and Coat of Arms Maker';
+const englishTitle = 'Coat of Arms Maker: Free Online Fantasy and Guild Badges';
 const englishDescription =
-  'Make your own family crest or coat of arms with editable shields and icons. Free to create and export in the browser.';
-const chineseTitle = '免费家族纹章与纹章制作器';
-const chineseDescription = '用可编辑的盾和图形做自己的家徽或纹章。在浏览器里免费创建并导出。';
+  'Draw your own fantasy shields and guild badges in this free online coat of arms maker, then export PNG, JPEG, or PDF.';
+const chineseTitle = '纹章制作器：免费在线做奇幻与公会徽章';
+const chineseDescription =
+  '在这款免费在线纹章制作器里自己画奇幻盾牌和公会徽章，再导出 PNG、JPEG 或 PDF。';
 
 export interface CoatMakerSeoCopy {
   heading: string;
