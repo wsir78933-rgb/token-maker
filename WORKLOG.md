@@ -1,5 +1,157 @@
 # WORKLOG
 
+## 交接单 · 2026-09-01 07:18 CST · Codex CLI
+
+### 本次目标
+
+在 Coat Maker 编辑器中实现受控的新拟态混合视觉层：保留现有黑金主题、白色输出画布、布局、交互、导出、SEO 和无关 dirty changes。
+
+### 已完成
+
+- 已提交 `9509105 feat: add hybrid neumorphic coat maker chrome`，提交只包含 `src/app/globals.css` 与 `src/components/coat-of-arms/CoatOfArmsMaker.test.tsx`；`WORKLOG.md` 明确未进 commit，未 push。
+- `globals.css:1411-1414` 新增 `--coat-shadow-hi/lo/raised/inset`；局部应用于 actionbar button、collapse、multi-select、zoom，pressed multi-select 使用 inset；结构边框、金色选中/焦点、错误/禁用状态和白色 artboard 保持。
+- TDD 已核对：先有真实 RED（2 failed），实现后 GREEN（2 passed）。新测试位于 `CoatOfArmsMaker.test.tsx:600` 和 `:641`。
+- 验证已通过：Coat Maker 与 SSR 2 个测试文件共 107/107；route/layout/API 5 个测试文件共 74 个；`pnpm typecheck` exit 0；`pnpm lint` exit 0（1 个既有 `no-img-element` warning）；`pnpm build` exit 0（147 static pages）；`git diff --check` exit 0。
+- Ego Browser 实测 `http://127.0.0.1:3101/coat-of-arms-maker` 与 `/zh/coat-of-arms-maker`：桌面 1496×767、移动 390×844；阴影 token 解析为有限的 -1/-1 2px 与 1/2 4px 层；画布和 `[role=application]` 为 `rgb(255,255,255)`；scrollWidth 等于 viewport；导出、多选、移动抽屉、定位/盾牌切换、错误态可读回且 `storageChanged=[]`。QA 结束时只停止了自己启动的 3101 server。
+- 本次编排 9 个 Task 全部 completed；首个 Cursor 复核 Dispatch 曾 `agent_prompt_stalled`，retry 成功；可安全关闭的 worker 已关闭。一个 Grok terminal 因 Orca `user_takeover` 保留，两个更早的历史 terminal 未触碰。
+
+### 做到一半
+
+- 本次目标没有未完成项；容器本身保持 `computed boxShadow:none` 是刻意的混合方案，拟态只用于控件层次，不替代结构边框和状态反馈。
+- 以下是复核报告的非阻塞、范围外债务，未改：selected tree child 对比度约 1.17:1、editor 内旧 160ms transition 未接入 reduced-motion、部分既有控件小于 44px、full-suite 历史 1518 passed/4 failures（几何与非确定性 Names 问题）。
+- 当前工作树预期仍只有未提交的 `WORKLOG.md`；不要把它加入后续代码 commit，除非用户单独授权。
+
+### 下一步
+
+- 无必需后续动作；如继续迭代，先从 commit `9509105` 检查实际页面，再单独决定是否开启“容器级阴影”或无障碍债务修复范围，不要混入本次已归档的视觉改动。
+- 浏览器验证需重新确认 token-maker-app server 身份；上一轮使用的是 `127.0.0.1:3101`，该 server 已由 QA 停止。
+
+### 踩过的坑
+
+- 不能对整个编辑器或白色输出画布套经典新拟态；工具树逐行阴影、主按钮灰化、画布阴影都会削弱状态或破坏导出预览。
+- `localhost:3000` 在 QA 时存在既有 draft overlay，workbench 为 inert；未清理用户 storage，改用同一 server 的 `127.0.0.1:3101` 干净 origin 验证。
+- actionbar 后代选择器会让导出菜单按钮继承 raised 阴影，移动 collapse 也有非阻断的阴影覆盖差异；这是复核报告事项，不要未经新授权顺手扩大修复。
+- 首次 Cursor 无障碍 Dispatch 因 prompt stalled 失败，retry 后成功；原 stalled terminal 已核实并关闭。不要强制关闭 Orca 标记为 `user_takeover` 的 Grok terminal。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsMaker.test.tsx src/components/coat-of-arms/CoatOfArmsMaker.ssr.test.tsx --reporter=dot
+pnpm typecheck
+pnpm lint
+pnpm build
+git diff --check
+```
+
+浏览器（本地 ego-browser）：启动并确认 token-maker-app server 后，打开 `http://127.0.0.1:3101/coat-of-arms-maker` 和 `http://127.0.0.1:3101/zh/coat-of-arms-maker`；检查 1496×767 与 390×844 下 actionbar、collapse、multi-select、zoom 的软阴影，确认选中/焦点/禁用/错误态、白色画布和无横向溢出。不要清除 localStorage/IndexedDB，不要把历史 full-suite 失败归因给本次拟态改动。
+
+## 交接单 · 2026-08-31 22:59 CST · Codex CLI
+
+### 本次目标
+
+排查用户截图中 Coat Maker 出现“没有盾牌图层”、素材卡消失和白色画布空白的问题，确认是否由本轮主题换肤或 GitHub/静态素材损坏导致。本次选择 B：未存档，不提交、不 push。
+
+### 已完成
+
+- 未存档；本轮诊断没有改代码或浏览器数据。当前工作树仍有 `WORKLOG.md`、`src/app/globals.css`、`src/components/coat-of-arms/CoatOfArmsMaker.test.tsx` 三项改动。
+- 根因已定位到运行时项目状态：截图中的“没有盾牌图层。”正是 `TargetShieldPalette.tsx:44-50` 在 `project.layers` 找不到 `type: 'shield'` 时的提前返回；该分支不会挂载 `ReferenceAssetGallery`，所以不是图片请求失败。
+- 默认项目仍会创建 `heater-shield`：[src/lib/coat-of-arms/assets.ts:322]；Coat Maker 生产代码、Canvas 渲染代码和 assets.ts 相对 HEAD 未改，未引入新的 asset URL、display/visibility/opacity/z-index 或 SVG 层级变化。
+- 产品当前允许删除最后一个盾牌：[src/components/coat-of-arms/LayerPanel.tsx:163]、`src/lib/coat-of-arms/commands.ts:1157`；每次 dispatch 会把项目写入 `coat-of-arms-maker-draft`：[src/lib/coat-of-arms/store.ts:126]。因此“0 盾牌项目”可以被本地草稿合法保存并恢复。
+- 若恢复的是 0 盾牌草稿，`CoatOfArmsMaker` 会保留该项目，不会重新插入默认盾牌；这解释了三个盾牌相关面板同时显示空状态。白色背景层仍可能存在，因此白画板看起来为空不一定代表背景素材丢失。
+- 当前仓库静态素材完整：`git ls-tree` 统计 `public/coat-assets` 446 个跟踪文件，工作树同为 446 个，缺失列表为空；目录内盾牌 SVG 与 WebP 文件均存在。
+- Ego Browser 独立 task space 实测正常：盾牌面板 24 张缩略图全部 `complete=true`、`naturalWidth=125`、`naturalHeight=150`；画布有 4 个逻辑图层和两个动物素材 `<image>`。该 task space 与用户浏览器 profile 的 localStorage/IndexedDB 隔离，不能替代读取用户自己的草稿。
+- 相关资源/状态测试独立通过：4 个测试文件、92/92 passed；覆盖 assets、store、Canvas、ReferenceAssetGallery。
+- 本轮并行使用 6 个只读子代理；所有子代理已停止。Ego Browser task spaces 282/283 已关闭。
+
+### 做到一半
+
+- 本次没有目标内未完成的诊断项；尚未实现修复，因为用户只要求深度排查，没有授权改变项目数据或修改空状态行为。
+- 单凭截图不能区分“用户手动删除了最后一个盾牌”和“恢复了一个原本就没有盾牌的本地草稿”；但可以确定当前渲染分支的直接条件就是活动项目没有 shield layer。
+- 当前实现存在一个产品行为冲突：系统允许 0 盾牌项目，但盾牌素材库只支持更新现有盾牌，0 盾牌时没有创建入口。
+
+### 下一步
+
+- 如要立即恢复当前项目：在“自定义”面板点击“添加新盾形”，这是现有非破坏性入口；不要先点击“丢弃草稿”，除非用户明确接受删除本地草稿。
+- 如要修代码，先让用户选择行为：
+  - 推荐 A：保留 0 盾牌合法性，在 `TargetShieldPalette` 空状态提供“添加新盾形”入口，并为该空状态加测试。
+  - B：禁止删除最后一个盾牌；会改变现有命令/测试合同。
+  - C：加载 0 盾牌草稿时静默插入默认盾牌；不推荐，会未经确认改变用户项目。
+- 用户选择后再做执行前对齐；未获确认前不修改 `TargetShieldPalette.tsx`、commands、store 或本地存储。
+
+### 踩过的坑
+
+- “没有盾牌图层”不是素材 404 的错误文案；若只是 URL 404，素材卡 DOM 仍会存在，只是图片加载失败。
+- 默认项目初始化只在无草稿动作时执行；存在草稿时会优先展示/恢复草稿，所以刷新不会自动修复 0 盾牌项目。
+- localStorage/IndexedDB 按 origin 和浏览器 profile 隔离；localhost、正式域名、不同浏览器空间之间不能互相推断用户草稿内容。
+- 不要通过 `git restore`、`reset`、清除 localStorage 或丢弃草稿来“试试看”；这些操作可能覆盖或删除用户数据。
+- 本轮主题换肤的 CSS diff 仅改颜色 token；它没有改变素材路径或画布渲染逻辑。历史主题调整的未存档 CSS 仍保持原边界。
+
+### 怎么验证
+
+```bash
+git ls-tree -r --name-only HEAD -- public/coat-assets | wc -l
+find public/coat-assets -type f | wc -l
+pnpm exec vitest run src/lib/coat-of-arms/assets.test.ts src/lib/coat-of-arms/store.test.ts src/components/coat-of-arms/CoatOfArmsCanvas.test.tsx src/components/coat-of-arms/ReferenceAssetGallery.test.tsx --reporter=dot
+git diff --quiet HEAD -- src/components/coat-of-arms/CoatOfArmsMaker.tsx src/components/coat-of-arms/CoatOfArmsCanvas.tsx src/lib/coat-of-arms/assets.ts; echo $?
+```
+
+浏览器（优先本地 ego-browser）：打开 `http://localhost:3000/zh/coat-of-arms-maker`，检查 `TargetShieldPalette` 是否出现“没有盾牌图层。”；在不丢弃草稿的前提下进入“自定义”并点“添加新盾形”，确认盾牌素材库重新出现、画布恢复盾牌。不要输出或清除用户 localStorage/IndexedDB 内容。
+
+## 交接单 · 2026-08-31 22:43 CST · Codex CLI
+
+### 本次目标
+
+把 `/coat-of-arms-maker` 与 `/zh/coat-of-arms-maker` 的 Coat Maker 编辑器外壳对齐当前页面黑金主题；只调整视觉样式和对应视觉契约，不改布局、交互、导出、SEO、导航或白色输出画板。本次选择 B：未存档，不提交、不 push。
+
+### 已完成
+
+- 未存档。当前工作树只有两项改动：`src/app/globals.css`、`src/components/coat-of-arms/CoatOfArmsMaker.test.tsx`。
+- `globals.css` 的 `.coat-target-workbench` 局部样式已把 actionbar、工具树、素材栏、画布外围、canvas toolbar、移动 sheet、表单、上传区和 Names 区的中性灰/米色皮肤改为现有 `--coat-*` 主题变量；悬停/选中/主操作改用 `--coat-active` / `--coat-accent`。
+- `.coat-target-artboard` 与其 `[role='application']` 仍保持 `background: #fff`；素材本身颜色、错误红、上传成功绿保留。
+- 测试先 RED 后 GREEN：`CoatOfArmsMaker.test.tsx` 新增最终 CSS 声明读取 helper，并把 actionbar/tool-tree/library/scene/canvas-toolbar 与选中子项改为断言 `--coat-*` 变量；未改几何合同。
+- Ego Browser 实测：英文桌面、中文桌面、中文 `390×844` 移动端均显示深色编辑器外壳；actionbar/tool-tree/library/scene/canvas-toolbar 计算样式为主题变量解析后的深色；画板和实际应用画布均为 `rgb(255,255,255)`；移动端 `document.documentElement.scrollWidth === 390`，无横向溢出。
+- `pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsMaker.test.tsx -t "uses coat theme tokens|keeps the selected desktop tree choice" --no-file-parallelism --maxWorkers=1 --reporter=verbose`：exit 0，2 passed。
+- `pnpm exec vitest run src/app/layout-route-boundaries.test.ts src/app/site-routes.test.tsx src/app/site-performance-styles.test.ts --reporter=dot`：exit 0，53/53 passed。
+- `pnpm typecheck`：exit 0。
+- `pnpm lint`：exit 0；仅有既有 `CoatMakerSeoContent.tsx:25` 的 `@next/next/no-img-element` warning。
+- `pnpm build`：exit 0；147/147 静态页面生成。
+- `git diff --check`：exit 0。
+- 本轮已编排并停止 11 个子代理；当前无 running agent。Ego Browser task space 279 已关闭。
+
+### 做到一半
+
+- 本次主题换肤没有目标内未完成项；代码仍是未存档状态，尚未 commit。
+- Coat Maker 单文件完整测试当前为 97 passed / 3 failed；3 项均为既有画板几何合同：测试解析到移动覆盖 `min(28rem, 76vw)`，以及 1512×738 浏览器 fixture 的 `artboardHeight === 0`。主题相关测试均通过；不要为本次换肤修改这些几何合同。
+- 全量 `pnpm test -- --reporter=dot` 当前为 1518 passed / 4 failed：上述 3 项几何失败，另有 `generates five local names and copies one into saved names` 仅在整套运行时失败，单独运行该测试为 1/1 passed；未归因或修改该范围外问题。
+- Impeccable detector（仅扫描本次两个目标文件）exit 2，报告两个既有范围外 warning：`src/app/globals.css:792` bounce easing、`src/app/globals.css:2429` SEO capabilities 的 2px side-tab；本次未处理。
+
+### 下一步
+
+- 下一班先复核两文件 diff 和未存档边界；如要提交，必须重新列出这两个文件并获得单独 commit 授权，`WORKLOG.md` 不入 commit，且不 push。
+- 若继续验证，可重复主题 focused test、路由测试、typecheck、lint、build，以及 `localhost:3000` 的 EN desktop / ZH mobile Ego Browser 检查；不要把范围外几何、Names、detector warning 顺手纳入本单。
+- 若用户要修复那 3 项几何或整套 Names 失败，另开独立任务并先重新对齐范围。
+
+### 踩过的坑
+
+- 当前接口没有 Grok 模型或连接器；已明确告知用户，未冒充 Grok，实际使用可用的 Codex 子代理。
+- 只改 token 定义无效：后置的 `#474747/#636363/#3a3a3a/#f0ece2/#5a5a5a` 声明会以同等特异性覆盖前面的 `--coat-*`；必须替换最终 selector 声明，且不能按字面值全局替换。
+- `#fff` 是真实输出画板合同，不可随主题换肤；`html.dark` 是 Coat Maker 文档边界，不能借此改全局 `:root` / `.dark`。
+- `CoatOfArmsMaker.test.tsx` 的旧 `cssDeclarationsForSelector` 会把嵌套 media 的移动 width 当成桌面最终声明，导致 3 个既有几何失败；本单没有触碰它。
+- `pnpm test` 全量的 Names 失败可单独通过，不能把整套运行结果当成 CSS 回归证据。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsMaker.test.tsx -t "uses coat theme tokens|keeps the selected desktop tree choice" --no-file-parallelism --maxWorkers=1 --reporter=verbose
+pnpm exec vitest run src/app/layout-route-boundaries.test.ts src/app/site-routes.test.tsx src/app/site-performance-styles.test.ts --reporter=dot
+pnpm typecheck
+pnpm lint
+pnpm build
+git diff --check
+```
+
+浏览器（优先本地 ego-browser）：`http://localhost:3000/coat-of-arms-maker` 用 `1512×738` 检查英文桌面；`http://localhost:3000/zh/coat-of-arms-maker` 用 `390×844` 检查中文移动端。确认 actionbar/tool tree/library/scene/canvas toolbar 统一深色主题、选中态使用金色、无横向溢出，且 `.coat-target-artboard` 与 `[role='application']` 均为白色。不要把当前 3 项画板几何失败误判成主题换肤失败。
+
 ## 交接单 · 2026-08-31 20:09 CST · Cursor Grok
 
 ### 本次目标
