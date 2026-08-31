@@ -37,6 +37,10 @@ vi.mock('@/components/ui/button', async () => {
 
 const browserApiNames = ['window', 'document', 'localStorage'] as const;
 
+function createServerPageHeadingSlot() {
+  return <header data-testid="coat-maker-page-heading-slot"><p>Server page heading slot</p></header>;
+}
+
 function renderWithoutBrowserApiAccess() {
   const originalDescriptors = browserApiNames.map((name) => [name, Object.getOwnPropertyDescriptor(globalThis, name)] as const);
   for (const name of browserApiNames) {
@@ -46,7 +50,7 @@ function renderWithoutBrowserApiAccess() {
     });
   }
   try {
-    return renderToString(<CoatOfArmsMaker locale="en" />);
+    return renderToString(<CoatOfArmsMaker locale="en" pageHeading={createServerPageHeadingSlot()} />);
   } finally {
     for (const [name, descriptor] of originalDescriptors) {
       if (descriptor) Object.defineProperty(globalThis, name, descriptor);
@@ -83,7 +87,8 @@ describe('CoatOfArmsMaker server render', () => {
     const markup = renderWithoutBrowserApiAccess();
 
     expect(markup.indexOf('site-topbar')).toBeGreaterThan(-1);
-    expect(markup.indexOf('site-topbar')).toBeLessThan(markup.indexOf('coat-workbench-content'));
+    expect(markup.indexOf('site-topbar')).toBeLessThan(markup.indexOf('coat-maker-page-heading-slot'));
+    expect(markup.indexOf('coat-maker-page-heading-slot')).toBeLessThan(markup.indexOf('coat-workbench-content'));
   });
 
   it('exposes the editor workspace hash targeted by the page CTA', () => {
@@ -93,7 +98,7 @@ describe('CoatOfArmsMaker server render', () => {
   });
 
   it('renders the default project name as non-heading text', () => {
-    const markup = renderToString(<CoatOfArmsMaker locale="zh" />);
+    const markup = renderToString(<CoatOfArmsMaker locale="zh" pageHeading={createServerPageHeadingSlot()} />);
 
     expect(markup).not.toContain('<h1');
     expect(markup).toContain('<span class="sr-only">我的徽章</span>');

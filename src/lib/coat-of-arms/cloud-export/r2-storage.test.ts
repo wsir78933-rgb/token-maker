@@ -2,7 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CoatCloudExportFileType } from './constants';
 
 const awsSdkMocks = vi.hoisted(() => ({
-  send: vi.fn(async () => ({})),
+  send: vi.fn(async (command: unknown) => {
+    void command;
+    return {};
+  }),
   putObjectCommandInputs: [] as Array<Record<string, unknown>>,
   s3ClientConfigs: [] as Array<Record<string, unknown>>,
 }));

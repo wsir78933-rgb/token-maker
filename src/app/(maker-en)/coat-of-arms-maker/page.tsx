@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { CoatMakerPageHeading } from '@/components/coat-of-arms/CoatMakerPageHeading';
 import { CoatOfArmsMaker } from '@/components/coat-of-arms/CoatOfArmsMaker';
 import { CoatMakerSeoContent } from '@/components/coat-of-arms/CoatMakerSeoContent';
 import { buildCoatMakerWebApplicationStructuredData } from '@/components/coat-of-arms/coat-maker-seo-schema';
@@ -47,7 +48,7 @@ export default function CoatOfArmsMakerPage() {
         id="coat-maker-en-web-application-jsonld"
         data={buildCoatMakerWebApplicationStructuredData(locale, localizedPath)}
       />
-      <CoatOfArmsMaker locale={locale} />
+      <CoatOfArmsMaker locale={locale} pageHeading={<CoatMakerPageHeading locale={locale} />} />
       <CoatMakerSeoContent locale={locale} />
       <SiteFooter contentWidth="nearFull" currentPath={localizedPath} locale={locale} />
     </div>

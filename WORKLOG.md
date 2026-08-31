@@ -1,5 +1,95 @@
 # WORKLOG
 
+## 交接单 · 2026-08-31 20:09 CST · Cursor Grok
+
+### 本次目标
+
+把纹章页现有 H1 + 描述原样挪到编辑器上方（英文、中文），文案不改、不另写标题；其余 SEO 长文留在编辑器下面；排版由实现方处理。
+
+### 已完成
+
+- 未存档。用户选 A，本班不提交。
+- 新组件 `src/components/coat-of-arms/CoatMakerPageHeading.tsx`：渲染 `copy.heading` + `copy.introduction`（与 metadata 同一组现有文案）。
+- EN `/coat-of-arms-maker`、ZH `/zh/coat-of-arms-maker` 顺序改为：`coat-maker-first-screen`（标题 → 编辑器）→ `CoatMakerSeoContent` → footer。
+- `CoatMakerSeoContent.tsx` 去掉下方那组 H1 + 导语；用例段改为 SEO 区第一块。
+- `globals.css`：首屏 `100svh` 分栏，标题条在上，工作台吃剩余高度。
+- 测试已改：`CoatMakerPageHeading.test.tsx`（新）、`CoatMakerSeoContent.test.tsx`、`site-routes.test.tsx`。相关 Vitest：`CoatMakerPageHeading` + `CoatMakerSeoContent` + `site-routes` + `CoatOfArmsMaker.ssr` **69/69**。
+- `http://127.0.0.1:3000` 实测：EN/ZH HTML 各 1 个 H1，文案与原来一致，DOM 顺序标题 → `#coat-editor-workspace` → SEO；SEO 内无 H1。Ego 桌面 EN 标题高约 192px、工作台约 546px、首屏高等于视口；ZH 桌面标题约 123px；手机 390 宽无横向溢出。
+
+### 做到一半
+
+- 排版未过：用户看过实页后认为当前标题条不对，并问有没有加载对应 skill。实现前 `designer-skill` 路径不存在（`~/.cursor/skills/designer-skill/SKILL.md` 未找到）；`frontend-design` / `impeccable` / `improve-ui` 也没读。标题条只是把 SEO 展示字缩小后堆在工作台上面（clamp 1.7–2.5rem + 左栏 `max 52rem` + `#100d08` 通栏），用户明确否了。
+- 用户后两条消息（skill 质问）还没答完就下了 `/handoff`。
+- 工作区另有非本班标题活、也未提交：`WORKLOG.md`（含今早 07:19 交接单）、`src/app/api/coat-export/route.test.ts`、`src/lib/coat-of-arms/cloud-export/r2-storage.test.ts`、`tmp/coat-*-heading.png` 四张核实截图。
+
+### 下一步
+
+- 先加载实际存在的排版 skill（至少 `frontend-design`：`~/.claude/plugins/cache/claude-plugins-official/frontend-design/b392f5189934/skills/frontend-design/SKILL.md`；designer 相关 skill 以本机现有路径为准），用**现有**标题和描述重做标题条，不要新写标题。
+- 动文件须用户再说「开始执行」。
+- 不要把 `tmp/coat-*-heading.png` 和 `WORKLOG.md` 推进提交。
+
+### 踩过的坑
+
+- 第一次对齐误提「只留短标题 / 另写一条」，用户纠正：要挪现有标题+描述，不是创造新标题。
+- `ego-browser` 的 `captureScreenshot` 会挂（任务 229707 已杀）；改用 `cdp('Page.captureScreenshot')` + 写文件。
+- `CoatOfArmsMaker.test.tsx` 里 3 个画板宽度断言在 **HEAD 的 globals.css** 上同样失败（CSS 解析器先吃到 `@media (max-width: 1023px)` 的 `min(28rem, 76vw)`），不是这班标题 CSS 引入的。
+- 全量 `pnpm typecheck` 仍在 `coat-export/route.test.ts:215`、`r2-storage.test.ts:17` 失败；工作区里这两文件有未提交的类型补丁，本班标题活没改它们，也没把 tsc 修绿。
+- token-maker-app 的 `pnpm dev` 在 `:3000`；`:3003` 是别的项目（AI image editor）。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/components/coat-of-arms/CoatMakerPageHeading.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx src/app/site-routes.test.tsx src/components/coat-of-arms/CoatOfArmsMaker.ssr.test.tsx
+```
+
+浏览器（优先本地 ego-browser）：`http://127.0.0.1:3000/coat-of-arms-maker` 与 `/zh/coat-of-arms-maker`。首屏应是现有 H1 + 现有描述，紧接着编辑器；往下滚才是用例等长文。当前标题条排版用户已否，下一班不要当验收通过。
+
+## 交接单 · 2026-08-31 07:19 CST · Cursor Grok
+
+### 本次目标
+
+重做 `/coat-of-arms-maker` 与 `/zh/coat-of-arms-maker` 的 SEO 区块：用例 + 对比表卖点、锁死 metadata、WebApplication JSON-LD、3 条 FAQ 后扩到 5 条、整段排版、用例图不被裁切、FAQ 在真实浏览器能点开。关键词密度 2%–4%；字数要求已取消。
+
+### 已完成
+
+- 文案与结构已在仓库里：H1 + 导语 → 4 张用例卡 → 步骤 + 工具 → 3 列×4 行对比表（Our coat of arms maker / CoaMaker / Roll for Fantasy）→ CTA → FAQ → 相关链接。标题「Why choose our coat of arms maker」/「为什么选择我们的纹章制作器」。
+- 用例图 `public/coat-of-arms-maker/use-cases/*.webp` 均为 1254×1254；`CoatMakerSeoContent.tsx` 用 `aspect-square` + `object-cover`，不再 16:9 裁切。Ego 桌面实测卡片约 492×492，狮鹫/盾尖完整。
+- FAQ 最终是原生 `<details>`/`<summary>`（`name="coat-maker-faq"`），文件 `src/components/coat-of-arms/CoatMakerFaqAccordion.tsx`。Base UI 与纯 `useState` 按钮在 ego-browser 里点了不展开。Ego 在 `http://127.0.0.1:3000` 桌面 1280：EN 第一条能开、点第二条第一条关上、ZH 第一条能开。
+- 用户已提交并与 `origin/main` 同步：`6cef7b3`（第二工具内页优化，含 SEO/排版/图/FAQ/globals 作用域样式，以及一批 `tmp/coat-maker-*` 草稿）、`8c8d952`（最新，3 个文件的小改）。工作区干净。
+- 验收过的数字：Vitest `CoatMakerSeoContent.test.tsx` + `site-routes.test.tsx` **62/62**；密度 EN **3.387%**、ZH **3.239%**。Codex 复核过 details FAQ 与方形图。
+
+### 做到一半
+
+- `src/components/ui/accordion.tsx` 已进 `6cef7b3`，本页 FAQ 已不再引用；用户未决定是否删除。
+- `tmp/` 下大量对比草稿、ego 截图、编排报告随 `6cef7b3` 进了 git；未单独清理。
+- 全量 `tsc` 仍可能在无关文件失败：`src/app/api/coat-export/route.test.ts:215`、`src/lib/coat-of-arms/cloud-export/r2-storage.test.ts:17`（复核时看到，本班未修）。
+- 编排 Run `run_b17b7ba66708` 里还有历史 blocked/failed 任务；本班相关 worker 已 release。未再开新功能。
+
+### 下一步
+
+- 若不要 Base UI 手风琴：删 `src/components/ui/accordion.tsx`（先确认无其它引用）。
+- 若不要研究草稿进仓库：从 git 拿掉 `tmp/coat-maker-*` / `tmp/ego-*`（需用户授权）。
+- 可选：修那两个无关 tsc 测试错误；查清本页 Next client 在 ego-browser 里是否水合（工作台 SSR 自带 `inert`，不能当水合证据）。
+- 用户要继续改纹章页再说；本班没有未提交代码。
+
+### 踩过的坑
+
+- 对比表从 4 列（含 Crest and Arms）改成 3 列攻击表，又砍过「姓氏/官方纹章」「When to stay」行；竞品缺点只许用 ego 核实过的事实。
+- 字数带 1050–1150 反复超限，用户后来取消字数、密度放宽到 2%–4%。
+- 三 agent 一致投票成本高；后改成起草+复核、2-1 可取多数。
+- Base UI Accordion 实页 `data-index="-1"`、trigger id 变成 `base-ui-*`；抽出 client 岛仍不行。`useState` 按钮 jsdom 过、ego 点到仍不切换。原生 `details` 不依赖 React 水合。
+- 本机 `:3000` 曾是停掉的别的 next-server；ego 有时要用 `:3001`。后一次核实 live 在 `:3000`、`:3001` 是别的 Vite 应用。先确认哪个端口是 token-maker-app。
+- `orca orchestration worker-stop` 常回 `stop_unknown`，retry 的 grok 终端要用 `orca terminal close --terminal <handle>`。
+- 同一 Run 上 `check --wait` 会 `waiter_exists`，先 `--peek`/`--ack` 再等。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/components/coat-of-arms/CoatMakerSeoContent.test.tsx src/app/site-routes.test.tsx --reporter=verbose --color=false
+```
+
+浏览器（优先本地 ego-browser）：打开 `/coat-of-arms-maker` 与 `/zh/coat-of-arms-maker`。看用例图是否正方形且盾徽完整；点 FAQ 第一条应展开，再点第二条第一条应合上。对比表第一列应是金色「Our coat of arms maker」/「我们的纹章制作器」。
+
 ## 交接单 · 2026-08-30 10:25 CST · Cursor Grok
 
 ### 本次目标

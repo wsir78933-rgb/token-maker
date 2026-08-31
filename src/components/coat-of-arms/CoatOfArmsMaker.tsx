@@ -35,6 +35,7 @@ import { getCoatWorkbenchCopy, toolOrder, type CoatWorkbenchCopy, type Reference
 
 interface CoatOfArmsMakerProps {
   locale: CoatLocale;
+  pageHeading: ReactNode;
 }
 
 type TargetToolId = ReferenceToolId;
@@ -88,7 +89,7 @@ interface WorkbenchTool {
  * A focused application shell. The shell owns editor placement and
  * transient navigation only; all coat data remains in the existing store.
  */
-export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
+export function CoatOfArmsMaker({ locale, pageHeading }: CoatOfArmsMakerProps) {
   const copy = getCoatWorkbenchCopy(locale);
   const homeCopy = getHomeCopy(locale);
   const siteConfig = getSiteConfig(locale);
@@ -317,7 +318,7 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
   };
 
   return (
-    <main id="coat-editor-workspace" aria-label={copy.workspace} className="coat-workbench coat-target-workbench" data-appearance={appearance} ref={workbenchRef}>
+    <>
       <ContentSiteTopbar
         brandHref={homeHref + '#editor-workspace'}
         brandName={siteConfig.name}
@@ -330,19 +331,21 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
         navLinks={siteNavigationLinks}
         topbarClassName="z-50"
       />
-      {storedPreferencesError ? <p role="alert">{storedPreferencesError}</p> : null}
-      <div
-        aria-hidden={isWorkbenchBlocked || undefined}
-        className="coat-workbench-content"
-        inert={isWorkbenchBlocked}
-        onClickCapture={blockBackgroundPointerEvent}
-        onKeyDownCapture={blockBackgroundKeyboardEvent}
-      >
-        <span className="sr-only">{projectName}</span>
-        <div className="coat-target-actionbar">
-          <div className="coat-target-export coat-target-export-control"><ExportMenu locale={locale} menuId="coat-export-options" project={project} /></div>
-        </div>
-        <div className="coat-target-editor-grid" data-tool-panel-collapsed={isToolPanelCollapsed}>
+      {pageHeading}
+      <main id="coat-editor-workspace" aria-label={copy.workspace} className="coat-workbench coat-target-workbench" data-appearance={appearance} ref={workbenchRef}>
+        {storedPreferencesError ? <p role="alert">{storedPreferencesError}</p> : null}
+        <div
+          aria-hidden={isWorkbenchBlocked || undefined}
+          className="coat-workbench-content"
+          inert={isWorkbenchBlocked}
+          onClickCapture={blockBackgroundPointerEvent}
+          onKeyDownCapture={blockBackgroundKeyboardEvent}
+        >
+          <span className="sr-only">{projectName}</span>
+          <div className="coat-target-actionbar">
+            <div className="coat-target-export coat-target-export-control"><ExportMenu locale={locale} menuId="coat-export-options" project={project} /></div>
+          </div>
+          <div className="coat-target-editor-grid" data-tool-panel-collapsed={isToolPanelCollapsed}>
           <aside aria-label={copy.desktopTools} className="coat-target-left-panel hidden lg:flex" data-collapsed={isToolPanelCollapsed}>
             <ReferenceToolRail activeToolId={activeTool.id} expandedToolIds={expandedToolIds} homeHref={homeHref} isCollapsed={isToolPanelCollapsed} locale={locale} onCollapseChange={() => setIsToolPanelCollapsed((value) => !value)} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleToolExpansion} selectedToolChildren={{ charges: selectedChargesTreeChild, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} treeBranches={toolTreeBranches} />
             {tools.map((tool) => tool.id === activeTool.id ? <section aria-labelledby={`coat-tab-${tool.id}`} className="coat-target-library-panel" id={`coat-panel-${tool.id}`} key={tool.id} role="tabpanel" tabIndex={0}>
@@ -380,16 +383,17 @@ export function CoatOfArmsMaker({ locale }: CoatOfArmsMakerProps) {
               {fullscreenError ? <p role="alert">{fullscreenError}</p> : null}
             </div>
           </section>
+          </div>
+          <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} homeHref={homeHref} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargesTreeChild, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
         </div>
-        <CoatOfArmsMobileDrawer activeToolId={activeTool.id} expandedToolIds={expandedToolIds} homeHref={homeHref} locale={locale} onToolChange={selectTool} onToolChildSelect={selectToolTreeChild} onToolExpansionChange={toggleMobileToolExpansion} selectedToolChildren={{ charges: selectedChargesTreeChild, colors: selectedColorSection, position: selectedPositionSection, shields: selectedShieldTreeAssetId, tools: activeUtilityId, top: selectedTopCategory }} tabs={mobileTools} treeBranches={toolTreeBranches} />
-      </div>
-      {hasDraftRecoveryAction ? <section aria-label={copy.draftAvailable} className="coat-workbench-action-row coat-target-draft" role="status">
-        {invalidDraftError ? <p role="alert">{copy.invalidDraftRecoveryDescription(invalidDraftError)}</p> : <p>{copy.draftRecoveryDescription}</p>}
-        {draftActionError ? <p role="alert">{draftActionError}</p> : null}
-        {hasRecoverableDraft ? <Button type="button" onClick={restoreDraft}>{copy.restoreDraft}</Button> : null}
-        <Button type="button" variant="outline" onClick={removeDraft}>{copy.discardDraft}</Button>
-      </section> : null}
-    </main>
+        {hasDraftRecoveryAction ? <section aria-label={copy.draftAvailable} className="coat-workbench-action-row coat-target-draft" role="status">
+          {invalidDraftError ? <p role="alert">{copy.invalidDraftRecoveryDescription(invalidDraftError)}</p> : <p>{copy.draftRecoveryDescription}</p>}
+          {draftActionError ? <p role="alert">{draftActionError}</p> : null}
+          {hasRecoverableDraft ? <Button type="button" onClick={restoreDraft}>{copy.restoreDraft}</Button> : null}
+          <Button type="button" variant="outline" onClick={removeDraft}>{copy.discardDraft}</Button>
+        </section> : null}
+      </main>
+    </>
   );
 }
 

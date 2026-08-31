@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { CoatMakerPageHeading } from './CoatMakerPageHeading';
 import { CoatMakerSeoContent } from './CoatMakerSeoContent';
 import { getCoatMakerSeoCopy } from './coat-maker-seo-copy';
 
@@ -104,11 +105,11 @@ describe('CoatMakerSeoContent', () => {
     const contentRoot = screen.getByTestId('coat-maker-seo-content');
     const copy = getCoatMakerSeoCopy(locale);
 
-    expect(within(contentRoot).getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(within(contentRoot).queryByRole('heading', { level: 1 })).toBeNull();
     expect(
       within(contentRoot).queryByRole('heading', { level: 1, name: heading }),
-      `Missing ${locale} heading: ${heading}`,
-    ).not.toBeNull();
+      `Unexpected ${locale} heading below the editor: ${heading}`,
+    ).toBeNull();
     const stepsList = within(contentRoot).getByRole('list', { name: /steps|步骤/i });
 
     expect(stepsList.tagName).toBe('OL');
@@ -568,9 +569,14 @@ describe('CoatMakerSeoContent', () => {
     { locale: 'en' as const, keyphrase: 'coat of arms maker' },
     { locale: 'zh' as const, keyphrase: '纹章制作器' },
   ])('records the $locale keyphrase density after putting metadata copy on the page', ({ locale, keyphrase }) => {
-    render(<CoatMakerSeoContent locale={locale} />);
+    render(
+      <div data-testid="coat-maker-page-copy">
+        <CoatMakerPageHeading locale={locale} />
+        <CoatMakerSeoContent locale={locale} />
+      </div>,
+    );
 
-    const contentRoot = screen.getByTestId('coat-maker-seo-content');
+    const contentRoot = screen.getByTestId('coat-maker-page-copy');
     const semanticText = collectVisibleSemanticText(contentRoot);
     const density = calculateKeyphraseDensity(semanticText, keyphrase, locale);
     const totalTokenCount = locale === 'zh' ? countChineseTokens(semanticText) : countEnglishTokens(semanticText);

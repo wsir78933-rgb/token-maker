@@ -104,12 +104,7 @@ export function CoatMakerSeoContent({ locale }: { locale: SiteLocale }) {
       className="coat-maker-seo-content border-t border-white/10 bg-[#100d08] text-stone-100"
     >
       <div className="mx-auto max-w-6xl px-6 py-16 lg:px-8 lg:py-24">
-        <div className="max-w-2xl">
-          <h1 className="font-display text-4xl leading-tight text-stone-50 text-balance sm:text-5xl">{copy.heading}</h1>
-          <p className="mt-5 text-base leading-8 text-stone-300 text-pretty">{copy.introduction}</p>
-        </div>
-
-        <section className="mt-16">
+        <section>
           <h2 className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl">
             {copy.useCasesHeading}
           </h2>

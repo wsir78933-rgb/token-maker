@@ -30,7 +30,11 @@ vi.mock('@/lib/coat-of-arms/export', async (importOriginal) => {
 
 function renderWorkbench(locale: 'en' | 'zh' = 'en', project = createDefaultProject(locale)) {
   useCoatProjectStore.getState().replaceProject(project);
-  return render(<CoatOfArmsMaker locale={locale} />);
+  return render(<CoatOfArmsMaker locale={locale} pageHeading={createWorkbenchPageHeadingSlot()} />);
+}
+
+function createWorkbenchPageHeadingSlot() {
+  return <header data-testid="coat-maker-page-heading-slot"><p>Test page heading slot</p></header>;
 }
 
 function projectWithoutShieldLayers(locale: 'en' | 'zh' = 'en') {
@@ -398,7 +402,7 @@ describe('CoatOfArmsMaker', () => {
     renderWorkbench();
 
     const workbench = screen.getByRole('main');
-    const topbar = workbench.querySelector<HTMLElement>(':scope > .site-topbar');
+    const topbar = document.querySelector<HTMLElement>('.site-topbar');
     const workbenchContent = workbench.querySelector<HTMLElement>(':scope > .coat-workbench-content');
     const actionBar = workbenchContent?.querySelector<HTMLElement>(':scope > .coat-target-actionbar');
     const editorGrid = workbenchContent?.querySelector<HTMLElement>(':scope > .coat-target-editor-grid');
@@ -417,7 +421,9 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.getAllByRole('button', { name: 'Export' })).toHaveLength(1);
     expect(topbar).not.toBeNull();
     expect(workbenchContent).not.toBeNull();
-    expect(topbar!.nextElementSibling).toBe(workbenchContent);
+    const pageHeadingSlot = screen.getByTestId('coat-maker-page-heading-slot');
+    expect(topbar!.nextElementSibling).toBe(pageHeadingSlot);
+    expect(pageHeadingSlot.nextElementSibling).toBe(workbench);
     expectWorkbenchProjectNameToBeNonHeading('My Coat of Arms');
   });
 
@@ -517,7 +523,7 @@ describe('CoatOfArmsMaker', () => {
   it('matches the homepage public-navigation presentation without overriding the site mark', () => {
     renderWorkbench('en');
 
-    const topbar = screen.getByRole('main').querySelector<HTMLElement>(':scope > .site-topbar');
+    const topbar = document.querySelector<HTMLElement>('.site-topbar');
     if (!topbar) throw new Error('Coat Maker public navigation is unavailable');
     const navigationContent = topbar.firstElementChild as HTMLElement | null;
     const brandTitle = topbar.querySelector<HTMLElement>('.site-brand-title');
@@ -537,7 +543,7 @@ describe('CoatOfArmsMaker', () => {
   ] as const)('uses the homepage tagline in the %s public navigation', (locale, expectedTagline) => {
     renderWorkbench(locale);
 
-    const topbar = screen.getByRole('main').querySelector<HTMLElement>(':scope > .site-topbar');
+    const topbar = document.querySelector<HTMLElement>('.site-topbar');
     expect(topbar?.querySelector('.site-brand-subtitle')?.textContent).toBe(expectedTagline);
   });
 
@@ -548,7 +554,7 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?font-family:\s*var\(--font-sans\);/);
     expect(workbenchStyles).toContain('background: var(--coat-stage);');
     expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-artboard [role='application'] { width: 100%; height: 100%; max-width: 100%; aspect-ratio: var(--coat-canvas-aspect-ratio); border: 0; border-radius: 0; background: #fff;");
-    expect(workbenchStyles).toMatch(/\.coat-target-workbench > \.site-topbar\s*\{[\s\S]*?font-family:\s*var\(--font-sans\);[\s\S]*?\}/);
+    expect(workbenchStyles).toMatch(/\.coat-maker-page > \.site-topbar\s*\{[\s\S]*?font-family:\s*var\(--font-sans\);[\s\S]*?\}/);
   });
 
   it('keeps the Chinese shared navigation and locale switch on Coat Maker', () => {
@@ -573,8 +579,8 @@ describe('CoatOfArmsMaker', () => {
   it('uses the exact desktop editor geometry and preserves the mobile drawer contract', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
-    expect(workbenchStyles).toContain('.coat-target-workbench > .site-topbar {\n  font-family: var(--font-sans);\n  box-sizing: border-box;\n}');
-    expect(workbenchStyles).toContain('@media (min-width: 1024px) {\n  .coat-target-workbench > .site-topbar {\n    height: 99px;\n    min-height: 99px;\n    overflow: hidden;\n  }');
+    expect(workbenchStyles).toContain('.coat-maker-page > .site-topbar {\n  font-family: var(--font-sans);\n  box-sizing: border-box;\n}');
+    expect(workbenchStyles).toContain('@media (min-width: 1024px) {\n  .coat-maker-page > .site-topbar {\n    height: 99px;\n    min-height: 99px;\n    overflow: hidden;\n  }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-actionbar {\n  display: flex;\n  height: 50px;');
     expect(workbenchStyles).toContain('border-bottom: 1px solid #636363;\n  background: #474747;\n  padding: 8.5px;');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-export > div > button { width: 109.375px; height: 38.25px; }');
@@ -610,7 +616,7 @@ describe('CoatOfArmsMaker', () => {
   });
 
   it('renders every reference tool label from Chinese workbench copy', () => {
-    render(<CoatOfArmsMaker locale="zh" />);
+    render(<CoatOfArmsMaker locale="zh" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     const toolRail = getDesktopToolRail();
     expect(within(toolRail).getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
@@ -830,13 +836,13 @@ describe('CoatOfArmsMaker', () => {
 
   it('unblocks the editor after its server markup hydrates in the browser', async () => {
     const container = document.createElement('div');
-    container.innerHTML = renderToString(<CoatOfArmsMaker locale="en" />);
+    container.innerHTML = renderToString(<CoatOfArmsMaker locale="en" pageHeading={createWorkbenchPageHeadingSlot()} />);
     document.body.append(container);
     let hydratedRoot: ReturnType<typeof hydrateRoot> | null = null;
 
     try {
       hydratedRoot = await act(async () => {
-        const root = hydrateRoot(container, <CoatOfArmsMaker locale="en" />);
+        const root = hydrateRoot(container, <CoatOfArmsMaker locale="en" pageHeading={createWorkbenchPageHeadingSlot()} />);
         await Promise.resolve();
         return root;
       });
@@ -1080,6 +1086,32 @@ describe('CoatOfArmsMaker', () => {
 
     expect((await screen.findByRole('alert')).textContent).toBe('Editor action failed: Invalid editor preferences JSON: {');
     expect(document.querySelector('main.coat-target-workbench')?.getAttribute('data-appearance')).toBe('dark');
+  });
+
+  it('keeps editor content in the flexible workbench row when stored preferences fail to load', async () => {
+    localStorage.setItem(EDITOR_PREFERENCES_STORAGE_KEY, '{');
+    renderWorkbench();
+
+    expect(await screen.findByRole('alert')).toBeDefined();
+    const workbench = screen.getByRole('main');
+    const workbenchContent = workbench.querySelector<HTMLElement>(':scope > .coat-workbench-content');
+    const workbenchStyles = readCoatWorkbenchStyles();
+
+    expect(workbenchContent).not.toBeNull();
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?grid-template-rows:\s*auto minmax\(0, 1fr\);/);
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench \.coat-workbench-content\s*\{[\s\S]*?grid-row:\s*2;/);
+  });
+
+  it('keeps the normal workbench content on the flexible editor row', () => {
+    renderWorkbench();
+
+    const workbench = screen.getByRole('main');
+    const workbenchContent = workbench.querySelector<HTMLElement>(':scope > .coat-workbench-content');
+    const workbenchStyles = readCoatWorkbenchStyles();
+
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(workbenchContent).not.toBeNull();
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench \.coat-workbench-content\s*\{[\s\S]*?grid-row:\s*2;/);
   });
 
   it('shows the invalid persisted export size and leaves the active project unchanged', async () => {
@@ -1404,12 +1436,12 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchStyles).toContain('grid-template-rows: auto minmax(29rem, 1fr) auto;');
   });
 
-  it('reserves the fullscreen workbench rows for navigation', () => {
+  it('reserves the fullscreen workbench rows for preference alerts and editor content', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
     expect(workbenchStyles).toContain('.coat-target-workbench {\n');
     expect(workbenchStyles).toContain('display: grid;\n  grid-template-rows: auto minmax(0, 1fr);');
-    expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-content {\n  height: auto;\n  min-height: 0;\n  grid-template-rows: auto minmax(0, 1fr);');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-content {\n  grid-row: 2;\n  height: auto;\n  min-height: 0;\n  grid-template-rows: auto minmax(0, 1fr);');
   });
 
   it('roots each target workbench selector below the workbench boundary', () => {
@@ -1549,7 +1581,7 @@ describe('CoatOfArmsMaker', () => {
   });
 
   it('initializes the target showcase without creating a recoverable draft', () => {
-    render(<CoatOfArmsMaker locale="en" />);
+    render(<CoatOfArmsMaker locale="en" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     expect(useCoatProjectStore.getState().project.layers).toHaveLength(4);
     expect(localStorage.getItem(COAT_PROJECT_DRAFT_STORAGE_KEY)).toBeNull();
@@ -1573,7 +1605,7 @@ describe('CoatOfArmsMaker', () => {
     localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, JSON.stringify({ version: 1, project: draft }));
     useCoatProjectStore.setState({ isInitialDocument: true });
 
-    render(<CoatOfArmsMaker locale="en" />);
+    render(<CoatOfArmsMaker locale="en" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     expect(screen.getByRole('status', { name: 'Draft available' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Restore draft' })).toBeDefined();
@@ -1590,7 +1622,7 @@ describe('CoatOfArmsMaker', () => {
   it('keeps a malformed browser draft until the user explicitly discards it', async () => {
     localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, '{');
 
-    render(<CoatOfArmsMaker locale="en" />);
+    render(<CoatOfArmsMaker locale="en" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     expect(screen.getByRole('alert').textContent).toContain('Invalid coat project draft JSON');
     expect(screen.queryByRole('button', { name: 'Restore draft' })).toBeNull();
@@ -1605,7 +1637,7 @@ describe('CoatOfArmsMaker', () => {
   });
 
   it('does not offer recovery for the draft created by the current editing session', () => {
-    render(<CoatOfArmsMaker locale="en" />);
+    render(<CoatOfArmsMaker locale="en" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     expect(screen.queryByRole('status', { name: 'Draft available' })).toBeNull();
     selectDesktopTool('Charges');
@@ -1620,7 +1652,7 @@ describe('CoatOfArmsMaker', () => {
     const serializedDraft = JSON.stringify({ version: 1, project: crossLocaleDraft });
     localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, serializedDraft);
 
-    render(<CoatOfArmsMaker locale="zh" />);
+    render(<CoatOfArmsMaker locale="zh" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     expect(screen.getByRole('status', { name: '发现草稿' })).toBeDefined();
     fireEvent.keyDown(window, { key: 'z', ctrlKey: true });
@@ -1635,7 +1667,7 @@ describe('CoatOfArmsMaker', () => {
     const activeProject = { ...createDefaultProject('en'), id: 'active-project', name: 'Active session project' };
     useCoatProjectStore.getState().replaceProject(activeProject);
 
-    render(<CoatOfArmsMaker locale="en" />);
+    render(<CoatOfArmsMaker locale="en" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     expect(screen.queryByRole('status', { name: 'Draft available' })).toBeNull();
     expectWorkbenchProjectNameToBeNonHeading('Active session project');
@@ -1645,7 +1677,7 @@ describe('CoatOfArmsMaker', () => {
     const draft = { ...createDefaultProject('zh'), id: 'zh-draft-project', name: '待恢复草稿' };
     localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, JSON.stringify({ version: 1, project: draft }));
 
-    render(<CoatOfArmsMaker locale="zh" />);
+    render(<CoatOfArmsMaker locale="zh" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     expect(screen.getByRole('status', { name: '发现草稿' })).toBeDefined();
     expect(screen.getByRole('button', { name: '恢复草稿' })).toBeDefined();
@@ -1674,7 +1706,7 @@ describe('CoatOfArmsMaker', () => {
     };
     localStorage.setItem(COAT_PROJECT_DRAFT_STORAGE_KEY, JSON.stringify({ version: 1, project: draft }));
 
-    render(<CoatOfArmsMaker locale="en" />);
+    render(<CoatOfArmsMaker locale="en" pageHeading={createWorkbenchPageHeadingSlot()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Restore draft' }));
 
     expect((await screen.findByRole('alert')).textContent).toContain(uploadId);
@@ -1685,7 +1717,7 @@ describe('CoatOfArmsMaker', () => {
   });
 
   it('creates the Chinese default project when the untouched initial store first mounts in Chinese', () => {
-    render(<CoatOfArmsMaker locale="zh" />);
+    render(<CoatOfArmsMaker locale="zh" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     expectWorkbenchProjectNameToBeNonHeading('我的徽章');
     expect(useCoatProjectStore.getState().project).toMatchObject({
@@ -1698,7 +1730,7 @@ describe('CoatOfArmsMaker', () => {
     const editedProject = { ...createDefaultProject('en'), name: 'Keep these arms' };
     useCoatProjectStore.getState().replaceProject(editedProject);
 
-    render(<CoatOfArmsMaker locale="zh" />);
+    render(<CoatOfArmsMaker locale="zh" pageHeading={createWorkbenchPageHeadingSlot()} />);
 
     expectWorkbenchProjectNameToBeNonHeading('Keep these arms');
     expect(useCoatProjectStore.getState().project).toMatchObject({

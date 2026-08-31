@@ -1252,9 +1252,71 @@
   }
 }
 
-/* The workbench is a continuous editor below the site navigation. */
+/* Title and lead precede the independently sized editor. */
 .coat-maker-page {
   min-height: 100svh;
+}
+
+.coat-maker-page-heading {
+  flex: 0 0 auto;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  background: #100d08;
+  color: #f5f5f4;
+}
+
+.coat-maker-page-heading-copy {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 2.25rem 1.25rem 2.5rem;
+  text-align: center;
+}
+
+.coat-maker-page-heading h1 {
+  max-width: 68rem;
+  margin: 0 auto;
+  color: #fafaf9;
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.coat-maker-page-heading p {
+  max-width: 52rem;
+  margin: 1.125rem auto 0;
+  color: #d6d3d1;
+  font-size: 1rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+@media (min-width: 640px) {
+  .coat-maker-page-heading-copy {
+    padding: 3rem 1.5rem 3.5rem;
+  }
+
+  .coat-maker-page-heading h1 {
+    font-size: 2.75rem;
+  }
+
+  .coat-maker-page-heading p {
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .coat-maker-page-heading-copy {
+    padding: 4rem 2rem 4.5rem;
+  }
+
+  .coat-maker-page-heading h1 {
+    font-size: clamp(3rem, 2.4rem + 1.2vw, 3.5rem);
+  }
 }
 
 .coat-maker-page > .coat-workbench:not(.coat-target-workbench) {
@@ -1384,30 +1446,31 @@
 .coat-target-workbench [role='menuitem']:disabled,
 .coat-target-workbench [role='menuitem'][aria-disabled='true'] { cursor: not-allowed; }
 
-.coat-target-workbench > .site-topbar {
+.coat-maker-page > .site-topbar {
   font-family: var(--font-sans);
   box-sizing: border-box;
 }
-.coat-target-workbench > .site-topbar > div {
+.coat-maker-page > .site-topbar > div {
   box-sizing: border-box;
   padding-top: 8.5px;
   padding-bottom: 8.5px;
 }
-.coat-target-workbench > .site-topbar nav {
+.coat-maker-page > .site-topbar nav {
   margin-top: 0;
 }
 @media (min-width: 1024px) {
-  .coat-target-workbench > .site-topbar {
+  .coat-maker-page > .site-topbar {
     height: 99px;
     min-height: 99px;
     overflow: hidden;
   }
-  .coat-target-workbench > .site-topbar > div {
+  .coat-maker-page > .site-topbar > div {
     height: 99px;
   }
 }
 
 .coat-target-workbench .coat-workbench-content {
+  grid-row: 2;
   height: auto;
   min-height: 0;
   grid-template-rows: auto minmax(0, 1fr);

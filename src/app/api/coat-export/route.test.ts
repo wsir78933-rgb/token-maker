@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { NextRequest } from 'next/server';
+import type { CoatExportUploadParseResult } from '@/lib/coat-of-arms/cloud-export/server-validation';
 
 const validPayload = {
   file: 'c2FuaXRpemVkLWZpbGU=',
@@ -77,7 +78,9 @@ async function loadRoute({
     return { check: rateLimiterCheck };
   });
   const sanitizedFileBuffer = Buffer.from('sanitized-file');
-  const parseCoatExportUploadPayload = vi.fn(async () => ({
+  const parseCoatExportUploadPayload = vi.fn<
+    () => Promise<CoatExportUploadParseResult>
+  >(async () => ({
     ok: true as const,
     value: {
       fileBuffer: sanitizedFileBuffer,

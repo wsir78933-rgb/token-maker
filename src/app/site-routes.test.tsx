@@ -409,6 +409,8 @@ describe('coat maker routes', () => {
     workspaceName,
   }) => {
     const serverDocument = parseServerMarkup(renderToStaticMarkup(<PageComponent />));
+    const siteTopbar = serverDocument.querySelector('.site-topbar');
+    const pageHeading = serverDocument.querySelector('[data-testid="coat-maker-page-heading"]');
     const workbench = serverDocument.querySelector(`main[aria-label="${workspaceName}"]`);
     const contentRoot = serverDocument.querySelector('[data-testid="coat-maker-seo-content"]');
     const footer = serverDocument.querySelector('footer');
@@ -417,6 +419,14 @@ describe('coat maker routes', () => {
     const structuredDataScripts = Array.from(serverDocument.querySelectorAll('script[type="application/ld+json"]'));
     const structuredData = getRouteStructuredData(serverDocument, schemaId);
     const routeStructuredDataTypes = getStructuredDataTypes(structuredData);
+
+    if (siteTopbar === null) {
+      throw new Error('SSR route is missing the shared site topbar.');
+    }
+
+    if (pageHeading === null) {
+      throw new Error('SSR route is missing the page heading.');
+    }
 
     if (workbench === null) {
       throw new Error('SSR route is missing the workbench element.');
@@ -430,13 +440,19 @@ describe('coat maker routes', () => {
       throw new Error('SSR route is missing the footer element.');
     }
 
+    expect(siteTopbar).not.toBeNull();
+    expect(pageHeading).not.toBeNull();
     expect(workbench).not.toBeNull();
     expect(contentRoot).not.toBeNull();
     expect(footer).not.toBeNull();
     expect(serverDocument.querySelectorAll('h1')).toHaveLength(1);
-    expect(serverDocument.querySelector('h1')?.textContent).toBe(contentHeading);
+    expect(pageHeading.querySelector('h1')?.textContent).toBe(contentHeading);
+    expect(pageHeading.querySelector('h1 + p')?.textContent).toBe(schemaDescription);
+    expect(contentRoot.querySelector('h1')).toBeNull();
     expect(projectNameElement?.tagName).toBe('SPAN');
     expect(Array.from(serverDocument.querySelectorAll('h1')).some((heading) => heading.textContent === projectName)).toBe(false);
+    expect(siteTopbar.compareDocumentPosition(pageHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(pageHeading.compareDocumentPosition(workbench) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(workbench.compareDocumentPosition(contentRoot) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(contentRoot.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(structuredDataScripts).toHaveLength(1);
@@ -506,7 +522,8 @@ describe('coat maker routes', () => {
     render(<PageComponent />);
     const sharedTopbar = document.querySelector<HTMLElement>('.site-topbar');
     if (!sharedTopbar) throw new Error('Coat maker site topbar is unavailable');
-    expect(sharedTopbar.parentElement).toBe(screen.getByRole('main'));
+    expect(sharedTopbar.parentElement).toBe(document.querySelector('.coat-maker-page'));
+    expect(sharedTopbar.nextElementSibling).toBe(document.querySelector('[data-testid="coat-maker-page-heading"]'));
 
     expect(screen.queryByRole('link', { name: removedArtworkLinkLabel })).toBeNull();
     for (const link of sharedNavigationLinks) {
