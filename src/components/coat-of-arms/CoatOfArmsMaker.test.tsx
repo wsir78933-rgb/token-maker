@@ -142,6 +142,34 @@ function cssDeclarationsForSelector(cssText: string, selector: string): string[]
   throw new Error(`Missing CSS rule for selector: ${collapsedSelector}`);
 }
 
+function finalCssDeclarationValueForSelector(cssText: string, selector: string, propertyName: string): string {
+  const collapsedCss = cssText.replace(/\s+/g, ' ');
+  const collapsedSelector = selector.replace(/\s+/g, ' ').trim();
+  const rulePattern = /([^{]+)\{([^}]+)\}/g;
+  let matchedSelector = false;
+  let finalPropertyValue: string | undefined;
+
+  for (const match of collapsedCss.matchAll(rulePattern)) {
+    const selectorList = match[1].split(',').map((part) => part.trim());
+    if (!selectorList.includes(collapsedSelector)) continue;
+    matchedSelector = true;
+
+    for (const declaration of match[2].split(';')) {
+      const separatorIndex = declaration.indexOf(':');
+      if (separatorIndex <= 0 || declaration.slice(0, separatorIndex).trim() !== propertyName) continue;
+      finalPropertyValue = declaration.slice(separatorIndex + 1).trim();
+    }
+  }
+
+  if (!matchedSelector) {
+    throw new Error(`Missing CSS rule for selector: ${collapsedSelector}`);
+  }
+  if (finalPropertyValue === undefined) {
+    throw new Error(`Missing CSS property ${propertyName} for selector: ${collapsedSelector}`);
+  }
+  return finalPropertyValue;
+}
+
 function readCoatWorkbenchStyles(): string {
   return readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 }
@@ -547,14 +575,109 @@ describe('CoatOfArmsMaker', () => {
     expect(topbar?.querySelector('.site-brand-subtitle')?.textContent).toBe(expectedTagline);
   });
 
-  it('uses the homepage editor visual tokens without recolouring the output artboard', () => {
-    const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
+  it('uses coat theme tokens across editor chrome without recolouring the output artboard', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const themedSurfaceDeclarations = [
+      ['.coat-target-workbench .coat-target-actionbar', 'border-bottom', '1px solid var(--coat-line)'],
+      ['.coat-target-workbench .coat-target-actionbar', 'background', 'var(--coat-toolbar)'],
+      ['.coat-target-workbench .coat-target-tool-tree', 'border-right', '1px solid var(--coat-line)'],
+      ['.coat-target-workbench .coat-target-tool-tree', 'background', 'var(--coat-toolbar)'],
+      ['.coat-target-workbench .coat-target-library-panel', 'background', 'var(--coat-panel)'],
+      ['.coat-target-workbench .coat-target-scene', 'background', 'var(--coat-stage)'],
+      ['.coat-target-workbench .coat-target-canvas-toolbar', 'border-bottom', '1px solid var(--coat-line)'],
+      ['.coat-target-workbench .coat-target-canvas-toolbar', 'background', 'var(--coat-toolbar)'],
+    ] as const;
 
     expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-stage:/);
     expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?font-family:\s*var\(--font-sans\);/);
-    expect(workbenchStyles).toContain('background: var(--coat-stage);');
+    for (const [selector, propertyName, expectedValue] of themedSurfaceDeclarations) {
+      expect(finalCssDeclarationValueForSelector(workbenchStyles, selector, propertyName)).toBe(expectedValue);
+    }
     expect(workbenchStyles).toContain(".coat-target-workbench .coat-target-artboard [role='application'] { width: 100%; height: 100%; max-width: 100%; aspect-ratio: var(--coat-canvas-aspect-ratio); border: 0; border-radius: 0; background: #fff;");
     expect(workbenchStyles).toMatch(/\.coat-maker-page > \.site-topbar\s*\{[\s\S]*?font-family:\s*var\(--font-sans\);[\s\S]*?\}/);
+  });
+
+  it('uses local neumorphic raised depth on editor chrome without recolouring the white output canvas', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const raisedChromeSelectors = [
+      '.coat-target-workbench .coat-target-actionbar button',
+      '.coat-target-workbench .coat-target-collapse',
+      '.coat-target-workbench .coat-target-multi-select',
+      '.coat-target-workbench .coat-target-zoom',
+    ] as const;
+
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-shadow-hi:/);
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-shadow-lo:/);
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-shadow-raised:/);
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-shadow-inset:/);
+    expect(workbenchStyles).toMatch(
+      /--coat-shadow-raised:\s*var\(--coat-shadow-hi\),\s*var\(--coat-shadow-lo\)|--coat-shadow-raised:\s*var\(--coat-shadow-lo\),\s*var\(--coat-shadow-hi\)/,
+    );
+    expect(workbenchStyles).toMatch(
+      /--coat-shadow-inset:\s*inset\s+var\(--coat-shadow-hi\),\s*inset\s+var\(--coat-shadow-lo\)|--coat-shadow-inset:\s*inset\s+var\(--coat-shadow-lo\),\s*inset\s+var\(--coat-shadow-hi\)/,
+    );
+    for (const selector of raisedChromeSelectors) {
+      const boxShadowDeclaration = cssDeclarationsForSelector(workbenchStyles, selector).find(
+        (declaration) => declaration.startsWith('box-shadow:'),
+      );
+      expect(boxShadowDeclaration).toBe('box-shadow: var(--coat-shadow-raised)');
+    }
+
+    expect(finalCssDeclarationValueForSelector(workbenchStyles, '.coat-target-workbench .coat-target-actionbar', 'background')).toBe('var(--coat-toolbar)');
+    expect(finalCssDeclarationValueForSelector(workbenchStyles, '.coat-target-workbench .coat-target-collapse', 'background')).toBe('var(--coat-panel-raised)');
+    expect(finalCssDeclarationValueForSelector(workbenchStyles, '.coat-target-workbench .coat-target-artboard', 'background')).toBe('#fff');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-artboard [role='application']",
+      'background',
+    )).toBe('#fff');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-artboard [role='application']",
+      'box-shadow',
+    )).toBe('none');
+  });
+
+  it('keeps neumorphic pressed chrome inset while selected, focus, disabled, and error stay distinguishable', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const pressedMultiSelectBoxShadow = cssDeclarationsForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-multi-select[aria-pressed='true']",
+    ).find((declaration) => declaration.startsWith('box-shadow:'));
+
+    expect(pressedMultiSelectBoxShadow).toBe('box-shadow: var(--coat-shadow-inset)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-multi-select[aria-pressed='true']",
+      'background',
+    )).toBe('var(--coat-active) !important');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-multi-select[aria-pressed='true']",
+      'color',
+    )).toBe('var(--coat-accent) !important');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true']",
+      'background',
+    )).toBe('var(--coat-active)');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-content :is(button, input, select):focus-visible { outline: 2px solid var(--coat-accent); outline-offset: 2px; }');
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar button:disabled { cursor: not-allowed; opacity: 0.38; }');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-selected-element-colour-error',
+      'color',
+    )).toBe('var(--coat-danger)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-tool-tree-error',
+      'border',
+    )).toBe('1px solid color-mix(in oklab, var(--coat-danger) 58%, var(--coat-line))');
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-accent:/);
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-active:/);
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-stage:/);
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-toolbar:/);
+    expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-danger:/);
   });
 
   it('keeps the Chinese shared navigation and locale switch on Coat Maker', () => {
@@ -582,7 +705,7 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchStyles).toContain('.coat-maker-page > .site-topbar {\n  font-family: var(--font-sans);\n  box-sizing: border-box;\n}');
     expect(workbenchStyles).toContain('@media (min-width: 1024px) {\n  .coat-maker-page > .site-topbar {\n    height: 99px;\n    min-height: 99px;\n    overflow: hidden;\n  }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-actionbar {\n  display: flex;\n  height: 50px;');
-    expect(workbenchStyles).toContain('border-bottom: 1px solid #636363;\n  background: #474747;\n  padding: 8.5px;');
+    expect(workbenchStyles).toContain('padding: 8.5px;');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-export > div > button { width: 109.375px; height: 38.25px; }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-scene { position: relative; display: grid; min-width: 0; min-height: 0; grid-template-rows: 40px minmax(0, 1fr);');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-canvas-toolbar { display: flex; height: 40px;');
@@ -673,7 +796,7 @@ describe('CoatOfArmsMaker', () => {
       'gap: 8.5px',
     ]));
     expect(selectedTreeButtonDeclarations).toEqual(expect.arrayContaining([
-      'background: #5a5a5a',
+      'background: var(--coat-active)',
     ]));
   });
 
