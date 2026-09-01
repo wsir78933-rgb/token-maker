@@ -97,11 +97,7 @@ describe('SiteFooter', () => {
       { name: 'Privacy', href: '/privacy' },
       { name: 'Contact', href: '/contact' },
     ]);
-    const stardewValleyPlannerLink = screen.getByRole('link', { name: 'stardewvalleyplanner.art' });
-
-    expect(stardewValleyPlannerLink.getAttribute('href')).toBe('https://stardewvalleyplanner.art/');
-    expect(stardewValleyPlannerLink.getAttribute('target')).toBe('_blank');
-    expect(stardewValleyPlannerLink.getAttribute('rel')).toBe('noopener noreferrer');
+    expect(screen.queryByRole('link', { name: 'stardewvalleyplanner.art' })).toBeNull();
   });
 
   it('renders localized Chinese links without adding dependencies', () => {
@@ -134,9 +130,7 @@ describe('SiteFooter', () => {
       { name: '隐私', href: '/zh/privacy' },
       { name: '联系', href: '/zh/contact' },
     ]);
-    expect(screen.getByRole('link', { name: 'stardewvalleyplanner.art' }).getAttribute('href')).toBe(
-      'https://stardewvalleyplanner.art/',
-    );
+    expect(screen.queryByRole('link', { name: 'stardewvalleyplanner.art' })).toBeNull();
   });
 
   it('marks the current footer link for assistive technology', () => {
