@@ -1420,6 +1420,12 @@
   background: var(--site-bg-hub);
   color: var(--coat-text);
   font-family: var(--font-sans);
+  box-shadow: none;
+}
+
+.coat-target-workbench[data-appearance='dark'] {
+  --coat-shadow-hi: -1px -1px 2px color-mix(in oklab, white 12%, transparent);
+  --coat-shadow-lo: 1px 2px 4px color-mix(in oklab, black 40%, transparent);
 }
 
 .coat-maker-page > .coat-target-workbench {
@@ -1479,6 +1485,7 @@
   min-height: 0;
   grid-template-rows: auto minmax(0, 1fr);
   background: var(--coat-stage);
+  box-shadow: none;
 }
 .coat-target-workbench .coat-workbench-content :is(button, input, select):focus-visible { outline: 2px solid var(--coat-accent); outline-offset: 2px; }
 .coat-target-workbench .coat-workbench-mobile-drawer { display: none; }
@@ -1487,6 +1494,7 @@
 .coat-target-workbench .coat-target-canvas-toolbar {
   border-color: var(--coat-line);
   background: var(--coat-toolbar);
+  box-shadow: var(--coat-shadow-raised);
 }
 
 .coat-target-workbench .coat-target-header-actions { display: flex; min-width: 0; margin-left: auto; align-items: center; gap: 0.75rem; }
@@ -1501,8 +1509,9 @@
   border-bottom: 1px solid var(--coat-line);
   background: var(--coat-toolbar);
   padding: 8.5px;
+  box-shadow: var(--coat-shadow-raised);
 }
-.coat-target-workbench .coat-target-actionbar button,
+.coat-target-workbench .coat-target-actionbar > .coat-target-export-control > div > button,
 .coat-target-workbench .coat-target-header-actions > button {
   border: 1px solid var(--coat-line);
   border-radius: 0.625rem;
@@ -1515,7 +1524,7 @@
 }
 .coat-target-workbench .coat-target-export > div > button { width: 109.375px; height: 38.25px; }
 
-.coat-target-workbench .coat-target-editor-grid { display: grid; min-height: 0; grid-template-columns: 460px minmax(0, 1fr); transition: grid-template-columns 160ms ease; }
+.coat-target-workbench .coat-target-editor-grid { display: grid; min-height: 0; grid-template-columns: 460px minmax(0, 1fr); transition: grid-template-columns 160ms ease; box-shadow: none; }
 .coat-target-workbench .coat-target-editor-grid[data-tool-panel-collapsed='true'] { grid-template-columns: 170px minmax(0, 1fr); }
 .coat-target-workbench .coat-target-left-panel { position: relative; min-width: 0; min-height: 0; overflow: visible; border-right: 1px solid var(--coat-line); background: var(--coat-panel); }
 .coat-target-workbench .coat-target-left-panel[data-collapsed='true'] { border-right: 1px solid var(--coat-line); }
@@ -1549,13 +1558,13 @@
 .coat-target-workbench .coat-target-shape-tree button[aria-selected='true'] { margin-right: 0.4rem; border-radius: 0.5rem; background: var(--coat-active); }
 .coat-target-workbench .coat-target-shape-tree svg { width: 1rem; height: 1rem; fill: currentColor; }
 
-.coat-target-workbench .coat-target-library-panel { flex: 0 0 290px; width: 290px; min-width: 0; min-height: 0; overflow: auto; background: var(--coat-panel); }
+.coat-target-workbench .coat-target-library-panel { flex: 0 0 290px; width: 290px; min-width: 0; min-height: 0; overflow: auto; background: var(--coat-panel); box-shadow: var(--coat-shadow-inset); }
 .coat-target-workbench .coat-target-library-panel > section:not(.coat-target-color-panel):not(.coat-escutcheon-panel) { min-height: 100%; }
 .coat-target-workbench .coat-target-tool-tree-error { margin: 0.75rem; border: 1px solid color-mix(in oklab, var(--coat-danger) 58%, var(--coat-line)); border-radius: 0.625rem; background: color-mix(in oklab, var(--coat-danger) 12%, var(--coat-panel)); padding: 0.5rem; color: var(--coat-text); font-size: 0.78rem; line-height: 1.35; }
 .coat-target-workbench .coat-target-collapse { position: absolute; z-index: 2; top: 50%; right: -12px; display: grid; width: 24px; height: 46px; transform: translateY(-50%); place-items: center; border: 1px solid var(--coat-line); border-radius: 12px; background: var(--coat-panel-raised); color: var(--coat-text); box-shadow: var(--coat-shadow-raised); }
 
-.coat-target-workbench .coat-target-scene { position: relative; display: grid; min-width: 0; min-height: 0; grid-template-rows: 40px minmax(0, 1fr); overflow: hidden; background: var(--coat-stage); }
-.coat-target-workbench .coat-target-canvas-toolbar { display: flex; height: 40px; align-items: center; gap: 0.5rem; min-width: 0; box-sizing: border-box; border-bottom: 1px solid var(--coat-line); background: var(--coat-toolbar); padding: 2.5px 8.5px; }
+.coat-target-workbench .coat-target-scene { position: relative; display: grid; min-width: 0; min-height: 0; grid-template-rows: 40px minmax(0, 1fr); overflow: hidden; background: var(--coat-stage); box-shadow: var(--coat-shadow-inset); }
+.coat-target-workbench .coat-target-canvas-toolbar { display: flex; height: 40px; align-items: center; gap: 0.5rem; min-width: 0; box-sizing: border-box; border-bottom: 1px solid var(--coat-line); background: var(--coat-toolbar); padding: 2.5px 8.5px; box-shadow: var(--coat-shadow-raised); }
 .coat-target-workbench .coat-target-canvas-toolbar > div { display: flex; gap: 0.22rem; }
 .coat-target-workbench .coat-target-history-controls,
 .coat-target-workbench .coat-target-canvas-toolbar-actions { flex: 0 0 auto; }
@@ -2340,6 +2349,174 @@
 .coat-target-workbench .coat-target-howto p { color: var(--coat-muted); font-size: 0.88rem; line-height: 1.6; }
 .coat-target-workbench .coat-target-draft { position: fixed; z-index: 50; right: 1rem; bottom: 1rem; max-width: 30rem; border: 1px solid var(--coat-line); border-radius: 0.875rem; background: var(--coat-panel); color: var(--coat-text); padding: 0.8rem; box-shadow: 0 18px 48px -28px var(--workspace-shadow-color); }
 
+.coat-target-workbench .coat-workbench-export-menu { box-shadow: var(--shadow-lg); }
+.coat-target-workbench .coat-target-draft { box-shadow: 0 18px 48px -28px var(--workspace-shadow-color); }
+
+.coat-target-workbench .coat-target-actionbar > .coat-target-export-control > div > button,
+.coat-target-workbench .coat-gallery-card,
+.coat-target-workbench .coat-reference-asset-gallery__grid--compact button,
+.coat-target-workbench .coat-escutcheon-option,
+.coat-target-workbench .coat-escutcheon-add-button,
+.coat-target-workbench .coat-target-action-button,
+.coat-target-workbench .coat-target-arrange-section button,
+.coat-target-workbench .coat-target-colour-swatch,
+.coat-target-workbench .coat-target-canvas-toolbar > .coat-target-history-controls button,
+.coat-target-workbench .coat-target-toggle-control,
+.coat-target-workbench .coat-target-token-grid button,
+.coat-target-workbench .coat-target-shield-grid button,
+.coat-target-workbench .coat-target-advanced-toggle,
+.coat-target-workbench .coat-escutcheon-library-summary,
+.coat-target-workbench .coat-target-palette-header button,
+.coat-target-workbench .coat-target-color-section-header button,
+.coat-target-workbench .coat-target-background-custom-wheel,
+.coat-target-workbench .coat-target-background-palette-swatch,
+.coat-target-workbench .coat-target-name-form .coat-target-name-saved li,
+.coat-target-workbench .coat-target-library-panel > section.space-y-4 > button,
+.coat-target-workbench .coat-target-library-panel .flex.flex-wrap.items-end.gap-2 > button,
+.coat-target-workbench .coat-target-library-panel ul.space-y-1 > li > button,
+.coat-target-workbench .coat-target-text-form button[data-text-creation-card],
+.coat-target-workbench [role='group'].flex.flex-wrap.gap-1 > button,
+.coat-target-workbench .grid.grid-cols-2.gap-2 > button,
+.coat-target-workbench [role='group'].grid.grid-cols-4.gap-2 > button {
+  box-shadow: var(--coat-shadow-raised);
+}
+
+.coat-target-workbench .coat-target-search input,
+.coat-target-workbench .coat-target-form-field > input[type='text'],
+.coat-target-workbench .coat-target-form-field > input[type='search'],
+.coat-target-workbench .coat-target-form-field > input[type='number'],
+.coat-target-workbench .coat-target-form-field > select,
+.coat-target-workbench .coat-target-library-panel input[type='text'],
+.coat-target-workbench .coat-target-library-panel input[type='search'],
+.coat-target-workbench .coat-target-library-panel input[type='number'],
+.coat-target-workbench .coat-target-library-panel select,
+.coat-target-workbench .coat-target-arrange-section input[type='text'],
+.coat-target-workbench .coat-target-arrange-section input[type='search'],
+.coat-target-workbench .coat-target-arrange-section input[type='number'],
+.coat-target-workbench .coat-target-arrange-section select,
+.coat-target-workbench .coat-target-layer-search,
+.coat-target-workbench .coat-target-draw-preview,
+.coat-target-workbench .coat-target-canvas-size-select,
+.coat-target-workbench .coat-target-name-form .coat-target-form-field > select,
+.coat-target-workbench .coat-workbench-export-menu select {
+  box-shadow: var(--coat-shadow-inset);
+}
+
+.coat-target-workbench .coat-target-action-button:hover,
+.coat-target-workbench .coat-reference-asset-gallery__grid--compact button:hover,
+.coat-target-workbench .coat-target-canvas-toolbar > .coat-target-history-controls button:hover,
+.coat-target-workbench .coat-target-shield-grid button:hover,
+.coat-target-workbench .coat-target-token-grid button:hover,
+.coat-target-workbench .coat-escutcheon-add-button:hover,
+.coat-target-workbench .coat-target-arrange-section button:hover,
+.coat-target-workbench .coat-target-library-panel > section.space-y-4 > button:hover,
+.coat-target-workbench .coat-target-library-panel .flex.flex-wrap.items-end.gap-2 > button:hover,
+.coat-target-workbench .coat-target-library-panel ul.space-y-1 > li > button:hover,
+.coat-target-workbench .coat-target-text-form button[data-text-creation-card]:hover,
+.coat-target-workbench [role='group'].flex.flex-wrap.gap-1 > button:hover,
+.coat-target-workbench .grid.grid-cols-2.gap-2 > button:hover,
+.coat-target-workbench [role='group'].grid.grid-cols-4.gap-2 > button:hover {
+  box-shadow: var(--coat-shadow-raised);
+}
+
+.coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true'],
+.coat-target-workbench .coat-target-tool-tree-node > button[aria-selected='true'],
+.coat-target-workbench .coat-target-canvas-toolbar button[aria-pressed='true'],
+.coat-target-workbench .coat-gallery-card[aria-pressed='true'],
+.coat-target-workbench .coat-escutcheon-option[data-selected='true'],
+.coat-target-workbench .coat-reference-asset-gallery__grid--compact button[aria-pressed='true'],
+.coat-target-workbench .coat-target-shape-tree button[aria-selected='true'],
+.coat-target-workbench .coat-target-layer-panel li[data-selected='true'],
+.coat-target-workbench .coat-target-background-palette-swatch[aria-pressed='true'],
+.coat-target-workbench .coat-target-multi-select[aria-pressed='true'],
+.coat-target-workbench [role='group'].flex.flex-wrap.gap-1 > button[aria-pressed='true'],
+.coat-target-workbench .grid.grid-cols-2.gap-2 > button[aria-pressed='true'],
+.coat-target-workbench [role='group'].grid.grid-cols-4.gap-2 > button[aria-pressed='true'],
+.coat-target-workbench .coat-target-library-panel ul.space-y-1 > li > button[aria-pressed='true'],
+.coat-target-workbench .coat-target-arrange-section legend button[aria-pressed='true'] {
+  box-shadow: var(--coat-shadow-inset);
+}
+
+.coat-target-workbench .coat-target-actionbar > .coat-target-export-control > div > button:active,
+.coat-target-workbench .coat-target-collapse:active,
+.coat-target-workbench .coat-target-multi-select:active,
+.coat-target-workbench .coat-gallery-card:active,
+.coat-target-workbench .coat-reference-asset-gallery__grid--compact button:active,
+.coat-target-workbench .coat-escutcheon-option:active,
+.coat-target-workbench .coat-escutcheon-add-button:active,
+.coat-target-workbench .coat-target-action-button:active,
+.coat-target-workbench .coat-target-arrange-section button:active,
+.coat-target-workbench .coat-target-colour-swatch:active,
+.coat-target-workbench .coat-target-canvas-toolbar > .coat-target-history-controls button:active,
+.coat-target-workbench .coat-target-toggle-control:active,
+.coat-target-workbench .coat-target-token-grid button:active,
+.coat-target-workbench .coat-target-shield-grid button:active,
+.coat-target-workbench .coat-target-advanced-toggle:active,
+.coat-target-workbench .coat-escutcheon-library-summary:active,
+.coat-target-workbench .coat-target-palette-header button:active,
+.coat-target-workbench .coat-target-color-section-header button:active,
+.coat-target-workbench .coat-target-background-palette-swatch:active,
+.coat-target-workbench .coat-target-library-panel > section.space-y-4 > button:active,
+.coat-target-workbench .coat-target-library-panel .flex.flex-wrap.items-end.gap-2 > button:active,
+.coat-target-workbench .coat-target-library-panel ul.space-y-1 > li > button:active,
+.coat-target-workbench .coat-target-text-form button[data-text-creation-card]:active,
+.coat-target-workbench [role='group'].flex.flex-wrap.gap-1 > button:active,
+.coat-target-workbench .grid.grid-cols-2.gap-2 > button:active,
+.coat-target-workbench [role='group'].grid.grid-cols-4.gap-2 > button:active {
+  box-shadow: var(--coat-shadow-inset);
+}
+
+.coat-target-workbench .coat-target-background-palette-swatch[aria-pressed='true'],
+.coat-target-workbench .coat-target-background-palette-swatch:active {
+  box-shadow: var(--coat-shadow-inset), 0 0 0 1px var(--coat-accent);
+}
+
+.coat-target-workbench .coat-target-tool-tree-node > button,
+.coat-target-workbench .coat-target-tool-tree-branch button,
+.coat-target-workbench .coat-target-tool-tree-navigation,
+.coat-target-workbench .coat-target-tool-tree-node > button:active,
+.coat-target-workbench .coat-target-tool-tree-branch button:active,
+.coat-target-workbench .coat-target-tool-tree-navigation:active {
+  box-shadow: none;
+}
+
+.coat-target-workbench .coat-target-tool-tree-node > button[aria-selected='true'][aria-expanded='true'],
+.coat-target-workbench .coat-target-tool-tree-node > button[aria-selected='true'][aria-expanded='true']:active,
+.coat-target-workbench .coat-target-arrange-section legend button,
+.coat-target-workbench .coat-target-arrange-section legend button:hover,
+.coat-target-workbench .coat-target-arrange-section legend button:active {
+  box-shadow: none;
+}
+
+.coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true'],
+.coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true']:active,
+.coat-target-workbench .coat-target-tool-tree-node > button[aria-selected='true']:not([aria-expanded='true']) {
+  box-shadow: var(--coat-shadow-inset);
+}
+
+.coat-target-workbench .coat-target-action-button--primary,
+.coat-target-workbench .coat-target-action-button--primary:hover,
+.coat-target-workbench .coat-target-action-button--primary:active,
+.coat-target-workbench .coat-target-randomize,
+.coat-target-workbench .coat-target-randomize:active,
+.coat-target-workbench .coat-target-add-charge,
+.coat-target-workbench .coat-target-add-charge:active,
+.coat-target-workbench .coat-custom-shield-uploads,
+.coat-target-workbench .coat-custom-shield-uploads .coat-custom-shield-upload-control,
+.coat-target-workbench .coat-custom-shield-uploads .coat-custom-shield-upload-control:active {
+  box-shadow: none;
+}
+
+.coat-target-workbench,
+.coat-target-workbench .coat-workbench-content,
+.coat-target-workbench .coat-target-editor-grid {
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coat-target-workbench .coat-target-editor-grid { transition: none; }
+}
+
 @media (max-width: 1023px) {
   .coat-target-workbench { min-height: 100svh; overflow: hidden; }
   .coat-target-workbench .coat-workbench-content { min-height: 0; overflow: auto; grid-template-rows: auto minmax(34rem, 1fr) auto; }
@@ -2383,6 +2560,12 @@
   .coat-target-workbench .coat-target-artboard { width: min(22rem, 82vw); }
   .coat-target-workbench .coat-target-zoom { right: 0.7rem; bottom: 0.7rem; }
   .coat-target-workbench .coat-target-zoom input { width: 5.25rem; }
+}
+
+@media (min-width: 640px) {
+  .coat-target-workbench .coat-target-actionbar { height: 50px; }
+  .coat-target-workbench .coat-target-canvas-toolbar { height: 40px; }
+  .coat-target-workbench .coat-target-scene { grid-template-rows: 40px minmax(0, 1fr); }
 }
 
 .coat-maker-seo-content .coat-maker-seo-steps {

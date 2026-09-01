@@ -170,6 +170,23 @@ function finalCssDeclarationValueForSelector(cssText: string, selector: string, 
   return finalPropertyValue;
 }
 
+function cssDeclarationsForSelectorWithinPrefersReducedMotion(cssText: string, selector: string): string[] {
+  const collapsedCss = cssText.replace(/\s+/g, ' ');
+  const collapsedSelector = selector.replace(/\s+/g, ' ').trim();
+  const reducedMotionRulePattern =
+    /@media\s*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)\s*\{((?:[^{}]*\{[^{}]*\})*[^{}]*)\}/g;
+
+  for (const reducedMotionRuleMatch of collapsedCss.matchAll(reducedMotionRulePattern)) {
+    const reducedMotionCss = reducedMotionRuleMatch[1];
+    if (!reducedMotionCss.includes(collapsedSelector)) continue;
+    return cssDeclarationsForSelector(reducedMotionCss, collapsedSelector);
+  }
+
+  throw new Error(
+    `Missing CSS rule for selector ${collapsedSelector} inside @media (prefers-reduced-motion: reduce)`,
+  );
+}
+
 function readCoatWorkbenchStyles(): string {
   return readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 }
@@ -600,7 +617,7 @@ describe('CoatOfArmsMaker', () => {
   it('uses local neumorphic raised depth on editor chrome without recolouring the white output canvas', () => {
     const workbenchStyles = readCoatWorkbenchStyles();
     const raisedChromeSelectors = [
-      '.coat-target-workbench .coat-target-actionbar button',
+      '.coat-target-workbench .coat-target-actionbar > .coat-target-export-control > div > button',
       '.coat-target-workbench .coat-target-collapse',
       '.coat-target-workbench .coat-target-multi-select',
       '.coat-target-workbench .coat-target-zoom',
@@ -678,6 +695,442 @@ describe('CoatOfArmsMaker', () => {
     expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-stage:/);
     expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-toolbar:/);
     expect(workbenchStyles).toMatch(/\.coat-target-workbench\s*\{[\s\S]*?--coat-danger:/);
+  });
+
+  it('applies control-level neumorphic raised shadows to editor control categories', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const raisedControlCategorySelectors = [
+      '.coat-target-workbench .coat-target-actionbar > .coat-target-export-control > div > button',
+      '.coat-target-workbench .coat-gallery-card',
+      '.coat-target-workbench .coat-reference-asset-gallery__grid--compact button',
+      '.coat-target-workbench .coat-escutcheon-option',
+      '.coat-target-workbench .coat-escutcheon-add-button',
+      '.coat-target-workbench .coat-target-action-button',
+      '.coat-target-workbench .coat-target-arrange-section button',
+      '.coat-target-workbench .coat-target-colour-swatch',
+      '.coat-target-workbench .coat-target-canvas-toolbar > .coat-target-history-controls button',
+      '.coat-target-workbench .coat-target-toggle-control',
+      '.coat-target-workbench .coat-target-token-grid button',
+      '.coat-target-workbench .coat-target-shield-grid button',
+      '.coat-target-workbench .coat-target-advanced-toggle',
+      '.coat-target-workbench .coat-target-library-panel > section.space-y-4 > button',
+      '.coat-target-workbench .coat-target-library-panel .flex.flex-wrap.items-end.gap-2 > button',
+      '.coat-target-workbench .coat-target-library-panel ul.space-y-1 > li > button',
+      '.coat-target-workbench .coat-target-text-form button[data-text-creation-card]',
+      ".coat-target-workbench [role='group'].flex.flex-wrap.gap-1 > button",
+      '.coat-target-workbench .grid.grid-cols-2.gap-2 > button',
+      ".coat-target-workbench [role='group'].grid.grid-cols-4.gap-2 > button",
+    ] as const;
+
+    for (const selector of raisedControlCategorySelectors) {
+      expect(finalCssDeclarationValueForSelector(workbenchStyles, selector, 'box-shadow')).toBe(
+        'var(--coat-shadow-raised)',
+      );
+    }
+
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-tool-tree-node > button',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-tool-tree-branch button',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-tool-tree-navigation',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-action-button--primary',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-randomize',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-add-charge',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-custom-shield-uploads .coat-custom-shield-upload-control',
+      'box-shadow',
+    )).toBe('none');
+    expect(() => cssDeclarationsForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-actionbar button',
+    )).toThrow('Missing CSS rule for selector: .coat-target-workbench .coat-target-actionbar button');
+    expect(() => finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-workbench-export-menu button',
+      'box-shadow',
+    )).toThrow('Missing CSS rule for selector: .coat-target-workbench .coat-workbench-export-menu button');
+  });
+
+  it('applies control-level neumorphic inset shadows to fields and pressed or selected controls', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const insetControlCategorySelectors = [
+      '.coat-target-workbench .coat-target-search input',
+      ".coat-target-workbench .coat-target-form-field > input[type='search']",
+      '.coat-target-workbench .coat-target-form-field > select',
+      ".coat-target-workbench .coat-target-library-panel input[type='search']",
+      '.coat-target-workbench .coat-target-library-panel select',
+      ".coat-target-workbench .coat-target-arrange-section input[type='number']",
+      '.coat-target-workbench .coat-target-arrange-section select',
+      '.coat-target-workbench .coat-target-layer-search',
+      '.coat-target-workbench .coat-target-draw-preview',
+      '.coat-target-workbench .coat-workbench-export-menu select',
+      ".coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true']",
+      ".coat-target-workbench .coat-target-canvas-toolbar button[aria-pressed='true']",
+      ".coat-target-workbench .coat-gallery-card[aria-pressed='true']",
+      ".coat-target-workbench .coat-escutcheon-option[data-selected='true']",
+      ".coat-target-workbench [role='group'].flex.flex-wrap.gap-1 > button[aria-pressed='true']",
+      ".coat-target-workbench .grid.grid-cols-2.gap-2 > button[aria-pressed='true']",
+      ".coat-target-workbench [role='group'].grid.grid-cols-4.gap-2 > button[aria-pressed='true']",
+      ".coat-target-workbench .coat-target-library-panel ul.space-y-1 > li > button[aria-pressed='true']",
+    ] as const;
+
+    for (const selector of insetControlCategorySelectors) {
+      expect(finalCssDeclarationValueForSelector(workbenchStyles, selector, 'box-shadow')).toBe(
+        'var(--coat-shadow-inset)',
+      );
+    }
+
+    expect(() => finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-library-panel input',
+      'box-shadow',
+    )).toThrow('Missing CSS property box-shadow for selector: .coat-target-workbench .coat-target-library-panel input');
+    expect(() => finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-arrange-section input',
+      'box-shadow',
+    )).toThrow('Missing CSS property box-shadow for selector: .coat-target-workbench .coat-target-arrange-section input');
+    expect(() => finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-form-field > input:not([type='checkbox']):not([type='range'])",
+      'box-shadow',
+    )).toThrow("Missing CSS property box-shadow for selector: .coat-target-workbench .coat-target-form-field > input:not([type='checkbox']):not([type='range'])");
+    expect(() => finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-form-field > input[type='color']",
+      'box-shadow',
+    )).toThrow("Missing CSS property box-shadow for selector: .coat-target-workbench .coat-target-form-field > input[type='color']");
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true']",
+      'background',
+    )).toBe('var(--coat-active)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-escutcheon-option[data-selected='true']",
+      'border',
+    )).toBe('2px solid var(--coat-accent)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-multi-select[aria-pressed='true']",
+      'box-shadow',
+    )).toBe('var(--coat-shadow-inset)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-background-palette-swatch[aria-pressed='true']",
+      'box-shadow',
+    )).toBe('var(--coat-shadow-inset), 0 0 0 1px var(--coat-accent)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-background-palette-swatch[aria-pressed='true']",
+      'border-color',
+    )).toBe('var(--coat-accent)');
+  });
+
+  it('keeps hover controls raised without replacing gold selected feedback', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const raisedHoverControlSelectors = [
+      '.coat-target-workbench .coat-target-action-button:hover',
+      '.coat-target-workbench .coat-reference-asset-gallery__grid--compact button:hover',
+      '.coat-target-workbench .coat-target-canvas-toolbar > .coat-target-history-controls button:hover',
+    ] as const;
+
+    for (const selector of raisedHoverControlSelectors) {
+      expect(finalCssDeclarationValueForSelector(workbenchStyles, selector, 'box-shadow')).toBe(
+        'var(--coat-shadow-raised)',
+      );
+    }
+
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-action-button:hover',
+      'border-color',
+    )).toBe('var(--coat-accent)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-reference-asset-gallery__grid--compact button:hover',
+      'border-color',
+    )).toBe('var(--coat-accent)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-canvas-toolbar button:hover',
+      'background',
+    )).toBe('var(--coat-active)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-canvas-toolbar button[aria-pressed='true']",
+      'color',
+    )).toBe('var(--coat-accent)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-action-button--primary:hover',
+      'box-shadow',
+    )).toBe('none');
+  });
+
+  it('gives visible controls non-colour inset feedback on :active and selected pressed states', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const activeInsetControlSelectors = [
+      '.coat-target-workbench .coat-target-actionbar > .coat-target-export-control > div > button:active',
+      '.coat-target-workbench .coat-target-collapse:active',
+      '.coat-target-workbench .coat-target-multi-select:active',
+      '.coat-target-workbench .coat-target-action-button:active',
+      '.coat-target-workbench .coat-target-library-panel > section.space-y-4 > button:active',
+      '.coat-target-workbench .coat-target-library-panel .flex.flex-wrap.items-end.gap-2 > button:active',
+      '.coat-target-workbench .coat-target-library-panel ul.space-y-1 > li > button:active',
+      '.coat-target-workbench .coat-target-text-form button[data-text-creation-card]:active',
+      ".coat-target-workbench [role='group'].flex.flex-wrap.gap-1 > button:active",
+      '.coat-target-workbench .grid.grid-cols-2.gap-2 > button:active',
+      ".coat-target-workbench [role='group'].grid.grid-cols-4.gap-2 > button:active",
+      '.coat-target-workbench .coat-target-shield-grid button:active',
+      '.coat-target-workbench .coat-target-token-grid button:active',
+    ] as const;
+
+    for (const selector of activeInsetControlSelectors) {
+      expect(finalCssDeclarationValueForSelector(workbenchStyles, selector, 'box-shadow')).toBe(
+        'var(--coat-shadow-inset)',
+      );
+    }
+
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-tool-tree-node > button[aria-selected='true']",
+      'box-shadow',
+    )).toBe('var(--coat-shadow-inset)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-tool-tree-node > button[aria-selected='true'][aria-expanded='true']",
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-tool-tree-node > button:active',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true']",
+      'box-shadow',
+    )).toBe('var(--coat-shadow-inset)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-tool-tree-branch button[aria-pressed='true']:active",
+      'box-shadow',
+    )).toBe('var(--coat-shadow-inset)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-action-button--primary:active',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-randomize:active',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-custom-shield-uploads .coat-custom-shield-upload-control:active',
+      'box-shadow',
+    )).toBe('none');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-background-palette-swatch:active',
+      'box-shadow',
+    )).toBe('var(--coat-shadow-inset), 0 0 0 1px var(--coat-accent)');
+  });
+
+  it('keeps workbench focus-visible gold and disables editor-grid motion when reduced motion is requested', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+
+    expect(workbenchStyles).toContain('.coat-target-workbench .coat-workbench-content :is(button, input, select):focus-visible { outline: 2px solid var(--coat-accent); outline-offset: 2px; }');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-reference-asset-gallery__grid--compact button:focus-visible',
+      'outline',
+    )).toBe('2px solid color-mix(in oklab, var(--coat-accent) 34%, transparent)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-reference-asset-gallery__grid--compact button:focus-visible',
+      'outline-offset',
+    )).toBe('2px');
+    expect(cssDeclarationValue(
+      cssDeclarationsForSelectorWithinPrefersReducedMotion(
+        workbenchStyles,
+        '.coat-target-workbench .coat-target-editor-grid',
+      ),
+      'transition',
+    )).toBe('none');
+  });
+
+  it('keeps the white artboard and application canvas free of control-level neumorphic shadows', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-artboard',
+      'background',
+    )).toBe('#fff');
+    const artboardBoxShadow = finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-artboard',
+      'box-shadow',
+    );
+    expect(artboardBoxShadow).not.toBe('var(--coat-shadow-raised)');
+    expect(artboardBoxShadow).not.toBe('var(--coat-shadow-inset)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-artboard [role='application']",
+      'background',
+    )).toBe('#fff');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-artboard [role='application']",
+      'box-shadow',
+    )).toBe('none');
+    expect(workbenchStyles).not.toContain("[role='application'] *");
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-workbench-export-menu',
+      'box-shadow',
+    )).toBe('var(--shadow-lg)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-draft',
+      'box-shadow',
+    )).toBe('0 18px 48px -28px var(--workspace-shadow-color)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench[data-appearance='dark']",
+      '--coat-shadow-hi',
+    )).toBe('-1px -1px 2px color-mix(in oklab, white 12%, transparent)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench[data-appearance='dark']",
+      '--coat-shadow-lo',
+    )).toBe('1px 2px 4px color-mix(in oklab, black 40%, transparent)');
+    expect(workbenchStyles).toMatch(
+      /\.coat-target-workbench\s*\{[\s\S]*?--coat-shadow-hi:\s*-1px -1px 2px color-mix\(in oklab, var\(--coat-panel-raised\) 55%, transparent\);/,
+    );
+  });
+
+  it('uses local shell-level neumorphic shadows on editor chrome without turning the viewport into a clay card', () => {
+    const workbenchStyles = readCoatWorkbenchStyles();
+    const raisedShellSurfaceSelectors = [
+      '.coat-target-workbench .coat-target-actionbar',
+      '.coat-target-workbench .coat-target-canvas-toolbar',
+    ] as const;
+    const insetShellSurfaceSelectors = [
+      '.coat-target-workbench .coat-target-scene',
+      '.coat-target-workbench .coat-target-library-panel',
+    ] as const;
+    const fullViewportSurfaceSelectors = [
+      '.coat-target-workbench',
+      '.coat-target-workbench .coat-workbench-content',
+      '.coat-target-workbench .coat-target-editor-grid',
+    ] as const;
+
+    for (const selector of raisedShellSurfaceSelectors) {
+      expect(finalCssDeclarationValueForSelector(workbenchStyles, selector, 'box-shadow')).toBe(
+        'var(--coat-shadow-raised)',
+      );
+    }
+    for (const selector of insetShellSurfaceSelectors) {
+      expect(finalCssDeclarationValueForSelector(workbenchStyles, selector, 'box-shadow')).toBe(
+        'var(--coat-shadow-inset)',
+      );
+    }
+
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-actionbar',
+      'height',
+    )).toBe('50px');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-actionbar',
+      'border-bottom',
+    )).toBe('1px solid var(--coat-line)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-canvas-toolbar',
+      'height',
+    )).toBe('40px');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-canvas-toolbar',
+      'border-bottom',
+    )).toBe('1px solid var(--coat-line)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-scene',
+      'grid-template-rows',
+    )).toBe('40px minmax(0, 1fr)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-left-panel',
+      'border-right',
+    )).toBe('1px solid var(--coat-line)');
+
+    for (const selector of fullViewportSurfaceSelectors) {
+      expect(finalCssDeclarationValueForSelector(workbenchStyles, selector, 'box-shadow')).toBe('none');
+    }
+
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-artboard',
+      'background',
+    )).toBe('#fff');
+    const artboardBoxShadow = finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-artboard',
+      'box-shadow',
+    );
+    expect(artboardBoxShadow).not.toBe('var(--coat-shadow-raised)');
+    expect(artboardBoxShadow).not.toBe('var(--coat-shadow-inset)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-artboard [role='application']",
+      'background',
+    )).toBe('#fff');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-artboard [role='application']",
+      'box-shadow',
+    )).toBe('none');
+    expect(workbenchStyles).not.toContain("[role='application'] *");
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench[data-appearance='dark']",
+      '--coat-shadow-hi',
+    )).toBe('-1px -1px 2px color-mix(in oklab, white 12%, transparent)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench[data-appearance='dark']",
+      '--coat-shadow-lo',
+    )).toBe('1px 2px 4px color-mix(in oklab, black 40%, transparent)');
   });
 
   it('keeps the Chinese shared navigation and locale switch on Coat Maker', () => {
