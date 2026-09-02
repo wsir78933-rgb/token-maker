@@ -202,6 +202,111 @@ function cssDeclarationValue(declarations: string[], propertyName: string): stri
   return matchedDeclaration.slice(matchedDeclaration.indexOf(':') + 1).trim();
 }
 
+const SITE_GRADIENT_OR_ACCENT_GOLD_PATTERN =
+  /(?:linear|radial|conic)-gradient|var\(--site-[^)]*\)|var\(--body-ambient\)|var\(--accent\)|#8e6117|#f1d492|rgba\(\s*215\s*,\s*180\s*,\s*106/i;
+const HIGH_CONTRAST_HARD_EDGE_PATTERN =
+  /#000(?:000)?\b|#fff(?:fff)?\b|\bsolid\s+black\b|\bsolid\s+white\b|var\(--coat-accent\)|var\(--site-accent-strong\)/i;
+
+function expectCssValueIsLocalSameHueMaterial(selector: string, propertyName: string, cssValue: string) {
+  if (SITE_GRADIENT_OR_ACCENT_GOLD_PATTERN.test(cssValue)) {
+    throw new Error(
+      `Missing local same-hue material for ${propertyName} on selector ${selector}; received: ${cssValue}`,
+    );
+  }
+}
+
+function expectCssValueReferencesSiblingCoatSurfaceToken(
+  selector: string,
+  propertyName: string,
+  cssValue: string,
+) {
+  const referencedSurfaceTokens = [
+    ...cssValue.matchAll(/var\(--coat-(?:stage|toolbar|panel|panel-raised)\)/g),
+  ].map((match) => match[0]);
+  const referencesSibling = referencedSurfaceTokens.some((token) => token !== `var(${propertyName})`);
+  if (!referencesSibling) {
+    throw new Error(
+      `Missing sibling coat surface token in ${propertyName} for selector ${selector}; received: ${cssValue}`,
+    );
+  }
+}
+
+function expectCssValueIsSoftSameHueEdge(selector: string, propertyName: string, cssValue: string) {
+  if (HIGH_CONTRAST_HARD_EDGE_PATTERN.test(cssValue)) {
+    throw new Error(
+      `Missing soft same-hue edge for ${propertyName} on selector ${selector}; received: ${cssValue}`,
+    );
+  }
+}
+
+function readCoatWorkbenchCssWithoutComments(): string {
+  return readCoatWorkbenchStyles().replace(/\/\*[\s\S]*?\*\//g, ' ');
+}
+
+function selectorListFromCssRulePrelude(rulePrelude: string): string[] {
+  return rulePrelude
+    .split(',')
+    .map((selector) => selector.replace(/^[\s}]+/, '').trim())
+    .filter((selector) => selector.length > 0);
+}
+
+function finalCssDeclarationValueForWorkbenchRoot(cssText: string, propertyName: string): string {
+  const collapsedCss = cssText.replace(/\s+/g, ' ');
+  const workbenchRootSelector = '.coat-target-workbench';
+  const rulePattern = /([^{]+)\{([^}]+)\}/g;
+  let matchedSelector = false;
+  let finalPropertyValue: string | undefined;
+
+  for (const match of collapsedCss.matchAll(rulePattern)) {
+    const selectorList = selectorListFromCssRulePrelude(match[1]);
+    if (!selectorList.includes(workbenchRootSelector)) continue;
+    matchedSelector = true;
+
+    for (const declaration of match[2].split(';')) {
+      const separatorIndex = declaration.indexOf(':');
+      if (separatorIndex <= 0 || declaration.slice(0, separatorIndex).trim() !== propertyName) continue;
+      finalPropertyValue = declaration.slice(separatorIndex + 1).trim();
+    }
+  }
+
+  if (!matchedSelector) {
+    throw new Error('Missing CSS rule for selector: .coat-target-workbench');
+  }
+  if (finalPropertyValue === undefined) {
+    throw new Error(`Missing CSS property ${propertyName} for selector: .coat-target-workbench`);
+  }
+  return finalPropertyValue;
+}
+
+function finalWorkbenchCssValue(workbenchStyles: string, selector: string, propertyName: string): string {
+  if (selector === '.coat-target-workbench') {
+    return finalCssDeclarationValueForWorkbenchRoot(workbenchStyles, propertyName);
+  }
+  return finalCssDeclarationValueForSelector(workbenchStyles, selector, propertyName);
+}
+
+function expectBoxShadowComposedOfLocalHiLo(
+  selector: string,
+  propertyName: string,
+  cssValue: string,
+  composition: 'raised' | 'inset',
+) {
+  const raisedValues = [
+    'var(--coat-shadow-hi), var(--coat-shadow-lo)',
+    'var(--coat-shadow-lo), var(--coat-shadow-hi)',
+  ];
+  const insetValues = [
+    'inset var(--coat-shadow-hi), inset var(--coat-shadow-lo)',
+    'inset var(--coat-shadow-lo), inset var(--coat-shadow-hi)',
+  ];
+  const allowedValues = composition === 'raised' ? raisedValues : insetValues;
+  if (!allowedValues.includes(cssValue)) {
+    throw new Error(
+      `Missing local --coat-shadow-hi/lo ${composition} composition for ${propertyName} on selector ${selector}; received: ${cssValue}`,
+    );
+  }
+}
+
 function coatWorkbenchRuleCss(workbenchStyles: string, selector: string): string {
   const declarations = cssDeclarationsForSelector(workbenchStyles, selector);
   if (declarations.length === 0) {
@@ -1131,6 +1236,252 @@ describe('CoatOfArmsMaker', () => {
       ".coat-target-workbench[data-appearance='dark']",
       '--coat-shadow-lo',
     )).toBe('1px 2px 4px color-mix(in oklab, black 40%, transparent)');
+  });
+
+  it('reads last-wins workbench, content, and editor-grid declarations from grouped selectors and later desktop media', () => {
+    const cascadeCss = [
+      '@media (max-width: 1px) { .unrelated { color: red; } }',
+      '.coat-target-workbench { --coat-stage: #1a1d23; background: red; box-shadow: inset 0 0 #000; min-height: 10rem; }',
+      '.coat-target-workbench .coat-workbench-content { background: blue; box-shadow: inset 0 0 #000; }',
+      '.coat-target-workbench .coat-target-editor-grid { background: green; box-shadow: inset 0 0 #000; }',
+      '.coat-target-workbench .coat-target-actionbar { height: 99px; }',
+      '.coat-target-workbench .coat-target-canvas-toolbar { height: 99px; }',
+      '.coat-target-workbench .coat-target-scene { grid-template-rows: 99px minmax(0, 1fr); }',
+      '.coat-target-workbench, .coat-target-workbench .coat-workbench-content, .coat-target-workbench .coat-target-editor-grid { background: var(--coat-stage); box-shadow: none; }',
+      '@media (max-width: 1023px) { .coat-target-workbench { min-height: 100svh; background: black; box-shadow: 0 0 red; } .coat-target-workbench .coat-target-actionbar { height: 20px; } }',
+      '@media (max-width: 639px) { .coat-target-workbench .coat-workbench-content { min-height: 0; } .coat-target-workbench .coat-target-canvas-toolbar { height: auto; } .coat-target-workbench .coat-target-scene { grid-template-rows: auto minmax(0, 1fr); } }',
+      '@media (min-width: 640px) { .coat-target-workbench .coat-target-library-panel { flex-basis: 290px; } .coat-target-workbench { min-height: 38rem; } .coat-target-workbench .coat-target-actionbar { height: 50px; } .coat-target-workbench .coat-target-canvas-toolbar { height: 40px; } .coat-target-workbench .coat-target-scene { grid-template-rows: 40px minmax(0, 1fr); } }',
+    ].join(' ');
+
+    expect(finalCssDeclarationValueForWorkbenchRoot(cascadeCss, '--coat-stage')).toBe('#1a1d23');
+    expect(finalCssDeclarationValueForWorkbenchRoot(cascadeCss, 'box-shadow')).toBe('none');
+    expect(finalCssDeclarationValueForWorkbenchRoot(cascadeCss, 'background')).toBe('var(--coat-stage)');
+    expect(finalCssDeclarationValueForWorkbenchRoot(cascadeCss, 'min-height')).toBe('38rem');
+    expect(finalWorkbenchCssValue(cascadeCss, '.coat-target-workbench .coat-workbench-content', 'box-shadow')).toBe('none');
+    expect(finalWorkbenchCssValue(cascadeCss, '.coat-target-workbench .coat-workbench-content', 'background')).toBe('var(--coat-stage)');
+    expect(finalWorkbenchCssValue(cascadeCss, '.coat-target-workbench .coat-target-editor-grid', 'box-shadow')).toBe('none');
+    expect(finalWorkbenchCssValue(cascadeCss, '.coat-target-workbench .coat-target-editor-grid', 'background')).toBe('var(--coat-stage)');
+    expect(finalWorkbenchCssValue(cascadeCss, '.coat-target-workbench .coat-target-actionbar', 'height')).toBe('50px');
+    expect(finalWorkbenchCssValue(cascadeCss, '.coat-target-workbench .coat-target-canvas-toolbar', 'height')).toBe('40px');
+    expect(finalWorkbenchCssValue(cascadeCss, '.coat-target-workbench .coat-target-scene', 'grid-template-rows')).toBe(
+      '40px minmax(0, 1fr)',
+    );
+
+    const workbenchStyles = readCoatWorkbenchCssWithoutComments();
+    expect(finalCssDeclarationValueForWorkbenchRoot(workbenchStyles, '--coat-stage')).toBe('#1a1d23');
+    expect(finalCssDeclarationValueForWorkbenchRoot(workbenchStyles, '--coat-shadow-raised')).toBe(
+      'var(--coat-shadow-hi), var(--coat-shadow-lo)',
+    );
+    expect(finalCssDeclarationValueForWorkbenchRoot(workbenchStyles, '--coat-accent')).toBe('var(--site-accent-strong)');
+    expect(finalCssDeclarationValueForWorkbenchRoot(workbenchStyles, 'box-shadow')).toBe('none');
+    expect(finalCssDeclarationValueForWorkbenchRoot(workbenchStyles, 'background')).toBe('var(--coat-stage)');
+    expect(finalWorkbenchCssValue(workbenchStyles, '.coat-target-workbench .coat-workbench-content', 'box-shadow')).toBe('none');
+    expect(finalWorkbenchCssValue(workbenchStyles, '.coat-target-workbench .coat-workbench-content', 'background')).toBe(
+      'var(--coat-stage)',
+    );
+    expect(finalWorkbenchCssValue(workbenchStyles, '.coat-target-workbench .coat-target-editor-grid', 'box-shadow')).toBe('none');
+    expect(finalWorkbenchCssValue(workbenchStyles, '.coat-target-workbench .coat-target-editor-grid', 'background')).toBe(
+      'var(--coat-stage)',
+    );
+    expect(finalWorkbenchCssValue(workbenchStyles, '.coat-target-workbench .coat-target-actionbar', 'height')).toBe('50px');
+    expect(finalWorkbenchCssValue(workbenchStyles, '.coat-target-workbench .coat-target-canvas-toolbar', 'height')).toBe('40px');
+    expect(finalWorkbenchCssValue(workbenchStyles, '.coat-target-workbench .coat-target-scene', 'grid-template-rows')).toBe(
+      '40px minmax(0, 1fr)',
+    );
+  });
+
+  it('uses a same-hue local material for idle workbench surfaces instead of site gradients or accent gold', () => {
+    const workbenchStyles = readCoatWorkbenchCssWithoutComments();
+    const workbenchSelector = '.coat-target-workbench';
+    const idleSurfaceTokenNames = [
+      '--coat-stage',
+      '--coat-toolbar',
+      '--coat-panel',
+      '--coat-panel-raised',
+    ] as const;
+    const idleSurfaceBackgroundContracts = [
+      ['.coat-target-workbench', 'var(--coat-stage)'],
+      ['.coat-target-workbench .coat-workbench-content', 'var(--coat-stage)'],
+      ['.coat-target-workbench .coat-target-editor-grid', 'var(--coat-stage)'],
+      ['.coat-target-workbench .coat-target-actionbar', 'var(--coat-toolbar)'],
+      ['.coat-target-workbench .coat-target-canvas-toolbar', 'var(--coat-toolbar)'],
+      ['.coat-target-workbench .coat-target-left-panel', 'var(--coat-panel)'],
+      ['.coat-target-workbench .coat-target-tool-tree', 'var(--coat-toolbar)'],
+      ['.coat-target-workbench .coat-target-library-panel', 'var(--coat-panel)'],
+      ['.coat-target-workbench .coat-target-scene', 'var(--coat-stage)'],
+    ] as const;
+
+    for (const tokenName of idleSurfaceTokenNames) {
+      const tokenValue = finalWorkbenchCssValue(workbenchStyles, workbenchSelector, tokenName);
+      expectCssValueIsLocalSameHueMaterial(workbenchSelector, tokenName, tokenValue);
+    }
+    for (const tokenName of idleSurfaceTokenNames) {
+      if (tokenName === '--coat-stage') continue;
+      const tokenValue = finalWorkbenchCssValue(workbenchStyles, workbenchSelector, tokenName);
+      expectCssValueReferencesSiblingCoatSurfaceToken(workbenchSelector, tokenName, tokenValue);
+    }
+
+    for (const [selector, expectedBackground] of idleSurfaceBackgroundContracts) {
+      const backgroundValue = finalWorkbenchCssValue(workbenchStyles, selector, 'background');
+      expectCssValueIsLocalSameHueMaterial(selector, 'background', backgroundValue);
+      expect(backgroundValue).toBe(expectedBackground);
+    }
+  });
+
+  it('keeps pure shell-level neumorphic depth readable without high-contrast hard edges', () => {
+    const workbenchStyles = readCoatWorkbenchCssWithoutComments();
+    const workbenchSelector = '.coat-target-workbench';
+    const raisedShellSelectors = [
+      '.coat-target-workbench .coat-target-actionbar',
+      '.coat-target-workbench .coat-target-canvas-toolbar',
+    ] as const;
+    const insetShellSelectors = [
+      '.coat-target-workbench .coat-target-library-panel',
+      '.coat-target-workbench .coat-target-scene',
+    ] as const;
+    const flatShellSelectors = [
+      '.coat-target-workbench',
+      '.coat-target-workbench .coat-workbench-content',
+      '.coat-target-workbench .coat-target-editor-grid',
+      '.coat-target-workbench .coat-target-left-panel',
+      '.coat-target-workbench .coat-target-tool-tree',
+    ] as const;
+    const softLineBorderContracts = [
+      ['.coat-target-workbench .coat-target-actionbar', 'border-bottom', '1px solid var(--coat-line)'],
+      ['.coat-target-workbench .coat-target-canvas-toolbar', 'border-bottom', '1px solid var(--coat-line)'],
+      ['.coat-target-workbench .coat-target-left-panel', 'border-right', '1px solid var(--coat-line)'],
+      ['.coat-target-workbench .coat-target-tool-tree', 'border-right', '1px solid var(--coat-line)'],
+    ] as const;
+
+    const raisedTokenValue = finalWorkbenchCssValue(
+      workbenchStyles,
+      workbenchSelector,
+      '--coat-shadow-raised',
+    );
+    const insetTokenValue = finalWorkbenchCssValue(
+      workbenchStyles,
+      workbenchSelector,
+      '--coat-shadow-inset',
+    );
+    expectBoxShadowComposedOfLocalHiLo(workbenchSelector, '--coat-shadow-raised', raisedTokenValue, 'raised');
+    expectBoxShadowComposedOfLocalHiLo(workbenchSelector, '--coat-shadow-inset', insetTokenValue, 'inset');
+    expect(finalWorkbenchCssValue(workbenchStyles, workbenchSelector, '--coat-shadow-hi')).toBe(
+      '-1px -1px 2px color-mix(in oklab, var(--coat-panel-raised) 55%, transparent)',
+    );
+    expect(finalWorkbenchCssValue(workbenchStyles, workbenchSelector, '--coat-shadow-lo')).toBe(
+      '1px 2px 4px color-mix(in oklab, var(--coat-line) 38%, transparent)',
+    );
+
+    const lineValue = finalWorkbenchCssValue(workbenchStyles, workbenchSelector, '--coat-line');
+    expectCssValueIsLocalSameHueMaterial(workbenchSelector, '--coat-line', lineValue);
+    expectCssValueReferencesSiblingCoatSurfaceToken(workbenchSelector, '--coat-line', lineValue);
+    expectCssValueIsSoftSameHueEdge(workbenchSelector, '--coat-line', lineValue);
+
+    for (const selector of raisedShellSelectors) {
+      expect(finalWorkbenchCssValue(workbenchStyles, selector, 'box-shadow')).toBe(
+        'var(--coat-shadow-raised)',
+      );
+    }
+    for (const selector of insetShellSelectors) {
+      expect(finalWorkbenchCssValue(workbenchStyles, selector, 'box-shadow')).toBe(
+        'var(--coat-shadow-inset)',
+      );
+    }
+    for (const selector of flatShellSelectors) {
+      expect(finalWorkbenchCssValue(workbenchStyles, selector, 'box-shadow')).toBe('none');
+    }
+    for (const [selector, propertyName, expectedValue] of softLineBorderContracts) {
+      const borderValue = finalCssDeclarationValueForSelector(workbenchStyles, selector, propertyName);
+      expectCssValueIsSoftSameHueEdge(selector, propertyName, borderValue);
+      expect(borderValue).toBe(expectedValue);
+    }
+
+    const darkShadowHi = finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench[data-appearance='dark']",
+      '--coat-shadow-hi',
+    );
+    const darkShadowLo = finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench[data-appearance='dark']",
+      '--coat-shadow-lo',
+    );
+    if (darkShadowHi === darkShadowLo) {
+      throw new Error(
+        `Missing readable dark highlight/shadow difference for --coat-shadow-hi/lo on selector .coat-target-workbench[data-appearance='dark']; received: ${darkShadowHi}`,
+      );
+    }
+    expect(darkShadowHi).toBe('-1px -1px 2px color-mix(in oklab, white 12%, transparent)');
+    expect(darkShadowLo).toBe('1px 2px 4px color-mix(in oklab, black 40%, transparent)');
+  });
+
+  it('keeps gold as selected focus and accent semantics without painting idle surfaces or content pixels', () => {
+    const workbenchStyles = readCoatWorkbenchCssWithoutComments();
+    const idleSurfaceSelectors = [
+      '.coat-target-workbench',
+      '.coat-target-workbench .coat-workbench-content',
+      '.coat-target-workbench .coat-target-editor-grid',
+      '.coat-target-workbench .coat-target-actionbar',
+      '.coat-target-workbench .coat-target-canvas-toolbar',
+      '.coat-target-workbench .coat-target-left-panel',
+      '.coat-target-workbench .coat-target-tool-tree',
+      '.coat-target-workbench .coat-target-library-panel',
+      '.coat-target-workbench .coat-target-scene',
+    ] as const;
+
+    expect(finalWorkbenchCssValue(workbenchStyles, '.coat-target-workbench', '--coat-accent')).toBe(
+      'var(--site-accent-strong)',
+    );
+    expect(workbenchStyles).toContain(
+      '.coat-target-workbench .coat-workbench-content :is(button, input, select):focus-visible { outline: 2px solid var(--coat-accent); outline-offset: 2px; }',
+    );
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-multi-select[aria-pressed='true']",
+      'color',
+    )).toBe('var(--coat-accent) !important');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-canvas-toolbar button[aria-pressed='true']",
+      'color',
+    )).toBe('var(--coat-accent)');
+
+    for (const selector of idleSurfaceSelectors) {
+      const backgroundValue = finalWorkbenchCssValue(workbenchStyles, selector, 'background');
+      if (
+        /var\(--coat-accent(?:-bg)?\)|var\(--site-accent(?:-strong|-bg)?\)|var\(--site-bg-hub\)|(?:linear|radial|conic)-gradient/.test(
+          backgroundValue,
+        )
+      ) {
+        throw new Error(
+          `Missing non-gold idle surface background for selector ${selector}; received: ${backgroundValue}`,
+        );
+      }
+      expect(backgroundValue).not.toBe('#fff');
+    }
+
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-artboard',
+      'background',
+    )).toBe('#fff');
+    const artboardBoxShadow = finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      '.coat-target-workbench .coat-target-artboard',
+      'box-shadow',
+    );
+    expect(artboardBoxShadow).not.toBe('var(--coat-shadow-raised)');
+    expect(artboardBoxShadow).not.toBe('var(--coat-shadow-inset)');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-artboard [role='application']",
+      'background',
+    )).toBe('#fff');
+    expect(finalCssDeclarationValueForSelector(
+      workbenchStyles,
+      ".coat-target-workbench .coat-target-artboard [role='application']",
+      'box-shadow',
+    )).toBe('none');
   });
 
   it('keeps the Chinese shared navigation and locale switch on Coat Maker', () => {

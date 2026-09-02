@@ -1397,12 +1397,12 @@
 /* Local editor chrome and working canvas are
    intentionally isolated from the site's editorial page chrome. */
 .coat-target-workbench {
-  --coat-stage: color-mix(in oklab, var(--background) 88%, #000 12%);
-  --coat-toolbar: color-mix(in oklab, var(--card) 88%, var(--background));
-  --coat-panel: color-mix(in oklab, var(--card) 94%, var(--background));
-  --coat-panel-raised: color-mix(in oklab, var(--accent) 82%, var(--card));
-  --coat-line: color-mix(in oklab, var(--border) 82%, var(--site-border-soft));
-  --coat-active: color-mix(in oklab, var(--site-accent-bg) 84%, var(--card));
+  --coat-stage: #1a1d23;
+  --coat-toolbar: color-mix(in oklab, var(--coat-stage) 86%, #2e333c);
+  --coat-panel: color-mix(in oklab, var(--coat-stage) 90%, #262b33);
+  --coat-panel-raised: color-mix(in oklab, var(--coat-stage) 78%, #343a44);
+  --coat-line: color-mix(in oklab, var(--coat-stage) 68%, #3d4450);
+  --coat-active: color-mix(in oklab, var(--coat-panel-raised) 88%, var(--coat-stage));
   --coat-text: var(--foreground);
   --coat-muted: var(--muted-foreground);
   --coat-accent: var(--site-accent-strong);
@@ -1417,7 +1417,7 @@
   height: 100svh;
   min-height: 38rem;
   overflow: hidden;
-  background: var(--site-bg-hub);
+  background: var(--coat-stage);
   color: var(--coat-text);
   font-family: var(--font-sans);
   box-shadow: none;
@@ -1524,7 +1524,7 @@
 }
 .coat-target-workbench .coat-target-export > div > button { width: 109.375px; height: 38.25px; }
 
-.coat-target-workbench .coat-target-editor-grid { display: grid; min-height: 0; grid-template-columns: 460px minmax(0, 1fr); transition: grid-template-columns 160ms ease; box-shadow: none; }
+.coat-target-workbench .coat-target-editor-grid { display: grid; min-height: 0; grid-template-columns: 460px minmax(0, 1fr); transition: grid-template-columns 160ms ease; box-shadow: none; background: var(--coat-stage); }
 .coat-target-workbench .coat-target-editor-grid[data-tool-panel-collapsed='true'] { grid-template-columns: 170px minmax(0, 1fr); }
 .coat-target-workbench .coat-target-left-panel { position: relative; min-width: 0; min-height: 0; overflow: visible; border-right: 1px solid var(--coat-line); background: var(--coat-panel); }
 .coat-target-workbench .coat-target-left-panel[data-collapsed='true'] { border-right: 1px solid var(--coat-line); }
@@ -2510,6 +2510,12 @@
 .coat-target-workbench,
 .coat-target-workbench .coat-workbench-content,
 .coat-target-workbench .coat-target-editor-grid {
+  background: var(--coat-stage);
+  box-shadow: none;
+}
+
+.coat-target-workbench .coat-target-left-panel,
+.coat-target-workbench .coat-target-tool-tree {
   box-shadow: none;
 }
 
