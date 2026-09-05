@@ -185,7 +185,7 @@ const DND_DRUID_SPELLS_UPDATED_AT = '2026-05-04';
 const DND_DHAMPIR_UPDATED_AT = '2026-04-17';
 const DND_GRUNG_UPDATED_AT = '2026-04-20';
 const DND_COUNTERSPELL_UPDATED_AT = '2026-04-25';
-const DND_GIANTS_UPDATED_AT = '2026-04-28';
+const DND_GIANTS_UPDATED_AT = '2026-09-05';
 const DND_MAGE_ARMOR_UPDATED_AT = '2026-04-29';
 const DND_NECROMANCER_SPELLS_UPDATED_AT = '2026-05-02';
 const DND_HUNTERS_MARK_UPDATED_AT = '2026-05-02';
@@ -1111,14 +1111,14 @@ const dndCounterspellArticleZh: BlogPost = {
 
 const dndGiantsArticle: BlogPost = {
   slug: 'dnd-giants',
-  title: 'DND Giants Guide: Types, Lore, Encounter Tips, and VTT Tokens',
-  seoTitle: 'DND Giants Guide: Types, Lore, Encounters & Tokens',
+  title: 'DND Giants: Split Type, Huge Space, and Encounter Controls',
+  seoTitle: 'DND Giants Guide: Type, Size, Ordning, Map, and Tokens',
   metaDescription:
-    'Learn the main DND giants, how each giant type plays at the table, how to design better giant encounters, and how to make readable VTT tokens.',
+    'Split Giant type from the six true DND giants, check 2014 and current Basic Rules, treat the Ordning as status, then lock map, morale, and tokens.',
   excerpt:
-    'A practical dnd giants encyclopedia guide with a quick type table, lore notes, encounter design advice, VTT token tips, and FAQ answers.',
+    'A practical DND giants guide that separates creature type, Huge space, Ordning status, encounter questions, and VTT token scale.',
   updatedAt: DND_GIANTS_UPDATED_AT,
-  readTime: '10 min read',
+  readTime: '11 min read',
   coverLabel: 'Monster Guide',
   coverImage: DND_GIANTS_COVER_PATH,
   coverAlt:
@@ -1126,24 +1126,24 @@ const dndGiantsArticle: BlogPost = {
   bodyHtml: dndGiantsArticleHtml,
   faqItems: [
     {
-      question: 'What are the main DND giants?',
+      question: 'Does “giant” mean the same thing as the six true DND giants?',
       answer:
-        'The main DND giants most players recognize are hill giants, stone giants, frost giants, fire giants, cloud giants, and storm giants.',
+        'No. In the 2014 Basic Rules, Giants is a creature type that includes the six true giants—hill, stone, frost, fire, cloud, and storm—and also includes other giants such as ogres and trolls. Confirm the type on the stat block you are using.',
     },
     {
-      question: 'Are DND giants humanoids?',
+      question: 'Do 2014 and 2024 Basic Rules treat DND giants the same way?',
       answer:
-        'In 5e, many classic DND giants use the giant creature type rather than ordinary humanoid. Always check the exact stat block your table is using.',
+        'They overlap, but they are not one package. The 2014 type paragraph names the six true giants. The current How to Use a Monster page gives different Giant examples, and the current creature list includes Huge entries for those six names. Open the rules version your table is playing.',
     },
     {
-      question: 'Which DND giant is best for a first giant encounter?',
+      question: 'Does the Ordning tell you which DND giant is strongest in combat?',
       answer:
-        'A hill giant is usually the easiest first choice because its threat is clear and its tactics are simple. A stone giant is better if you want a more tactical terrain fight.',
+        'No. The official Ordning overview is a social caste. It ranks storm, cloud, fire, frost, stone, and hill for status, and it notes that not every giant accepts the system. Combat numbers come from the stat block, not from that caste list.',
     },
     {
-      question: 'How do you make DND giants feel bigger in combat?',
+      question: 'What should you lock before placing a DND giant token on a VTT map?',
       answer:
-        'Use scale cues, vertical terrain, thrown objects, destructible cover, and objectives beyond damage. A giant should change the room, not just occupy more squares.',
+        'Lock the rules version, the size tag, the occupied space, one response route, one visible objective, and one morale line. Then crop the token so the silhouette still reads as a giant next to a Medium character token.',
     },
   ],
   relatedSlugs: ['dnd-classes-explained', 'dnd-counterspell', 'dnd-constitution-guide'],
@@ -1151,14 +1151,14 @@ const dndGiantsArticle: BlogPost = {
 
 const dndGiantsArticleZh: BlogPost = {
   slug: 'dnd-giants',
-  title: 'DND Giants 指南：巨人类型、设定、遭遇设计与 VTT Token',
-  seoTitle: 'DND Giants 指南：类型、设定、遭遇与 Token',
+  title: '巨人遭遇：先锁规则版本，再写占位、目标和士气',
+  seoTitle: 'dnd giants：巨人类、巨型占位、等级秩序与棋子',
   metaDescription:
-    '想了解 dnd giants 有哪些类型、每种巨人怎么跑、如何设计更有压迫感的巨人遭遇，以及怎样制作清晰的 VTT Token？这篇直接给你速查和实战建议。',
+    '分开 2014 年的巨人类和六种经典巨人，核验当前巨型体型条目，把巨人等级秩序当身份而不是伤害，再写地图、目标和停手规则。',
   excerpt:
-    '想把 DND 巨人跑得有压迫感而不是单纯磨血？这里整理巨人类型、设定用法、遭遇设计和 VTT Token 建议。',
+    '从规则版本、巨型占位和巨人等级秩序出发，给六种经典巨人各自一个遭遇问题，并用棋子保住 3×3 轮廓。',
   updatedAt: DND_GIANTS_UPDATED_AT,
-  readTime: '10 分钟阅读',
+  readTime: '11 分钟阅读',
   coverLabel: '怪物百科',
   coverImage: DND_GIANTS_COVER_PATH,
   coverAlt:
@@ -1166,24 +1166,24 @@ const dndGiantsArticleZh: BlogPost = {
   bodyHtml: dndGiantsArticleHtmlZh,
   faqItems: [
     {
-      question: 'DND giants 主要有哪些？',
+      question: '2014 年的巨人类和六种经典巨人是一回事吗？',
       answer:
-        '最常见的 DND giants 包括 hill giant、stone giant、frost giant、fire giant、cloud giant 和 storm giant。',
+        '不是。2014 年 D&D 基础规则把巨人类写成生物类型，六种经典巨人是丘陵巨人、石巨人、霜巨人、火巨人、云巨人和风暴巨人；食人魔和巨魔也可以落在这个类型里。具体仍以当前怪物数据卡的类型字段为准。',
     },
     {
-      question: 'DND giants 算 humanoid 吗？',
+      question: '当前基础规则里六种巨人的体型标签是什么？',
       answer:
-        '在 5e 中，许多经典 DND giants 使用的是 giant 类型，而不是普通 humanoid。具体仍要看你桌使用的 stat block。',
+        '当前条目里丘陵巨人、石巨人、霜巨人、火巨人、云巨人和风暴巨人都是巨型体型的巨人类。双头巨人和巨魔是大型巨人类。巨型体型在当前战斗规则里占 15×15 英尺，也就是 3×3 格。',
     },
     {
-      question: '第一次巨人遭遇用哪种 DND giant 最好？',
+      question: '不接受巨人等级秩序的巨人还能用吗？',
       answer:
-        'Hill giant 通常最适合作为第一次巨人遭遇，因为威胁清晰、跑法简单。如果你想要更强的地形战术感，stone giant 更合适。',
+        '能。官方设定文写明不是所有巨人都遵循巨人等级秩序，理由可以不同。社会等级能解释场面，不能改写怪物数据卡上的数值。',
     },
     {
-      question: '怎样让 DND giants 在战斗里更有巨大感？',
+      question: '地图、目标和士气哪一项要先写？',
       answer:
-        '使用尺度参照、立体地形、投掷物、可破坏掩体和非伤害目标。巨人应该改变房间，而不是只占更多格子。',
+        '先锁定规则版本和怪物数据卡，再写巨人对房间、路线或对话正在做的事，最后在先攻之前放好占位、可回应路线、可见目标和士气规则。棋子只负责让 3×3 的轮廓在地图上仍能被认出来。',
     },
   ],
   relatedSlugs: ['dnd-classes-explained', 'dnd-counterspell', 'dnd-constitution-guide'],
