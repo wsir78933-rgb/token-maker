@@ -1,5 +1,56 @@
 # WORKLOG
 
+## 交接单 · 2026-09-02 20:02 CST · Codex CLI
+
+### 本次目标
+
+将 `/coat-of-arms-maker` 从深色混合新拟态纯化为更正统的新拟态：编辑器局部 surface 使用同色系材质，减少非必要硬边框、渐变和普通状态金色，用左上高光与右下暗影表达 raised/inset；保留黑金语义、白色作品画布、功能、布局、SEO 和无关 dirty changes。
+
+### 已完成
+
+- `src/app/globals.css:1400-1428` 将 Coat Maker 局部 material 收敛到深色同色系 surface，编辑器范围不再使用站点渐变或普通 idle gold；保留 dark 高光/暗影 token。
+- `src/app/globals.css:1493-1567` 保留控件级拟态，并将 actionbar/canvas toolbar 做 raised、scene/library 做 inset；workbench/content/editor-grid 保持结构性 none；artboard 与 `[role='application']` 保持白色和无阴影。
+- `src/components/coat-of-arms/CoatOfArmsMaker.test.tsx:1293` 增加 pure material/no-gradient/no-idle-gold 契约；` :1241` 修正 CSS cascade helper 的 last-wins 读取并加入 grouped-selector fixture。
+- 已提交 `1db08a4 feat: refine coat maker neumorphic styling`，commit 只包含 `src/app/globals.css` 和 `src/components/coat-of-arms/CoatOfArmsMaker.test.tsx`，未 push、未部署。
+- TDD 先得到真实 RED（3 failed / 109 passed），最终 Coat Maker focused 113/113；相关 SSR/route/API 126/126；完整 `pnpm test` 1535/1535；Names 隔离 3 次 1/1；typecheck、lint、build、`git diff --check` 均通过。lint 只有既有 `no-img-element` warning。
+- Ego Browser 在 `127.0.0.1:3101` 对 EN/ZH、1496×767 和 390×844 做了真实 QA：同色 material、左上/右下阴影、raised/inset、无 idle gold、白色 artboard、无横向溢出和 storage 未变化均通过；task space 已关闭、3101 listener 已清理。错误态和 blocked-inert 路径没有触发，保持未验证记录。
+- Impeccable detector 已运行：退出码 2，仅报告既有 video bounce easing（`globals.css:792`）和 SEO side-tab（当前约 `:2625`）两个 warning；没有本轮纯拟态相关 finding，测试文件无 finding。
+- 本轮 Run 的 10 个 Task 全部 completed；所有本轮可安全关闭的 agent 已关闭，当前不应保留 worker terminal。
+
+### 做到一半
+
+- 无目标内未完成的功能工作。
+- 错误态、部分浏览器 reduced-motion 交互和旧的 44px/对比度债务没有纳入本轮修复；如要处理，需单独扩大范围。
+- `WORKLOG.md` 是本交接单新增的未存档改动，按规则不要把它加入后续代码 commit，除非用户单独授权。
+
+### 下一步
+
+- 下一班输入 `$pickup` 接手；先读取本交接单和 commit `1db08a4`，再决定是否继续视觉迭代。
+- 若继续验证，打开 `/coat-of-arms-maker`，确认当前暗色同色 material、控件和外壳 raised/inset，以及白色作品画布边界；不要未经新授权改站点整体主题或编辑器功能。
+
+### 踩过的坑
+
+- 只给按钮加阴影会得到“控件新拟态”，不等于编辑器外壳新拟态；本轮已分别处理 shell surface 和 control surface。
+- `finalCssDeclarationValueForWorkbenchRoot` 原先只读取第一个规则，无法可靠验证后置 grouped selector；已在测试 helper 中改为 last-wins，并清理 media-query 前缀。
+- `localhost:3000` 可能有用户 draft overlay 导致 workbench inert；浏览器 QA 使用 `127.0.0.1:3101` clean origin，不能清理 localStorage/IndexedDB，也不要点击 Restore/Discard。
+- 纯新拟态必须依靠有 offset 和 blur 的双向阴影，不能用零偏移彩色 halo、宽阴影叠硬边框或大面积 idle gold；白色 artboard/application 不要套拟态。
+- Impeccable 的两个 detector warning 属于既有视频/SEO样式，不要为了清零 detector 顺手修改范围外页面。
+
+### 怎么验证
+
+```bash
+git show --stat --oneline 1db08a4
+pnpm exec vitest run src/components/coat-of-arms/CoatOfArmsMaker.test.tsx
+pnpm test
+pnpm typecheck
+pnpm lint
+pnpm build
+git diff --check
+node /Users/wusir/.codex/skills/designer-skill/references/external-skills/impeccable/scripts/detect.mjs --json src/app/globals.css src/components/coat-of-arms/CoatOfArmsMaker.test.tsx
+```
+
+浏览器（优先本地 ego-browser）：启动并确认 token-maker-app server 后，打开 `http://127.0.0.1:3101/coat-of-arms-maker` 和 `/zh/coat-of-arms-maker`；检查 1496×767 与 390×844 下编辑器同色材质、左上/右下阴影、raised/inset、focus/active/disabled、白色画布和无横向溢出。不要清除 localStorage/IndexedDB，不要把历史 hydration/error-state 未验证项当成已通过。
+
 ## 交接单 · 2026-09-01 07:18 CST · Codex CLI
 
 ### 本次目标
