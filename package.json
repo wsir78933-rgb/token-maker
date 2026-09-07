@@ -4,9 +4,9 @@
   "private": true,
   "packageManager": "pnpm@10.22.0",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 40001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 40001",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "audit:prod": "pnpm audit --prod --audit-level=low",

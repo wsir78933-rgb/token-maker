@@ -8,14 +8,14 @@ export default defineConfig({
   reporter: isContinuousIntegration ? [['github'], ['html', { open: 'never' }]] : 'list',
   testDir: './e2e',
   use: {
-    baseURL: 'http://127.0.0.1:3000',
+    baseURL: 'http://127.0.0.1:40001',
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'pnpm exec next start --hostname 127.0.0.1 --port 3000',
+    command: 'pnpm exec next start --hostname 127.0.0.1 --port 40001',
     reuseExistingServer: !isContinuousIntegration,
     timeout: 120_000,
-    url: 'http://127.0.0.1:3000',
+    url: 'http://127.0.0.1:40001',
   },
   workers: isContinuousIntegration ? 1 : undefined,
   projects: [

@@ -1,5 +1,40 @@
 # WORKLOG
 
+## 交接单 · 2026-09-06 09:57 CST · Codex CLI
+
+### 本次目标
+
+记录当前 dnd-giants 英文与中文页面重写及中文本地化任务的可核验状态。
+
+### 已完成
+
+- 写入已核对事实：Grok 完成结构性英文/中文重写；Grok 完成中文术语本地化；Cursor 独立复核；中文页无英文解释性括号；英文只保留必要关键词/品牌/来源；当前最新 commit 由 git show 确认为 138987635f366bf3b8fb01e0d4b3c4cd058da709，标题为“重写 DND gaints”，包含 src/lib/blog-posts/dnd-giants.ts、src/lib/blog/registry.ts、src/app/sitemap.test.ts；工作树在写交接单前 clean；未 push/deploy。
+
+### 做到一半
+
+无目标内未完成项。明确记录 V4.1 adapter 层残留：typed claimId/evidenceRefs AST 和 immutable handoff digest 未存入项目 checkout；它们不是本次页面文案范围。记录 coverAlt 中仍保留精确关键词 DND giants、站点侧栏 CTA 的 Token/Roll20/Foundry 属于范围外。
+
+### 下一步
+
+下一班输入 $pickup 接手；如继续修改 coverAlt、站点侧栏 CTA 或把 V4.1 handoff digest 持久化，先单独确认范围。不要把 WORKLOG.md 加入后续代码提交。
+
+### 踩过的坑
+
+必须使用 /Users/wusir/Desktop/obsidian/skill合集/tool-site-content-factory-v4.1，不要使用 AI内容工厂公开版或旧版 content skill；真正的 V4.1 中文计数是 Unicode letters/numbers，不是只数汉字；中文本地化只保留必要品牌/关键词，不能把普通规则术语留成英文；Grok 实现后必须由不同于实现者的 Cursor 只读复核；不要把 worker_done 口头报告当验证，必须记录真实命令/页面回读。
+
+### 怎么验证
+
+记录已经核对的真实证据：
+- pnpm lint：exit 0；0 errors，只有范围外 CoatMakerSeoContent.tsx:25 的既有 no-img-element warning。
+- pnpm typecheck：exit 0。
+- pnpm test：143 files passed、1535 tests passed、exit 0（结构性重写验收前的完整回归）。
+- pnpm build：exit 0；Next.js 16.3.0，147/147 静态页面。
+- pnpm exec vitest run src/lib/blog/index.test.ts：124/124，exit 0。
+- V4.1 zh-CN 本地化复核：unitCount=2253，NFC=true，无英文解释性括号；英文重写计数 2128，中文重写计数 2257。
+- 本地页面 ego-browser：/blog/dnd-giants 与 /zh/blog/dnd-giants HTTP 200；H1、description、canonical、Article/FAQ JSON-LD 回读正常。
+- git diff --check：exit 0。
+- 只写交接单，不运行新功能验证；交接单写入后 WORKLOG.md 会成为唯一未存档改动，禁止提交它。
+
 ## 交接单 · 2026-09-02 20:02 CST · Codex CLI
 
 ### 本次目标

@@ -1140,73 +1140,331 @@ describe('dnd 5e armorer blog post', () => {
 });
 
 describe('dnd death knight blog post', () => {
-  test('uses the 2025 encounter workflow with a separate 2014 comparison in both locales', () => {
+  const englishLockedTitle = 'Lock one DnD Death Knight listing before you cut tokens';
+  const chineseLockedTitle = 'DND 死亡骑士：先锁版本再布置能打完的遭遇';
+  const englishLockedDescription =
+    'Lock one Death Knight object before the map: current Monster Manual, 2014 Legacy, Aspirant, or the playtest path. Then cut tokens the table can tell apart.';
+  const chineseLockedDescription =
+    '开团前先锁当前图鉴、2014 Legacy 或志从条目，再布置能打完的亡灵指挥官遭遇，并用 Token Maker 把指挥官、志从和随从做成分得清的标记。';
+  const englishLockedFaq = [
+    {
+      question: 'Which official Death Knight listing should I lock?',
+      answer:
+        'Start from the catalog-identity table: current Monster Manual Death Knight, 2014 Legacy Death Knight, or Death Knight Aspirant, matching the book on the table.',
+    },
+    {
+      question: 'Does a later token replace the official stat block?',
+      answer:
+        'No. Cut tokens only after the listing is locked. Token Maker is not an encounter manager and does not fill unpaid combat numbers.',
+    },
+    {
+      question: 'Is Path of the Death Knight a Player’s Handbook class?',
+      answer:
+        'No. It is an Unearthed Arcana playtest feat path. Talk with the Dungeon Master before using it.',
+    },
+    {
+      question: 'What can I copy without the paid combat block?',
+      answer:
+        'Creature name, source-book label, Undead type, size, alignment, habitat when listed, and Challenge.',
+    },
+  ];
+  const chineseLockedFaq = [
+    {
+      question: '手头没有完整属性块还能准备吗？',
+      answer: '可以。只用目录上已经看见的身份字段，不要补生命值或护甲等级。',
+    },
+    {
+      question: '志从能不能当挑战等级 17 的指挥官？',
+      answer: '不能。Death Knight Aspirant 是挑战等级 11 的另一行。',
+    },
+    {
+      question: '试玩路径是不是职业？',
+      answer: '不是。Path of the Death Knight 是试玩专长路径，不是玩家手册职业。',
+    },
+    {
+      question: '私密立绘该不该生成公开链接？',
+      answer: '不该。本地下载 PNG 带到桌子上；公开链接谁拿到都能看。',
+    },
+  ];
+  const factoryLeakPhrases = [
+    'claimIds',
+    'evidenceRefs',
+    'toolFacts',
+    'ToolFact',
+    'ReaderTask',
+    'InformationGain',
+    'InformationGap',
+    'tempering',
+    'requirementId',
+    'node-decision',
+    'node-io-query-to-catalog',
+    'claim-catalog-three-rows',
+    'claim-io-serp-vs-catalog',
+  ];
+  const oldEncounterSkeletonPhrases = [
+    'Build the battlefield before initiative',
+    'The outer-gate warning',
+    'The reliquary hold',
+    'The last march',
+    'Hellfire Orb',
+    'Running a Monster',
+    'Quick answer',
+    '先布置战场，再掷先攻',
+    '外门警报',
+    '圣物库固守',
+    '最后的行军',
+    '快速结论',
+  ];
+  const oldChapterHeadings = [
+    'Separate a DM table from a player looking for a character',
+    'Open the catalog, then make the tokens',
+    'Keep the commander group readable',
+    'Portrait in, transparent PNG out',
+    'What stays closed',
+    'Bring the listing to the table',
+    '用公开目录字段认人',
+    '没有授权时不要补数据',
+    '有授权和没授权走不同路',
+    '目录身份不是遭遇主持',
+    '用已有立绘做能分开的标记',
+  ];
+  const researchTracePhrases = [
+    'who searched',
+    'Requesting URL landed',
+    'unopened SRD PDF',
+    '未观察 UI',
+    '检索框',
+    '第一位',
+    '第六位',
+  ];
+
+  function countableNodeText(bodyHtml: string) {
+    return [...bodyHtml.matchAll(/<(p|li|td|th)\b[^>]*>([\s\S]*?)<\/\1>/gi)].map((match) =>
+      match[2].replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim(),
+    );
+  }
+
+  test('publishes the canonical bilingual catalog-row body without the old encounter skeleton', () => {
     const englishPost = getBlogPost('en', DND_DEATH_KNIGHT_SLUG);
     const chinesePost = getBlogPost('zh', DND_DEATH_KNIGHT_SLUG);
 
-    expect(englishPost?.title).toContain('Death Knight');
-    expect(englishPost?.bodyHtml).toContain('2025 Monster Manual');
-    expect(englishPost?.bodyHtml).toContain('Build the battlefield before initiative');
-    expect(englishPost?.bodyHtml).toContain('Choose a scenario by the party\'s job');
-    expect(englishPost?.bodyHtml).toContain('The outer-gate warning');
-    expect(englishPost?.bodyHtml).toContain('The reliquary hold');
-    expect(englishPost?.bodyHtml).toContain('The last march');
-    expect(englishPost?.bodyHtml).toContain('For rules checks, use the 2025 Monster Manual stat block');
-    expect(englishPost?.bodyHtml).toContain('What changes at a 2014 table');
-    expect(englishPost?.bodyHtml).toContain('roll20.net/compendium/dnd5e/Monsters%3ADeath%20Knight');
-    expect(englishPost?.bodyHtml).not.toContain('Use Marshal Undead');
-    expect(englishPost?.bodyHtml).not.toContain('Quick answer');
-    expect(englishPost?.bodyHtml).not.toContain('<table');
-    expect(englishPost?.bodyHtml).not.toContain('companion video');
-    expect(englishPost?.faqItems).toBeUndefined();
+    expect(englishPost?.slug).toBe(DND_DEATH_KNIGHT_SLUG);
+    expect(englishPost?.title).toBe(englishLockedTitle);
+    expect(englishPost?.seoTitle).toBe(englishLockedTitle);
+    expect(englishPost?.metaDescription).toBe(englishLockedDescription);
+    expect(englishPost?.excerpt).toBe(englishLockedDescription);
+    expect(englishPost?.updatedAt).toBe('2026-07-22');
+    expect(englishPost?.publishedAt).toBe('2026-07-22');
+    expect(englishPost?.placeholder).toBeFalsy();
+    expect(englishPost?.featured).toBeFalsy();
+    expect(englishPost?.relatedSlugs).toEqual([
+      'dnd-ghost',
+      'dnd-necromancer-spells',
+      'dnd-armor-guide',
+      'dnd-sword-sheaths',
+    ]);
     expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-death-knight-guide.webp');
 
-    expect(chinesePost?.title).toContain('死亡骑士');
-    expect(chinesePost?.bodyHtml).toContain('2025《怪物图鉴》');
-    expect(chinesePost?.bodyHtml).toContain('先布置战场，再掷先攻');
-    expect(chinesePost?.bodyHtml).toContain('按队伍面对的任务选遭遇');
-    expect(chinesePost?.bodyHtml).toContain('外门警报');
-    expect(chinesePost?.bodyHtml).toContain('圣物库固守');
-    expect(chinesePost?.bodyHtml).toContain('最后的行军');
-    expect(chinesePost?.bodyHtml).toContain('规则核对时，以本桌持有的 2025《怪物图鉴》数据块为准');
-    expect(chinesePost?.bodyHtml).toContain('2014 桌上哪些地方不同');
-    expect(chinesePost?.bodyHtml).toContain('Death%20Knight%20Aspirant');
-    expect(chinesePost?.bodyHtml).not.toContain('再使用 Marshal Undead');
-    expect(chinesePost?.bodyHtml).not.toContain('快速结论');
-    expect(chinesePost?.bodyHtml).not.toContain('<table');
-    expect(chinesePost?.bodyHtml).not.toContain('配套视频');
-    expect(chinesePost?.faqItems).toBeUndefined();
+    const englishParagraphs = [...(englishPost?.bodyHtml?.matchAll(/<p>([\s\S]*?)<\/p>/g) ?? [])].map(
+      (match) => match[1],
+    );
+    expect(englishParagraphs).toHaveLength(36);
+    expect(englishPost?.bodyHtml).toContain('<h2');
+    expect(englishPost?.bodyHtml).toContain('<table');
+    expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.bodyHtml).toContain('Tonight’s map needs one Death Knight object');
+    expect(englishPost?.bodyHtml).toContain(
+      'Those rows are monster catalog entries. They are not a Player’s Handbook class.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'content that was previously labeled “2024” is now labeled “5.5e”',
+    );
+    expect(englishPost?.bodyHtml).toContain('Complete official stat blocks stay out of this article.');
+    expect(englishPost?.bodyHtml).toContain(
+      'The public catalog listing does not show Armor Class, Hit Points, or a full action list.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'The System Reference Document v5.2.1 landing page on D&amp;D Beyond does not mention Death Knight.',
+    );
+    expect(englishPost?.bodyHtml).toContain('That post does not name Death Knight.');
+    expect(englishPost?.bodyHtml).toContain(
+      'If the table still uses Monster Manual (2014), keep the Legacy Death Knight catalog row',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Unearthed Arcana: Villainous Options presents Path of the Death Knight as a selection of playtest feats',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Death Knight Initiate is a Path of the Death Knight feat with prerequisite Level 4+',
+    );
+    expect(englishPost?.bodyHtml).toContain('Give the undead a job that can end');
+    expect(englishPost?.bodyHtml).toContain('Token Maker is a browser VTT token maker');
+    expect(englishPost?.bodyHtml).toContain(
+      'Ordinary PNG downloads are generated locally in the browser.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'Anyone with the public share link can view the generated token image.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'There is no Death Knight class in the Player’s Handbook.',
+    );
+    expect(englishPost?.bodyHtml).toContain(
+      'That silhouette is catalog identity, not a replacement stat block.',
+    );
+    expect(englishPost?.bodyHtml).not.toContain('/api/share');
+    expect(englishPost?.bodyHtml).not.toContain('2/Day Each');
+    expect(englishPost?.bodyHtml).not.toContain('source path mm-2024');
+    expect(englishPost?.bodyHtml).not.toContain('roll20.net/compendium');
+    expect(englishPost?.bodyHtml).not.toContain('companion video');
+    const englishQualifyingWords = countableNodeText(englishPost?.bodyHtml ?? '')
+      .join(' ')
+      .match(/[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)?/g);
+    expect(englishQualifyingWords?.length ?? 0).toBeGreaterThanOrEqual(2000);
+
+    expect(chinesePost?.slug).toBe(DND_DEATH_KNIGHT_SLUG);
+    expect(chinesePost?.title).toBe(chineseLockedTitle);
+    expect(chinesePost?.seoTitle).toBe(chineseLockedTitle);
+    expect(chinesePost?.metaDescription).toBe(chineseLockedDescription);
+    expect(chinesePost?.excerpt).toBe(chineseLockedDescription);
+    expect(chinesePost?.updatedAt).toBe('2026-07-22');
+    expect(chinesePost?.publishedAt).toBe('2026-07-22');
+    expect(chinesePost?.placeholder).toBeFalsy();
+    expect(chinesePost?.featured).toBeFalsy();
+    expect(chinesePost?.relatedSlugs).toEqual([
+      'dnd-ghost',
+      'dnd-necromancer-spells',
+      'dnd-armor-guide',
+      'dnd-sword-sheaths',
+    ]);
     expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-death-knight-guide.webp');
+
+    const chineseParagraphs = [...(chinesePost?.bodyHtml?.matchAll(/<p>([\s\S]*?)<\/p>/g) ?? [])].map(
+      (match) => match[1],
+    );
+    expect(chineseParagraphs).toHaveLength(33);
+    expect(chinesePost?.bodyHtml).toContain('<h2');
+    expect(chinesePost?.bodyHtml).toContain('<table');
+    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.bodyHtml).toContain('开团前先锁版本，再布置能打完的亡灵指挥官遭遇。');
+    expect(chinesePost?.bodyHtml).toContain(
+      '三条都是官方目录上的怪物身份，不是玩家手册里的职业。',
+    );
+    expect(chinesePost?.bodyHtml).toContain('不要把三条合成一只怪物。');
+    expect(chinesePost?.bodyHtml).toContain(
+      '名称、来源书、挑战等级、类型、体型、阵营和栖息地是同一行的版本识别组合',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '系统参考文档 v5.2.1 落地页正文没有出现 Death Knight。',
+    );
+    expect(chinesePost?.bodyHtml).toContain(
+      '把 Path of the Death Knight 写成一组试玩专长，不是玩家手册职业。',
+    );
+    expect(chinesePost?.bodyHtml).toContain('把战场分成三个能认出来的职责');
+    expect(chinesePost?.bodyHtml).toContain('普通 PNG 下载在浏览器本地生成。');
+    expect(chinesePost?.bodyHtml).toContain(
+      '中文检索词「死亡骑士」也不是 Wizards of the Coast 或 D&amp;D Beyond 写在目录上的官方中文译名',
+    );
+    expect(chinesePost?.bodyHtml).toContain('玩家手册里没有死亡骑士职业');
+    expect(chinesePost?.bodyHtml).not.toContain('/api/share');
+    expect(chinesePost?.bodyHtml).not.toContain('mm-2024');
+    expect(chinesePost?.bodyHtml).not.toMatch(/（[^）]*[A-Za-z][^）]*）/);
+    const chineseQualifyingHan = countableNodeText(chinesePost?.bodyHtml ?? '')
+      .join('')
+      .match(/[\u4e00-\u9fff]/g);
+    expect(chineseQualifyingHan?.length ?? 0).toBeGreaterThanOrEqual(2000);
+
+    for (const post of [englishPost, chinesePost]) {
+      for (const phrase of [
+        ...factoryLeakPhrases,
+        ...oldEncounterSkeletonPhrases,
+        ...oldChapterHeadings,
+        ...researchTracePhrases,
+      ]) {
+        expect(post?.bodyHtml).not.toContain(phrase);
+      }
+    }
   });
 
-  test('builds localized metadata and article schema for the Death Knight guide', () => {
+  test('uses locked bilingual FAQ metadata without copying factory fields into the body', () => {
+    const englishPost = getBlogPost('en', DND_DEATH_KNIGHT_SLUG);
+    const chinesePost = getBlogPost('zh', DND_DEATH_KNIGHT_SLUG);
+
+    expect(englishPost?.faqItems).toEqual(englishLockedFaq);
+    expect(chinesePost?.faqItems).toEqual(chineseLockedFaq);
+    expect(englishPost?.bodyHtml).not.toContain(englishLockedFaq[0].question);
+    expect(chinesePost?.bodyHtml).not.toContain(chineseLockedFaq[0].question);
+  });
+
+  test('builds localized metadata, routes, and schema from the locked Death Knight copy', () => {
     expect(getBlogPostPath('en', DND_DEATH_KNIGHT_SLUG)).toBe('/blog/dnd-death-knight');
     expect(getBlogPostPath('zh', DND_DEATH_KNIGHT_SLUG)).toBe('/zh/blog/dnd-death-knight');
 
     const englishMetadata = createBlogPostMetadata('en', DND_DEATH_KNIGHT_SLUG);
     const chineseMetadata = createBlogPostMetadata('zh', DND_DEATH_KNIGHT_SLUG);
 
-    expect(englishMetadata.title).toBe('DnD Death Knight: Run a 2025 Undead Commander Encounter');
+    expect(englishMetadata.title).toBe(englishLockedTitle);
+    expect(englishMetadata.description).toBe(englishLockedDescription);
     expect(englishMetadata.alternates?.canonical).toBe('/blog/dnd-death-knight');
-    expect(chineseMetadata.title).toBe('DND 死亡骑士：运行 2025 亡灵指挥官遭遇');
-    expect(chineseMetadata.description).toContain('死亡骑士');
+    expect(englishMetadata.alternates?.languages).toEqual({
+      'x-default': '/blog/dnd-death-knight',
+      'en-US': '/blog/dnd-death-knight',
+      'zh-CN': '/zh/blog/dnd-death-knight',
+    });
+    expect(chineseMetadata.title).toBe(chineseLockedTitle);
+    expect(chineseMetadata.description).toBe(chineseLockedDescription);
 
     expect(buildBlogPostStructuredData('en', DND_DEATH_KNIGHT_SLUG)).toMatchObject({
       '@type': 'Article',
+      headline: englishLockedTitle,
+      description: englishLockedDescription,
+      datePublished: '2026-07-22',
+      dateModified: '2026-07-22',
       inLanguage: 'en-US',
       url: 'https://www.tokenmaker.one/blog/dnd-death-knight',
       image: ['https://www.tokenmaker.one/blog/covers/en/dnd-death-knight-guide.webp'],
     });
-    expect(buildBlogPostFaqStructuredData('en', DND_DEATH_KNIGHT_SLUG)).toBeNull();
-    expect(buildBlogPostFaqStructuredData('zh', DND_DEATH_KNIGHT_SLUG)).toBeNull();
+    expect(buildBlogPostStructuredData('zh', DND_DEATH_KNIGHT_SLUG)).toMatchObject({
+      '@type': 'Article',
+      headline: chineseLockedTitle,
+      description: chineseLockedDescription,
+      datePublished: '2026-07-22',
+      dateModified: '2026-07-22',
+      inLanguage: 'zh-CN',
+      url: 'https://www.tokenmaker.one/zh/blog/dnd-death-knight',
+    });
+    expect(buildBlogPostFaqStructuredData('en', DND_DEATH_KNIGHT_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'en-US',
+      mainEntity: englishLockedFaq.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+      })),
+    });
+    expect(buildBlogPostFaqStructuredData('zh', DND_DEATH_KNIGHT_SLUG)).toMatchObject({
+      '@type': 'FAQPage',
+      inLanguage: 'zh-CN',
+      mainEntity: chineseLockedFaq.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+      })),
+    });
   });
 
-  test('uses a WebP cover and lists both localized Death Knight URLs in llms.txt', () => {
+  test('uses a WebP cover and projects both localized Death Knight lines in llms.txt', () => {
     expect(existsSync('public/blog/covers/en/dnd-death-knight-guide.webp')).toBe(true);
 
     const llmsText = readFileSync('public/llms.txt', 'utf8');
-    expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-death-knight');
-    expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-death-knight');
+    expect(llmsText).toContain(
+      `[${englishLockedTitle}](https://www.tokenmaker.one/blog/dnd-death-knight): ${englishLockedDescription}`,
+    );
+    expect(llmsText).toContain(
+      `[${chineseLockedTitle}](https://www.tokenmaker.one/zh/blog/dnd-death-knight): ${chineseLockedDescription}`,
+    );
+    expect(llmsText).not.toContain('2025 Death Knight encounter setup with objectives, cover, undead jobs');
+    expect(llmsText).not.toContain('DND 死亡骑士：运行 2025 亡灵指挥官遭遇');
+    expect(llmsText).not.toContain('Choose the current CR 17 Death Knight or CR 11 Aspirant');
+    expect(llmsText).not.toContain('DND 死亡骑士：先选定现行或遗产条目');
   });
 });
 

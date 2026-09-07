@@ -45,7 +45,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [DND Dagger 5e: Stats, Rules, and Best Uses](https://www.tokenmaker.one/blog/dnd-dagger): Dagger stats, thrown range, Rogue uses, 2014/2024 Nick rules, VTT token tips, FAQ, and companion video.
 - [Dwelf DnD](https://www.tokenmaker.one/blog/dwelf-dnd): Build a dwarf-elf character with one official rules chassis, a family promise the party can act on, and a readable VTT token portrait.
 - [DnD Flumph Guide](https://www.tokenmaker.one/blog/dnd-flumph): Use a flumph as a telepathic warning scout, frightened witness, or ally clue, then make its state readable on a VTT token.
-- [DnD Death Knight](https://www.tokenmaker.one/blog/dnd-death-knight): 2025 Death Knight encounter setup with objectives, cover, undead jobs, legendary pressure, the Aspirant lead-in, a 2014 comparison, and VTT commander-token cues.
+- [Lock one DnD Death Knight listing before you cut tokens](https://www.tokenmaker.one/blog/dnd-death-knight): Lock one Death Knight object before the map: current Monster Manual, 2014 Legacy, Aspirant, or the playtest path. Then cut tokens the table can tell apart.
 - [DnD 5e Armorer](https://www.tokenmaker.one/blog/dnd-5e-armorer): 2014 Guardian and Infiltrator roles, the 2025 Dreadnaught branch, first-round jobs, rest swaps, and VTT token cues.
 - [DnD Sword Sheaths](https://www.tokenmaker.one/blog/dnd-sword-sheaths): Current draw and stow rules, scabbard character hooks, DM-safe homebrew prompts, and VTT token visuals.
 - [Thunderclap DnD Guide](https://www.tokenmaker.one/blog/dnd-thunderclap): Thunderclap 2014/2024 rules, 5-foot Emanation range, 100-foot sound, ally risk, damage scaling, FAQ, and VTT token tips.
@@ -99,7 +99,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [dnd dagger 指南：5e 数据、用法、Nick 与 FAQ](https://www.tokenmaker.one/zh/blog/dnd-dagger)
 - [Dwelf DND：用一套规则做出矮人精灵混血角色](https://www.tokenmaker.one/zh/blog/dwelf-dnd)
 - [DND Flumph 指南：盟友线索、心灵感应与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-flumph)
-- [DND 死亡骑士：运行 2025 亡灵指挥官遭遇](https://www.tokenmaker.one/zh/blog/dnd-death-knight)
+- [DND 死亡骑士：先锁版本再布置能打完的遭遇](https://www.tokenmaker.one/zh/blog/dnd-death-knight): 开团前先锁当前图鉴、2014 Legacy 或志从条目，再布置能打完的亡灵指挥官遭遇，并用 Token Maker 把指挥官、志从和随从做成分得清的标记。
 - [DND 5e 装甲师：构筑定位、装甲模型与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-5e-armorer)
 - [DND 剑鞘指南：收剑规则、角色设定与 VTT 视觉](https://www.tokenmaker.one/zh/blog/dnd-sword-sheaths)
 - [DND 雷鸣拍击（Thunderclap）指南：2014/2024 规则、范围与 VTT 标记](https://www.tokenmaker.one/zh/blog/dnd-thunderclap)

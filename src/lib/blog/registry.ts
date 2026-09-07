@@ -1985,39 +1985,79 @@ const dnd5eArmorerArticleZh: BlogPost = {
 
 const dndDeathKnightArticle: BlogPost = {
   slug: 'dnd-death-knight',
-  title: 'DnD Death Knight: Run a 2025 Undead Commander Encounter',
-  seoTitle: 'DnD Death Knight: Run a 2025 Undead Commander Encounter',
+  title: 'Lock one DnD Death Knight listing before you cut tokens',
+  seoTitle: 'Lock one DnD Death Knight listing before you cut tokens',
   metaDescription:
-    'Run a 2025 DnD Death Knight with an objective, cover, undead jobs, legendary pressure, a Death Knight Aspirant lead-in, and a clear 2014 comparison.',
+    'Lock one Death Knight object before the map: current Monster Manual, 2014 Legacy, Aspirant, or the playtest path. Then cut tokens the table can tell apart.',
   excerpt:
-    'Build a 2025 Death Knight encounter around an objective, separate undead jobs, answers to Hellfire Orb pressure, and a VTT commander token.',
+    'Lock one Death Knight object before the map: current Monster Manual, 2014 Legacy, Aspirant, or the playtest path. Then cut tokens the table can tell apart.',
   publishedAt: DND_DEATH_KNIGHT_UPDATED_AT,
   updatedAt: DND_DEATH_KNIGHT_UPDATED_AT,
-  readTime: '11 min read',
+  readTime: '12 min read',
   coverLabel: 'Monster Encounter',
   coverImage: DND_DEATH_KNIGHT_COVER_PATH,
   coverAlt:
     'dnd death knight guide cover showing an undead commander in black plate with skeletal troops on a ruined moonlit battle map',
   bodyHtml: dndDeathKnightArticleHtml,
+  faqItems: [
+    {
+      question: 'Which official Death Knight listing should I lock?',
+      answer:
+        'Start from the catalog-identity table: current Monster Manual Death Knight, 2014 Legacy Death Knight, or Death Knight Aspirant, matching the book on the table.',
+    },
+    {
+      question: 'Does a later token replace the official stat block?',
+      answer:
+        'No. Cut tokens only after the listing is locked. Token Maker is not an encounter manager and does not fill unpaid combat numbers.',
+    },
+    {
+      question: 'Is Path of the Death Knight a Player’s Handbook class?',
+      answer:
+        'No. It is an Unearthed Arcana playtest feat path. Talk with the Dungeon Master before using it.',
+    },
+    {
+      question: 'What can I copy without the paid combat block?',
+      answer:
+        'Creature name, source-book label, Undead type, size, alignment, habitat when listed, and Challenge.',
+    },
+  ],
   relatedSlugs: ['dnd-ghost', 'dnd-necromancer-spells', 'dnd-armor-guide', 'dnd-sword-sheaths'],
 };
 
 const dndDeathKnightArticleZh: BlogPost = {
   slug: 'dnd-death-knight',
-  title: 'DND 死亡骑士：运行 2025 亡灵指挥官遭遇',
-  seoTitle: 'DND 死亡骑士：运行 2025 亡灵指挥官遭遇',
+  title: 'DND 死亡骑士：先锁版本再布置能打完的遭遇',
+  seoTitle: 'DND 死亡骑士：先锁版本再布置能打完的遭遇',
   metaDescription:
-    '用目标、掩体、亡灵职责、传奇压力、Death Knight Aspirant 前置遭遇和清楚的 2014 对照，运行 2025 DND 死亡骑士。',
+    '开团前先锁当前图鉴、2014 Legacy 或志从条目，再布置能打完的亡灵指挥官遭遇，并用 Token Maker 把指挥官、志从和随从做成分得清的标记。',
   excerpt:
-    '把 2025 死亡骑士放进有目标、有分工亡灵和可回应压力的遭遇，再做一张一眼能认出的 VTT 指挥官 Token。',
+    '开团前先锁当前图鉴、2014 Legacy 或志从条目，再布置能打完的亡灵指挥官遭遇，并用 Token Maker 把指挥官、志从和随从做成分得清的标记。',
   publishedAt: DND_DEATH_KNIGHT_UPDATED_AT,
   updatedAt: DND_DEATH_KNIGHT_UPDATED_AT,
-  readTime: '11 分钟阅读',
+  readTime: '12 分钟阅读',
   coverLabel: '怪物遭遇',
   coverImage: DND_DEATH_KNIGHT_COVER_PATH,
   coverAlt:
     'DND 死亡骑士指南封面图：黑色板甲中的亡灵指挥官、骷髅部属，以及月光下的废墟战斗地图',
   bodyHtml: dndDeathKnightArticleHtmlZh,
+  faqItems: [
+    {
+      question: '手头没有完整属性块还能准备吗？',
+      answer: '可以。只用目录上已经看见的身份字段，不要补生命值或护甲等级。',
+    },
+    {
+      question: '志从能不能当挑战等级 17 的指挥官？',
+      answer: '不能。Death Knight Aspirant 是挑战等级 11 的另一行。',
+    },
+    {
+      question: '试玩路径是不是职业？',
+      answer: '不是。Path of the Death Knight 是试玩专长路径，不是玩家手册职业。',
+    },
+    {
+      question: '私密立绘该不该生成公开链接？',
+      answer: '不该。本地下载 PNG 带到桌子上；公开链接谁拿到都能看。',
+    },
+  ],
   relatedSlugs: ['dnd-ghost', 'dnd-necromancer-spells', 'dnd-armor-guide', 'dnd-sword-sheaths'],
 };
 
