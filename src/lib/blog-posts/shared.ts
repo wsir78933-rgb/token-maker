@@ -119,6 +119,8 @@ export const DND_SHORTSWORD_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-shortswor
 export const DND_SILVERY_BARBS_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-silvery-barbs/dnd-silvery-barbs-video-placeholder.webp';
 export const DND_FLUMPH_VTT_IMAGE_PATH = '/blog/inline/dnd-flumph/flumph-vtt-clue-board.webp';
+export const DND_GNOME_NAMES_THREE_NAME_WORKSHOP_IMAGE_PATH =
+  '/blog/inline/dnd-gnome-names/gnome-three-name-workshop.webp';
 export const DND_GNOME_NAMES_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-gnome-names/gnome-race-video-placeholder.webp';
 export const DND_SHATTER_5E_RADIUS_IMAGE_PATH =

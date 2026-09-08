@@ -3611,45 +3611,45 @@ const dndShatter5eArticleZh: BlogPost = {
 
 const dndGnomeNamesArticle: BlogPost = {
   slug: 'dnd-gnome-names',
-  title: 'DND Gnome Names: First Names, Clans, Nicknames, and Character Hooks',
-  seoTitle: 'DND Gnome Names: 132 First Names, Clans, and Nicknames',
+  title: 'DND Gnome Names: Lock the Book Before You Copy the Matching List',
+  seoTitle: 'DND Gnome Names: Lock the Book, Copy Three Names, Pick a Call-Name',
   metaDescription:
-    'Choose from 132 DND gnome first names, clan names, and nicknames, then turn one full name into a character hook and readable VTT token.',
+    'Lock the rulebook your table uses, copy a personal name, clan name, and nickname from the matching list—or Elemental Evil for deep gnomes—then keep one short call-name for speech and tokens.',
   excerpt:
-    'Mix 132 first names, clan names, and nicknames, then give the result a playable hook, distinct table sound, and readable VTT identity.',
+    'Lock the rulebook your table is actually using, copy a personal name, clan name, and nickname from the matching list—or Elemental Evil for deep gnomes—then keep one short call-name for speech and tokens.',
   publishedAt: DND_GNOME_NAMES_UPDATED_AT,
   updatedAt: DND_GNOME_NAMES_UPDATED_AT,
-  readTime: '12 min read',
+  readTime: '14 min read',
   coverLabel: 'Character Names',
   coverImage: DND_GNOME_NAMES_COVER_PATH,
   coverAlt:
-    'Three DND gnome adventurers choosing names and character identities around a lantern-lit fantasy workshop table',
+    'A small-folk portrait token with a short gnome call name beside a three-part name written on a character sheet',
   bodyHtml: dndGnomeNamesArticleHtml,
   faqItems: [
     {
-      question: 'What are good DND gnome names?',
+      question: 'Can a 2024 table use the 2014 gnome name lists?',
       answer:
-        'Good DND gnome names are easy to say and carry one memorable detail. Fenna Gearbloom "Blue-Fingers," Rook Underlamp "Cave-Lantern," and Hobbik Wrongmap "Shortcut" each give the table a short name plus a story prompt.',
+        "Yes, if the table agrees to borrow them. The 2024 free gnome pages print Forest and Rock lineage traits and do not reprint a name appendix. Borrowed 2014 names stay 2014 names. Write both sources on the sheet. This is not a claim about extra lists in the paid 2024 <em>Player's Handbook</em>, which this page does not inspect.",
     },
     {
-      question: 'Why do DND gnomes have so many names?',
+      question: 'Do deep gnomes use the surface nickname list?',
       answer:
-        'The 2014 gnome description says relatives and clan elders may each give a gnome a name, while nicknames accumulate from other people. Around outsiders, a gnome often reduces the collection to a personal name, clan name, and nickname.',
+        'Not in the Elemental Evil name section. That PDF prints personal names and occupation-style clan names and describes the names as less fanciful. A surface nickname can be table flavor. It is not an Elemental Evil nickname.',
     },
     {
-      question: 'Do gnome names need to sound funny?',
+      question: 'Does Token Maker generate official gnome names?',
       answer:
-        'No. A playful sound fits many gnome characters, but the person still has to work in serious scenes. Put the humor in a nickname or family story instead of turning every syllable into a punchline.',
+        'No. It adds text to a token and exports a PNG after you already have a call-name. The official lists live on the D&amp;D Beyond 2014 pages and in the Elemental Evil PDF.',
     },
     {
-      question: 'What is a good gnome clan name?',
+      question: 'Why not paste every official name into this article?',
       answer:
-        'A useful clan name points to craft, home, reputation, or an old event. Gearbloom, Fernburrow, Underlamp, and Wrongmap all create a place or family expectation the DM can bring into play.',
+        'The lists are already published on the pages linked above. Pasting them here would duplicate the appendix without teaching the book gate, the deep-gnome split, or the call-name. Copy from the source when you need a row that is not in the short samples.',
     },
     {
-      question: 'How long should a gnome name be on a VTT?',
+      question: 'What if the table wants a funny name?',
       answer:
-        'Use one short personal name or nickname during play. Keep the full personal, clan, and nickname form on the sheet or handout so the map stays readable.',
+        'Start with official nicknames such as Oneshoe, Badger, or Stumbleduck. If those are not funny enough, invent a call-name and mark it table flavor. Funny does not make a generator string official.',
     },
   ],
   relatedSlugs: ['dnd-dwarf-names', 'dwelf-dnd', 'dnd-classes-explained', 'dnd-ranger-spells'],
@@ -3657,44 +3657,29 @@ const dndGnomeNamesArticle: BlogPost = {
 
 const dndGnomeNamesArticleZh: BlogPost = {
   slug: 'dnd-gnome-names',
-  title: 'DND 侏儒名字：名字、氏族名、昵称与角色钩子',
-  seoTitle: 'DND 侏儒名字：132 个名字、氏族名与昵称',
+  title: 'DND 侏儒名字：卡面写全名，语音用两到四个汉字称呼',
+  seoTitle: 'DND 侏儒名字：先认名册，卡面写全名，桌上喊短称呼',
   metaDescription:
-    '从 132 个 DND 侏儒个人名、氏族名和昵称中组合角色，再补上剧情钩子、清楚桌上称呼与可读 VTT Token。',
+    '先按桌上规则书打开 2014/灰机或 Elemental Evil 名册，角色卡登记个人名与氏族名，再用两到四个汉字的中文绰号作桌上称呼；2024 免费规则未印新的名字附录。',
   excerpt:
-    '自由组合 132 个个人名、氏族名和昵称，再让完整名字带出角色钩子、清楚声音与可读 VTT 身份。',
+    '先按桌上规则书打开 2014/灰机或 Elemental Evil 名册，角色卡登记个人名与氏族名，再用两到四个汉字的中文绰号作桌上称呼。',
   publishedAt: DND_GNOME_NAMES_UPDATED_AT,
   updatedAt: DND_GNOME_NAMES_UPDATED_AT,
-  readTime: '12 分钟阅读',
+  readTime: '10 分钟阅读',
   coverLabel: '角色命名',
   coverImage: DND_GNOME_NAMES_COVER_PATH,
-  coverAlt: '三名 DND 侏儒冒险者围在灯光照亮的奇幻工坊桌边挑选名字与角色身份',
+  coverAlt: '一枚印着短称呼的小型人像棋子，旁边角色卡写着本名、氏族名和绰号',
   bodyHtml: dndGnomeNamesArticleHtmlZh,
   faqItems: [
     {
-      question: '哪些 DND 侏儒名字好用？',
+      question: '手头没有 2014 纸书，只有 2024 免费规则，名表去哪查？',
       answer:
-        '好用的 DND 侏儒名字要读得顺，还要带一个记忆点。Fenna Gearbloom "Blue-Fingers"、Rook Underlamp "Cave-Lantern" 和 Hobbik Wrongmap "Shortcut" 都给了桌上短称呼和一个故事入口。',
+        '打开<a href="https://dnd.huijiwiki.com/wiki/%E4%BE%8F%E5%84%92">灰机wiki 侏儒页</a>参考个人名、氏族名与绰号进行组合，并在角色卡上注明「名字来源：2014/灰机；机制来源：2024 免费规则」。2024 免费规则与 SRD 5.2.1 枢纽页面均未提供新的名字附录；经 DM 同意借用不等于官方继承声明。',
     },
     {
-      question: '为什么 DND 侏儒会有很多名字？',
+      question: '姓名栏写不下半打名字怎么办？',
       answer:
-        '2014 版侏儒说明写到，亲属和氏族长辈都可能为侏儒取名，其他人还会不断送上昵称。面对外人时，侏儒常把这组名字缩成个人名、氏族名和昵称。',
-    },
-    {
-      question: '侏儒名字必须听起来搞笑吗？',
-      answer:
-        '不必。轻快声音适合很多侏儒，但角色仍要能撑住严肃场景。把幽默放进昵称或家族旧事，比让每个音节都像笑话更耐用。',
-    },
-    {
-      question: '什么样的侏儒氏族名比较好？',
-      answer:
-        '好用的氏族名会指向手艺、家乡、名声或旧事故。Gearbloom、Fernburrow、Underlamp 和 Wrongmap 都能直接变成 DM 可调用的地点或家族期待。',
-    },
-    {
-      question: 'VTT 上的侏儒名字应该多长？',
-      answer:
-        '跑团时使用一个短个人名或昵称。个人名、氏族名和昵称组成的完整形式留在角色卡或 handout 上，地图会更清楚。',
+        '角色卡正面的姓名栏只填写正式的「个人名·氏族名」。其余来自长辈赠予的名字与 4 到 6 个音节的家族自造全名，全部记录在角色背景或传记说明栏中。两到四个汉字的日常桌上称呼可以写在特征栏，或直接印在虚拟桌面棋子的文字标签上。',
     },
   ],
   relatedSlugs: ['dnd-dwarf-names', 'dwelf-dnd', 'dnd-classes-explained', 'dnd-ranger-spells'],

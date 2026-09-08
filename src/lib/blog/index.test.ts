@@ -503,7 +503,102 @@ describe('dnd shatter 5e blog post', () => {
 });
 
 describe('dnd gnome names blog post', () => {
-  test('publishes a bilingual gnome naming workshop with a lazy video', () => {
+  const englishResidualHeadings = [
+    'Start with the name your table will actually say',
+    'Build a three-part gnome name',
+    'Turn one name into a playable character',
+    'Keep a whole gnome cast easy to hear',
+    'Name the gnome you actually sit down to play',
+    'The 2014 three-name habit, not a generator dump',
+    'Two worked names from the official lists',
+    'What 2024 free rules give you, and what they do not',
+    'Names that fail at the table',
+    'Decide the book before you copy a name',
+    'The official three-name habit',
+    'Official personal names you can copy tonight',
+    'Clan names carry pressure; nicknames carry a story',
+    'Two combinations that stay on the lists',
+    '2024 lineages change traits, not the name appendix',
+    'Deep gnome names without a fake official list',
+    'Names that fight the session',
+    'Stamp the short call name on a local token',
+    'Questions players ask after the name is locked',
+  ];
+  const chineseResidualHeadings = [
+    '先选桌上真正会喊的名字',
+    '组合一个三段式侏儒名字',
+    '把一个名字变成能直接上桌的角色',
+    '让整组侏儒名字听起来不混',
+    '先认清你桌上那只侏儒',
+    '半打名字，出门只报三个',
+    '森林倾向和岩石倾向各做一组',
+    '2024 血系改了能力，没改官方名册',
+    '这些起法会上桌翻车',
+    '侏儒为什么要攒半打名字',
+    '第一步：先挑一个念得出口的本名',
+    '第二步：氏族名怎么扛、怎么对人类意译',
+    '第三步：绰号才是队友会喊的那个',
+    '第四步：岩、林、地底三种味道分开起',
+    '第五步：把短称呼印进本地棋子',
+    '开团前还会被问到的几句',
+  ];
+  const researchTracePhrases = [
+    'who searched',
+    'Requesting URL landed',
+    'unopened SRD PDF',
+    'ReaderTask',
+    'InformationGain',
+    'ToolFact',
+    'canary',
+    'PublicBlogHandoff',
+    '检索框',
+    '未观察 UI',
+    '扩写到 2000',
+  ];
+
+  function countableNodeTexts(html: string, faqAnswers: string[]): string[] {
+    const nodePattern = /<(p|li|td)\b[^>]*>([\s\S]*?)<\/\1>/gi;
+    const texts: string[] = [];
+    const strippedFaqAnswers = faqAnswers.map((answer) => stripCountableHtml(answer));
+    for (const match of html.matchAll(nodePattern)) {
+      const innerHtml = match[2] ?? '';
+      const plainText = stripCountableHtml(innerHtml);
+      if (!plainText) {
+        continue;
+      }
+      if (faqAnswers.includes(plainText) || strippedFaqAnswers.includes(plainText)) {
+        continue;
+      }
+      texts.push(plainText);
+    }
+    return texts;
+  }
+
+  function stripCountableHtml(html: string): string {
+    return html
+      .replace(/<a\b[^>]*>[\s\S]*?<\/a>/gi, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function countEnglishQualifyingWords(html: string, faqAnswers: string[]): number {
+    return countableNodeTexts(html, faqAnswers).reduce((total, text) => {
+      const words = text.match(/[A-Za-z0-9’'-]+/g) ?? [];
+      return total + words.length;
+    }, 0);
+  }
+
+  function countChineseQualifyingHan(html: string, faqAnswers: string[]): number {
+    return countableNodeTexts(html, faqAnswers).reduce((total, text) => {
+      const han = text.match(/\p{Script=Han}/gu) ?? [];
+      return total + han.length;
+    }, 0);
+  }
+
+  test('publishes independent bilingual gnome naming bodies on the public blog interface', () => {
     expect(getBlogPageCount('en')).toBe(6);
     expect(getBlogPageCount('zh')).toBe(6);
     expect(getBlogPostsForPage('en', 1).map((post) => post.slug)).toEqual(FIRST_BLOG_PAGE_SLUGS);
@@ -512,37 +607,95 @@ describe('dnd gnome names blog post', () => {
     const englishPost = getBlogPost('en', DND_GNOME_NAMES_SLUG);
     const chinesePost = getBlogPost('zh', DND_GNOME_NAMES_SLUG);
 
-    expect(englishPost?.title).toBe('DND Gnome Names: First Names, Clans, Nicknames, and Character Hooks');
+    expect(englishPost?.title).toBe(
+      'DND Gnome Names: Lock the Book Before You Copy the Matching List',
+    );
+    expect(englishPost?.seoTitle).toBe(
+      'DND Gnome Names: Lock the Book, Copy Three Names, Pick a Call-Name',
+    );
+    expect(englishPost?.metaDescription).toBe(
+      'Lock the rulebook your table uses, copy a personal name, clan name, and nickname from the matching list—or Elemental Evil for deep gnomes—then keep one short call-name for speech and tokens.',
+    );
     expect(englishPost?.updatedAt).toBe('2026-08-06');
-    expect(englishPost?.bodyHtml).toContain('Start with the name your table will actually say');
-    expect(englishPost?.bodyHtml).toContain('Build a three-part gnome name');
-    expect(englishPost?.bodyHtml).toContain('Turn one name into a playable character');
-    expect(englishPost?.bodyHtml).toContain('Keep a whole gnome cast easy to hear');
-    expect(englishPost?.bodyHtml).toContain('data-video-id="HRX8c3IihL0"');
-    expect(englishPost?.bodyHtml).toContain('loading="lazy"');
+    expect(englishPost?.bodyHtml).toContain(
+      'Lock the book, then copy from the list that book actually prints',
+    );
+    expect(englishPost?.bodyHtml).toContain('Personal name, clan name, nickname');
+    expect(englishPost?.bodyHtml).toContain('Deep gnomes: a shorter list with occupation clans');
+    expect(englishPost?.bodyHtml).toContain('2024 lineage traits are not a name appendix');
+    expect(englishPost?.bodyHtml).toContain('Design example: Burgell Scheppen, called Doublelock');
+    expect(englishPost?.bodyHtml).toContain('Alston');
+    expect(englishPost?.bodyHtml).toContain('Bimpnottin');
+    expect(englishPost?.bodyHtml).toContain('Sparklegem');
+    expect(englishPost?.bodyHtml).toContain('Burgell Scheppen');
+    expect(englishPost?.bodyHtml).toContain('svirfneblin');
+    expect(englishPost?.bodyHtml).toContain('30 feet');
+    expect(englishPost?.bodyHtml).toContain('25 feet');
+    expect(englishPost?.bodyHtml).toContain('Elemental Evil');
+    expect(englishPost?.bodyHtml).not.toContain('data-video-id');
     expect(englishPost?.bodyHtml).not.toContain('<iframe');
+    expect(englishPost?.bodyHtml).not.toContain('132');
+    expect(englishPost?.bodyHtml).not.toContain('Fenna Gearbloom');
+    expect(englishPost?.bodyHtml).not.toContain('Jessamira');
+    for (const heading of englishResidualHeadings) {
+      expect(englishPost?.bodyHtml).not.toContain(heading);
+    }
+    for (const phrase of researchTracePhrases) {
+      expect(englishPost?.bodyHtml).not.toContain(phrase);
+    }
     expect(englishPost?.faqItems).toHaveLength(5);
     expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-gnome-names-guide.webp');
     for (const faqItem of englishPost?.faqItems ?? []) {
       expect(englishPost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
       expect(englishPost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
     }
+    const englishFaqAnswers = (englishPost?.faqItems ?? []).map((item) => item.answer);
+    expect(countEnglishQualifyingWords(englishPost?.bodyHtml ?? '', englishFaqAnswers)).toBeGreaterThanOrEqual(
+      2000,
+    );
 
-    expect(chinesePost?.title).toBe('DND 侏儒名字：名字、氏族名、昵称与角色钩子');
+    expect(chinesePost?.title).toBe('DND 侏儒名字：卡面写全名，语音用两到四个汉字称呼');
+    expect(chinesePost?.seoTitle).toBe('DND 侏儒名字：先认名册，卡面写全名，桌上喊短称呼');
+    expect(chinesePost?.metaDescription).toBe(
+      '先按桌上规则书打开 2014/灰机或 Elemental Evil 名册，角色卡登记个人名与氏族名，再用两到四个汉字的中文绰号作桌上称呼；2024 免费规则未印新的名字附录。',
+    );
     expect(chinesePost?.updatedAt).toBe('2026-08-06');
-    expect(chinesePost?.bodyHtml).toContain('先选桌上真正会喊的名字');
-    expect(chinesePost?.bodyHtml).toContain('组合一个三段式侏儒名字');
-    expect(chinesePost?.bodyHtml).toContain('把一个名字变成能直接上桌的角色');
-    expect(chinesePost?.bodyHtml).toContain('让整组侏儒名字听起来不混');
-    expect(chinesePost?.bodyHtml).toContain('data-video-id="HRX8c3IihL0"');
-    expect(chinesePost?.bodyHtml).toContain('loading="lazy"');
+    expect(chinesePost?.bodyHtml).toContain('中文桌上的称呼脱节：卡面写全名，语音要短称呼');
+    expect(chinesePost?.bodyHtml).toContain('岩、森林、地底：听感不同，名册也不要混抄');
+    expect(chinesePost?.bodyHtml).toContain('名册怎么查：短样 + 来源，不靠整表凑篇幅');
+    expect(chinesePost?.bodyHtml).toContain('2014 与 2024：机制分流，名册要单独标注');
+    expect(chinesePost?.bodyHtml).toContain('五步拼出能上桌的一套名字');
+    expect(chinesePost?.bodyHtml).toContain('起名之后：把桌上称呼落到棋子标签');
+    expect(chinesePost?.bodyHtml).toContain('奥斯顿');
+    expect(chinesePost?.bodyHtml).toContain('彬娜汀');
+    expect(chinesePost?.bodyHtml).toContain('贝伦');
+    expect(chinesePost?.bodyHtml).toContain('闪光宝石');
+    expect(chinesePost?.bodyHtml).toContain('斯涅布力');
+    expect(chinesePost?.bodyHtml).toContain('30 尺');
+    expect(chinesePost?.bodyHtml).toContain('25 尺');
+    expect(chinesePost?.bodyHtml).toContain('/zh/#editor-workspace');
+    expect(chinesePost?.bodyHtml).not.toContain('data-video-id');
     expect(chinesePost?.bodyHtml).not.toContain('<iframe');
-    expect(chinesePost?.faqItems).toHaveLength(5);
+    expect(chinesePost?.bodyHtml).not.toContain('132');
+    expect(chinesePost?.bodyHtml).not.toContain('Fenna Gearbloom');
+    expect(chinesePost?.bodyHtml).not.toContain('侏儒（Gnome）');
+    expect(chinesePost?.bodyHtml).not.toContain('黑暗视觉（Darkvision）');
+    for (const heading of chineseResidualHeadings) {
+      expect(chinesePost?.bodyHtml).not.toContain(heading);
+    }
+    for (const phrase of researchTracePhrases) {
+      expect(chinesePost?.bodyHtml).not.toContain(phrase);
+    }
+    expect(chinesePost?.faqItems).toHaveLength(2);
     expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-gnome-names-guide.webp');
     for (const faqItem of chinesePost?.faqItems ?? []) {
       expect(chinesePost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
       expect(chinesePost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
     }
+    const chineseFaqAnswers = (chinesePost?.faqItems ?? []).map((item) => item.answer);
+    expect(countChineseQualifyingHan(chinesePost?.bodyHtml ?? '', chineseFaqAnswers)).toBeGreaterThanOrEqual(
+      2000,
+    );
   });
 
   test('builds gnome names metadata, schema, assets, and llms discovery', () => {
@@ -577,14 +730,125 @@ describe('dnd gnome names blog post', () => {
       '@type': 'FAQPage',
     });
     expect(existsSync('public/blog/covers/en/dnd-gnome-names-guide.webp')).toBe(true);
+    expect(existsSync('public/blog/inline/dnd-gnome-names/gnome-three-name-workshop.webp')).toBe(true);
     expect(existsSync('public/blog/inline/dnd-gnome-names/gnome-race-video-placeholder.webp')).toBe(
       true,
     );
 
     const llmsText = readFileSync('public/llms.txt', 'utf8');
+    expect(llmsText).toContain(
+      'Lock the rulebook your table uses, copy a personal name, clan name, and nickname from the matching list—or Elemental Evil for deep gnomes—then keep one short call-name for speech and tokens.',
+    );
     expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-gnome-names');
+    expect(llmsText).toContain(
+      '先按桌上规则书打开 2014/灰机或 Elemental Evil 名册，角色卡登记个人名与氏族名，再用两到四个汉字的中文绰号作桌上称呼；2024 免费规则未印新的名字附录。',
+    );
     expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-gnome-names');
   });
+
+  test('inserts exactly one lazy workshop figure in each gnome names body', () => {
+    const englishHtml = getBlogPost('en', DND_GNOME_NAMES_SLUG)?.bodyHtml ?? '';
+    const chineseHtml = getBlogPost('zh', DND_GNOME_NAMES_SLUG)?.bodyHtml ?? '';
+    const workshopSrc = 'src="/blog/inline/dnd-gnome-names/gnome-three-name-workshop.webp"';
+    const englishAlt =
+      'Candlelit gnome workshop: a bearded gnome weighs a pendant against three blank parchment nameplates marked with a spiral, a mountain, and a jester face';
+    const englishCaption =
+      'The gnome is still choosing among three blank workshop tags. Nothing on the bench is a printed name list or a character-sheet screen.';
+    const chineseAlt =
+      '烛光侏儒工坊里，白须侏儒对照三张无字羊皮名牌：螺旋、山形和笑脸小丑，手里捏着一枚吊坠';
+    const chineseCaption =
+      '工坊桌上只摆三张空白名牌，侏儒还在比哪一块能带出门，不是规则表，也不是真实编辑器界面。';
+
+    expect((englishHtml.match(/<figure\b/g) ?? []).length).toBe(1);
+    expect((englishHtml.match(/<img\b/g) ?? []).length).toBe(1);
+    expect((englishHtml.match(/gnome-three-name-workshop\.webp/g) ?? []).length).toBe(1);
+    expect(englishHtml).toContain(workshopSrc);
+    expect(englishHtml).toContain(`alt="${englishAlt}"`);
+    expect(englishHtml).toContain(`<figcaption>${englishCaption}</figcaption>`);
+    expect(englishHtml).toContain('width="1536"');
+    expect(englishHtml).toContain('height="1024"');
+    expect(englishHtml).toContain('loading="lazy"');
+    expect(englishHtml).toContain('decoding="async"');
+    expect(englishHtml.indexOf('plus one spoken call-name.')).toBeGreaterThan(-1);
+    expect(englishHtml.indexOf('plus one spoken call-name.')).toBeLessThan(englishHtml.indexOf('<figure'));
+    expect(englishHtml.indexOf('<figure')).toBeLessThan(englishHtml.indexOf('Copy. Do not derive.'));
+    expect(englishHtml).not.toContain('official name table');
+    expect(englishHtml).not.toContain('character sheet UI');
+
+    expect((chineseHtml.match(/<figure\b/g) ?? []).length).toBe(1);
+    expect((chineseHtml.match(/<img\b/g) ?? []).length).toBe(1);
+    expect((chineseHtml.match(/gnome-three-name-workshop\.webp/g) ?? []).length).toBe(1);
+    expect(chineseHtml).toContain(workshopSrc);
+    expect(chineseHtml).toContain(`alt="${chineseAlt}"`);
+    expect(chineseHtml).toContain(`<figcaption>${chineseCaption}</figcaption>`);
+    expect(chineseHtml).toContain('width="1536"');
+    expect(chineseHtml).toContain('height="1024"');
+    expect(chineseHtml).toContain('loading="lazy"');
+    expect(chineseHtml).toContain('decoding="async"');
+    expect(chineseHtml.indexOf('不是规则书强制规格。')).toBeGreaterThan(-1);
+    expect(chineseHtml.indexOf('不是规则书强制规格。')).toBeLessThan(chineseHtml.indexOf('<figure'));
+    expect(chineseHtml.indexOf('<figure')).toBeLessThan(chineseHtml.indexOf('把这三层职能分清楚后'));
+    expect(chineseHtml).not.toContain('官方规则表');
+    expect(chineseHtml).not.toContain('真实 UI');
+  });
+
+  test('rejects mirrored Chinese skeleton, uniform fail-cadence, and search-engine traces', () => {
+    const englishPost = getBlogPost('en', DND_GNOME_NAMES_SLUG);
+    const chinesePost = getBlogPost('zh', DND_GNOME_NAMES_SLUG);
+    const englishHtml = englishPost?.bodyHtml ?? '';
+    const chineseHtml = chinesePost?.bodyHtml ?? '';
+    const englishHeadingCount = (englishHtml.match(/<h2\b/g) ?? []).length;
+    const chineseHeadingCount = (chineseHtml.match(/<h2\b/g) ?? []).length;
+
+    expect(chineseHeadingCount).not.toBe(englishHeadingCount);
+    expect(chineseHtml).toContain('五步拼出能上桌的一套名字');
+    expect(chineseHtml).toContain('反例：三种可观察的选名失误');
+    expect(chineseHtml).toContain('桌上称呼');
+    expect(chineseHtml).toContain('灰机wiki');
+    expect(chineseHtml).not.toContain('第一步：');
+    expect(chineseHtml).not.toContain('音乐盒');
+    expect(chineseHtml).not.toContain('可爱的小发明家');
+    expect(chineseHtml).not.toContain('苔语');
+    expect(chineseHtml).not.toContain('柯尔，对石厅负责');
+    expect(chineseHtml).not.toContain('十二节宝石');
+    expect(chineseHtml).not.toContain('桌子一听');
+    expect(chineseHtml).not.toContain('告诉桌子');
+    expect(chineseHtml).not.toContain('真正显灵');
+    expect(chineseHtml).not.toContain('会翻车，因为');
+    expect(englishHtml).not.toContain('music box');
+    expect(englishHtml).not.toContain('Cute small inventor');
+    expect(englishHtml).not.toContain('Mosswhisper');
+    expect(englishHtml).not.toContain('Kell, who answers');
+    expect(englishHtml).not.toContain('twelve-name gemstone');
+    expect(englishHtml).not.toMatch(/\bfails because\b/i);
+    expect(englishHtml).not.toMatch(/\bBing(?:-style)?\b|\bGoogle\b/i);
+    expect(englishHtml).not.toContain('AC 5');
+    expect(englishHtml).not.toContain('1 hit point');
+    expect(englishHtml).not.toContain('Proficiency Bonus');
+
+    const englishParagraphs = [...englishHtml.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(
+      (match) => match[1] ?? '',
+    );
+    const chineseParagraphs = [...chineseHtml.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(
+      (match) => match[1] ?? '',
+    );
+    expect(longestUniformCadence(englishParagraphs, /\bfails because\b/i)).toBeLessThan(3);
+    expect(longestUniformCadence(chineseParagraphs, /会翻车/)).toBeLessThan(3);
+  });
+
+  function longestUniformCadence(paragraphs: string[], pattern: RegExp): number {
+    let currentRun = 0;
+    let longestRun = 0;
+    for (const paragraph of paragraphs) {
+      if (pattern.test(paragraph)) {
+        currentRun += 1;
+        longestRun = Math.max(longestRun, currentRun);
+      } else {
+        currentRun = 0;
+      }
+    }
+    return longestRun;
+  }
 });
 
 describe('dnd maul blog post', () => {

@@ -37,7 +37,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [DnD Alignment Chart](https://www.tokenmaker.one/blog/dnd-alignment-chart): Read all nine alignments, judge order and morality separately, pressure-test one hard choice, and turn the result into repeatable roleplay.
 - [DnD Races](https://www.tokenmaker.one/blog/dnd-races): Compare the ten 2024 species, separate the 2014 race rules, and choose a character concept with four practical questions.
 - [Shatter DnD 5e](https://www.tokenmaker.one/blog/dnd-shatter-5e): Place the 10-foot blast, resolve Constitution saves, compare 2014 and 2024 disadvantage rules, and handle unattended objects and cover.
-- [DND Gnome Names](https://www.tokenmaker.one/blog/dnd-gnome-names): Mix 132 gnome first names, clan names, and nicknames, then turn one full name into a character hook and readable VTT identity.
+- [DND Gnome Names](https://www.tokenmaker.one/blog/dnd-gnome-names): Lock the rulebook your table uses, copy a personal name, clan name, and nickname from the matching list—or Elemental Evil for deep gnomes—then keep one short call-name for speech and tokens.
 - [DND Maul 5e](https://www.tokenmaker.one/blog/dnd-maul): Check Martial proficiency, the Strength 13 Heavy threshold, and two-hand commitment, then resolve Topple and hand Prone to the next useful action.
 - [DND Quarterstaff 5e](https://www.tokenmaker.one/blog/dnd-quarterstaff): Choose the hand setup, attack ability, Topple timing, Monk or Shillelagh rules, Polearm Master action economy, and VTT token grip for a quarterstaff.
 - [Spectator DnD](https://www.tokenmaker.one/blog/spectator-dnd): Run a spectator as a contract-bound guardian with clear 2014/2024 rules, eye-ray pressure, Spell Reflection, and VTT token cues.
@@ -91,7 +91,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [DND 阵营九宫格：选择一个会随行动改变的角色坐标](https://www.tokenmaker.one/zh/blog/dnd-alignment-chart)
 - [DND 种族与 Species：为 2024 角色选择出身](https://www.tokenmaker.one/zh/blog/dnd-races)
 - [Shatter DnD 5e：确定爆点、结算豁免与破坏物体](https://www.tokenmaker.one/zh/blog/dnd-shatter-5e)
-- [DND 侏儒名字：名字、氏族名、昵称与角色钩子](https://www.tokenmaker.one/zh/blog/dnd-gnome-names)
+- [DND 侏儒名字：先认名册，卡面写全名，桌上喊短称呼](https://www.tokenmaker.one/zh/blog/dnd-gnome-names): 先按桌上规则书打开 2014/灰机或 Elemental Evil 名册，角色卡登记个人名与氏族名，再用两到四个汉字的中文绰号作桌上称呼；2024 免费规则未印新的名字附录。
 - [DND 巨锤（Maul）5e：Heavy、Topple 与清楚回合流程](https://www.tokenmaker.one/zh/blog/dnd-maul)
 - [DND 长棍（Quarterstaff）5e：持握选择、Topple 与构筑](https://www.tokenmaker.one/zh/blog/dnd-quarterstaff)
 - [Spectator DND：守卫命令、Eye Rays 与 VTT Token](https://www.tokenmaker.one/zh/blog/spectator-dnd)
