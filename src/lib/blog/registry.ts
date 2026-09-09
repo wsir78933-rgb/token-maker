@@ -27,6 +27,7 @@ import {
   DND_BLESS_COVER_PATH,
   DND_RAPIER_COVER_PATH,
   DND_RANGER_SPELLS_COVER_PATH,
+  DND_RANGER_COVER_PATH,
   DND_SHORTSWORD_COVER_PATH,
   DND_SILVERY_BARBS_COVER_PATH,
   DND_SWORD_SHEATHS_COVER_PATH,
@@ -88,6 +89,7 @@ import {
 } from '@/lib/blog-posts/paladin-2024-spells-dnd';
 import { dndMaceArticleHtml, dndMaceArticleHtmlZh } from '@/lib/blog-posts/dnd-mace';
 import { dndRangerSpellsArticleHtml, dndRangerSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-ranger-spells';
+import { dndRangerArticleHtml, dndRangerArticleHtmlZh } from '@/lib/blog-posts/dnd-ranger';
 import { dndBlessArticleHtml, dndBlessArticleHtmlZh } from '@/lib/blog-posts/dnd-bless';
 import { rapierDndArticleHtml, rapierDndArticleHtmlZh } from '@/lib/blog-posts/rapier-dnd';
 import { dndShortswordArticleHtml, dndShortswordArticleHtmlZh } from '@/lib/blog-posts/dnd-shortsword';
@@ -206,6 +208,7 @@ const DND_5E_ARMORER_UPDATED_AT = '2026-07-20';
 const DND_DEATH_KNIGHT_UPDATED_AT = '2026-07-22';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
+const DND_RANGER_UPDATED_AT = '2026-09-09';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
 const DND_BLESS_UPDATED_AT = '2026-07-09';
 const DND_SHORTSWORD_UPDATED_AT = '2026-07-10';
@@ -4783,11 +4786,46 @@ const dndBackgroundsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-character-sheet', 'dnd-stats', 'dnd-alignment-chart', 'players-handbook-dnd-5e'],
 };
 
+const dndRangerArticle: BlogPost = {
+  slug: 'dnd-ranger',
+  title: 'DND Ranger Guide for 2014 and 2024 Rules',
+  seoTitle: 'DND Ranger Guide: Choose Your Edition and Party Role',
+  metaDescription:
+    'Build a DND Ranger with a clear 2014 or 2024 path, level 1–5 decisions, party-role checks, source-labeled subclasses, and an optional VTT token workflow.',
+  excerpt:
+    'Build a DND Ranger with a clear 2014 or 2024 path, level 1–5 decisions, party-role checks, source-labeled subclasses, and an optional VTT token workflow.',
+  publishedAt: DND_RANGER_UPDATED_AT,
+  updatedAt: DND_RANGER_UPDATED_AT,
+  readTime: '11 min read',
+  coverLabel: 'Ranger Guide',
+  coverImage: DND_RANGER_COVER_PATH,
+  coverAlt:
+    'A DND Ranger scout token on a foggy forest ridge with a bow, trail markers, and a VTT grid',
+  bodyHtml: dndRangerArticleHtml,
+};
+
+const dndRangerArticleZh: BlogPost = {
+  slug: 'dnd-ranger',
+  title: 'DND 游侠指南：从版本选择到 1 级职责与首回合',
+  seoTitle: 'DND 游侠指南：2024 与 2014 版本、建卡与首回合',
+  metaDescription:
+    '先区分 2014 与 2024 Ranger，再按队伍职责安排属性、技能、装备和首回合；附 1–5 级检查点与可选 VTT Token 制作流程。',
+  excerpt:
+    '先区分 2014 与 2024 Ranger，再按队伍职责安排属性、技能、装备和首回合；附 1–5 级检查点与可选 VTT Token 制作流程。',
+  publishedAt: DND_RANGER_UPDATED_AT,
+  updatedAt: DND_RANGER_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '游侠指南',
+  coverImage: DND_RANGER_COVER_PATH,
+  coverAlt: '雾林山脊上的 DND 游侠侦察 Token，身边有弓、足迹标记与 VTT 网格',
+  bodyHtml: dndRangerArticleHtmlZh,
+};
+
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle].map(
+  en: [dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh].map(
+  zh: [dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh].map(
     addHeadingAnchors,
   ),
 };

@@ -563,7 +563,7 @@ describe('blog sitemap entries', () => {
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 
-  test('keeps fifth blog hub pages current after publishing the handbook guide', () => {
+  test('keeps the fifth blog hub page current after publishing dnd-ranger', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/5');
     const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/5');
 
@@ -573,18 +573,18 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/5',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-09-05'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-09-09'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-05'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-09'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 
-  test('keeps sixth blog hub pages current after publishing the backgrounds guide', () => {
+  test('keeps the sixth blog hub page current after publishing dnd-ranger', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/6');
     const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/6');
 
@@ -594,12 +594,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/6',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-09-05'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-09-09'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-05'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-09'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);

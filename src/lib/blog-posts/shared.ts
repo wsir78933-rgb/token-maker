@@ -28,6 +28,7 @@ export const DND_MACE_COVER_PATH = '/blog/covers/en/dnd-mace-guide.webp';
 export const DND_BLESS_COVER_PATH = '/blog/covers/en/dnd-bless-guide.webp';
 export const DND_RAPIER_COVER_PATH = '/blog/covers/en/dnd-rapier-guide.webp';
 export const DND_RANGER_SPELLS_COVER_PATH = '/blog/covers/en/dnd-ranger-spells-guide.webp';
+export const DND_RANGER_COVER_PATH = '/blog/covers/en/dnd-ranger-guide.webp';
 export const DND_SHORTSWORD_COVER_PATH = '/blog/covers/en/dnd-shortsword-guide.webp';
 export const DND_SILVERY_BARBS_COVER_PATH = '/blog/covers/en/dnd-silvery-barbs-guide.webp';
 export const DND_SWORD_SHEATHS_COVER_PATH = '/blog/covers/en/dnd-sword-sheaths-guide.webp';
@@ -114,6 +115,11 @@ export const DND_MACE_COMPARISON_IMAGE_PATH = '/blog/inline/dnd-mace/mace-weapon
 export const DND_MACE_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-mace/mace-video-placeholder.webp';
 export const DND_RANGER_SPELLS_PREP_IMAGE_PATH = '/blog/inline/dnd-ranger-spells/ranger-spell-prep-table.webp';
 export const DND_RANGER_SPELLS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-ranger-spells/ranger-spells-video-placeholder.webp';
+export const DND_RANGER_DECISION_PLAN_IMAGE_PATH =
+  '/blog/inline/dnd-ranger/ranger-decision-plan.webp';
+export const DND_RANGER_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-ranger/dnd-ranger-video-placeholder.webp';
+export const DND_RANGER_VIDEO_ID = 'P_qzyTFSrTE';
 export const DND_BLESS_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-bless/dnd-bless-video-placeholder.webp';
 export const DND_SHORTSWORD_VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-shortsword/dnd-shortsword-video-placeholder.webp';
 export const DND_SILVERY_BARBS_VIDEO_PLACEHOLDER_PATH =
