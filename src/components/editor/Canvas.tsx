@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { renderToken, drawCheckerboard } from '@/lib/renderer/pipeline';
 import { useI18n } from '@/lib/i18n';
 import { ImageUploader } from './ImageUploader';
@@ -87,6 +88,15 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
   const dragStartOffset = useRef({ x: 0, y: 0 });
   const pendingOffset = useRef<{ x: number; y: number } | null>(null);
   const offsetFrame = useRef<number | null>(null);
+  const imageElementRef = useRef(imageElement);
+  const committedImageScaleRef = useRef(imageScale);
+  const pendingImageScaleCommitRef = useRef<{
+    frameId: number;
+    baselineScale: number;
+    imageElement: HTMLImageElement;
+  } | null>(null);
+  const scheduleImageScaleCommitRef = useRef<() => void>(() => {});
+  const flushPendingImageScaleCommitRef = useRef<() => void>(() => {});
 
   // ResizeObserver: 让 canvas 渲染分辨率跟随容器实际像素尺寸
   useEffect(() => {
@@ -194,10 +204,85 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     isBatchPreview,
   ]);
 
+  const discardPendingImageScaleCommit = () => {
+    const pendingImageScaleCommit = pendingImageScaleCommitRef.current;
+    if (pendingImageScaleCommit === null) return;
+
+    cancelAnimationFrame(pendingImageScaleCommit.frameId);
+    pendingImageScaleCommitRef.current = null;
+  };
+
+  const commitPendingImageScale = () => {
+    const pendingImageScaleCommit = pendingImageScaleCommitRef.current;
+    pendingImageScaleCommitRef.current = null;
+    if (pendingImageScaleCommit === null || !isMountedRef.current) {
+      return;
+    }
+
+    if (imageElementRef.current !== pendingImageScaleCommit.imageElement) {
+      imageScaleRef.current = committedImageScaleRef.current;
+      return;
+    }
+
+    if (committedImageScaleRef.current !== pendingImageScaleCommit.baselineScale) {
+      imageScaleRef.current = committedImageScaleRef.current;
+      return;
+    }
+
+    const nextImageScale = imageScaleRef.current;
+    if (nextImageScale === committedImageScaleRef.current) {
+      return;
+    }
+
+    setImageScale(nextImageScale);
+  };
+
+  const flushPendingImageScaleCommit = () => {
+    if (pendingImageScaleCommitRef.current === null) return;
+
+    cancelAnimationFrame(pendingImageScaleCommitRef.current.frameId);
+    flushSync(() => {
+      commitPendingImageScale();
+    });
+  };
+
+  const scheduleImageScaleCommit = () => {
+    if (pendingImageScaleCommitRef.current !== null) return;
+
+    const imageElementForCommit = imageElementRef.current;
+    if (!imageElementForCommit) return;
+
+    const pendingImageScaleCommit = {
+      frameId: 0,
+      baselineScale: committedImageScaleRef.current,
+      imageElement: imageElementForCommit,
+    };
+    pendingImageScaleCommit.frameId = requestAnimationFrame(() => {
+      commitPendingImageScale();
+    });
+    pendingImageScaleCommitRef.current = pendingImageScaleCommit;
+  };
+
+  useEffect(() => {
+    flushPendingImageScaleCommitRef.current = flushPendingImageScaleCommit;
+    scheduleImageScaleCommitRef.current = scheduleImageScaleCommit;
+  });
+
   useEffect(() => {
     isMountedRef.current = true;
+    const flushPendingScaleOnDiscreteUserAction = () => {
+      flushPendingImageScaleCommitRef.current();
+    };
+    window.addEventListener('pointerdown', flushPendingScaleOnDiscreteUserAction, true);
+    window.addEventListener('click', flushPendingScaleOnDiscreteUserAction, true);
+    window.addEventListener('keydown', flushPendingScaleOnDiscreteUserAction, true);
+
     return () => {
       isMountedRef.current = false;
+      window.removeEventListener('pointerdown', flushPendingScaleOnDiscreteUserAction, true);
+      window.removeEventListener('click', flushPendingScaleOnDiscreteUserAction, true);
+      window.removeEventListener('keydown', flushPendingScaleOnDiscreteUserAction, true);
+      discardPendingImageScaleCommit();
       if (offsetFrame.current !== null) {
         cancelAnimationFrame(offsetFrame.current);
       }
@@ -205,8 +290,23 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
   }, []);
 
   useEffect(() => {
-    imageScaleRef.current = imageScale;
-  }, [imageScale]);
+    imageElementRef.current = imageElement;
+    committedImageScaleRef.current = imageScale;
+
+    const pendingImageScaleCommit = pendingImageScaleCommitRef.current;
+    if (pendingImageScaleCommit === null) {
+      imageScaleRef.current = imageScale;
+      return;
+    }
+
+    if (
+      imageElement !== pendingImageScaleCommit.imageElement ||
+      imageScale !== pendingImageScaleCommit.baselineScale
+    ) {
+      discardPendingImageScaleCommit();
+      imageScaleRef.current = imageScale;
+    }
+  }, [imageElement, imageScale]);
 
   useEffect(() => {
     const previewElement = previewRef.current;
@@ -215,16 +315,15 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     const handlePreviewWheel = (wheelEvent: WheelEvent) => {
       wheelEvent.preventDefault();
       const wheelDeltaInPixels = getWheelDeltaInPixels(wheelEvent);
-      const nextImageScale = getNextImageScaleForWheel(imageScaleRef.current, wheelDeltaInPixels);
-      imageScaleRef.current = nextImageScale;
-      setImageScale(nextImageScale);
+      imageScaleRef.current = getNextImageScaleForWheel(imageScaleRef.current, wheelDeltaInPixels);
+      scheduleImageScaleCommitRef.current();
     };
 
     previewElement.addEventListener('wheel', handlePreviewWheel, { passive: false });
     return () => {
       previewElement.removeEventListener('wheel', handlePreviewWheel);
     };
-  }, [imageElement, setImageScale]);
+  }, [imageElement]);
 
   const scheduleImageOffset = (x: number, y: number) => {
     pendingOffset.current = { x, y };

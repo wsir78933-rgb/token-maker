@@ -1,5 +1,54 @@
 # WORKLOG
 
+## 交接单 · 2026-09-10 20:08 CST · Cursor Grok
+
+### 本次目标
+
+把已锁的 V6 `dnd-backgrounds-lock-r1` 写入现有 `/blog/dnd-backgrounds` 与 `/zh/blog/dnd-backgrounds`（project-write），不新建 slug，不部署。
+
+### 已完成
+
+- Orca Run `run_2c3cffec5e98`：Grok 写页 `task_789686c4fa82` / `ctx_6e012bf7a4bc`，另一个 Grok 只读复核 `task_d6c8c542182e` / `ctx_3d66b633399e`；两个 Task 均为 completed，Worker 均已 release。
+- 代码已提交 `00acc07`，仅含 `src/lib/blog-posts/dnd-backgrounds.ts`、`src/lib/blog/registry.ts`、`src/lib/blog/dnd-backgrounds.test.ts`、`src/app/sitemap.test.ts`。`main` 比 `origin/main` 超前 1 个提交。未 push、未部署。
+- 页面表面与交接一致：英文 Title `DnD 5e Backgrounds: Confirm the Year, Then Copy Fields`，H1 `Confirm the Rules Year Before You Copy a D&D 5e Background`；中文 Title `DND 5E 背景怎么选：先问年份，再按那一年抄进角色卡`，H1 `DND 5E 背景：先分清你在找什么，再按年份抄进角色卡`。`faqItems` 已去掉。`publishedAt` 仍为 `2026-08-26`，`updatedAt` 为 `2026-09-10`。
+- 锁稿 hash 复核时仍为英 `54b5e7ab7cbde706b15b0de92fdd83f9627c0c932ab921013467a8c08f35a034`、中 `e76e247a56610a90109ab3df1404efa0cd797088847debd90c7a0c28028c10df`。
+- 独立复核亲自跑过：`pnpm exec vitest run src/lib/blog/dnd-backgrounds.test.ts` 2/2 exit 0；`pnpm typecheck` exit 0；`pnpm lint` 0 errors（仅既有 `CoatMakerSeoContent.tsx:25` img warning）；`pnpm build` exit 0，149/149，含这两条路由。
+- ego-browser 回读 `http://127.0.0.1:40001/blog/dnd-backgrounds` 与 `/zh/blog/dnd-backgrounds` HTTP 200；Title/H1/Description/引用 quote 与 href 对齐；无 FAQPage、无「五步筛选法」、无旧 H2 `Start with the rulebook year`。
+
+### 做到一半
+
+- 目标内写页工作无未完成项。
+- `DND-筛选后关键词清单.xlsx` 仍是会话前已有的未存档改动，按用户选择未进 `00acc07`。
+- 未 push、未部署；线上仍是旧文，不能声称已更新、已收录或已排名。
+- 旧 content-only Run `run_f92d3b708837` 的 12 个 Task 此前已 completed；仍留 4 个失败重试的 retained worker（2 个 `user_takeover`、2 个 `identity_unproven`），不在本次写页范围。
+- 交接文件里的 `publicFieldsHash` 仍未能独立复算，正文 hash 不受影响。
+
+### 下一步
+
+- 下一班输入 `$pickup` 接手。先读本交接单和 `git show --stat --oneline 00acc07`，再单独决定是否 push 或部署。
+- 不要把 `WORKLOG.md` 加入后续代码提交。不要关闭标记为 `user_takeover` 的旧终端。
+
+### 踩过的坑
+
+- `worker-start --agent grok` 首次曾 `agent_prompt_blocked`；等 `tui-idle` 后用 `--retry-of` 加 `--terminal` 才注入成功。
+- 第二次 `task-create` 曾卡住，改用 Python 直接传 `--spec` 才建成复核 Task。
+- 写页 Grok 不能复核自己，必须另开 Grok。
+- 博客列表页 sitemap `lastModified` 取全站最新 `updatedAt`，改这一篇会带动 page/5、page/6 的日期断言。
+- 交接写明 Media none required、FAQ none；不要为迎合旧测试把 video/FAQ 塞回正文。中文锁稿已有 H1，页面模板也用 `post.title` 渲染 H1，`bodyHtml` 不能再输出第二个 H1。
+
+### 怎么验证
+
+```bash
+git show --stat --oneline 00acc07
+git status --short --branch
+pnpm exec vitest run src/lib/blog/dnd-backgrounds.test.ts
+pnpm typecheck
+pnpm lint
+pnpm build
+```
+
+浏览器优先本地 ego-browser。确认 token-maker-app 的 `pnpm dev --port 40001` 后打开 `http://127.0.0.1:40001/blog/dnd-backgrounds` 与 `http://127.0.0.1:40001/zh/blog/dnd-backgrounds`。核 Title、H1、Description、正文引用链接；确认无 FAQ、无「五步筛选法」。不要清理用户 localStorage。仓库检查不能证明线上已更新。
+
 ## 交接单 · 2026-09-06 09:57 CST · Codex CLI
 
 ### 本次目标

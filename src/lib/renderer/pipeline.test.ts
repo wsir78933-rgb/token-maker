@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, type MockInstance } from 'vitest';
 
 import { getBorderById } from '@/lib/templates/borders';
 import {
@@ -172,10 +172,7 @@ describe('exportTokenAsPNG', () => {
   });
 
   it('keeps the default border inset ratio for PNG export', async () => {
-    const renderingContext = createRenderingContext();
-    const getContextSpy = vi
-      .spyOn(HTMLCanvasElement.prototype, 'getContext')
-      .mockReturnValue(renderingContext);
+    const { contextByCanvas, getContextSpy } = spyOnGetContextPerCanvas();
     const toBlobSpy = vi
       .spyOn(HTMLCanvasElement.prototype, 'toBlob')
       .mockImplementation((callback) => callback(new Blob(['token'], { type: 'image/png' })));
@@ -206,8 +203,13 @@ describe('exportTokenAsPNG', () => {
       200,
       6.4,
     );
+    const exportTargetCanvas = [...contextByCanvas.keys()][0];
+    if (!exportTargetCanvas) {
+      throw new Error('exportTokenAsPNG did not acquire a canvas rendering context');
+    }
+
     expect(rendererMocks.drawBorder).toHaveBeenCalledWith(
-      renderingContext,
+      renderingContextFor(contextByCanvas, exportTargetCanvas, 'export-target'),
       ringBorder,
       200,
       '#ffffff',
@@ -240,11 +242,11 @@ describe('shouldApplyImageBorderInteriorFallback', () => {
   });
 });
 
-function createRenderingContext(): CanvasRenderingContext2D {
+function createRenderingContext(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
   const gradient = { addColorStop: vi.fn() } as unknown as CanvasGradient;
 
   return {
-    canvas: document.createElement('canvas'),
+    canvas,
     clearRect: vi.fn(),
     clip: vi.fn(),
     createImageData: vi.fn((width: number, height: number) => ({
@@ -253,7 +255,9 @@ function createRenderingContext(): CanvasRenderingContext2D {
     createLinearGradient: vi.fn(() => gradient),
     drawImage: vi.fn(),
     fill: vi.fn(),
+    fillRect: vi.fn(),
     fillStyle: '',
+    font: '10px sans-serif',
     getImageData: vi.fn((_x: number, _y: number, width: number, height: number) => ({
       data: new Uint8ClampedArray(width * height * 4),
     } as ImageData)),
@@ -267,25 +271,92 @@ function createRenderingContext(): CanvasRenderingContext2D {
     putImageData: vi.fn(),
     restore: vi.fn(),
     save: vi.fn(),
+    setTransform: vi.fn(),
     shadowBlur: 0,
     shadowColor: 'transparent',
     shadowOffsetX: 0,
     shadowOffsetY: 0,
     stroke: vi.fn(),
     strokeStyle: '',
+    textAlign: 'start',
+    textBaseline: 'alphabetic',
   } as unknown as CanvasRenderingContext2D;
 }
 
-function renderRingToken(options: Parameters<typeof renderToken>[3]) {
-  const renderingContext = createRenderingContext();
+function renderingContextFor(
+  contextByCanvas: Map<HTMLCanvasElement, CanvasRenderingContext2D>,
+  canvas: HTMLCanvasElement,
+  canvasRole: string
+): CanvasRenderingContext2D {
+  const renderingContext = contextByCanvas.get(canvas);
+  if (!renderingContext) {
+    throw new Error(
+      `Missing ${canvasRole} rendering context for canvas width=${String(canvas.width)}`
+    );
+  }
+  return renderingContext;
+}
+
+function spyOnGetContextPerCanvas(options: { attachReset?: boolean } = {}) {
+  const contextByCanvas = new Map<HTMLCanvasElement, CanvasRenderingContext2D>();
   const getContextSpy = vi
     .spyOn(HTMLCanvasElement.prototype, 'getContext')
-    .mockReturnValue(renderingContext);
+    .mockImplementation(function (this: HTMLCanvasElement) {
+      const existingContext = contextByCanvas.get(this);
+      if (existingContext) {
+        return existingContext;
+      }
+
+      const renderingContext = createRenderingContext(this);
+      if (options.attachReset) {
+        renderingContext.reset = vi.fn(() => {
+          renderingContext.imageSmoothingEnabled = false;
+          renderingContext.imageSmoothingQuality = 'low';
+        });
+      }
+      contextByCanvas.set(this, renderingContext);
+      return renderingContext;
+    });
+
+  return { contextByCanvas, getContextSpy };
+}
+
+function createdCanvasElements(
+  createElementSpy: MockInstance<typeof document.createElement>
+): HTMLCanvasElement[] {
+  return createElementSpy.mock.calls.flatMap((args, index) => {
+    if (args[0] !== 'canvas') return [];
+    const result = createElementSpy.mock.results[index];
+    if (result.type !== 'return') return [];
+    return [result.value as HTMLCanvasElement];
+  });
+}
+
+function trackNumericPropertyWrites(
+  target: HTMLCanvasElement,
+  propertyName: 'width' | 'height'
+): { assignCount: number } {
+  const writes = { assignCount: 0 };
+  let currentValue = target[propertyName];
+  Object.defineProperty(target, propertyName, {
+    configurable: true,
+    get: () => currentValue,
+    set: (value: number) => {
+      writes.assignCount += 1;
+      currentValue = value;
+    },
+  });
+  return writes;
+}
+
+function renderRingToken(options: Parameters<typeof renderToken>[3]) {
+  const targetCanvas = document.createElement('canvas');
+  const { contextByCanvas, getContextSpy } = spyOnGetContextPerCanvas();
   const ringBorder = { id: 'inset-test-ring', name: 'Inset test', type: 'ring' as const };
 
   try {
     renderToken(
-      document.createElement('canvas'),
+      targetCanvas,
       createState({
         selectedBorderId: ringBorder.id,
         customBorders: [ringBorder],
@@ -297,7 +368,10 @@ function renderRingToken(options: Parameters<typeof renderToken>[3]) {
     getContextSpy.mockRestore();
   }
 
-  return { renderingContext, ringBorder };
+  return {
+    renderingContext: renderingContextFor(contextByCanvas, targetCanvas, 'target'),
+    ringBorder,
+  };
 }
 
 describe('renderToken border inset options', () => {
@@ -352,7 +426,7 @@ describe('renderToken border inset options', () => {
   });
 
   it('keeps image-border masks distinct for each inset ratio', () => {
-    const renderingContext = createRenderingContext();
+    const renderingContext = createRenderingContext(document.createElement('canvas'));
     const getContextSpy = vi
       .spyOn(HTMLCanvasElement.prototype, 'getContext')
       .mockReturnValue(renderingContext);
@@ -399,5 +473,187 @@ describe('renderToken border inset options', () => {
       193.6,
     );
     expect(renderingContext.getImageData).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('renderToken intermediate buffer reuse', () => {
+  it('reuses one same-size base layer across consecutive renders of the same target', () => {
+    const targetCanvas = document.createElement('canvas');
+    const { getContextSpy } = spyOnGetContextPerCanvas();
+    const createElementSpy = vi.spyOn(document, 'createElement');
+
+    try {
+      renderToken(targetCanvas, createState({}), 200);
+      const canvasesAfterFirstRender = createdCanvasElements(createElementSpy);
+      expect(canvasesAfterFirstRender).toHaveLength(1);
+
+      renderToken(targetCanvas, createState({ overlayOpacity: 0.4, overlayTint: '#ff0000' }), 200);
+      renderToken(targetCanvas, createState({}), 200);
+
+      expect(createdCanvasElements(createElementSpy)).toEqual(canvasesAfterFirstRender);
+      expect(canvasesAfterFirstRender[0].width).toBe(200);
+      expect(canvasesAfterFirstRender[0].height).toBe(200);
+    } finally {
+      createElementSpy.mockRestore();
+      getContextSpy.mockRestore();
+    }
+  });
+
+  it('keeps a separate base layer for each target canvas', () => {
+    const firstTarget = document.createElement('canvas');
+    const secondTarget = document.createElement('canvas');
+    const { contextByCanvas, getContextSpy } = spyOnGetContextPerCanvas();
+    const createElementSpy = vi.spyOn(document, 'createElement');
+
+    try {
+      renderToken(firstTarget, createState({}), 180);
+      renderToken(secondTarget, createState({}), 180);
+      const [firstBaseLayer, secondBaseLayer] = createdCanvasElements(createElementSpy);
+
+      expect(createdCanvasElements(createElementSpy)).toHaveLength(2);
+      expect(firstBaseLayer).not.toBe(secondBaseLayer);
+      expect(renderingContextFor(contextByCanvas, firstTarget, 'first-target').canvas).toBe(firstTarget);
+      expect(renderingContextFor(contextByCanvas, secondTarget, 'second-target').canvas).toBe(secondTarget);
+      expect(renderingContextFor(contextByCanvas, firstBaseLayer, 'first-base-layer').canvas).toBe(
+        firstBaseLayer
+      );
+      expect(renderingContextFor(contextByCanvas, secondBaseLayer, 'second-base-layer').canvas).toBe(
+        secondBaseLayer
+      );
+
+      renderToken(firstTarget, createState({}), 180);
+      expect(createdCanvasElements(createElementSpy)).toHaveLength(2);
+    } finally {
+      createElementSpy.mockRestore();
+      getContextSpy.mockRestore();
+    }
+  });
+
+  it('skips same-size dimension writes when reset is available and still resizes on output change', () => {
+    const targetCanvas = document.createElement('canvas');
+    const { contextByCanvas, getContextSpy } = spyOnGetContextPerCanvas({ attachReset: true });
+    const createElementSpy = vi.spyOn(document, 'createElement');
+
+    try {
+      renderToken(targetCanvas, createState({}), 128);
+      const [baseLayer] = createdCanvasElements(createElementSpy);
+      expect(baseLayer.width).toBe(128);
+      expect(baseLayer.height).toBe(128);
+
+      const targetContext = renderingContextFor(contextByCanvas, targetCanvas, 'target');
+      const baseContext = renderingContextFor(contextByCanvas, baseLayer, 'base-layer');
+      vi.mocked(targetContext.reset).mockClear();
+      vi.mocked(baseContext.reset).mockClear();
+
+      const targetWidthWrites = trackNumericPropertyWrites(targetCanvas, 'width');
+      const targetHeightWrites = trackNumericPropertyWrites(targetCanvas, 'height');
+      const baseWidthWrites = trackNumericPropertyWrites(baseLayer, 'width');
+      const baseHeightWrites = trackNumericPropertyWrites(baseLayer, 'height');
+
+      renderToken(targetCanvas, createState({}), 128);
+      expect(createdCanvasElements(createElementSpy)).toHaveLength(1);
+      expect(targetContext.reset).toHaveBeenCalledTimes(1);
+      expect(baseContext.reset).toHaveBeenCalledTimes(1);
+      expect(targetWidthWrites.assignCount).toBe(0);
+      expect(targetHeightWrites.assignCount).toBe(0);
+      expect(baseWidthWrites.assignCount).toBe(0);
+      expect(baseHeightWrites.assignCount).toBe(0);
+      expect(targetContext.imageSmoothingEnabled).toBe(true);
+      expect(targetContext.imageSmoothingQuality).toBe('high');
+      expect(baseContext.imageSmoothingEnabled).toBe(true);
+      expect(baseContext.imageSmoothingQuality).toBe('high');
+
+      renderToken(targetCanvas, createState({}), 256);
+      expect(createdCanvasElements(createElementSpy)).toHaveLength(1);
+      expect(targetWidthWrites.assignCount).toBe(1);
+      expect(targetHeightWrites.assignCount).toBe(1);
+      expect(baseWidthWrites.assignCount).toBe(1);
+      expect(baseHeightWrites.assignCount).toBe(1);
+      expect(baseLayer.width).toBe(256);
+      expect(baseLayer.height).toBe(256);
+    } finally {
+      createElementSpy.mockRestore();
+      getContextSpy.mockRestore();
+    }
+  });
+
+  it('rewrites same-size canvas dimensions when reset is unavailable', () => {
+    const targetCanvas = document.createElement('canvas');
+    const { contextByCanvas, getContextSpy } = spyOnGetContextPerCanvas();
+    const createElementSpy = vi.spyOn(document, 'createElement');
+
+    try {
+      renderToken(targetCanvas, createState({}), 96);
+      const [baseLayer] = createdCanvasElements(createElementSpy);
+      const targetContext = renderingContextFor(contextByCanvas, targetCanvas, 'target');
+      const baseContext = renderingContextFor(contextByCanvas, baseLayer, 'base-layer');
+
+      expect(targetContext.canvas).toBe(targetCanvas);
+      expect(baseContext.canvas).toBe(baseLayer);
+      expect(targetContext.reset).toBeUndefined();
+      expect(baseContext.reset).toBeUndefined();
+
+      targetContext.imageSmoothingEnabled = false;
+      targetContext.imageSmoothingQuality = 'low';
+      baseContext.imageSmoothingEnabled = false;
+      baseContext.imageSmoothingQuality = 'low';
+
+      const targetWidthWrites = trackNumericPropertyWrites(targetCanvas, 'width');
+      const targetHeightWrites = trackNumericPropertyWrites(targetCanvas, 'height');
+      const baseWidthWrites = trackNumericPropertyWrites(baseLayer, 'width');
+      const baseHeightWrites = trackNumericPropertyWrites(baseLayer, 'height');
+
+      renderToken(targetCanvas, createState({}), 96);
+
+      expect(createdCanvasElements(createElementSpy)).toHaveLength(1);
+      expect(targetWidthWrites.assignCount).toBe(1);
+      expect(targetHeightWrites.assignCount).toBe(1);
+      expect(baseWidthWrites.assignCount).toBe(1);
+      expect(baseHeightWrites.assignCount).toBe(1);
+      expect(targetCanvas.width).toBe(96);
+      expect(baseLayer.width).toBe(96);
+      expect(targetContext.imageSmoothingEnabled).toBe(true);
+      expect(targetContext.imageSmoothingQuality).toBe('high');
+      expect(baseContext.imageSmoothingEnabled).toBe(true);
+      expect(baseContext.imageSmoothingQuality).toBe('high');
+    } finally {
+      createElementSpy.mockRestore();
+      getContextSpy.mockRestore();
+    }
+  });
+
+  it('still honors clipFinalOutputToMask and a custom border inset ratio while reusing the buffer', () => {
+    rendererMocks.createMaskPathWithInset.mockClear();
+    rendererMocks.drawBorder.mockClear();
+
+    const targetCanvas = document.createElement('canvas');
+    const { contextByCanvas, getContextSpy } = spyOnGetContextPerCanvas();
+    const ringBorder = { id: 'reuse-inset-ring', name: 'Reuse inset', type: 'ring' as const };
+
+    try {
+      const state = createState({
+        selectedBorderId: ringBorder.id,
+        customBorders: [ringBorder],
+      });
+      const options = { borderInsetRatio: 0.008, clipFinalOutputToMask: true };
+
+      renderToken(targetCanvas, state, 200, options);
+      renderToken(targetCanvas, state, 200, options);
+    } finally {
+      getContextSpy.mockRestore();
+    }
+
+    expect(rendererMocks.createMaskPathWithInset).toHaveBeenCalledTimes(6);
+    expect(rendererMocks.drawBorder).toHaveBeenNthCalledWith(
+      2,
+      renderingContextFor(contextByCanvas, targetCanvas, 'target'),
+      ringBorder,
+      200,
+      '#ffffff',
+      1,
+      true,
+      undefined,
+      0.008,
+    );
   });
 });

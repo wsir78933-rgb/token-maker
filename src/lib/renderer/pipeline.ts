@@ -21,6 +21,51 @@ export interface RenderTokenOptions {
 const IMAGE_BORDER_MASK_CACHE = new CanvasByteBudgetLruCache(32 * 1024 * 1024);
 const BORDER_ALPHA_THRESHOLD = 8;
 const BORDER_INSET_RATIO = 0.032;
+const BASE_LAYER_BY_TARGET = new WeakMap<HTMLCanvasElement, HTMLCanvasElement>();
+
+function setSquareCanvasSize(canvas: HTMLCanvasElement, outputSize: number): void {
+  if (canvas.width === outputSize && canvas.height === outputSize) {
+    return;
+  }
+
+  canvas.width = outputSize;
+  canvas.height = outputSize;
+}
+
+function applyHighQualitySmoothing(ctx: CanvasRenderingContext2D): void {
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+}
+
+function resetTokenRenderDrawingState(
+  ctx: CanvasRenderingContext2D,
+  outputSize: number
+): void {
+  if (typeof ctx.reset === 'function') {
+    ctx.reset();
+  } else {
+    ctx.canvas.width = outputSize;
+    ctx.canvas.height = outputSize;
+  }
+
+  applyHighQualitySmoothing(ctx);
+}
+
+function acquireBaseLayerForTarget(
+  targetCanvas: HTMLCanvasElement,
+  outputSize: number
+): HTMLCanvasElement {
+  const cachedBaseLayer = BASE_LAYER_BY_TARGET.get(targetCanvas);
+  if (cachedBaseLayer) {
+    setSquareCanvasSize(cachedBaseLayer, outputSize);
+    return cachedBaseLayer;
+  }
+
+  const baseLayer = document.createElement('canvas');
+  setSquareCanvasSize(baseLayer, outputSize);
+  BASE_LAYER_BY_TARGET.set(targetCanvas, baseLayer);
+  return baseLayer;
+}
 
 function getBorderRenderInset(
   outputSize: number,
@@ -368,22 +413,16 @@ export function renderToken(
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  canvas.width = outputSize;
-  canvas.height = outputSize;
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
-  ctx.clearRect(0, 0, outputSize, outputSize);
+  setSquareCanvasSize(canvas, outputSize);
+  resetTokenRenderDrawingState(ctx, outputSize);
 
   const border = getSelectedBorder(state);
   const borderInsetRatio = options.borderInsetRatio ?? BORDER_INSET_RATIO;
 
-  const baseLayer = document.createElement('canvas');
-  baseLayer.width = outputSize;
-  baseLayer.height = outputSize;
+  const baseLayer = acquireBaseLayerForTarget(canvas, outputSize);
   const baseCtx = baseLayer.getContext('2d');
   if (!baseCtx) return;
-  baseCtx.imageSmoothingEnabled = true;
-  baseCtx.imageSmoothingQuality = 'high';
+  resetTokenRenderDrawingState(baseCtx, outputSize);
 
   // ------- Step 1 & 2: 裁切 + 主图 -------
   if (state.imageElement) {
