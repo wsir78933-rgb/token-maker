@@ -54,6 +54,7 @@ import {
   DND_CLASSES_COMPARISON_COVER_PATH,
   DND_BACKGROUNDS_COVER_PATH,
   DND_DRUID_COVER_PATH,
+  DND_DRAGONBORN_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -160,6 +161,10 @@ import {
   dndBackgroundsArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-backgrounds';
 import { dndDruidArticleHtml, dndDruidArticleHtmlZh } from '@/lib/blog-posts/dnd-druid';
+import {
+  dndDragonbornArticleHtml,
+  dndDragonbornArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-dragonborn';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -4590,6 +4595,74 @@ const rapierDndArticleZh: BlogPost = {
   relatedSlugs: ['dnd-dagger', 'dnd-mace', 'dnd-classes-explained', 'dnd-armor-guide'],
 };
 
+const DND_DRAGONBORN_UPDATED_AT = '2026-09-10';
+
+const dndDragonbornArticle: BlogPost = {
+  slug: 'dnd-dragonborn',
+  title: 'DnD Dragonborn: Lock the Rulebook, Copy Breath and Names, Crop a Token',
+  seoTitle: 'DnD Dragonborn: Lock 2014 or 2024, Then Copy Traits',
+  metaDescription:
+    'Copy 2014 or 2024 dnd dragonborn traits. Pick one ancestry color, take a clan-first name from the 2014 lists, and crop a token so scales and horns still read.',
+  excerpt:
+    "Lock 2014 or 2024 for a dnd dragonborn, copy that book's traits and one ancestry color, take a clan-first name from the 2014 lists, and crop a token that still shows scales and horns.",
+  publishedAt: DND_DRAGONBORN_UPDATED_AT,
+  updatedAt: DND_DRAGONBORN_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Race Guide',
+  coverImage: DND_DRAGONBORN_COVER_PATH,
+  coverAlt:
+    'A red-scaled Dragonborn adventurer with clear horns and snout standing over a tabletop map token',
+  bodyHtml: dndDragonbornArticleHtml,
+  faqItems: [
+    {
+      question: 'Do 2024 Dragonborn have Darkvision?',
+      answer:
+        'Yes. The 2024 species block grants Darkvision out to 60 feet. The 2014 race block does not include that trait.',
+    },
+    {
+      question: 'Are gem Dragonborn in the 2024 core table?',
+      answer:
+        'No. The 2024 free ancestry table is the ten chromatic and metallic colors. Gem ancestries are a Fizban option and need DM permission.',
+    },
+    {
+      question: 'Do they automatically know Draconic in 2024?',
+      answer:
+        'The 2024 species block does not grant Common and Draconic. Origin languages are Common plus two picks or rolls from the Standard Languages table, where Draconic appears. 2014 still grants Common and Draconic from the race.',
+    },
+    {
+      question: 'What is the best class for a dnd dragonborn?',
+      answer:
+        'There is no official best class. 2014&rsquo;s +2 Strength and +1 Charisma pulled many players toward Paladin and similar chassis. 2024 moved those increases to the background, so pick the class fantasy and a background that lists the scores you want.',
+    },
+    {
+      question: 'Do official 2024 rules give them a tail?',
+      answer:
+        '2014 prose says they lack a tail. 2024 free prose calls them wingless and does not list a tail trait. A tail in art is a table description, not a copied 2024 trait.',
+    },
+  ],
+  relatedSlugs: ['dnd-races', 'dnd-classes-explained', 'dnd-constitution-guide'],
+};
+
+const dndDragonbornArticleZh: BlogPost = {
+  slug: 'dnd-dragonborn',
+  title: 'dnd dragonborn：龙裔建卡先锁版本，再抄吐息、名字和 Token',
+  seoTitle: 'dnd dragonborn（龙裔）：先问 DM 抄 2014 还是 2024',
+  metaDescription:
+    '中文桌把 dnd dragonborn 叫龙裔，不是《上古卷轴》主角。先问 DM 抄 2014 还是 2024，再按那一页写吐息、鳞色和名字；Token 裁切时留下角和口鼻。',
+  excerpt:
+    '已经决定玩龙裔时，先问 DM 抄 2014 还是 2024，再按那一页写吐息和加值，把鳞色、伤害、抗性锁成一套，氏族名在前、桌上用短称呼。',
+  publishedAt: DND_DRAGONBORN_UPDATED_AT,
+  updatedAt: DND_DRAGONBORN_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '种族百科',
+  coverImage: DND_DRAGONBORN_COVER_PATH,
+  coverAlt:
+    '带角的龙裔冒险者站在发光桌面地图旁，鳞片颜色清楚，旁边放着角色卡和圆形 Token。',
+  bodyHtml: dndDragonbornArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: ['dnd-races', 'dnd-classes-explained', 'dnd-constitution-guide'],
+};
+
 const DND_DRUID_UPDATED_AT = '2026-08-28';
 
 const dndDruidArticle: BlogPost = {
@@ -4822,10 +4895,10 @@ const dndRangerArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle].map(
+  en: [dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh].map(
+  zh: [dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh].map(
     addHeadingAnchors,
   ),
 };

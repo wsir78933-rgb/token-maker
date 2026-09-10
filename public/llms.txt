@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DnD Dragonborn: Lock 2014 or 2024, Then Copy Traits](https://www.tokenmaker.one/blog/dnd-dragonborn): Lock 2014 or 2024 for a dnd dragonborn, copy that book's traits and one ancestry color, take a clan-first name from the 2014 lists, and crop a token that still shows scales and horns.
 - [DnD Druid: Build a Level 1 Caster, Then Unlock Wild Shape at Level 2](https://www.tokenmaker.one/blog/dnd-druid): A DnD Druid is a Wisdom caster who borrows tools from the land: control, emergency healing, and later a Beast form. The fantasy is usually the bear. Session one is not about the bear.
 - [DnD Backgrounds: Which Origin Fits the Year You Play?](https://www.tokenmaker.one/blog/dnd-backgrounds): A Dungeons & Dragons background is the occupation and place that shaped the character before the first adventure.
 - [DND Classes Compared: All 13 by Party Job and First Combat Turn](https://www.tokenmaker.one/blog/dnd-classes-comparison): There are 12 classes in the 2024 Player's Handbook, or 13 with official Artificer. Compare them by party job and the first combat turn at level 1.
@@ -77,6 +78,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [dnd dragonborn（龙裔）：先问 DM 抄 2014 还是 2024](https://www.tokenmaker.one/zh/blog/dnd-dragonborn): 已经决定玩龙裔时，先问 DM 抄 2014 还是 2024，再按那一页写吐息和加值，把鳞色、伤害、抗性锁成一套，氏族名在前、桌上用短称呼。
 - [DND 德鲁伊指南：先定职责，再准备法术与荒野变形](https://www.tokenmaker.one/zh/blog/dnd-druid): 先确认 2014 或 2024 规则，再按队伍职责安排感知、体质、训练路线、准备法术和荒野变形。本文给出 1 级建卡顺序、版本差异表与不会卡住的回合计划。
 - [DND 5E 背景怎么选：先定规则版本，再把过去写进冒险](https://www.tokenmaker.one/zh/blog/dnd-backgrounds): 先分清 2014 与 2024 背景规则，再用技能缺口、起源专长和故事钩子筛选，让角色的过去不只写在卡上，也会在战役里继续发生作用。
 - [DND职业有哪些：用队伍职责和第1回合对照全部13个官方职业](https://www.tokenmaker.one/zh/blog/dnd-classes-comparison): 先回答 DND职业有哪些：2024《玩家手册》12 个，加上奇械师共 13 个官方职业。按队伍职责和第 1 回合对照后写下职业名。
