@@ -610,6 +610,11 @@ describe('blog static routes', () => {
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: 'dnd-races' });
   });
 
+  it('emits bilingual dnd dragonborn detail params', () => {
+    expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: 'dnd-dragonborn' });
+    expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: 'dnd-dragonborn' });
+  });
+
   it('emits bilingual Shatter detail params', () => {
     expect(generateEnglishBlogPostStaticParams()).toContainEqual({ slug: DND_SHATTER_5E_SLUG });
     expect(generateChineseBlogPostStaticParams()).toContainEqual({ slug: DND_SHATTER_5E_SLUG });

@@ -58,6 +58,7 @@ export const DND_CLASSES_COMPARISON_COVER_PATH =
   '/blog/covers/en/dnd-classes-comparison-cover.webp';
 export const DND_BACKGROUNDS_COVER_PATH = '/blog/covers/en/dnd-backgrounds-guide.webp';
 export const DND_DRUID_COVER_PATH = '/blog/covers/en/dnd-druid-guide.webp';
+export const DND_DRAGONBORN_COVER_PATH = '/blog/covers/en/dnd-dragonborn-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -154,6 +155,18 @@ export const DND_BACKGROUNDS_VIDEO_PLACEHOLDER_PATH =
 export const DND_DRUID_TURN_PLAN_IMAGE_PATH = '/blog/inline/dnd-druid/druid-turn-plan.webp';
 export const DND_DRUID_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-druid/dnd-druid-video-placeholder.webp';
+export const DND_DRAGONBORN_ANCESTRY_SCALES_IMAGE_PATH =
+  '/blog/inline/dnd-dragonborn/dragonborn-ancestry-scales.webp';
+export const DND_DRAGONBORN_BREATH_SHAPE_IMAGE_PATH =
+  '/blog/inline/dnd-dragonborn/dragonborn-breath-shape.webp';
+export const DND_DRAGONBORN_NAME_CLAN_TAGS_IMAGE_PATH =
+  '/blog/inline/dnd-dragonborn/dragonborn-name-clan-tags.webp';
+export const DND_DRAGONBORN_TWO_SOURCE_LINES_IMAGE_PATH =
+  '/blog/inline/dnd-dragonborn/dragonborn-two-source-lines.webp';
+export const DND_DRAGONBORN_CLAN_AND_CALLNAME_IMAGE_PATH =
+  '/blog/inline/dnd-dragonborn/dragonborn-clan-and-callname.webp';
+export const DND_DRAGONBORN_VIDEO_PLACEHOLDER_PATH =
+  '/blog/inline/dnd-dragonborn/dragonborn-video-placeholder.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -231,6 +244,10 @@ export const DND_BACKGROUNDS_VIDEO_URL = 'https://www.youtube.com/watch?v=vyg5jJ
 export const DND_BACKGROUNDS_VIDEO_ID = 'vyg5jJrZ42s';
 export const DND_DRUID_VIDEO_URL = 'https://www.youtube.com/watch?v=WMo_gCRMSfA';
 export const DND_DRUID_VIDEO_ID = 'WMo_gCRMSfA';
+export const DND_DRAGONBORN_2024_SPECIES_URL =
+  'https://www.dndbeyond.com/species/1751435-dragonborn';
+export const DND_DRAGONBORN_VIDEO_URL = 'https://www.youtube.com/watch?v=EVwBW5GbGwQ';
+export const DND_DRAGONBORN_VIDEO_ID = 'EVwBW5GbGwQ';
 export const DND_2024_CASTING_SPELLS_RULES_URL = 'https://roll20.net/compendium/dnd5e/Rules%3ACasting%20Spells';
 export const PALADIN_2024_SPELLS_DND_VIDEO_URL = 'https://www.youtube.com/watch?v=_vx-oqXOabw';
 export const DND_HEX_2024_RULES_URL = 'https://www.dndbeyond.com/spells/2618988-hex';
@@ -469,6 +486,8 @@ export const EN_DND_BACKGROUNDS_PATH = getLocalizedPath('en', '/blog/dnd-backgro
 export const ZH_DND_BACKGROUNDS_PATH = getLocalizedPath('zh', '/blog/dnd-backgrounds');
 export const EN_DND_DRUID_PATH = getLocalizedPath('en', '/blog/dnd-druid');
 export const ZH_DND_DRUID_PATH = getLocalizedPath('zh', '/blog/dnd-druid');
+export const EN_DND_DRAGONBORN_PATH = getLocalizedPath('en', '/blog/dnd-dragonborn');
+export const ZH_DND_DRAGONBORN_PATH = getLocalizedPath('zh', '/blog/dnd-dragonborn');
 
 export function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src: string; alt: string }): string {
   const thumb = thumbnail?.src ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
