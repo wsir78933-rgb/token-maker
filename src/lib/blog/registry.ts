@@ -4687,17 +4687,17 @@ const dndDruidArticleZh: BlogPost = {
   relatedSlugs: ['dnd-druid-spells', 'dnd-classes-explained', 'dnd-stats', 'dnd-fighter'],
 };
 
-const DND_BACKGROUNDS_UPDATED_AT = '2026-08-26';
+const DND_BACKGROUNDS_UPDATED_AT = '2026-09-10';
 
 const dndBackgroundsArticle: BlogPost = {
   slug: 'dnd-backgrounds',
-  title: 'DnD Backgrounds: Which Origin Fits the Year You Play?',
-  seoTitle: 'DnD Backgrounds: Check 2014 or 2024 Before You Pick',
+  title: 'Confirm the Rules Year Before You Copy a D&D 5e Background',
+  seoTitle: 'DnD 5e Backgrounds: Confirm the Year, Then Copy Fields',
   metaDescription:
-    'Start with the table year. Then pick a 2014 feature or a 2024 Origin feat, scores, and skills so the background matches the character sheet.',
+    'Confirm 2014 or 2024, then copy that year\'s skills, feature or Origin feat, and equipment. Convert older backgrounds without stacking bonuses. Token Maker is optional after the sheet.',
   excerpt:
-    'A Dungeons & Dragons background is the occupation and place that shaped the character before the first adventure.',
-  publishedAt: DND_BACKGROUNDS_UPDATED_AT,
+    'Choose a D&D background by first asking your Dungeon Master whether the campaign uses the 2014 rules or the 2024 revision.',
+  publishedAt: '2026-08-26',
   updatedAt: DND_BACKGROUNDS_UPDATED_AT,
   readTime: '12 min read',
   coverLabel: 'DND BACKGROUNDS',
@@ -4705,84 +4705,24 @@ const dndBackgroundsArticle: BlogPost = {
   coverAlt:
     'A candlelit Dungeons and Dragons character sheet between a 2014 feature card and a 2024 origin card, with circular VTT tokens in front',
   bodyHtml: dndBackgroundsArticleHtml,
-  faqItems: [
-    {
-      question: 'What does a DnD background give you?',
-      answer:
-        'On 2024 rules it gives three listed ability scores to raise, a specified Origin feat, two skills, one tool, and either a gear pack or 50 GP. On 2014 rules it gives two skills, tools or languages, starting gear, a feature, and suggested personality tables. Always match the grant to the year on the sheet.',
-    },
-    {
-      question: "How many backgrounds are in the 2024 Player's Handbook?",
-      answer:
-        'Sixteen. The 2024 Free Rules include full text for Acolyte, Criminal, Sage, and Soldier. The other twelve are in the Player\'s Handbook. Expansion books add more names; ask which sources the campaign allows before you treat a catalog dump as the core list.',
-    },
-    {
-      question: 'Do 2024 backgrounds increase ability scores?',
-      answer:
-        'Yes. Each 2024 background lists three scores. Increase one by 2 and a different one by 1, or increase all three by 1. None of those increases can raise a score above 20. In 2024, species does not supply those increases.',
-    },
-    {
-      question: 'Can I use a 2014 background in a 2024 game?',
-      answer:
-        'Yes, if the Dungeon Master allows it. Official conversion says you assign the three ability score points, ignore an old race increase if you also brought an older species, and gain an Origin feat of your choice when the old card has no feat. Do not keep two full score packages.',
-    },
-    {
-      question: 'What is a DnD Origin feat?',
-      answer:
-        'An Origin feat is the 2024 talent attached to a background, such as Alert, Crafter, Healer, Lucky, Magic Initiate, Musician, Savage Attacker, Skilled, Tavern Brawler, or Tough. Humans also gain an extra Origin feat from the species trait. It is not the same as a 2014 background feature.',
-    },
-    {
-      question: 'What is the best DnD background for a beginner?',
-      answer:
-        'The best first pick is one whose job you can say in one sentence and whose numbers you can copy without mixing years. Soldier, Sage, Acolyte, and Criminal are printed in the 2024 Free Rules, so they are easy to check. There is no universal strongest origin.',
-    },
-  ],
   relatedSlugs: ['dnd-character-sheet', 'dnd-stats', 'dnd-alignment-chart', 'players-handbook-dnd-5e'],
 };
 
 const dndBackgroundsArticleZh: BlogPost = {
   slug: 'dnd-backgrounds',
-  title: 'DND 5E 背景怎么选：先定规则版本，再把过去写进冒险',
-  seoTitle:
-    'DND 5E 背景不是职业附属：先分清 2014 与 2024，再补齐技能、专长和能推动冒险的完整过去',
+  title: 'DND 5E 背景：先分清你在找什么，再按年份抄进角色卡',
+  seoTitle: 'DND 5E 背景怎么选：先问年份，再按那一年抄进角色卡',
   metaDescription:
-    '先确认你的团使用 2014 还是 2024 规则，再按技能缺口、起源专长与角色动机选择 DND 5E 背景。本文给出对照表、五步筛选法、自定义边界和可直接套用的故事问题，帮助你完成既符合规则、又会在战役里持续发挥作用的角色过去，并用两种示例说明怎样与 DM 快速确认。',
+    '先分清规则栏、身世和壁纸，再问清桌上是 2014 还是 2024，按那年抄技能、特性或起源专长。旧书进新桌不要两套加值叠在一起。出身选定后，Token Maker 只做可选地图标记。',
   excerpt:
-    '先分清 2014 与 2024 背景规则，再用技能缺口、起源专长和故事钩子筛选，让角色的过去不只写在卡上，也会在战役里继续发生作用。',
-  publishedAt: DND_BACKGROUNDS_UPDATED_AT,
+    '先向城主确认这桌用 2014 基础规则还是 2024 基础规则，再只按那一年把组件写进卡里。',
+  publishedAt: '2026-08-26',
   updatedAt: DND_BACKGROUNDS_UPDATED_AT,
   readTime: '12 分钟阅读',
   coverLabel: '背景选择指南',
   coverImage: DND_BACKGROUNDS_COVER_PATH,
   coverAlt: '一名冒险者在酒馆桌边对照 2014 与 2024 规则，挑选适合角色的 DND 5E 背景',
   bodyHtml: dndBackgroundsArticleHtmlZh,
-  faqItems: [
-    {
-      question: 'DND 5E 背景和职业有什么区别？',
-      answer:
-        '职业描述角色成为冒险者后训练出的核心能力，背景描述此前最重要的生活经历。两者会在技能或主题上交叉，但背景不等于副职业，也不该额外塞入职业等级才会获得的能力。',
-    },
-    {
-      question: 'DND 5E 背景有唯一最强选择吗？',
-      answer:
-        '没有脱离版本、职业和队伍的统一答案。先看规则组件是否合法，再看它是否补足常用任务，最后确认故事钩子会不会进入战役。只在真空里比较单项收益，容易忽略实际出场次数。',
-    },
-    {
-      question: '2014 背景可以自定义吗？',
-      answer:
-        '可以。官方基础规则允许选择任意两项技能，并合计选择两项工具熟练或语言，也可以调整装备取得方式；背景特性的替换或新创内容应与 DM 一起完成。',
-    },
-    {
-      question: '2024 背景可以直接套用 2014 的自定义规则吗？',
-      answer:
-        '不要默认可以。2024 背景有自己的能力值、起源专长、技能、工具和装备结构。若要使用旧书背景或自定义方案，应先查看团里采用的规则来源，并让 DM 明确确认。',
-    },
-    {
-      question: '背景与职业给了同一个熟练怎么办？',
-      answer:
-        '在 2014 规则中，从两个来源重复获得同一种熟练时，可改选同类的另一项熟练。使用 2024 规则时，按该版角色创建规则和 DM 的说明处理，不要自行跨版本替换。',
-    },
-  ],
   relatedSlugs: ['dnd-character-sheet', 'dnd-stats', 'dnd-alignment-chart', 'players-handbook-dnd-5e'],
 };
 

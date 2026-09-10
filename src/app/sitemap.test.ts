@@ -79,11 +79,11 @@ describe('blog sitemap entries', () => {
       'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_BACKGROUNDS_SLUG}`,
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-08-26'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-09-10'));
     expect(englishEntry.changeFrequency).toBe('monthly');
     expect(englishEntry.priority).toBe(0.6);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-08-26'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-10'));
     expect(chineseEntry.changeFrequency).toBe('monthly');
     expect(chineseEntry.priority).toBe(0.6);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
@@ -573,12 +573,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/5',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-09-09'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-09-10'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-09'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-10'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
@@ -594,12 +594,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/6',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-09-09'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-09-10'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-09'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-10'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
