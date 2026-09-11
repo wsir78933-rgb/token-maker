@@ -55,6 +55,7 @@ import {
   DND_BACKGROUNDS_COVER_PATH,
   DND_DRUID_COVER_PATH,
   DND_DRAGONBORN_COVER_PATH,
+  DND_KENKU_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -166,6 +167,7 @@ import {
   dndDragonbornArticleHtml,
   dndDragonbornArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-dragonborn';
+import { dndKenkuArticleHtml, dndKenkuArticleHtmlZh } from '@/lib/blog-posts/dnd-kenku';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -4597,6 +4599,74 @@ const rapierDndArticleZh: BlogPost = {
   relatedSlugs: ['dnd-dagger', 'dnd-mace', 'dnd-classes-explained', 'dnd-armor-guide'],
 };
 
+const DND_KENKU_UPDATED_AT = '2026-09-12';
+
+const dndKenkuArticle: BlogPost = {
+  slug: 'dnd-kenku',
+  title: "DnD Kenku: Speech Depends on Volo's or MotM",
+  seoTitle: "DnD Kenku: Speech Depends on Volo's or MotM",
+  metaDescription:
+    "Ask the DM which Kenku page is legal. Copy that speech and Mimicry line from print, not a Volo's-MotM mix. Crop a wingless raven-person. Not in the 2024 PHB.",
+  excerpt:
+    "A dnd kenku is a wingless raven-person copied from Volo's or MotM, not from the 2024 Player's Handbook. Ask the DM which page is legal, copy that speech and Mimicry check, and keep the beak inside the token.",
+  publishedAt: DND_KENKU_UPDATED_AT,
+  updatedAt: DND_KENKU_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Race Guide',
+  coverImage: DND_KENKU_COVER_PATH,
+  coverAlt:
+    'A wingless Kenku raven-person with a readable beak and head feathers beside a circular VTT token',
+  bodyHtml: dndKenkuArticleHtml,
+  faqItems: [
+    {
+      question: 'Can a Kenku speak in 5e?',
+      answer:
+        'It depends on the book. The free D&amp;D Beyond index does not print a Kenku Languages line. The unofficial Kenku lineage transcription gives a Volo&rsquo;s player as speaking only through Mimicry, and a MotM player as able to speak, read, and write Common plus one other language, with Mimicry still a separate trait. Confirm those lines on printed Volo&rsquo;s or MotM. A 2014 MM Kenku monster speaks only through Mimicry. A 2024 MM Kenku monster lists Common and Primordial (Auran) on the language line, while the lore paragraph still describes mimic-only vocal communication.',
+    },
+    {
+      question: 'Is Kenku in the 2024 Player&rsquo;s Handbook?',
+      answer:
+        'No. Kenku is not one of the ten 2024 PHB species. On a 2024 table, play Kenku only if the DM allows the MotM (or Volo&rsquo;s) older species, and then ignore the old species ASI in favor of the background increases.',
+    },
+    {
+      question: 'Do playable Kenku have Darkvision?',
+      answer:
+        'No. Volo&rsquo;s and MotM player traits do not list Darkvision. The 2024 MM Kenku monster has Darkvision 60 feet. That monster sense is not a player trait.',
+    },
+    {
+      question: 'Can a Kenku cast spells with verbal components?',
+      answer:
+        'Official Kenku traits do not ban spellcasting. If printed MotM matches the unofficial transcription and the character can speak, that Kenku can provide verbal components like other speakers. Volo&rsquo;s Kenku can produce mimicked voices and sounds; the Kenku traits do not say that blocks verbal components, and they do not require the character to have heard the exact spell text first.',
+    },
+    {
+      question: 'Which Mimicry check do I roll?',
+      answer:
+        'The free index lists Mimicry as a name only. The unofficial lineage transcription gives Volo&rsquo;s player as Insight opposed by the Kenku&rsquo;s Deception, and MotM player as Insight against DC 8 + proficiency bonus + Charisma modifier. Confirm those player formulas on the printed page you locked. 2014 and 2024 monsters: DC 14 Insight. Do not mix those three.',
+    },
+  ],
+  relatedSlugs: ['dnd-races', 'dnd-classes-explained', 'dnd-dragonborn'],
+};
+
+const dndKenkuArticleZh: BlogPost = {
+  slug: 'dnd-kenku',
+  title: 'dnd kenku：瓦罗只能拟声，灰机缺页不等于魔邓肯不能开口',
+  seoTitle: 'dnd kenku（天狗）：瓦罗只能拟声，灰机缺页不等于魔邓肯不能开口',
+  metaDescription:
+    '中文桌把 dnd kenku 叫天狗 Kenku，不是日本妖怪或开拓者 Tengu。瓦罗语言条只能用拟声说话；灰机魔邓肯页没有语言条，缺页不是规则，开口跟锁的书走。拟声别让全桌猜谜，Token 留下喙和无翼肩线。',
+  excerpt:
+    '瓦罗天狗 Kenku 语言栏按拟声写；魔邓肯开口不要用灰机缺页去填。拟声默认旁白，卡面留拟声名、桌上用短称呼，Token 要认出无翼有喙。',
+  publishedAt: DND_KENKU_UPDATED_AT,
+  updatedAt: DND_KENKU_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '种族百科',
+  coverImage: DND_KENKU_COVER_PATH,
+  coverAlt:
+    '无翼有喙的天狗 Kenku 站在发光桌面地图旁，角色卡标明开口规则，旁边一枚仍能看出喙和肩线的 Token。',
+  bodyHtml: dndKenkuArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: ['dnd-races', 'dnd-classes-explained', 'dnd-dragonborn'],
+};
+
 const DND_DRAGONBORN_UPDATED_AT = '2026-09-10';
 
 const dndDragonbornArticle: BlogPost = {
@@ -4869,10 +4939,10 @@ const dndCampaignsArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
+  en: [dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
+  zh: [dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
     addHeadingAnchors,
   ),
 };

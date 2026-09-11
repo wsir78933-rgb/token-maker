@@ -1,0 +1,20 @@
+{
+  "file": "/Users/wusir/Desktop/开发项目集合/token-maker-app/tmp/blog-dnd-kenku/zh-body.md",
+  "locale": "zh-CN",
+  "mechanical_units": 3277,
+  "required_floor": 2000,
+  "meets_mechanical_floor": true,
+  "semantic_qualification": "requires_independent_review",
+  "excluded_heading_sections": [
+    "Sources"
+  ],
+  "omitted_line_counts": {
+    "headings": 9,
+    "code": 0,
+    "excluded_sections": 15,
+    "non_body": 56,
+    "frontmatter": 0
+  },
+  "sha256_raw": "46ed76373a95c9d5e8f802addd27916ab5c71fc4dce18dde4bf1b0f45d69e1d2",
+  "sha256_nfc_lf": "46ed76373a95c9d5e8f802addd27916ab5c71fc4dce18dde4bf1b0f45d69e1d2"
+}

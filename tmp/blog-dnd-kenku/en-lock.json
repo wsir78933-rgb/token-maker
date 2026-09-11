@@ -1,0 +1,13 @@
+{
+  "locale": "en",
+  "slug": "dnd-kenku",
+  "bodyFile": "tmp/blog-dnd-kenku/en-body.md",
+  "sha256_nfc_lf": "8b80188c2d964b6f35de9cd54b9fc3d5bc1400f842afafd3a44c738914a9e01b",
+  "mechanical_units": 4374,
+  "lockedAt": "2026-09-12",
+  "independentAppraisal": "PASS",
+  "appraisalSession": "01a09158-f2c0-7992-9fdd-f6ab3ea25b7b",
+  "citationAudit": "CLEAN",
+  "citationSession": "01a09158-f2c0-7992-9fdd-f6c713d8dffa",
+  "note": "Technical lock of reader body. Not user approval. Titles generated after this lock."
+}

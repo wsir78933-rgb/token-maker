@@ -59,6 +59,7 @@ export const DND_CLASSES_COMPARISON_COVER_PATH =
 export const DND_BACKGROUNDS_COVER_PATH = '/blog/covers/en/dnd-backgrounds-guide.webp';
 export const DND_DRUID_COVER_PATH = '/blog/covers/en/dnd-druid-guide.webp';
 export const DND_DRAGONBORN_COVER_PATH = '/blog/covers/en/dnd-dragonborn-guide.webp';
+export const DND_KENKU_COVER_PATH = '/blog/covers/en/dnd-kenku-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -167,6 +168,13 @@ export const DND_DRAGONBORN_CLAN_AND_CALLNAME_IMAGE_PATH =
   '/blog/inline/dnd-dragonborn/dragonborn-clan-and-callname.webp';
 export const DND_DRAGONBORN_VIDEO_PLACEHOLDER_PATH =
   '/blog/inline/dnd-dragonborn/dragonborn-video-placeholder.webp';
+export const DND_KENKU_BOOK_LOCK_IMAGE_PATH = '/blog/inline/dnd-kenku/kenku-book-lock.webp';
+export const DND_KENKU_VS_AARAKOCRA_IMAGE_PATH = '/blog/inline/dnd-kenku/kenku-vs-aarakocra.webp';
+export const DND_KENKU_TOKEN_CROP_IMAGE_PATH = '/blog/inline/dnd-kenku/kenku-token-crop.webp';
+export const DND_KENKU_SPEECH_LOCK_ZH_IMAGE_PATH = '/blog/inline/dnd-kenku/kenku-speech-lock-zh.webp';
+export const DND_KENKU_NAME_COLLISION_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-kenku/kenku-name-collision-zh.webp';
+export const DND_KENKU_TOKEN_BEAK_ZH_IMAGE_PATH = '/blog/inline/dnd-kenku/kenku-token-beak-zh.webp';
 
 // External URLs
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
@@ -246,6 +254,18 @@ export const DND_DRUID_VIDEO_URL = 'https://www.youtube.com/watch?v=WMo_gCRMSfA'
 export const DND_DRUID_VIDEO_ID = 'WMo_gCRMSfA';
 export const DND_DRAGONBORN_2024_SPECIES_URL =
   'https://www.dndbeyond.com/species/1751435-dragonborn';
+export const DND_BEYOND_SPECIES_INDEX_URL = 'https://www.dndbeyond.com/species';
+export const DND_2024_CREATE_CHARACTER_POST_URL =
+  'https://www.dndbeyond.com/posts/1787-how-to-create-a-character-using-the-2024-players';
+export const DND_VOLO_ERRATA_URL = 'https://www.dndbeyond.com/sources/dnd/sae/volos-guide-to-monsters';
+export const DND_KENKU_2024_ROLL20_URL =
+  'https://roll20.net/compendium/dnd5e/Monsters:Kenku?expansion=34653';
+export const DND_KENKU_2014_AIDEDD_URL = 'https://www.aidedd.org/dnd/monstres.php?vo=kenku';
+export const DND_KENKU_2024_AIDEDD_URL = 'https://www.aidedd.org/monster/kenku';
+export const DND_KENKU_WIKIDOT_LINEAGE_URL = 'https://dnd5e.wikidot.com/lineage:kenku';
+export const DND_KENKU_HUIJI_MOTM_URL = 'https://dnd.huijiwiki.com/wiki/%E5%A4%A9%E7%8B%97';
+export const DND_KENKU_HUIJI_VOLO_URL =
+  'https://dnd.huijiwiki.com/wiki/%E7%A7%8D%E6%97%8F/%E7%93%A6%E7%BD%97%E6%80%AA%E7%89%A9%E6%8C%87%E5%8D%97/%E5%A4%A9%E7%8B%97';
 export const DND_DRAGONBORN_VIDEO_URL = 'https://www.youtube.com/watch?v=EVwBW5GbGwQ';
 export const DND_DRAGONBORN_VIDEO_ID = 'EVwBW5GbGwQ';
 export const DND_2024_CASTING_SPELLS_RULES_URL = 'https://roll20.net/compendium/dnd5e/Rules%3ACasting%20Spells';
@@ -488,6 +508,8 @@ export const EN_DND_DRUID_PATH = getLocalizedPath('en', '/blog/dnd-druid');
 export const ZH_DND_DRUID_PATH = getLocalizedPath('zh', '/blog/dnd-druid');
 export const EN_DND_DRAGONBORN_PATH = getLocalizedPath('en', '/blog/dnd-dragonborn');
 export const ZH_DND_DRAGONBORN_PATH = getLocalizedPath('zh', '/blog/dnd-dragonborn');
+export const EN_DND_KENKU_PATH = getLocalizedPath('en', '/blog/dnd-kenku');
+export const ZH_DND_KENKU_PATH = getLocalizedPath('zh', '/blog/dnd-kenku');
 
 export function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src: string; alt: string }): string {
   const thumb = thumbnail?.src ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;

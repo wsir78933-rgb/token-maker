@@ -73,9 +73,9 @@ describe('dnd campaigns blog post', () => {
 
     expect(getBlogPageCount('en')).toBe(6);
     expect(getBlogPageCount('zh')).toBe(6);
-    expect(getBlogPostsForPage('en', 6)).toHaveLength(5);
-    expect(getBlogPostsForPage('zh', 6)).toHaveLength(5);
-    expect(getBlogPostsForPage('en', 1)[0]?.slug).toBe('dnd-dragonborn');
-    expect(getBlogPostsForPage('zh', 1)[0]?.slug).toBe('dnd-dragonborn');
+    expect(getBlogPostsForPage('en', 6)).toHaveLength(6);
+    expect(getBlogPostsForPage('zh', 6)).toHaveLength(6);
+    expect(getBlogPostsForPage('en', 1)[0]?.slug).toBe('dnd-kenku');
+    expect(getBlogPostsForPage('zh', 1)[0]?.slug).toBe('dnd-kenku');
   });
 });

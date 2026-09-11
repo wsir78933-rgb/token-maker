@@ -1,0 +1,79 @@
+[
+  {
+    "id": "ddb-species-index",
+    "label": "D&D Beyond Character Species list (MotM Kenku current; Volo’s Kenku Legacy)",
+    "url": "https://www.dndbeyond.com/species",
+    "versionNote": "Checked 2026-09-11. MotM Kenku traits: Expert Duplication, Kenku Recall, Mimicry. Volo’s Kenku marked Legacy: +2 Dexterity, +1 Wisdom, Expert Forgery, Kenku Training, Mimicry. 2024 PHB species block has no Kenku.",
+    "supportsClaims": ["F01", "F02", "F03", "F06", "F16", "F17", "F18"]
+  },
+  {
+    "id": "ddb-2024-creating-character",
+    "label": "D&D Beyond Basic Rules (2024) — Creating a Character",
+    "url": "https://www.dndbeyond.com/sources/dnd/br-2024/creating-a-character",
+    "versionNote": "2024 character creation. Free Rules species list has no Kenku. Ability scores adjusted by background. Languages: Common plus two; knowing a language means communicate, read, and write. Primordial includes Auran.",
+    "supportsClaims": ["F03", "F04", "F26"]
+  },
+  {
+    "id": "ddb-2024-character-origins",
+    "label": "D&D Beyond Basic Rules (2024) — Character Origins",
+    "url": "https://www.dndbeyond.com/sources/dnd/br-2024/character-origins",
+    "versionNote": "Background ASI rule. Free Rules species: Dragonborn, Dwarf, Elf, Gnome, Goliath, Halfling, Human, Orc, Tiefling. No Kenku.",
+    "supportsClaims": ["F03", "F04"]
+  },
+  {
+    "id": "ddb-post-10-species-2024",
+    "label": "The 10 Species in the 2024 Player’s Handbook (D&D Beyond)",
+    "url": "https://www.dndbeyond.com/posts/1783-the-10-species-in-the-2024-players-handbook",
+    "versionNote": "Official article. Lists the 2024 PHB ten species; Kenku is not among them. States ability score adjustments are no longer tied to species.",
+    "supportsClaims": ["F03", "F04"]
+  },
+  {
+    "id": "ddb-post-2024-character-creation",
+    "label": "How to Create a Character Using the 2024 Player’s Handbook (D&D Beyond)",
+    "url": "https://www.dndbeyond.com/posts/1787-how-to-create-a-character-using-the-2024-players",
+    "versionNote": "Quotes the older-species conversion sidebar: ignore Ability Score Increases from older species; background grants +2/+1 or three +1s.",
+    "supportsClaims": ["F05"]
+  },
+  {
+    "id": "ddb-volo-errata",
+    "label": "Volo’s Guide to Monsters — Sage Advice & Errata",
+    "url": "https://www.dndbeyond.com/sources/dnd/sae/volos-guide-to-monsters",
+    "versionNote": "Kenku Traits (p. 111): Alignment trait removed. Confirms Kenku player traits live in Volo’s at that page.",
+    "supportsClaims": ["F01", "F19"]
+  },
+  {
+    "id": "ddb-mm2014-errata",
+    "label": "Monster Manual (2014) — Sage Advice & Errata",
+    "url": "https://www.dndbeyond.com/sources/dnd/sae/monster-manual-2014",
+    "versionNote": "Kenku (p. 194) Ambusher wording update. Confirms 2014 MM Kenku page number.",
+    "supportsClaims": ["F11", "F21"]
+  },
+  {
+    "id": "ddb-2024-spell-components",
+    "label": "D&D Beyond Basic Rules (2024) — Spells (Verbal components)",
+    "url": "https://www.dndbeyond.com/sources/dnd/br-2024/spells",
+    "versionNote": "Verbal (V): esoteric words uttered in a normal speaking voice; particular combination of sounds with specific pitch and resonance. Does not mention Kenku.",
+    "supportsClaims": ["F23"]
+  },
+  {
+    "id": "roll20-mm2024-kenku",
+    "label": "Kenku — D&D Monster Manual (2024) on Roll20",
+    "url": "https://roll20.net/compendium/dnd5e/Monsters:Kenku?expansion=34653",
+    "versionNote": "Opened 2026-09-11. Lore: curse allows vocal communication only by mimicking heard sounds. Stat block: Medium Monstrosity, Neutral, Speed 30 ft., Darkvision 60 ft., Languages Common and Primordial (Auran), Mimicry trait DC 14 Insight.",
+    "supportsClaims": ["F12", "F15", "F18", "F19", "F20", "F22"]
+  },
+  {
+    "id": "aidedd-kenku-2014",
+    "label": "Kenku monster — AideDD (2014 Monster Manual)",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=kenku",
+    "versionNote": "2014 MM transcription. Languages: understands Auran and Common but speaks only through Mimicry. No Darkvision. Mimicry DC 14. Humanoid, chaotic neutral.",
+    "supportsClaims": ["F11", "F15", "F18", "F19", "F20", "F22"]
+  },
+  {
+    "id": "aidedd-kenku-2024",
+    "label": "Kenku monster — AideDD (Monster Manual 2024)",
+    "url": "https://www.aidedd.org/monster/kenku",
+    "versionNote": "Cross-check of 2024 MM numbers: Darkvision 60 ft.; Languages Common, Primordial (Auran); Mimicry DC 14; Monstrosity, Neutral.",
+    "supportsClaims": ["F12", "F15", "F18", "F20"]
+  }
+]
