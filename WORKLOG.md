@@ -1,5 +1,60 @@
 # WORKLOG
 
+## 交接单 · 2026-09-12 07:40 CST · Grok CLI
+
+### 本次目标
+
+本会话只回答「上一次改动是做什么」，随后执行 `/handoff`。没有编码授权，没有改产品代码。
+
+### 已完成
+
+- 工作区干净：`git status --porcelain` 为空。当前分支 `main`，`HEAD` 为 `7541dd8d9c42178aa51b753c44628efdb0db25ea`（标题 `Remove Kenku internal research files from the blog branch.`）。相对 `origin/main` **ahead 2**，未 push。本会话未 `git fetch` / push / deploy。
+- 本会话只读核对过 git。会话开始时（2026-09-11）当时 HEAD 是 `1337e1e`；到写本交接时，仓库已多出两笔用户侧提交，不是本会话写的：
+  - `0f898a1`（2026-09-12 07:35 CST，标题 `9.12`）：新增中英 Kenku 博客页、封面/内文图、registry、sitemap/分页测试、`public/llms.txt`，并把内部研究稿放进 `tmp/blog-dnd-kenku/`。
+  - `7541dd8`（2026-09-12 07:40 CST）：从博客分支删掉 `tmp/blog-dnd-kenku/` 共 28 个内部研究文件（3812 行删除）。提交说明写明保留已发布正文、图片和 registry 接线，避免这些编辑笔记进 main。
+- 本会话对用户的问答（基于当时 `1337e1e`）：最新提交 `1337e1e` 标题 `1`，只改 `WORKLOG.md` 和 `DND-筛选后关键词清单.xlsx`；再前一次产品提交是 `394f6e8` 双语 `dnd-campaigns` 页。该结论对应当时 HEAD，不是现在的 HEAD。
+- 现 HEAD 上 Kenku 页仍在：`src/lib/blog-posts/dnd-kenku.ts`、`src/lib/blog/dnd-kenku.test.ts`、`src/lib/blog/registry.ts`、封面 `public/blog/covers/en/dnd-kenku-guide.webp`。内部研究目录 `tmp/blog-dnd-kenku/` 已不在 `7541dd8`。
+- `WORKLOG.md` 旧顶条仍是 2026-09-11 07:10 的编辑器卡顿交接，记录的当时 HEAD 是 `89866f0`。本条只追加文档，不提交。
+
+### 做到一半
+
+- 本会话无未完成编码项。
+- `main` 比 `origin/main` 超前 2 个提交（`0f898a1`、`7541dd8`）。未 push、未部署；不能声称线上已有 Kenku 页。
+- 本会话未跑 typecheck / lint / test / build，也未开浏览器。Kenku 页与编辑器卡顿优化的当前运行状态 UNVERIFIED。
+- 上一份交接里的编辑器四文件优化、F/P 终端、`localhost:40001` 监听：本会话未复查，不得沿用为现在仍成立。
+
+### 下一步
+
+- 下一班输入 `/pickup` 接手。先读本条、`git rev-parse HEAD`、`git status --short --branch`、`git log --oneline origin/main..HEAD`。
+- 若继续产品工作：先单独确认是看 Kenku 页、编辑器卡顿，还是别的；push / 部署必须单独授权。
+- 不要把 `WORKLOG.md` 加入产品提交。不要 `git fetch` / push / deploy，除非用户本班明确授权。
+
+### 踩过的坑
+
+- 用户问「上一次改动」时，仓库随后又提交了 Kenku 页。下一班不要把本会话问答里的 `1337e1e` / `dnd-campaigns` 当成当前 HEAD。
+- `0f898a1` 曾把 Kenku 内部研究稿提交进仓库；`7541dd8` 已删，不要再把 `tmp/blog-dnd-kenku/` 加回 main。
+- 旧 WORKLOG 顶条的 HEAD、测试结果、端口监听都是 2026-09-11 的历史记录，不能当成这一班刚验证过。
+
+### 怎么验证
+
+本交接轮未跑产品测试。下一班如需核对仓库现状：
+
+```bash
+git rev-parse HEAD
+git status --short --branch
+git log --oneline -5
+git log --oneline origin/main..HEAD
+git show --stat --oneline 0f898a1
+git show --stat --oneline 7541dd8
+```
+
+若要验证 Kenku 页（需先确认本仓库 dev server 仍在听，本会话未查端口）：
+
+- `http://localhost:40001/blog/dnd-kenku`
+- `http://localhost:40001/zh/blog/dnd-kenku`
+
+优先本地 ego-browser、自有 task space。不要清用户 localStorage。仓库检查不能证明线上已更新。
+
 ## 交接单 · 2026-09-11 07:10 CST · Grok CLI
 
 Codex 协调（Orca Run `run_6d6779be7161` / `term_989a84c7-184c-4f51-94b7-ac595f53e9cc`）监督，Grok CLI 写入本交接。不是所有权移交。用户已确认「不提交，只写 WORKLOG」。Q 与 R 都只改仓库里的 `WORKLOG.md`；不改代码、不重跑产品测试、不启停服务、不关终端。Q 曾额外创建临时旧正文校验副本 `/tmp/worklog-old-body-q-handoff.txt`，超出当时 Task「不得新增临时文件」的执行范围；未改产品，本 R 不删除该副本，留待用户决定。
