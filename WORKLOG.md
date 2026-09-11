@@ -1,5 +1,84 @@
 # WORKLOG
 
+## 交接单 · 2026-09-11 07:10 CST · Grok CLI
+
+Codex 协调（Orca Run `run_6d6779be7161` / `term_989a84c7-184c-4f51-94b7-ac595f53e9cc`）监督，Grok CLI 写入本交接。不是所有权移交。用户已确认「不提交，只写 WORKLOG」。Q 与 R 都只改仓库里的 `WORKLOG.md`；不改代码、不重跑产品测试、不启停服务、不关终端。Q 曾额外创建临时旧正文校验副本 `/tmp/worklog-old-body-q-handoff.txt`，超出当时 Task「不得新增临时文件」的执行范围；未改产品，本 R 不删除该副本，留待用户决定。
+
+### 本次目标
+
+上传图片后整页滚到编辑器觉得卡。在不删编辑器功能、不改界面、不降画质、不改原滚轮语义的前提下，只做内部优化。
+
+复现已经明确：预览画布 `wheel` 会 `preventDefault`，页面不跟着滚，图片缩放并触发重绘。本轮**保留**这个行为。不能对外说「已经消除页面滚动接管」或「卡顿已经消失」。
+
+### 已完成
+
+产品改动已在用户侧提交，不归功本交接轮。本交接轮只写文档。
+
+- 当前 `git rev-parse HEAD`：`89866f050ae3d9d40ff6e2d0908d65384401380e`（`Merge branch '博客'`）。写交接前（07:07）工作区干净、无暂存，当时 `origin/main` 是 `ce07434`、`main` 超前 2。插入后复核（07:12）本地 `origin/main` 已等于该 HEAD；本 worker 未 `git fetch` / push，refs 变化来源 UNVERIFIED，不推断远程或线上。不要把历史 N/G 日志里的 `00acc07` 当成现在的 HEAD。
+- 用户侧提交 `ce07434` 标题「解决卡顿问题」，含四文件、当时的 `WORKLOG.md`、以及 `DND-筛选后关键词清单.xlsx`。随后 `dd73c6c` / `89866f0` 是博客龙裔页合并，**未改这四文件**。`git diff ce07434 HEAD --` 四文件为空。
+- 实现文件（与验收 sha256 一致，本轮 `shasum -a 256` 回读匹配，因此历史 F/P/N/G 证据仍绑定当前这四份源码）：
+  - `src/components/editor/Canvas.tsx` `8dd259657289e3483ff5cccbdbe4f1a323dba5966691e2281238f7692e726f39`
+  - `src/components/editor/Canvas.test.tsx` `866a14ddaf373dc7525f61f98f86020ffc3bb665510c16e0c7de2de0f7cbe3d5`
+  - `src/lib/renderer/pipeline.ts` `1a81e42275abf73f62d3b9a62e2f9f686d19d15c81b8acd7d79a0849530944f6`
+  - `src/lib/renderer/pipeline.test.ts` `6caab178ff92758f022418a542d6cab99f77052b06288412d44d0cdbd02da8a7`
+- 四文件哈希一致仅确认优化源码版本；N的1560项全量测试和149页构建是合并前历史结果，本交接未对89866f0博客合并后的整仓重跑，当前整仓回归状态UNVERIFIED。
+- `pipeline.ts`：按目标 canvas 用 `WeakMap` 复用 base canvas；`ctx.reset` 若存在就调用，否则写 `canvas.width/height` 清 clip 残留；高质量 smoothing 仍开。`Canvas.tsx`：同帧滚轮先累加再 `requestAnimationFrame` 提交；卸载取消；离散 `pointerdown` / `click` / `keydown` 先 `flushPendingImageScaleCommit`；仅 pending 时用 `react-dom` 公开 `flushSync`。仍 `import { flushSync } from 'react-dom'`，经 `useCanvasEditorState` 拿状态，**没有**直接 `@/lib/store/editor-store`。原图、DPR、阴影、文字 overlay、`drawTextBoxes`、PNG 导出 `clipFinalOutputToMask: true` 未删。预览 `wheel` 仍 `preventDefault` + `{ passive: false }`。
+- 最终 G **ACCEPT**（历史终审，本交接轮未重跑）：`/tmp/token-maker-g-final-review-task_c00aa241ff00/REPORT.md`。当时审查 HEAD 是 `00acc07` + 脏四文件；四文件哈希与现在相同。
+- 历史 N 命令证据（`/tmp/wheel-n-verify-XcWuIh/`，本交接轮未重跑）：`typecheck.exit` 0；`lint.exit` 0，0 error，既有 `CoatMakerSeoContent.tsx:25` `@next/next/no-img-element` warning；`pnpm-test.exit` 0，`Test Files  144 passed (144)` / `Tests  1560 passed (1560)`；`pnpm-build.exit` 0，Next.js 16.3.0，`Generating static pages ... (149/149)`。G 窄复核 59/59：`pnpm exec vitest run --no-cache src/components/editor/Canvas.test.tsx src/lib/renderer/pipeline.test.ts src/lib/architecture-boundaries.test.ts`（Canvas 39 + pipeline 17 + architecture 3）。
+- 历史 F（`/tmp/token-maker-f-verify-task_4aa3715c34ba/`）：`pixels/head-vs-new-compare.json` `caseCount=12` `failedCount=0`，每案 `mismatchPixels=0`；PNG 512 双方 `bytes=129869`，PNG 1024 双方 `bytes=67288`。热路径不再每次新建 base canvas。
+- 历史 P（`/tmp/token-maker-p-verify.L2WLAE/`）：`pixels/h-clip-reset.json` reset / 无 reset 对比 `mismatchPixels=0`。`counts/en-slider-arrow.json` 与 `zh-slider-arrow.json` 的 **1.17** 只在这组历史 fixture 条件下成立：`imageScale=1`、画布 `wheel` `deltaY=-100` pixel `deltaMode=0`、下一 rAF 提交被保持、焦点在缩放滑块、`nativeArrowRight` 一次；得到 1.17，匹配先提交再按键的顺序路径，不是 1.01。普通任意滚轮不保证 1.17。`counts/en-short-regression.json` 同帧两轮 `persistedScale=1.349858807576003`，`canvasCreateCount=0`。滚轮 `defaultPrevented=true`，EN `scrollY` 保持 776，ZH 保持 734。
+- 历史浏览器已测：上传、图片拖动、缩放、边框、重置、撤销/重做、批量预览、PNG。文字拖动真实像素、ZIP/JPG/PDF、外部分享按钮未完整实测。
+- Orca 只读：优化 Run `run_6d6779be7161` 上 **15** 个产品 Dispatch 全 `completed` / `succeeded`；对应 **12** 个不同 Grok 终端（不含本交接 worker）。`worker-list`：**10** `released`。F `ctx_23f0e7e5f9ef` / `term_9346d28f-b43b-4914-9c1b-816ce387d202` 与 P `ctx_280481e93f99` / `term_12ac2e11-8358-4787-898d-6b18841e4cd6` 会计仍是 `user_owned` + `user_takeover` retained。当前 `orca terminal list` 里 token-maker-app 只有协调者 `term_989a84c7`、本交接终端 `term_39978508-f84f-4025-95ee-7e1d85625f72`、验证服务 `term_dd3ab45a`；F/P 句柄**不在**当前列表。不能说 F/P 现在仍在跑，也不能说本轮关掉了它们。Q 交接是 `task_e72464148902` / `ctx_ffe94fa3743b`，完整句柄 `term_39978508-f84f-4025-95ee-7e1d85625f72`；Q 已完成，主脑按 `user_requested` retain。当前 R 复用同一终端：`task_471d1937ec92` / `ctx_7761bd96bd66`；结算后主脑再次 retain。历史 12 个优化 Grok 不变，不要把本终端算进那 12 个。
+- 写交接时 `lsof`：`localhost:40001` 仍由 PID **18428** `next-server (v16.3.0)` 监听，cwd `/Users/wusir/Desktop/开发项目集合/token-maker-app`，父进程 18422；对应终端 `term_dd3ab45a` 标题 `Token Maker verification dev 40001`。本轮未启停。
+
+### 做到一半
+
+- 产品优化目标内没有未完成的编码项；本交接轮也没有未写完的模板段。
+- 未完整浏览器实测：文字拖动像素、ZIP/JPG/PDF、分享/社交。不能保证所有功能场景。
+- 不得宣传性能提升百分比、FPS、或卡顿彻底消失。F 的 180 次 wheel 触顶 scale 5、只 2 次 preview reset，和工作负载「每次 wheel 都整帧渲染」不同。
+- `WORKLOG.md` 是本交接新增的未存档改动。用户已确认不提交。不要把它加进后续产品 commit。
+- 期间出现范围外未暂存改动，本轮未修改、未还原。
+- `/tmp` 历史证据这次还在；以后若被系统清理，缺失项必须标 UNVERIFIED，不能默认仍绿。
+
+### 下一步
+
+- 下一班输入 `$pickup` 接手。先读本交接、`git rev-parse HEAD`、四文件 sha256，再决定要不要动代码。
+- 若要看页面：先重新 `lsof -nP -iTCP:40001 -sTCP:LISTEN` 确认监听和 cwd，再用 **EGO 自有 task space**。不要碰用户 task space / localStorage。优先 `http://localhost:40001`，不要随便换 `127.0.0.1`。
+- 继续改滚轮交互、提交、部署、关闭旧终端：必须单独用户授权。本轮未授权。
+- 不要 `git fetch` / push / deploy。不要把本文件塞进产品提交。
+
+### 踩过的坑
+
+- 初次 A 测试 `spyOn` 类型 TS2344；B 直接 `import` store 破坏架构边界。已由 I/J 修。
+- 无 `ctx.reset` 时 clip 残留蓝像素。已由 K 修；P `h-clip-reset.json` 0 diff。
+- 真实 ControlPanel 滑块 `ArrowRight` 曾把 pending 滚轮盖成 1.01。已由 N `flushSync` 修；P EN/ZH 真实键到 1.17。
+- L 全套曾偶发找不到 Coat Maker `Saved Names`。历史记录不可掩盖；优化验收时最终N全绿；不覆盖后续整仓合并。该失败不在四文件内。
+- M Header Ctrl+Z 套件顺序隔离是 history store 问题，**不是**四文件产品缺陷。
+- 预览滚轮 `preventDefault` 是保留的旧手势，不是本轮新消掉的「页面滚动接管」。
+- 本交接是文档轮：无编码授权。历史测试不要当成这一班刚跑过。
+- Q 为核对旧正文创建了 `/tmp/worklog-old-body-q-handoff.txt`。这是 Q 历史额外临时写入，不是 R 创建；未改产品，不删除，留待用户决定。
+
+### 怎么验证
+
+下一班如需复测再运行；**交接轮未重跑**。
+
+```bash
+git rev-parse HEAD
+shasum -a 256 src/components/editor/Canvas.tsx src/components/editor/Canvas.test.tsx src/lib/renderer/pipeline.ts src/lib/renderer/pipeline.test.ts
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+pnpm exec vitest run --no-cache src/components/editor/Canvas.test.tsx src/lib/renderer/pipeline.test.ts src/lib/architecture-boundaries.test.ts
+```
+
+浏览器（优先本地 ego-browser，自有 task space）：确认 `localhost:40001` 仍是本仓库后打开
+
+- `http://localhost:40001/#editor-workspace`
+- `http://localhost:40001/zh#editor-workspace`
+
+关键动作：上传图片、拖动、滚轮缩放、滑块、边框、重置位置、撤销/重做、批量预览、下载 PNG。滚轮仍应拦住页面滚动并缩放图片。历史 1.17 只在 P 的 fixture 条件下成立：`imageScale=1`、画布 `wheel` `deltaY=-100` pixel `deltaMode=0`、下一 rAF 提交被保持、焦点在缩放滑块、`nativeArrowRight` 一次，结果匹配顺序路径。普通任意滚轮不保证 1.17；不要在正常手工操作里要求这个竞态值。下一班若要复测，复用 P 历史 artifact（`/tmp/token-maker-p-verify.L2WLAE/`）里的自有测试 fixture。不要清用户 localStorage。不要点分享/社交。仓库检查不能证明线上已更新。
+
 ## 交接单 · 2026-09-10 20:08 CST · Cursor Grok
 
 ### 本次目标
