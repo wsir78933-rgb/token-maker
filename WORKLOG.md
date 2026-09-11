@@ -1,5 +1,66 @@
 # WORKLOG
 
+## 交接单 · 2026-09-12 07:49 CST · Grok CLI
+
+### 本次目标
+
+按 `/Users/wusir/Desktop/博客-V7修订版` 为 tokenmaker.one 写关键词 **dnd kenku** 的中英独立文章，装进现有网站；开 git 分支 `博客`（不是 worktree/分区）；合进 `main` 后删掉该分支。牧师法术未完成稿不带进本分支。不部署。
+
+### 已完成
+
+- 当前 `git rev-parse HEAD`：`6b1cb54cb82fd528b864c4fde5ae1ac2593e8d2a`（标题 `1`，只改 `WORKLOG.md`）。分支 `main`，工作区干净，与 `origin/main` 一致。本地和远程都没有 `博客` 分支。本交接未 `git fetch` / push / deploy。
+- 产品提交链（Kenku 已在 `main` 上）：
+  - `0f898a1` 标题 `9.12`：新增双语 Kenku 页、封面/6 张正文 webp、registry、sitemap/分页/index 测试、`public/llms.txt`。当时还带了 `tmp/blog-dnd-kenku/` 内部研究稿。
+  - `7541dd8`：从该分支删掉 `tmp/blog-dnd-kenku/` 共 28 个文件，再快进合进当时的 `main`。
+  - `6b1cb54`：用户侧把当时的 `WORKLOG.md` 交班条提交为 `1`。
+- Kenku 文件现仍在 HEAD：`src/lib/blog-posts/dnd-kenku.ts`、`src/lib/blog/dnd-kenku.test.ts`、封面 `public/blog/covers/en/dnd-kenku-guide.webp`、`public/blog/inline/dnd-kenku/` 六张图。`git ls-tree HEAD` 无 `tmp/blog-dnd-kenku/`。
+- 英文 H1/seoTitle：`DnD Kenku: Speech Depends on Volo's or MotM`。中文 title：`dnd kenku：瓦罗只能拟声，灰机缺页不等于魔邓肯不能开口`。slug `dnd-kenku`。用户终审未做，不能记用户通过。
+- 本会话写文阶段曾独立跑过：`pnpm exec vitest run src/lib/blog/dnd-kenku.test.ts src/lib/blog/pagination.test.ts src/lib/blog/dnd-campaigns.test.ts src/lib/blog/index.test.ts src/app/sitemap.test.ts` → 5 files / 175 passed；`pnpm typecheck` 通过。本交接轮未重跑。
+- 写文时 ego-browser 打开过 `http://localhost:40001/blog/dnd-kenku` 与 `/zh/blog/dnd-kenku`，桌面+手机 390×844。交班时 `40001` 仍有 node 在听（PID 40216）。
+- 用户确认后：本地 `博客` 用 `-D` 删除（当时相对 `origin/博客` 多 1 笔删 tmp 的提交，但已是 `main` 祖先）；`git push origin --delete 博客` 已成功。远程 `origin/博客` 已不存在。
+- 牧师法术未完成稿在 `stash@{0}`：`On main: preserve dnd-cleric-spells WIP on main before kenku blog branch`（`git stash push -u`）。`git stash show --stat` 可见 xlsx、`llms.txt`、`shared.ts`、registry/测试；未跟踪的 `dnd-cleric-spells.ts` / 封面/内文图因 `-u` 应在该 stash 里，本交接未 `stash show -u` 逐项列出。
+
+### 做到一半
+
+- Kenku 页面：**网站成品已就绪，待用户终审**。用户未在成品页确认通过或提出修改。
+- 牧师法术文章：仍在 `stash@{0}`，未恢复、未合入 `main`。
+- 无未存档工作区改动。本 `WORKLOG.md` 本条未提交。
+
+### 下一步
+
+1. 用户终审本地 Kenku 页；要改再开修订，不要把技术冻结当成用户批准。
+2. 继续牧师法术：在干净 `main` 上 `git stash pop`（先确认 stash@{0}），注意会改 registry / 测试 / llms.txt，可能和已上线的 Kenku 接线冲突，pop 后要跑测试。
+3. 不要把已删除的 `博客` 分支当还存在。产品发布需用户另行授权。
+
+### 踩过的坑
+
+- 写 Kenku 前工作区有牧师法术脏文件。从脏 `main` 直接切 `博客` 会把两篇混在一起。已用 `stash -u` 留在 main 侧。
+- 子代理曾把牧师法术接线写回 `博客` 工作区，已 `git checkout HEAD --` 清掉，未带进 Kenku 提交。
+- `0f898a1` 误把 `tmp/blog-dnd-kenku/` 内部研究稿提交进去。用户选方案 A 后另提交 `7541dd8` 删除再合 main。
+- 英文/中文初选标题把 wikidot 转写的「MotM 能说话」写成定论；独立题文复核 REVISE 后才锁现在的 H1。
+- 精确美国/中国大陆 Google SERP 未取得（验证码）。正文未编排名。
+- 删本地 `博客` 时 `git branch -d` 失败：相对 `origin/博客` 未完全合并。已核它是 `main` 祖先后用 `-D`。远程删除已完成。
+- 上一份 07:40 交接单写 HEAD 是 `7541dd8` 且 ahead 2。现在 HEAD 已是 `6b1cb54`，且已与 `origin/main` 同步。不要沿用 07:40 的 ahead 状态。
+
+### 怎么验证
+
+```bash
+git rev-parse HEAD
+git status -sb
+git branch | rg 博客 || true
+git branch -r | rg 博客 || true
+pnpm typecheck
+pnpm exec vitest run src/lib/blog/dnd-kenku.test.ts src/lib/blog/pagination.test.ts src/lib/blog/dnd-campaigns.test.ts src/lib/blog/index.test.ts src/app/sitemap.test.ts
+```
+
+浏览器（优先本地 ego-browser；交班时 40001 仍在听）：
+
+- http://localhost:40001/blog/dnd-kenku
+- http://localhost:40001/zh/blog/dnd-kenku
+- http://localhost:40001/blog （网格第一篇常规文应为 Kenku；featured 仍是 classes-explained）
+
+核对 H1、三张正文图、中英语言切换、手机视口不撑破。仓库检查不能证明线上已更新。不要清用户 localStorage。不要把 stash pop 牧师法术和 Kenku 终审混成一件事。
+
 ## 交接单 · 2026-09-12 07:40 CST · Grok CLI
 
 ### 本次目标
