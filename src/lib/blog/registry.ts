@@ -57,6 +57,7 @@ import {
   DND_DRAGONBORN_COVER_PATH,
   DND_KENKU_COVER_PATH,
   DND_CLERIC_SPELLS_COVER_PATH,
+  MIND_FLAYER_DND_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -170,6 +171,10 @@ import {
 } from '@/lib/blog-posts/dnd-dragonborn';
 import { dndKenkuArticleHtml, dndKenkuArticleHtmlZh } from '@/lib/blog-posts/dnd-kenku';
 import { dndClericSpellsArticleHtml, dndClericSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-cleric-spells';
+import {
+  mindFlayerDndArticleHtml,
+  mindFlayerDndArticleHtmlZh,
+} from '@/lib/blog-posts/mind-flayer-dnd';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -4763,6 +4768,74 @@ const dndKenkuArticleZh: BlogPost = {
   relatedSlugs: ['dnd-races', 'dnd-classes-explained', 'dnd-dragonborn'],
 };
 
+const MIND_FLAYER_DND_UPDATED_AT = '2026-09-12';
+
+const mindFlayerDndArticle: BlogPost = {
+  slug: 'mind-flayer-dnd',
+  title: 'Mind Flayer DnD: CR 7 Matches, The Stun Clock Doesn\'t',
+  seoTitle: 'Mind Flayer DnD: CR 7 Matches, The Stun Clock Doesn\'t',
+  metaDescription:
+    'Both books print CR 7. 2014 Mind Blast stuns 1 minute; 2024 stuns until the flayer\'s next turn ends. Lock one year and copy that book\'s three actions.',
+  excerpt:
+    'A mind flayer dnd encounter is a CR 7 Medium aberration copied from one Monster Manual year. Write 2014 or 2024 on the tracker before the cone. Crop tentacles and the long skull inside the token.',
+  publishedAt: MIND_FLAYER_DND_UPDATED_AT,
+  updatedAt: MIND_FLAYER_DND_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Aberration Guide',
+  coverImage: MIND_FLAYER_DND_COVER_PATH,
+  coverAlt:
+    'A mauve mind flayer with four face tentacles stands over a battle map beside a circular VTT token of the same head',
+  bodyHtml: mindFlayerDndArticleHtml,
+  faqItems: [
+    {
+      question: 'Which Monster Manual do I use for a mind flayer?',
+      answer:
+        'Copy either the 2014 <em>Monster Manual</em> mind flayer or the 2024 <em>Monster Manual</em> mind flayer, then use only that book&rsquo;s Mind Blast, Tentacles, and Extract Brain. Write <code>2014</code> or <code>2024</code> on the initiative tracker. Confirm numbers on the printed page; AideDD and Roll20 are public transcriptions of those books.',
+    },
+    {
+      question: 'Can a 2024 mind flayer Extract Brain if the target is not an incapacitated humanoid?',
+      answer:
+        'Yes, on the 2024 block. 2024 Extract Brain is a DC 15 Constitution save against one creature Grappled by Tentacles. It does not require a humanoid and does not require incapacitated. 2014 Extract Brain still requires an incapacitated humanoid grappled by the mind flayer.',
+    },
+    {
+      question: 'How long does Mind Blast stun last?',
+      answer:
+        'On the 2014 block, a failed DC 15 Intelligence save stuns the creature for 1 minute, and the creature repeats the save at the end of each of its turns. On the 2024 block, a failed DC 15 Intelligence save stuns the creature until the end of the mind flayer&rsquo;s next turn. A 2024 success takes half damage and is not stunned. Do not mix those stun clocks.',
+    },
+    {
+      question: 'Is a mind flayer a playable species in the 2024 Player&rsquo;s Handbook?',
+      answer:
+        'No. The ten 2024 <em>Player&rsquo;s Handbook</em> species are Aasimar, Dragonborn, Dwarf, Elf, Gnome, Goliath, Halfling, Human, Orc, and Tiefling. Mind flayer / illithid is not on that list.',
+    },
+    {
+      question: 'What has to stay inside the mind flayer token circle?',
+      answer:
+        'Keep the face tentacles and the elongated bald skull inside the circle. Reject winged Cthulhu, a bearded squid-man, tadpole-only art, and the Stranger Things TV monster.',
+    },
+  ],
+  relatedSlugs: ['dnd-flumph', 'dnd-demons', 'dnd-kenku'],
+};
+
+const mindFlayerDndArticleZh: BlogPost = {
+  slug: 'mind-flayer-dnd',
+  title: 'dnd mind flayer：夺心魔别把 1 分钟震慑拼上不要求失能的采脑',
+  seoTitle: 'dnd mind flayer（夺心魔）：别把 1 分钟震慑拼上不要求失能的采脑',
+  metaDescription:
+    '中文桌把 dnd mind flayer 叫夺心魔，也叫灵吸怪；不是怪奇物语巨兽、最终幻想 14 或克苏鲁头。卡边写 2014 或 2024，不要把 1 分钟震慑拼上不要求失能的采脑。',
+  excerpt:
+    '夺心魔先锁 2014 或 2024《怪物图鉴》。两版都是挑战等级 7；分得开的是震慑能挂多久、采脑要什么条件。Token 要认出面触须，不要裁成电视剧或克苏鲁。',
+  publishedAt: MIND_FLAYER_DND_UPDATED_AT,
+  updatedAt: MIND_FLAYER_DND_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '异怪指南',
+  coverImage: MIND_FLAYER_DND_COVER_PATH,
+  coverAlt:
+    '紫色夺心魔俯身查看桌面地图，旁边一枚圆形 Token 仍能看出面触须和光头长颅',
+  bodyHtml: mindFlayerDndArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: ['dnd-flumph', 'dnd-demons', 'dnd-kenku'],
+};
+
 const DND_DRAGONBORN_UPDATED_AT = '2026-09-10';
 
 const dndDragonbornArticle: BlogPost = {
@@ -5035,10 +5108,10 @@ const dndCampaignsArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
+  en: [mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
+  zh: [mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
     addHeadingAnchors,
   ),
 };

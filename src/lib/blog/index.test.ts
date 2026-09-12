@@ -49,7 +49,9 @@ const DND_DRUID_SLUG = 'dnd-druid';
 const DND_DRAGONBORN_SLUG = 'dnd-dragonborn';
 const DND_KENKU_SLUG = 'dnd-kenku';
 const DND_CLERIC_SPELLS_SLUG = 'dnd-cleric-spells';
+const MIND_FLAYER_DND_SLUG = 'mind-flayer-dnd';
 const FIRST_BLOG_PAGE_SLUGS = [
+  MIND_FLAYER_DND_SLUG,
   DND_CLERIC_SPELLS_SLUG,
   DND_KENKU_SLUG,
   DND_DRAGONBORN_SLUG,
@@ -59,9 +61,8 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DND_CHARACTER_SHEET_SLUG,
   DND_FIGHTER_SLUG,
   PLAYERS_HANDBOOK_DND_5E_SLUG,
-  DND_PALADIN_SLUG,
 ];
-const SECOND_BLOG_PAGE_START_SLUGS = [DND_ARTIFICER_SLUG, DND_STATS_SLUG];
+const SECOND_BLOG_PAGE_START_SLUGS = [DND_PALADIN_SLUG, DND_ARTIFICER_SLUG];
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {

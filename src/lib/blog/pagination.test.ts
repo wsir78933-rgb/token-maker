@@ -12,13 +12,13 @@ import {
 
 describe('blog pagination capacity', () => {
   it.each(['en', 'zh'] as const)(
-    'keeps dnd-ranger pagination on six pages while preserving the dnd-cleric-spells first-page lead',
+    'keeps dnd-ranger pagination on six pages while preserving the mind-flayer-dnd first-page lead',
     (locale) => {
       expect(getBlogPageCount(locale)).toBe(6);
       expect([1, 2, 3, 4, 5, 6].map((page) => getBlogPostsForPage(locale, page).length)).toEqual(
-        [10, 10, 10, 10, 10, 7],
+        [10, 10, 10, 10, 10, 8],
       );
-      expect(getBlogPostsForPage(locale, 1)[0]?.slug).toBe('dnd-cleric-spells');
+      expect(getBlogPostsForPage(locale, 1)[0]?.slug).toBe('mind-flayer-dnd');
     },
   );
 

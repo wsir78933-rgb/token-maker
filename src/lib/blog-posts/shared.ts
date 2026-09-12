@@ -61,6 +61,7 @@ export const DND_DRUID_COVER_PATH = '/blog/covers/en/dnd-druid-guide.webp';
 export const DND_DRAGONBORN_COVER_PATH = '/blog/covers/en/dnd-dragonborn-guide.webp';
 export const DND_KENKU_COVER_PATH = '/blog/covers/en/dnd-kenku-guide.webp';
 export const DND_CLERIC_SPELLS_COVER_PATH = '/blog/covers/en/dnd-cleric-spells-guide.webp';
+export const MIND_FLAYER_DND_COVER_PATH = '/blog/covers/en/mind-flayer-dnd-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -188,6 +189,18 @@ export const DND_CLERIC_SPELLS_FOCUS_ZH_IMAGE_PATH =
   '/blog/inline/dnd-cleric-spells/cleric-focus-zh.webp';
 export const DND_CLERIC_SPELLS_TOKEN_ZH_IMAGE_PATH =
   '/blog/inline/dnd-cleric-spells/cleric-token-zh.webp';
+export const MIND_FLAYER_BOOK_LOCK_IMAGE_PATH =
+  '/blog/inline/mind-flayer-dnd/mind-flayer-book-lock.webp';
+export const MIND_FLAYER_ACTION_LOOP_IMAGE_PATH =
+  '/blog/inline/mind-flayer-dnd/mind-flayer-action-loop.webp';
+export const MIND_FLAYER_TOKEN_CROP_IMAGE_PATH =
+  '/blog/inline/mind-flayer-dnd/mind-flayer-token-crop.webp';
+export const MIND_FLAYER_NAME_COLLISION_ZH_IMAGE_PATH =
+  '/blog/inline/mind-flayer-dnd/mind-flayer-name-collision-zh.webp';
+export const MIND_FLAYER_STUN_LOCK_ZH_IMAGE_PATH =
+  '/blog/inline/mind-flayer-dnd/mind-flayer-stun-lock-zh.webp';
+export const MIND_FLAYER_TOKEN_TENTACLES_ZH_IMAGE_PATH =
+  '/blog/inline/mind-flayer-dnd/mind-flayer-token-tentacles-zh.webp';
 
 // External URLs
 export const DND_CLERIC_2014_RULES_URL =
@@ -283,6 +296,17 @@ export const DND_KENKU_WIKIDOT_LINEAGE_URL = 'https://dnd5e.wikidot.com/lineage:
 export const DND_KENKU_HUIJI_MOTM_URL = 'https://dnd.huijiwiki.com/wiki/%E5%A4%A9%E7%8B%97';
 export const DND_KENKU_HUIJI_VOLO_URL =
   'https://dnd.huijiwiki.com/wiki/%E7%A7%8D%E6%97%8F/%E7%93%A6%E7%BD%97%E6%80%AA%E7%89%A9%E6%8C%87%E5%8D%97/%E5%A4%A9%E7%8B%97';
+export const MIND_FLAYER_2014_AIDEDD_URL =
+  'https://www.aidedd.org/dnd/monstres.php?vo=mind-flayer';
+export const MIND_FLAYER_2024_AIDEDD_URL = 'https://www.aidedd.org/monster/mind-flayer';
+export const MIND_FLAYER_2024_ROLL20_URL =
+  'https://roll20.net/compendium/dnd5e/Monsters:Mind%20Flayer?expansion=34653';
+export const MIND_FLAYER_ARCANIST_2024_AIDEDD_URL =
+  'https://www.aidedd.org/monster/mind-flayer-arcanist';
+export const MIND_FLAYER_HUIJI_URL = 'https://dnd.huijiwiki.com/wiki/%E5%A4%BA%E5%BF%83%E9%AD%94';
+export const MIND_FLAYER_HUIJI_PSION_URL =
+  'https://dnd.huijiwiki.com/wiki/%E6%80%AA%E7%89%A9/%E7%93%A6%E7%BD%97%E6%80%AA%E7%89%A9%E6%8C%87%E5%8D%97/%E5%A4%BA%E5%BF%83%E9%AD%94%E7%81%B5%E8%83%BD%E5%B8%88';
+export const ILLITHID_ZH_WIKIPEDIA_URL = 'https://zh.wikipedia.org/zh-hans/%E7%81%B5%E5%90%B8%E6%80%AA';
 export const DND_DRAGONBORN_VIDEO_URL = 'https://www.youtube.com/watch?v=EVwBW5GbGwQ';
 export const DND_DRAGONBORN_VIDEO_ID = 'EVwBW5GbGwQ';
 export const DND_2024_CASTING_SPELLS_RULES_URL = 'https://roll20.net/compendium/dnd5e/Rules%3ACasting%20Spells';
@@ -531,6 +555,8 @@ export const EN_DND_KENKU_PATH = getLocalizedPath('en', '/blog/dnd-kenku');
 export const ZH_DND_KENKU_PATH = getLocalizedPath('zh', '/blog/dnd-kenku');
 export const EN_DND_CLERIC_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-cleric-spells');
 export const ZH_DND_CLERIC_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-cleric-spells');
+export const EN_MIND_FLAYER_DND_PATH = getLocalizedPath('en', '/blog/mind-flayer-dnd');
+export const ZH_MIND_FLAYER_DND_PATH = getLocalizedPath('zh', '/blog/mind-flayer-dnd');
 export const EN_PALADIN_2024_SPELLS_PATH = EN_PALADIN_2024_SPELLS_DND_PATH;
 export const ZH_PALADIN_2024_SPELLS_PATH = ZH_PALADIN_2024_SPELLS_DND_PATH;
 
