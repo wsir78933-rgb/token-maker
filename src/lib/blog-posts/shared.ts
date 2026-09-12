@@ -60,6 +60,7 @@ export const DND_BACKGROUNDS_COVER_PATH = '/blog/covers/en/dnd-backgrounds-guide
 export const DND_DRUID_COVER_PATH = '/blog/covers/en/dnd-druid-guide.webp';
 export const DND_DRAGONBORN_COVER_PATH = '/blog/covers/en/dnd-dragonborn-guide.webp';
 export const DND_KENKU_COVER_PATH = '/blog/covers/en/dnd-kenku-guide.webp';
+export const DND_CLERIC_SPELLS_COVER_PATH = '/blog/covers/en/dnd-cleric-spells-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -175,8 +176,24 @@ export const DND_KENKU_SPEECH_LOCK_ZH_IMAGE_PATH = '/blog/inline/dnd-kenku/kenku
 export const DND_KENKU_NAME_COLLISION_ZH_IMAGE_PATH =
   '/blog/inline/dnd-kenku/kenku-name-collision-zh.webp';
 export const DND_KENKU_TOKEN_BEAK_ZH_IMAGE_PATH = '/blog/inline/dnd-kenku/kenku-token-beak-zh.webp';
+export const DND_CLERIC_SPELLS_JOB_IMAGE_PATH =
+  '/blog/inline/dnd-cleric-spells/cleric-spell-jobs.webp';
+export const DND_CLERIC_SPELLS_CONCENTRATION_IMAGE_PATH =
+  '/blog/inline/dnd-cleric-spells/cleric-concentration-clash.webp';
+export const DND_CLERIC_SPELLS_TOKEN_IMAGE_PATH =
+  '/blog/inline/dnd-cleric-spells/cleric-token-crop.webp';
+export const DND_CLERIC_SPELLS_PREPARE_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-cleric-spells/cleric-prepare-zh.webp';
+export const DND_CLERIC_SPELLS_FOCUS_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-cleric-spells/cleric-focus-zh.webp';
+export const DND_CLERIC_SPELLS_TOKEN_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-cleric-spells/cleric-token-zh.webp';
 
 // External URLs
+export const DND_CLERIC_2014_RULES_URL =
+  'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#ClericSpellcasting';
+export const DND_CLERIC_2024_RULES_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Level1ClericSpellcasting';
 export const DND_BARD_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Bard';
 export const DND_BARD_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Bard';
 export const DND_DRUID_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Druid';
@@ -474,6 +491,8 @@ export const EN_DND_QUARTERSTAFF_PATH = getLocalizedPath('en', '/blog/dnd-quarte
 export const ZH_DND_QUARTERSTAFF_PATH = getLocalizedPath('zh', '/blog/dnd-quarterstaff');
 export const EN_EDITOR_PATH = `${getLocalizedPath('en', '/')}#editor-workspace`;
 export const ZH_EDITOR_PATH = `${getLocalizedPath('zh', '/')}#editor-workspace`;
+export const EN_CLERIC_PRESET_EDITOR_PATH = '/?preset=cleric#editor-workspace';
+export const ZH_CLERIC_PRESET_EDITOR_PATH = '/zh?preset=cleric#editor-workspace';
 export const EN_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('en', '/templates/square-token-maker');
 export const ZH_SQUARE_TOKEN_MAKER_PATH = getLocalizedPath('zh', '/templates/square-token-maker');
 export const EN_DICE_ROLLER_PATH = getLocalizedPath('en', '/dice-roller-dnd');
@@ -510,6 +529,10 @@ export const EN_DND_DRAGONBORN_PATH = getLocalizedPath('en', '/blog/dnd-dragonbo
 export const ZH_DND_DRAGONBORN_PATH = getLocalizedPath('zh', '/blog/dnd-dragonborn');
 export const EN_DND_KENKU_PATH = getLocalizedPath('en', '/blog/dnd-kenku');
 export const ZH_DND_KENKU_PATH = getLocalizedPath('zh', '/blog/dnd-kenku');
+export const EN_DND_CLERIC_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-cleric-spells');
+export const ZH_DND_CLERIC_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-cleric-spells');
+export const EN_PALADIN_2024_SPELLS_PATH = EN_PALADIN_2024_SPELLS_DND_PATH;
+export const ZH_PALADIN_2024_SPELLS_PATH = ZH_PALADIN_2024_SPELLS_DND_PATH;
 
 export function liteVideoEmbed(videoId: string, title: string, thumbnail?: { src: string; alt: string }): string {
   const thumb = thumbnail?.src ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;

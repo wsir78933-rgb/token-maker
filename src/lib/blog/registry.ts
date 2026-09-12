@@ -56,6 +56,7 @@ import {
   DND_DRUID_COVER_PATH,
   DND_DRAGONBORN_COVER_PATH,
   DND_KENKU_COVER_PATH,
+  DND_CLERIC_SPELLS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -168,6 +169,7 @@ import {
   dndDragonbornArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-dragonborn';
 import { dndKenkuArticleHtml, dndKenkuArticleHtmlZh } from '@/lib/blog-posts/dnd-kenku';
+import { dndClericSpellsArticleHtml, dndClericSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-cleric-spells';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -4599,6 +4601,100 @@ const rapierDndArticleZh: BlogPost = {
   relatedSlugs: ['dnd-dagger', 'dnd-mace', 'dnd-classes-explained', 'dnd-armor-guide'],
 };
 
+const DND_CLERIC_SPELLS_UPDATED_AT = '2026-09-12';
+
+const dndClericSpellsArticle: BlogPost = {
+  slug: 'dnd-cleric-spells',
+  title: 'DnD Cleric Spells: The 2024 Official Four Has No Healing Word',
+  seoTitle: 'DnD Cleric Spells: The 2024 Official Four Has No Healing Word',
+  metaDescription:
+    'The 2024 recommended dnd cleric spells skip Healing Word. Swap Shield of Faith for the Bonus Action pickup unless another character already has that rescue.',
+  excerpt:
+    'The 2024 Free Rules four dnd cleric spells are Bless, Cure Wounds, Guiding Bolt, and Shield of Faith. They leave no Bonus Action pickup. Swap Shield of Faith for Healing Word unless another character already has that rescue.',
+  publishedAt: DND_CLERIC_SPELLS_UPDATED_AT,
+  updatedAt: DND_CLERIC_SPELLS_UPDATED_AT,
+  readTime: '14 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_CLERIC_SPELLS_COVER_PATH,
+  coverAlt:
+    'A cream-and-gold Cleric miniature on a dungeon map with two closed rulebooks, blank parchment piles, and a circular token',
+  bodyHtml: dndClericSpellsArticleHtml,
+  faqItems: [
+    {
+      question: 'How many Cleric spells do I prepare?',
+      answer:
+        'In 2014, prepare Wisdom modifier + Cleric level (minimum 1) spells of a level you have slots for. In 2024, use the Prepared Spells column of the Free Rules Cleric Features table: 4 at level 1, 5 at 2, 6 at 3, 7 at 4, and 9 at 5. Domain or subclass always-prepared spells do not count against that number.',
+    },
+    {
+      question: 'Is Cleric a known-spell caster?',
+      answer:
+        'No. Cleric is a prepared caster. You choose from the Cleric list after a Long Rest. Cantrips are known separately and are not part of the daily level 1+ count. Casting a prepared spell does not un-prepare it.',
+    },
+    {
+      question: 'Can I cast a Cleric ritual if I did not prepare the spell?',
+      answer:
+        'No. In 2014 you can cast a Cleric spell as a ritual if it has the ritual tag and you have it prepared. In 2024, a spell with the Ritual tag also requires that the caster have it prepared.',
+    },
+    {
+      question: 'Do Life Domain spells use a daily prepare slot?',
+      answer:
+        'No. Once you gain them, Life Domain spells are always prepared and do not count against the daily number. 2014 Life starts at 1st level (Bless and Cure Wounds). 2024 Life starts at Cleric 3 (Aid, Bless, Cure Wounds, Lesser Restoration). Do not also pick those names on the counted list.',
+    },
+    {
+      question: 'Does 2024 Divine Intervention replace Revivify on my prepared list?',
+      answer:
+        'No. 2024 Divine Intervention is a 10th-level class feature, not a prepared spell. It can cast a Cleric spell of level 5 or lower that is not a Reaction, without a slot or Material components, once per Long Rest. Before level 10, keep Revivify prepared if you want that button. At 10 it is still only once per Long Rest, so a prepared Revivify still matters for a second casting.',
+    },
+  ],
+  relatedSlugs: ['dnd-bless', 'dnd-bard-spells', 'dnd-druid-spells', 'dnd-classes-explained'],
+};
+
+const dndClericSpellsArticleZh: BlogPost = {
+  slug: 'dnd-cleric-spells',
+  title: 'dnd 牧师法术：2024 灵体武器要专注，不能叠祝福术',
+  seoTitle: 'dnd 牧师法术（Cleric）：2024 灵体武器要专注，不能叠祝福术',
+  metaDescription:
+    '2024 的 dnd 牧师法术里，灵体武器要专注，不能再和祝福术或灵体卫士叠开。写进名单可以，同一场全开不行。',
+  excerpt:
+    '2024 灵体武器改为专注，不能和祝福术或灵体卫士一起维持。dnd 牧师法术名单上可以同时写这三个名字；同一场战斗只能开一个主工作。2014 灵体武器仍不占专注。',
+  publishedAt: DND_CLERIC_SPELLS_UPDATED_AT,
+  updatedAt: DND_CLERIC_SPELLS_UPDATED_AT,
+  readTime: '14 分钟阅读',
+  coverLabel: '法术指南',
+  coverImage: DND_CLERIC_SPELLS_COVER_PATH,
+  coverAlt:
+    '木桌上的牧师微缩、两本合上的规则书、空白纸片和一枚圆形 Token',
+  bodyHtml: dndClericSpellsArticleHtmlZh,
+  faqItems: [
+    {
+      question: '牧师是准备法术还是已知法术？',
+      answer:
+        '准备法术。2014 和 2024 的牧师都从牧师法术表准备 1 环及以上法术；戏法是已知的，不占每日准备格。中文资料若写成「已知法术」，不要抄进牧师卡。',
+    },
+    {
+      question: '能准备多少？2014 和 2024 怎么算？',
+      answer:
+        '2014 等于感知调整值加牧师等级，最少 1。2024 的 1 级先选四个 1 环，之后只看职业表 Prepared Spells 列：1 级 4、2 级 5、3 级 6、4 级 7、5 级 9。两版长休后都可换名单；2024 写明可换任意，2014 是换整份并按环计时。',
+    },
+    {
+      question: '领域法术占准备名额吗？2024 几级选领域？',
+      answer:
+        '不占。始终准备的领域或子职业法术不计入每日准备上限。2014 从 1 级选领域；2024 的 1 级是神圣职阶，3 级才选子职业，所以 1 到 2 级没有领域白给。',
+    },
+    {
+      question: '急救位为什么是治愈真言，而不是治愈伤口？',
+      answer:
+        '治愈真言是 60 尺附赠动作，用来把倒地的人拉回行动顺序，还不占专注。治愈伤口吃动作、要靠近。2014 治愈真言是 1d4 + 调整值，2024 是 2d4 + 调整值；职责相同，骰子不同。',
+    },
+    {
+      question: '2024 还能同时开灵体武器和灵体卫士吗？',
+      answer:
+        '不能。2024 灵体武器要专注，灵体卫士也要专注，同一时间只能维持一个。2014 灵体武器不要专注，可以和灵体卫士或祝福术叠开。2024 把它们写进名单可以，同一场全开不行。',
+    },
+  ],
+  relatedSlugs: ['dnd-bless', 'dnd-bard-spells', 'dnd-druid-spells', 'dnd-classes-explained'],
+};
+
 const DND_KENKU_UPDATED_AT = '2026-09-12';
 
 const dndKenkuArticle: BlogPost = {
@@ -4939,10 +5035,10 @@ const dndCampaignsArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
+  en: [dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
+  zh: [dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
     addHeadingAnchors,
   ),
 };
