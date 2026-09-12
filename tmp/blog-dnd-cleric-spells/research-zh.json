@@ -1,0 +1,515 @@
+{
+  "meta": {
+    "date": "2026-09-12",
+    "site": "https://www.tokenmaker.one",
+    "locale": "zh-CN",
+    "country": "CN",
+    "englishSeedKeyword": "dnd cleric spells",
+    "outputConstraint": "research only; no article body; no src/public edits"
+  },
+  "taskCard": {
+    "goal": "为 tokenmaker.one 中文博客准备牧师选法研究材料，不是翻译英文主词。",
+    "readerTask": "中文桌团玩家在开团前准备牧师法术：确认自己是准备施法者、领域始终准备、2014/2024 哪些改动会改选法，再按职责填 1–5 级短名单。",
+    "outOfScope": [
+      "全职业攻略",
+      "0–9 环法术图鉴",
+      "领域百科",
+      "BG3 构筑",
+      "3.5e/Pathfinder",
+      "魔兽牧师",
+      "重写已有祝福术专文"
+    ],
+    "acceptance": [
+      "任务卡、事实表、SERP 表、中文候选词、H2 计划、CTA 位置",
+      "规则事实回到 Wizards/D&D Beyond",
+      "打不开的来源标未取得",
+      "通用搜索不标成精确当地 Google/百度前五"
+    ],
+    "assumptions": [
+      "读者主要跑 5e 桌团，可能混用 2014 与 2024",
+      "中文检索会被 BG3、3.5e、基督教牧师、魔兽世界抢走"
+    ],
+    "siteGap": "src/lib/blog-posts 无 dnd-cleric-spells；registry 无该 slug；WORKLOG 记未完成稿在 stash，未上线。"
+  },
+  "chineseKeywordCandidates": [
+    {
+      "term": "dnd 牧师法术",
+      "recommended": true,
+      "role": "primary",
+      "localCloseness": "最接近已取得的中国搜索引擎（搜狗）结果",
+      "notes": "必须带 dnd，否则撞基督教牧师。"
+    },
+    {
+      "term": "5e 牧师法术",
+      "recommended": true,
+      "role": "secondary",
+      "localCloseness": "搜狗相关；Bing 中国站会被宗教内容劫持",
+      "notes": "标题可写成 DND 5e 牧师法术。"
+    },
+    {
+      "term": "牧师准备法术",
+      "recommended": true,
+      "role": "intent",
+      "localCloseness": "检索表现弱于前两者，最贴 ReaderTask",
+      "notes": "适合 H1 副标题或 H2。"
+    },
+    {
+      "term": "牧师法术列表",
+      "recommended": false,
+      "role": "avoid-as-primary",
+      "localCloseness": "当地结果已经大量是抄表",
+      "notes": "不要当主意图。"
+    },
+    {
+      "term": "2024 牧师法术",
+      "recommended": true,
+      "role": "version-angle",
+      "localCloseness": "当地 SERP 几乎没有 2024 选法文",
+      "notes": "作版本卖点，不宜单独做主词。"
+    },
+    {
+      "term": "牧师神术",
+      "recommended": false,
+      "role": "discovery-only",
+      "localCloseness": "BG3 当地强",
+      "notes": "电子游戏用语，不当本站主词。"
+    }
+  ],
+  "siteChineseTerms": {
+    "className": "牧师",
+    "presetId": "cleric",
+    "presetLabelZh": "牧师",
+    "borderId": "cleric-border-01",
+    "presetHrefExample": "/zh?preset=cleric&mask=circle&border=revgold#editor-workspace",
+    "level1RecommendedFour": ["祝福", "治愈伤口", "光导箭", "虔诚护盾"],
+    "healingWordNamesOnSite": ["医疗真言", "治愈真言"],
+    "healingWordRecommendation": "正文第一次写「治愈真言（Healing Word，本站职业文也作医疗真言）」",
+    "divineOrderZh": "神圣职阶"
+  },
+  "existingChinesePosts": [
+    {
+      "path": "/zh",
+      "angle": "Token 制作器；预设标签牧师",
+      "avoid": "不要把选法文写成 Token 广告"
+    },
+    {
+      "path": "/zh/blog/dnd-bless",
+      "angle": "祝福术规则与目标",
+      "avoid": "只把祝福术当专注位工作"
+    },
+    {
+      "path": "/zh/blog/paladin-2024-spells-dnd",
+      "angle": "圣武士准备与 Smite",
+      "avoid": "不写惩击；牧师长休可换任意准备法术"
+    },
+    {
+      "path": "/zh/blog/dnd-paladin",
+      "angle": "圣武士回合决策",
+      "avoid": "不写圣武士决策树"
+    },
+    {
+      "path": "/zh/blog/dnd-classes-comparison",
+      "angle": "牧师 1 级第 1 回合、3 级才选领域、推荐四法",
+      "avoid": "不重写职业总览"
+    },
+    {
+      "path": "/zh/blog/dnd-classes-explained",
+      "angle": "牧师不是只能后排加血",
+      "avoid": "不写职业幻想长文"
+    },
+    {
+      "path": "/zh/blog/dnd-classes-ranked",
+      "angle": "牧师 S 级",
+      "avoid": "不写强度榜"
+    },
+    {
+      "path": "/zh/blog/dnd-character-sheet",
+      "angle": "1 级侍僧牧师填卡",
+      "avoid": "不写填卡教程"
+    },
+    {
+      "path": "/zh/blog/dnd-bard-spells",
+      "angle": "按职责选法",
+      "avoid": "结构可借鉴，内容不抄"
+    },
+    {
+      "path": "/zh/blog/dnd-druid-spells",
+      "angle": "德鲁伊准备列表",
+      "avoid": "不写德鲁伊"
+    },
+    {
+      "path": "/zh/blog/dnd-ranger-spells",
+      "angle": "2014 已知 vs 2024 准备",
+      "avoid": "牧师两版都是准备施法者"
+    }
+  ],
+  "slugCheck": {
+    "dnd-cleric-spellsInBlogPosts": false,
+    "dnd-cleric-spellsInRegistry": false,
+    "stashNote": "WORKLOG: 牧师法术未完成稿在 stash，未上线"
+  },
+  "localSerpPrecision": {
+    "googleCnLocalTop5": false,
+    "baiduLocalTop5": false,
+    "googleCnStatus": "未取得：captcha，未绕过",
+    "baiduStatus": "未取得：百度安全验证，未绕过",
+    "enginesActuallyObtained": ["sogou", "bing-cn-not-precise-local-top5", "generic-web-search"]
+  },
+  "serpTable": [
+    {
+      "provider": "Google",
+      "query": "dnd 牧师法术",
+      "countryLanguage": "尝试 gl=cn hl=zh-CN",
+      "date": "2026-09-12",
+      "precision": "未取得",
+      "organicTop": [],
+      "notes": "captcha，不记前五"
+    },
+    {
+      "provider": "Baidu",
+      "query": "dnd 牧师法术 | 牧师法术 5e",
+      "countryLanguage": "尝试 CN",
+      "date": "2026-09-12",
+      "precision": "未取得",
+      "organicTop": [],
+      "notes": "安全验证，不记前五"
+    },
+    {
+      "provider": "Sogou",
+      "query": "dnd 牧师法术",
+      "countryLanguage": "CN / zh",
+      "date": "2026-09-12",
+      "precision": "中国搜索引擎结果，非百度/Google 精确当地前五",
+      "organicTop": [
+        "BG3 牧师神术表（游戏）",
+        "https://www.bilibili.com/video/BV1Yv411874Y/",
+        "DND 3R 法术速查 PDF",
+        "DND 法术全列表文档",
+        "BG3 全职业法术"
+      ],
+      "opened": [
+        {
+          "url": "https://www.bilibili.com/video/BV1Yv411874Y/",
+          "status": "opened",
+          "note": "2021-03-29；2014 向选法视频；口播未转录，非规则源"
+        }
+      ],
+      "notes": "当地意图被 BG3、3.5e 全表、2014 视频占住。缺少 2024 准备流程。"
+    },
+    {
+      "provider": "Sogou",
+      "query": "牧师法术 5e",
+      "countryLanguage": "CN / zh",
+      "date": "2026-09-12",
+      "precision": "中国搜索引擎结果，非百度/Google 精确当地前五",
+      "organicTop": [
+        "索拉斯塔牧师法术",
+        "BG3 EA 牧师",
+        "https://www.bilibili.com/video/BV1Yv411874Y/",
+        "知乎 5e 坟墓牧带什么法术",
+        "头条牧师控制/AOE"
+      ],
+      "notes": "电子游戏 + 领域特化问答；仍无每天怎么准备。"
+    },
+    {
+      "provider": "Sogou",
+      "query": "dnd cleric spells",
+      "countryLanguage": "CN / zh",
+      "date": "2026-09-12",
+      "precision": "中国搜索引擎结果，非百度/Google 精确当地前五",
+      "organicTop": ["3.5e 文档", "知乎 什么是 dnd", "2024 PHB 畅销新闻"],
+      "notes": "英文主词在中文引擎上几乎不指向 5e 选法。"
+    },
+    {
+      "provider": "Bing China",
+      "query": "dnd 牧师法术",
+      "countryLanguage": "mkt=zh-CN",
+      "date": "2026-09-12",
+      "precision": "非精确当地前五",
+      "organicTop": [
+        "https://baike.baidu.com/item/龙与地下城/31164",
+        "https://dnd.huijiwiki.com/wiki/首页",
+        "https://dndnd.cn/",
+        "https://5e.kiwee.top/",
+        "https://dnd.wiki/"
+      ],
+      "notes": "dnd 还撞 Dark and Darker。"
+    },
+    {
+      "provider": "Bing China",
+      "query": "牧师法术 5e",
+      "countryLanguage": "mkt=zh-CN",
+      "date": "2026-09-12",
+      "precision": "非精确当地前五",
+      "organicTop": [
+        "https://baike.baidu.com/item/牧师/27121",
+        "知乎神父/牧师区别",
+        "搜狗百科牧师",
+        "https://zh.minecraft.wiki/w/牧师?variant=zh-cn"
+      ],
+      "notes": "查询失败：无 D&D。"
+    },
+    {
+      "provider": "generic web_search",
+      "query": "dnd cleric spells",
+      "countryLanguage": "generic EN",
+      "date": "2026-09-12",
+      "precision": "通用，非 CN 当地前五",
+      "organicTop": [
+        "https://dnd5e.wikidot.com/spells:cleric",
+        "https://www.wargamer.com/dnd/cleric-spells-5e",
+        "https://www.dndbeyond.com/spells/class/2-cleric",
+        "https://www.dndlounge.com/cleric-spells-5e/"
+      ],
+      "opened": [
+        {
+          "url": "https://dnd5e.wikidot.com/spells:cleric",
+          "status": "opened",
+          "note": "含 Tasha 可选；发现用"
+        },
+        {
+          "url": "https://www.wargamer.com/dnd/cleric-spells-5e",
+          "status": "opened",
+          "note": "2023-01 全表，2014+补充书"
+        },
+        {
+          "url": "https://www.dndlounge.com/cleric-spells-5e/",
+          "status": "partial",
+          "note": "页面打开，正文几乎未抽出"
+        }
+      ]
+    }
+  ],
+  "factTable": [
+    {
+      "claim": "牧师是准备施法者",
+      "y2014": "准备数量 = 感知调整值 + 牧师等级（最少 1）",
+      "y2024": "1 级选四个 1 环；之后按职业表 Prepared Spells 列；3 级例子为 6 个",
+      "source": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#ClericSpellcasting ; https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Level1ClericSpellcasting",
+      "selectionImpact": "不要抄已知法术流程。灰机摘要「已知法术」与官方 2014 牧师条文不符。"
+    },
+    {
+      "claim": "长休换法术",
+      "y2014": "长休后可换整份名单；准备新名单按每环至少 1 分钟",
+      "y2024": "长休后可把名单上任意法术换成其他已有环位的牧师法术",
+      "source": "同上",
+      "selectionImpact": "牧师比 2024 圣武士灵活（圣武士长休只换 1 个）。"
+    },
+    {
+      "claim": "子职业/领域时机",
+      "y2014": "1 级选 Divine Domain，立刻拿领域法术",
+      "y2024": "1 级 Divine Order（Protector 或 Thaumaturge）；3 级才选 subclass",
+      "source": "2014 Divine Domain；2024 Level 1 Divine Order、Level 3 Cleric Subclass",
+      "selectionImpact": "2024 1–2 级没有领域白给法术。"
+    },
+    {
+      "claim": "领域法术始终准备且不计入上限",
+      "y2014": true,
+      "y2024": true,
+      "source": "2014 Domain Spells；2024 Life Domain Spells",
+      "selectionImpact": "先看领域白给，再花名额。"
+    },
+    {
+      "claim": "生命领域白给法术（选法例子）",
+      "y2014": "1 Bless+Cure Wounds；3 Lesser Restoration+Spiritual Weapon；5 Beacon of Hope+Revivify；7 Death Ward+Guardian of Faith；9 Mass Cure Wounds+Raise Dead",
+      "y2024": "3 Aid+Bless+Cure Wounds+Lesser Restoration；5 Mass Healing Word+Revivify；7 Aura of Life+Death Ward；9 Greater Restoration+Mass Cure Wounds。无 Spiritual Weapon",
+      "source": "2014/2024 Life Domain Spells tables on D&D Beyond",
+      "selectionImpact": "2014 生命牧不必准备灵体武器；2024 生命牧要自己决定，且该法术现在要专注。"
+    },
+    {
+      "claim": "2024 官方 1 级推荐四个 1 环",
+      "y2024": "Bless, Cure Wounds, Guiding Bolt, Shield of Faith",
+      "source": "https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Level1ClericSpellcasting",
+      "selectionImpact": "本站职业对照已用。本文应另补治愈真言作为急救职责。"
+    },
+    {
+      "claim": "Spiritual Weapon 专注与升环",
+      "y2014": "持续 1 分钟，无专注；每高两环 +1d8",
+      "y2024": "专注最多 1 分钟；每高一环 +1d8",
+      "source": "https://www.dndbeyond.com/spells/2263-spiritual-weapon ; https://www.dndbeyond.com/spells/2619081-spiritual-weapon",
+      "selectionImpact": "2014 可与灵体卫士同开；2024 不能。"
+    },
+    {
+      "claim": "Spirit Guardians 占专注",
+      "y2014": "3 环，专注最多 10 分钟，15 尺",
+      "y2024": "3 环，专注最多 10 分钟，15-foot Emanation",
+      "source": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#SpiritGuardians ; https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#SpiritGuardians",
+      "selectionImpact": "两版都占专注。2024 与灵体武器抢专注。"
+    },
+    {
+      "claim": "Healing Word 急救职责",
+      "y2014": "附赠动作，60 尺，1d4+mod，对不死/构装无效",
+      "y2024": "附赠动作，60 尺，2d4+mod",
+      "source": "https://www.dndbeyond.com/spells/2140-healing-word ; https://www.dndbeyond.com/spells/2619143-healing-word",
+      "selectionImpact": "不要用动作位疗伤术替代这个急救位。"
+    },
+    {
+      "claim": "2024 免费规则牧师戏法表无 Toll the Dead / Word of Radiance",
+      "y2024Cantrips": ["Guidance", "Light", "Mending", "Resistance", "Sacred Flame", "Spare the Dying", "Thaumaturgy"],
+      "source": "https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#ClericSpellList",
+      "selectionImpact": "抄 Tasha 表到 2024 只用 PHB 的桌子会多出非法术。"
+    }
+  ],
+  "unverifiedDoNotState": [
+    "2024 Spare the Dying 距离变化",
+    "2024 Guidance 是否一次检定即结束"
+  ],
+  "informationGain": {
+    "localResultsLack": [
+      "准备施法者每天怎么换名单，而不是 0–9 环抄表",
+      "2014 准备数量公式 vs 2024 职业表列；3 级前没有领域白给",
+      "2024 灵体武器要专注，不能再和灵体卫士/祝福术叠开",
+      "用职责压缩名单，对抗牧师=奶妈和 BG3 神术表",
+      "中文译名与本站已有文对齐"
+    ],
+    "thisArticleAdds": "短 ReaderTask 选法文；链到祝福术、职业对照、圣武士 2024 法术；规则回官方免费规则。"
+  },
+  "h2Plan": {
+    "h1": "DND 牧师法术：按职责准备，而不是当奶妈抄全表",
+    "sections": [
+      { "h2": "速查：牧师每天准备法术，不是把法术表背完", "job": "定义 ReaderTask" },
+      { "h2": "2014 和 2024：只改选法的差异", "job": "准备数量、换名单、神圣职阶 vs 领域时机" },
+      { "h2": "按职责填准备名单", "job": "急救、专注、输出、解状态" },
+      { "h2": "1 级、3 级、5 级短模板", "job": "领域始终准备另算" },
+      { "h2": "领域始终准备：先看白给再花名额", "job": "只用生命领域官方表当例子" },
+      { "h2": "专注冲突：祝福术、灵体卫士、2024 灵体武器", "job": "2014 无专注 vs 2024 有专注" },
+      { "h2": "常见坑", "job": "纯奶妈、BG3、灰机已知、Toll the Dead" },
+      { "h2": "常见问题", "job": "FAQ" }
+    ],
+    "faq": [
+      "牧师是准备法术还是已知法术？",
+      "能准备多少？2014 和 2024 怎么算？",
+      "领域法术占准备名额吗？",
+      "2024 几级选领域？",
+      "战斗里该准备治愈真言还是疗伤术？",
+      "2024 还能同时开灵体武器和灵体卫士吗？",
+      "1 级官方推荐哪四个 1 环？"
+    ],
+    "internalLinks": [
+      "/zh/blog/dnd-bless",
+      "/zh/blog/dnd-classes-comparison",
+      "/zh/blog/paladin-2024-spells-dnd",
+      "/zh/blog/dnd-bard-spells",
+      "/zh/blog/dnd-druid-spells",
+      "/zh/blog/dnd-character-sheet",
+      "/zh/blog/dnd-constitution-guide"
+    ]
+  },
+  "cta": {
+    "countInBody": 1,
+    "placement": "H2「专注冲突」末尾",
+    "reason": "读者需要牧师/灵体武器/灵体卫士地图标记时",
+    "href": "/zh?preset=cleric#editor-workspace",
+    "presetLabelZh": "牧师",
+    "forbidden": ["开篇推销", "每节重复", "把选法表写成边框广告"]
+  },
+  "citationCandidates": [
+    {
+      "id": "dndb-2014-cleric",
+      "label": "D&D Beyond 2014 Basic Rules：牧师施法与生命领域",
+      "url": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Cleric",
+      "supports": "准备数量公式、长休换名单、1 级领域、领域始终准备、生命领域 2014 法术表",
+      "versionNote": "2014 Basic Rules；Beyond 标 Legacy"
+    },
+    {
+      "id": "dndb-2024-cleric",
+      "label": "D&D Beyond 2024 Free Rules：牧师",
+      "url": "https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Cleric",
+      "supports": "1 级准备 4 个、长休可换任意、神圣职阶、3 级子职业、2024 牧师法术表、生命领域 2024 法术表",
+      "versionNote": "2024 Free Rules"
+    },
+    {
+      "id": "dndb-2014-cleric-list",
+      "label": "D&D Beyond 2014 牧师法术列表",
+      "url": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#ClericSpells",
+      "supports": "2014 基础规则表内有哪些法术",
+      "versionNote": "不含 Tasha 可选"
+    },
+    {
+      "id": "dndb-2014-sw",
+      "label": "2014 Spiritual Weapon",
+      "url": "https://www.dndbeyond.com/spells/2263-spiritual-weapon",
+      "supports": "无专注、每两环升伤",
+      "versionNote": "2014"
+    },
+    {
+      "id": "dndb-2024-sw",
+      "label": "2024 Spiritual Weapon",
+      "url": "https://www.dndbeyond.com/spells/2619081-spiritual-weapon",
+      "supports": "要专注、每一环升伤",
+      "versionNote": "2024"
+    },
+    {
+      "id": "dndb-2014-sg",
+      "label": "2014 Spirit Guardians",
+      "url": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#SpiritGuardians",
+      "supports": "3 环专注控场",
+      "versionNote": "2014"
+    },
+    {
+      "id": "dndb-2024-sg",
+      "label": "2024 Spirit Guardians",
+      "url": "https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#SpiritGuardians",
+      "supports": "3 环专注；与灵体武器冲突",
+      "versionNote": "2024"
+    },
+    {
+      "id": "dndb-2014-bless",
+      "label": "2014 Bless",
+      "url": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#Bless",
+      "supports": "1 环专注增益",
+      "versionNote": "细节以本站祝福术文为准"
+    },
+    {
+      "id": "dndb-2024-bless",
+      "label": "2024 Bless",
+      "url": "https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Bless",
+      "supports": "同效果；材料圣徽",
+      "versionNote": "2024"
+    },
+    {
+      "id": "dndb-2014-hw",
+      "label": "2014 Healing Word",
+      "url": "https://www.dndbeyond.com/spells/2140-healing-word",
+      "supports": "附赠动作 60 尺 1d4+mod",
+      "versionNote": "2014；对不死/构装无效"
+    },
+    {
+      "id": "dndb-2024-hw",
+      "label": "2024 Healing Word",
+      "url": "https://www.dndbeyond.com/spells/2619143-healing-word",
+      "supports": "附赠动作 60 尺 2d4+mod",
+      "versionNote": "2024"
+    },
+    {
+      "id": "site-bless-zh",
+      "label": "本站祝福术中文文",
+      "url": "https://www.tokenmaker.one/zh/blog/dnd-bless",
+      "supports": "祝福术不重复展开",
+      "versionNote": "已发布"
+    },
+    {
+      "id": "site-class-zh",
+      "label": "本站职业对照中文文",
+      "url": "https://www.tokenmaker.one/zh/blog/dnd-classes-comparison",
+      "supports": "1 级四法、3 级才选领域",
+      "versionNote": "已发布"
+    },
+    {
+      "id": "bili-2014-picks",
+      "label": "Bilibili 牧师 1-9 环选择",
+      "url": "https://www.bilibili.com/video/BV1Yv411874Y/",
+      "supports": "仅证明当地有选法需求",
+      "versionNote": "2021，2014 向；非规则源"
+    }
+  ],
+  "notObtained": [
+    { "source": "中国大陆 Google 当地 SERP", "status": "未取得（captcha，未绕过）" },
+    { "source": "百度网页 SERP", "status": "未取得（安全验证，未绕过）" },
+    { "source": "https://dnd.huijiwiki.com/wiki/牧师", "status": "未取得完整页（请稍候）" },
+    { "source": "dndlogs 牧师法术表页", "status": "本次直接打开失败；仅有搜索摘要" },
+    { "source": "NGA 5e 牧师法术帖", "status": "未取得（检索落到魔兽数据库）" },
+    { "source": "https://www.dndlounge.com/cleric-spells-5e/", "status": "部分取得（正文几乎未抽出）" },
+    { "source": "Bilibili BV1Yv411874Y 口播全文", "status": "未转录" }
+  ]
+}
