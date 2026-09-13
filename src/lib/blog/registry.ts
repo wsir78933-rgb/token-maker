@@ -4818,8 +4818,8 @@ const mindFlayerDndArticle: BlogPost = {
 
 const mindFlayerDndArticleZh: BlogPost = {
   slug: 'mind-flayer-dnd',
-  title: 'dnd mind flayer：夺心魔别把 1 分钟震慑拼上不要求失能的采脑',
-  seoTitle: 'dnd mind flayer（夺心魔）：别把 1 分钟震慑拼上不要求失能的采脑',
+  title: '夺心魔：别把 1 分钟震慑拼上不要求失能的采脑',
+  seoTitle: '夺心魔：别把 1 分钟震慑拼上不要求失能的采脑',
   metaDescription:
     '中文桌把 dnd mind flayer 叫夺心魔，也叫灵吸怪；不是怪奇物语巨兽、最终幻想 14 或克苏鲁头。卡边写 2014 或 2024，不要把 1 分钟震慑拼上不要求失能的采脑。',
   excerpt:

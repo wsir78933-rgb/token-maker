@@ -82,7 +82,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
-- [dnd mind flayer（夺心魔）：别把 1 分钟震慑拼上不要求失能的采脑](https://www.tokenmaker.one/zh/blog/mind-flayer-dnd): 夺心魔先锁 2014 或 2024《怪物图鉴》。两版都是挑战等级 7；分得开的是震慑能挂多久、采脑要什么条件。Token 要认出面触须，不要裁成电视剧或克苏鲁。
+- [夺心魔：别把 1 分钟震慑拼上不要求失能的采脑](https://www.tokenmaker.one/zh/blog/mind-flayer-dnd): 夺心魔先锁 2014 或 2024《怪物图鉴》。两版都是挑战等级 7；分得开的是震慑能挂多久、采脑要什么条件。Token 要认出面触须，不要裁成电视剧或克苏鲁。
 - [dnd 牧师法术（Cleric）：2024 灵体武器要专注，不能叠祝福术](https://www.tokenmaker.one/zh/blog/dnd-cleric-spells): 2024 灵体武器改为专注，不能和祝福术或灵体卫士一起维持。dnd 牧师法术名单上可以同时写这三个名字；同一场战斗只能开一个主工作。2014 灵体武器仍不占专注。
 - [dnd kenku（天狗）：瓦罗只能拟声，灰机缺页不等于魔邓肯不能开口](https://www.tokenmaker.one/zh/blog/dnd-kenku): 瓦罗天狗 Kenku 语言栏按拟声写；魔邓肯开口不要用灰机缺页去填。拟声默认旁白，卡面留拟声名、桌上用短称呼，Token 要认出无翼有喙。
 - [dnd dragonborn（龙裔）：先问 DM 抄 2014 还是 2024](https://www.tokenmaker.one/zh/blog/dnd-dragonborn): 已经决定玩龙裔时，先问 DM 抄 2014 还是 2024，再按那一页写吐息和加值，把鳞色、伤害、抗性锁成一套，氏族名在前、桌上用短称呼。

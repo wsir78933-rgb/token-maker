@@ -97,10 +97,8 @@ describe('mind flayer dnd blog post', () => {
       expect(englishPost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
     }
 
-    expect(chinesePost?.title).toBe('dnd mind flayer：夺心魔别把 1 分钟震慑拼上不要求失能的采脑');
-    expect(chinesePost?.seoTitle).toBe(
-      'dnd mind flayer（夺心魔）：别把 1 分钟震慑拼上不要求失能的采脑',
-    );
+    expect(chinesePost?.title).toBe('夺心魔：别把 1 分钟震慑拼上不要求失能的采脑');
+    expect(chinesePost?.seoTitle).toBe('夺心魔：别把 1 分钟震慑拼上不要求失能的采脑');
     expect(chinesePost?.updatedAt).toBe('2026-09-12');
     expect(chinesePost?.coverImage).toBe(COVER_PATH);
     expect(chinesePost?.coverLabel).toBe('异怪指南');
@@ -140,7 +138,7 @@ describe('mind flayer dnd blog post', () => {
       },
     });
     expect(createBlogPostMetadata('zh', MIND_FLAYER_DND_SLUG)).toMatchObject({
-      title: 'dnd mind flayer（夺心魔）：别把 1 分钟震慑拼上不要求失能的采脑',
+      title: '夺心魔：别把 1 分钟震慑拼上不要求失能的采脑',
       description:
         '中文桌把 dnd mind flayer 叫夺心魔，也叫灵吸怪；不是怪奇物语巨兽、最终幻想 14 或克苏鲁头。卡边写 2014 或 2024，不要把 1 分钟震慑拼上不要求失能的采脑。',
       alternates: {
