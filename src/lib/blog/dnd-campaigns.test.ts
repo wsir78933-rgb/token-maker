@@ -71,11 +71,13 @@ describe('dnd campaigns blog post', () => {
     expect(llmsText).toContain('https://www.tokenmaker.one/blog/dnd-campaigns');
     expect(llmsText).toContain('https://www.tokenmaker.one/zh/blog/dnd-campaigns');
 
-    expect(getBlogPageCount('en')).toBe(6);
-    expect(getBlogPageCount('zh')).toBe(6);
-    expect(getBlogPostsForPage('en', 6)).toHaveLength(9);
-    expect(getBlogPostsForPage('zh', 6)).toHaveLength(9);
-    expect(getBlogPostsForPage('en', 1)[0]?.slug).toBe('dnd-beholder');
-    expect(getBlogPostsForPage('zh', 1)[0]?.slug).toBe('dnd-beholder');
+    expect(getBlogPageCount('en')).toBe(7);
+    expect(getBlogPageCount('zh')).toBe(7);
+    expect(getBlogPostsForPage('en', 6)).toHaveLength(10);
+    expect(getBlogPostsForPage('zh', 6)).toHaveLength(10);
+    expect(getBlogPostsForPage('en', 7)).toHaveLength(1);
+    expect(getBlogPostsForPage('zh', 7)).toHaveLength(1);
+    expect(getBlogPostsForPage('en', 1)[0]?.slug).toBe('dnd-skills');
+    expect(getBlogPostsForPage('zh', 1)[0]?.slug).toBe('dnd-skills');
   });
 });

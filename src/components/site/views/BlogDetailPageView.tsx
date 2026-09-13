@@ -257,8 +257,8 @@ export function BlogDetailPageView({
             hasArticleHeadings ? 'lg:grid-cols-[minmax(0,1.22fr)_280px] xl:grid-cols-[minmax(0,1.26fr)_300px]' : ''
           }`}
         >
-          <div className={hasArticleHeadings ? 'space-y-8' : 'max-w-[980px] space-y-8'}>
-            <article className="site-surface-card site-surface-card--warm rounded-[34px] px-4 py-5 sm:px-5 sm:py-6 lg:px-5 lg:py-6 xl:px-6 xl:py-7">
+          <div className={hasArticleHeadings ? 'min-w-0 space-y-8' : 'min-w-0 max-w-[980px] space-y-8'}>
+            <article className="site-surface-card site-surface-card--warm min-w-0 max-w-full rounded-[34px] px-4 py-5 sm:px-5 sm:py-6 lg:px-5 lg:py-6 xl:px-6 xl:py-7">
               <div className="flex items-center gap-3 text-xs uppercase tracking-[0.28em] text-[#d7b46a]">
                 <FileText className="h-4 w-4" />
                 {isPlaceholder ? copy.placeholderDetailHeading : copy.detailHeading}

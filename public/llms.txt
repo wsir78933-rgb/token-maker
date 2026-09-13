@@ -23,6 +23,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [DnD Skills: Eighteen Names, Constitution Has No Skill](https://www.tokenmaker.one/blog/dnd-skills): Copy tonight's eighteen dnd skills from 2014 or 2024. Constitution has no skill; add d20 + the ability modifier + proficiency bonus if proficient.
+- [DnD Conditions: Same Fifteen Names, Lock 2014 or 2024](https://www.tokenmaker.one/blog/dnd-conditions): Copy tonight's fifteen dnd conditions from 2014 or 2024. Grappled is not Restrained; Stunned is not Paralyzed; Exhaustion 2 then +1 is 3.
 - [DnD Beholder: 2014 Cone Is a Trait, 2024 a Bonus Action](https://www.tokenmaker.one/blog/dnd-beholder): A dnd beholder is a CR 13 Large aberration copied from one Monster Manual year. Write 2014 or 2024 before the cone. Ten stalks stay in the token; four stalks is the spectator page.
 - [Mind Flayer DnD: CR 7 Matches, The Stun Clock Doesn't](https://www.tokenmaker.one/blog/mind-flayer-dnd): A mind flayer dnd encounter is a CR 7 Medium aberration copied from one Monster Manual year. Write 2014 or 2024 on the tracker before the cone. Crop tentacles and the long skull inside the token.
 - [DnD Cleric Spells: The 2024 Official Four Has No Healing Word](https://www.tokenmaker.one/blog/dnd-cleric-spells): The 2024 Free Rules four dnd cleric spells are Bless, Cure Wounds, Guiding Bolt, and Shield of Faith. They leave no Bonus Action pickup. Swap Shield of Faith for Healing Word unless another character already has that rescue.
@@ -83,6 +85,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [dnd 5e 技能：体操对回特技，生存对回求生，观察对回察觉](https://www.tokenmaker.one/zh/blog/dnd-skills): 今晚这张 dnd 5e 技能是绑在属性上的 18 项，不是法术表。体质没有技能，表里没有体质行。体操对回特技，生存对回求生，观察或技能名「感知」对回察觉。没熟练仍做该技能相关检定，只是不加熟练加值。专精是已经熟练的那一行加倍，0 的两倍还是 0。2014 和 2024 这 18 个英文名没有增删。
+- [dnd 5e 状态：力竭已经 2 级再 +1，升到 3 不是只执行新得到的那 1 级](https://www.tokenmaker.one/zh/blog/dnd-conditions): 今晚这张 dnd 5e 状态，中文叫状态，英文括注 Conditions。卡边写 2014《玩家手册》状态或 2024 术语表状态。附录仍是 15 个名字。受擒两边速度 0，敏捷豁免劣势只在束缚。震慑两版都没有 5 尺重击。力竭已经 2 级再获得 1 级升到 3，不是只执行新得到的那 1 级：2014 同时承受 1+2+3，2024 是 D20 检定 −6、速度 −15 尺。
 - [眼魔：挑战等级 13 锁不住年，看反魔锥是特质还是附赠动作](https://www.tokenmaker.one/zh/blog/dnd-beholder): 眼魔先锁 2014 或 2024《怪物图鉴》。两版都是挑战等级 13；分得开的是反魔锥是特质还是附赠动作。Token 要认出十根眼柄，四根是观察者眼魔。
 - [夺心魔：别把 1 分钟震慑拼上不要求失能的采脑](https://www.tokenmaker.one/zh/blog/mind-flayer-dnd): 夺心魔先锁 2014 或 2024《怪物图鉴》。两版都是挑战等级 7；分得开的是震慑能挂多久、采脑要什么条件。Token 要认出面触须，不要裁成电视剧或克苏鲁。
 - [dnd 牧师法术（Cleric）：2024 灵体武器要专注，不能叠祝福术](https://www.tokenmaker.one/zh/blog/dnd-cleric-spells): 2024 灵体武器改为专注，不能和祝福术或灵体卫士一起维持。dnd 牧师法术名单上可以同时写这三个名字；同一场战斗只能开一个主工作。2014 灵体武器仍不占专注。

@@ -63,6 +63,8 @@ export const DND_KENKU_COVER_PATH = '/blog/covers/en/dnd-kenku-guide.webp';
 export const DND_CLERIC_SPELLS_COVER_PATH = '/blog/covers/en/dnd-cleric-spells-guide.webp';
 export const MIND_FLAYER_DND_COVER_PATH = '/blog/covers/en/mind-flayer-dnd-guide.webp';
 export const DND_BEHOLDER_COVER_PATH = '/blog/covers/en/dnd-beholder-guide.webp';
+export const DND_CONDITIONS_COVER_PATH = '/blog/covers/en/dnd-conditions-guide.webp';
+export const DND_SKILLS_COVER_PATH = '/blog/covers/en/dnd-skills-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -214,6 +216,30 @@ export const BEHOLDER_CONE_LOCK_ZH_IMAGE_PATH =
   '/blog/inline/dnd-beholder/beholder-cone-lock-zh.webp';
 export const BEHOLDER_TOKEN_STALKS_ZH_IMAGE_PATH =
   '/blog/inline/dnd-beholder/beholder-token-stalks-zh.webp';
+export const CONDITIONS_YEAR_LOCK_IMAGE_PATH =
+  '/blog/inline/dnd-conditions/conditions-year-lock.webp';
+export const CONDITIONS_GRAPPLE_RESTRAIN_IMAGE_PATH =
+  '/blog/inline/dnd-conditions/conditions-grapple-restrain.webp';
+export const CONDITIONS_EXHAUSTION_STACK_IMAGE_PATH =
+  '/blog/inline/dnd-conditions/conditions-exhaustion-stack.webp';
+export const CONDITIONS_YEAR_LOCK_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-conditions/conditions-year-lock-zh.webp';
+export const CONDITIONS_GRAPPLE_RESTRAIN_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-conditions/conditions-grapple-restrain-zh.webp';
+export const CONDITIONS_EXHAUSTION_STACK_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-conditions/conditions-exhaustion-stack-zh.webp';
+export const SKILLS_ABILITY_MAP_IMAGE_PATH =
+  '/blog/inline/dnd-skills/skills-ability-map.webp';
+export const SKILLS_CHECK_NOT_SAVE_IMAGE_PATH =
+  '/blog/inline/dnd-skills/skills-check-not-save.webp';
+export const SKILLS_HIDE_HELP_YEAR_IMAGE_PATH =
+  '/blog/inline/dnd-skills/skills-hide-help-year.webp';
+export const SKILLS_ABILITY_MAP_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-skills/skills-ability-map-zh.webp';
+export const SKILLS_NAME_TRAPS_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-skills/skills-name-traps-zh.webp';
+export const SKILLS_CHECK_BONUS_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-skills/skills-check-bonus-zh.webp';
 
 // External URLs
 export const DND_CLERIC_2014_RULES_URL =
@@ -328,6 +354,24 @@ export const DND_BEHOLDER_WIKIPEDIA_URL =
   'https://en.wikipedia.org/wiki/Beholder_(Dungeons_%26_Dragons)';
 export const DND_SRD_52_URL = 'https://www.dndbeyond.com/srd';
 export const DND_SRD_URL = DND_SRD_52_URL;
+export const DND_SRD_51_PDF_URL =
+  'https://media.dndbeyond.com/compendium-images/srd/5.1/SRD_CC_v5.1.pdf';
+export const DND_SRD_521_PDF_URL =
+  'https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf';
+export const WIZARDS_FAN_CONTENT_POLICY_URL =
+  'https://company.wizards.com/en/legal/fancontentpolicy';
+export const DND_SAGE_ADVICE_COMPENDIUM_URL =
+  'https://www.dndbeyond.com/sources/dnd/sae/sage-advice-compendium';
+export const CREATIVE_COMMONS_BY_4_LEGALCODE_URL =
+  'https://creativecommons.org/licenses/by/4.0/legalcode';
+export const HUIJI_2014_CONDITIONS_URL =
+  'https://dnd.huijiwiki.com/wiki/%E7%8E%A9%E5%AE%B6%E6%89%8B%E5%86%8C2014/%E7%8A%B6%E6%80%81';
+export const HUIJI_2024_CONDITIONS_URL =
+  'https://dnd.huijiwiki.com/wiki/%E6%9C%AF%E8%AF%AD/%E7%8A%B6%E6%80%81';
+export const HUIJI_2024_SKILL_TERM_URL =
+  'https://dnd.huijiwiki.com/wiki/%E6%9C%AF%E8%AF%AD/%E6%8A%80%E8%83%BD';
+export const HUIJI_2024_PROFICIENCY_URL =
+  'https://dnd.huijiwiki.com/wiki/%E7%8E%A9%E5%AE%B6%E6%89%8B%E5%86%8C%EF%BC%882024%EF%BC%89/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E8%BF%9B%E8%A1%8C%E6%B8%B8%E6%88%8F/%E7%86%9F%E7%BB%83';
 export const BEHOLDER_HUIJI_2014_URL =
   'https://dnd.huijiwiki.com/wiki/%E6%80%AA%E7%89%A9/%E6%80%AA%E7%89%A9%E6%89%8B%E5%86%8C%EF%BC%882014%EF%BC%89/%E7%9C%BC%E9%AD%94';
 export const BEHOLDER_HUIJI_2025_URL =
@@ -423,6 +467,8 @@ export const DND_DWELF_HOMEBREW_REFERENCE_URL =
 export const DND_FIRE_BOLT_RULES_URL = 'https://www.dndbeyond.com/spells/2618890-fire-bolt';
 export const DND_2024_PLAYING_THE_GAME_URL =
   'https://www.dndbeyond.com/sources/dnd/br-2024/playing-the-game';
+export const DND_2014_USING_ABILITY_SCORES_URL =
+  'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/using-ability-scores';
 export const DND_SPECTATOR_2014_DNDBEYOND_URL = 'https://www.dndbeyond.com/monsters/17094-spectator';
 export const DND_SPECTATOR_2024_ROLL20_URL =
   'https://roll20.net/compendium/dnd5e/Monsters%3ASpectator?expansion=34653';
@@ -586,6 +632,10 @@ export const EN_MIND_FLAYER_DND_PATH = getLocalizedPath('en', '/blog/mind-flayer
 export const ZH_MIND_FLAYER_DND_PATH = getLocalizedPath('zh', '/blog/mind-flayer-dnd');
 export const EN_DND_BEHOLDER_PATH = getLocalizedPath('en', '/blog/dnd-beholder');
 export const ZH_DND_BEHOLDER_PATH = getLocalizedPath('zh', '/blog/dnd-beholder');
+export const EN_DND_CONDITIONS_PATH = getLocalizedPath('en', '/blog/dnd-conditions');
+export const ZH_DND_CONDITIONS_PATH = getLocalizedPath('zh', '/blog/dnd-conditions');
+export const EN_DND_SKILLS_PATH = getLocalizedPath('en', '/blog/dnd-skills');
+export const ZH_DND_SKILLS_PATH = getLocalizedPath('zh', '/blog/dnd-skills');
 export const EN_SPECTATOR_DND_PATH = getLocalizedPath('en', '/blog/spectator-dnd');
 export const ZH_SPECTATOR_DND_PATH = getLocalizedPath('zh', '/blog/spectator-dnd');
 export const EN_PALADIN_2024_SPELLS_PATH = EN_PALADIN_2024_SPELLS_DND_PATH;

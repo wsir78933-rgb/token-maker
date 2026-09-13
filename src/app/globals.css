@@ -839,7 +839,9 @@
 .site-rich-text table {
   margin-top: 2rem;
   width: 100%;
-  max-width: 56rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   border-collapse: separate;
   border-spacing: 0;
   border: 1px solid color-mix(in oklab, var(--site-border-soft) 88%, transparent);

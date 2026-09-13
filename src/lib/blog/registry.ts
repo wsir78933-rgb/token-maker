@@ -59,6 +59,8 @@ import {
   DND_CLERIC_SPELLS_COVER_PATH,
   MIND_FLAYER_DND_COVER_PATH,
   DND_BEHOLDER_COVER_PATH,
+  DND_CONDITIONS_COVER_PATH,
+  DND_SKILLS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -180,6 +182,14 @@ import {
   dndBeholderArticleHtml,
   dndBeholderArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-beholder';
+import {
+  dndConditionsArticleHtml,
+  dndConditionsArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-conditions';
+import {
+  dndSkillsArticleHtml,
+  dndSkillsArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-skills';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -4841,6 +4851,142 @@ const mindFlayerDndArticleZh: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-demons', 'dnd-kenku'],
 };
 
+const DND_SKILLS_UPDATED_AT = '2026-09-13';
+
+const dndSkillsArticle: BlogPost = {
+  slug: 'dnd-skills',
+  title: 'DnD Skills: Eighteen Names, Constitution Has No Skill',
+  seoTitle: 'DnD Skills: Eighteen Names, Constitution Has No Skill',
+  metaDescription:
+    "Copy tonight's eighteen dnd skills from 2014 or 2024. Constitution has no skill. Add d20 + the ability modifier + proficiency bonus if you are proficient.",
+  excerpt:
+    "Copy tonight's eighteen dnd skills from 2014 or 2024. Constitution has no skill; add d20 + the ability modifier + proficiency bonus if proficient.",
+  publishedAt: DND_SKILLS_UPDATED_AT,
+  updatedAt: DND_SKILLS_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Skills Guide',
+  coverImage: DND_SKILLS_COVER_PATH,
+  coverAlt:
+    'A wooden table with a lantern, closed books tagged 2014 and 2024, a blank lined sheet with empty circles, dice, and a pencil',
+  bodyHtml: dndSkillsArticleHtml,
+  faqItems: [
+    {
+      question: 'How many dnd skills are there? Does Constitution have one?',
+      answer:
+        'There are eighteen. The English names match in 2014 and 2024. Constitution has no skill. The 2014 Constitution Checks text says no skills apply to Constitution checks. The 2024 Skills table does not give Constitution a skill.',
+    },
+    {
+      question: 'How do I calculate a skill check?',
+      answer:
+        'Roll d20 + the ability modifier + proficiency bonus if you are proficient in that skill. If you are not proficient, you still make the ability check; you just do not add proficiency bonus. Example. A 1st-level creature with Wisdom 15 (+2) and proficiency in Perception (proficiency bonus +2) makes an active Wisdom (Perception) check of d20+4.',
+    },
+    {
+      question: 'Is a Perception check a saving throw?',
+      answer:
+        'No. Perception is a Wisdom skill. A Perception check is an ability check. A saving throw is a different d20 test. A skill check is not a fourth kind of die.',
+    },
+    {
+      question: 'Do I use DC 15 when I Hide?',
+      answer:
+        'On 2024 Hide, yes: succeed on DC 15 Dexterity (Stealth), after you meet Heavily Obscured or Three-Quarters / Total Cover and you are unseen by enemies. The 2014 Hide action does not list DC 15.',
+    },
+    {
+      question: "If I'm proficient in Deception and Persuasion, do I add proficiency twice?",
+      answer:
+        'No. Proficiency bonus does not add more than once to the same number. The 2024 rule uses Charisma (Deception or Persuasion): proficiency in either skill adds proficiency bonus once, and proficiency in both still adds it once.',
+    },
+  ],
+  relatedSlugs: ['dnd-stats', 'dnd-character-sheet', 'dnd-backgrounds', 'players-handbook-dnd-5e'],
+};
+
+const dndSkillsArticleZh: BlogPost = {
+  slug: 'dnd-skills',
+  title: 'dnd 5e 技能：体操对回特技，生存对回求生，观察对回察觉',
+  seoTitle: 'dnd 5e 技能（dnd skills）：体操对回特技，生存对回求生，观察对回察觉',
+  metaDescription:
+    '开团前先认这张表：dnd 5e 技能是绑在属性上的 18 项，不是法术表。体质没有技能。体操对回特技，生存对回求生，观察或「感知技能」对回察觉，都不是第 19 项。没熟练仍能掷；有熟练只加一次熟练加值；专精是加倍，不是新技能。',
+  excerpt:
+    '今晚这张 dnd 5e 技能是绑在属性上的 18 项，不是法术表。体质没有技能，表里没有体质行。体操对回特技，生存对回求生，观察或技能名「感知」对回察觉。没熟练仍做该技能相关检定，只是不加熟练加值。专精是已经熟练的那一行加倍，0 的两倍还是 0。2014 和 2024 这 18 个英文名没有增删。',
+  publishedAt: DND_SKILLS_UPDATED_AT,
+  updatedAt: DND_SKILLS_UPDATED_AT,
+  readTime: '10 分钟阅读',
+  coverLabel: '技能指南',
+  coverImage: DND_SKILLS_COVER_PATH,
+  coverAlt:
+    '木桌上有一盏提灯、分别标着 2014 和 2024 的合上的书、一张带空圆圈的空白横线纸、骰子和一支铅笔',
+  bodyHtml: dndSkillsArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: ['dnd-stats', 'dnd-character-sheet', 'dnd-backgrounds', 'players-handbook-dnd-5e'],
+};
+
+const DND_CONDITIONS_UPDATED_AT = '2026-09-13';
+
+const dndConditionsArticle: BlogPost = {
+  slug: 'dnd-conditions',
+  title: 'DnD Conditions: Same Fifteen Names, Lock 2014 or 2024',
+  seoTitle: 'DnD Conditions: Same Fifteen Names, Lock 2014 or 2024',
+  metaDescription:
+    "Copy tonight's fifteen dnd conditions from 2014 or 2024. Grappled is not Restrained, Stunned is not Paralyzed, and Exhaustion already at 2 then +1 is 3.",
+  excerpt:
+    "Copy tonight's fifteen dnd conditions from 2014 or 2024. Grappled is not Restrained; Stunned is not Paralyzed; Exhaustion 2 then +1 is 3.",
+  publishedAt: DND_CONDITIONS_UPDATED_AT,
+  updatedAt: DND_CONDITIONS_UPDATED_AT,
+  readTime: '14 min read',
+  coverLabel: 'Conditions Guide',
+  coverImage: DND_CONDITIONS_COVER_PATH,
+  coverAlt:
+    'Two closed rulebooks tagged 2014 and 2024 on a wooden table beside a blank condition nameplate board and tokens labeled grapple, restrain, stun, and paralyze',
+  bodyHtml: dndConditionsArticleHtml,
+  faqItems: [
+    {
+      question: 'Which year&rsquo;s dnd conditions do I use tonight?',
+      answer:
+        'Write <code>2014</code> or <code>2024</code> on the initiative tracker before the first save, then copy each of the fifteen names from that year only. The fifteen names match in both years. Grappled, Stunned, and Exhaustion can use different math.',
+    },
+    {
+      question: 'Does Grappled give disadvantage on my attacks?',
+      answer:
+        'The 2014 Grappled line does not list attack disadvantage. Speed is 0. On the 2024 Grappled line, you have Disadvantage on attacks other than the grappler. Grappled does not list Dexterity-save disadvantage in either year; that penalty is on Restrained.',
+    },
+    {
+      question: 'Can a 2024 Stunned creature still move?',
+      answer:
+        'Yes. The 2024 Stunned line does not list Speed 0. The <em>Sage Advice Compendium</em> answers that the change is intentional, with Stunned now allowing you to move. 2014 Stunned still writes can&rsquo;t move. Neither year&rsquo;s Stunned line lists a 5-foot critical hit.',
+    },
+    {
+      question: 'I&rsquo;m already at Exhaustion 2 and I gain 1 more. What is on me now?',
+      answer:
+        '3. 2014 puts levels 1+2+3 on you together: disadvantage on ability checks, speed halved, and disadvantage on attack rolls and saving throws. 2024 applies D20 Tests −6 and Speed −15 feet. 2024 Exhaustion does not apply disadvantage and does not halve hit-point maximum. Level 6 is death in both years.',
+    },
+    {
+      question: 'Does Incapacitated stop movement? Does it break concentration?',
+      answer:
+        'Neither year&rsquo;s Incapacitated line is Speed 0. 2014 concentration break sits in Spellcasting Concentration, not on the Incapacitated line. 2024 Incapacitated writes that Concentration is broken. Stunned, Paralyzed, and Unconscious include Incapacitated.',
+    },
+  ],
+  relatedSlugs: ['mind-flayer-dnd', 'players-handbook-dnd-5e', 'dnd-maul'],
+};
+
+const dndConditionsArticleZh: BlogPost = {
+  slug: 'dnd-conditions',
+  title: 'dnd 5e 状态：力竭已经 2 级再 +1，升到 3 不是只执行新得到的那 1 级',
+  seoTitle: 'dnd 5e 状态（dnd conditions）：力竭已经 2 级再 +1，升到 3 不是只执行新得到的那 1 级',
+  metaDescription:
+    '今晚这张 dnd 5e 状态是附录里那 15 个。卡边写「2014《玩家手册》状态」或「2024 术语表状态」。力竭已经 2 级再获得 1 级升到 3，不是只执行新得到的那 1 级：2014 同时承受 1+2+3，2024 是 D20 检定 −6、速度 −15 尺。受擒不是束缚，震慑不是麻痹。',
+  excerpt:
+    '今晚这张 dnd 5e 状态，中文叫状态，英文括注 Conditions。卡边写 2014《玩家手册》状态或 2024 术语表状态。附录仍是 15 个名字。受擒两边速度 0，敏捷豁免劣势只在束缚。震慑两版都没有 5 尺重击。力竭已经 2 级再获得 1 级升到 3，不是只执行新得到的那 1 级：2014 同时承受 1+2+3，2024 是 D20 检定 −6、速度 −15 尺。',
+  publishedAt: DND_CONDITIONS_UPDATED_AT,
+  updatedAt: DND_CONDITIONS_UPDATED_AT,
+  readTime: '14 分钟阅读',
+  coverLabel: '状态指南',
+  coverImage: DND_CONDITIONS_COVER_PATH,
+  coverAlt:
+    '木桌上两本规则书分别标着 2014 和 2024，旁边是空白状态名牌板，以及标着 grapple、restrain、stun、paralyze 的小标记',
+  bodyHtml: dndConditionsArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: ['mind-flayer-dnd', 'players-handbook-dnd-5e', 'dnd-maul'],
+};
+
 const DND_BEHOLDER_UPDATED_AT = '2026-09-13';
 
 const dndBeholderArticle: BlogPost = {
@@ -5181,10 +5327,10 @@ const dndCampaignsArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
+  en: [dndSkillsArticle, dndConditionsArticle, dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
+  zh: [dndSkillsArticleZh, dndConditionsArticleZh, dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
     addHeadingAnchors,
   ),
 };
