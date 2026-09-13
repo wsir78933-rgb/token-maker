@@ -62,6 +62,7 @@ export const DND_DRAGONBORN_COVER_PATH = '/blog/covers/en/dnd-dragonborn-guide.w
 export const DND_KENKU_COVER_PATH = '/blog/covers/en/dnd-kenku-guide.webp';
 export const DND_CLERIC_SPELLS_COVER_PATH = '/blog/covers/en/dnd-cleric-spells-guide.webp';
 export const MIND_FLAYER_DND_COVER_PATH = '/blog/covers/en/mind-flayer-dnd-guide.webp';
+export const DND_BEHOLDER_COVER_PATH = '/blog/covers/en/dnd-beholder-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -201,6 +202,18 @@ export const MIND_FLAYER_STUN_LOCK_ZH_IMAGE_PATH =
   '/blog/inline/mind-flayer-dnd/mind-flayer-stun-lock-zh.webp';
 export const MIND_FLAYER_TOKEN_TENTACLES_ZH_IMAGE_PATH =
   '/blog/inline/mind-flayer-dnd/mind-flayer-token-tentacles-zh.webp';
+export const BEHOLDER_BOOK_LOCK_IMAGE_PATH =
+  '/blog/inline/dnd-beholder/beholder-book-lock.webp';
+export const BEHOLDER_CONE_RAYS_IMAGE_PATH =
+  '/blog/inline/dnd-beholder/beholder-cone-rays.webp';
+export const BEHOLDER_TOKEN_CROP_IMAGE_PATH =
+  '/blog/inline/dnd-beholder/beholder-token-crop.webp';
+export const BEHOLDER_NAME_COLLISION_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-beholder/beholder-name-collision-zh.webp';
+export const BEHOLDER_CONE_LOCK_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-beholder/beholder-cone-lock-zh.webp';
+export const BEHOLDER_TOKEN_STALKS_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-beholder/beholder-token-stalks-zh.webp';
 
 // External URLs
 export const DND_CLERIC_2014_RULES_URL =
@@ -307,6 +320,20 @@ export const MIND_FLAYER_HUIJI_URL = 'https://dnd.huijiwiki.com/wiki/%E5%A4%BA%E
 export const MIND_FLAYER_HUIJI_PSION_URL =
   'https://dnd.huijiwiki.com/wiki/%E6%80%AA%E7%89%A9/%E7%93%A6%E7%BD%97%E6%80%AA%E7%89%A9%E6%8C%87%E5%8D%97/%E5%A4%BA%E5%BF%83%E9%AD%94%E7%81%B5%E8%83%BD%E5%B8%88';
 export const ILLITHID_ZH_WIKIPEDIA_URL = 'https://zh.wikipedia.org/zh-hans/%E7%81%B5%E5%90%B8%E6%80%AA';
+export const BEHOLDER_2014_AIDEDD_URL = 'https://www.aidedd.org/dnd/monstres.php?vo=beholder';
+export const BEHOLDER_2024_AIDEDD_URL = 'https://www.aidedd.org/monster/beholder';
+export const BEHOLDER_2024_ROLL20_URL =
+  'https://roll20.net/compendium/dnd5e/Monsters:Beholder?expansion=34653';
+export const DND_BEHOLDER_WIKIPEDIA_URL =
+  'https://en.wikipedia.org/wiki/Beholder_(Dungeons_%26_Dragons)';
+export const DND_SRD_52_URL = 'https://www.dndbeyond.com/srd';
+export const DND_SRD_URL = DND_SRD_52_URL;
+export const BEHOLDER_HUIJI_2014_URL =
+  'https://dnd.huijiwiki.com/wiki/%E6%80%AA%E7%89%A9/%E6%80%AA%E7%89%A9%E6%89%8B%E5%86%8C%EF%BC%882014%EF%BC%89/%E7%9C%BC%E9%AD%94';
+export const BEHOLDER_HUIJI_2025_URL =
+  'https://dnd.huijiwiki.com/wiki/%E6%80%AA%E7%89%A9/%E6%80%AA%E7%89%A9%E5%9B%BE%E9%89%B4%EF%BC%882025%EF%BC%89/%E7%9C%BC%E9%AD%94';
+export const BEHOLDER_HUIJI_2025_CATALOG_URL =
+  'https://dnd.huijiwiki.com/wiki/%E6%80%AA%E7%89%A9%E5%9B%BE%E9%89%B4%EF%BC%882025%EF%BC%89';
 export const DND_DRAGONBORN_VIDEO_URL = 'https://www.youtube.com/watch?v=EVwBW5GbGwQ';
 export const DND_DRAGONBORN_VIDEO_ID = 'EVwBW5GbGwQ';
 export const DND_2024_CASTING_SPELLS_RULES_URL = 'https://roll20.net/compendium/dnd5e/Rules%3ACasting%20Spells';
@@ -557,6 +584,10 @@ export const EN_DND_CLERIC_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-cleri
 export const ZH_DND_CLERIC_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-cleric-spells');
 export const EN_MIND_FLAYER_DND_PATH = getLocalizedPath('en', '/blog/mind-flayer-dnd');
 export const ZH_MIND_FLAYER_DND_PATH = getLocalizedPath('zh', '/blog/mind-flayer-dnd');
+export const EN_DND_BEHOLDER_PATH = getLocalizedPath('en', '/blog/dnd-beholder');
+export const ZH_DND_BEHOLDER_PATH = getLocalizedPath('zh', '/blog/dnd-beholder');
+export const EN_SPECTATOR_DND_PATH = getLocalizedPath('en', '/blog/spectator-dnd');
+export const ZH_SPECTATOR_DND_PATH = getLocalizedPath('zh', '/blog/spectator-dnd');
 export const EN_PALADIN_2024_SPELLS_PATH = EN_PALADIN_2024_SPELLS_DND_PATH;
 export const ZH_PALADIN_2024_SPELLS_PATH = ZH_PALADIN_2024_SPELLS_DND_PATH;
 

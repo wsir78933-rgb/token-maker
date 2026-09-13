@@ -58,6 +58,7 @@ import {
   DND_KENKU_COVER_PATH,
   DND_CLERIC_SPELLS_COVER_PATH,
   MIND_FLAYER_DND_COVER_PATH,
+  DND_BEHOLDER_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -175,6 +176,10 @@ import {
   mindFlayerDndArticleHtml,
   mindFlayerDndArticleHtmlZh,
 } from '@/lib/blog-posts/mind-flayer-dnd';
+import {
+  dndBeholderArticleHtml,
+  dndBeholderArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-beholder';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -4836,6 +4841,74 @@ const mindFlayerDndArticleZh: BlogPost = {
   relatedSlugs: ['dnd-flumph', 'dnd-demons', 'dnd-kenku'],
 };
 
+const DND_BEHOLDER_UPDATED_AT = '2026-09-13';
+
+const dndBeholderArticle: BlogPost = {
+  slug: 'dnd-beholder',
+  title: 'DnD Beholder: 2014 Cone Is a Trait, 2024 a Bonus Action',
+  seoTitle: 'DnD Beholder: 2014 Cone Is a Trait, 2024 a Bonus Action',
+  metaDescription:
+    'A dnd beholder\'s cone is a start-of-turn trait in 2014 and a Bonus Action in 2024. Copy that year\'s Eye Rays: three-ray action, or Multiattack three times.',
+  excerpt:
+    'A dnd beholder is a CR 13 Large aberration copied from one Monster Manual year. Write 2014 or 2024 before the cone. Ten stalks stay in the token; four stalks is the spectator page.',
+  publishedAt: DND_BEHOLDER_UPDATED_AT,
+  updatedAt: DND_BEHOLDER_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Aberration Guide',
+  coverImage: DND_BEHOLDER_COVER_PATH,
+  coverAlt:
+    'A spherical ochre beholder with ten eyestalks hovers over a battle map beside a circular VTT token of the same creature',
+  bodyHtml: dndBeholderArticleHtml,
+  faqItems: [
+    {
+      question: 'Which Monster Manual do I use for a CR 13 beholder?',
+      answer:
+        'Copy either the 2014 <em>Monster Manual</em> beholder or the 2024 <em>Monster Manual</em> beholder, then use only that book&rsquo;s Antimagic Cone, Eye Rays, and legendary actions. Write <code>2014</code> or <code>2024</code> on the initiative tracker. Confirm numbers on the printed page; AideDD and Roll20 are public transcriptions of those books.',
+    },
+    {
+      question: 'How many eye rays does a beholder shoot on its turn?',
+      answer:
+        'On the 2014 block, the Eye Rays action shoots three random rays (reroll duplicates) at one to three seen targets within 120 feet. On the 2024 block, Multiattack uses Eye Rays three times, and each use is one random ray (1d10; reroll if that ray was already used this turn) at one seen target within 120 feet. Do not mix those procedures.',
+    },
+    {
+      question: 'Is a spectator a small beholder?',
+      answer:
+        'No. A spectator is a CR 3 guardian with four eyestalks and no antimagic cone. The CR 13 beholder has ten eyestalks, a central eye, and Antimagic Cone. Do not run spectator rays on a beholder token.',
+    },
+    {
+      question: 'Is the beholder in the SRD 5.2?',
+      answer:
+        'No. Beholder is excluded from SRD 5.2. Do not paste a full stat block and call it SRD-legal. Copy from the printed <em>Monster Manual</em> you locked; the public transcriptions in Sources are check pages, not a license.',
+    },
+    {
+      question: 'What has to stay inside the beholder token?',
+      answer:
+        'Keep ten eyestalks and the central eye inside the crop. A four-stalk crop reads as a spectator. Export a transparent PNG for a Large 2&times;2 space; that is a crop job, not a promise that a VTT will import the file with zero extra setup.',
+    },
+  ],
+  relatedSlugs: ['spectator-dnd', 'mind-flayer-dnd', 'dnd-flumph'],
+};
+
+const dndBeholderArticleZh: BlogPost = {
+  slug: 'dnd-beholder',
+  title: '眼魔：挑战等级 13 锁不住年，看反魔锥是特质还是附赠动作',
+  seoTitle: '眼魔（dnd beholder）：挑战等级 13 锁不住年，看反魔锥是特质还是附赠动作',
+  metaDescription:
+    '中文桌把 dnd beholder 叫眼魔，不是观察者眼魔。两版都是挑战等级 13；2014 反魔锥是特质，2024 才花附赠动作。射线和传奇跟锥抄同一本，Token 留下十根眼柄。',
+  excerpt:
+    '眼魔先锁 2014 或 2024《怪物图鉴》。两版都是挑战等级 13；分得开的是反魔锥是特质还是附赠动作。Token 要认出十根眼柄，四根是观察者眼魔。',
+  publishedAt: DND_BEHOLDER_UPDATED_AT,
+  updatedAt: DND_BEHOLDER_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '异怪指南',
+  coverImage: DND_BEHOLDER_COVER_PATH,
+  coverAlt:
+    '球体眼魔悬在桌面地图旁，圆形 Token 里仍能看出中央眼和十根眼柄',
+  bodyHtml: dndBeholderArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: ['spectator-dnd', 'mind-flayer-dnd', 'dnd-flumph'],
+};
+
 const DND_DRAGONBORN_UPDATED_AT = '2026-09-10';
 
 const dndDragonbornArticle: BlogPost = {
@@ -5108,10 +5181,10 @@ const dndCampaignsArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
+  en: [dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
+  zh: [dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
     addHeadingAnchors,
   ),
 };

@@ -38,6 +38,7 @@ const DND_DRUID_SLUG = 'dnd-druid';
 const DND_DRAGONBORN_SLUG = 'dnd-dragonborn';
 const DND_KENKU_SLUG = 'dnd-kenku';
 const DND_CLERIC_SPELLS_SLUG = 'dnd-cleric-spells';
+const DND_BEHOLDER_SLUG = 'dnd-beholder';
 const MIND_FLAYER_DND_SLUG = 'mind-flayer-dnd';
 
 function findSitemapEntry(url: string) {
@@ -51,6 +52,25 @@ function findSitemapEntry(url: string) {
 }
 
 describe('blog sitemap entries', () => {
+  test('includes bilingual dnd beholder routes with alternates', () => {
+    const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_BEHOLDER_SLUG}`);
+    const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_BEHOLDER_SLUG}`);
+    const expectedAlternates = {
+      'x-default': `https://www.tokenmaker.one/blog/${DND_BEHOLDER_SLUG}`,
+      'en-US': `https://www.tokenmaker.one/blog/${DND_BEHOLDER_SLUG}`,
+      'zh-CN': `https://www.tokenmaker.one/zh/blog/${DND_BEHOLDER_SLUG}`,
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-09-13'));
+    expect(englishEntry.changeFrequency).toBe('monthly');
+    expect(englishEntry.priority).toBe(0.6);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-13'));
+    expect(chineseEntry.changeFrequency).toBe('monthly');
+    expect(chineseEntry.priority).toBe(0.6);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes bilingual mind flayer dnd routes with alternates', () => {
     const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${MIND_FLAYER_DND_SLUG}`);
     const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${MIND_FLAYER_DND_SLUG}`);
@@ -657,12 +677,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/5',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-09-12'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-09-13'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-12'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-13'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
@@ -678,12 +698,12 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/6',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-09-12'));
+    expect(englishEntry.lastModified).toEqual(new Date('2026-09-13'));
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-12'));
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-13'));
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
