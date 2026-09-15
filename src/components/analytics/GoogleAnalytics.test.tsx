@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { render } from '@testing-library/react';
+import { cleanup, render } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/navigation', () => ({
@@ -20,7 +20,7 @@ vi.mock('next/script', () => ({
     nonce?: string;
     src?: string;
   }) => (
-    <script id={id} nonce={nonce} data-src={src}>
+    <script id={id} data-script-nonce={nonce} data-src={src}>
       {children}
     </script>
   ),
@@ -28,6 +28,7 @@ vi.mock('next/script', () => ({
 
 describe('GoogleAnalytics', () => {
   afterEach(() => {
+    cleanup();
     vi.unstubAllEnvs();
     vi.resetModules();
   });
@@ -37,9 +38,36 @@ describe('GoogleAnalytics', () => {
     vi.stubEnv('NEXT_PUBLIC_GA_MEASUREMENT_ID', 'G-TEST123');
     const { GoogleAnalytics } = await import('./GoogleAnalytics');
 
-    render(<GoogleAnalytics />);
+    const { container } = render(<GoogleAnalytics />);
 
-    expect(document.querySelector('script[data-src*="googletagmanager.com"]')?.getAttribute('nonce')).toBeNull();
-    expect(document.querySelector('#google-analytics')?.getAttribute('nonce')).toBeNull();
+    expect(container.querySelector('script[data-src*="googletagmanager.com"]')?.getAttribute('nonce')).toBeNull();
+    expect(container.querySelector('script[data-src*="googletagmanager.com"]')?.getAttribute('data-script-nonce')).toBeNull();
+    expect(container.querySelector('#google-analytics')?.getAttribute('nonce')).toBeNull();
+    expect(container.querySelector('#google-analytics')?.getAttribute('data-script-nonce')).toBeNull();
+  });
+
+  it('applies a request nonce to both executable analytics scripts', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('NEXT_PUBLIC_GA_MEASUREMENT_ID', 'G-TEST123');
+    const { GoogleAnalytics } = await import('./GoogleAnalytics');
+
+    const { container } = render(<GoogleAnalytics nonce="coat-maker-nonce" />);
+
+    expect(
+      container.querySelector('script[data-src*="googletagmanager.com"]')?.getAttribute('data-script-nonce')
+    ).toBe('coat-maker-nonce');
+    expect(container.querySelector('#google-analytics')?.getAttribute('data-script-nonce')).toBe(
+      'coat-maker-nonce'
+    );
+  });
+
+  it('fails fast when a request nonce is empty', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('NEXT_PUBLIC_GA_MEASUREMENT_ID', 'G-TEST123');
+    const { GoogleAnalytics } = await import('./GoogleAnalytics');
+
+    expect(() => render(<GoogleAnalytics nonce="" />)).toThrow(
+      'GoogleAnalytics requires a non-empty CSP nonce; received value: '
+    );
   });
 });

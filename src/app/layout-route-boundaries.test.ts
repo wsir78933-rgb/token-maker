@@ -15,11 +15,19 @@ vi.mock('@/components/analytics/GoogleAdSense', () => ({
 }));
 
 vi.mock('@/components/analytics/GoogleAnalytics', () => ({
-  GoogleAnalytics: () => createElement('script', { 'data-analytics': 'google-analytics' }),
+  GoogleAnalytics: ({ nonce }: { nonce?: string }) =>
+    createElement('script', {
+      'data-analytics': 'google-analytics',
+      ...(nonce === undefined ? {} : { 'data-nonce': nonce }),
+    }),
 }));
 
 vi.mock('@/components/analytics/MicrosoftClarity', () => ({
-  MicrosoftClarity: () => createElement('script', { 'data-analytics': 'microsoft-clarity' }),
+  MicrosoftClarity: ({ nonce }: { nonce?: string }) =>
+    createElement('script', {
+      'data-analytics': 'microsoft-clarity',
+      ...(nonce === undefined ? {} : { 'data-nonce': nonce }),
+    }),
 }));
 
 vi.mock('@/lib/i18n', () => ({
@@ -43,14 +51,23 @@ async function renderLayout(rootLayout: RootLayout) {
 
 function expectAnalyticsScripts(
   markup: string,
-  expectedAnalytics: readonly string[]
+  expectedAnalytics: readonly string[],
+  expectedNonce?: string
 ) {
   const renderedAnalytics = [...markup.matchAll(/data-analytics="([^"]+)"/g)].map(
     ([, analyticsName]) => analyticsName
   );
 
   expect(renderedAnalytics).toEqual(expectedAnalytics);
-  expect(markup).not.toContain('data-nonce=');
+
+  if (expectedNonce === undefined) {
+    expect(markup).not.toContain('data-nonce=');
+    return;
+  }
+
+  expect([...markup.matchAll(/data-nonce="([^"]+)"/g)].map(([, nonce]) => nonce)).toEqual(
+    expectedAnalytics.map(() => expectedNonce)
+  );
 }
 
 function expectAdSenseScriptInDocumentHead(markup: string) {
@@ -103,13 +120,21 @@ describe('root layout route boundaries', () => {
     expect(getRequestNonce).not.toHaveBeenCalled();
   });
 
-  it('requests a nonce for each local Coat Maker document root while keeping analytics scripts out', async () => {
+  it('requests a nonce for each local Coat Maker document root and loads analytics without advertising', async () => {
     const EnglishCoatMakerRootLayout = (await import('./(maker-en)/layout')).default;
     const ChineseCoatMakerRootLayout = (await import('./(maker-zh)/layout')).default;
 
-    expectNoAnalyticsScripts(await renderLayout(EnglishCoatMakerRootLayout));
+    expectAnalyticsScripts(
+      await renderLayout(EnglishCoatMakerRootLayout),
+      ['microsoft-clarity', 'google-analytics'],
+      'layout-request-nonce'
+    );
     expect(getRequestNonce).toHaveBeenCalledTimes(1);
-    expectNoAnalyticsScripts(await renderLayout(ChineseCoatMakerRootLayout));
+    expectAnalyticsScripts(
+      await renderLayout(ChineseCoatMakerRootLayout),
+      ['microsoft-clarity', 'google-analytics'],
+      'layout-request-nonce'
+    );
     expect(getRequestNonce).toHaveBeenCalledTimes(2);
   });
 
