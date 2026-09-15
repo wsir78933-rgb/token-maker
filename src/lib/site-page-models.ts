@@ -154,7 +154,7 @@ const faqDocModels: Record<SiteLocale, FaqDocModel> = {
 
 const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
   en: {
-    updatedAt: '2026-07-03',
+    updatedAt: '2026-09-15',
     eyebrow: 'Privacy',
     title: 'How Token Maker handles images, sharing, analytics, ads, and contact messages',
     description:
@@ -172,7 +172,7 @@ const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
       },
       {
         title: 'Analytics are disclosed by current loading behavior',
-        description: 'Microsoft Clarity is included on the live site outside development. Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured.',
+        description: 'Microsoft Clarity is included on the live site outside development, including /coat-of-arms-maker and /zh/coat-of-arms-maker. Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured, including those Coat Maker pages.',
       },
       {
         title: 'Google advertising cookies',
@@ -192,7 +192,7 @@ const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
     ],
   },
   zh: {
-    updatedAt: '2026-07-03',
+    updatedAt: '2026-09-15',
     eyebrow: '隐私',
     title: 'Token Maker 如何处理图片、分享、统计、广告和联系消息',
     description: '说明本地 PNG 下载、公开分享链接、R2 存储、Clarity、Google Analytics、Google 广告 Cookie 和联系消息的当前事实。',
@@ -209,7 +209,7 @@ const privacyDocModels: Record<SiteLocale, PrivacyDocModel> = {
       },
       {
         title: '统计加载行为按当前实现披露',
-        description: 'Microsoft Clarity 会在非开发环境的站点加载。只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用。',
+        description: 'Microsoft Clarity 会在非开发环境的站点加载，包括 /coat-of-arms-maker 和 /zh/coat-of-arms-maker。只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用，这些 Coat Maker 页面也包括在内。',
       },
       {
         title: 'Google 广告 Cookie',

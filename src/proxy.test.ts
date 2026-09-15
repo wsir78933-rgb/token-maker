@@ -33,6 +33,29 @@ function getContentSecurityPolicyDirective(
   return directive.split(' ').slice(1);
 }
 
+const COAT_MAKER_CONNECT_SOURCES = [
+  "'self'",
+  'https://www.google-analytics.com',
+  'https://*.google-analytics.com',
+  'https://analytics.google.com',
+  'https://www.googletagmanager.com',
+  'https://*.googletagmanager.com',
+  'https://www.clarity.ms',
+  'https://*.clarity.ms',
+  'https://c.bing.com',
+];
+
+const COAT_MAKER_IMAGE_SOURCES = [
+  "'self'",
+  'data:',
+  'blob:',
+  'https://www.google-analytics.com',
+  'https://www.googletagmanager.com',
+  'https://www.clarity.ms',
+  'https://*.clarity.ms',
+  'https://c.bing.com',
+];
+
 describe('proxy', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
@@ -55,7 +78,10 @@ describe('proxy', () => {
     expect(firstContentSecurityPolicy).toContain(`'nonce-${firstNonce}'`);
     expect(firstContentSecurityPolicy).toContain("'strict-dynamic'");
     expect(firstContentSecurityPolicy).toContain("'self'");
-    expect(firstContentSecurityPolicy).not.toContain('https:');
+    expect(getContentSecurityPolicyDirective(firstContentSecurityPolicy, 'connect-src')).not.toContain(
+      'https:'
+    );
+    expect(getContentSecurityPolicyDirective(firstContentSecurityPolicy, 'img-src')).not.toContain('https:');
     expect(firstContentSecurityPolicy).not.toContain('http:');
     expect(getContentSecurityPolicyDirective(firstContentSecurityPolicy, 'script-src')).not.toContain(
       "'unsafe-inline'"
@@ -65,8 +91,12 @@ describe('proxy', () => {
       "'self'",
       "'unsafe-inline'",
     ]);
-    expect(firstContentSecurityPolicy).toContain("img-src 'self' data: blob:");
-    expect(firstContentSecurityPolicy).toContain("connect-src 'self'");
+    expect(getContentSecurityPolicyDirective(firstContentSecurityPolicy, 'img-src')).toEqual(
+      COAT_MAKER_IMAGE_SOURCES
+    );
+    expect(getContentSecurityPolicyDirective(firstContentSecurityPolicy, 'connect-src')).toEqual(
+      COAT_MAKER_CONNECT_SOURCES
+    );
     expect(firstContentSecurityPolicy).toContain("frame-src 'none'");
     expect(firstContentSecurityPolicy).toContain("object-src 'none'");
     expect(firstContentSecurityPolicy).toContain("base-uri 'self'");
@@ -130,9 +160,41 @@ describe('proxy', () => {
       ]);
       expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'connect-src')).toEqual(["'self'"]);
       expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'frame-src')).toEqual(["'none'"]);
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'connect-src')).not.toContain('https:');
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'img-src')).not.toContain('https:');
       expect(contentSecurityPolicy).not.toMatch(
         /google-analytics|googletagmanager|clarity|cloudflareinsights|youtube|ytimg/i
       );
+    }
+  });
+
+  it('allows Google Analytics and Microsoft Clarity beacons on coat maker documents', async () => {
+    const productionProxy = (await loadProxy('production')).proxy;
+    const developmentProxy = (await loadProxy('development')).proxy;
+    const coatMakerResponses = [
+      productionProxy(new NextRequest('https://www.tokenmaker.one/coat-of-arms-maker')),
+      productionProxy(new NextRequest('https://www.tokenmaker.one/zh/coat-of-arms-maker')),
+      developmentProxy(new NextRequest('https://www.tokenmaker.one/coat-of-arms-maker')),
+      developmentProxy(new NextRequest('https://www.tokenmaker.one/zh/coat-of-arms-maker')),
+    ];
+
+    for (const response of coatMakerResponses) {
+      const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
+      const nonce = response.headers.get('x-middleware-request-x-nonce');
+
+      expect(contentSecurityPolicy).toContain(`'nonce-${nonce}'`);
+      expect(contentSecurityPolicy).toContain("'strict-dynamic'");
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'img-src')).toEqual(
+        COAT_MAKER_IMAGE_SOURCES
+      );
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'connect-src')).toEqual(
+        COAT_MAKER_CONNECT_SOURCES
+      );
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'frame-src')).toEqual(["'none'"]);
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'object-src')).toEqual(["'none'"]);
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'connect-src')).not.toContain('https:');
+      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'img-src')).not.toContain('https:');
+      expect(contentSecurityPolicy).not.toMatch(/adsense|doubleclick|cloudflareinsights|youtube|ytimg/i);
     }
   });
 

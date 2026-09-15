@@ -857,7 +857,7 @@ export const privacySectionsByLocale: Record<SiteLocale, StaticPageSection[]> = 
     {
       title: 'Analytics and operations',
       body:
-        'Microsoft Clarity is included on the live site outside development. Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured.',
+        'Microsoft Clarity is included on the live site outside development, including /coat-of-arms-maker and /zh/coat-of-arms-maker. Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured, including those Coat Maker pages.',
     },
     {
       title: 'Google advertising cookies',
@@ -889,7 +889,7 @@ export const privacySectionsByLocale: Record<SiteLocale, StaticPageSection[]> = 
     {
       title: '分析与运维',
       body:
-        'Microsoft Clarity 会在非开发环境的站点加载。只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用。',
+        'Microsoft Clarity 会在非开发环境的站点加载，包括 /coat-of-arms-maker 和 /zh/coat-of-arms-maker。只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用，这些 Coat Maker 页面也包括在内。',
     },
     {
       title: 'Google 广告 Cookie',

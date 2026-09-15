@@ -129,8 +129,8 @@ describe('static site support pages', () => {
     const englishHomepage = sitemap().find((entry) => entry.url === 'https://www.tokenmaker.one/');
     const chineseHomepage = sitemap().find((entry) => entry.url === 'https://www.tokenmaker.one/zh');
 
-    expect(englishHomepage?.lastModified).toEqual(new Date('2026-07-03'));
-    expect(chineseHomepage?.lastModified).toEqual(new Date('2026-07-03'));
+    expect(englishHomepage?.lastModified).toEqual(new Date('2026-09-15'));
+    expect(chineseHomepage?.lastModified).toEqual(new Date('2026-09-15'));
   });
 
   it.each([
@@ -225,9 +225,11 @@ describe('static site support pages', () => {
     expect(englishPrivacyText).toContain('/api/share');
     expect(englishPrivacyText).toContain('R2');
     expect(englishPrivacyText).toContain('public share link');
-    expect(englishPrivacyText).toContain('Microsoft Clarity is included on the live site outside development.');
     expect(englishPrivacyText).toContain(
-      'Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured.'
+      'Microsoft Clarity is included on the live site outside development, including /coat-of-arms-maker and /zh/coat-of-arms-maker.'
+    );
+    expect(englishPrivacyText).toContain(
+      'Google Analytics runs only in production when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured, including those Coat Maker pages.'
     );
     expect(englishPrivacyText).toContain(
       'Token Maker does not provide a self-service deletion or retention promise on this page.'
@@ -249,8 +251,12 @@ describe('static site support pages', () => {
     expect(chinesePrivacyText).toContain('/api/share');
     expect(chinesePrivacyText).toContain('R2');
     expect(chinesePrivacyText).toContain('公开分享链接');
-    expect(chinesePrivacyText).toContain('Microsoft Clarity 会在非开发环境的站点加载。');
-    expect(chinesePrivacyText).toContain('只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用。');
+    expect(chinesePrivacyText).toContain(
+      'Microsoft Clarity 会在非开发环境的站点加载，包括 /coat-of-arms-maker 和 /zh/coat-of-arms-maker。'
+    );
+    expect(chinesePrivacyText).toContain(
+      '只有在生产环境且配置 NEXT_PUBLIC_GA_MEASUREMENT_ID 时，Google Analytics 才会启用，这些 Coat Maker 页面也包括在内。'
+    );
     expect(chinesePrivacyText).toContain('Google 广告 Cookie');
     expect(chinesePrivacyText).toContain('第三方广告供应商');
     expect(chinesePrivacyText).toContain('网络信标');

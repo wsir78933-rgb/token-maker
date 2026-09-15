@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { render } from '@testing-library/react';
+import { cleanup, render } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/script', () => ({
@@ -17,7 +17,7 @@ vi.mock('next/script', () => ({
   }) => (
     <script
       id={id}
-      nonce={nonce}
+      data-script-nonce={nonce}
       data-strategy={strategy}
       dangerouslySetInnerHTML={dangerouslySetInnerHTML}
     />
@@ -26,6 +26,7 @@ vi.mock('next/script', () => ({
 
 describe('MicrosoftClarity', () => {
   afterEach(() => {
+    cleanup();
     vi.unstubAllEnvs();
     vi.resetModules();
   });
@@ -34,9 +35,30 @@ describe('MicrosoftClarity', () => {
     vi.stubEnv('NODE_ENV', 'production');
     const { MicrosoftClarity } = await import('./MicrosoftClarity');
 
-    render(<MicrosoftClarity />);
+    const { container } = render(<MicrosoftClarity />);
 
-    expect(document.querySelector('#microsoft-clarity')?.getAttribute('data-strategy')).toBe('lazyOnload');
-    expect(document.querySelector('#microsoft-clarity')?.getAttribute('nonce')).toBeNull();
+    expect(container.querySelector('#microsoft-clarity')?.getAttribute('data-strategy')).toBe('lazyOnload');
+    expect(container.querySelector('#microsoft-clarity')?.getAttribute('nonce')).toBeNull();
+    expect(container.querySelector('#microsoft-clarity')?.getAttribute('data-script-nonce')).toBeNull();
+  });
+
+  it('applies a request nonce to the Clarity loader script', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const { MicrosoftClarity } = await import('./MicrosoftClarity');
+
+    const { container } = render(<MicrosoftClarity nonce="coat-maker-nonce" />);
+
+    expect(container.querySelector('#microsoft-clarity')?.getAttribute('data-script-nonce')).toBe(
+      'coat-maker-nonce'
+    );
+  });
+
+  it('fails fast when a request nonce is empty', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const { MicrosoftClarity } = await import('./MicrosoftClarity');
+
+    expect(() => render(<MicrosoftClarity nonce="" />)).toThrow(
+      'MicrosoftClarity requires a non-empty CSP nonce; received value: '
+    );
   });
 });
