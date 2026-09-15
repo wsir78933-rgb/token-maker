@@ -1,5 +1,67 @@
 # WORKLOG
 
+## 交接单 · 2026-09-16 07:22 CST · Grok CLI
+
+### 本次目标
+
+查清 `https://www.tokenmaker.one/coat-of-arms-maker` 是否被 GA4 / Clarity 统计；用户选定两者都开，并同步改隐私页。在工作树 `第三方工具` 里实现，提交该分支后合进 `main`，再删除分支和工作树。不部署。
+
+### 已完成
+
+- 当前 `HEAD`：`1ad8eec`（`Merge branch '第三方工具'`）。分支 `main`，工作区干净，与 `origin/main` 一致。本地和远程都没有 `第三方工具` 分支。只剩主工作区 `/Users/wusir/Desktop/开发项目集合/token-maker-app`。本交接未 `git fetch` / push / deploy。
+- 只读核实：线上纹章页不加载 `gtag` / Clarity；首页加载 GA 测量 ID `G-6FMX5JSNNX` 和 Clarity 项目 `wlcq64go88`。原因：`CoatMakerDocument` 故意不挂第三方脚本，且纹章页 CSP 为 `connect-src 'self'`。
+- 产品提交：
+  - `422871d` Enable GA4 and Clarity on Coat Maker pages.（11 文件，+241 / −49）
+  - `1ad8eec` 合进 `main` 后 `git push origin main`；`git push origin --delete 第三方工具` 成功。
+- 实现要点（已在 `main`）：
+  - `CoatMakerDocument` 挂 `MicrosoftClarity` + `Suspense`/`GoogleAnalytics`，带 request nonce；不加 AdSense。
+  - `proxy.ts` 拆开分享页 / 纹章页 CSP；纹章页放行 GA/GTM/Clarity，并含 `https://c.bing.com`。分享页仍锁定。
+  - 隐私中英说明写明 `/coat-of-arms-maker` 与 `/zh/coat-of-arms-maker` 会加载 Clarity（非开发）和 GA（生产且配置了 `NEXT_PUBLIC_GA_MEASUREMENT_ID`）。
+- 合并后在 `main` 上跑过：`pnpm typecheck` 通过；`pnpm exec vitest run src/proxy.test.ts src/app/layout-route-boundaries.test.ts src/components/analytics/GoogleAnalytics.test.tsx src/components/analytics/MicrosoftClarity.test.tsx src/lib/site-page-models.test.ts src/app/sitemap.test.ts` → 6 files / 75 passed。
+- 工作树 `/Users/wusir/Desktop/开发项目集合/第三方工具` 已 `git worktree remove`。用户随后要求清掉合并后无用的工作树，把已合进 `main` 的 `/Users/wusir/Desktop/开发项目集合/hero 布局`（detached `b4242ab`）也删了。
+- 推 `main` 时，本地原先超前的 `b4242ab Redesign coat of arms hero layout` 一并上去了。
+
+### 做到一半
+
+- 生产未部署。线上纹章页此时仍不应有 GA/Clarity。GA4 / Clarity 后台还看不到这一页的新数据，除非这次 `main` 已经由用户或托管平台发布。
+- 本 `WORKLOG.md` 本条未提交。
+
+### 下一步
+
+1. 用户授权后再部署生产。
+2. 部署后用浏览器打开 `/coat-of-arms-maker` 与 `/zh/coat-of-arms-maker`，确认有 `googletagmanager.com/gtag/js?id=G-6FMX5JSNNX` 和 `clarity.ms`；分享页 `/share/...` 仍没有。再在 GA4 / Clarity 后台按页面路径核对。
+3. 不要把已删除的 `第三方工具` 分支或那两个工作树目录当还存在。
+
+### 踩过的坑
+
+- 只往 `CoatMakerDocument` 塞脚本不够：纹章页 CSP 会拦住发往 Google / Clarity 的请求。分享页和纹章页必须拆 CSP，不能一起放宽。
+- 用户先说开分支「数据统计」，后改口开工作树，命名「第三方工具」。git worktree 仍会带一条同名分支。
+- Clarity 官方 CSP 还要 `https://c.bing.com`（cookie 缺失时 `c.clarity.ms/c.gif` 会跳到 Bing）。审查后补进 `img-src` / `connect-src`。
+- 本地 `pnpm dev` 不会出数：GA 仅 production，Clarity 在 development 返回 null。
+- 分支被工作树占用时不能先 `git branch -d`，要先 `git worktree remove`。
+- 清工作树时不要误删主仓库；`hero 布局` 是另一份已合入的残留，不是 `第三方工具`。
+
+### 怎么验证
+
+```bash
+git rev-parse HEAD
+git status -sb
+git branch | rg 第三方工具 || true
+git branch -r | rg 第三方工具 || true
+git worktree list
+pnpm typecheck
+pnpm exec vitest run src/proxy.test.ts src/app/layout-route-boundaries.test.ts src/components/analytics/GoogleAnalytics.test.tsx src/components/analytics/MicrosoftClarity.test.tsx src/lib/site-page-models.test.ts src/app/sitemap.test.ts
+```
+
+部署后浏览器（优先本地 ego-browser 对生产 URL）：
+
+- https://www.tokenmaker.one/coat-of-arms-maker
+- https://www.tokenmaker.one/zh/coat-of-arms-maker
+- 对照首页 https://www.tokenmaker.one/ 已有 GA/Clarity
+- 分享页不应出现这两套脚本
+
+核对运行时 `window.gtag`、`clarity.ms` 脚本、网络请求能发到 `google-analytics.com` / `googletagmanager.com` / `clarity.ms`。仓库检查不能证明线上已更新。不要清用户 localStorage。
+
 ## 交接单 · 2026-09-12 07:49 CST · Grok CLI
 
 ### 本次目标
