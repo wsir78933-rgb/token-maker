@@ -1254,70 +1254,260 @@
   }
 }
 
-/* Title and lead precede the independently sized editor. */
+/* The Coat Maker hero precedes the independently sized editor. */
 .coat-maker-page {
   min-height: 100svh;
 }
 
 .coat-maker-page-heading {
+  position: relative;
+  isolation: isolate;
   flex: 0 0 auto;
-  border-bottom: 1px solid rgb(255 255 255 / 0.1);
-  background: #100d08;
-  color: #f5f5f4;
+  overflow-x: clip;
+  border-bottom: 1px solid var(--site-border-soft);
+  background: var(--site-panel);
+  color: var(--site-ink-strong);
+}
+
+.coat-maker-page-heading-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  box-sizing: border-box;
+  padding: clamp(3rem, 7vw, 5.5rem) 1rem 2.75rem;
 }
 
 .coat-maker-page-heading-copy {
   box-sizing: border-box;
   width: 100%;
-  max-width: 72rem;
+  max-width: 68rem;
   margin-inline: auto;
-  padding: 2.25rem 1.25rem 2.5rem;
   text-align: center;
 }
 
 .coat-maker-page-heading h1 {
   max-width: 68rem;
   margin: 0 auto;
-  color: #fafaf9;
+  color: var(--site-ink-strong);
   font-family: var(--font-display);
-  font-size: 2.25rem;
+  font-size: clamp(2.25rem, 1.65rem + 3.5vw, 4.75rem);
   font-weight: 400;
-  line-height: 1.08;
+  line-height: 1.02;
   letter-spacing: -0.03em;
   text-wrap: balance;
 }
 
-.coat-maker-page-heading p {
-  max-width: 52rem;
+.coat-maker-page-heading-title-line {
+  display: block;
+}
+
+.coat-maker-page-heading-title-emphasis {
+  color: var(--site-accent-strong);
+}
+
+.coat-maker-page-heading-description {
+  max-width: 42rem;
   margin: 1.125rem auto 0;
-  color: #d6d3d1;
+  color: var(--site-ink);
   font-size: 1rem;
-  line-height: 1.55;
+  line-height: 1.65;
   text-wrap: pretty;
 }
 
-@media (min-width: 640px) {
-  .coat-maker-page-heading-copy {
-    padding: 3rem 1.5rem 3.5rem;
+.coat-maker-page-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.coat-maker-page-heading-action {
+  display: inline-flex;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.75rem 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.coat-maker-page-heading-action:hover {
+  transform: translateY(-1px);
+}
+
+.coat-maker-page-heading-action--primary {
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 0.75rem 1.75rem -1rem var(--workspace-shadow-color);
+}
+
+.coat-maker-page-heading-action--primary:hover {
+  border-color: color-mix(in oklab, var(--primary) 86%, var(--foreground));
+  background: color-mix(in oklab, var(--primary) 86%, var(--foreground));
+}
+
+.coat-maker-page-heading-action--secondary {
+  border: 1px solid var(--site-border-strong);
+  background: color-mix(in oklab, var(--site-panel-strong) 84%, transparent);
+  color: var(--site-ink-strong);
+  box-shadow: 0 0.75rem 1.75rem -1.2rem var(--workspace-shadow-color);
+}
+
+.coat-maker-page-heading-action--secondary:hover {
+  border-color: var(--site-accent-strong);
+  background: var(--site-accent-bg);
+  color: var(--site-ink-strong);
+}
+
+.coat-maker-page-heading-action:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.coat-maker-page-heading-support {
+  max-width: 38rem;
+  margin: -0.35rem auto 0;
+  color: var(--site-ink-soft);
+  font-size: 0.75rem;
+  line-height: 1.65;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.coat-maker-page-heading-fan {
+  display: grid;
+  width: 100%;
+  max-width: 58rem;
+  min-width: 0;
+  margin-inline: auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr) minmax(0, 1fr);
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0.5rem 0.5rem 1rem;
+}
+
+.coat-maker-page-heading-card {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 0.3rem solid color-mix(in oklab, var(--site-accent-strong) 52%, var(--site-card-rim));
+  border-radius: 0.9rem;
+  background: var(--site-card-plain-top);
+  box-shadow: var(--site-card-shadow);
+}
+
+.coat-maker-page-heading-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coat-maker-page-heading-card--left {
+  z-index: 1;
+  margin-right: -12%;
+  transform: translateY(0.75rem) rotate(-4deg);
+}
+
+.coat-maker-page-heading-card--center {
+  z-index: 2;
+  transform: translateY(-0.25rem);
+}
+
+.coat-maker-page-heading-card--right {
+  z-index: 1;
+  margin-left: -12%;
+  transform: translateY(0.75rem) rotate(4deg);
+}
+
+@media (max-width: 479px) {
+  .coat-maker-page-heading-inner {
+    gap: 1.5rem;
+    padding-inline: 0.75rem;
   }
 
-  .coat-maker-page-heading h1 {
-    font-size: 2.75rem;
+  .coat-maker-page-heading-actions {
+    width: 100%;
+    flex-direction: column;
   }
 
-  .coat-maker-page-heading p {
-    font-size: 1.125rem;
-    line-height: 1.6;
+  .coat-maker-page-heading-action {
+    width: min(100%, 18rem);
+  }
+
+  .coat-maker-page-heading-fan {
+    padding-inline: 0.15rem;
+  }
+
+  .coat-maker-page-heading-card {
+    border-width: 0.22rem;
+    border-radius: 0.75rem;
+  }
+
+  .coat-maker-page-heading-card--left {
+    margin-right: -9%;
+    transform: translateY(0.55rem) rotate(-3deg);
+  }
+
+  .coat-maker-page-heading-card--center {
+    transform: translateY(-0.15rem);
+  }
+
+  .coat-maker-page-heading-card--right {
+    margin-left: -9%;
+    transform: translateY(0.55rem) rotate(3deg);
   }
 }
 
-@media (min-width: 1024px) {
-  .coat-maker-page-heading-copy {
-    padding: 4rem 2rem 4.5rem;
+@media (min-width: 640px) {
+  .coat-maker-page-heading-inner {
+    gap: 2rem;
+    padding-inline: 1.5rem;
   }
 
-  .coat-maker-page-heading h1 {
-    font-size: clamp(3rem, 2.4rem + 1.2vw, 3.5rem);
+  .coat-maker-page-heading-description {
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+
+  .coat-maker-page-heading-support {
+    font-size: 0.8125rem;
+  }
+
+  .coat-maker-page-heading-fan {
+    padding: 0.75rem 1.5rem 1.5rem;
+  }
+
+  .coat-maker-page-heading-card--left {
+    margin-right: -16%;
+    transform: translateY(1.25rem) rotate(-6deg);
+  }
+
+  .coat-maker-page-heading-card--center {
+    transform: translateY(-0.5rem);
+  }
+
+  .coat-maker-page-heading-card--right {
+    margin-left: -16%;
+    transform: translateY(1.25rem) rotate(6deg);
   }
 }
 
