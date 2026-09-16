@@ -67,6 +67,7 @@ export const MIND_FLAYER_DND_COVER_PATH = '/blog/covers/en/mind-flayer-dnd-guide
 export const DND_BEHOLDER_COVER_PATH = '/blog/covers/en/dnd-beholder-guide.webp';
 export const DND_CONDITIONS_COVER_PATH = '/blog/covers/en/dnd-conditions-guide.webp';
 export const DND_SKILLS_COVER_PATH = '/blog/covers/en/dnd-skills-guide.webp';
+export const DND_WIZARD_SPELLS_COVER_PATH = '/blog/covers/en/dnd-wizard-spells-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -249,6 +250,11 @@ export const SKILLS_NAME_TRAPS_ZH_IMAGE_PATH =
   '/blog/inline/dnd-skills/skills-name-traps-zh.webp';
 export const SKILLS_CHECK_BONUS_ZH_IMAGE_PATH =
   '/blog/inline/dnd-skills/skills-check-bonus-zh.webp';
+export const DND_WIZARD_SPELLS_CHARACTER_IMAGE_PATHS = {
+  study: '/blog/inline/dnd-wizard-spells/wizard-character-study.webp',
+  focus: '/blog/inline/dnd-wizard-spells/wizard-character-focus.webp',
+  ready: '/blog/inline/dnd-wizard-spells/wizard-character-ready.webp',
+} as const;
 
 // External URLs
 export const DND_CLERIC_2014_RULES_URL =

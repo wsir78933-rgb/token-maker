@@ -63,6 +63,7 @@ import {
   DND_BEHOLDER_COVER_PATH,
   DND_CONDITIONS_COVER_PATH,
   DND_SKILLS_COVER_PATH,
+  DND_WIZARD_SPELLS_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -193,6 +194,10 @@ import {
   dndSkillsArticleHtml,
   dndSkillsArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-skills';
+import {
+  dndWizardSpellsArticleHtml,
+  dndWizardSpellsArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-wizard-spells';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -5392,11 +5397,77 @@ const dndCampaignsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-meaning', 'players-handbook-dnd-5e', 'dnd-classes-explained'],
 };
 
+const DND_WIZARD_SPELLS_UPDATED_AT = '2026-09-16';
+const DND_WIZARD_SPELLS_ENGLISH_TITLE =
+  'DnD Wizard Spells: Prepare From the Spellbook, Not the Catalog';
+const DND_WIZARD_SPELLS_ENGLISH_DESCRIPTION =
+  'dnd wizard spells on a legal sheet are prepared names from your spellbook, not a mixed catalog. Write 2014 or 2024 first, count spellbook / prepared / slots, skip rituals when the year allows, and keep one concentration job. 2014 uses Intelligence plus Wizard level; 2024 uses the Prepared Spells column (four at level 1, six at level 3).';
+const DND_WIZARD_SPELLS_CHINESE_TITLE = 'DND 法师法术：书里有 6 个，不等于今天准备 6 个';
+const DND_WIZARD_SPELLS_CHINESE_SEO_TITLE =
+  'DND 法师法术（Wizard）：书里有 6 个，不等于今天准备 6 个';
+const DND_WIZARD_SPELLS_CHINESE_DESCRIPTION =
+  '开团前先写 2014 或 2024，再把法术书、准备法术和法术位分成三栏；按场景写出可回算的 1–3 级低环清单。';
+
+const dndWizardSpellsArticle: BlogPost = {
+  slug: 'dnd-wizard-spells',
+  title: DND_WIZARD_SPELLS_ENGLISH_TITLE,
+  seoTitle: DND_WIZARD_SPELLS_ENGLISH_TITLE,
+  metaDescription: DND_WIZARD_SPELLS_ENGLISH_DESCRIPTION,
+  excerpt: DND_WIZARD_SPELLS_ENGLISH_DESCRIPTION,
+  publishedAt: DND_WIZARD_SPELLS_UPDATED_AT,
+  updatedAt: DND_WIZARD_SPELLS_UPDATED_AT,
+  readTime: '13 min read',
+  coverLabel: 'Spell Guide',
+  coverImage: DND_WIZARD_SPELLS_COVER_PATH,
+  coverAlt:
+    'Single original adult wizard character in deep blue robes against a simple dark background with one hand raised',
+  bodyHtml: dndWizardSpellsArticleHtml,
+  faqItems: [],
+  relatedSlugs: ['dnd-cleric-spells', 'dnd-mage-armor', 'dnd-find-familiar', 'dnd-classes-explained'],
+};
+
+const dndWizardSpellsArticleZh: BlogPost = {
+  slug: 'dnd-wizard-spells',
+  title: DND_WIZARD_SPELLS_CHINESE_TITLE,
+  seoTitle: DND_WIZARD_SPELLS_CHINESE_SEO_TITLE,
+  metaDescription: DND_WIZARD_SPELLS_CHINESE_DESCRIPTION,
+  excerpt: DND_WIZARD_SPELLS_CHINESE_DESCRIPTION,
+  publishedAt: DND_WIZARD_SPELLS_UPDATED_AT,
+  updatedAt: DND_WIZARD_SPELLS_UPDATED_AT,
+  readTime: '13 分钟阅读',
+  coverLabel: '法术指南',
+  coverImage: DND_WIZARD_SPELLS_COVER_PATH,
+  coverAlt: '单一成年 DND 法师人物，深蓝法袍，深色简洁背景，抬手准备施法',
+  bodyHtml: dndWizardSpellsArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: ['dnd-classes-explained', 'dnd-find-familiar', 'dnd-mage-armor', 'dnd-counterspell'],
+};
+
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndKoboldArticle, dndSkillsArticle, dndConditionsArticle, dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
+  en: [dndKoboldArticle, dndSkillsArticle, dndConditionsArticle, dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle, dndWizardSpellsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndKoboldArticleZh, dndSkillsArticleZh, dndConditionsArticleZh, dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
+  zh: [dndKoboldArticleZh, dndSkillsArticleZh, dndConditionsArticleZh, dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh, dndWizardSpellsArticleZh].map(
     addHeadingAnchors,
   ),
 };
+
+function assertRelatedSlugsResolve(locale: SiteLocale, slug: string) {
+  const localePosts = postsByLocale[locale];
+  const post = localePosts.find((candidate) => candidate.slug === slug);
+  if (!post) {
+    throw new Error(`Unable to resolve blog post slug=${slug} in locale=${locale}.`);
+  }
+
+  const availableSlugs = new Set(localePosts.map((candidate) => candidate.slug));
+  for (const relatedSlug of post.relatedSlugs ?? []) {
+    if (!availableSlugs.has(relatedSlug)) {
+      throw new Error(
+        `Blog post slug=${slug} in locale=${locale} relatedSlugs includes unresolvable slug: ${relatedSlug}.`,
+      );
+    }
+  }
+}
+
+assertRelatedSlugsResolve('en', 'dnd-wizard-spells');
+assertRelatedSlugsResolve('zh', 'dnd-wizard-spells');
