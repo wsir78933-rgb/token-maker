@@ -23,6 +23,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 - [Blog index](https://www.tokenmaker.one/blog): English DnD, VTT token, and tabletop workflow articles.
 - [Blog index Chinese](https://www.tokenmaker.one/zh/blog): Simplified Chinese article index.
+- [Matching CR 1/8 Does Not Make One DnD Kobold](https://www.tokenmaker.one/blog/dnd-kobold): A dnd kobold is the 2014 Kobold (Small Humanoid, Lawful Evil) or the 2024 Kobold Warrior (Small Dragon, Neutral). Same CR 1/8 does not make those one creature.
 - [DnD Skills: Eighteen Names, Constitution Has No Skill](https://www.tokenmaker.one/blog/dnd-skills): Copy tonight's eighteen dnd skills from 2014 or 2024. Constitution has no skill; add d20 + the ability modifier + proficiency bonus if proficient.
 - [DnD Conditions: Same Fifteen Names, Lock 2014 or 2024](https://www.tokenmaker.one/blog/dnd-conditions): Copy tonight's fifteen dnd conditions from 2014 or 2024. Grappled is not Restrained; Stunned is not Paralyzed; Exhaustion 2 then +1 is 3.
 - [DnD Beholder: 2014 Cone Is a Trait, 2024 a Bonus Action](https://www.tokenmaker.one/blog/dnd-beholder): A dnd beholder is a CR 13 Large aberration copied from one Monster Manual year. Write 2014 or 2024 before the cone. Ten stalks stay in the token; four stalks is the spectator page.
@@ -85,6 +86,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
+- [DND 狗头人（Kobold）不能同时抄瓦罗和魔邓肯](https://www.tokenmaker.one/zh/blog/dnd-kobold): DND 狗头人（Kobold）是带鳞、小角的小龙类人。玩家卡只抄瓦罗或魔邓肯其中一页；同卡出现摇尾乞怜和龙吼就算失败。
 - [dnd 5e 技能：体操对回特技，生存对回求生，观察对回察觉](https://www.tokenmaker.one/zh/blog/dnd-skills): 今晚这张 dnd 5e 技能是绑在属性上的 18 项，不是法术表。体质没有技能，表里没有体质行。体操对回特技，生存对回求生，观察或技能名「感知」对回察觉。没熟练仍做该技能相关检定，只是不加熟练加值。专精是已经熟练的那一行加倍，0 的两倍还是 0。2014 和 2024 这 18 个英文名没有增删。
 - [dnd 5e 状态：力竭已经 2 级再 +1，升到 3 不是只执行新得到的那 1 级](https://www.tokenmaker.one/zh/blog/dnd-conditions): 今晚这张 dnd 5e 状态，中文叫状态，英文括注 Conditions。卡边写 2014《玩家手册》状态或 2024 术语表状态。附录仍是 15 个名字。受擒两边速度 0，敏捷豁免劣势只在束缚。震慑两版都没有 5 尺重击。力竭已经 2 级再获得 1 级升到 3，不是只执行新得到的那 1 级：2014 同时承受 1+2+3，2024 是 D20 检定 −6、速度 −15 尺。
 - [眼魔：挑战等级 13 锁不住年，看反魔锥是特质还是附赠动作](https://www.tokenmaker.one/zh/blog/dnd-beholder): 眼魔先锁 2014 或 2024《怪物图鉴》。两版都是挑战等级 13；分得开的是反魔锥是特质还是附赠动作。Token 要认出十根眼柄，四根是观察者眼魔。

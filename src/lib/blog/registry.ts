@@ -56,6 +56,8 @@ import {
   DND_DRUID_COVER_PATH,
   DND_DRAGONBORN_COVER_PATH,
   DND_KENKU_COVER_PATH,
+  DND_KOBOLD_COVER_PATH,
+  DND_KOBOLD_ZH_COVER_PATH,
   DND_CLERIC_SPELLS_COVER_PATH,
   MIND_FLAYER_DND_COVER_PATH,
   DND_BEHOLDER_COVER_PATH,
@@ -173,6 +175,7 @@ import {
   dndDragonbornArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-dragonborn';
 import { dndKenkuArticleHtml, dndKenkuArticleHtmlZh } from '@/lib/blog-posts/dnd-kenku';
+import { dndKoboldArticleHtml, dndKoboldArticleHtmlZh } from '@/lib/blog-posts/dnd-kobold';
 import { dndClericSpellsArticleHtml, dndClericSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-cleric-spells';
 import {
   mindFlayerDndArticleHtml,
@@ -4715,6 +4718,69 @@ const dndClericSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-bless', 'dnd-bard-spells', 'dnd-druid-spells', 'dnd-classes-explained'],
 };
 
+const DND_KOBOLD_UPDATED_AT = '2026-09-16';
+
+const dndKoboldArticle: BlogPost = {
+  slug: 'dnd-kobold',
+  title: 'Matching CR 1/8 Does Not Make One DnD Kobold',
+  seoTitle: 'Matching CR 1/8 Does Not Make One DnD Kobold',
+  metaDescription:
+    "Tonight's dnd kobold is the 2014 Kobold (Small Humanoid, Lawful Evil) or the 2024 Kobold Warrior (Small Dragon, Neutral). Copy that page only.",
+  excerpt:
+    'A dnd kobold is the 2014 Kobold (Small Humanoid, Lawful Evil) or the 2024 Kobold Warrior (Small Dragon, Neutral). Same CR 1/8 does not make those one creature.',
+  publishedAt: DND_KOBOLD_UPDATED_AT,
+  updatedAt: DND_KOBOLD_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Monster Guide',
+  coverImage: DND_KOBOLD_COVER_PATH,
+  coverAlt:
+    'Small rusty-orange reptilian kobold standing in a torchlit dungeon corridor, dog-like snout and small brow horns readable, patched leather and a spear; not a Warcraft candle-miner and not a dragonborn hero',
+  bodyHtml: dndKoboldArticleHtml,
+  faqItems: [
+    {
+      question: 'Are kobolds good or evil in D&amp;D?',
+      answer:
+        'The 2014 monster is Lawful Evil. The 2024 Kobold Warrior is Neutral. Volo&rsquo;s player errata removed the Alignment trait and set the player Ability Score Increase to +2 Dexterity only. MotM dropped a racial Alignment trait. Do not average those answers into one moral default.',
+    },
+    {
+      question: 'Can you play D&amp;D as a kobold?',
+      answer:
+        'Yes if the table allows Volo&rsquo;s Guide to Monsters (Legacy) or Mordenkainen Presents: Monsters of the Multiverse. Kobold is not one of the 2024 PHB ten. Copy that player page. Do not copy the 2014 Kobold or 2024 Kobold Warrior monster onto the character sheet.',
+    },
+    {
+      question: 'Is a 2024 kobold still a Humanoid?',
+      answer:
+        'The 2024 Warrior monster is Small Dragon. The 2014 monster is Small Humanoid (kobold). Copy a player creature type from the printed Volo&rsquo;s or MotM page. Do not invent a PC type from either monster.',
+    },
+    {
+      question: 'Do Small kobolds share a square with a second Small creature by default?',
+      answer:
+        'No. Small is one square, the same as Medium. Tiny is the size that can put four creatures in one square. Neither official monster in this lock is Tiny.',
+    },
+  ],
+  relatedSlugs: ['dnd-kenku', 'dnd-dragonborn', 'dnd-races'],
+};
+
+const dndKoboldArticleZh: BlogPost = {
+  slug: 'dnd-kobold',
+  title: 'DND 狗头人不能同时抄瓦罗和魔邓肯',
+  seoTitle: 'DND 狗头人（Kobold）不能同时抄瓦罗和魔邓肯',
+  metaDescription:
+    'DND 狗头人（Kobold）是带鳞、小角的小龙类人。写卡只锁瓦罗或魔邓肯其中一页；摇尾乞怜不要叠龙吼。',
+  excerpt:
+    'DND 狗头人（Kobold）是带鳞、小角的小龙类人。玩家卡只抄瓦罗或魔邓肯其中一页；同卡出现摇尾乞怜和龙吼就算失败。',
+  publishedAt: DND_KOBOLD_UPDATED_AT,
+  updatedAt: DND_KOBOLD_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '种族百科',
+  coverImage: DND_KOBOLD_ZH_COVER_PATH,
+  coverAlt:
+    '带鳞小角的小型龙类人站在地底石廊里，铁锈鳞片，乳白色短角，手里是短剑，不是矿镐',
+  bodyHtml: dndKoboldArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: ['dnd-kenku', 'dnd-dragonborn', 'dnd-races'],
+};
+
 const DND_KENKU_UPDATED_AT = '2026-09-12';
 
 const dndKenkuArticle: BlogPost = {
@@ -5327,10 +5393,10 @@ const dndCampaignsArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndSkillsArticle, dndConditionsArticle, dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
+  en: [dndKoboldArticle, dndSkillsArticle, dndConditionsArticle, dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndSkillsArticleZh, dndConditionsArticleZh, dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
+  zh: [dndKoboldArticleZh, dndSkillsArticleZh, dndConditionsArticleZh, dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh].map(
     addHeadingAnchors,
   ),
 };

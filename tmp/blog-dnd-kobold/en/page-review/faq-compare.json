@@ -1,0 +1,44 @@
+{
+  "h2": "FAQ about dnd kobold",
+  "itemCount": 4,
+  "items": [
+    {
+      "q": "Are kobolds good or evil in D&D?",
+      "a": "The 2014 monster is Lawful Evil. The 2024 Kobold Warrior is Neutral. Volo’s player errata removed the Alignment trait and set the player Ability Score Increase to +2 Dexterity only. MotM dropped a racial Alignment trait. Do not average those answers into one moral default.",
+      "aHtml": "\n<p>The 2014 monster is Lawful Evil. The 2024 Kobold Warrior is Neutral. Volo’s <a href=\"https://www.dndbeyond.com/sources/dnd/sae/volos-guide-to-monsters\" rel=\"noreferrer noopener\">player errata</a> removed the Alignment trait and set the player Ability Score Increase to +2 Dexterity only. MotM dropped a racial Alignment trait. Do not average those answers into one moral default.</p>\n"
+    },
+    {
+      "q": "Can you play D&D as a kobold?",
+      "a": "Yes if the table allows Volo’s Guide to Monsters (Legacy) or Mordenkainen Presents: Monsters of the Multiverse. Kobold is not one of the 2024 PHB ten. Copy that player page. Do not copy the 2014 Kobold or 2024 Kobold Warrior monster onto the character sheet.",
+      "aHtml": "\n<p>Yes if the table allows <em>Volo’s Guide to Monsters</em> (Legacy) or <em>Mordenkainen Presents: Monsters of the Multiverse</em>. Kobold is not one of the 2024 PHB ten. Copy that player page. Do not copy the 2014 Kobold or 2024 Kobold Warrior monster onto the character sheet.</p>\n"
+    },
+    {
+      "q": "Is a 2024 kobold still a Humanoid?",
+      "a": "The 2024 Warrior monster is Small Dragon. The 2014 monster is Small Humanoid (kobold). Copy a player creature type from the printed Volo’s or MotM page. Do not invent a PC type from either monster.",
+      "aHtml": "\n<p>The 2024 <strong>Warrior</strong> monster is Small <strong>Dragon</strong>. The 2014 monster is Small Humanoid (kobold). Copy a player creature type from the printed Volo’s or MotM page. Do not invent a PC type from either monster.</p>\n"
+    },
+    {
+      "q": "Do Small kobolds share a square with a second Small creature by default?",
+      "a": "No. Small is one square, the same as Medium. Tiny is the size that can put four creatures in one square. Neither official monster in this lock is Tiny.",
+      "aHtml": "\n<p>No. Small is one square, the same as Medium. Tiny is the size that can put four creatures in one square. Neither official monster in this lock is Tiny.</p>\n"
+    }
+  ],
+  "ldQuestions": [
+    {
+      "name": "Are kobolds good or evil in D&amp;D?",
+      "text": "The 2014 monster is Lawful Evil. The 2024 Kobold Warrior is Neutral. Volo&rsquo;s <a href=\"https://www.dndbeyond.com/sources/dnd/sae/volos-guide-to-monsters\" rel=\"noreferrer noopener\">player errata</a> removed the Alignment trait and set the player Ability Score Increase to +2 Dexterity only. MotM dropped a racial Alignment trait. Do not average those answers into one moral default."
+    },
+    {
+      "name": "Can you play D&amp;D as a kobold?",
+      "text": "Yes if the table allows <em>Volo&rsquo;s Guide to Monsters</em> (Legacy) or <em>Mordenkainen Presents: Monsters of the Multiverse</em>. Kobold is not one of the 2024 PHB ten. Copy that player page. Do not copy the 2014 Kobold or 2024 Kobold Warrior monster onto the character sheet."
+    },
+    {
+      "name": "Is a 2024 kobold still a Humanoid?",
+      "text": "The 2024 <strong>Warrior</strong> monster is Small <strong>Dragon</strong>. The 2014 monster is Small Humanoid (kobold). Copy a player creature type from the printed Volo&rsquo;s or MotM page. Do not invent a PC type from either monster."
+    },
+    {
+      "name": "Do Small kobolds share a square with a second Small creature by default?",
+      "text": "No. Small is one square, the same as Medium. Tiny is the size that can put four creatures in one square. Neither official monster in this lock is Tiny."
+    }
+  ]
+}

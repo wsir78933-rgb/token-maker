@@ -60,6 +60,8 @@ export const DND_BACKGROUNDS_COVER_PATH = '/blog/covers/en/dnd-backgrounds-guide
 export const DND_DRUID_COVER_PATH = '/blog/covers/en/dnd-druid-guide.webp';
 export const DND_DRAGONBORN_COVER_PATH = '/blog/covers/en/dnd-dragonborn-guide.webp';
 export const DND_KENKU_COVER_PATH = '/blog/covers/en/dnd-kenku-guide.webp';
+export const DND_KOBOLD_COVER_PATH = '/blog/covers/en/dnd-kobold-guide.webp';
+export const DND_KOBOLD_ZH_COVER_PATH = '/blog/covers/en/dnd-kobold-zh-guide.webp';
 export const DND_CLERIC_SPELLS_COVER_PATH = '/blog/covers/en/dnd-cleric-spells-guide.webp';
 export const MIND_FLAYER_DND_COVER_PATH = '/blog/covers/en/mind-flayer-dnd-guide.webp';
 export const DND_BEHOLDER_COVER_PATH = '/blog/covers/en/dnd-beholder-guide.webp';
@@ -180,6 +182,13 @@ export const DND_KENKU_SPEECH_LOCK_ZH_IMAGE_PATH = '/blog/inline/dnd-kenku/kenku
 export const DND_KENKU_NAME_COLLISION_ZH_IMAGE_PATH =
   '/blog/inline/dnd-kenku/kenku-name-collision-zh.webp';
 export const DND_KENKU_TOKEN_BEAK_ZH_IMAGE_PATH = '/blog/inline/dnd-kenku/kenku-token-beak-zh.webp';
+export const DND_KOBOLD_LOCK_IMAGE_PATH = '/blog/inline/dnd-kobold/kobold-lock-2014-2024.webp';
+export const DND_KOBOLD_PACK_GRID_IMAGE_PATH =
+  '/blog/inline/dnd-kobold/kobold-pack-tactics-grid.webp';
+export const DND_KOBOLD_TOKEN_CROP_IMAGE_PATH = '/blog/inline/dnd-kobold/kobold-snout-crop.webp';
+export const DND_KOBOLD_IDENTIFY_ZH_IMAGE_PATH = '/blog/inline/dnd-kobold/kobold-identify-zh.webp';
+export const DND_KOBOLD_LOCK_ZH_IMAGE_PATH = '/blog/inline/dnd-kobold/kobold-lock-zh.webp';
+export const DND_KOBOLD_AXES_ZH_IMAGE_PATH = '/blog/inline/dnd-kobold/kobold-axes-zh.webp';
 export const DND_CLERIC_SPELLS_JOB_IMAGE_PATH =
   '/blog/inline/dnd-cleric-spells/cleric-spell-jobs.webp';
 export const DND_CLERIC_SPELLS_CONCENTRATION_IMAGE_PATH =
@@ -626,6 +635,8 @@ export const EN_DND_DRAGONBORN_PATH = getLocalizedPath('en', '/blog/dnd-dragonbo
 export const ZH_DND_DRAGONBORN_PATH = getLocalizedPath('zh', '/blog/dnd-dragonborn');
 export const EN_DND_KENKU_PATH = getLocalizedPath('en', '/blog/dnd-kenku');
 export const ZH_DND_KENKU_PATH = getLocalizedPath('zh', '/blog/dnd-kenku');
+export const EN_DND_KOBOLD_PATH = getLocalizedPath('en', '/blog/dnd-kobold');
+export const ZH_DND_KOBOLD_PATH = getLocalizedPath('zh', '/blog/dnd-kobold');
 export const EN_DND_CLERIC_SPELLS_PATH = getLocalizedPath('en', '/blog/dnd-cleric-spells');
 export const ZH_DND_CLERIC_SPELLS_PATH = getLocalizedPath('zh', '/blog/dnd-cleric-spells');
 export const EN_MIND_FLAYER_DND_PATH = getLocalizedPath('en', '/blog/mind-flayer-dnd');

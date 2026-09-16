@@ -53,7 +53,9 @@ const MIND_FLAYER_DND_SLUG = 'mind-flayer-dnd';
 const DND_BEHOLDER_SLUG = 'dnd-beholder';
 const DND_CONDITIONS_SLUG = 'dnd-conditions';
 const DND_SKILLS_SLUG = 'dnd-skills';
+const DND_KOBOLD_SLUG = 'dnd-kobold';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_KOBOLD_SLUG,
   DND_SKILLS_SLUG,
   DND_CONDITIONS_SLUG,
   DND_BEHOLDER_SLUG,
@@ -63,9 +65,8 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DND_DRAGONBORN_SLUG,
   DND_DRUID_SLUG,
   DND_BACKGROUNDS_SLUG,
-  DND_CLASSES_COMPARISON_SLUG,
 ];
-const SECOND_BLOG_PAGE_START_SLUGS = [DND_CHARACTER_SHEET_SLUG, DND_FIGHTER_SLUG];
+const SECOND_BLOG_PAGE_START_SLUGS = [DND_CLASSES_COMPARISON_SLUG, DND_CHARACTER_SHEET_SLUG];
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {

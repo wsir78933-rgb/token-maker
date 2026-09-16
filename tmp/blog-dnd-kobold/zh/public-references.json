@@ -1,0 +1,269 @@
+{
+  "locale": "zh-CN",
+  "role": "C-ZH",
+  "body_file": "tmp/blog-dnd-kobold/zh/draft-body.html",
+  "draftBodySha256": "d78f0ba3312a9686b27566ce7c835913c1d6963eb555731f292b9d36c6e2c3bf",
+  "note": "定位随当前草稿。非正式锁定；F 锁稿时须对锁定正文重算 hash 并核验 quote。C 不签发通过。",
+  "references": [
+    {
+      "id": "R01",
+      "label": "灰机wiki：狗头人 Kobold（魔邓肯）",
+      "url": "https://dnd.huijiwiki.com/wiki/%E7%8B%97%E5%A4%B4%E4%BA%BA",
+      "versionNote": "社区译文，不是威世智简体官方纸书。",
+      "appliesTo": [
+        {
+          "quote": "多元宇宙中最小的龙类生物，鳞片通常铁锈色",
+          "occurrence": 1
+        },
+        {
+          "quote": "灰机魔邓肯页可见：类人、小型、速度 30 尺、黑暗视觉 60 尺。",
+          "occurrence": 1
+        },
+        {
+          "quote": "灰机写成狡猾 / 反抗 / 龙族术法",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R02",
+      "label": "灰机wiki：种族 / 瓦罗怪物指南 / 狗头人",
+      "url": "https://dnd.huijiwiki.com/wiki/%E7%A7%8D%E6%97%8F/%E7%93%A6%E7%BD%97%E6%80%AA%E7%89%A9%E6%8C%87%E5%8D%97/%E7%8B%97%E5%A4%B4%E4%BA%BA",
+      "versionNote": "社区译文；特质名摇尾乞怜、集群战术、日照敏感。",
+      "appliesTo": [
+        {
+          "quote": "看见龙吼或狗头人遗产，说明你把魔邓肯叠进来了。",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "label": "D&D 5E 中文化：VGM 狗頭人",
+      "url": "https://trpgtdnd.weebly.com/vgm-293993895720154.html",
+      "versionNote": "繁体社区转录，仍印敏捷 +2 / 力量 -2。",
+      "appliesTo": [
+        {
+          "quote": "和灰机瓦罗页仍常见敏捷 +2、力量 -2。这是印本和中文转录还在用的写法。",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R04",
+      "label": "泉媽團：狗頭人 Kobold",
+      "url": "https://sites.google.com/view/izumi-dnd-5e/%E5%89%B5%E5%BB%BA%E8%A7%92%E8%89%B2/%E7%A8%AE%E6%97%8F/%E6%80%AA%E7%89%A9%E7%A8%AE%E6%97%8F/%E7%8B%97%E9%A0%AD%E4%BA%BA",
+      "versionNote": "繁体瓦罗怪物種族页；神名库尔图马克；仍印力量 -2。",
+      "appliesTo": [
+        {
+          "quote": "和灰机瓦罗页仍常见敏捷 +2、力量 -2。这是印本和中文转录还在用的写法。",
+          "occurrence": 1
+        },
+        {
+          "quote": "都指向 Kurtulmak。不要并成第三个神",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R05",
+      "label": "百度百科：狗头人",
+      "url": "https://baike.baidu.com/item/%E7%8B%97%E5%A4%B4%E4%BA%BA/12810154",
+      "versionNote": "旧设定介绍，不是 5e 玩家页。",
+      "appliesTo": [
+        {
+          "quote": "写鳞片、乳白色小角、地底",
+          "occurrence": 1
+        },
+        {
+          "quote": "百科上的守序邪恶、克图玛、陷阱风味是旧设定介绍，不是 5e 玩家特质，也不是 2024 武者页。",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R06",
+      "label": "维基百科：狗头人 (龙与地下城)",
+      "url": "https://zh.wikipedia.org/zh-cn/%E7%8B%97%E9%A0%AD%E4%BA%BA_(%E9%BE%8D%E8%88%87%E5%9C%B0%E4%B8%8B%E5%9F%8E)",
+      "versionNote": "别称寇伯仅维基一句；形象变迁段自陈缺来源。",
+      "appliesTo": [
+        {
+          "quote": "维基第一句还写「又称寇伯」，那是维基别称，灰机、百科和泉媽團都不用，卡面也不要改。",
+          "occurrence": 1
+        },
+        {
+          "quote": "人头改为狗头，渐渐演变成鳄鱼头。条目自己标明缺来源。",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R07",
+      "label": "D&D Beyond：Exploring the New Goblin, Hobgoblin, and Kobold Races",
+      "url": "https://www.dndbeyond.com/posts/1248-exploring-the-new-goblin-hobgoblin-and-kobold",
+      "versionNote": "官方介绍文转述上限；未打开 MotM 付费种族页原文。",
+      "appliesTo": [
+        {
+          "quote": "奖励动作；你与盟友获得攻击优势；次数等于熟练加值，长休恢复；不要求盟友站在目标 5 尺内",
+          "occurrence": 1
+        },
+        {
+          "quote": "浮动 +2/+1 或三个 +1",
+          "occurrence": 1
+        },
+        {
+          "quote": "介绍文新特质清单未列入",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R08",
+      "label": "D&D Beyond：Volo’s Guide to Monsters Sage Advice & Errata",
+      "url": "https://www.dndbeyond.com/sources/dnd/sae/volos-guide-to-monsters",
+      "versionNote": "官方勘误：只有敏捷 +2；删除 Alignment 特质。",
+      "appliesTo": [
+        {
+          "quote": "把属性改为只有敏捷 +2，并删除 Alignment 特质",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R09",
+      "label": "D&D Beyond：The 10 Species in the 2024 Player’s Handbook",
+      "url": "https://www.dndbeyond.com/posts/1783-the-10-species-in-the-2024-players-handbook",
+      "versionNote": "核心十 Species 无狗头人；旧物种仍可用；加值改由背景提供。",
+      "appliesTo": [
+        {
+          "quote": "2024《玩家手册》核心十个 Species 是：Aasimar、Dragonborn、Dwarf、Elf、Gnome、Goliath、Halfling、Human、Orc、Tiefling。",
+          "occurrence": 1
+        },
+        {
+          "quote": "旧书物种仍可用；2024 属性加值改由背景提供",
+          "occurrence": 1
+        },
+        {
+          "quote": "不要把旧种族的敏捷 +2 叠进背景加值",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R10",
+      "label": "SRD 5.1（CC-BY）Kobold",
+      "url": "https://media.dndbeyond.com/compendium-images/srd/5.1/SRD_CC_v5.1.pdf",
+      "versionNote": "CC-BY；复述要点，未整块粘贴统计块。",
+      "appliesTo": [
+        {
+          "quote": "Small Humanoid (kobold)",
+          "occurrence": 1
+        },
+        {
+          "quote": "2014 有匕首和投石索",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R11",
+      "label": "SRD 5.2.1（CC-BY）Kobold Warrior",
+      "url": "https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf",
+      "versionNote": "CC-BY；社区条目名狗头人武者，不是已核验威世智简体纸书译名。",
+      "appliesTo": [
+        {
+          "quote": "能力检定 + 攻击都劣势，范围更宽",
+          "occurrence": 1
+        },
+        {
+          "quote": "2024 武者是三把匕首、无投石索。护甲等级和生命值从 12 与 5 变为 14 与 7。",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R12",
+      "label": "D&D Beyond：2014 Kobold",
+      "url": "https://www.dndbeyond.com/monsters/16939-kobold",
+      "versionNote": "与 SRD 5.1 对照的 2014 怪物页。",
+      "appliesTo": [
+        {
+          "quote": "2014 / SRD 5.1 Kobold",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R13",
+      "label": "D&D Beyond：Kobold Warrior",
+      "url": "https://www.dndbeyond.com/monsters/5195096-kobold-warrior",
+      "versionNote": "2024 官方怪物页无 Frightened 免疫。",
+      "appliesTo": [
+        {
+          "quote": "完整骰子公式不必抄进玩家卡。第三方 wiki 给 2024 武者写 Frightened 免疫：官方怪物页没有这一行，不要采用。",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R14",
+      "label": "Reddit 机翻：大家对5e的狗头人有什么看法？",
+      "url": "https://www.reddit.com/r/DnD/comments/n60scu/how_do_people_feel_about_the_5e_kobolds/?tl=zh-hans",
+      "versionNote": "中文检索可见瓦罗手感讨论；机翻不当规则。",
+      "appliesTo": [
+        {
+          "quote": "该机翻还把后来的遗产说成哥布林特质，禁止沿用。",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R15",
+      "label": "Wizards of the Coast Fan Content Policy",
+      "url": "https://company.wizards.com/en/legal/fancontentpolicy",
+      "versionNote": "同人页须标明 unofficial；不用官方商标冒充官方。",
+      "appliesTo": [
+        {
+          "quote": "本页是 unofficial 同人介绍，不是威世智官方页面",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R16",
+      "label": "本站：DND 种族怎么选",
+      "url": "https://www.tokenmaker.one/zh/blog/dnd-races",
+      "versionNote": "正文内链为 ${ZH_DND_RACES_PATH}；装配后应指向本 URL。",
+      "appliesTo": [
+        {
+          "quote": "十个名字见",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R17",
+      "label": "本站：DND 龙裔",
+      "url": "https://www.tokenmaker.one/zh/blog/dnd-dragonborn",
+      "versionNote": "正文内链为 ${ZH_DND_DRAGONBORN_PATH}。",
+      "appliesTo": [
+        {
+          "quote": "龙裔是玩家手册里的龙血两足，块头更大、角更龙。",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "R18",
+      "label": "本站：DND 天狗 Kenku",
+      "url": "https://www.tokenmaker.one/zh/blog/dnd-kenku",
+      "versionNote": "正文内链为 ${ZH_DND_KENKU_PATH}。只借锁页节奏，不抄天狗内容。",
+      "appliesTo": [
+        {
+          "quote": "天狗文</a>也是先问瓦罗还是魔邓肯。",
+          "occurrence": 1
+        }
+      ]
+    }
+  ]
+}

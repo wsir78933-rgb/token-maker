@@ -1,0 +1,178 @@
+[
+  {
+    "id": "REF-DDB-2014",
+    "label": "Kobold monster (D&D Beyond, Legacy / 2014)",
+    "url": "https://www.dndbeyond.com/monsters/16939-kobold",
+    "appliesTo": "2014 type, alignment, CR, AC, HP, traits",
+    "quote": "Legacy Kobold: Small Humanoid (kobold), Lawful Evil, AC 12, HP 5, CR 1/8; Basic Rules (2014) p. 142.",
+    "occurrence": "Opening check-pages paragraph; need-to-know table; H2 Lock / H3 2014; comparison table; Sources"
+  },
+  {
+    "id": "REF-SRD51-KOB",
+    "label": "SRD 5.1 Kobold (CC-BY PDF)",
+    "url": "https://media.dndbeyond.com/compendium-images/srd/5.1/SRD_CC_v5.1.pdf",
+    "appliesTo": "2014 block paraphrase; size table p.92",
+    "quote": "SRD 5.1 p. 324 Kobold; p. 92 Small = 5 by 5 feet / 1 square. CC-BY-4.0, Wizards of the Coast LLC.",
+    "occurrence": "Opening check-pages paragraph; H2 Lock / H3 2014; H3 Small still takes one square; Sources"
+  },
+  {
+    "id": "REF-DDB-2024",
+    "label": "Kobold Warrior (D&D Beyond)",
+    "url": "https://www.dndbeyond.com/monsters/5195096-kobold-warrior",
+    "appliesTo": "2024 type Dragon, Neutral, AC 14, HP 7, daggers, no Frightened immunity",
+    "quote": "Kobold Warrior: Small Dragon, Neutral, AC 14, HP 7, three daggers, no sling; Monster Manual p. 185 on that entry; no Frightened immunity row.",
+    "occurrence": "Opening check-pages paragraph; need-to-know table; H2 Lock / H3 2024; comparison table; mix-ups; Sources"
+  },
+  {
+    "id": "REF-SRD521-WAR",
+    "label": "SRD 5.2.1 Kobold Warrior (CC-BY PDF)",
+    "url": "https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf",
+    "appliesTo": "2024 block paraphrase; Creature Size and Space",
+    "quote": "SRD 5.2.1 Kobold Warrior (~p. 302): Small Dragon, Neutral, widened sunlight, Pack Tactics, Daggers (3). CC-BY-4.0, Wizards of the Coast LLC.",
+    "occurrence": "Opening check-pages paragraph; H2 Lock / H3 2024; H3 Small still takes one square; Sources"
+  },
+  {
+    "id": "REF-SRD-HUB",
+    "label": "D&D Beyond SRD hub",
+    "url": "https://www.dndbeyond.com/srd",
+    "appliesTo": "license, SRD 5.2 FAQ (Tiamat not in SRD 5.2), no ZH SRD",
+    "quote": "SRD 5.1 / 5.2.1 license path; SRD 5.2 FAQ keeps names such as Tiamat out of SRD 5.2.",
+    "occurrence": "Sources (license and SRD 5.2 FAQ exclusion)"
+  },
+  {
+    "id": "REF-BR2014-K",
+    "label": "Basic Rules (2014) Monster Stat Blocks (K)",
+    "url": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/monster-stat-blocks-k",
+    "appliesTo": "existence of trap-making flavor sentence",
+    "quote": "2014 flavor after the Kobold block: timid reptilian dungeon dwellers who offset weak bodies with trap-making cleverness. Not SRD; paraphrase only.",
+    "occurrence": "H2 What a 5e kobold is on the table; Pack Tactics traps sentence; Sources"
+  },
+  {
+    "id": "REF-ROLL20-2014",
+    "label": "Roll20 5e Compendium Kobold",
+    "url": "https://roll20.net/compendium/dnd5e/Kobold#content",
+    "appliesTo": "2014 reprint cross-check",
+    "quote": "Free Basic Rules (2014) reprint of the Kobold monster; not a second creature.",
+    "occurrence": "H2 Lock / H3 2014; Sources"
+  },
+  {
+    "id": "REF-DDB-MOTM-POST",
+    "label": "Exploring Goblin, Hobgoblin, and Kobold in MotM",
+    "url": "https://www.dndbeyond.com/posts/1248-exploring-the-new-goblin-hobgoblin-and-kobold",
+    "appliesTo": "Volo vs MotM player fence: Pack Tactics vs Draconic Cry",
+    "quote": "Volo's player: Pack Tactics, Sunlight Sensitivity, Grovel, Cower, and Beg. MotM: Draconic Cry replaces Pack Tactics; Kobold Legacy replaces Grovel.",
+    "occurrence": "H2 A playable kobold is a different book; mix-ups; session check; FAQ; Sources"
+  },
+  {
+    "id": "REF-DDB-10SP",
+    "label": "The 10 Species in the 2024 Player's Handbook",
+    "url": "https://www.dndbeyond.com/posts/1783-the-10-species-in-the-2024-players-handbook",
+    "appliesTo": "kobold not in core ten; older species still usable; ASI on background",
+    "quote": "Core ten: Aasimar, Dragonborn, Dwarf, Elf, Gnome, Goliath, Halfling, Human, Orc, Tiefling. Older species still usable; 2024 ASI on background.",
+    "occurrence": "Need-to-know Playable row; H2 A playable kobold is a different book; FAQ; Sources"
+  },
+  {
+    "id": "REF-VOLO-ERRATA",
+    "label": "Volo’s Guide Sage Advice & Errata",
+    "url": "https://www.dndbeyond.com/sources/dnd/sae/volos-guide-to-monsters",
+    "appliesTo": "Volo PC: +2 Dex only; Alignment trait removed",
+    "quote": "Kobold Traits ~p. 119: Ability Score Increase is +2 Dexterity only; Alignment trait removed.",
+    "occurrence": "FAQ alignment; Sources"
+  },
+  {
+    "id": "REF-DDB-LEGACY",
+    "label": "Legacy Content — D&D Beyond",
+    "url": "https://www.dndbeyond.com/legacy",
+    "appliesTo": "what “Legacy” means",
+    "quote": "Defines the Legacy badge used on Volo's kobold player content.",
+    "occurrence": "H2 A playable kobold is a different book; Sources"
+  },
+  {
+    "id": "REF-DDB-SPECIES-SEARCH",
+    "label": "D&D Beyond species search kobold",
+    "url": "https://www.dndbeyond.com/species?filter-search=kobold",
+    "appliesTo": "MotM card + Volo Legacy card; no 2024 PHB species card in that list",
+    "quote": "Listing shows MotM and Volo's Legacy kobold cards; no 2024 PHB species card in that list.",
+    "occurrence": "H2 A playable kobold is a different book; Sources"
+  },
+  {
+    "id": "REF-SIZE-2024",
+    "label": "Playing the Game — Creature Size (2024 free rules)",
+    "url": "https://www.dndbeyond.com/sources/dnd/br-2024/playing-the-game",
+    "appliesTo": "Small 5×5 ft / 1 square",
+    "quote": "Small controls a 5-by-5-foot space / 1 square, same occupancy as Medium.",
+    "occurrence": "Need-to-know Space row; H3 Small still takes one square; FAQ sharing a square; Sources"
+  },
+  {
+    "id": "REF-WINGED-2024",
+    "label": "Winged Kobold (Roll20, MM 2024)",
+    "url": "https://roll20.net/compendium/dnd5e/Monsters:Winged%20Kobold?expansion=34653",
+    "appliesTo": "separate 2024 card, CR 1/4, Fly 30 ft",
+    "quote": "Separate 2024 Monster Manual card: CR 1/4, Fly 30 feet. Not the SRD 5.2.1 Kobold Warrior. Unique ecology names are not treated as SRD.",
+    "occurrence": "Mix-ups flyer bullet; Sources"
+  },
+  {
+    "id": "REF-CREATOR-FAQ",
+    "label": "Creator FAQ",
+    "url": "https://www.dndbeyond.com/creator-faq",
+    "appliesTo": "Basic Rules ≠ SRD; cite non-SRD books by title+page",
+    "quote": "D&D Beyond Basic Rules is not the SRD publishing license. Cite non-SRD books by title and page.",
+    "occurrence": "H2 identity (Basic Rules flavor not SRD); Sources"
+  },
+  {
+    "id": "REF-FAN",
+    "label": "Fan Content Policy",
+    "url": "https://company.wizards.com/en/legal/fancontentpolicy",
+    "appliesTo": "unofficial, free, no logos, no verbatim book dump",
+    "quote": "Unofficial Fan Content; no D&D logos; no verbatim book dump. Last updated 2017-11-15.",
+    "occurrence": "Opening Fan Content paragraph; Sources"
+  },
+  {
+    "id": "REF-FOUNDRY-TOKENS",
+    "label": "Foundry Tokens",
+    "url": "https://foundryvtt.com/article/tokens",
+    "appliesTo": "Dimensions = occupancy; Scale is art only",
+    "quote": "Token Dimensions are occupancy in grid units. Scale resizes art only.",
+    "occurrence": "H3 Small still takes one square; Sources"
+  },
+  {
+    "id": "REF-FOUNDRY-RINGS",
+    "label": "Foundry Dynamic Token Rings",
+    "url": "https://foundryvtt.com/article/dynamic-token-rings",
+    "appliesTo": "512 px subject suggestion",
+    "quote": "512-pixel subject is a software suggestion for a single square, not Tiny occupancy and not a D&D export law.",
+    "occurrence": "H3 What must stay in the circle; Sources"
+  },
+  {
+    "id": "REF-ROLL20-TOKEN",
+    "label": "Roll20 Token Features",
+    "url": "https://help.roll20.net/hc/en-us/articles/360039674573-Token-Features",
+    "appliesTo": "drop-on-grid fits one unit",
+    "quote": "A token dropped on a grid is fitted to one unit. One unit = 70 px is Roll20 software, not D&D law.",
+    "occurrence": "H3 Small still takes one square; Sources"
+  },
+  {
+    "id": "REF-TM-HOME",
+    "label": "Token Maker home",
+    "url": "https://www.tokenmaker.one/",
+    "appliesTo": "optional crop after lock",
+    "quote": "Optional PNG crop after the source line exists. No kobold-specific template.",
+    "occurrence": "H2 Crop a token that still reads as a small reptile; Sources"
+  },
+  {
+    "id": "REF-TM-FAQ",
+    "label": "Token Maker FAQ",
+    "url": "https://www.tokenmaker.one/faq",
+    "appliesTo": "transparent PNG; designed for image-token VTTs; local-first edit",
+    "quote": "Exports transparent PNG. Designed for Roll20, Foundry VTT, Owlbear, and similar image-token tabletops. Ordinary editing is local-first. Not a VTT plugin.",
+    "occurrence": "H2 Crop product paragraph; Sources"
+  },
+  {
+    "id": "REF-TM-EDITOR",
+    "label": "Token Maker editor",
+    "url": "https://www.tokenmaker.one/#editor-workspace",
+    "appliesTo": "optional PNG step",
+    "quote": "Upload JPG/PNG/WEBP ≤10 MB; circular mask; Download PNG at 256/512/1024/2048. Presets Warrior/Mage/Rogue/Cleric/Ranger/Undead/Monster/Other. No kobold template.",
+    "occurrence": "H2 Crop product paragraph and no-template sentence; Sources"
+  }
+]

@@ -1,0 +1,242 @@
+{
+  "topicId": "dnd-kobold",
+  "role": "A-TOPIC",
+  "verifiedDate": "2026-09-16",
+  "method": "必须打开页面或 PDF 正文；搜索摘要只作发现，不作唯一证据。",
+  "sources": [
+    {
+      "url": "https://www.dndbeyond.com/monsters/16939-kobold",
+      "title": "Kobold — Monsters — D&D Beyond",
+      "publisher": "Wizards of the Coast / D&D Beyond",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["2014 monster stat block", "Pack Tactics", "Sunlight Sensitivity", "trap flavor sentence"]
+    },
+    {
+      "url": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/monster-stat-blocks-k",
+      "title": "Basic Rules (2014) Monster Stat Blocks (K)",
+      "publisher": "Wizards of the Coast / D&D Beyond",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["2014 Basic Rules kobold block", "trap-making flavor"]
+    },
+    {
+      "url": "https://www.dndbeyond.com/srd",
+      "title": "System Reference Document v5.2.1 / v5.1 hub",
+      "publisher": "Wizards of the Coast / D&D Beyond",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["SRD license", "5.1 vs 5.2 FAQ", "no Chinese localization", "Tiamat excluded from SRD 5.2", "download URLs"]
+    },
+    {
+      "url": "https://media.dndbeyond.com/compendium-images/srd/5.1/SRD_CC_v5.1.pdf",
+      "title": "SRD 5.1 CC-BY PDF",
+      "publisher": "Wizards of the Coast LLC",
+      "opened": true,
+      "tool": "curl + pypdf extract",
+      "usedFor": ["Kobold p.324", "Size Categories p.92"],
+      "pagesCited": [92, 324]
+    },
+    {
+      "url": "https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf",
+      "title": "SRD 5.2.1 CC-BY PDF",
+      "publisher": "Wizards of the Coast LLC",
+      "opened": true,
+      "tool": "curl + pypdf extract",
+      "usedFor": ["Kobold Warrior ~p.302", "Creature Size and Space table"],
+      "pagesCited": [14, 302]
+    },
+    {
+      "url": "https://www.dndbeyond.com/monsters/5195096-kobold-warrior",
+      "title": "Kobold Warrior — D&D Beyond",
+      "publisher": "Wizards of the Coast / D&D Beyond",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["2024 monster identity", "no Frightened immunity on official page"]
+    },
+    {
+      "url": "https://www.dndbeyond.com/posts/1248-exploring-the-new-goblin-hobgoblin-and-kobold",
+      "title": "Exploring the New Goblin, Hobgoblin, and Kobold Races in Monsters of the Multiverse",
+      "publisher": "D&D Beyond (Mike Bernier)",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["Volo vs MotM playable traits", "Draconic Cry", "Kobold Legacy", "floating ASI"]
+    },
+    {
+      "url": "https://www.dndbeyond.com/posts/1783-the-10-species-in-the-2024-players-handbook",
+      "title": "The 10 Species in the 2024 Player's Handbook",
+      "publisher": "D&D Beyond (Riley Silverman)",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["2024 PHB 10 species list", "older species still usable", "ASI moved to background"]
+    },
+    {
+      "url": "https://www.dndbeyond.com/sources/dnd/sae/volos-guide-to-monsters",
+      "title": "Volo’s Guide to Monsters Sage Advice & Errata",
+      "publisher": "Wizards of the Coast / D&D Beyond",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["Volo kobold ASI errata", "alignment removed", "roleplaying a kobold section removed"]
+    },
+    {
+      "url": "https://www.dndbeyond.com/legacy",
+      "title": "Legacy Content — D&D Beyond",
+      "publisher": "D&D Beyond",
+      "opened": true,
+      "tool": "open_page",
+      "usedFor": ["definition of Legacy content"]
+    },
+    {
+      "url": "https://www.dndbeyond.com/creator-faq",
+      "title": "Creator FAQ",
+      "publisher": "D&D Beyond / Wizards of the Coast",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["Basic Rules ≠ SRD for publishing", "citation format for non-SRD books"]
+    },
+    {
+      "url": "https://company.wizards.com/en/legal/fancontentpolicy",
+      "title": "Wizards of the Coast Fan Content Policy",
+      "publisher": "Wizards of the Coast",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["fan blog rules", "no verbatim book dump", "no logos", "free access"]
+    },
+    {
+      "url": "https://www.dndbeyond.com/sources/dnd/br-2024/playing-the-game",
+      "title": "Playing the Game — D&D Beyond Free Rules 2024",
+      "publisher": "Wizards of the Coast / D&D Beyond",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["Creature Size and Space table 2024"]
+    },
+    {
+      "url": "https://roll20.net/compendium/dnd5e/Monsters:Winged%20Kobold?expansion=34653",
+      "title": "Winged Kobold | D&D 2024 | Roll20 Compendium",
+      "publisher": "Wizards of the Coast content on Roll20",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["2024 winged kobold stats and MM lore including urd/Tiamat"]
+    },
+    {
+      "url": "https://www.5esrd.com/database/creature/kobold/",
+      "title": "Kobold — 5th Edition SRD (Open Gaming Network)",
+      "publisher": "Open Gaming Network (third-party SRD republication)",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["cross-check SRD 5.1 stat block only; page also contains third-party trap content NOT used as WotC fact"]
+    },
+    {
+      "url": "https://foundryvtt.com/article/tokens",
+      "title": "Tokens | Foundry Virtual Tabletop",
+      "publisher": "Foundry Gaming LLC",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["token dimensions in grid units", "scale vs occupancy"]
+    },
+    {
+      "url": "https://foundryvtt.com/article/dynamic-token-rings",
+      "title": "Dynamic Token Rings | Foundry Virtual Tabletop",
+      "publisher": "Foundry Gaming LLC",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["512px subject recommendation", "Small/Medium 0.8 table"]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/foundryvtt/dnd5e/master/module/config.mjs",
+      "title": "dnd5e system config.mjs actorSizes",
+      "publisher": "Foundry VTT dnd5e system",
+      "opened": true,
+      "tool": "web_fetch",
+      "usedFor": ["Small dynamicTokenScale 0.8", "size-to-token mapping"]
+    },
+    {
+      "url": "https://help.roll20.net/hc/en-us/articles/360039674573-Token-Features",
+      "title": "Token Features — Roll20 Help Center",
+      "publisher": "Roll20",
+      "opened": true,
+      "tool": "open_page",
+      "usedFor": ["creating/resizing tokens", "grid snap"]
+    },
+    {
+      "url": "https://help.roll20.net/hc/articles/360037256634-Best-Practices-for-Files-on-Roll20",
+      "title": "Best Practices for Files on Roll20",
+      "publisher": "Roll20",
+      "opened": true,
+      "tool": "open_page",
+      "usedFor": ["token image padding", "dropped image fits one grid unit"]
+    },
+    {
+      "url": "https://help.roll20.net/hc/en-us/articles/360037256774-API-Utility-Functions",
+      "title": "API: Utility Functions — Roll20 Help Center",
+      "publisher": "Roll20",
+      "opened": true,
+      "tool": "open_page",
+      "usedFor": ["1 unit = 70px default 5ft square"]
+    },
+    {
+      "url": "https://dndbeyond-support.wizards.com/hc/en-us/articles/46385049945492-Adding-Tokens",
+      "title": "Adding Tokens — D&D Beyond Maps",
+      "publisher": "Wizards of the Coast / D&D Beyond Support",
+      "opened": true,
+      "tool": "open_page",
+      "usedFor": ["auto token size", "Large ogre 2x2"]
+    },
+    {
+      "url": "https://dndbeyond-support.wizards.com/hc/en-us/articles/46363324655508-Uploading-and-Scaling-a-Map",
+      "title": "Uploading and Scaling a Map — D&D Beyond Maps",
+      "publisher": "Wizards of the Coast / D&D Beyond Support",
+      "opened": true,
+      "tool": "open_page",
+      "usedFor": ["Medium token as scale reference"]
+    },
+    {
+      "url": "https://dnd.huijiwiki.com/wiki/%E6%80%AA%E7%89%A9%E5%9B%BE%E9%89%B4%EF%BC%882025%EF%BC%89",
+      "title": "怪物图鉴（2025）— 灰机wiki",
+      "publisher": "粉丝中文资料站（非威世智）",
+      "opened": false,
+      "tool": "web_fetch returned 请稍候; used web_search extract of TOC",
+      "usedFor": ["community ZH names 狗头人武者 / 带翼狗头人 only"],
+      "limitations": "未完整打开 wiki 正文；只作中文社区译名线索，不作官方规则"
+    },
+    {
+      "url": "https://dnd-wiki.org/wiki/Kobold_Warrior_(5e24)",
+      "title": "Kobold Warrior (5e24) fan wiki",
+      "publisher": "dnd-wiki.org",
+      "opened": false,
+      "tool": "web_search extract only",
+      "usedFor": ["conflict record: unofficial Frightened immunity"],
+      "limitations": "不得作正面来源"
+    }
+  ],
+  "attemptedUnverified": [
+    {
+      "url": "https://www.dndbeyond.com/sources/motm/fantastical-races-continued#Kobold",
+      "result": "redirect to marketplace; MotM race page not opened"
+    },
+    {
+      "url": "https://www.dndbeyond.com/races/1026395-kobold",
+      "result": "404 Not found"
+    },
+    {
+      "url": "https://www.dndbeyond.com/sources/dnd/vgtm/character-races#Kobold",
+      "result": "landed on /legacy, Volo race text not opened"
+    },
+    {
+      "url": "https://www.dndbeyond.com/monsters/17021-winged-kobold",
+      "result": "404; 2014 winged kobold DDB page not verified"
+    },
+    {
+      "url": "https://5e.tools/bestiary/kobold-mm.html",
+      "result": "JS shell only via web_fetch; not used as primary"
+    },
+    {
+      "url": "https://5e.tools/bestiary/kobold-warrior-xmm.html",
+      "result": "JS shell only via web_fetch; not used as primary"
+    },
+    {
+      "url": "https://dnd.wizards.com/resources/systems-reference-document",
+      "result": "redirects to D&D Beyond SRD hub"
+    }
+  ]
+}
