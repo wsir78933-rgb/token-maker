@@ -65,6 +65,26 @@ R2 setup requirements:
 - Add a lifecycle rule that deletes `shares/*` objects after 30 days.
 - The app stores generated share images at `shares/{id}.png` and serves them with a 30-day immutable cache header.
 
+## Local vinext / Cloudflare Workers migration
+
+The existing `dev`, `build`, `start`, and test scripts continue to use Next.js. The
+incremental vinext commands are separate:
+
+```bash
+pnpm run check:vinext
+pnpm run dev:vinext
+pnpm run build:vinext
+```
+
+`vite.config.ts` uses vinext's App Router Cloudflare integration, and
+`wrangler.jsonc` declares the native `SHARE_BUCKET` R2 binding for the
+`tokenmaker-shares` bucket plus a `SHARE_RATE_LIMITER` binding (20 calls per
+60 seconds). Its `namespace_id` is the non-secret placeholder `999999999`;
+replace it with a unique positive integer before any deployment. Do not put
+Cloudflare account IDs, R2 access keys, Upstash tokens, or other credentials in
+the repository. This is local scaffolding and compatibility-check tooling; it
+does not claim that the entire application is Workers-ready or deploy anything.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

@@ -1,7 +1,14 @@
 import sharp from 'sharp';
-import { describe, expect, it } from 'vitest';
-import { SHARE_MAX_IMAGE_BYTES, SHARE_SOCIAL_IMAGE_HEIGHT, SHARE_SOCIAL_IMAGE_WIDTH } from './constants';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  SHARE_EXPORT_WIDTHS,
+  SHARE_MAX_IMAGE_BYTES,
+  SHARE_SOCIAL_IMAGE_HEIGHT,
+  SHARE_SOCIAL_IMAGE_WIDTH,
+} from './constants';
 import { parseShareUploadPayload } from './server-validation';
+
+vi.mock('@cf-wasm/png/workerd', async () => import('@cf-wasm/png/node'));
 
 async function createPngBuffer(width: number, height: number) {
   return sharp({
@@ -98,23 +105,26 @@ async function createAnimatedPngBuffer() {
 }
 
 describe('share upload payload validation', () => {
-  it('accepts and re-encodes a PNG with the requested square export dimensions', async () => {
-    const sourceImage = await createPngBuffer(1024, 1024);
-    const result = await parseShareUploadPayload({
-      image: sourceImage.toString('base64'),
-      width: 1024,
-      locale: 'zh',
-    });
-
-    expect(result.ok).toBe(true);
-    if (result.ok) {
-      expect(result.value.width).toBe(1024);
-      expect(result.value.locale).toBe('zh');
-      await expect(sharp(result.value.imageBuffer).metadata()).resolves.toMatchObject({
-        format: 'png',
-        width: 1024,
-        height: 1024,
+  it('accepts and re-encodes every square export size as a PNG', async () => {
+    for (const width of SHARE_EXPORT_WIDTHS) {
+      const sourceImage = await createPngBuffer(width, width);
+      const result = await parseShareUploadPayload({
+        image: sourceImage.toString('base64'),
+        width,
+        locale: 'zh',
       });
+
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.width).toBe(width);
+        expect(result.value.locale).toBe('zh');
+        expect(Buffer.isBuffer(result.value.imageBuffer)).toBe(true);
+        await expect(sharp(result.value.imageBuffer).metadata()).resolves.toMatchObject({
+          format: 'png',
+          width,
+          height: width,
+        });
+      }
     }
   });
 
@@ -140,6 +150,24 @@ describe('share upload payload validation', () => {
     });
 
     expect(result).toEqual({ ok: false, error: 'invalid_image', status: 400 });
+  });
+
+  it('rejects malformed base64 before image decoding', async () => {
+    const sourceImage = await createPngBuffer(256, 256);
+    const encodedImage = sourceImage.toString('base64');
+    const malformedBase64Values = [
+      `${encodedImage.slice(0, -1)}!`,
+      `${encodedImage.slice(0, -4)}====`,
+      `${encodedImage.slice(0, -3)}=A==`,
+    ];
+
+    for (const image of malformedBase64Values) {
+      await expect(parseShareUploadPayload({ image, width: 256 })).resolves.toEqual({
+        ok: false,
+        error: 'invalid_image',
+        status: 400,
+      });
+    }
   });
 
   it('rejects unsupported export widths', async () => {
