@@ -1,19 +1,14 @@
 import {
-  SHARE_MAX_IMAGE_PIXELS,
   SHARE_MAX_IMAGE_BYTES,
   getShareUploadDimensions,
   isShareUploadWidth,
   type ShareUploadWidth,
 } from './constants';
 import type { SiteLocale } from '@/lib/site-locale';
-import sharp from 'sharp';
-
-const PNG_SIGNATURE_LENGTH = 8;
-const PNG_CHUNK_HEADER_LENGTH = 8;
-const PNG_CHUNK_CRC_LENGTH = 4;
-const PNG_CHUNK_LENGTH_OFFSET = 0;
-const PNG_CHUNK_TYPE_OFFSET = 4;
-const PNG_ANIMATION_CONTROL_CHUNK_TYPE = 'acTL';
+import {
+  sanitizeSharePngBytes,
+  type SharePngSanitizeResult,
+} from './workers-image-sanitizer';
 export type ShareUploadError = 'invalid_image' | 'image_too_large';
 
 export interface ParsedShareUpload {
@@ -82,66 +77,27 @@ function decodeBase64Image(value: string) {
   return Buffer.from(normalized, 'base64');
 }
 
-function isAnimatedPng(imageBuffer: Buffer) {
-  let offset = PNG_SIGNATURE_LENGTH;
-
-  while (offset + PNG_CHUNK_HEADER_LENGTH + PNG_CHUNK_CRC_LENGTH <= imageBuffer.length) {
-    const chunkDataLength = imageBuffer.readUInt32BE(offset + PNG_CHUNK_LENGTH_OFFSET);
-    const chunkLength = PNG_CHUNK_HEADER_LENGTH + chunkDataLength + PNG_CHUNK_CRC_LENGTH;
-    if (chunkLength > imageBuffer.length - offset) return false;
-
-    const chunkTypeStart = offset + PNG_CHUNK_TYPE_OFFSET;
-    const chunkType = imageBuffer.subarray(chunkTypeStart, chunkTypeStart + 4).toString('ascii');
-    if (chunkType === PNG_ANIMATION_CONTROL_CHUNK_TYPE) return true;
-
-    offset += chunkLength;
-  }
-
-  return false;
-}
-
 function normalizePayload(payload: unknown): ShareUploadPayload {
   return payload && typeof payload === 'object' ? (payload as ShareUploadPayload) : {};
-}
-
-function hasExpectedPngMetadata(
-  metadata: Awaited<ReturnType<ReturnType<typeof sharp>['metadata']>>,
-  expectedDimensions: { width: number; height: number },
-) {
-  return metadata.format === 'png'
-    && metadata.width === expectedDimensions.width
-    && metadata.height === expectedDimensions.height
-    && (metadata.pages === undefined || metadata.pages === 1);
 }
 
 type SanitizedPngResult =
   | { ok: true; imageBuffer: Buffer }
   | { ok: false; error: ShareUploadError; status: 400 | 413 };
 
-async function sanitizePngImage(
+function sanitizePngImage(
   sourceImageBuffer: Buffer,
   expectedDimensions: { width: number; height: number },
-): Promise<SanitizedPngResult> {
-  try {
-    const pngDecoder = sharp(sourceImageBuffer, {
-      animated: true,
-      limitInputPixels: SHARE_MAX_IMAGE_PIXELS,
-    });
-    const metadata = await pngDecoder.metadata();
-    if (!hasExpectedPngMetadata(metadata, expectedDimensions)) {
-      return { ok: false, error: 'invalid_image', status: 400 };
-    }
-
-    const sanitizedImageBuffer = await pngDecoder.png().toBuffer();
-    if (sanitizedImageBuffer.byteLength > SHARE_MAX_IMAGE_BYTES) {
-      return { ok: false, error: 'image_too_large', status: 413 };
-    }
-
-    return { ok: true, imageBuffer: sanitizedImageBuffer };
-  } catch (error) {
-    if (error instanceof Error) return { ok: false, error: 'invalid_image', status: 400 };
-    throw error;
+): SanitizedPngResult {
+  const sanitizedPng: SharePngSanitizeResult = sanitizeSharePngBytes(
+    sourceImageBuffer,
+    expectedDimensions,
+  );
+  if (!sanitizedPng.ok) {
+    return sanitizedPng;
   }
+
+  return { ok: true, imageBuffer: Buffer.from(sanitizedPng.imageBytes) };
 }
 
 export async function parseShareUploadPayload(payload: unknown): Promise<ShareUploadParseResult> {
@@ -156,7 +112,7 @@ export async function parseShareUploadPayload(payload: unknown): Promise<ShareUp
   }
 
   const sourceImageBuffer = decodeBase64Image(normalizedPayload.image);
-  if (!sourceImageBuffer || isAnimatedPng(sourceImageBuffer)) {
+  if (!sourceImageBuffer) {
     return { ok: false, error: 'invalid_image', status: 400 };
   }
 

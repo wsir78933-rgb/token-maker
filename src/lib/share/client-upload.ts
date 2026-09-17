@@ -12,6 +12,7 @@ export type ShareUploadError =
   | 'invalid_image'
   | 'image_too_large'
   | 'rate_limited'
+  | 'rate_limiter_unavailable'
   | 'storage_not_configured'
   | 'upload_failed'
   | 'network_error'
@@ -47,6 +48,7 @@ function normalizeUploadError(value: unknown): ShareUploadError {
     'invalid_image',
     'image_too_large',
     'rate_limited',
+    'rate_limiter_unavailable',
     'storage_not_configured',
     'upload_failed',
   ];
