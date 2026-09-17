@@ -66,7 +66,7 @@ describe('downloadCurrentTokenWithSharePrompt', () => {
   });
 
   it('opens the share dialog without downloading when the dialog should be shown', async () => {
-    await downloadCurrentTokenWithSharePrompt(t, 'en');
+    await expect(downloadCurrentTokenWithSharePrompt(t, 'en')).resolves.toBe('share-dialog');
 
     expect(mocks.saveAs).not.toHaveBeenCalled();
     expect(mocks.trackDownloadPng).not.toHaveBeenCalled();
@@ -98,7 +98,7 @@ describe('downloadCurrentTokenWithSharePrompt', () => {
   it('falls back to the download blob when social image generation fails', async () => {
     mocks.createShareSocialImageBlob.mockRejectedValue(new Error('social render failed'));
 
-    await downloadCurrentTokenWithSharePrompt(t, 'en');
+    await expect(downloadCurrentTokenWithSharePrompt(t, 'en')).resolves.toBe('share-dialog');
 
     const state = useShareDialogStore.getState();
     expect(state.isOpen).toBe(true);
@@ -116,13 +116,23 @@ describe('downloadCurrentTokenWithSharePrompt', () => {
   it('downloads directly when the share dialog is suppressed', async () => {
     mocks.shouldShowShareDialog.mockReturnValue(false);
 
-    await downloadCurrentTokenWithSharePrompt(t, 'en');
+    await expect(downloadCurrentTokenWithSharePrompt(t, 'en')).resolves.toBe('downloaded');
 
     expect(mocks.saveAs).toHaveBeenCalledWith(blob, fileName);
     expect(mocks.createShareSocialImageBlob).not.toHaveBeenCalled();
     expect(mocks.exportTokenAsPNG).toHaveBeenCalledTimes(1);
     expect(mocks.trackDownloadPng).toHaveBeenCalledTimes(1);
     expect(mocks.trackShareDialogSuppressed).toHaveBeenCalledWith(256);
+    expect(useShareDialogStore.getState().isOpen).toBe(false);
+  });
+
+  it('throws a size-specific error when the PNG export returns no Blob', async () => {
+    mocks.exportTokenAsPNG.mockReset().mockResolvedValue(null);
+
+    await expect(downloadCurrentTokenWithSharePrompt(t, 'en')).rejects.toThrow(
+      'Token PNG export returned no Blob for export size 256'
+    );
+    expect(mocks.saveAs).not.toHaveBeenCalled();
     expect(useShareDialogStore.getState().isOpen).toBe(false);
   });
 });

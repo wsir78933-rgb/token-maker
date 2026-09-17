@@ -45,6 +45,21 @@ function saveTokenPng(
   trackDownloadPng(getSelectedFrameName(state.selectedBorderId, state.customBorders, t));
 }
 
+export type TokenDownloadOutcome = 'downloaded' | 'share-dialog';
+
+async function createTokenExportBlob(
+  state: ReturnType<typeof useEditorStore.getState>,
+  exportSize: number
+) {
+  const blob = await exportTokenAsPNG(state, exportSize);
+
+  if (!blob) {
+    throw new Error(`Token PNG export returned no Blob for export size ${exportSize}`);
+  }
+
+  return blob;
+}
+
 async function createShareSocialImageBlobSafely(state: ReturnType<typeof useEditorStore.getState>) {
   try {
     return await createShareSocialImageBlob(state);
@@ -72,28 +87,24 @@ async function createShareDialogPreviewBlobSafely(
 
 export async function downloadCurrentToken(t: (key: I18nKey) => string) {
   const state = useEditorStore.getState();
-  const blob = await exportTokenAsPNG(state, state.exportSize);
+  const blob = await createTokenExportBlob(state, state.exportSize);
 
-  if (blob) {
-    saveTokenPng(blob, `token_${Date.now()}.png`, state, t);
-  }
+  saveTokenPng(blob, `token_${Date.now()}.png`, state, t);
 }
 
 export async function downloadCurrentTokenWithSharePrompt(
   t: (key: I18nKey) => string,
   locale: SiteLocale
-) {
+): Promise<TokenDownloadOutcome> {
   const state = useEditorStore.getState();
-  const blob = await exportTokenAsPNG(state, state.exportSize);
-
-  if (!blob) return;
+  const blob = await createTokenExportBlob(state, state.exportSize);
 
   const fileName = `token_${Date.now()}.png`;
 
   if (!shouldShowShareDialog()) {
     saveTokenPng(blob, fileName, state, t);
     trackShareDialogSuppressed(state.exportSize);
-    return;
+    return 'downloaded';
   }
 
   const shareBlob = await createShareSocialImageBlobSafely(state);
@@ -109,4 +120,6 @@ export async function downloadCurrentTokenWithSharePrompt(
     exportSize: state.exportSize,
     locale,
   });
+
+  return 'share-dialog';
 }

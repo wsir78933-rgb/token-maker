@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useI18n, type I18nKey } from '@/lib/i18n';
 import { trackApplyBorder } from '@/lib/analytics';
 import { getPresetIdForBorder, getVisibleBorderTemplates } from '@/lib/templates/borders';
@@ -9,7 +10,7 @@ import { STYLE_PRESETS } from '@/lib/templates/presets';
 import { drawBorderThumbnail } from '@/lib/renderer/borders';
 import { Button } from '@/components/ui/button';
 import type { BorderTemplate, ExportSize } from '@/types/editor';
-import { DownloadCloud, Plus, Trash2 } from 'lucide-react';
+import { Check, DownloadCloud, Loader2, Plus, Trash2 } from 'lucide-react';
 import { preloadImageToCache } from '@/lib/utils/imageCache';
 import { downloadCurrentTokenWithSharePrompt, getLocalizedName } from './export-token';
 import { useBorderTemplatesState, useTemplatePanelState } from './editor-store-hooks';
@@ -142,16 +143,95 @@ function getCustomBorderErrorCopy(locale: 'en' | 'zh') {
   };
 }
 
-export function TemplatePanel() {
+type TokenExportStatus = 'idle' | 'preparing' | 'started' | 'failed';
+
+function getTokenExportErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  const serializedError = String(error);
+  if (serializedError) {
+    return serializedError;
+  }
+
+  return 'downloadCurrentTokenWithSharePrompt threw a non-error value';
+}
+
+function DownloadPngButton({
+  className,
+  buttonClassName,
+}: {
+  className?: string;
+  buttonClassName?: string;
+}) {
   const { t, locale } = useI18n();
-  const { activePresetId, selectedBorderId, exportSize, imageElement, applyPreset, setExportSize } =
+  const { imageElement } = useTemplatePanelState();
+  const [tokenExportStatus, setTokenExportStatus] = useState<TokenExportStatus>('idle');
+  const [tokenExportError, setTokenExportError] = useState<string | null>(null);
+  const tokenExportInFlightRef = useRef(false);
+  const isPreparing = tokenExportStatus === 'preparing';
+  const downloadLabel = isPreparing ? t('downloadPreparing') : t('download');
+
+  const handleExport = async () => {
+    if (!imageElement) return;
+    if (tokenExportInFlightRef.current || isPreparing) return;
+
+    tokenExportInFlightRef.current = true;
+    flushSync(() => {
+      setTokenExportStatus('preparing');
+      setTokenExportError(null);
+    });
+
+    try {
+      const outcome = await downloadCurrentTokenWithSharePrompt(t, locale);
+      setTokenExportStatus(outcome === 'downloaded' ? 'started' : 'idle');
+    } catch (error) {
+      setTokenExportStatus('failed');
+      setTokenExportError(getTokenExportErrorMessage(error));
+    } finally {
+      tokenExportInFlightRef.current = false;
+    }
+  };
+
+  return (
+    <div className={className}>
+      <Button
+        className={buttonClassName}
+        size="default"
+        onClick={handleExport}
+        disabled={!imageElement || isPreparing}
+        aria-busy={isPreparing}
+      >
+        {isPreparing ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : tokenExportStatus === 'started' ? (
+          <Check className="mr-2 h-4 w-4" />
+        ) : (
+          <DownloadCloud className="mr-2 h-4 w-4" />
+        )}
+        {downloadLabel}
+      </Button>
+      {tokenExportStatus === 'started' ? (
+        <p role="status" aria-live="polite" className="mt-2 max-w-full text-xs leading-5 text-muted-foreground">
+          {t('downloadStarted')}
+        </p>
+      ) : null}
+      {tokenExportStatus === 'failed' && tokenExportError ? (
+        <p role="alert" className="mt-2 max-w-full text-xs leading-5 break-words text-destructive">
+          {t('downloadFailed')}: {tokenExportError}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+export function TemplatePanel() {
+  const { t } = useI18n();
+  const { activePresetId, selectedBorderId, exportSize, applyPreset, setExportSize } =
     useTemplatePanelState();
   const selectedBorderCategoryId =
     activePresetId ?? getPresetIdForBorder(selectedBorderId) ?? 'other';
-
-  const handleExport = async () => {
-    await downloadCurrentTokenWithSharePrompt(t, locale);
-  };
 
   return (
     <div className="order-4 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:order-none xl:h-full xl:w-[var(--editor-side-panel-width)] xl:overflow-hidden xl:border-y-0 xl:border-l">
@@ -213,15 +293,10 @@ export function TemplatePanel() {
           </div>
         </div>
 
-        <Button
-          className="hidden w-full font-medium xl:inline-flex"
-          size="default"
-          onClick={handleExport}
-          disabled={!imageElement}
-        >
-          <DownloadCloud className="mr-2 h-4 w-4" />
-          {t('download')}
-        </Button>
+        <DownloadPngButton
+          className="hidden xl:block"
+          buttonClassName="w-full font-medium"
+        />
       </div>
 
     </div>
@@ -229,26 +304,14 @@ export function TemplatePanel() {
 }
 
 export function MobileBorderTemplatesPanel() {
-  const { t, locale } = useI18n();
-  const { imageElement } = useTemplatePanelState();
-
-  const handleExport = async () => {
-    await downloadCurrentTokenWithSharePrompt(t, locale);
-  };
-
   return (
     <div className="order-2 flex w-full flex-col overflow-visible border-y border-border bg-card/65 backdrop-blur xl:hidden">
       <div className="px-4 py-4 sm:py-6">
         <BorderTemplatesSection />
-        <Button
-          className="mt-4 w-full gap-2 text-sm font-medium"
-          size="default"
-          onClick={handleExport}
-          disabled={!imageElement}
-        >
-          <DownloadCloud className="h-4 w-4" />
-          {t('download')}
-        </Button>
+        <DownloadPngButton
+          className="mt-4"
+          buttonClassName="w-full gap-2 text-sm font-medium"
+        />
       </div>
     </div>
   );

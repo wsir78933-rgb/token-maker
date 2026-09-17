@@ -151,11 +151,11 @@ describe('TemplatePanel preset border assets', () => {
     expect(warriorPresetButton.className).not.toContain('xl:aspect-square');
   });
 
-  it('renders one mobile download control below Borders and invokes the shared download flow', () => {
+  it('renders one mobile download control below Borders and invokes the shared download flow', async () => {
     i18nMockState.messages = {
       ...i18nMockState.messages,
       borderTemplates: 'Borders',
-      download: 'Download',
+      download: 'Download PNG',
     };
     const imageElement = new Image();
     useEditorStore.setState({ imageElement, imageUrl: 'blob:test' });
@@ -163,33 +163,122 @@ describe('TemplatePanel preset border assets', () => {
     render(<MobileBorderTemplatesPanel />);
 
     const bordersHeading = screen.getByRole('heading', { name: 'Borders' });
-    const downloadControls = screen.getAllByRole('button', { name: 'Download' });
-    const downloadControl = downloadControls[0]!;
+    const downloadControl = screen.getByRole('button', { name: 'Download PNG' });
 
-    expect(downloadControls).toHaveLength(1);
-    const borderTemplatesSection = downloadControl.previousElementSibling;
-    expect(borderTemplatesSection?.contains(bordersHeading)).toBe(true);
+    expect(
+      bordersHeading.compareDocumentPosition(downloadControl) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
 
     fireEvent.click(downloadControl);
 
     expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledOnce();
     expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledWith(expect.any(Function), 'en');
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Download PNG' })).toHaveProperty('disabled', false);
+    });
   });
 
   it('disables the mobile download control when no image is loaded', () => {
     i18nMockState.messages = {
       ...i18nMockState.messages,
-      download: 'Download',
+      download: 'Download PNG',
     };
 
     render(<MobileBorderTemplatesPanel />);
 
-    const downloadControl = screen.getByRole('button', { name: 'Download' });
+    const downloadControl = screen.getByRole('button', { name: 'Download PNG' });
     expect(downloadControl).toHaveProperty('disabled', true);
 
     fireEvent.click(downloadControl);
 
     expect(downloadCurrentTokenWithSharePromptMock).not.toHaveBeenCalled();
+  });
+
+  it('shows preparing on Download PNG, blocks a second click, then restores the control', async () => {
+    i18nMockState.messages = {
+      ...i18nMockState.messages,
+      download: 'Download PNG',
+      downloadPreparing: 'Preparing download...',
+    };
+    const imageElement = new Image();
+    useEditorStore.setState({ imageElement, imageUrl: 'blob:test' });
+
+    let finishExport: (() => void) | undefined;
+    downloadCurrentTokenWithSharePromptMock.mockImplementation(
+      () =>
+        new Promise<'share-dialog'>((resolve) => {
+          finishExport = () => resolve('share-dialog');
+        })
+    );
+
+    render(<MobileBorderTemplatesPanel />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
+
+    const preparingControl = screen.getByRole('button', { name: 'Preparing download...' });
+    expect(preparingControl).toHaveProperty('disabled', true);
+    expect(preparingControl.getAttribute('aria-busy')).toBe('true');
+    expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledOnce();
+
+    fireEvent.click(preparingControl);
+    expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledOnce();
+
+    finishExport?.();
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Download PNG' })).toHaveProperty('disabled', false);
+    });
+  });
+
+  it('shows the thrown export error and keeps Download PNG retryable', async () => {
+    i18nMockState.messages = {
+      ...i18nMockState.messages,
+      download: 'Download PNG',
+      downloadFailed: 'Download failed. Please try again.',
+    };
+    const imageElement = new Image();
+    useEditorStore.setState({ imageElement, imageUrl: 'blob:test' });
+    downloadCurrentTokenWithSharePromptMock.mockRejectedValueOnce(
+      new Error('Token PNG export returned no Blob for export size 1024')
+    );
+
+    render(<MobileBorderTemplatesPanel />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
+
+    expect(await screen.findByRole('alert')).toHaveProperty(
+      'textContent',
+      'Download failed. Please try again.: Token PNG export returned no Blob for export size 1024'
+    );
+
+    const retryControl = screen.getByRole('button', { name: 'Download PNG' });
+    expect(retryControl).toHaveProperty('disabled', false);
+
+    downloadCurrentTokenWithSharePromptMock.mockResolvedValueOnce('share-dialog');
+    fireEvent.click(retryControl);
+
+    expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
+  });
+
+  it('shows the local download started status when the share prompt is suppressed', async () => {
+    i18nMockState.messages = {
+      ...i18nMockState.messages,
+      download: 'Download PNG',
+      downloadStarted: 'Download started. Check your browser downloads or Files app.',
+    };
+    const imageElement = new Image();
+    useEditorStore.setState({ imageElement, imageUrl: 'blob:test' });
+    downloadCurrentTokenWithSharePromptMock.mockResolvedValueOnce('downloaded');
+
+    render(<MobileBorderTemplatesPanel />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
+
+    expect(await screen.findByRole('status')).toHaveProperty(
+      'textContent',
+      'Download started. Check your browser downloads or Files app.'
+    );
   });
 
   it('shows warrior borders inside the border templates after the warrior preset is selected', () => {

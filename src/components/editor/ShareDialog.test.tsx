@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, act } from '@testing-library/react';
 
 import { useShareDialogStore } from '@/lib/store/share-dialog-store';
 import { SHARE_SOCIAL_IMAGE_WIDTH } from '@/lib/share/constants';
@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   clipboardWriteText: vi.fn(),
   windowOpen: vi.fn(),
   trackShareCopyLink: vi.fn(),
+  trackShareRedownload: vi.fn(),
   trackShareSocial: vi.fn(),
 }));
 
@@ -35,6 +36,9 @@ vi.mock('@/lib/i18n', () => ({
         shareOnPinterest: 'Pinterest',
         shareOnReddit: 'Reddit',
         shareDownload: 'Download',
+        shareDownloading: 'Downloading...',
+        shareDownloadStarted: 'Download started. Check Files or Downloads.',
+        shareDownloadFailed: 'Download failed',
         shareUploadDisclosure: 'Copy a link or share on social media to create a public share page.',
         shareSuppressFor24Hours: 'Do not show again for 24 hours',
         shareImageAlt: 'Generated VTT token preview',
@@ -47,7 +51,7 @@ vi.mock('@/lib/i18n', () => ({
 
 vi.mock('@/lib/analytics', () => ({
   trackShareCopyLink: mocks.trackShareCopyLink,
-  trackShareRedownload: vi.fn(),
+  trackShareRedownload: mocks.trackShareRedownload,
   trackShareSocial: mocks.trackShareSocial,
   trackShareSuppress24h: vi.fn(),
   trackShareUploadFail: vi.fn(),
@@ -110,6 +114,7 @@ describe('ShareDialog', () => {
     mocks.clipboardWriteText.mockClear();
     mocks.windowOpen.mockClear();
     mocks.trackShareCopyLink.mockClear();
+    mocks.trackShareRedownload.mockClear();
     mocks.trackShareSocial.mockClear();
     useShareDialogStore.setState({ isOpen: false, payload: null });
   });
@@ -167,6 +172,104 @@ describe('ShareDialog', () => {
 
     expect(mocks.saveAs).toHaveBeenCalledWith(blob, 'token.png');
     expect(mocks.uploadTokenForShare).not.toHaveBeenCalled();
+    expect(mocks.trackShareRedownload).toHaveBeenCalledWith(1024);
+    expect(screen.getByRole('status').textContent).toBe(
+      'Download started. Check Files or Downloads.'
+    );
+  });
+
+  it('enters downloading immediately, blocks a second click, and keeps download local', () => {
+    const { blob } = openDialog();
+    render(<ShareDialog />);
+
+    const downloadButton = screen.getByRole('button', { name: 'Download' }) as HTMLButtonElement;
+    mocks.saveAs.mockImplementation(() => {
+      const downloadingButton = screen.getByRole('button', { name: 'Downloading...' }) as HTMLButtonElement;
+      expect(downloadingButton.disabled).toBe(true);
+      expect(downloadingButton.getAttribute('aria-busy')).toBe('true');
+      fireEvent.click(downloadingButton);
+    });
+
+    fireEvent.click(downloadButton);
+
+    expect(mocks.saveAs).toHaveBeenCalledTimes(1);
+    expect(mocks.saveAs).toHaveBeenCalledWith(blob, 'token.png');
+    expect(mocks.uploadTokenForShare).not.toHaveBeenCalled();
+    expect(screen.getByRole('status').textContent).toBe(
+      'Download started. Check Files or Downloads.'
+    );
+  });
+
+  it('shows the thrown saveAs error and allows a retry', () => {
+    const { blob } = openDialog();
+    mocks.saveAs.mockImplementationOnce(() => {
+      throw new Error('saveAs rejected token.png');
+    });
+
+    render(<ShareDialog />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Download' }));
+
+    expect(mocks.trackShareRedownload).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert').textContent).toBe(
+      'Download failed: saveAs rejected token.png'
+    );
+
+    const retryButton = screen.getByRole('button', { name: 'Download' }) as HTMLButtonElement;
+    expect(retryButton.disabled).toBe(false);
+
+    fireEvent.click(retryButton);
+
+    expect(mocks.saveAs).toHaveBeenCalledTimes(2);
+    expect(mocks.saveAs).toHaveBeenLastCalledWith(blob, 'token.png');
+    expect(screen.getByRole('status').textContent).toBe(
+      'Download started. Check Files or Downloads.'
+    );
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('does not carry download status onto a new payload after close and reopen', async () => {
+    openDialog();
+    render(<ShareDialog />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Download' }));
+    expect(screen.getByRole('status').textContent).toBe(
+      'Download started. Check Files or Downloads.'
+    );
+
+    act(() => {
+      useShareDialogStore.setState({ isOpen: false, payload: null });
+    });
+    act(() => {
+      openDialog();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByRole('status')).toBeNull();
+    });
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect((screen.getByRole('button', { name: 'Download' }) as HTMLButtonElement).disabled).toBe(
+      false
+    );
+  });
+
+  it('does not keep download status after the dialog unmounts and opens a new payload', () => {
+    openDialog();
+    const { unmount } = render(<ShareDialog />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Download' }));
+    expect(screen.getByRole('status')).toBeTruthy();
+
+    unmount();
+    useShareDialogStore.setState({ isOpen: false, payload: null });
+    openDialog();
+    render(<ShareDialog />);
+
+    expect(screen.queryByRole('status')).toBeNull();
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect((screen.getByRole('button', { name: 'Download' }) as HTMLButtonElement).disabled).toBe(
+      false
+    );
   });
 
   it('uploads to R2 when the user copies the share link', async () => {

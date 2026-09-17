@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
+import { flushSync } from 'react-dom';
 import { saveAs } from 'file-saver';
 import {
   Check,
@@ -36,6 +37,7 @@ import { suppressShareDialogFor24Hours } from '@/lib/share/local-frequency';
 import type { SharePlatform } from '@/lib/share/constants';
 
 type ShareStatus = 'idle' | 'uploading' | 'ready' | 'failed';
+type LocalDownloadStatus = 'downloading' | 'started' | 'failed';
 
 interface ShareRequestState {
   payload: ShareDialogPayload;
@@ -43,6 +45,12 @@ interface ShareRequestState {
   shareData: ShareUploadResponse | null;
   copied: boolean;
   errorCode: string | null;
+}
+
+interface LocalDownloadState {
+  payload: ShareDialogPayload;
+  status: LocalDownloadStatus;
+  errorMessage: string | null;
 }
 
 const platformLabels: Array<{ platform: SharePlatform; key: I18nKey }> = [
@@ -57,6 +65,23 @@ function getShareErrorCode(error: unknown) {
   }
 
   return 'unknown_error';
+}
+
+function getThrownErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  return String(error);
+}
+
+function getLocalDownloadFailureMessage(error: unknown, fileName: string) {
+  const thrownErrorMessage = getThrownErrorMessage(error);
+  if (thrownErrorMessage) {
+    return thrownErrorMessage;
+  }
+
+  return `saveAs threw for fileName ${fileName}`;
 }
 
 function ShareCircleButton({
@@ -81,6 +106,7 @@ function ShareCircleButton({
       disabled={disabled}
       data-highlighted={highlighted ? 'true' : undefined}
       data-loading={loading ? 'true' : undefined}
+      aria-busy={loading || undefined}
       aria-label={label}
       title={label}
       className="group flex min-w-0 flex-1 flex-col items-center gap-2 text-[11px] leading-tight text-stone-400 transition disabled:pointer-events-none sm:text-sm"
@@ -150,17 +176,23 @@ export function ShareDialog() {
   const closeShareDialog = useShareDialogStore((state) => state.closeShareDialog);
   const currentPayload = payload;
   const [shareRequestState, setShareRequestState] = useState<ShareRequestState | null>(null);
+  const [localDownloadState, setLocalDownloadState] = useState<LocalDownloadState | null>(null);
   const uploadPromiseRef = useRef<{
     payload: ShareDialogPayload;
     promise: Promise<ShareUploadResponse | null>;
   } | null>(null);
+  const localDownloadInFlightRef = useRef(false);
   const activeShareRequestState =
     shareRequestState?.payload === currentPayload ? shareRequestState : null;
+  const activeLocalDownloadState =
+    localDownloadState?.payload === currentPayload ? localDownloadState : null;
   const status = activeShareRequestState?.status ?? 'idle';
   const shareData = activeShareRequestState?.shareData ?? null;
   const copied = activeShareRequestState?.copied ?? false;
   const errorCode = activeShareRequestState?.errorCode ?? null;
   const isShareBusy = status === 'uploading';
+  const isLocalDownloadBusy = activeLocalDownloadState?.status === 'downloading';
+  const downloadButtonLabel = isLocalDownloadBusy ? t('shareDownloading') : t('shareDownload');
 
   const previewUrl = useMemo(() => {
     if (!isOpen || !currentPayload) return null;
@@ -192,6 +224,15 @@ export function ShareDialog() {
     }, 1500);
     return () => window.clearTimeout(timeout);
   }, [copied, currentPayload]);
+
+  useEffect(() => {
+    localDownloadInFlightRef.current = false;
+    setLocalDownloadState((previousState) =>
+      previousState == null || previousState.payload === currentPayload
+        ? previousState
+        : null
+    );
+  }, [currentPayload]);
 
   const requestShareData = useCallback(async () => {
     if (!currentPayload) return null;
@@ -293,8 +334,37 @@ export function ShareDialog() {
 
   const handleDownload = () => {
     if (!currentPayload) return;
-    saveAs(currentPayload.blob, currentPayload.fileName);
-    trackShareRedownload(currentPayload.exportSize);
+    if (localDownloadInFlightRef.current || isLocalDownloadBusy) return;
+
+    const downloadPayload = currentPayload;
+    localDownloadInFlightRef.current = true;
+    flushSync(() => {
+      setLocalDownloadState({
+        payload: downloadPayload,
+        status: 'downloading',
+        errorMessage: null,
+      });
+    });
+
+    try {
+      saveAs(downloadPayload.blob, downloadPayload.fileName);
+      trackShareRedownload(downloadPayload.exportSize);
+      setLocalDownloadState({
+        payload: downloadPayload,
+        status: 'started',
+        errorMessage: null,
+      });
+    } catch (error) {
+      const errorMessage = getLocalDownloadFailureMessage(error, downloadPayload.fileName);
+      console.error(`Failed to download token file ${downloadPayload.fileName}: ${errorMessage}`);
+      setLocalDownloadState({
+        payload: downloadPayload,
+        status: 'failed',
+        errorMessage,
+      });
+    } finally {
+      localDownloadInFlightRef.current = false;
+    }
   };
 
   const handleSuppressChange = (checked: boolean) => {
@@ -391,10 +461,34 @@ export function ShareDialog() {
               </ShareCircleButton>
             ))}
 
-            <ShareCircleButton label={t('shareDownload')} highlighted onClick={handleDownload}>
+            <ShareCircleButton
+              label={downloadButtonLabel}
+              highlighted
+              disabled={!currentPayload || isLocalDownloadBusy}
+              loading={isLocalDownloadBusy}
+              onClick={handleDownload}
+            >
               <Download className="h-8 w-8 stroke-[1.8]" />
             </ShareCircleButton>
           </div>
+
+          {activeLocalDownloadState?.status === 'failed' && activeLocalDownloadState.errorMessage ? (
+            <p
+              role="alert"
+              aria-live="assertive"
+              className="mt-3 max-w-full px-1 text-center text-xs leading-5 break-words text-red-300 sm:text-sm"
+            >
+              {t('shareDownloadFailed')}: {activeLocalDownloadState.errorMessage}
+            </p>
+          ) : activeLocalDownloadState?.status === 'started' ? (
+            <p
+              role="status"
+              aria-live="polite"
+              className="mt-3 max-w-full px-1 text-center text-xs leading-5 break-words text-stone-300 sm:text-sm"
+            >
+              {t('shareDownloadStarted')}
+            </p>
+          ) : null}
 
           <div className="mt-5 h-px w-full bg-white/10 sm:mt-6" />
 
