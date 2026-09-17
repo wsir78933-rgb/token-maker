@@ -1,10 +1,5 @@
 import {
-  DND_KOBOLD_AXES_ZH_IMAGE_PATH,
-  DND_KOBOLD_IDENTIFY_ZH_IMAGE_PATH,
-  DND_KOBOLD_LOCK_IMAGE_PATH,
-  DND_KOBOLD_LOCK_ZH_IMAGE_PATH,
-  DND_KOBOLD_PACK_GRID_IMAGE_PATH,
-  DND_KOBOLD_TOKEN_CROP_IMAGE_PATH,
+  DND_KOBOLD_CHARACTER_IMAGE_PATHS,
   EN_DND_DRAGONBORN_PATH,
   EN_DND_KENKU_PATH,
   EN_DND_RACES_PATH,
@@ -86,14 +81,14 @@ export const dndKoboldArticleHtml = String.raw`
 <figure class="inline-figure inline-figure--wide-crop">
   <img
     class="inline-figure__image inline-figure__image--wide"
-    src="${DND_KOBOLD_LOCK_IMAGE_PATH}"
-    alt="Two-column lock diagram: 2014 Kobold labeled Small Humanoid, Lawful Evil, AC 12, HP 5 on the left; 2024 Kobold Warrior labeled Small Dragon, Neutral, AC 14, HP 7 on the right; center note lock one year"
+    src="${DND_KOBOLD_CHARACTER_IMAGE_PATHS.study}"
+    alt="Single orange-brown scaled Kobold character in a brown tunic, standing with hands clasped at the chest and looking to the side against a dark neutral backdrop"
     width="1536"
     height="1024"
     loading="lazy"
     decoding="async"
   />
-  <figcaption>Left column is the 2014 Kobold. Right column is the 2024 Kobold Warrior. Matching challenge rating 1/8 is not permission to mix type or alignment. This is a lock diagram, not a D&amp;D Beyond screenshot.</figcaption>
+  <figcaption>Orange-brown scaled Kobold character standing with hands clasped and a sideward gaze.</figcaption>
 </figure>
 
 <h3>2014 &mdash; Small Humanoid, Lawful Evil</h3>
@@ -178,14 +173,14 @@ export const dndKoboldArticleHtml = String.raw`
 <figure class="inline-figure inline-figure--wide-crop">
   <img
     class="inline-figure__image inline-figure__image--wide"
-    src="${DND_KOBOLD_PACK_GRID_IMAGE_PATH}"
-    alt="Five-foot grid: two kobolds on squares adjacent to a fighter labeled pack tactics advantage, and one kobold in a neighboring cell with no ally labeled no pack tactics"
+    src="${DND_KOBOLD_CHARACTER_IMAGE_PATHS.alert}"
+    alt="Single orange-brown scaled Kobold character in a brown tunic, crouching low with one hand raised against a dark neutral backdrop"
     width="1536"
     height="1024"
     loading="lazy"
     decoding="async"
   />
-  <figcaption>Count the squares. Pack Tactics needs an ally within 5 feet of the target who is not incapacitated. Each Small kobold still occupies one square. This is a range diagram, not a session log and not a VTT screenshot.</figcaption>
+  <figcaption>Orange-brown scaled Kobold character in a low crouch with one hand raised.</figcaption>
 </figure>
 
 <h3>Advantage from an ally within 5 feet</h3>
@@ -241,14 +236,14 @@ export const dndKoboldArticleHtml = String.raw`
 <figure class="inline-figure inline-figure--wide-crop">
   <img
     class="inline-figure__image inline-figure__image--wide"
-    src="${DND_KOBOLD_TOKEN_CROP_IMAGE_PATH}"
-    alt="Circular crop diagram of a small reptilian kobold with snout and horn-frill inside the ring, marked not a Warcraft candle miner and not a dragonborn"
+    src="${DND_KOBOLD_CHARACTER_IMAGE_PATHS.ready}"
+    alt="Single orange-brown scaled Kobold character in a brown tunic, standing with arms relaxed at the sides against a dark neutral backdrop"
     width="1536"
     height="1024"
     loading="lazy"
     decoding="async"
   />
-  <figcaption>Crop diagram, not a Token Maker screenshot. If the mask shaves the snout or the art is a candle-miner or a dragonborn, recrop or replace the file. There is no Kobold-specific template on this site.</figcaption>
+  <figcaption>Orange-brown scaled Kobold character standing with arms relaxed at the sides.</figcaption>
 </figure>
 
 <h3>What must stay in the circle</h3>
@@ -382,14 +377,14 @@ export const dndKoboldArticleHtmlZh = String.raw`
 <figure class="inline-figure inline-figure--wide-crop">
   <img
     class="inline-figure__image inline-figure__image--wide"
-    src="${DND_KOBOLD_IDENTIFY_ZH_IMAGE_PATH}"
-    alt="四格辨认：带鳞小角的 DND 狗头人 Kobold、顶蜡烛的矿工、龙裔、地精，后三格标明不是这只"
+    src="${DND_KOBOLD_CHARACTER_IMAGE_PATHS.study}"
+    alt="一名橙棕色鳞片狗头人角色身穿棕色布衣，站立并将双手合于胸前，侧头凝视，背景简洁深色"
     width="1536"
     height="1024"
     loading="lazy"
     decoding="async"
   />
-  <figcaption>留下鳞片和小角才是 DND 狗头人。图是辨认示意，不是官方书页，也不是某款游戏截图。</figcaption>
+  <figcaption>橙棕色鳞片狗头人角色站立图：双手合于胸前，侧头凝视。</figcaption>
 </figure>
 <p>图只承担认脸。蜡烛矿工和龙裔角一眼能分开；炉石卡面、科博德这个音译、DOTA 那只，外形不好塞进同一格，用下表认词。</p>
 <table>
@@ -429,14 +424,14 @@ export const dndKoboldArticleHtmlZh = String.raw`
 <figure class="inline-figure inline-figure--wide-crop">
   <img
     class="inline-figure__image inline-figure__image--wide"
-    src="${DND_KOBOLD_LOCK_ZH_IMAGE_PATH}"
-    alt="对照示意：左边瓦罗狗头人卡写着摇尾乞怜、集群战术、日照敏感，右边魔邓肯卡写着龙吼、狗头人遗产，中间写先问 DM 锁哪一页"
+    src="${DND_KOBOLD_CHARACTER_IMAGE_PATHS.alert}"
+    alt="一名橙棕色鳞片狗头人角色身穿棕色布衣，低身蹲伏并抬起一只手，背景简洁深色"
     width="1536"
     height="1024"
     loading="lazy"
     decoding="async"
   />
-  <figcaption>瓦罗这一页是摇尾乞怜和日照敏感，魔邓肯这一页是龙吼和狗头人遗产。图是锁页示意，不是官方书页扫描。</figcaption>
+  <figcaption>橙棕色鳞片狗头人角色低身警戒姿态，一只手抬起。</figcaption>
 </figure>
 <p>图只用来看见两页不能叠。力量 -2 和官方勘误不要从图里读。精确对照用下表。</p>
 <table>
@@ -499,14 +494,14 @@ export const dndKoboldArticleHtmlZh = String.raw`
 <figure class="inline-figure inline-figure--wide-crop">
   <img
     class="inline-figure__image inline-figure__image--wide"
-    src="${DND_KOBOLD_AXES_ZH_IMAGE_PATH}"
-    alt="示意图：上方玩家轴在瓦罗和魔邓肯里二选一，下方怪物轴在 2014 Kobold 和 2024 狗头人武者里二选一，两轴不相交"
+    src="${DND_KOBOLD_CHARACTER_IMAGE_PATHS.ready}"
+    alt="一名橙棕色鳞片狗头人角色身穿棕色布衣，站立时双臂自然垂下，背景简洁深色"
     width="1536"
     height="1024"
     loading="lazy"
     decoding="async"
   />
-  <figcaption>玩家抄瓦罗或魔邓肯其中一页；怪物另锁 2014 或 2024 狗头人武者。图是分叉示意，不是统计块。</figcaption>
+  <figcaption>橙棕色鳞片狗头人角色站立待命图，双臂自然垂下。</figcaption>
 </figure>
 <p>两轴中间没有「通用狗头人」。挑战等级两版都是 1/8，CR 未变不等于统计块未变。AC、生命值、武器和日光敏感范围看下表，不要从图里读数字。</p>
 <table>

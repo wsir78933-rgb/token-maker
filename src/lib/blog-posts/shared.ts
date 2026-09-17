@@ -190,6 +190,11 @@ export const DND_KOBOLD_TOKEN_CROP_IMAGE_PATH = '/blog/inline/dnd-kobold/kobold-
 export const DND_KOBOLD_IDENTIFY_ZH_IMAGE_PATH = '/blog/inline/dnd-kobold/kobold-identify-zh.webp';
 export const DND_KOBOLD_LOCK_ZH_IMAGE_PATH = '/blog/inline/dnd-kobold/kobold-lock-zh.webp';
 export const DND_KOBOLD_AXES_ZH_IMAGE_PATH = '/blog/inline/dnd-kobold/kobold-axes-zh.webp';
+export const DND_KOBOLD_CHARACTER_IMAGE_PATHS = {
+  study: '/blog/inline/dnd-kobold/kobold-character-study.webp',
+  alert: '/blog/inline/dnd-kobold/kobold-character-alert.webp',
+  ready: '/blog/inline/dnd-kobold/kobold-character-ready.webp',
+} as const;
 export const DND_CLERIC_SPELLS_JOB_IMAGE_PATH =
   '/blog/inline/dnd-cleric-spells/cleric-spell-jobs.webp';
 export const DND_CLERIC_SPELLS_CONCENTRATION_IMAGE_PATH =

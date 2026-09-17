@@ -16,11 +16,19 @@ const DND_KOBOLD_SLUG = 'dnd-kobold';
 const COVER_PATH = '/blog/covers/en/dnd-kobold-guide.webp';
 const ZH_COVER_PATH = '/blog/covers/en/dnd-kobold-zh-guide.webp';
 const EN_INLINE_PATHS = [
+  '/blog/inline/dnd-kobold/kobold-character-study.webp',
+  '/blog/inline/dnd-kobold/kobold-character-alert.webp',
+  '/blog/inline/dnd-kobold/kobold-character-ready.webp',
+] as const;
+const ZH_INLINE_PATHS = [
+  '/blog/inline/dnd-kobold/kobold-character-study.webp',
+  '/blog/inline/dnd-kobold/kobold-character-alert.webp',
+  '/blog/inline/dnd-kobold/kobold-character-ready.webp',
+] as const;
+const LEGACY_INLINE_PATHS = [
   '/blog/inline/dnd-kobold/kobold-lock-2014-2024.webp',
   '/blog/inline/dnd-kobold/kobold-pack-tactics-grid.webp',
   '/blog/inline/dnd-kobold/kobold-snout-crop.webp',
-] as const;
-const ZH_INLINE_PATHS = [
   '/blog/inline/dnd-kobold/kobold-identify-zh.webp',
   '/blog/inline/dnd-kobold/kobold-lock-zh.webp',
   '/blog/inline/dnd-kobold/kobold-axes-zh.webp',
@@ -36,6 +44,18 @@ function getVisibleBodyRoot(bodyHtml: string) {
     .forEach((element) => element.remove());
 
   return body;
+}
+
+function getInlineFigurePaths(bodyHtml: string) {
+  return Array.from(getVisibleBodyRoot(bodyHtml).querySelectorAll('figure img')).map((image) => {
+    const src = image.getAttribute('src');
+
+    if (!src) {
+      throw new Error('Expected every dnd-kobold inline figure image to have a src attribute.');
+    }
+
+    return src;
+  });
 }
 
 function decodeHtmlEntities(value: string) {
@@ -86,6 +106,10 @@ describe('dnd kobold blog post', () => {
     for (const inlinePath of EN_INLINE_PATHS) {
       expect(englishPost?.bodyHtml).toContain(inlinePath);
     }
+    expect(getInlineFigurePaths(englishPost?.bodyHtml ?? '')).toEqual(EN_INLINE_PATHS);
+    for (const legacyPath of LEGACY_INLINE_PATHS) {
+      expect(englishPost?.bodyHtml).not.toContain(legacyPath);
+    }
     expect(englishPost?.bodyHtml).toContain('loading="lazy"');
     expect(englishPost?.bodyHtml).toContain('decoding="async"');
     expect(englishPost?.bodyHtml).not.toContain('fetchpriority=');
@@ -118,6 +142,10 @@ describe('dnd kobold blog post', () => {
     expect(chinesePost?.bodyHtml).not.toContain('FAQ about dnd kobold');
     for (const inlinePath of ZH_INLINE_PATHS) {
       expect(chinesePost?.bodyHtml).toContain(inlinePath);
+    }
+    expect(getInlineFigurePaths(chinesePost?.bodyHtml ?? '')).toEqual(ZH_INLINE_PATHS);
+    for (const legacyPath of LEGACY_INLINE_PATHS) {
+      expect(chinesePost?.bodyHtml).not.toContain(legacyPath);
     }
     expect(chinesePost?.bodyHtml).toContain('loading="lazy"');
     expect(chinesePost?.bodyHtml).not.toContain('data-video-id=');
