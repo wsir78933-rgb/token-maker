@@ -3,6 +3,8 @@ import type { SiteLocale } from '@/lib/site-locale';
 import type { ShareUploadWidth } from '@/lib/share/constants';
 import type { ExportSize } from '@/types/editor';
 
+export type DownloadSurface = 'mobile' | 'desktop';
+
 export interface ShareDialogPayload {
   blob: Blob;
   previewBlob: Blob;
@@ -11,6 +13,7 @@ export interface ShareDialogPayload {
   fileName: string;
   exportSize: ExportSize;
   locale: SiteLocale;
+  downloadSurface?: DownloadSurface;
 }
 
 interface ShareDialogState {

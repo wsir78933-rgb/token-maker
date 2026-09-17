@@ -172,7 +172,11 @@ describe('TemplatePanel preset border assets', () => {
     fireEvent.click(downloadControl);
 
     expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledOnce();
-    expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledWith(expect.any(Function), 'en');
+    expect(downloadCurrentTokenWithSharePromptMock).toHaveBeenCalledWith(
+      expect.any(Function),
+      'en',
+      'mobile'
+    );
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Download PNG' })).toHaveProperty('disabled', false);
     });
@@ -265,7 +269,7 @@ describe('TemplatePanel preset border assets', () => {
     i18nMockState.messages = {
       ...i18nMockState.messages,
       download: 'Download PNG',
-      downloadStarted: 'Download started. Check your browser downloads or Files app.',
+      mobileDownloadSuccess: 'Download successful. Check your browser downloads or Files app.',
     };
     const imageElement = new Image();
     useEditorStore.setState({ imageElement, imageUrl: 'blob:test' });
@@ -277,7 +281,7 @@ describe('TemplatePanel preset border assets', () => {
 
     expect(await screen.findByRole('status')).toHaveProperty(
       'textContent',
-      'Download started. Check your browser downloads or Files app.'
+      'Download successful. Check your browser downloads or Files app.'
     );
   });
 

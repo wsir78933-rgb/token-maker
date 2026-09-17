@@ -166,6 +166,7 @@ const en = {
   download: 'Download PNG',
   downloadPreparing: 'Preparing download...',
   downloadStarted: 'Download started. Check your browser downloads or Files app.',
+  mobileDownloadSuccess: 'Download successful. Check your browser downloads or Files app.',
   downloadFailed: 'Download failed. Please try again.',
   downloadAll: 'Download ZIP',
 

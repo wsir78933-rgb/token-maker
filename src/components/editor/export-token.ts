@@ -5,7 +5,7 @@ import {
   trackShareDialogSuppressed,
 } from '@/lib/analytics';
 import { useEditorStore } from '@/lib/store/editor-store';
-import { useShareDialogStore } from '@/lib/store/share-dialog-store';
+import { useShareDialogStore, type DownloadSurface } from '@/lib/store/share-dialog-store';
 import { BORDER_TEMPLATES } from '@/lib/templates/borders';
 import { exportTokenAsPNG } from '@/lib/renderer/pipeline';
 import { createShareSocialImageBlob } from '@/lib/share/social-image';
@@ -94,7 +94,8 @@ export async function downloadCurrentToken(t: (key: I18nKey) => string) {
 
 export async function downloadCurrentTokenWithSharePrompt(
   t: (key: I18nKey) => string,
-  locale: SiteLocale
+  locale: SiteLocale,
+  downloadSurface: DownloadSurface = 'desktop'
 ): Promise<TokenDownloadOutcome> {
   const state = useEditorStore.getState();
   const blob = await createTokenExportBlob(state, state.exportSize);
@@ -119,6 +120,7 @@ export async function downloadCurrentTokenWithSharePrompt(
     fileName,
     exportSize: state.exportSize,
     locale,
+    downloadSurface,
   });
 
   return 'share-dialog';

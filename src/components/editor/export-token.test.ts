@@ -135,4 +135,12 @@ describe('downloadCurrentTokenWithSharePrompt', () => {
     expect(mocks.saveAs).not.toHaveBeenCalled();
     expect(useShareDialogStore.getState().isOpen).toBe(false);
   });
+
+  it('records the mobile download surface on the share dialog payload', async () => {
+    await expect(downloadCurrentTokenWithSharePrompt(t, 'en', 'mobile')).resolves.toBe('share-dialog');
+
+    expect(useShareDialogStore.getState().payload).toMatchObject({
+      downloadSurface: 'mobile',
+    });
+  });
 });

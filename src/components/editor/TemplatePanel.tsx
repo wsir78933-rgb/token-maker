@@ -161,9 +161,11 @@ function getTokenExportErrorMessage(error: unknown) {
 function DownloadPngButton({
   className,
   buttonClassName,
+  isMobile = false,
 }: {
   className?: string;
   buttonClassName?: string;
+  isMobile?: boolean;
 }) {
   const { t, locale } = useI18n();
   const { imageElement } = useTemplatePanelState();
@@ -184,7 +186,11 @@ function DownloadPngButton({
     });
 
     try {
-      const outcome = await downloadCurrentTokenWithSharePrompt(t, locale);
+      const outcome = await downloadCurrentTokenWithSharePrompt(
+        t,
+        locale,
+        isMobile ? 'mobile' : 'desktop'
+      );
       setTokenExportStatus(outcome === 'downloaded' ? 'started' : 'idle');
     } catch (error) {
       setTokenExportStatus('failed');
@@ -214,7 +220,7 @@ function DownloadPngButton({
       </Button>
       {tokenExportStatus === 'started' ? (
         <p role="status" aria-live="polite" className="mt-2 max-w-full text-xs leading-5 text-muted-foreground">
-          {t('downloadStarted')}
+          {isMobile ? t('mobileDownloadSuccess') : t('downloadStarted')}
         </p>
       ) : null}
       {tokenExportStatus === 'failed' && tokenExportError ? (
@@ -311,6 +317,7 @@ export function MobileBorderTemplatesPanel() {
         <DownloadPngButton
           className="mt-4"
           buttonClassName="w-full gap-2 text-sm font-medium"
+          isMobile
         />
       </div>
     </div>

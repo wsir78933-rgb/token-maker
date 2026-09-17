@@ -193,6 +193,10 @@ export function ShareDialog() {
   const isShareBusy = status === 'uploading';
   const isLocalDownloadBusy = activeLocalDownloadState?.status === 'downloading';
   const downloadButtonLabel = isLocalDownloadBusy ? t('shareDownloading') : t('shareDownload');
+  const downloadSuccessMessage =
+    currentPayload?.downloadSurface === 'mobile'
+      ? t('mobileDownloadSuccess')
+      : t('shareDownloadStarted');
 
   const previewUrl = useMemo(() => {
     if (!isOpen || !currentPayload) return null;
@@ -486,7 +490,7 @@ export function ShareDialog() {
               aria-live="polite"
               className="mt-3 max-w-full px-1 text-center text-xs leading-5 break-words text-stone-300 sm:text-sm"
             >
-              {t('shareDownloadStarted')}
+              {downloadSuccessMessage}
             </p>
           ) : null}
 

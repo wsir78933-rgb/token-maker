@@ -39,6 +39,7 @@ vi.mock('@/lib/i18n', () => ({
         shareDownloading: 'Downloading...',
         shareDownloadStarted: 'Download started. Check Files or Downloads.',
         shareDownloadFailed: 'Download failed',
+        mobileDownloadSuccess: 'Download successful. Check your browser downloads or Files app.',
         shareUploadDisclosure: 'Copy a link or share on social media to create a public share page.',
         shareSuppressFor24Hours: 'Do not show again for 24 hours',
         shareImageAlt: 'Generated VTT token preview',
@@ -72,7 +73,7 @@ vi.mock('file-saver', () => ({
   saveAs: mocks.saveAs,
 }));
 
-function openDialog() {
+function openDialog(downloadSurface: 'mobile' | 'desktop' = 'desktop') {
   const blob = new Blob([new Uint8Array([137, 80, 78, 71])], { type: 'image/png' });
   const previewBlob = new Blob([new Uint8Array([137, 80, 78, 71, 2])], {
     type: 'image/png',
@@ -89,6 +90,7 @@ function openDialog() {
     fileName: 'token.png',
     exportSize: 1024,
     locale: 'en',
+    downloadSurface,
   });
 
   return { blob, previewBlob, shareBlob };
@@ -197,6 +199,18 @@ describe('ShareDialog', () => {
     expect(mocks.uploadTokenForShare).not.toHaveBeenCalled();
     expect(screen.getByRole('status').textContent).toBe(
       'Download started. Check Files or Downloads.'
+    );
+  });
+
+  it('uses the mobile success copy for a mobile-origin download', () => {
+    const { blob } = openDialog('mobile');
+    render(<ShareDialog />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Download' }));
+
+    expect(mocks.saveAs).toHaveBeenCalledWith(blob, 'token.png');
+    expect(screen.getByRole('status').textContent).toBe(
+      'Download successful. Check your browser downloads or Files app.'
     );
   });
 

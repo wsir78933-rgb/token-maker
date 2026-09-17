@@ -177,6 +177,7 @@ const zh = {
   download: '下载 PNG',
   downloadPreparing: '正在准备下载…',
   downloadStarted: '下载已开始，请到浏览器的下载内容或文件 App 中查看。',
+  mobileDownloadSuccess: '下载成功，请到浏览器的下载内容或文件 App 中查看。',
   downloadFailed: '下载失败，请重试。',
   downloadAll: '批量下载 ZIP',
 

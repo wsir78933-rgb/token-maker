@@ -1,5 +1,56 @@
 # WORKLOG
 
+## 交接单 · 2026-09-17 20:19 CST · Codex CLI
+
+### 本次目标
+
+替换 `dnd-kobold` 中英文页面的全部正文图片，并将变更提交到本地 `main`；不删除旧图，不在本次执行 push 或部署。
+
+### 已完成
+
+- 生成并转换 3 张干净的 Kobold 人物图，已加入：
+  - `public/blog/inline/dnd-kobold/kobold-character-study.webp`
+  - `public/blog/inline/dnd-kobold/kobold-character-alert.webp`
+  - `public/blog/inline/dnd-kobold/kobold-character-ready.webp`
+- 英文和中文正文共 6 个 figure 已按 `study → alert → ready` 替换；新增公开路径集合 `DND_KOBOLD_CHARACTER_IMAGE_PATHS`。正文文字、表格、链接、标题、描述、FAQ 和封面未改；旧 6 张图仍保留且页面不再引用。
+- 本地 ego-browser 已回读 `http://127.0.0.1:40001/blog/dnd-kobold` 与 `/zh/blog/dnd-kobold`，在 1440×1000、375×812 四种组合中确认新图可见、HTTP 200、natural size 1536×1024、无横向溢出；封面保持原路径。
+- 已通过：`pnpm typecheck`、`pnpm lint`（0 errors，8 个既有 warning）、`pnpm exec vitest run src/lib/blog/dnd-kobold.test.ts`（1 file / 2 tests）、`pnpm build`、`git diff --check`。
+- 已在本地 `main` 创建 commit `23ea17c60363390ab283248bdd83fc23aee3f6ba`，消息为 `fix(blog): replace kobold body images`。当前工作区干净，`main` 相对 `origin/main` ahead 1；父提交和 `origin/main` 为 `5039872fbe6038589d3c9a3152a5488f4bb44924`。
+- 详细报告位于 `/tmp/token-maker-blog-v7-dnd-wizard-spells-e42833429c48/` 下的 `kobold-character-assets-report.md`、`kobold-body-character-rewire-report.md`、`kobold-body-character-browser-review.md`、`kobold-main-commit-report.md`、`kobold-main-commit-review.md`。
+
+### 做到一半
+
+无。本地代码、图片、测试、提交和本地浏览器验收均已完成。`WORKLOG.md` 本条按交接规则不提交。
+
+### 下一步
+
+1. 如需让远程仓库或线上站点更新，先明确授权后执行 `git push origin main`，再按部署平台流程部署。
+2. push/deploy 后重新回读生产 URL；当前证据只覆盖本地 `main` 和本地 40001，不能当作线上已更新。
+
+### 踩过的坑
+
+- 本地提交到 `main` 不等于远程或生产已更新；当前 `origin/main` 仍落后 1 个 commit。
+- 旧 Kobold 图片是有意保留的历史资产，不能因为页面不再引用就删除。
+- 40001 当前由 token-maker-app 的 `next-server` 提供；后续浏览器验收应复用并先核对 PID/cwd，不要停止未知服务。
+
+### 怎么验证
+
+```bash
+git status --short --branch
+git log -1 --oneline --decorate
+git rev-list --left-right --count origin/main...HEAD
+pnpm typecheck
+pnpm lint
+pnpm exec vitest run src/lib/blog/dnd-kobold.test.ts
+pnpm build
+git diff --check
+```
+
+本地页面：
+
+- http://127.0.0.1:40001/blog/dnd-kobold
+- http://127.0.0.1:40001/zh/blog/dnd-kobold
+
 ## 交接单 · 2026-09-16 07:22 CST · Grok CLI
 
 ### 本次目标
