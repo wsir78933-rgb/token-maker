@@ -1,5 +1,53 @@
 # WORKLOG
 
+## 交接单 · 2026-09-18 06:36 CST · Codex CLI
+
+### 本次目标
+
+在工作树「分享功能」中，将分享后端迁移到 Cloudflare Workers（vinext）+ 原生 R2 binding + Cloudflare Workers Rate Limiting，完成验证后提交、合并到本地 `main`，并删除该工作树。
+
+### 已完成
+
+- `/api/share` 已改用 `cloudflare:workers` 的 `SHARE_BUCKET` 与 `SHARE_RATE_LIMITER`；分享路径不再使用 Upstash、R2 S3 SDK、Vercel IP 头或运行时 `sharp`。
+- 增加了 Cloudflare 限流/IP/R2 适配器，保留严格 PNG 校验、APNG 拒绝、尺寸/像素/5MiB 限制、`shares/{id}.png`、30 天 immutable 缓存和 `{id, shareUrl, imageUrl}` 成功响应契约。
+- `@cf-wasm/png` 已改用明确的 `/workerd` 入口；Node/Vitest 测试使用仅测试侧的 `/node` mock，解决本地 Worker 的 Wasm 加载错误。
+- `wrangler.jsonc` 已声明 `SHARE_BUCKET`（`tokenmaker-shares`）和 `SHARE_RATE_LIMITER`（20 次/60 秒），并显式开启 observability logs/traces；`namespace_id` 仍是部署前必须替换的非密钥占位值 `999999999`。
+- 通过证据：分享 focused tests 60/60、目标 share ESLint 0、`pnpm run check:vinext` 退出 0、`pnpm run build:vinext` 退出 0、`pnpm exec wrangler types` 退出 0；本地 Wrangler `GET /`=200、`GET /api/share`=405，端口已释放。
+- 功能提交为 `983bd51`（`feat(share): use Cloudflare native storage and rate limiting`），已通过合并提交 `12e2eae` 合入 `main`。当前 `main` 后续 HEAD 为 `e5f2bd8`（`最新`），工作区干净。
+- Orca 工作树 `/Users/wusir/orca/workspaces/token-maker-app/分享功能` 及本地分支 `分享功能` 已删除；当前 Orca 只剩主工作树。
+
+### 做到一半
+
+- 无本次范围内的未完成代码。生产尚未部署，未 push，未执行真实 R2 上传或 Cloudflare 外部写入。
+- 此前全局 `tsc`/`lint` 仍有未修改组件、测试和生成产物相关残余；当前 `main` 后续提交 `e5f2bd8` 未在本次交接中重新跑全局检查，部署前需在当前 HEAD 复核。
+
+### 下一步
+
+1. 在当前 `main` 重新跑分享 focused tests、`check:vinext`、`build:vinext` 和 `wrangler types`。
+2. 部署前替换 `wrangler.jsonc` 中的 `namespace_id` 占位值，并在 Cloudflare 控制面配置真实 R2/Worker 资源；这些操作需要单独授权。
+3. 获得部署授权后再 deploy/push，并回读生产分享按钮、`/api/share` 和 R2 对象；当前没有生产证据。
+
+### 踩过的坑
+
+- `@cf-wasm/png` 默认入口会被打包成内联 `WebAssembly.Module`，本地 Wrangler workerd 返回 500；显式 `/workerd` 入口才通过本地 Worker smoke。
+- route 曾经重复解析 base64 并绕过 `parseShareUploadPayload`，且未映射非法 R2 binding；已修复并加入回归测试。
+- `wrangler types --check` 在一次只读验收中长时间无输出并被中断；成功证据使用的是 `pnpm exec wrangler types`。
+- 工作树删除前已确认提交已在 `main`；不要再假设 `分享功能` 分支或目录存在，也不要重写当前 `main` 历史。
+
+### 怎么验证
+
+```bash
+git status -sb
+git log --oneline --decorate -4
+pnpm exec vitest run src/app/api/share/route.test.ts src/lib/share/server-validation.test.ts src/lib/share/workers-image-sanitizer.test.ts src/lib/share/workers-rate-limit.test.ts src/lib/share/workers-client-ip.test.ts src/lib/share/workers-r2-storage.test.ts
+pnpm run check:vinext
+pnpm run build:vinext
+pnpm exec wrangler types
+git diff --check
+```
+
+本地 Worker 只读 smoke：启动 `pnpm exec wrangler dev --config dist/server/wrangler.json --local --port 40124` 后，确认 `GET /` 返回 200、`GET /api/share` 返回 405；不要发送 POST，完成后停止进程并确认端口释放。
+
 ## 交接单 · 2026-09-17 20:19 CST · Codex CLI
 
 ### 本次目标
