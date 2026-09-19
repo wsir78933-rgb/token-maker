@@ -18,10 +18,17 @@
   "ratelimits": [
     {
       "name": "SHARE_RATE_LIMITER",
-      // Non-secret local placeholder; replace with a unique positive integer before deployment.
-      "namespace_id": "999999999",
+      "namespace_id": "1001",
       "simple": {
         "limit": 20,
+        "period": 60
+      }
+    },
+    {
+      "name": "CONTACT_RATE_LIMITER",
+      "namespace_id": "1002",
+      "simple": {
+        "limit": 5,
         "period": 60
       }
     }

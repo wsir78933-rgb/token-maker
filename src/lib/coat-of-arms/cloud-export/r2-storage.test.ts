@@ -1,52 +1,15 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { CoatCloudExportFileType } from './constants';
-
-const awsSdkMocks = vi.hoisted(() => ({
-  send: vi.fn(async (command: unknown) => {
-    void command;
-    return {};
-  }),
-  putObjectCommandInputs: [] as Array<Record<string, unknown>>,
-  s3ClientConfigs: [] as Array<Record<string, unknown>>,
-}));
-
-vi.mock('@aws-sdk/client-s3', () => ({
-  S3Client: class {
-    constructor(config: Record<string, unknown>) {
-      awsSdkMocks.s3ClientConfigs.push(config);
-    }
-
-    send(command: unknown) {
-      return awsSdkMocks.send(command);
-    }
-  },
-  PutObjectCommand: class {
-    constructor(input: Record<string, unknown>) {
-      awsSdkMocks.putObjectCommandInputs.push(input);
-    }
-  },
-}));
-
 import { uploadCoatExportObject } from './r2-storage';
+import { WorkersR2StorageError } from '@/lib/share/workers-r2-storage';
 
-function createCoatExportStorageEnv() {
+function createFakeR2Bucket() {
   return {
-    accountId: 'test-account',
-    accessKeyId: 'test-access-key',
-    secretAccessKey: 'test-secret',
-    bucketName: 'tokenmaker-shares',
-    publicBaseUrl: 'https://r2.tokenmaker.one',
+    put: vi.fn(async () => null),
   };
 }
 
 describe('uploadCoatExportObject', () => {
-  beforeEach(() => {
-    awsSdkMocks.send.mockClear();
-    awsSdkMocks.send.mockResolvedValue({});
-    awsSdkMocks.putObjectCommandInputs.length = 0;
-    awsSdkMocks.s3ClientConfigs.length = 0;
-  });
-
   it.each([
     {
       fileType: 'png' as const,
@@ -64,13 +27,13 @@ describe('uploadCoatExportObject', () => {
       expectedContentType: 'application/pdf',
     },
   ])(
-    'puts $fileType to R2 with coats/{id} key, content type, cache control, and body',
+    'puts $fileType to SHARE_BUCKET with coats/{id} key, content type, cache control, and body',
     async ({ fileType, expectedKey, expectedContentType }) => {
       const fileBuffer = Buffer.from(`coat-export-${fileType}`);
-      const env = createCoatExportStorageEnv();
+      const bucket = createFakeR2Bucket();
 
       const result = await uploadCoatExportObject({
-        env,
+        bucket,
         id: '0123456789',
         fileType,
         fileBuffer,
@@ -79,66 +42,73 @@ describe('uploadCoatExportObject', () => {
       expect(result).toEqual({ key: expectedKey });
       expect(result).not.toHaveProperty('imageUrl');
       expect(result).not.toHaveProperty('shareUrl');
-      expect(awsSdkMocks.s3ClientConfigs).toEqual([
-        {
-          region: 'auto',
-          endpoint: 'https://test-account.r2.cloudflarestorage.com',
-          credentials: {
-            accessKeyId: 'test-access-key',
-            secretAccessKey: 'test-secret',
-          },
+      expect(bucket.put).toHaveBeenCalledTimes(1);
+      expect(bucket.put).toHaveBeenCalledWith(expectedKey, fileBuffer, {
+        httpMetadata: {
+          contentType: expectedContentType,
+          cacheControl: 'public, max-age=2592000, immutable',
         },
-      ]);
-      expect(awsSdkMocks.putObjectCommandInputs).toEqual([
-        {
-          Bucket: 'tokenmaker-shares',
-          Key: expectedKey,
-          Body: fileBuffer,
-          ContentType: expectedContentType,
-          CacheControl: 'public, max-age=2592000, immutable',
-        },
-      ]);
-      expect(awsSdkMocks.send).toHaveBeenCalledTimes(1);
-    }
+      });
+    },
   );
 
-  it('throws on invalid id and does not send PutObject', async () => {
+  it('throws on invalid id and does not call R2', async () => {
+    const bucket = createFakeR2Bucket();
+
     await expect(
       uploadCoatExportObject({
-        env: createCoatExportStorageEnv(),
+        bucket,
         id: 'short',
         fileType: 'png',
         fileBuffer: Buffer.from('png-bytes'),
-      })
+      }),
     ).rejects.toThrowError(/Invalid coat export id: "short"/);
 
-    expect(awsSdkMocks.send).not.toHaveBeenCalled();
-    expect(awsSdkMocks.putObjectCommandInputs).toHaveLength(0);
+    expect(bucket.put).not.toHaveBeenCalled();
   });
 
   it('throws on invalid file type and includes the actual value', async () => {
+    const bucket = createFakeR2Bucket();
+
     await expect(
       uploadCoatExportObject({
-        env: createCoatExportStorageEnv(),
+        bucket,
         id: '0123456789',
         fileType: 'webp' as CoatCloudExportFileType,
         fileBuffer: Buffer.from('webp-bytes'),
-      })
+      }),
     ).rejects.toThrowError(/webp/);
 
-    expect(awsSdkMocks.send).not.toHaveBeenCalled();
+    expect(bucket.put).not.toHaveBeenCalled();
   });
 
-  it('throws on a non-buffer body and includes the actual value', async () => {
+  it('throws on a non-byte body and includes the actual value', async () => {
+    const bucket = createFakeR2Bucket();
+
     await expect(
       uploadCoatExportObject({
-        env: createCoatExportStorageEnv(),
+        bucket,
         id: '0123456789',
         fileType: 'png',
-        fileBuffer: 'not-a-buffer' as unknown as Buffer,
-      })
-    ).rejects.toThrowError(/Invalid coat export file buffer: "not-a-buffer"/);
+        fileBuffer: 'not-a-buffer',
+      }),
+    ).rejects.toThrowError(/Invalid coat export file buffer: received "not-a-buffer"/);
 
-    expect(awsSdkMocks.send).not.toHaveBeenCalled();
+    expect(bucket.put).not.toHaveBeenCalled();
+  });
+
+  it('fails fast when SHARE_BUCKET is missing', async () => {
+    await expect(
+      uploadCoatExportObject({
+        bucket: undefined,
+        id: '0123456789',
+        fileType: 'png',
+        fileBuffer: Buffer.from('png-bytes'),
+      }),
+    ).rejects.toSatisfy(
+      (error: unknown) =>
+        error instanceof WorkersR2StorageError
+        && error.message === 'SHARE_BUCKET binding is missing; received undefined',
+    );
   });
 });

@@ -10,31 +10,56 @@ interface PublicEnv {
   NEXT_PUBLIC_SITE_URL: string;
 }
 
-function requireEnv(key: string): string {
-  const value = process.env[key];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${key}`);
+function serializeReceivedValue(value: unknown) {
+  if (typeof value === 'string') return JSON.stringify(value);
+  if (typeof value === 'number' || typeof value === 'boolean' || value === null) {
+    return JSON.stringify(value);
   }
-  return value;
+  if (value === undefined) return 'undefined';
+  return String(value);
+}
+
+function readRequiredEnvString(source: object, key: string): string {
+  const value = Reflect.get(source, key);
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new Error(
+      `Missing required environment variable: ${key}; received ${serializeReceivedValue(value)}`,
+    );
+  }
+
+  return value.trim();
+}
+
+function readOptionalEnvString(source: object, key: string, fallback: string): string {
+  const value = Reflect.get(source, key);
+  if (value === undefined || value === '') {
+    return fallback;
+  }
+
+  if (typeof value !== 'string') {
+    throw new Error(
+      `Environment variable ${key} must be a string; received ${serializeReceivedValue(value)}`,
+    );
+  }
+
+  return value.trim() || fallback;
 }
 
 function optionalEnv(key: string, fallback: string): string {
   return process.env[key] || fallback;
 }
 
-let cachedServerEnv: ServerEnv | null = null;
-
-export function getServerEnv(): ServerEnv {
-  if (cachedServerEnv) return cachedServerEnv;
-
-  cachedServerEnv = {
-    RESEND_API_KEY: requireEnv('RESEND_API_KEY'),
-    RESEND_FROM_EMAIL: requireEnv('RESEND_FROM_EMAIL'),
-    CONTACT_TO_EMAIL: requireEnv('CONTACT_TO_EMAIL'),
-    CONTACT_SUBJECT_PREFIX: optionalEnv('CONTACT_SUBJECT_PREFIX', 'Token Maker contact'),
+export function getServerEnv(source: object = process.env): ServerEnv {
+  return {
+    RESEND_API_KEY: readRequiredEnvString(source, 'RESEND_API_KEY'),
+    RESEND_FROM_EMAIL: readRequiredEnvString(source, 'RESEND_FROM_EMAIL'),
+    CONTACT_TO_EMAIL: readRequiredEnvString(source, 'CONTACT_TO_EMAIL'),
+    CONTACT_SUBJECT_PREFIX: readOptionalEnvString(
+      source,
+      'CONTACT_SUBJECT_PREFIX',
+      'Token Maker contact',
+    ),
   };
-
-  return cachedServerEnv;
 }
 
 let cachedPublicEnv: PublicEnv | null = null;

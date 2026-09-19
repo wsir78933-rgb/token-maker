@@ -1,5 +1,5 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import type { getShareStorageEnv } from '@/lib/share/r2-storage';
+import type { ShareBucketBinding } from '@/lib/share/workers-r2-storage';
+import { WorkersR2StorageError } from '@/lib/share/workers-r2-storage';
 import {
   COAT_EXPORT_CACHE_CONTROL,
   getCoatExportContentType,
@@ -7,46 +7,69 @@ import {
   type CoatCloudExportFileType,
 } from './constants';
 
-type CoatExportStorageEnv = NonNullable<ReturnType<typeof getShareStorageEnv>>;
+export interface UploadCoatExportObjectInput {
+  bucket: ShareBucketBinding | null | undefined;
+  id: string;
+  fileType: CoatCloudExportFileType;
+  fileBuffer: unknown;
+}
 
-function createCoatExportR2Client(env: CoatExportStorageEnv) {
-  return new S3Client({
-    region: 'auto',
-    endpoint: `https://${env.accountId}.r2.cloudflarestorage.com`,
-    credentials: {
-      accessKeyId: env.accessKeyId,
-      secretAccessKey: env.secretAccessKey,
-    },
-  });
+function serializeReceivedValue(value: unknown) {
+  if (typeof value === 'string') return JSON.stringify(value);
+  if (typeof value === 'number' || typeof value === 'boolean' || value === null) {
+    return JSON.stringify(value);
+  }
+  if (value === undefined) return 'undefined';
+  return String(value);
+}
+
+function requireCoatExportBucket(bucket: unknown): ShareBucketBinding {
+  if (bucket == null) {
+    throw new WorkersR2StorageError(
+      `SHARE_BUCKET binding is missing; received ${serializeReceivedValue(bucket)}`,
+    );
+  }
+
+  if (typeof bucket !== 'object') {
+    throw new WorkersR2StorageError(
+      `SHARE_BUCKET binding is invalid; received ${serializeReceivedValue(bucket)}`,
+    );
+  }
+
+  const put = Reflect.get(bucket, 'put');
+  if (typeof put !== 'function') {
+    throw new WorkersR2StorageError(
+      `SHARE_BUCKET binding is invalid; received put type ${typeof put}`,
+    );
+  }
+
+  return bucket as ShareBucketBinding;
+}
+
+function requireCoatExportFileBytes(fileBuffer: unknown): asserts fileBuffer is Uint8Array {
+  if (!(fileBuffer instanceof Uint8Array)) {
+    throw new Error(
+      `Invalid coat export file buffer: received ${serializeReceivedValue(fileBuffer)}`,
+    );
+  }
 }
 
 export async function uploadCoatExportObject({
-  env,
+  bucket,
   id,
   fileType,
   fileBuffer,
-}: {
-  env: CoatExportStorageEnv;
-  id: string;
-  fileType: CoatCloudExportFileType;
-  fileBuffer: Buffer;
-}): Promise<{ key: string }> {
-  if (!Buffer.isBuffer(fileBuffer)) {
-    throw new Error(`Invalid coat export file buffer: "${String(fileBuffer)}"`);
-  }
-
+}: UploadCoatExportObjectInput): Promise<{ key: string }> {
+  const shareBucket = requireCoatExportBucket(bucket);
+  requireCoatExportFileBytes(fileBuffer);
   const key = getCoatExportObjectKey(id, fileType);
-  const client = createCoatExportR2Client(env);
 
-  await client.send(
-    new PutObjectCommand({
-      Bucket: env.bucketName,
-      Key: key,
-      Body: fileBuffer,
-      ContentType: getCoatExportContentType(fileType),
-      CacheControl: COAT_EXPORT_CACHE_CONTROL,
-    })
-  );
+  await shareBucket.put(key, fileBuffer, {
+    httpMetadata: {
+      contentType: getCoatExportContentType(fileType),
+      cacheControl: COAT_EXPORT_CACHE_CONTROL,
+    },
+  });
 
   return { key };
 }

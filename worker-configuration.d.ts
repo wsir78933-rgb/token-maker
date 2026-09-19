@@ -4,6 +4,7 @@
 interface __BaseEnv_Env {
 	SHARE_BUCKET: R2Bucket;
 	SHARE_RATE_LIMITER: RateLimit;
+	CONTACT_RATE_LIMITER: RateLimit;
 	ASSETS: Fetcher;
 }
 declare namespace Cloudflare {

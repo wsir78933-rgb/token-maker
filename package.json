@@ -11,6 +11,8 @@
     "dev:vinext": "vinext dev --port 40001",
     "build:vinext": "vinext build",
     "check:vinext": "vinext check",
+    "deploy:workers": "wrangler deploy --config dist/server/wrangler.json",
+    "upload:workers-preview": "wrangler versions upload --config dist/server/wrangler.json",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "audit:prod": "pnpm audit --prod --audit-level=low",

@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import { env } from 'cloudflare:workers';
 import { NextRequest, NextResponse } from 'next/server';
 import {
   COAT_EXPORT_ID_LENGTH,
@@ -11,18 +12,13 @@ import {
   getSameOriginError,
   readRequestBodyWithinLimit,
 } from '@/lib/request-validation';
-import { getClientIp } from '@/lib/share/client-ip';
-import { getShareStorageEnv } from '@/lib/share/r2-storage';
+import { createRateLimitKey } from '@/lib/share/rate-limit';
+import { getCloudflareConnectingIp } from '@/lib/share/workers-client-ip';
 import {
-  RateLimiterUnavailableError,
-  createRateLimitKey,
-  createUpstashRateLimiter,
-} from '@/lib/share/rate-limit';
-
-export const runtime = 'nodejs';
-
-const COAT_EXPORT_RATE_LIMIT_MAX_REQUESTS = 20;
-const COAT_EXPORT_RATE_LIMIT_WINDOW_SECONDS = 60;
+  WorkersRateLimiterUnavailableError,
+  checkWorkersRateLimit,
+} from '@/lib/share/workers-rate-limit';
+import { WorkersR2StorageError } from '@/lib/share/workers-r2-storage';
 
 function jsonResponse(body: Record<string, unknown>, status: number, headers?: HeadersInit) {
   return NextResponse.json(body, { status, headers });
@@ -44,6 +40,10 @@ function parseJsonPayload(body: Uint8Array): unknown {
   }
 }
 
+function createCoatExportRateLimitKey(headers: Headers) {
+  return createRateLimitKey('coat-export:ip', getCloudflareConnectingIp(headers));
+}
+
 export async function POST(request: NextRequest) {
   const contentTypeError = getJsonContentTypeError(request.headers);
   if (contentTypeError) {
@@ -55,24 +55,21 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ error: originError }, 403);
   }
 
-  let rateLimiter: ReturnType<typeof createUpstashRateLimiter>;
   try {
-    rateLimiter = createUpstashRateLimiter();
-    const ipLimitResult = await rateLimiter.check({
-      key: createRateLimitKey('coat-export:ip', getClientIp(request.headers)),
-      maxRequests: COAT_EXPORT_RATE_LIMIT_MAX_REQUESTS,
-      windowSeconds: COAT_EXPORT_RATE_LIMIT_WINDOW_SECONDS,
-    });
+    const ipLimitResult = await checkWorkersRateLimit(
+      env.SHARE_RATE_LIMITER,
+      createCoatExportRateLimitKey(request.headers),
+    );
 
     if (ipLimitResult.limited) {
       return jsonResponse(
         { error: 'rate_limited' },
         429,
-        { 'Retry-After': String(ipLimitResult.retryAfterSeconds) }
+        { 'Retry-After': String(ipLimitResult.retryAfterSeconds) },
       );
     }
   } catch (error) {
-    if (error instanceof RateLimiterUnavailableError) {
+    if (error instanceof WorkersRateLimiterUnavailableError) {
       return jsonResponse({ error: 'rate_limiter_unavailable' }, 503);
     }
 
@@ -81,7 +78,7 @@ export async function POST(request: NextRequest) {
 
   const bodyResult = await readRequestBodyWithinLimit(
     request,
-    COAT_EXPORT_MAX_REQUEST_BODY_BYTES
+    COAT_EXPORT_MAX_REQUEST_BODY_BYTES,
   );
   if (!bodyResult.ok) {
     return jsonResponse({ error: 'file_too_large' }, 413);
@@ -97,17 +94,25 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ error: parsedPayload.error }, parsedPayload.status);
   }
 
-  const env = getShareStorageEnv();
-  if (!env) {
+  const shareBucket = env.SHARE_BUCKET;
+  if (shareBucket == null) {
     return jsonResponse({ error: 'storage_not_configured' }, 503);
   }
 
-  await uploadCoatExportObject({
-    env,
-    id: createCoatExportId(),
-    fileType: parsedPayload.value.fileType,
-    fileBuffer: parsedPayload.value.fileBuffer,
-  });
+  try {
+    await uploadCoatExportObject({
+      bucket: shareBucket,
+      id: createCoatExportId(),
+      fileType: parsedPayload.value.fileType,
+      fileBuffer: parsedPayload.value.fileBuffer,
+    });
+  } catch (error) {
+    if (error instanceof WorkersR2StorageError) {
+      return jsonResponse({ error: 'storage_not_configured' }, 503);
+    }
+
+    throw error;
+  }
 
   return jsonResponse({ ok: true }, 200);
 }

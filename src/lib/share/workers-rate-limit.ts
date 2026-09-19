@@ -7,12 +7,12 @@ export class WorkersRateLimiterUnavailableError extends Error {
   }
 }
 
-export interface WorkersShareRateLimitResult {
+export interface WorkersRateLimitResult {
   limited: boolean;
   retryAfterSeconds: number;
 }
 
-const SHARE_RATE_LIMIT_RETRY_AFTER_SECONDS = 60;
+const WORKERS_RATE_LIMIT_RETRY_AFTER_SECONDS = 60;
 
 function serializeReceivedValue(value: unknown) {
   if (typeof value === 'string') return JSON.stringify(value);
@@ -29,49 +29,49 @@ function requireNonEmptyRateLimitKey(key: string) {
   }
 }
 
-function requireShareRateLimiterBinding(shareRateLimiter: unknown): {
+function requireRateLimiterBinding(rateLimiter: unknown): {
   limit: (options: { key: string }) => Promise<unknown>;
 } {
-  if (shareRateLimiter == null) {
+  if (rateLimiter == null) {
     throw new WorkersRateLimiterUnavailableError(
-      `SHARE_RATE_LIMITER binding is missing; received ${String(shareRateLimiter)}`,
+      `Rate limiter binding is missing; received ${serializeReceivedValue(rateLimiter)}`,
     );
   }
 
-  if (typeof shareRateLimiter !== 'object') {
+  if (typeof rateLimiter !== 'object') {
     throw new WorkersRateLimiterUnavailableError(
-      `SHARE_RATE_LIMITER binding is invalid; received ${serializeReceivedValue(shareRateLimiter)}`,
+      `Rate limiter binding is invalid; received ${serializeReceivedValue(rateLimiter)}`,
     );
   }
 
-  const limit = Reflect.get(shareRateLimiter, 'limit');
+  const limit = Reflect.get(rateLimiter, 'limit');
   if (typeof limit !== 'function') {
     throw new WorkersRateLimiterUnavailableError(
-      `SHARE_RATE_LIMITER binding is invalid; received limit type ${typeof limit}`,
+      `Rate limiter binding is invalid; received limit type ${typeof limit}`,
     );
   }
 
-  return shareRateLimiter as { limit: (options: { key: string }) => Promise<unknown> };
+  return rateLimiter as { limit: (options: { key: string }) => Promise<unknown> };
 }
 
-export async function checkWorkersShareRateLimit(
-  shareRateLimiter: unknown,
+export async function checkWorkersRateLimit(
+  rateLimiter: unknown,
   key: string,
-): Promise<WorkersShareRateLimitResult> {
+): Promise<WorkersRateLimitResult> {
   requireNonEmptyRateLimitKey(key);
-  const shareRateLimiterBinding = requireShareRateLimiterBinding(shareRateLimiter);
-  const outcome = await shareRateLimiterBinding.limit({ key });
+  const rateLimiterBinding = requireRateLimiterBinding(rateLimiter);
+  const outcome = await rateLimiterBinding.limit({ key });
 
   if (outcome == null || typeof outcome !== 'object') {
     throw new WorkersRateLimiterUnavailableError(
-      `SHARE_RATE_LIMITER.limit() returned an invalid result; received ${serializeReceivedValue(outcome)}`,
+      `Rate limiter limit() returned an invalid result; received ${serializeReceivedValue(outcome)}`,
     );
   }
 
   const success = Reflect.get(outcome, 'success');
   if (typeof success !== 'boolean') {
     throw new WorkersRateLimiterUnavailableError(
-      `SHARE_RATE_LIMITER.limit() returned a non-boolean success; received ${serializeReceivedValue(success)}`,
+      `Rate limiter limit() returned a non-boolean success; received ${serializeReceivedValue(success)}`,
     );
   }
 
@@ -79,5 +79,8 @@ export async function checkWorkersShareRateLimit(
     return { limited: false, retryAfterSeconds: 0 };
   }
 
-  return { limited: true, retryAfterSeconds: SHARE_RATE_LIMIT_RETRY_AFTER_SECONDS };
+  return { limited: true, retryAfterSeconds: WORKERS_RATE_LIMIT_RETRY_AFTER_SECONDS };
 }
+
+export const checkWorkersShareRateLimit = checkWorkersRateLimit;
+export type WorkersShareRateLimitResult = WorkersRateLimitResult;

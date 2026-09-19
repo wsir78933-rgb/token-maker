@@ -9,7 +9,7 @@ import {
 import { getCloudflareConnectingIp } from '@/lib/share/workers-client-ip';
 import {
   WorkersRateLimiterUnavailableError,
-  checkWorkersShareRateLimit,
+  checkWorkersRateLimit,
 } from '@/lib/share/workers-rate-limit';
 import {
   uploadShareImageToBucket,
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const ipLimitResult = await checkWorkersShareRateLimit(
+    const ipLimitResult = await checkWorkersRateLimit(
       env.SHARE_RATE_LIMITER,
       createShareRateLimitKey(request.headers),
     );

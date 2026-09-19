@@ -1,3 +1,4 @@
+import { env } from 'cloudflare:workers';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerEnv } from '@/lib/env';
 import {
@@ -5,20 +6,16 @@ import {
   getSameOriginError,
   readRequestBodyWithinLimit,
 } from '@/lib/request-validation';
-import { getClientIp } from '@/lib/share/client-ip';
+import { getCloudflareConnectingIp } from '@/lib/share/workers-client-ip';
+import { createRateLimitKey } from '@/lib/share/rate-limit';
 import {
-  RateLimiterUnavailableError,
-  createRateLimitKey,
-  createUpstashRateLimiter,
-} from '@/lib/share/rate-limit';
-
-export const runtime = 'nodejs';
+  WorkersRateLimiterUnavailableError,
+  checkWorkersRateLimit,
+} from '@/lib/share/workers-rate-limit';
 
 const RESEND_EMAILS_ENDPOINT = 'https://api.resend.com/emails';
 const MAX_MESSAGE_LENGTH = 4000;
 const MAX_REQUEST_BODY_BYTES = 32 * 1024;
-const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
-const CONTACT_RATE_LIMIT_WINDOW_SECONDS = 10 * 60;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface ContactPayload {
@@ -29,12 +26,12 @@ interface ContactPayload {
   locale?: unknown;
 }
 
-function normalizeText(value: unknown) {
-  return typeof value === 'string' ? value.trim() : '';
-}
-
 function jsonResponse(body: Record<string, unknown>, status: number, headers?: HeadersInit) {
   return NextResponse.json(body, { status, headers });
+}
+
+function normalizeText(value: unknown) {
+  return typeof value === 'string' ? value.trim() : '';
 }
 
 function parseContactPayload(body: Uint8Array): ContactPayload | null {
@@ -94,98 +91,41 @@ function buildEmailHtml({
   `;
 }
 
-export async function POST(request: NextRequest) {
-  const contentTypeError = getJsonContentTypeError(request.headers);
-  if (contentTypeError) {
-    return jsonResponse({ error: contentTypeError }, 415);
-  }
-
-  const originError = getSameOriginError(request);
-  if (originError) {
-    return jsonResponse({ error: originError }, 403);
-  }
-
-  let rateLimiter: ReturnType<typeof createUpstashRateLimiter>;
+async function workersRateLimitResponse(rateLimiterBinding: unknown, key: string) {
   try {
-    rateLimiter = createUpstashRateLimiter();
-    const ipLimitResult = await rateLimiter.check({
-      key: createRateLimitKey('contact:ip', getClientIp(request.headers)),
-      maxRequests: CONTACT_RATE_LIMIT_MAX_REQUESTS,
-      windowSeconds: CONTACT_RATE_LIMIT_WINDOW_SECONDS,
-    });
-
-    if (ipLimitResult.limited) {
+    const limitResult = await checkWorkersRateLimit(rateLimiterBinding, key);
+    if (limitResult.limited) {
       return jsonResponse(
         { error: 'rate_limited' },
         429,
-        { 'Retry-After': String(ipLimitResult.retryAfterSeconds) }
+        { 'Retry-After': String(limitResult.retryAfterSeconds) },
       );
     }
+
+    return null;
   } catch (error) {
-    if (error instanceof RateLimiterUnavailableError) {
+    if (error instanceof WorkersRateLimiterUnavailableError) {
       return jsonResponse({ error: 'rate_limiter_unavailable' }, 503);
     }
 
     throw error;
   }
+}
 
-  const bodyResult = await readRequestBodyWithinLimit(request, MAX_REQUEST_BODY_BYTES);
-  if (!bodyResult.ok) {
-    return jsonResponse({ error: 'request_too_large' }, 413);
-  }
-
-  const payload = parseContactPayload(bodyResult.value);
-  if (!payload) {
-    return jsonResponse({ error: 'invalid_json' }, 400);
-  }
-
-  const honeypot = normalizeText(payload.website);
-  if (honeypot) {
-    return jsonResponse({ ok: true }, 200);
-  }
-
-  const name = normalizeText(payload.name);
-  const email = normalizeText(payload.email).toLowerCase();
-  const message = normalizeText(payload.message);
-  const locale = normalizeText(payload.locale) === 'zh' ? 'zh' : 'en';
-
-  if (name.length < 2 || name.length > 80) {
-    return jsonResponse({ error: 'invalid_name' }, 400);
-  }
-
-  if (!emailPattern.test(email) || email.length > 254) {
-    return jsonResponse({ error: 'invalid_email' }, 400);
-  }
-
-  if (message.length < 10 || message.length > MAX_MESSAGE_LENGTH) {
-    return jsonResponse({ error: 'invalid_message' }, 400);
-  }
-
+async function sendContactEmail({
+  name,
+  email,
+  message,
+  locale,
+}: {
+  name: string;
+  email: string;
+  message: string;
+  locale: string;
+}) {
+  let emailSettings: ReturnType<typeof getServerEnv>;
   try {
-    const emailLimitResult = await rateLimiter.check({
-      key: createRateLimitKey('contact:email', email),
-      maxRequests: CONTACT_RATE_LIMIT_MAX_REQUESTS,
-      windowSeconds: CONTACT_RATE_LIMIT_WINDOW_SECONDS,
-    });
-
-    if (emailLimitResult.limited) {
-      return jsonResponse(
-        { error: 'rate_limited' },
-        429,
-        { 'Retry-After': String(emailLimitResult.retryAfterSeconds) }
-      );
-    }
-  } catch (error) {
-    if (error instanceof RateLimiterUnavailableError) {
-      return jsonResponse({ error: 'rate_limiter_unavailable' }, 503);
-    }
-
-    throw error;
-  }
-
-  let env: ReturnType<typeof getServerEnv>;
-  try {
-    env = getServerEnv();
+    emailSettings = getServerEnv(env);
   } catch (error) {
     if (isMissingServerEnvironmentError(error)) {
       return jsonResponse({ error: 'email_not_configured' }, 503);
@@ -199,7 +139,7 @@ export async function POST(request: NextRequest) {
     RESEND_FROM_EMAIL: from,
     CONTACT_TO_EMAIL: to,
     CONTACT_SUBJECT_PREFIX: subjectPrefix,
-  } = env;
+  } = emailSettings;
   const subjectName = name.length > 48 ? `${name.slice(0, 48)}...` : name;
   const subject = `${subjectPrefix}: ${subjectName}`;
   const text = [
@@ -249,4 +189,66 @@ export async function POST(request: NextRequest) {
   }
 
   return jsonResponse({ ok: true }, 200);
+}
+
+export async function POST(request: NextRequest) {
+  const contentTypeError = getJsonContentTypeError(request.headers);
+  if (contentTypeError) {
+    return jsonResponse({ error: contentTypeError }, 415);
+  }
+
+  const originError = getSameOriginError(request);
+  if (originError) {
+    return jsonResponse({ error: originError }, 403);
+  }
+
+  const ipLimitResponse = await workersRateLimitResponse(
+    env.CONTACT_RATE_LIMITER,
+    createRateLimitKey('contact:ip', getCloudflareConnectingIp(request.headers)),
+  );
+  if (ipLimitResponse) {
+    return ipLimitResponse;
+  }
+
+  const bodyResult = await readRequestBodyWithinLimit(request, MAX_REQUEST_BODY_BYTES);
+  if (!bodyResult.ok) {
+    return jsonResponse({ error: 'request_too_large' }, 413);
+  }
+
+  const payload = parseContactPayload(bodyResult.value);
+  if (!payload) {
+    return jsonResponse({ error: 'invalid_json' }, 400);
+  }
+
+  const honeypot = normalizeText(payload.website);
+  if (honeypot) {
+    return jsonResponse({ ok: true }, 200);
+  }
+
+  const name = normalizeText(payload.name);
+  const email = normalizeText(payload.email).toLowerCase();
+  const message = normalizeText(payload.message);
+  const locale = normalizeText(payload.locale) === 'zh' ? 'zh' : 'en';
+
+  if (name.length < 2 || name.length > 80) {
+    return jsonResponse({ error: 'invalid_name' }, 400);
+  }
+
+  if (!emailPattern.test(email) || email.length > 254) {
+    return jsonResponse({ error: 'invalid_email' }, 400);
+  }
+
+  if (message.length < 10 || message.length > MAX_MESSAGE_LENGTH) {
+    return jsonResponse({ error: 'invalid_message' }, 400);
+  }
+
+  const emailLimitResponse = await workersRateLimitResponse(
+    env.CONTACT_RATE_LIMITER,
+    createRateLimitKey('contact:email', email),
+  );
+  if (emailLimitResponse) {
+    return emailLimitResponse;
+  }
+
+  return sendContactEmail({ name, email, message, locale });
 }

@@ -92,7 +92,7 @@ async function loadRoute(options: LoadRouteOptions = {}) {
   const r2StorageModule = await vi.importActual<typeof import('@/lib/share/workers-r2-storage')>(
     '@/lib/share/workers-r2-storage',
   );
-  const checkWorkersShareRateLimit = vi.fn(async () => {
+  const checkWorkersRateLimit = vi.fn(async () => {
     if (options.rateLimiterError) {
       throw options.rateLimiterError;
     }
@@ -105,6 +105,7 @@ async function loadRoute(options: LoadRouteOptions = {}) {
 
     return rateLimitResult;
   });
+  const checkWorkersShareRateLimit = checkWorkersRateLimit;
   const getCloudflareConnectingIp = vi.fn((headers: Headers) => {
     void headers;
     return connectingIp;
@@ -139,6 +140,7 @@ async function loadRoute(options: LoadRouteOptions = {}) {
   }));
   vi.doMock('@/lib/share/workers-rate-limit', () => ({
     ...rateLimitModule,
+    checkWorkersRateLimit,
     checkWorkersShareRateLimit,
   }));
   vi.doMock('@/lib/share/workers-client-ip', () => ({

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { NextRequest } from 'next/server';
 import type { CoatExportUploadParseResult } from '@/lib/coat-of-arms/cloud-export/server-validation';
+import { createRateLimitKey } from '@/lib/share/rate-limit';
 
 const validPayload = {
   file: 'c2FuaXRpemVkLWZpbGU=',
@@ -10,23 +11,29 @@ const validPayload = {
   locale: 'en',
 };
 
-const configuredStorageEnvironment = {
-  accountId: 'test-account',
-  accessKeyId: 'test-access-key',
-  secretAccessKey: 'test-secret',
-  bucketName: 'tokenmaker-shares',
-  publicBaseUrl: 'https://r2.tokenmaker.one',
-};
-
 interface RateLimitResult {
   limited: boolean;
   retryAfterSeconds: number;
 }
 
 interface LoadRouteOptions {
-  limiterErrorStage?: 'creation' | 'check';
-  rateLimitResults?: RateLimitResult[];
-  storageConfigured?: boolean;
+  rateLimiterBinding?: unknown;
+  bucketBinding?: unknown;
+  connectingIp?: string;
+  rateLimitResult?: RateLimitResult;
+  rateLimiterUnavailableMessage?: string;
+}
+
+function createFakeRateLimiterBinding() {
+  return {
+    limit: vi.fn(async () => ({ success: true })),
+  };
+}
+
+function createFakeR2Bucket() {
+  return {
+    put: vi.fn(async () => null),
+  };
 }
 
 function createRawCoatExportRequest(body: string, headers: Record<string, string> = {}) {
@@ -35,7 +42,7 @@ function createRawCoatExportRequest(body: string, headers: Record<string, string
     headers: {
       'content-type': 'application/json',
       origin: 'http://localhost',
-      'x-vercel-forwarded-for': '203.0.113.10',
+      'CF-Connecting-IP': '203.0.113.10',
       ...headers,
     },
     body,
@@ -47,35 +54,41 @@ function createRawCoatExportRequest(body: string, headers: Record<string, string
 
 function createCoatExportRequest(
   body: Record<string, unknown>,
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ) {
   return createRawCoatExportRequest(JSON.stringify(body), headers);
 }
 
-async function loadRoute({
-  limiterErrorStage,
-  rateLimitResults = [{ limited: false, retryAfterSeconds: 0 }],
-  storageConfigured = true,
-}: LoadRouteOptions = {}) {
+async function loadRoute(options: LoadRouteOptions = {}) {
+  const rateLimiterBinding = 'rateLimiterBinding' in options
+    ? options.rateLimiterBinding
+    : createFakeRateLimiterBinding();
+  const bucketBinding = 'bucketBinding' in options
+    ? options.bucketBinding
+    : createFakeR2Bucket();
+  const connectingIp = options.connectingIp ?? '203.0.113.10';
+  const rateLimitResult = options.rateLimitResult ?? { limited: false, retryAfterSeconds: 0 };
+
   vi.resetModules();
 
-  const rateLimitModule = await import('@/lib/share/rate-limit');
-  const queuedRateLimitResults = [...rateLimitResults];
-  const rateLimiterCheck = vi.fn(async () => {
-    if (limiterErrorStage === 'check') {
-      throw new rateLimitModule.RateLimiterUnavailableError('Upstash is unavailable.');
-    }
-
-    return queuedRateLimitResults.shift() ?? { limited: false, retryAfterSeconds: 0 };
-  });
-  const createRateLimiter = vi.fn(() => {
-    if (limiterErrorStage === 'creation') {
-      throw new rateLimitModule.RateLimiterUnavailableError(
-        'UPSTASH_REDIS_REST_URL is not configured.'
+  const rateLimitModule = await vi.importActual<typeof import('@/lib/share/workers-rate-limit')>(
+    '@/lib/share/workers-rate-limit',
+  );
+  const r2StorageModule = await vi.importActual<
+    typeof import('@/lib/coat-of-arms/cloud-export/r2-storage')
+  >('@/lib/coat-of-arms/cloud-export/r2-storage');
+  const checkWorkersRateLimit = vi.fn(async () => {
+    if (options.rateLimiterUnavailableMessage) {
+      throw new rateLimitModule.WorkersRateLimiterUnavailableError(
+        options.rateLimiterUnavailableMessage,
       );
     }
 
-    return { check: rateLimiterCheck };
+    return rateLimitResult;
+  });
+  const getCloudflareConnectingIp = vi.fn((headers: Headers) => {
+    void headers;
+    return connectingIp;
   });
   const sanitizedFileBuffer = Buffer.from('sanitized-file');
   const parseCoatExportUploadPayload = vi.fn<
@@ -90,32 +103,37 @@ async function loadRoute({
       locale: 'en' as const,
     },
   }));
-  const getShareStorageEnv = vi.fn(() =>
-    storageConfigured ? configuredStorageEnvironment : null
-  );
-  const uploadCoatExportObject = vi.fn(async ({ id }: { id: string }) => ({
-    key: `coats/${id}.png`,
-  }));
+  const uploadCoatExportObject = vi.fn(r2StorageModule.uploadCoatExportObject);
 
-  vi.doMock('@/lib/share/rate-limit', () => ({
-    ...rateLimitModule,
-    createUpstashRateLimiter: createRateLimiter,
+  vi.doMock('cloudflare:workers', () => ({
+    env: {
+      SHARE_RATE_LIMITER: rateLimiterBinding,
+      SHARE_BUCKET: bucketBinding,
+    },
   }));
-  vi.doMock('@/lib/share/r2-storage', () => ({ getShareStorageEnv }));
+  vi.doMock('@/lib/share/workers-rate-limit', () => ({
+    ...rateLimitModule,
+    checkWorkersRateLimit,
+    checkWorkersShareRateLimit: checkWorkersRateLimit,
+  }));
+  vi.doMock('@/lib/share/workers-client-ip', () => ({
+    getCloudflareConnectingIp,
+  }));
   vi.doMock('@/lib/coat-of-arms/cloud-export/server-validation', () => ({
     parseCoatExportUploadPayload,
   }));
   vi.doMock('@/lib/coat-of-arms/cloud-export/r2-storage', () => ({
+    ...r2StorageModule,
     uploadCoatExportObject,
   }));
 
   const route = await import('./route');
   return {
     ...route,
-    createRateLimiter,
-    getShareStorageEnv,
+    bucketBinding,
+    checkWorkersRateLimit,
+    getCloudflareConnectingIp,
     parseCoatExportUploadPayload,
-    rateLimiterCheck,
     sanitizedFileBuffer,
     uploadCoatExportObject,
   };
@@ -123,40 +141,43 @@ async function loadRoute({
 
 describe('coat export API', () => {
   afterEach(() => {
-    vi.doUnmock('@/lib/share/r2-storage');
-    vi.doUnmock('@/lib/share/rate-limit');
+    vi.doUnmock('cloudflare:workers');
+    vi.doUnmock('@/lib/share/workers-rate-limit');
+    vi.doUnmock('@/lib/share/workers-client-ip');
     vi.doUnmock('@/lib/coat-of-arms/cloud-export/server-validation');
     vi.doUnmock('@/lib/coat-of-arms/cloud-export/r2-storage');
     vi.restoreAllMocks();
   });
 
-  it('rejects a non-JSON content type before creating a rate limiter', async () => {
-    const { POST, createRateLimiter } = await loadRoute();
+  it('rejects a non-JSON content type before reading Workers bindings', async () => {
+    const { POST, checkWorkersRateLimit, getCloudflareConnectingIp } = await loadRoute();
 
     const response = await POST(
-      createCoatExportRequest(validPayload, { 'content-type': 'text/plain' })
+      createCoatExportRequest(validPayload, { 'content-type': 'text/plain' }),
     );
 
     expect(response.status).toBe(415);
     expect(await response.json()).toEqual({ error: 'invalid_content_type' });
-    expect(createRateLimiter).not.toHaveBeenCalled();
+    expect(getCloudflareConnectingIp).not.toHaveBeenCalled();
+    expect(checkWorkersRateLimit).not.toHaveBeenCalled();
   });
 
-  it('rejects a cross-origin request before creating a rate limiter', async () => {
-    const { POST, createRateLimiter } = await loadRoute();
+  it('rejects a cross-origin request before reading Workers bindings', async () => {
+    const { POST, checkWorkersRateLimit, getCloudflareConnectingIp } = await loadRoute();
 
     const response = await POST(
-      createCoatExportRequest(validPayload, { origin: 'https://attacker.example' })
+      createCoatExportRequest(validPayload, { origin: 'https://attacker.example' }),
     );
 
     expect(response.status).toBe(403);
     expect(await response.json()).toEqual({ error: 'invalid_origin' });
-    expect(createRateLimiter).not.toHaveBeenCalled();
+    expect(getCloudflareConnectingIp).not.toHaveBeenCalled();
+    expect(checkWorkersRateLimit).not.toHaveBeenCalled();
   });
 
   it('returns retry metadata from the coat export IP limiter', async () => {
-    const { POST, parseCoatExportUploadPayload, rateLimiterCheck } = await loadRoute({
-      rateLimitResults: [{ limited: true, retryAfterSeconds: 37 }],
+    const { POST, parseCoatExportUploadPayload, checkWorkersRateLimit } = await loadRoute({
+      rateLimitResult: { limited: true, retryAfterSeconds: 37 },
     });
 
     const response = await POST(createRawCoatExportRequest('{not json'));
@@ -165,36 +186,34 @@ describe('coat export API', () => {
     expect(response.headers.get('retry-after')).toBe('37');
     expect(await response.json()).toEqual({ error: 'rate_limited' });
     expect(parseCoatExportUploadPayload).not.toHaveBeenCalled();
-    expect(rateLimiterCheck).toHaveBeenCalledWith({
-      key: expect.stringMatching(/^coat-export:ip:[a-f0-9]{24}$/),
-      maxRequests: 20,
-      windowSeconds: 60,
+    expect(checkWorkersRateLimit).toHaveBeenCalledWith(
+      { limit: expect.any(Function) },
+      createRateLimitKey('coat-export:ip', '203.0.113.10'),
+    );
+  });
+
+  it('returns 503 when the SHARE_RATE_LIMITER binding is missing', async () => {
+    const { POST, checkWorkersRateLimit, parseCoatExportUploadPayload } = await loadRoute({
+      rateLimiterBinding: undefined,
+      rateLimiterUnavailableMessage: 'Rate limiter binding is missing; received undefined',
     });
-  });
-
-  it('returns 503 when Upstash configuration is absent', async () => {
-    const { POST } = await loadRoute({ limiterErrorStage: 'creation' });
 
     const response = await POST(createCoatExportRequest(validPayload));
 
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({ error: 'rate_limiter_unavailable' });
-  });
-
-  it('returns 503 when the Upstash limiter service is unavailable', async () => {
-    const { POST } = await loadRoute({ limiterErrorStage: 'check' });
-
-    const response = await POST(createCoatExportRequest(validPayload));
-
-    expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({ error: 'rate_limiter_unavailable' });
+    expect(checkWorkersRateLimit).toHaveBeenCalledWith(
+      undefined,
+      createRateLimitKey('coat-export:ip', '203.0.113.10'),
+    );
+    expect(parseCoatExportUploadPayload).not.toHaveBeenCalled();
   });
 
   it('rejects request bodies above the upload limit after limiter approval', async () => {
     const { POST, parseCoatExportUploadPayload } = await loadRoute();
 
     const response = await POST(
-      createRawCoatExportRequest('{}', { 'content-length': String(9 * 1024 * 1024) })
+      createRawCoatExportRequest('{}', { 'content-length': String(9 * 1024 * 1024) }),
     );
 
     expect(response.status).toBe(413);
@@ -227,16 +246,15 @@ describe('coat export API', () => {
     expect(uploadCoatExportObject).not.toHaveBeenCalled();
   });
 
-  it('reports when R2 storage is not configured', async () => {
-    const { POST, getShareStorageEnv, uploadCoatExportObject } = await loadRoute({
-      storageConfigured: false,
+  it('reports when SHARE_BUCKET is not configured', async () => {
+    const { POST, uploadCoatExportObject } = await loadRoute({
+      bucketBinding: undefined,
     });
 
     const response = await POST(createCoatExportRequest(validPayload));
 
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({ error: 'storage_not_configured' });
-    expect(getShareStorageEnv).toHaveBeenCalledTimes(1);
     expect(uploadCoatExportObject).not.toHaveBeenCalled();
   });
 
@@ -246,6 +264,7 @@ describe('coat export API', () => {
       parseCoatExportUploadPayload,
       sanitizedFileBuffer,
       uploadCoatExportObject,
+      bucketBinding,
     } = await loadRoute();
 
     const response = await POST(createCoatExportRequest(validPayload));
@@ -258,7 +277,7 @@ describe('coat export API', () => {
     expect(responseBody).not.toHaveProperty('key');
     expect(parseCoatExportUploadPayload).toHaveBeenCalledWith(validPayload);
     expect(uploadCoatExportObject).toHaveBeenCalledWith({
-      env: configuredStorageEnvironment,
+      bucket: bucketBinding,
       id: expect.stringMatching(/^[A-Za-z0-9_-]{10}$/),
       fileType: 'png',
       fileBuffer: sanitizedFileBuffer,

@@ -1,5 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { NextRequest } from 'next/server';
+import { createRateLimitKey } from '@/lib/share/rate-limit';
 
 const validPayload = {
   name: 'Test User',
@@ -14,8 +15,17 @@ interface RateLimitResult {
 }
 
 interface LoadRouteOptions {
-  limiterErrorStage?: 'creation' | 'check';
+  rateLimiterBinding?: unknown;
+  connectingIp?: string;
   rateLimitResults?: RateLimitResult[];
+  rateLimiterUnavailableMessage?: string;
+  emailSettings?: Record<string, string>;
+}
+
+function createFakeRateLimiterBinding() {
+  return {
+    limit: vi.fn(async () => ({ success: true })),
+  };
 }
 
 function createRawContactRequest(body: string, headers: Record<string, string> = {}) {
@@ -24,7 +34,7 @@ function createRawContactRequest(body: string, headers: Record<string, string> =
     headers: {
       'content-type': 'application/json',
       origin: 'http://localhost',
-      'x-vercel-forwarded-for': '203.0.113.10',
+      'CF-Connecting-IP': '203.0.113.10',
       ...headers,
     },
     body,
@@ -38,87 +48,97 @@ function createContactRequest(body: Record<string, unknown>, headers: Record<str
   return createRawContactRequest(JSON.stringify(body), headers);
 }
 
-async function loadRoute({
-  limiterErrorStage,
-  rateLimitResults = [
+async function loadRoute(options: LoadRouteOptions = {}) {
+  const rateLimiterBinding = 'rateLimiterBinding' in options
+    ? options.rateLimiterBinding
+    : createFakeRateLimiterBinding();
+  const connectingIp = options.connectingIp ?? '203.0.113.10';
+  const queuedRateLimitResults = [...(options.rateLimitResults ?? [
     { limited: false, retryAfterSeconds: 0 },
     { limited: false, retryAfterSeconds: 0 },
-  ],
-}: LoadRouteOptions = {}) {
+  ])];
+  const emailSettings = options.emailSettings ?? {
+    RESEND_API_KEY: 'test-key',
+    RESEND_FROM_EMAIL: 'Token Maker <from@example.com>',
+    CONTACT_TO_EMAIL: 'to@example.com',
+  };
+
   vi.resetModules();
 
-  const rateLimitModule = await import('@/lib/share/rate-limit');
-  const resultQueue = [...rateLimitResults];
-  const rateLimiterCheck = vi.fn(async () => {
-    if (limiterErrorStage === 'check') {
-      throw new rateLimitModule.RateLimiterUnavailableError('Upstash is unavailable.');
+  const rateLimitModule = await vi.importActual<typeof import('@/lib/share/workers-rate-limit')>(
+    '@/lib/share/workers-rate-limit',
+  );
+  const checkWorkersRateLimit = vi.fn(async () => {
+    if (options.rateLimiterUnavailableMessage) {
+      throw new rateLimitModule.WorkersRateLimiterUnavailableError(
+        options.rateLimiterUnavailableMessage,
+      );
     }
 
-    return resultQueue.shift() ?? { limited: false, retryAfterSeconds: 0 };
+    return queuedRateLimitResults.shift() ?? { limited: false, retryAfterSeconds: 0 };
   });
-  const createRateLimiter = vi.fn(() => {
-    if (limiterErrorStage === 'creation') {
-      throw new rateLimitModule.RateLimiterUnavailableError('UPSTASH_REDIS_REST_URL is not configured.');
-    }
-
-    return { check: rateLimiterCheck };
+  const getCloudflareConnectingIp = vi.fn((headers: Headers) => {
+    void headers;
+    return connectingIp;
   });
 
-  vi.doMock('@/lib/share/rate-limit', () => ({
+  vi.doMock('cloudflare:workers', () => ({
+    env: {
+      CONTACT_RATE_LIMITER: rateLimiterBinding,
+      ...emailSettings,
+    },
+  }));
+  vi.doMock('@/lib/share/workers-rate-limit', () => ({
     ...rateLimitModule,
-    createUpstashRateLimiter: createRateLimiter,
+    checkWorkersRateLimit,
+    checkWorkersShareRateLimit: checkWorkersRateLimit,
+  }));
+  vi.doMock('@/lib/share/workers-client-ip', () => ({
+    getCloudflareConnectingIp,
   }));
 
   const route = await import('./route');
-  return { ...route, createRateLimiter, rateLimiterCheck };
+  return {
+    ...route,
+    checkWorkersRateLimit,
+    getCloudflareConnectingIp,
+    rateLimiterBinding,
+  };
 }
 
 describe('contact API', () => {
-  const originalEnv = process.env;
-
-  beforeEach(() => {
-    process.env = {
-      ...originalEnv,
-      RESEND_API_KEY: 'test-key',
-      RESEND_FROM_EMAIL: 'Token Maker <from@example.com>',
-      CONTACT_TO_EMAIL: 'to@example.com',
-    };
-
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(async () => new Response(JSON.stringify({ id: 'email_123' }), { status: 200 }))
-    );
-  });
-
   afterEach(() => {
-    process.env = originalEnv;
-    vi.doUnmock('@/lib/share/rate-limit');
+    vi.doUnmock('cloudflare:workers');
+    vi.doUnmock('@/lib/share/workers-rate-limit');
+    vi.doUnmock('@/lib/share/workers-client-ip');
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
-  it('rejects a non-JSON content type before creating a rate limiter', async () => {
-    const { POST, createRateLimiter } = await loadRoute();
+  it('rejects a non-JSON content type before reading Workers bindings', async () => {
+    const { POST, checkWorkersRateLimit, getCloudflareConnectingIp } = await loadRoute();
 
     const response = await POST(createContactRequest(validPayload, { 'content-type': 'text/plain' }));
 
     expect(response.status).toBe(415);
     expect(await response.json()).toEqual({ error: 'invalid_content_type' });
-    expect(createRateLimiter).not.toHaveBeenCalled();
+    expect(getCloudflareConnectingIp).not.toHaveBeenCalled();
+    expect(checkWorkersRateLimit).not.toHaveBeenCalled();
   });
 
-  it('rejects a cross-origin request before creating a rate limiter', async () => {
-    const { POST, createRateLimiter } = await loadRoute();
+  it('rejects a cross-origin request before reading Workers bindings', async () => {
+    const { POST, checkWorkersRateLimit, getCloudflareConnectingIp } = await loadRoute();
 
     const response = await POST(createContactRequest(validPayload, { origin: 'https://attacker.example' }));
 
     expect(response.status).toBe(403);
     expect(await response.json()).toEqual({ error: 'invalid_origin' });
-    expect(createRateLimiter).not.toHaveBeenCalled();
+    expect(getCloudflareConnectingIp).not.toHaveBeenCalled();
+    expect(checkWorkersRateLimit).not.toHaveBeenCalled();
   });
 
   it('returns retry metadata from the IP limiter before parsing invalid JSON', async () => {
-    const { POST, rateLimiterCheck } = await loadRoute({
+    const { POST, checkWorkersRateLimit, getCloudflareConnectingIp } = await loadRoute({
       rateLimitResults: [{ limited: true, retryAfterSeconds: 41 }],
     });
 
@@ -127,29 +147,27 @@ describe('contact API', () => {
     expect(response.status).toBe(429);
     expect(response.headers.get('retry-after')).toBe('41');
     expect(await response.json()).toEqual({ error: 'rate_limited' });
-    expect(rateLimiterCheck).toHaveBeenCalledWith({
-      key: expect.stringMatching(/^contact:ip:[a-f0-9]{24}$/),
-      maxRequests: 5,
-      windowSeconds: 600,
+    expect(getCloudflareConnectingIp).toHaveBeenCalledTimes(1);
+    expect(checkWorkersRateLimit).toHaveBeenCalledWith(
+      { limit: expect.any(Function) },
+      createRateLimitKey('contact:ip', '203.0.113.10'),
+    );
+  });
+
+  it('returns 503 when the CONTACT_RATE_LIMITER binding is missing', async () => {
+    const { POST, checkWorkersRateLimit } = await loadRoute({
+      rateLimiterBinding: undefined,
+      rateLimiterUnavailableMessage: 'Rate limiter binding is missing; received undefined',
     });
-  });
-
-  it('returns 503 when Upstash configuration is absent', async () => {
-    const { POST } = await loadRoute({ limiterErrorStage: 'creation' });
 
     const response = await POST(createContactRequest(validPayload));
 
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({ error: 'rate_limiter_unavailable' });
-  });
-
-  it('returns 503 when the Upstash limiter service is unavailable', async () => {
-    const { POST } = await loadRoute({ limiterErrorStage: 'check' });
-
-    const response = await POST(createContactRequest(validPayload));
-
-    expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({ error: 'rate_limiter_unavailable' });
+    expect(checkWorkersRateLimit).toHaveBeenCalledWith(
+      undefined,
+      createRateLimitKey('contact:ip', '203.0.113.10'),
+    );
   });
 
   it('rejects invalid JSON after the request is allowed', async () => {
@@ -162,7 +180,12 @@ describe('contact API', () => {
   });
 
   it('limits a hashed email key after an allowed IP check', async () => {
-    const { POST, rateLimiterCheck } = await loadRoute({
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ id: 'email_123' }), { status: 200 })),
+    );
+
+    const { POST, checkWorkersRateLimit } = await loadRoute({
       rateLimitResults: [
         { limited: false, retryAfterSeconds: 0 },
         { limited: true, retryAfterSeconds: 53 },
@@ -174,25 +197,30 @@ describe('contact API', () => {
     expect(response.status).toBe(429);
     expect(response.headers.get('retry-after')).toBe('53');
     expect(await response.json()).toEqual({ error: 'rate_limited' });
-    expect(rateLimiterCheck).toHaveBeenNthCalledWith(2, {
-      key: expect.stringMatching(/^contact:email:[a-f0-9]{24}$/),
-      maxRequests: 5,
-      windowSeconds: 600,
-    });
+    expect(checkWorkersRateLimit).toHaveBeenNthCalledWith(
+      2,
+      { limit: expect.any(Function) },
+      createRateLimitKey('contact:email', 'test@example.com'),
+    );
     expect(fetch).not.toHaveBeenCalled();
   });
 
   it('sends an allowed request with the existing Resend fields', async () => {
-    const { POST, rateLimiterCheck } = await loadRoute();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ id: 'email_123' }), { status: 200 })),
+    );
+
+    const { POST, checkWorkersRateLimit } = await loadRoute();
 
     const response = await POST(createContactRequest(validPayload));
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ ok: true });
-    expect(rateLimiterCheck).toHaveBeenCalledTimes(2);
+    expect(checkWorkersRateLimit).toHaveBeenCalledTimes(2);
     expect(fetch).toHaveBeenCalledWith(
       'https://api.resend.com/emails',
-      expect.objectContaining({ method: 'POST' })
+      expect.objectContaining({ method: 'POST' }),
     );
   });
 });
