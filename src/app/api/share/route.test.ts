@@ -2,8 +2,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { NextRequest } from 'next/server';
 import type { ShareUploadParseResult } from '@/lib/share/server-validation';
 
-vi.mock('@cf-wasm/png/workerd', async () => import('@cf-wasm/png/node'));
-
 const validPayload = {
   image: 'c2FuaXRpemVkLWltYWdl',
   width: 1024,

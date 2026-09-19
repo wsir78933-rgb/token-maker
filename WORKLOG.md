@@ -1,5 +1,54 @@
 # WORKLOG
 
+## 交接单 · 2026-09-18 08:03 CST · Codex CLI
+
+### 本次目标
+
+只调整 Token Maker 移动端最终下载反馈：下载后显示“下载成功”，并提示用户到浏览器下载内容或文件 App 查看；桌面端保持原有可见文案和行为。
+
+### 已完成
+
+- 在下载 payload 中加入可选的下载来源标记；移动端传递 `mobile`，桌面端默认使用 `desktop`。
+- 移动端外层下载和分享弹层最终下载均显示：`下载成功，请到浏览器的下载内容或文件 App 中查看。`；桌面端继续显示原有的“下载已开始……”文案。
+- 保留普通下载本地生成/保存和分享上传边界；没有把移动端成功文案直接改成桌面端共用文案。
+- 相关源文件和测试已在 `main` 的 `e5f2bd8`（`最新`）中；当前最新 HEAD 为 `b789980`（`最新`），`origin/main` 与 HEAD 一致，工作树在写本交接单前干净。
+- 本地生产构建、移动端/桌面端 Ego 浏览器回读已完成：移动端 375×812 显示移动端成功文案并触发真实下载；桌面端 1440×1000 未显示移动端文案，仍显示原有文案；两端均无横向溢出。
+- 通过证据：下载相关 focused tests 3 files / 38 tests、`pnpm typecheck`、`pnpm build`（171 个页面）、Impeccable detector；`pnpm lint` 0 errors，保留 8 条既有 warning。
+- `移动端下载` 工作树和分支已按此前要求删除；当前只剩主工作树。
+
+### 做到一半
+
+无本次范围内的未完成代码或待决定事项。生产 URL 未在本次重新部署或验收；当前证据是本地 `main`、本地 production build 和本地 Ego 浏览器。
+
+### 下一步
+
+1. 如果需要确认线上效果，先按单独授权的部署流程检查生产版本，再回读移动端和桌面端下载流程；不要把 Git 状态或本地构建当成生产已更新。
+2. 如需继续改动，先保留桌面默认 `downloadSurface` 分支，只修改移动端来源路径；不要直接改 `shareDownloadStarted` 这类桌面共用文案。
+
+### 踩过的坑
+
+- `ShareDialog` 和 `TemplatePanel` 是桌面/移动共用组件；移动端专属文案必须通过来源标记分流，否则直接改 i18n 共用 key 会改变桌面端。
+- `saveAs` 只能证明浏览器下载已触发，网页不能确认手机系统最终写入文件；用户提示应同时指导去浏览器下载内容或文件 App 查看。
+- `WORKLOG.md` 是交接记录文件，不要把它加入功能提交；当前交接单写入后它会成为新的未存档修改。
+
+### 怎么验证
+
+```bash
+git status -sb
+git log --oneline --decorate -4
+pnpm exec vitest run src/components/editor/ShareDialog.test.tsx src/components/editor/TemplatePanel.test.tsx src/components/editor/export-token.test.ts
+pnpm typecheck
+pnpm lint
+pnpm build
+node /Users/wusir/.codex/skills/designer-skill/references/external-skills/impeccable/scripts/detect.mjs --json src/components/editor/ShareDialog.tsx src/components/editor/TemplatePanel.tsx
+git diff --check
+```
+
+本地浏览器路径：
+
+- 移动端：`http://localhost:40001/zh`，375×812；打开编辑器，上传 PNG，点击“下载 PNG”，再点击弹层里的“下载”，确认出现“下载成功，请到浏览器的下载内容或文件 App 中查看。”。
+- 桌面端：同一地址，1440×1000；完成相同流程，确认仍为“下载已开始，请到浏览器的下载内容或文件 App 中查看。”。
+
 ## 交接单 · 2026-09-18 06:36 CST · Codex CLI
 
 ### 本次目标

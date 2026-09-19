@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { decode } from '@cf-wasm/png';
 import {
   SHARE_MAX_IMAGE_BYTES,
@@ -7,8 +7,6 @@ import {
   SHARE_SOCIAL_IMAGE_WIDTH,
 } from './constants';
 import { sanitizeSharePngBytes } from './workers-image-sanitizer';
-
-vi.mock('@cf-wasm/png/workerd', async () => import('@cf-wasm/png/node'));
 
 async function createPngBuffer(width: number, height: number) {
   return sharp({

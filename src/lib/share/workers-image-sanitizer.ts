@@ -1,4 +1,4 @@
-import { decode, encode } from '@cf-wasm/png/workerd';
+import { decode, encode } from '@cf-wasm/png';
 import { SHARE_MAX_IMAGE_BYTES, SHARE_MAX_IMAGE_PIXELS } from './constants';
 
 const PNG_SIGNATURE = Uint8Array.of(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a);
@@ -113,8 +113,8 @@ function resultFromDecoderFailure(error: unknown): SharePngSanitizeResult {
 
 /**
  * Decode a standard PNG, enforce the share upload contract, and re-encode a
- * clean PNG. Uses the explicit @cf-wasm/png/workerd entry so the Worker bundle
- * loads Wasm as an external module asset instead of compiling a Node inline module.
+ * clean PNG. The package entry stays runtime-conditional: Next's Node build uses
+ * the inline Node Wasm entry, while Vinext aliases it to Workerd's external Wasm.
  * A 2048×2048 round-trip took ~590ms wall in local workerd, so production
  * needs Workers Paid CPU (default 30s), not the Free 10ms limit.
  */
