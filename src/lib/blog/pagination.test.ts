@@ -16,7 +16,7 @@ describe('blog pagination capacity', () => {
     (locale) => {
       expect(getBlogPageCount(locale)).toBe(7);
       expect([1, 2, 3, 4, 5, 6, 7].map((page) => getBlogPostsForPage(locale, page).length)).toEqual(
-        [10, 10, 10, 10, 10, 10, 2],
+        [10, 10, 10, 10, 10, 10, 4],
       );
       expect(getBlogPostsForPage(locale, 1)[0]?.slug).toBe('dnd-kobold');
     },
