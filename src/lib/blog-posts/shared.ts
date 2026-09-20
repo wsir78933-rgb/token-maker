@@ -70,6 +70,8 @@ export const DND_SKILLS_COVER_PATH = '/blog/covers/en/dnd-skills-guide.webp';
 export const DND_WIZARD_SPELLS_COVER_PATH = '/blog/covers/en/dnd-wizard-spells-guide.webp';
 export const DND_SCHOOLS_OF_MAGIC_COVER_PATH =
   '/blog/covers/en/dnd-schools-of-magic-guide.webp';
+export const DND_SCHOOLS_OF_MAGIC_ZH_COVER_PATH =
+  '/blog/covers/zh/dnd-schools-of-magic-caster.webp';
 export const DND_HALFLING_COVER_PATH = '/blog/covers/en/dnd-halfling-guide.webp';
 
 // Inline images
@@ -267,6 +269,8 @@ export const DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_IMAGE_PATH =
   '/blog/inline/dnd-schools-of-magic/eight-schools-peer-grid.webp';
 export const DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_ZH_IMAGE_PATH =
   '/blog/inline/dnd-schools-of-magic/eight-schools-peer-grid-zh.webp';
+export const DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-schools-of-magic/spellcasters-zh.webp';
 export const DND_HALFLING_VERSION_LOCK_IMAGE_PATH =
   '/blog/inline/dnd-halfling/dnd-halfling-version-lock.webp';
 export const DND_HALFLING_CROP_DECISION_IMAGE_PATH =

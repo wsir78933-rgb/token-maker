@@ -65,6 +65,7 @@ import {
   DND_SKILLS_COVER_PATH,
   DND_WIZARD_SPELLS_COVER_PATH,
   DND_SCHOOLS_OF_MAGIC_COVER_PATH,
+  DND_SCHOOLS_OF_MAGIC_ZH_COVER_PATH,
   DND_HALFLING_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
@@ -5573,7 +5574,7 @@ const dndSchoolsOfMagicArticleZh: BlogPost = {
   updatedAt: DND_SCHOOLS_OF_MAGIC_UPDATED_AT,
   readTime: '12 分钟阅读',
   coverLabel: '法术学派',
-  coverImage: DND_SCHOOLS_OF_MAGIC_COVER_PATH,
+  coverImage: DND_SCHOOLS_OF_MAGIC_ZH_COVER_PATH,
   coverAlt: DND_SCHOOLS_OF_MAGIC_CHINESE_COVER_ALT,
   bodyHtml: dndSchoolsOfMagicArticleHtmlZh,
   faqItems: [],

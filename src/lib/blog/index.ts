@@ -186,20 +186,22 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
   const path = `/blog/${slug}`;
   const localizedPath = getLocalizedPath(locale, path);
   const metadataTitle = post.seoTitle ?? post.title;
+  const isChineseSchoolsPost = locale === 'zh' && slug === 'dnd-schools-of-magic';
+  const socialTitle = isChineseSchoolsPost ? metadataTitle : `${metadataTitle} | ${siteConfig.name}`;
   const description = post.metaDescription ?? post.excerpt;
   const absoluteCoverImage = post.coverImage ? absoluteUrl(post.coverImage) : undefined;
   const publishedTime = post.publishedAt ?? post.updatedAt;
 
   return {
     metadataBase: new URL(getSiteUrl()),
-    title: metadataTitle,
+    title: isChineseSchoolsPost ? { absolute: metadataTitle } : metadataTitle,
     description,
     alternates: {
       canonical: localizedPath,
       languages: getBlogPostLanguageAlternates(slug),
     },
     openGraph: {
-      title: `${metadataTitle} | ${siteConfig.name}`,
+      title: socialTitle,
       description,
       url: absoluteUrl(localizedPath),
       siteName: siteConfig.name,
@@ -213,7 +215,7 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
     },
     twitter: {
       card: absoluteCoverImage ? 'summary_large_image' : 'summary',
-      title: `${metadataTitle} | ${siteConfig.name}`,
+      title: socialTitle,
       description,
       images: absoluteCoverImage ? [absoluteCoverImage] : undefined,
     },

@@ -4,7 +4,7 @@ import {
   DND_SCHOOLS_OF_MAGIC_2024_SPELL_DESCRIPTIONS_URL,
   DND_SCHOOLS_OF_MAGIC_2024_SPELLS_URL,
   DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_IMAGE_PATH,
-  DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_ZH_IMAGE_PATH,
+  DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH,
   DND_SCHOOLS_OF_MAGIC_WIZARD_COMPARISON_URL,
 } from './shared';
 
@@ -12,8 +12,9 @@ export const DND_SCHOOLS_OF_MAGIC_SLUG = 'dnd-schools-of-magic';
 export const DND_SCHOOLS_OF_MAGIC_UPDATED_AT = '2026-09-16';
 export const DND_SCHOOLS_OF_MAGIC_LOCKED_EN_BODY_HASH =
   '74d76115c45ee430f6e74b450af13c7577f79b00ec1b8eee09b46bde557fe8a3';
+// SHA-256 of the bound Chinese HTML, before the registry adds heading anchors.
 export const DND_SCHOOLS_OF_MAGIC_LOCKED_ZH_BODY_HASH =
-  '25e728d6747be45f4a77af7f21e591a636870115cede2f17caeddbcfd88b4e05';
+  'eb7a19617b6d8e4b797c369ceaaf06b758360104dafc8d2e8ae963c46595b1b0';
 export const DND_SCHOOLS_OF_MAGIC_ENGLISH_H1 =
   'D&D Schools of Magic Explained: The Eight Spell Schools and How to Read Them';
 export const DND_SCHOOLS_OF_MAGIC_ENGLISH_SEO_TITLE =
@@ -21,15 +22,15 @@ export const DND_SCHOOLS_OF_MAGIC_ENGLISH_SEO_TITLE =
 export const DND_SCHOOLS_OF_MAGIC_ENGLISH_DESCRIPTION =
   'dnd schools of magic names eight 2024 spell categories, not class features. Pair each school with a checked example, then check the spell, class list, and rules year.';
 export const DND_SCHOOLS_OF_MAGIC_CHINESE_H1 =
-  'DND 法术学派详解：dnd schools of magic 的八类分类与查阅方法';
+  '龙与地下城法术学派详解：八大学派与查阅方法';
 export const DND_SCHOOLS_OF_MAGIC_CHINESE_SEO_TITLE =
-  'dnd schools of magic：八类法术学派，不是法师子职';
+  '龙与地下城八大法术学派：分类、示例与版次区别';
 export const DND_SCHOOLS_OF_MAGIC_CHINESE_DESCRIPTION =
-  '把 dnd schools of magic 的八个中文工作标签对上英文原名和已核验的 2024 示例；分清法术分类、职业法术列表和 Wizard 子职，并按规则年份核对 Cure Wounds 与 Detect Magic。';
+  '了解龙与地下城八大法术学派及其代表法术，分清法术分类、职业法术列表与法师子职，并通过疗伤术和侦测魔法核对 2014 年与 2024 年规则的区别。';
 export const DND_SCHOOLS_OF_MAGIC_ENGLISH_COVER_ALT =
   'Eight D&D spell-school names shown as peer categories, not a ranking.';
 export const DND_SCHOOLS_OF_MAGIC_CHINESE_COVER_ALT =
-  '八个 D&D 法术学派名称的平级查阅示意，不是排名。';
+  '身穿深蓝长袍的奇幻法师在石殿中托起蓝色魔法光团。';
 export const DND_SCHOOLS_OF_MAGIC_RELATED_SLUGS = [
   'dnd-wizard-spells',
   'dnd-necromancer-spells',
@@ -397,125 +398,125 @@ const dndSchoolsOfMagicLockedEnglishHtml = String.raw`
 `.trim();
 
 const dndSchoolsOfMagicLockedChineseHtml = String.raw`
-<p>在 2024 修订版核心规则里，<code>dnd schools of magic</code> 指八类用来归类法术的 <strong>School of Magic</strong>：防护 <strong>Abjuration</strong>、咒法 <strong>Conjuration</strong>、预言 <strong>Divination</strong>、惑控 <strong>Enchantment</strong>、塑能 <strong>Evocation</strong>、幻术 <strong>Illusion</strong>、死灵 <strong>Necromancy</strong> 和变化 <strong>Transmutation</strong>。学派标签说明一个法术归入哪类魔法概念，但不会单独赋予角色能力、决定角色能否使用该法术，或代替具体法术条目。可以先从 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/spells" rel="noreferrer noopener">D&amp;D Beyond 的 2024 Basic Rules 法术说明</a>开始查阅。</p>
-<p>本文以 2024 修订版为核心范围，只在需要解释差异时对照 2014。文中的中文名称是对照英文原名的工作标签，不是官方唯一译名；查阅时保留英文名、规则年份和具体法术条目。</p>
+<p>在 2024 修订版核心规则里，<code>法术学派</code> 是为法术划分的 <strong>八种类别</strong>：<strong>防护</strong>、<strong>咒法</strong>、<strong>预言</strong>、<strong>惑控</strong>、<strong>塑能</strong>、<strong>幻术</strong>、<strong>死灵</strong> 和<strong>变化</strong>。学派标签说明一个法术归入哪类魔法概念，但不会单独赋予角色能力、决定角色能否使用该法术，或代替具体法术条目。可以先从 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/spells" rel="noreferrer noopener">龙与地下城官方资料站的 2024 年基本规则法术说明</a>开始查阅。</p>
+<p>本文以 2024 修订版为主，只在需要解释差异时对照 2014 年规则。文中采用便于查阅的中文译名，不代表官方唯一译法；遇到不同译名时，请按规则年份和链接核对具体法术条目。</p>
 <figure style="margin:1.5rem 0;width:100%;">
-  <img class="inline-figure__image inline-figure__image--wide" src="__SCHOOLS_EIGHT_GRID__" alt="八个同层级法术学派及其已核验的 2024 示例：防护 Abjuration 对应 Shield；咒法 Conjuration 对应 Misty Step；预言 Divination 对应 Detect Magic；惑控 Enchantment 对应 Charm Person；塑能 Evocation 对应 Fireball；幻术 Illusion 对应 Minor Illusion；死灵 Necromancy 对应 Animate Dead；变化 Transmutation 对应 Polymorph。" width="1536" height="960" loading="lazy" decoding="async" />
-  <div role="list" aria-label="八个同层级法术学派及其已核验的 2024 示例：防护 Abjuration 对应 Shield；咒法 Conjuration 对应 Misty Step；预言 Divination 对应 Detect Magic；惑控 Enchantment 对应 Charm Person；塑能 Evocation 对应 Fireball；幻术 Illusion 对应 Minor Illusion；死灵 Necromancy 对应 Animate Dead；变化 Transmutation 对应 Polymorph。" style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+  <img class="inline-figure__image inline-figure__image--wide" src="__SCHOOLS_EIGHT_GRID__" alt="三名身穿长袍的奇幻施法者分别展现蓝色光团、防护光幕和火焰。" width="1536" height="960" loading="lazy" decoding="async" />
+  <div role="list" aria-label="八个同层级法术学派及其已核验的 2024 示例：防护对应护盾术；咒法对应迷踪步；预言对应侦测魔法；惑控对应魅惑人类；塑能对应火球术；幻术对应次级幻影；死灵对应操纵死尸；变化对应变形术。" style="display:flex;flex-wrap:wrap;gap:0.75rem;">
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.8rem 0.9rem;">
-      <strong>防护 <span lang="en">Abjuration</span></strong><br><span>2024 核验示例：<code>Shield</code></span>
+      <strong><span lang="zh-CN">防护</span></strong><br><span>2024 核验示例：<code>护盾术</code></span>
     </div>
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.8rem 0.9rem;">
-      <strong>咒法 <span lang="en">Conjuration</span></strong><br><span>2024 核验示例：<code>Misty Step</code></span>
+      <strong><span lang="zh-CN">咒法</span></strong><br><span>2024 核验示例：<code>迷踪步</code></span>
     </div>
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.8rem 0.9rem;">
-      <strong>预言 <span lang="en">Divination</span></strong><br><span>2024 核验示例：<code>Detect Magic</code></span>
+      <strong><span lang="zh-CN">预言</span></strong><br><span>2024 核验示例：<code>侦测魔法</code></span>
     </div>
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.8rem 0.9rem;">
-      <strong>惑控 <span lang="en">Enchantment</span></strong><br><span>2024 核验示例：<code>Charm Person</code></span>
+      <strong><span lang="zh-CN">惑控</span></strong><br><span>2024 核验示例：<code>魅惑人类</code></span>
     </div>
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.8rem 0.9rem;">
-      <strong>塑能 <span lang="en">Evocation</span></strong><br><span>2024 核验示例：<code>Fireball</code></span>
+      <strong><span lang="zh-CN">塑能</span></strong><br><span>2024 核验示例：<code>火球术</code></span>
     </div>
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.8rem 0.9rem;">
-      <strong>幻术 <span lang="en">Illusion</span></strong><br><span>2024 核验示例：<code>Minor Illusion</code></span>
+      <strong><span lang="zh-CN">幻术</span></strong><br><span>2024 核验示例：<code>次级幻影</code></span>
     </div>
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.8rem 0.9rem;">
-      <strong>死灵 <span lang="en">Necromancy</span></strong><br><span>2024 核验示例：<code>Animate Dead</code></span>
+      <strong><span lang="zh-CN">死灵</span></strong><br><span>2024 核验示例：<code>操纵死尸</code></span>
     </div>
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.8rem 0.9rem;">
-      <strong>变化 <span lang="en">Transmutation</span></strong><br><span>2024 核验示例：<code>Polymorph</code></span>
+      <strong><span lang="zh-CN">变化</span></strong><br><span>2024 核验示例：<code>变形术</code></span>
     </div>
   </div>
-  <figcaption>八个法术学派的中文工作标签、英文原名与核验示例对照。</figcaption>
+  <figcaption>插画呈现奇幻施法场景；列表对照八个法术学派及已核验的 2024 年法术示例。</figcaption>
 </figure>
 <p>这八类是并列分类，不是排名。</p>
-<h2>dnd schools of magic 到底指什么？</h2>
+<h2>法术学派到底指什么？</h2>
 <p>法术学派是写在法术条目里的分类标签。2024 规则把法术分成八类，并同时给出学派、环级和职业法术列表。标签提供第一层方向：保护、移动、取得信息、影响心智、魔法能量、误导感知、生命与死亡，或改变生物与物体。</p>
-<p>这个方向不能代替完整规则。单看学派，得不出距离、目标、动作、豁免、持续时间、专注或全部限制；同一学派的法术也不会因此动作相同。裁定场景时读具体条目。</p>
-<p>2014 <a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spellcasting" rel="noreferrer noopener">Spellcasting 章节中的法术学派说明</a>同样把八类当作分类，并说明标签本身不是独立规则子系统。其他规则仍可能引用学派，所以准确说法是“标签提供有限分类信息”，不是“学派永远没有规则用途”。</p>
-<h2>八个 D&amp;D 法术学派：中英文与示例对照</h2>
-<p>下表是 2024 规则下的查阅地图，不是推荐清单或必须掌握的八项能力。示例来自已核对的 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions" rel="noreferrer noopener">2024 Spell Descriptions</a>。类别线索只是简述，判定时打开对应条目。</p>
+<p>这个方向不能代替完整规则。单看学派，得不出距离、目标、动作、豁免、持续时间、专注或全部限制；同一学派的法术也不会因此运作方式相同。裁定场景时读具体条目。</p>
+<p>2014 <a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spellcasting" rel="noreferrer noopener">施法章节中的法术学派说明</a>同样把八类当作分类，并说明标签本身不是独立规则子系统。其他规则仍可能引用学派，所以准确说法是“标签提供有限分类信息”，不是“学派永远没有规则用途”。</p>
+<h2>八个法术学派：分类与示例对照</h2>
+<p>下表是 2024 规则下的查阅地图，不是推荐清单或必须掌握的八项能力。示例来自已核对的 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions" rel="noreferrer noopener">2024 年法术详述</a>。类别线索只是简述，判定时打开对应条目。</p>
 <table>
 <thead>
-<tr><th>中文工作标签</th><th>English name</th><th>类别线索</th><th>已核验的 2024 示例</th></tr>
+<tr><th>学派</th><th>查阅重点</th><th>类别线索</th><th>已核验的 2024 示例</th></tr>
 </thead>
 <tbody>
-<tr><td>防护</td><td>Abjuration</td><td>保护，或逆转伤害</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Shield" rel="noreferrer noopener">Shield</a></td></tr>
-<tr><td>咒法</td><td>Conjuration</td><td>移动或传送生物、物体</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#MistyStep" rel="noreferrer noopener">Misty Step</a></td></tr>
-<tr><td>预言</td><td>Divination</td><td>获取信息</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#DetectMagic" rel="noreferrer noopener">Detect Magic</a></td></tr>
-<tr><td>惑控</td><td>Enchantment</td><td>影响心智</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#CharmPerson" rel="noreferrer noopener">Charm Person</a></td></tr>
-<tr><td>塑能</td><td>Evocation</td><td>通过魔法能量产生效果，常见于破坏性效果</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Fireball" rel="noreferrer noopener">Fireball</a></td></tr>
-<tr><td>幻术</td><td>Illusion</td><td>误导感知或心智</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#MinorIllusion" rel="noreferrer noopener">Minor Illusion</a></td></tr>
-<tr><td>死灵</td><td>Necromancy</td><td>处理生命与死亡</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#AnimateDead" rel="noreferrer noopener">Animate Dead</a></td></tr>
-<tr><td>变化</td><td>Transmutation</td><td>改变生物或物体</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Polymorph" rel="noreferrer noopener">Polymorph</a></td></tr>
+<tr><td>防护</td><td>保护目标与触发时机</td><td>保护，或逆转伤害</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Shield" rel="noreferrer noopener">护盾术</a></td></tr>
+<tr><td>咒法</td><td>传送目标与有效位置</td><td>移动或传送生物、物体</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#MistyStep" rel="noreferrer noopener">迷踪步</a></td></tr>
+<tr><td>预言</td><td>感知范围与查验条件</td><td>获取信息</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#DetectMagic" rel="noreferrer noopener">侦测魔法</a></td></tr>
+<tr><td>惑控</td><td>目标、豁免与持续时间</td><td>影响心智</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#CharmPerson" rel="noreferrer noopener">魅惑人类</a></td></tr>
+<tr><td>塑能</td><td>范围、伤害与遮蔽</td><td>通过魔法能量产生效果，常见于破坏性效果</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Fireball" rel="noreferrer noopener">火球术</a></td></tr>
+<tr><td>幻术</td><td>幻觉内容与识破方式</td><td>误导感知或心智</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#MinorIllusion" rel="noreferrer noopener">次级幻影</a></td></tr>
+<tr><td>死灵</td><td>生命效果与亡灵控制</td><td>处理生命与死亡</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#AnimateDead" rel="noreferrer noopener">操纵死尸</a></td></tr>
+<tr><td>变化</td><td>改变形态的条件与限制</td><td>改变生物或物体</td><td><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Polymorph" rel="noreferrer noopener">变形术</a></td></tr>
 </tbody>
 </table>
-<h3>防护 Abjuration：先问它保护什么</h3>
-<p>防护围绕保护或逆转伤害。<code>Shield</code> 是已核验的 2024 示例，可把“保护效果”当作 Abjuration 的线索。它不能说明保护给谁、何时触发，也不能把所有治疗都归入这一类；裁定时读目标、时机和效果。</p>
-<h3>咒法 Conjuration：移动与传送是线索</h3>
-<p>咒法关注生物或物体的移动、传送。<code>Misty Step</code> 的 2024 条目把施法者传到 30 英尺内可见且未被占用的空间。看到 Conjuration 不能推出每个咒法都同样传送或召唤；先查目标、范围和有效位置。</p>
-<h3>预言 Divination：它试图取得什么信息</h3>
-<p>预言的线索是取得信息。<code>Detect Magic</code> 属于这类，但不能把“预言”读成能识别所有魔法或所有法术。先问它要获取哪类信息，再核对该条目的感知对象、可见条件、动作和规则年份。后文会分开写出 2014 与 2024 的查验条件。</p>
-<h3>惑控 Enchantment：影响心智不等于结果相同</h3>
-<p>惑控归类影响心智的效果。<code>Charm Person</code> 是已核验的 2024 示例。学派不会告诉你目标如何行动，也不代表控制程度相同；目标、持续时间、豁免和受影响者知道什么，都要查具体法术。</p>
-<h3>塑能 Evocation：魔法能量形成的效果</h3>
-<p>塑能把通过魔法能量产生的效果归在一起，常带破坏性。<code>Fireball</code> 是已核验的 2024 示例。Evocation 不能推出范围、伤害、豁免或遮蔽影响。若桌上有人把学派当结算方式，把它当作打开条目的提醒。</p>
-<h3>幻术 Illusion：误导感知或心智</h3>
-<p>幻术处理误导感知或心智。<code>Minor Illusion</code> 可制造声音或物体影像，实体互动会揭示影像是幻觉。不能把所有幻术想成同一种影像或同一种破解方式；“幻术”也不是隐形、无声或无法识破的同义词。</p>
-<h3>死灵 Necromancy：生命与死亡的分类</h3>
-<p>死灵围绕生命与死亡。<code>Animate Dead</code> 说明类别对应，但不能据此归类所有生命效果，也不能单独确定亡灵如何被控制。涉及亡灵、生命能量或控制方式时，同时读对应法术和相关特性。</p>
-<h3>变化 Transmutation：改变生物或物体</h3>
-<p>变化关注改变生物或物体。<code>Polymorph</code> 把目标变成 Beast，并在条目中写明限制。Transmutation 只指向“改变了什么”；目标和限制要读 <code>Polymorph</code> 条目。</p>
-<h2>分清三层信息：法术学派、职业法术列表、Wizard 子职</h2>
-<p>这三个词常一起出现，但回答不同问题。法术学派回答“这个法术属于哪类”；职业法术列表回答“哪个职业列表包含它、还要满足什么访问条件”；Wizard 子职回答“这个法师分支提供什么特性”。不要用其中一层代替另外两层。</p>
+<h3>防护：先问它保护什么</h3>
+<p>防护围绕保护或逆转伤害。<code>护盾术</code> 是已核验的 2024 示例，可把“保护效果”当作防护的线索。它不能说明保护给谁、何时触发，也不能把所有治疗都归入这一类；裁定时读目标、时机和效果。</p>
+<h3>咒法：移动与传送是线索</h3>
+<p>咒法关注生物或物体的移动、传送。<code>迷踪步</code> 的 2024 条目把施法者传到 30 英尺内可见且未被占用的空间。看到咒法不能推出每个咒法都同样传送或召唤；先查目标、范围和有效位置。</p>
+<h3>预言：它试图取得什么信息</h3>
+<p>预言的线索是取得信息。<code>侦测魔法</code> 属于这类，但不能把“预言”读成能识别所有魔法或所有法术。先问它要获取哪类信息，再核对该条目的感知对象、可见条件、动作和规则年份。后文会分开写出 2014 与 2024 的查验条件。</p>
+<h3>惑控：影响心智不等于结果相同</h3>
+<p>惑控归类影响心智的效果。<code>魅惑人类</code> 是已核验的 2024 示例。学派不会告诉你目标如何行动，也不代表控制程度相同；目标、持续时间、豁免和受影响者知道什么，都要查具体法术。</p>
+<h3>塑能：魔法能量形成的效果</h3>
+<p>塑能把通过魔法能量产生的效果归在一起，常带破坏性。<code>火球术</code> 是已核验的 2024 示例。塑能不能推出范围、伤害、豁免或遮蔽影响。若桌上有人把学派当结算方式，把它当作打开条目的提醒。</p>
+<h3>幻术：误导感知或心智</h3>
+<p>幻术处理误导感知或心智。<code>次级幻影</code> 可制造声音或物体影像，实体互动会揭示影像是幻觉。不能把所有幻术想成同一种影像或同一种破解方式；“幻术”也不是隐形、无声或无法识破的同义词。</p>
+<h3>死灵：生命与死亡的分类</h3>
+<p>死灵围绕生命与死亡。<code>操纵死尸</code> 说明类别对应，但不能据此归类所有生命效果，也不能单独确定亡灵如何被控制。涉及亡灵、生命能量或控制方式时，同时读对应法术和相关特性。</p>
+<h3>变化：改变生物或物体</h3>
+<p>变化关注改变生物或物体。<code>变形术</code> 把目标变成野兽，并在条目中写明限制。变化只指向“改变了什么”；目标和限制要读 <code>变形术</code> 条目。</p>
+<h2>分清三层信息：法术学派、职业法术列表、法师子职</h2>
+<p>这三个词常一起出现，但回答不同问题。法术学派回答“这个法术属于哪类”；职业法术列表回答“哪个职业列表包含它、还要满足什么使用条件”；法师子职回答“这个法师分支提供什么特性”。不要用其中一层代替另外两层。</p>
 <figure style="margin:1.5rem 0;width:100%;">
-  <div role="list" aria-label="三个彼此分开的规则层次：法术学派 School of Magic 给法术分类；职业法术列表 Class Spell List 说明列表归属与可用来源；法师子职 Wizard subclass 提供子职特性。" style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+  <div role="list" aria-label="三个彼此分开的规则层次：法术学派给法术分类；职业法术列表说明列表归属与可用来源；法师子职提供子职特性。" style="display:flex;flex-wrap:wrap;gap:0.75rem;">
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.9rem;">
-      <strong>法术学派 / <span lang="en">School of Magic</span></strong><br><span>给法术分类</span>
+      <strong><span lang="zh-CN">法术学派</span></strong><br><span>给法术分类</span>
     </div>
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.9rem;">
-      <strong>职业法术列表 / <span lang="en">Class Spell List</span></strong><br><span>说明列表归属与可用来源</span>
+      <strong><span lang="zh-CN">职业法术列表</span></strong><br><span>说明列表归属与可用来源</span>
     </div>
     <div role="listitem" style="box-sizing:border-box;flex:1 1 14rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.9rem;">
-      <strong>法师子职 / <span lang="en">Wizard subclass</span></strong><br><span>提供子职特性</span>
+      <strong><span lang="zh-CN">法师子职</span></strong><br><span>提供子职特性</span>
     </div>
   </div>
   <figcaption>法术分类、职业法术列表和法师子职不是同一层规则信息。</figcaption>
 </figure>
 <h3>法术学派只回答“它属于哪一类”</h3>
-<p>学派写在法术条目上，提供分类和第一层概念。它不回答角色是否知道、是否准备、今天有没有法术位，也不自动满足职业特性条件。知道 <code>Misty Step</code> 是 Conjuration，或 <code>Fireball</code> 是 Evocation，都不等于角色已经能用它们。</p>
+<p>学派写在法术条目上，提供分类和第一层概念。它不回答角色是否知道、是否准备、今天有没有法术位，也不自动满足职业特性条件。知道 <code>迷踪步</code> 是咒法，或 <code>火球术</code> 是塑能，都不等于角色已经能用它们。</p>
 <h3>职业法术列表回答“它从哪里可用”</h3>
-<p>2024 条目中的职业名称指向职业法术列表，这是访问信息，不是学派强弱表。法术属于 Divination，也不意味着任何角色都能施放。问角色能否施放时，先确认规则版本和允许资料，再看职业列表和会改变访问的特性。对照 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/spells" rel="noreferrer noopener">2024 Basic Rules 的法术章节</a>，学派字段和职业列表字段并列，却作用不同。</p>
-<h3>Wizard 子职回答“这个职业分支提供什么特性”</h3>
-<p>中文里的“法师学派”有时指 Wizard 子职，而不是法术条目上的 School of Magic。这里单独写成 <code>Wizard subclass</code>。<a href="https://www.dndbeyond.com/posts/1753-2024-wizard-vs-2014-wizard-whats-new" rel="noreferrer noopener">2024 Wizard 与 2014 Wizard 对照文章</a>讨论了 2024 Player’s Handbook 的子职层，并举出 Abjurer、Diviner、Evoker、Illusionist；子职等级变化也限定在该对照范围内。这不是“只有四个法术学派”，也不是八个必须选择的 Wizard 构筑。问特性读子职；问分类读 school line。</p>
+<p>2024 条目中的职业名称指向职业法术列表，这说明法术的可用来源，不是学派强弱表。法术属于预言，也不意味着任何角色都能施放。问角色能否施放时，先确认规则版本和允许资料，再看职业列表和会改变法术使用范围的特性。对照 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/spells" rel="noreferrer noopener">2024 年基本规则的法术章节</a>，学派字段和职业列表字段并列，却作用不同。</p>
+<h3>法师子职回答“这个职业分支提供什么特性”</h3>
+<p>中文里的“法师学派”有时指法师子职，而不是法术条目上的分类。本文将这个职业分支单独称为 <code>法师子职</code>。<a href="https://www.dndbeyond.com/posts/1753-2024-wizard-vs-2014-wizard-whats-new" rel="noreferrer noopener">2024 年与 2014 年法师对照文章</a>讨论了 2024 年《玩家手册》中的子职，并举出防护师、预言师、塑能师、幻术师；子职等级变化也限定在该对照范围内。这不是“只有四个法术学派”，也不意味着必须从八种法师构筑中选择。问特性读子职；问分类读学派栏。</p>
 <h2>用具体法术分辨相近的效果</h2>
 <p>使用学派时，先让标签缩小问题，再让具体条目给出答案。日常说法里，几个法术都可能让场景“看起来不一样”，但规则处理并不相同。</p>
-<p><code>Minor Illusion</code> 用声音或物体影像误导感知；<code>Misty Step</code> 把施法者传到 30 英尺内可见且未被占用的空间；<code>Polymorph</code> 把目标变成 Beast，并受该条目限制。它们分属 Illusion、Conjuration 和 Transmutation。</p>
-<p>举一个范围受限的教学例子：守卫看到假箱子，角色传送过间隙，第三个生物改变形态。三个学派只负责把问题分成幻术、咒法和变化；互动结果、目的地是否合格、形态限制，必须打开对应的 <code>Minor Illusion</code>、<code>Misty Step</code> 和 <code>Polymorph</code> 条目。</p>
-<p>颜色表、记忆口诀或自制关系图可以整理笔记，但不能替代规则原文。查阅笔记时，同时记录法术英文名和版次；不要只记录中文标签。</p>
+<p><code>次级幻影</code> 用声音或物体影像误导感知；<code>迷踪步</code> 把施法者传到 30 英尺内可见且未被占用的空间；<code>变形术</code> 把目标变成野兽，并受该条目限制。它们分属幻术、咒法和变化。</p>
+<p>举一个范围受限的教学例子：守卫看到假箱子，角色传送过间隙，第三个生物改变形态。三个学派只负责把问题分成幻术、咒法和变化；互动结果、目的地是否合格、形态限制，必须打开对应的 <code>次级幻影</code>、<code>迷踪步</code> 和 <code>变形术</code> 条目。</p>
+<p>颜色表、记忆口诀或自制关系图可以整理笔记，但不能替代规则原文。查阅笔记时，同时记录法术名称、版次和对应条目链接；不要只记录学派标签。</p>
 <h2>版次差异：先核对年份，再判断标签</h2>
-<p>同名法术在不同规则书里可能出现不同学派，不要先把其中一个页面判成错误。<code>Cure Wounds</code> 是已核验的对照：</p>
+<p>同名法术在不同规则书里可能出现不同学派，不要先把其中一个页面判成错误。<code>疗伤术</code> 是已核验的对照：</p>
 <table>
 <thead>
 <tr><th>规则条目</th><th>显示的学派</th><th>这项对照能说明什么</th></tr>
 </thead>
 <tbody>
-<tr><td>2014 <a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#CureWounds" rel="noreferrer noopener">Cure Wounds</a></td><td>Evocation</td><td>2014 核心条目使用这个学派标签。</td></tr>
-<tr><td>2024 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#CureWounds" rel="noreferrer noopener">Cure Wounds</a></td><td>Abjuration</td><td>修订版核心条目使用了不同的学派标签。</td></tr>
+<tr><td>2014 <a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#CureWounds" rel="noreferrer noopener">疗伤术</a></td><td>塑能</td><td>2014 核心条目使用这个学派标签。</td></tr>
+<tr><td>2024 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#CureWounds" rel="noreferrer noopener">疗伤术</a></td><td>防护</td><td>修订版核心条目使用了不同的学派标签。</td></tr>
 </tbody>
 </table>
 <p>这是版次差异，不是“所有治疗都属于防护”，也不能只凭日常意义猜学派。笔记或网页不一致时，先写规则年份，再打开对应条目。</p>
-<h3><code>Detect Magic</code> 的查验条件不能合并</h3>
-<p><code>Detect Magic</code> 有桌面用途，也有边界。2024 条目：感知 30 英尺内的魔法效果；之后用 Magic action，可在带有魔法的可见生物或物体上看到光环；若该效果由法术创造，还能得知该法术的学派。需要专注，最长 10 分钟。屏障：1 英尺石头、泥土或木材，1 英寸金属，或一层薄铅板。</p>
+<h3><code>侦测魔法</code>的查验条件不能合并</h3>
+<p><code>侦测魔法</code> 有桌面用途，也有边界。2024 条目：感知 30 英尺内的魔法效果；之后用魔法动作，可在带有魔法的可见生物或物体上看到光环；若该效果由法术创造，还能得知该法术的学派。需要专注，最长 10 分钟。屏障：1 英尺石头、泥土或木材，1 英寸金属，或一层薄铅板。</p>
 <p>2014 条目同样是 30 英尺感知范围、对可见生物或物体使用一个动作、最长 10 分钟专注，但屏障不同：1 英尺石头、1 英寸普通金属、铅，或 3 英尺木材或泥土。条件和版次必须分开记录。现场核对时对照 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#DetectMagic" rel="noreferrer noopener">2024 条目</a>和 <a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells#DetectMagic" rel="noreferrer noopener">2014 条目</a>。</p>
 <p>两套规则都不能把“读到学派”变成“直接知道具体法术名称”。在条目条件下，你可能得知法术创造的效果属于哪个学派；这不等于完整法术说明，也不代表非法术魔法效果会显示法术名，更不会取消可见目标和动作要求。</p>
 <figure style="margin:1.5rem 0;width:100%;">
-  <div role="group" aria-label="版次对照：2014 年 Cure Wounds 属于 Evocation，Detect Magic 具有下列 30 英尺、可见目标、动作、专注、持续时间和屏障条件；2024 修订版 Cure Wounds 属于 Abjuration，Detect Magic 分别具有下列 30 英尺、可见目标、Magic action、法术创建效果、专注、持续时间和屏障条件。" style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+  <div role="group" aria-label="版次对照：2014 年疗伤术属于塑能，侦测魔法具有下列 30 英尺、可见目标、动作、专注、持续时间和屏障条件；2024 修订版疗伤术属于防护，侦测魔法分别具有下列 30 英尺、可见目标、魔法动作、法术创建效果、专注、持续时间和屏障条件。" style="display:flex;flex-wrap:wrap;gap:0.75rem;">
     <section aria-label="2014 规则" style="box-sizing:border-box;flex:1 1 23rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.9rem;overflow-wrap:anywhere;">
       <h3 style="margin-top:0;">2014</h3>
-      <p><strong><code>Cure Wounds</code></strong><br>学派：<code>Evocation</code></p>
-      <p><strong><code>Detect Magic</code></strong></p>
+      <p><strong><code>疗伤术</code></strong><br>学派：<code>塑能</code></p>
+      <p><strong><code>侦测魔法</code></strong></p>
       <ul>
         <li>感知 30 英尺内的魔法。</li>
         <li>使用一个动作，可在可见生物或物体上看到光环及其学派（如果有）。</li>
@@ -525,11 +526,11 @@ const dndSchoolsOfMagicLockedChineseHtml = String.raw`
     </section>
     <section aria-label="2024 修订版规则" style="box-sizing:border-box;flex:1 1 23rem;min-width:0;border:1px solid #111827;border-radius:0.5rem;padding:0.9rem;overflow-wrap:anywhere;">
       <h3 style="margin-top:0;">2024 修订版</h3>
-      <p><strong><code>Cure Wounds</code></strong><br>学派：<code>Abjuration</code></p>
-      <p><strong><code>Detect Magic</code></strong></p>
+      <p><strong><code>疗伤术</code></strong><br>学派：<code>防护</code></p>
+      <p><strong><code>侦测魔法</code></strong></p>
       <ul>
         <li>感知 30 英尺内的魔法效果。</li>
-        <li>使用 Magic action，可在带有魔法的可见生物或物体上看到光环；如果该效果由法术创造，还能得知该法术的学派。</li>
+        <li>使用魔法动作，可在带有魔法的可见生物或物体上看到光环；如果该效果由法术创造，还能得知该法术的学派。</li>
         <li>需要专注，最长 10 分钟。</li>
         <li>会被 1 英尺石头、泥土或木材，1 英寸金属，或一层薄铅板阻挡。</li>
       </ul>
@@ -541,20 +542,20 @@ const dndSchoolsOfMagicLockedChineseHtml = String.raw`
 <p>遇到法术学派问题时，按下面顺序查：</p>
 <ol>
 <li><strong>先确定规则年份和来源。</strong> 在条目旁写清“2014”或“2024 修订版”，再比较学派名称。</li>
-<li><strong>读 school line。</strong> 用八类表格识别大致类别，不从标签发明法术效果。</li>
+<li><strong>读学派栏。</strong> 用八类表格识别大致类别，不从标签发明法术效果。</li>
 <li><strong>说清楚你真正要回答的问题。</strong> 分类、角色能否使用、子职特性和具体法术行为是四种不同问题。</li>
 <li><strong>打开完整法术条目。</strong> 核对目标、范围、动作、豁免、持续时间、专注以及会影响场景的特殊条件。</li>
-<li><strong>单独核对访问条件。</strong> 如果问题是角色能否施放，就查职业法术列表和相关特性，不要用学派标签代替。</li>
+<li><strong>单独核对使用条件。</strong> 如果问题是角色能否施放，就查职业法术列表和相关特性，不要用学派标签代替。</li>
 <li><strong>在证据边界处停下。</strong> 来源只给出学派、没有说明具体互动时，保留已知结论，继续找负责该互动的规则。</li>
 </ol>
-<p>这样使用 <strong>dnd schools of magic</strong>，八个名称是查阅入口，不是八种职业能力。分类看学派；能否使用看职业列表和特性；这一回合发生什么，回到对应版次的具体法术条目。</p>
+<p>这样使用 <strong>法术学派</strong>，八个名称是查阅入口，不是八种职业能力。分类看学派；能否使用看职业列表和特性；这一回合发生什么，回到对应版次的具体法术条目。</p>
 <h2>来源</h2>
 <ul>
-<li><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spells" rel="noreferrer noopener">D&amp;D Beyond Basic Rules: Spells</a></li>
-<li><a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spellcasting" rel="noreferrer noopener">D&amp;D Beyond Basic Rules (2014): Spellcasting</a></li>
-<li><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions" rel="noreferrer noopener">D&amp;D Beyond Basic Rules: Spell Descriptions</a></li>
-<li><a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells" rel="noreferrer noopener">D&amp;D Beyond Basic Rules (2014): Spells</a></li>
-<li><a href="https://www.dndbeyond.com/posts/1753-2024-wizard-vs-2014-wizard-whats-new" rel="noreferrer noopener">D&amp;D Beyond: 2024 Wizard vs. 2014 Wizard</a></li>
+<li><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spells" rel="noreferrer noopener">龙与地下城官方资料站：2024 年基本规则·法术</a></li>
+<li><a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spellcasting" rel="noreferrer noopener">龙与地下城官方资料站：2014 年基本规则·施法</a></li>
+<li><a href="https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions" rel="noreferrer noopener">龙与地下城官方资料站：2024 年基本规则·法术详述</a></li>
+<li><a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells" rel="noreferrer noopener">龙与地下城官方资料站：2014 年基本规则·法术</a></li>
+<li><a href="https://www.dndbeyond.com/posts/1753-2024-wizard-vs-2014-wizard-whats-new" rel="noreferrer noopener">龙与地下城官方资料站：2024 年与 2014 年法师对照</a></li>
 </ul>
 `.trim();
 
@@ -567,5 +568,5 @@ export const dndSchoolsOfMagicArticleHtml = bindSchoolsOfMagicArticleHtml(
 export const dndSchoolsOfMagicArticleHtmlZh = bindSchoolsOfMagicArticleHtml(
   'zh-CN',
   dndSchoolsOfMagicLockedChineseHtml,
-  DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_ZH_IMAGE_PATH,
+  DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH,
 );

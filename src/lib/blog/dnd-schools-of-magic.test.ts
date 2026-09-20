@@ -20,11 +20,14 @@ import {
   DND_SCHOOLS_OF_MAGIC_RELATED_SLUGS,
   DND_SCHOOLS_OF_MAGIC_SLUG,
   DND_SCHOOLS_OF_MAGIC_UPDATED_AT,
+  dndSchoolsOfMagicArticleHtml,
+  dndSchoolsOfMagicArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-schools-of-magic';
 import {
   DND_SCHOOLS_OF_MAGIC_COVER_PATH,
+  DND_SCHOOLS_OF_MAGIC_ZH_COVER_PATH,
   DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_IMAGE_PATH,
-  DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_ZH_IMAGE_PATH,
+  DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH,
 } from '@/lib/blog-posts/shared';
 import {
   buildBlogPostFaqStructuredData,
@@ -39,8 +42,6 @@ import {
 
 const LOCKED_EN_BODY_PATH =
   '/Users/wusir/Desktop/工作/dnd-schools-of-magic-blog-content-package/locked-body-en-f2.md';
-const LOCKED_ZH_BODY_PATH =
-  '/Users/wusir/Desktop/工作/dnd-schools-of-magic-blog-content-package/locked-body-zh-f2.md';
 
 const ENGLISH_FIGURE_ONE_CAPTION =
   'Eight spell-school categories, each paired with one checked 2024 example.';
@@ -49,7 +50,7 @@ const ENGLISH_FIGURE_TWO_CAPTION =
 const ENGLISH_FIGURE_THREE_CAPTION =
   'Version labels can change a spell’s school and the conditions for reading a school with Detect Magic.';
 const CHINESE_FIGURE_ONE_CAPTION =
-  '八个法术学派的中文工作标签、英文原名与核验示例对照。';
+  '插画呈现奇幻施法场景；列表对照八个法术学派及已核验的 2024 年法术示例。';
 const CHINESE_FIGURE_TWO_CAPTION =
   '法术分类、职业法术列表和法师子职不是同一层规则信息。';
 const CHINESE_FIGURE_THREE_CAPTION =
@@ -92,9 +93,11 @@ function expectRelatedSlugsResolve(
 }
 
 describe('dnd schools of magic blog post', () => {
-  test('keeps the locked body hashes and publishes both locale entries', () => {
+  test('keeps the English source hash, locks the revised Chinese body, and publishes both locales', () => {
     expect(sha256File(LOCKED_EN_BODY_PATH)).toBe(DND_SCHOOLS_OF_MAGIC_LOCKED_EN_BODY_HASH);
-    expect(sha256File(LOCKED_ZH_BODY_PATH)).toBe(DND_SCHOOLS_OF_MAGIC_LOCKED_ZH_BODY_HASH);
+    expect(createHash('sha256').update(dndSchoolsOfMagicArticleHtmlZh).digest('hex')).toBe(
+      DND_SCHOOLS_OF_MAGIC_LOCKED_ZH_BODY_HASH,
+    );
 
     const englishPost = getBlogPost('en', DND_SCHOOLS_OF_MAGIC_SLUG);
     const chinesePost = getBlogPost('zh', DND_SCHOOLS_OF_MAGIC_SLUG);
@@ -133,7 +136,7 @@ describe('dnd schools of magic blog post', () => {
     expect(englishHtml).toContain(ENGLISH_FIGURE_TWO_CAPTION);
     expect(englishHtml).toContain(ENGLISH_FIGURE_THREE_CAPTION);
     expect(englishHtml).toContain(DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_IMAGE_PATH);
-    expect(englishHtml).not.toContain(DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_ZH_IMAGE_PATH);
+    expect(englishHtml).not.toContain(DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH);
     expect((englishHtml.match(/<figure\b/g) ?? []).length).toBe(3);
     expect((englishHtml.match(/<img\b/g) ?? []).length).toBe(1);
     expect(englishHtml).not.toMatch(/<h1\b/i);
@@ -155,19 +158,19 @@ describe('dnd schools of magic blog post', () => {
     expect(chinesePost?.seoTitle).not.toContain(' | Token Maker');
     expect(chinesePost?.metaDescription).toBe(DND_SCHOOLS_OF_MAGIC_CHINESE_DESCRIPTION);
     expect(chinesePost?.excerpt).toBe(DND_SCHOOLS_OF_MAGIC_CHINESE_DESCRIPTION);
-    expect(chinesePost?.coverImage).toBe(DND_SCHOOLS_OF_MAGIC_COVER_PATH);
+    expect(chinesePost?.coverImage).toBe(DND_SCHOOLS_OF_MAGIC_ZH_COVER_PATH);
     expect(chinesePost?.coverAlt).toBe(DND_SCHOOLS_OF_MAGIC_CHINESE_COVER_ALT);
     expect(chinesePost?.featured).toBe(true);
     expect(chinesePost?.faqItems).toEqual([]);
     expect(chinesePost?.relatedSlugs).toEqual([...DND_SCHOOLS_OF_MAGIC_RELATED_SLUGS]);
     expectRelatedSlugsResolve('zh', chinesePost?.relatedSlugs);
     expect(chineseHtml).toContain(
-      '在 2024 修订版核心规则里，<code>dnd schools of magic</code> 指八类用来归类法术的 <strong>School of Magic</strong>',
+      '在 2024 修订版核心规则里，<code>法术学派</code> 是为法术划分的 <strong>八种类别</strong>',
     );
     expect(chineseHtml).toContain(CHINESE_FIGURE_ONE_CAPTION);
     expect(chineseHtml).toContain(CHINESE_FIGURE_TWO_CAPTION);
     expect(chineseHtml).toContain(CHINESE_FIGURE_THREE_CAPTION);
-    expect(chineseHtml).toContain(DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_ZH_IMAGE_PATH);
+    expect(chineseHtml).toContain(DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH);
     expect(chineseHtml).not.toContain(DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_IMAGE_PATH);
     expect((chineseHtml.match(/<figure\b/g) ?? []).length).toBe(3);
     expect(chineseHtml).not.toMatch(/<h1\b/i);
@@ -184,7 +187,7 @@ describe('dnd schools of magic blog post', () => {
     expect(wizardPost?.bodyHtml).not.toContain('dnd-schools-of-magic');
   });
 
-  test('exposes locked metadata, schemas, sitemap routes, assets, and regular pagination exclusion', () => {
+  test('uses an absolute Chinese metadata title and preserves branded English social titles', () => {
     expect(getBlogPostPath('en', DND_SCHOOLS_OF_MAGIC_SLUG)).toBe('/blog/dnd-schools-of-magic');
     expect(getBlogPostPath('zh', DND_SCHOOLS_OF_MAGIC_SLUG)).toBe(
       '/zh/blog/dnd-schools-of-magic',
@@ -204,9 +207,13 @@ describe('dnd schools of magic blog post', () => {
         title: `${DND_SCHOOLS_OF_MAGIC_ENGLISH_SEO_TITLE} | Token Maker`,
         description: DND_SCHOOLS_OF_MAGIC_ENGLISH_DESCRIPTION,
       },
+      twitter: {
+        title: `${DND_SCHOOLS_OF_MAGIC_ENGLISH_SEO_TITLE} | Token Maker`,
+        description: DND_SCHOOLS_OF_MAGIC_ENGLISH_DESCRIPTION,
+      },
     });
     expect(createBlogPostMetadata('zh', DND_SCHOOLS_OF_MAGIC_SLUG)).toMatchObject({
-      title: DND_SCHOOLS_OF_MAGIC_CHINESE_SEO_TITLE,
+      title: { absolute: DND_SCHOOLS_OF_MAGIC_CHINESE_SEO_TITLE },
       description: DND_SCHOOLS_OF_MAGIC_CHINESE_DESCRIPTION,
       alternates: {
         canonical: '/zh/blog/dnd-schools-of-magic',
@@ -217,11 +224,17 @@ describe('dnd schools of magic blog post', () => {
         },
       },
       openGraph: {
-        title: `${DND_SCHOOLS_OF_MAGIC_CHINESE_SEO_TITLE} | Token Maker`,
+        title: DND_SCHOOLS_OF_MAGIC_CHINESE_SEO_TITLE,
+        description: DND_SCHOOLS_OF_MAGIC_CHINESE_DESCRIPTION,
+      },
+      twitter: {
+        title: DND_SCHOOLS_OF_MAGIC_CHINESE_SEO_TITLE,
         description: DND_SCHOOLS_OF_MAGIC_CHINESE_DESCRIPTION,
       },
     });
+  });
 
+  test('exposes locked schemas, sitemap routes, assets, and regular pagination exclusion', () => {
     expect(buildBlogPostStructuredData('en', DND_SCHOOLS_OF_MAGIC_SLUG)).toMatchObject({
       '@type': 'Article',
       headline: DND_SCHOOLS_OF_MAGIC_ENGLISH_SEO_TITLE,
@@ -238,7 +251,7 @@ describe('dnd schools of magic blog post', () => {
       dateModified: DND_SCHOOLS_OF_MAGIC_UPDATED_AT,
       inLanguage: 'zh-CN',
       url: 'https://www.tokenmaker.one/zh/blog/dnd-schools-of-magic',
-      image: [`https://www.tokenmaker.one${DND_SCHOOLS_OF_MAGIC_COVER_PATH}`],
+      image: [`https://www.tokenmaker.one${DND_SCHOOLS_OF_MAGIC_ZH_COVER_PATH}`],
     });
     expect(buildBlogPostFaqStructuredData('en', DND_SCHOOLS_OF_MAGIC_SLUG)).toBeNull();
     expect(buildBlogPostFaqStructuredData('zh', DND_SCHOOLS_OF_MAGIC_SLUG)).toBeNull();
@@ -262,8 +275,9 @@ describe('dnd schools of magic blog post', () => {
     });
 
     expect(existsSync(`public${DND_SCHOOLS_OF_MAGIC_COVER_PATH}`)).toBe(true);
+    expect(existsSync(`public${DND_SCHOOLS_OF_MAGIC_ZH_COVER_PATH}`)).toBe(true);
     expect(existsSync(`public${DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_IMAGE_PATH}`)).toBe(true);
-    expect(existsSync(`public${DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_ZH_IMAGE_PATH}`)).toBe(true);
+    expect(existsSync(`public${DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH}`)).toBe(true);
 
     expect(getFeaturedBlogPost('en')?.slug).toBe('dnd-classes-explained');
     expect(getFeaturedBlogPost('zh')?.slug).toBe('dnd-classes-explained');
@@ -308,7 +322,7 @@ describe('dnd schools of magic blog post', () => {
       '<p style="margin-top:0;"><strong>2024 修订版</strong></p>',
     );
     expect(chinesePost.bodyHtml).toContain(
-      'aria-label="版次对照：2014 年 Cure Wounds 属于 Evocation，Detect Magic 具有下列 30 英尺、可见目标、动作、专注、持续时间和屏障条件；2024 修订版 Cure Wounds 属于 Abjuration，Detect Magic 分别具有下列 30 英尺、可见目标、Magic action、法术创建效果、专注、持续时间和屏障条件。"',
+      'aria-label="版次对照：2014 年疗伤术属于塑能，侦测魔法具有下列 30 英尺、可见目标、动作、专注、持续时间和屏障条件；2024 修订版疗伤术属于防护，侦测魔法分别具有下列 30 英尺、可见目标、魔法动作、法术创建效果、专注、持续时间和屏障条件。"',
     );
     expect(chinesePost.bodyHtml).toContain('aria-label="2014 规则"');
     expect(chinesePost.bodyHtml).toContain('aria-label="2024 修订版规则"');
@@ -338,23 +352,23 @@ describe('dnd schools of magic blog post', () => {
       'Sources',
     ]);
     expect(chinesePost.headings?.map((heading) => heading.text)).toEqual([
-      'dnd schools of magic 到底指什么？',
-      '八个 D&D 法术学派：中英文与示例对照',
-      '防护 Abjuration：先问它保护什么',
-      '咒法 Conjuration：移动与传送是线索',
-      '预言 Divination：它试图取得什么信息',
-      '惑控 Enchantment：影响心智不等于结果相同',
-      '塑能 Evocation：魔法能量形成的效果',
-      '幻术 Illusion：误导感知或心智',
-      '死灵 Necromancy：生命与死亡的分类',
-      '变化 Transmutation：改变生物或物体',
-      '分清三层信息：法术学派、职业法术列表、Wizard 子职',
+      '法术学派到底指什么？',
+      '八个法术学派：分类与示例对照',
+      '防护：先问它保护什么',
+      '咒法：移动与传送是线索',
+      '预言：它试图取得什么信息',
+      '惑控：影响心智不等于结果相同',
+      '塑能：魔法能量形成的效果',
+      '幻术：误导感知或心智',
+      '死灵：生命与死亡的分类',
+      '变化：改变生物或物体',
+      '分清三层信息：法术学派、职业法术列表、法师子职',
       '法术学派只回答“它属于哪一类”',
       '职业法术列表回答“它从哪里可用”',
-      'Wizard 子职回答“这个职业分支提供什么特性”',
+      '法师子职回答“这个职业分支提供什么特性”',
       '用具体法术分辨相近的效果',
       '版次差异：先核对年份，再判断标签',
-      'Detect Magic 的查验条件不能合并',
+      '侦测魔法的查验条件不能合并',
       '一套可以重复使用的学派核对顺序',
       '来源',
     ]);
@@ -362,5 +376,75 @@ describe('dnd schools of magic blog post', () => {
     expect(englishPost.headings?.some((heading) => heading.text === '2024 revised')).toBe(false);
     expect(chinesePost.headings?.some((heading) => heading.text === '2014')).toBe(false);
     expect(chinesePost.headings?.some((heading) => heading.text === '2024 修订版')).toBe(false);
+  });
+
+  test('keeps all Chinese article text and accessible labels free of Latin words', () => {
+    const chinesePost = getBlogPost('zh', DND_SCHOOLS_OF_MAGIC_SLUG);
+    if (!chinesePost?.bodyHtml) {
+      throw new Error('Expected Chinese bodyHtml for the readable-text language contract.');
+    }
+
+    const article = document.createElement('article');
+    article.innerHTML = chinesePost.bodyHtml;
+    expect(article.textContent).not.toMatch(/[A-Za-z]/);
+    for (const text of [
+      chinesePost.title,
+      chinesePost.seoTitle,
+      chinesePost.metaDescription,
+      chinesePost.excerpt,
+      chinesePost.coverAlt,
+      ...(chinesePost.headings ?? []).map((heading) => heading.text),
+    ]) {
+      expect(text).toEqual(expect.any(String));
+      expect(text).not.toMatch(/[A-Za-z]/);
+    }
+    for (const element of article.querySelectorAll('[alt], [aria-label], [title]')) {
+      for (const attribute of ['alt', 'aria-label', 'title']) {
+        const readableLabel = element.getAttribute(attribute);
+        if (readableLabel !== null) {
+          expect(readableLabel).not.toBe('');
+          expect(readableLabel).not.toMatch(/[A-Za-z]/);
+        }
+      }
+    }
+    expect(article.querySelectorAll('[lang="en"]').length).toBe(0);
+    expect(article.querySelectorAll('figure').length).toBe(3);
+    expect(article.querySelectorAll('img').length).toBe(1);
+    expect(article.querySelector('img')?.getAttribute('src')).toBe(
+      DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH,
+    );
+    expect(Array.from(article.querySelectorAll('table:first-of-type tbody tr'), (row) => [
+      row.querySelector('td')?.textContent,
+      row.querySelector('a')?.textContent,
+    ])).toEqual([
+      ['防护', '护盾术'],
+      ['咒法', '迷踪步'],
+      ['预言', '侦测魔法'],
+      ['惑控', '魅惑人类'],
+      ['塑能', '火球术'],
+      ['幻术', '次级幻影'],
+      ['死灵', '操纵死尸'],
+      ['变化', '变形术'],
+    ]);
+    expect(article.querySelector('section[aria-label="2014 规则"]')?.textContent).toContain('塑能');
+    expect(article.querySelector('section[aria-label="2024 修订版规则"]')?.textContent).toContain('防护');
+    expect(article.querySelector('section[aria-label="2014 规则"]')?.textContent).toContain('3 英尺木材或泥土');
+    expect(article.querySelector('section[aria-label="2024 修订版规则"]')?.textContent).toContain('1 英尺石头、泥土或木材');
+  });
+
+  test('preserves the English body and keeps each locale on its own image paths', () => {
+    expect(createHash('sha256').update(dndSchoolsOfMagicArticleHtml).digest('hex')).toBe(
+      '88f8ebcc0d612234bb6c993b8cf64aad58b3b339cedaac3b79e9790b2d28662b',
+    );
+    const englishPost = getBlogPost('en', DND_SCHOOLS_OF_MAGIC_SLUG);
+    const chinesePost = getBlogPost('zh', DND_SCHOOLS_OF_MAGIC_SLUG);
+    expect(englishPost?.coverImage).toBe(DND_SCHOOLS_OF_MAGIC_COVER_PATH);
+    expect(chinesePost?.coverImage).toBe(DND_SCHOOLS_OF_MAGIC_ZH_COVER_PATH);
+    expect(englishPost?.bodyHtml).toContain(DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_IMAGE_PATH);
+    expect(englishPost?.bodyHtml).not.toContain(DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH);
+    expect(chinesePost?.bodyHtml).not.toContain('eight-schools-peer-grid');
+    expect(createBlogPostMetadata('zh', DND_SCHOOLS_OF_MAGIC_SLUG)?.openGraph).toMatchObject({
+      images: [{ url: `https://www.tokenmaker.one${DND_SCHOOLS_OF_MAGIC_ZH_COVER_PATH}` }],
+    });
   });
 });
