@@ -1,5 +1,57 @@
 # WORKLOG
 
+## 交接单 · 2026-09-20 08:23 CST · Cursor CLI
+
+### 本次目标
+
+把 Token Maker 生产从 Vercel 切到 Cloudflare Workers（vinext 全站），并停掉 Vercel 对正式域名和 `main` 推送的自动构建。代码改动不在本班新增；本班后半只做控制面切流。
+
+### 已完成
+
+- 生产代码已在 `origin/main` 的 `b7b78f4`（`Move contact and coat-export onto Workers bindings for Cloudflare deploys.`）。Share / contact / coat-export 走 Workers Rate Limit + `SHARE_BUCKET`；contact 的 Resend 变量用 `getServerEnv(env)`。
+- Cloudflare 账号 `233c6bfa4790ecd5fd238598658641de`（与 R2 桶 `tokenmaker-shares` 同一账号）。Worker 名 `token-maker-app`；Workers Builds 跟 GitHub `wsir78933-rgb/token-maker`，build `pnpm run build:vinext`，deploy `npx wrangler deploy --config dist/server/wrangler.json`。
+- 自定义域名已绑 `www.tokenmaker.one` 和 `tokenmaker.one`。Cloudflare DNS 已删旧 Vercel 记录：`www` CNAME `70f72d15fadb3747.vercel-dns-017.com`、apex A `216.198.79.1`。保留 `r2`、send MX/SPF、`_dmarc`、`resend._domainkey`、Google site-verification TXT。
+- Contact 四个 Worker secrets 已通过 Dashboard「Add variable and deploy」写入生产：`RESEND_API_KEY`、`RESEND_FROM_EMAIL`、`CONTACT_TO_EMAIL`、`CONTACT_SUBJECT_PREFIX`。值不要回读到聊天。
+- 2026-09-19 晚回读：`https://www.tokenmaker.one/` 与 `https://tokenmaker.one/` 均为 HTTP 200、`server: cloudflare`，无 `x-vercel-id`。Contact 曾测过 `POST /api/contact` 返回 200 `{"ok":true}`。
+- Vercel 项目 `token-maker`：已移除自定义域名 `tokenmaker.one`、`www.tokenmaker.one`；已 Disconnect Git。项目仍在，状态 Ready，只剩 `token-maker-eta.vercel.app`。
+- 用户明确：xlsx 未存档。当前工作区相对 `main`/`origin/main` 仅有未跟踪/未提交的 `DND-筛选后关键词清单.xlsx`；`WORKLOG.md` 写入后也会变成未存档修改。
+
+### 做到一半
+
+- Vercel 项目未 Pause、未删除。用户说过「要删再说」。
+- 无未完成的本次范围内代码改动。
+
+### 下一步
+
+1. 正式站继续以 Cloudflare 为准；推 `main` 只应触发 Workers Builds，不应再触发 Vercel。
+2. 若要彻底关掉 Vercel，需单独授权 Pause 或删除项目 `token-maker`；不要重连 Git、不要把 `tokenmaker.one` 加回 Vercel。
+3. 不要提交 `WORKLOG.md`，不要提交 `.env.local`，不要 force-push。
+
+### 踩过的坑
+
+- Vercel 上跑 Workers limiter 代码会返回 503 `rate_limiter_unavailable`；切 Cloudflare 前正式 Share 是坏的。
+- Worker 自定义域名要求 hostname 无外部 DNS；必须先删 Vercel 的 `www` CNAME 和 apex A，再绑 Worker 域名。删 CNAME 后 apex 仍可能被 Vercel A 记录 308。
+- `wrangler secret put` 能列出 secrets，但生产 contact 仍可能 503 `email_not_configured`；必须在 Dashboard 对每个变量点「Add variable and deploy」。
+- GitHub sudo OTP 会挡住自动化；Cloudflare GitHub App 当时只有 `open-seo` / `Retouchia`，要手动加 `token-maker`。首次自动部署只打到 `*.workers.dev`。
+- Vercel 项目 slug 是 `token-maker`，不是 `token-maker-app`；后者 settings URL 会 404。
+- 把整段 dotenv 贴进 Secret 的 Key 会报 invalid name。Workers Rate Limit `period` 只能 10 或 60 秒。
+
+### 怎么验证
+
+```bash
+git status -sb
+git log --oneline --decorate -3
+curl -sS -D - -o /dev/null --max-time 20 -A 'Mozilla/5.0' 'https://www.tokenmaker.one/' | grep -iE '^(HTTP/|server:|x-vercel|cf-ray:)'
+curl -sS -D - -o /dev/null --max-time 20 -A 'Mozilla/5.0' 'https://tokenmaker.one/' | grep -iE '^(HTTP/|server:|x-vercel|cf-ray:)'
+curl -sS -D - -o /dev/null --max-time 20 -A 'Mozilla/5.0' 'https://token-maker-eta.vercel.app/' | grep -iE '^(HTTP/|server:|x-vercel:)'
+```
+
+控制面：
+
+- Cloudflare：Worker `token-maker-app` production 自定义域名含 `www.tokenmaker.one` 和 `tokenmaker.one`。
+- Vercel：`https://vercel.com/wsir78933-rgbs-projects/token-maker/settings/git` 显示未连接仓库；Domains 只剩 `token-maker-eta.vercel.app`。
+- 浏览器：打开 `https://www.tokenmaker.one/`，编辑器 Share 应出现 Share link ready，不要再出现 503 `rate_limiter_unavailable`。
+
 ## 交接单 · 2026-09-18 08:03 CST · Codex CLI
 
 ### 本次目标
