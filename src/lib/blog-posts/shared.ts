@@ -68,6 +68,8 @@ export const DND_BEHOLDER_COVER_PATH = '/blog/covers/en/dnd-beholder-guide.webp'
 export const DND_CONDITIONS_COVER_PATH = '/blog/covers/en/dnd-conditions-guide.webp';
 export const DND_SKILLS_COVER_PATH = '/blog/covers/en/dnd-skills-guide.webp';
 export const DND_WIZARD_SPELLS_COVER_PATH = '/blog/covers/en/dnd-wizard-spells-guide.webp';
+export const DND_SCHOOLS_OF_MAGIC_COVER_PATH =
+  '/blog/covers/en/dnd-schools-of-magic-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -260,6 +262,10 @@ export const DND_WIZARD_SPELLS_CHARACTER_IMAGE_PATHS = {
   focus: '/blog/inline/dnd-wizard-spells/wizard-character-focus.webp',
   ready: '/blog/inline/dnd-wizard-spells/wizard-character-ready.webp',
 } as const;
+export const DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_IMAGE_PATH =
+  '/blog/inline/dnd-schools-of-magic/eight-schools-peer-grid.webp';
+export const DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_ZH_IMAGE_PATH =
+  '/blog/inline/dnd-schools-of-magic/eight-schools-peer-grid-zh.webp';
 
 // External URLs
 export const DND_CLERIC_2014_RULES_URL =
@@ -431,6 +437,16 @@ export const DND_BLESS_2014_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/b
 export const DND_BLESS_2024_RULES_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions#Bless';
 export const DND_2014_SPELLCASTING_COMPONENTS_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spellcasting#Components';
 export const DND_2024_SPELLCASTING_COMPONENTS_URL = 'https://www.dndbeyond.com/sources/dnd/br-2024/spells#Components';
+export const DND_SCHOOLS_OF_MAGIC_2024_SPELLS_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/spells';
+export const DND_SCHOOLS_OF_MAGIC_2014_SPELLCASTING_URL =
+  'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spellcasting';
+export const DND_SCHOOLS_OF_MAGIC_2024_SPELL_DESCRIPTIONS_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/spell-descriptions';
+export const DND_SCHOOLS_OF_MAGIC_2014_SPELLS_URL =
+  'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spells';
+export const DND_SCHOOLS_OF_MAGIC_WIZARD_COMPARISON_URL =
+  'https://www.dndbeyond.com/posts/1753-2024-wizard-vs-2014-wizard-whats-new';
 export const DND_HOLY_SYMBOL_2024_URL = 'https://www.dndbeyond.com/equipment/514-holy-symbol';
 export const DND_BLESS_VIDEO_URL = 'https://www.youtube.com/watch?v=IPOddAMdy5k';
 export const DND_SHORTSWORD_2014_EQUIPMENT_URL = 'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#Weapons';
