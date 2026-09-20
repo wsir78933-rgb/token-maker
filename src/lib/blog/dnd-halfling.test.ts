@@ -30,7 +30,7 @@ const ENGLISH_DESCRIPTION =
   'Learn how the 2014/legacy race and 2024 Basic Rules species differ, then copy the matching traits and creation fields and preserve one readable character cue.';
 const CHINESE_TITLE = 'DND 半身人：25 英尺还是 30 英尺？先锁 2014/2024 规则再填卡';
 const CHINESE_DESCRIPTION =
-  '按 DM 允许的来源分开填写 2014 Race 或 2024 Species 的体型、速度、属性值来源与特性，再核对身份标签和 Token 在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。';
+  '按 DM 允许的来源分开填写 2014 种族或 2024 物种的体型、速度、属性值来源与特性，再核对身份标签和角色棋子在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。';
 
 const EN_INLINE_PATHS = [
   DND_HALFLING_VERSION_LOCK_IMAGE_PATH,
@@ -60,7 +60,7 @@ const ZH_INLINE_CAPTIONS = [
   '先确认规则来源，再把同一角色的身份线索带进角色卡和冒险场景。',
   '把角色字段写清后，再保留一个能在画面里看见的身份线索；这张是场景插画，不是官方角色卡版式。',
   '用角色场景记住特性触发时的行动，但仍以对应版本的规则文字为准。',
-  '先让脸部和一件身份道具在画面中保持可读，再按地图缩放选择裁切形状；这张是角色原画，不是 Token 框。',
+  '先让脸部和一件身份道具在画面中保持可读，再按地图缩放选择裁切形状；这张是角色原画，不是角色棋子边框。',
 ] as const;
 
 function getBodyRoot(bodyHtml: string) {
@@ -141,7 +141,7 @@ describe('dnd halfling blog post', () => {
     const englishBody = englishPost?.bodyHtml ?? '';
     const chineseBody = chinesePost?.bodyHtml ?? '';
     expect(englishBody).toContain('A D&amp;D Halfling entry is safe to copy only after you tie it to the rules year');
-    expect(chineseBody).toContain('如果你已经决定玩半身人，先让 DM 确认 2014 或 2024');
+    expect(chineseBody).toContain('如果你已经决定玩半身人，先让 DM（地下城主）确认使用 2014 还是 2024 规则');
     expect(englishBody).toContain('https://www.dndbeyond.com/sources/dnd/br-2024/character-origins#Halfling');
     expect(chineseBody).toContain('https://tokenmaker.one/zh/blog/dnd-races');
     expect(chineseBody).toContain('https://tokenmaker.one/zh/blog/dnd-character-sheet');

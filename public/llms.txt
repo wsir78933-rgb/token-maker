@@ -88,7 +88,7 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 
 ## Optional
 
-- [DND 半身人：25 英尺还是 30 英尺？先锁 2014/2024 规则再填卡](https://www.tokenmaker.one/zh/blog/dnd-halfling): 按 DM 允许的来源分开填写 2014 Race 或 2024 Species 的体型、速度、属性值来源与特性，再核对身份标签和 Token 在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。
+- [DND 半身人：25 英尺还是 30 英尺？先锁 2014/2024 规则再填卡](https://www.tokenmaker.one/zh/blog/dnd-halfling): 按 DM 允许的来源分开填写 2014 种族或 2024 物种的体型、速度、属性值来源与特性，再核对身份标签和角色棋子在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。
 - [星露谷物语温室怎么解锁：社区中心与 Joja 路线](https://www.tokenmaker.one/zh/blog/greenhouse-stardew): 说明星露谷物语温室的两条解锁路线，分别讲清茶水间普通收集包、Joja 会员与温室项目的条件，以及完成后如何检查温室是否已经可用。
 - [DND 狗头人（Kobold）不能同时抄瓦罗和魔邓肯](https://www.tokenmaker.one/zh/blog/dnd-kobold): DND 狗头人（Kobold）是带鳞、小角的小龙类人。玩家卡只抄瓦罗或魔邓肯其中一页；同卡出现摇尾乞怜和龙吼就算失败。
 - [dnd 5e 技能：体操对回特技，生存对回求生，观察对回察觉](https://www.tokenmaker.one/zh/blog/dnd-skills): 今晚这张 dnd 5e 技能是绑在属性上的 18 项，不是法术表。体质没有技能，表里没有体质行。体操对回特技，生存对回求生，观察或技能名「感知」对回察觉。没熟练仍做该技能相关检定，只是不加熟练加值。专精是已经熟练的那一行加倍，0 的两倍还是 0。2014 和 2024 这 18 个英文名没有增删。

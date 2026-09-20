@@ -4778,9 +4778,9 @@ const dndHalflingArticleZh: BlogPost = {
   title: 'DND 半身人：25 英尺还是 30 英尺？先锁 2014/2024 规则再填卡',
   seoTitle: 'DND 半身人：25 英尺还是 30 英尺？先锁 2014/2024 规则再填卡',
   metaDescription:
-    '按 DM 允许的来源分开填写 2014 Race 或 2024 Species 的体型、速度、属性值来源与特性，再核对身份标签和 Token 在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。',
+    '按 DM 允许的来源分开填写 2014 种族或 2024 物种的体型、速度、属性值来源与特性，再核对身份标签和角色棋子在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。',
   excerpt:
-    '按 DM 允许的来源分开填写 2014 Race 或 2024 Species 的体型、速度、属性值来源与特性，再核对身份标签和 Token 在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。',
+    '按 DM 允许的来源分开填写 2014 种族或 2024 物种的体型、速度、属性值来源与特性，再核对身份标签和角色棋子在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。',
   publishedAt: DND_HALFLING_UPDATED_AT,
   updatedAt: DND_HALFLING_UPDATED_AT,
   readTime: '12 分钟阅读',
