@@ -64,6 +64,7 @@ import {
   DND_CONDITIONS_COVER_PATH,
   DND_SKILLS_COVER_PATH,
   DND_WIZARD_SPELLS_COVER_PATH,
+  DND_SCHOOLS_OF_MAGIC_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -198,6 +199,21 @@ import {
   dndWizardSpellsArticleHtml,
   dndWizardSpellsArticleHtmlZh,
 } from '@/lib/blog-posts/dnd-wizard-spells';
+import {
+  DND_SCHOOLS_OF_MAGIC_CHINESE_COVER_ALT,
+  DND_SCHOOLS_OF_MAGIC_CHINESE_DESCRIPTION,
+  DND_SCHOOLS_OF_MAGIC_CHINESE_H1,
+  DND_SCHOOLS_OF_MAGIC_CHINESE_SEO_TITLE,
+  DND_SCHOOLS_OF_MAGIC_ENGLISH_COVER_ALT,
+  DND_SCHOOLS_OF_MAGIC_ENGLISH_DESCRIPTION,
+  DND_SCHOOLS_OF_MAGIC_ENGLISH_H1,
+  DND_SCHOOLS_OF_MAGIC_ENGLISH_SEO_TITLE,
+  DND_SCHOOLS_OF_MAGIC_RELATED_SLUGS,
+  DND_SCHOOLS_OF_MAGIC_SLUG,
+  DND_SCHOOLS_OF_MAGIC_UPDATED_AT,
+  dndSchoolsOfMagicArticleHtml,
+  dndSchoolsOfMagicArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-schools-of-magic';
 import type { BlogPost, PlaceholderCopy } from './types';
 import { addHeadingAnchors } from './html-utils';
 
@@ -5443,11 +5459,47 @@ const dndWizardSpellsArticleZh: BlogPost = {
   relatedSlugs: ['dnd-classes-explained', 'dnd-find-familiar', 'dnd-mage-armor', 'dnd-counterspell'],
 };
 
+const dndSchoolsOfMagicArticle: BlogPost = {
+  slug: DND_SCHOOLS_OF_MAGIC_SLUG,
+  title: DND_SCHOOLS_OF_MAGIC_ENGLISH_H1,
+  seoTitle: DND_SCHOOLS_OF_MAGIC_ENGLISH_SEO_TITLE,
+  metaDescription: DND_SCHOOLS_OF_MAGIC_ENGLISH_DESCRIPTION,
+  excerpt: DND_SCHOOLS_OF_MAGIC_ENGLISH_DESCRIPTION,
+  publishedAt: DND_SCHOOLS_OF_MAGIC_UPDATED_AT,
+  updatedAt: DND_SCHOOLS_OF_MAGIC_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Schools of Magic',
+  coverImage: DND_SCHOOLS_OF_MAGIC_COVER_PATH,
+  coverAlt: DND_SCHOOLS_OF_MAGIC_ENGLISH_COVER_ALT,
+  bodyHtml: dndSchoolsOfMagicArticleHtml,
+  faqItems: [],
+  relatedSlugs: [...DND_SCHOOLS_OF_MAGIC_RELATED_SLUGS],
+  featured: true,
+};
+
+const dndSchoolsOfMagicArticleZh: BlogPost = {
+  slug: DND_SCHOOLS_OF_MAGIC_SLUG,
+  title: DND_SCHOOLS_OF_MAGIC_CHINESE_H1,
+  seoTitle: DND_SCHOOLS_OF_MAGIC_CHINESE_SEO_TITLE,
+  metaDescription: DND_SCHOOLS_OF_MAGIC_CHINESE_DESCRIPTION,
+  excerpt: DND_SCHOOLS_OF_MAGIC_CHINESE_DESCRIPTION,
+  publishedAt: DND_SCHOOLS_OF_MAGIC_UPDATED_AT,
+  updatedAt: DND_SCHOOLS_OF_MAGIC_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '法术学派',
+  coverImage: DND_SCHOOLS_OF_MAGIC_COVER_PATH,
+  coverAlt: DND_SCHOOLS_OF_MAGIC_CHINESE_COVER_ALT,
+  bodyHtml: dndSchoolsOfMagicArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: [...DND_SCHOOLS_OF_MAGIC_RELATED_SLUGS],
+  featured: true,
+};
+
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndKoboldArticle, dndSkillsArticle, dndConditionsArticle, dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle, dndWizardSpellsArticle].map(
+  en: [dndKoboldArticle, dndSkillsArticle, dndConditionsArticle, dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle, dndWizardSpellsArticle, dndSchoolsOfMagicArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndKoboldArticleZh, dndSkillsArticleZh, dndConditionsArticleZh, dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh, dndWizardSpellsArticleZh].map(
+  zh: [dndKoboldArticleZh, dndSkillsArticleZh, dndConditionsArticleZh, dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh, dndWizardSpellsArticleZh, dndSchoolsOfMagicArticleZh].map(
     addHeadingAnchors,
   ),
 };
@@ -5471,3 +5523,5 @@ function assertRelatedSlugsResolve(locale: SiteLocale, slug: string) {
 
 assertRelatedSlugsResolve('en', 'dnd-wizard-spells');
 assertRelatedSlugsResolve('zh', 'dnd-wizard-spells');
+assertRelatedSlugsResolve('en', DND_SCHOOLS_OF_MAGIC_SLUG);
+assertRelatedSlugsResolve('zh', DND_SCHOOLS_OF_MAGIC_SLUG);
