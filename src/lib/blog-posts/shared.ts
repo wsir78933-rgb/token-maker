@@ -68,6 +68,7 @@ export const DND_BEHOLDER_COVER_PATH = '/blog/covers/en/dnd-beholder-guide.webp'
 export const DND_CONDITIONS_COVER_PATH = '/blog/covers/en/dnd-conditions-guide.webp';
 export const DND_SKILLS_COVER_PATH = '/blog/covers/en/dnd-skills-guide.webp';
 export const DND_WIZARD_SPELLS_COVER_PATH = '/blog/covers/en/dnd-wizard-spells-guide.webp';
+export const DND_HALFLING_COVER_PATH = '/blog/covers/en/dnd-halfling-guide.webp';
 
 // Inline images
 export const DND_CLASSES_TABLETOP_IMAGE_PATH = '/blog/inline/dnd-classes/tabletop-atmosphere.webp';
@@ -260,6 +261,18 @@ export const DND_WIZARD_SPELLS_CHARACTER_IMAGE_PATHS = {
   focus: '/blog/inline/dnd-wizard-spells/wizard-character-focus.webp',
   ready: '/blog/inline/dnd-wizard-spells/wizard-character-ready.webp',
 } as const;
+export const DND_HALFLING_VERSION_LOCK_IMAGE_PATH =
+  '/blog/inline/dnd-halfling/dnd-halfling-version-lock.webp';
+export const DND_HALFLING_CROP_DECISION_IMAGE_PATH =
+  '/blog/inline/dnd-halfling/dnd-halfling-crop-decision.webp';
+export const DND_HALFLING_VERSION_BRANCH_IMAGE_PATH =
+  '/blog/inline/dnd-halfling/halfling-version-branch.webp';
+export const DND_HALFLING_CHARACTER_CARD_FIELDS_IMAGE_PATH =
+  '/blog/inline/dnd-halfling/halfling-character-card-fields.webp';
+export const DND_HALFLING_TRAIT_TRIGGER_MATRIX_IMAGE_PATH =
+  '/blog/inline/dnd-halfling/halfling-trait-trigger-matrix.webp';
+export const DND_HALFLING_TOKEN_CROP_COMPARISON_IMAGE_PATH =
+  '/blog/inline/dnd-halfling/halfling-token-crop-comparison.webp';
 
 // External URLs
 export const DND_CLERIC_2014_RULES_URL =

@@ -64,6 +64,7 @@ import {
   DND_CONDITIONS_COVER_PATH,
   DND_SKILLS_COVER_PATH,
   DND_WIZARD_SPELLS_COVER_PATH,
+  DND_HALFLING_COVER_PATH,
 } from '@/lib/blog-posts/shared';
 import { dndClassesArticleHtml, dndClassesArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-explained';
 import { dndClassesRankedArticleHtml, dndClassesRankedArticleHtmlZh } from '@/lib/blog-posts/dnd-classes-ranked';
@@ -177,6 +178,10 @@ import {
 } from '@/lib/blog-posts/dnd-dragonborn';
 import { dndKenkuArticleHtml, dndKenkuArticleHtmlZh } from '@/lib/blog-posts/dnd-kenku';
 import { dndKoboldArticleHtml, dndKoboldArticleHtmlZh } from '@/lib/blog-posts/dnd-kobold';
+import {
+  dndHalflingArticleHtml,
+  dndHalflingArticleHtmlZh,
+} from '@/lib/blog-posts/dnd-halfling';
 import { dndClericSpellsArticleHtml, dndClericSpellsArticleHtmlZh } from '@/lib/blog-posts/dnd-cleric-spells';
 import {
   mindFlayerDndArticleHtml,
@@ -4729,6 +4734,47 @@ const dndClericSpellsArticleZh: BlogPost = {
 
 const DND_KOBOLD_UPDATED_AT = '2026-09-16';
 
+const DND_HALFLING_UPDATED_AT = '2026-09-20';
+
+const dndHalflingArticle: BlogPost = {
+  slug: 'dnd-halfling',
+  title: 'D&D Halfling: The Source Label Comes Before the Character Card',
+  seoTitle: 'D&D Halfling: The Source Label Comes Before the Character Card',
+  metaDescription:
+    'Learn how the 2014/legacy race and 2024 Basic Rules species differ, then copy the matching traits and creation fields and preserve one readable character cue.',
+  excerpt:
+    'Learn how the 2014/legacy race and 2024 Basic Rules species differ, then copy the matching traits and creation fields and preserve one readable character cue.',
+  publishedAt: DND_HALFLING_UPDATED_AT,
+  updatedAt: DND_HALFLING_UPDATED_AT,
+  readTime: '12 min read',
+  coverLabel: 'Race Guide',
+  coverImage: DND_HALFLING_COVER_PATH,
+  coverAlt:
+    'Abstract two-column D&D Halfling source-lock diagram contrasting the 2014 legacy race and 2024 Basic Rules species with a single choice marker',
+  bodyHtml: dndHalflingArticleHtml,
+  faqItems: [],
+  relatedSlugs: ['dnd-races'],
+};
+
+const dndHalflingArticleZh: BlogPost = {
+  slug: 'dnd-halfling',
+  title: 'DND 半身人：25 英尺还是 30 英尺？先锁 2014/2024 规则再填卡',
+  seoTitle: 'DND 半身人：25 英尺还是 30 英尺？先锁 2014/2024 规则再填卡',
+  metaDescription:
+    '按 DM 允许的来源分开填写 2014 Race 或 2024 Species 的体型、速度、属性值来源与特性，再核对身份标签和 Token 在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。',
+  excerpt:
+    '按 DM 允许的来源分开填写 2014 Race 或 2024 Species 的体型、速度、属性值来源与特性，再核对身份标签和 Token 在地图缩放下的可读性；年份或旧书许可未确认时，先问 DM。',
+  publishedAt: DND_HALFLING_UPDATED_AT,
+  updatedAt: DND_HALFLING_UPDATED_AT,
+  readTime: '12 分钟阅读',
+  coverLabel: '种族指南',
+  coverImage: DND_HALFLING_COVER_PATH,
+  coverAlt: '2014 与 2024 半身人规则分栏示意图，中间有单一来源选择标记',
+  bodyHtml: dndHalflingArticleHtmlZh,
+  faqItems: [],
+  relatedSlugs: ['dnd-races', 'dnd-character-sheet'],
+};
+
 const dndKoboldArticle: BlogPost = {
   slug: 'dnd-kobold',
   title: 'Matching CR 1/8 Does Not Make One DnD Kobold',
@@ -5484,10 +5530,10 @@ const greenhouseStardewArticleZh: BlogPost = {
 };
 
 export const postsByLocale: Record<SiteLocale, BlogPost[]> = {
-  en: [dndKoboldArticle, dndSkillsArticle, dndConditionsArticle, dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle, dndWizardSpellsArticle, greenhouseStardewArticle].map(
+  en: [dndHalflingArticle, dndKoboldArticle, dndSkillsArticle, dndConditionsArticle, dndBeholderArticle, mindFlayerDndArticle, dndClericSpellsArticle, dndKenkuArticle, dndDragonbornArticle, dndDruidArticle, dndBackgroundsArticle, dndClassesComparisonArticle, dndCharacterSheetArticle, dndFighterArticle, playersHandbookDnd5eArticle, dndPaladinArticle, dndArtificerArticle, dndStatsArticle, dndLanguagesArticle, dndMeaningArticle, dndAlignmentChartArticle, dndRacesArticle, dndShatter5eArticle, dndGnomeNamesArticle, dndMaulArticle, dndQuarterstaffArticle, spectatorDndArticle, fireboltDnd5eArticle, dndDaggerArticle, dwelfDndArticle, dndFlumphArticle, dndDeathKnightArticle, dnd5eArmorerArticle, dndSwordSheathsArticle, dndThunderclapArticle, dndFindFamiliarArticle, dndHexArticle, paladin2024SpellsDndArticle, dndGlaiveArticle, dndSilveryBarbsArticle, dndShortswordArticle, dndBlessArticle, rapierDndArticle, dndRangerSpellsArticle, dndMaceArticle, dndDwarfNamesArticle, dndGhostArticle, dndDemonsArticle, dndBardSpellsArticle, dndMephistophelesArticle, dndClassesArticle, dndHuntersMarkArticle, dndNecromancerSpellsArticle, dndMageArmorArticle, dndGiantsArticle, dndCounterspellArticle, dndDhampirArticle, dndGrungArticle, dndClassesRankedArticle, dndArmorArticle, dndTokenGuideArticle, dndSmallPartyGuideArticle, dndConstitutionArticle, dndDruidSpellsArticle, dndRangerArticle, dndCampaignsArticle, dndWizardSpellsArticle, greenhouseStardewArticle].map(
     addHeadingAnchors,
   ),
-  zh: [dndKoboldArticleZh, dndSkillsArticleZh, dndConditionsArticleZh, dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh, dndWizardSpellsArticleZh, greenhouseStardewArticleZh].map(
+  zh: [dndHalflingArticleZh, dndKoboldArticleZh, dndSkillsArticleZh, dndConditionsArticleZh, dndBeholderArticleZh, mindFlayerDndArticleZh, dndClericSpellsArticleZh, dndKenkuArticleZh, dndDragonbornArticleZh, dndDruidArticleZh, dndBackgroundsArticleZh, dndClassesComparisonArticleZh, dndCharacterSheetArticleZh, dndFighterArticleZh, playersHandbookDnd5eArticleZh, dndPaladinArticleZh, dndArtificerArticleZh, dndStatsArticleZh, dndLanguagesArticleZh, dndMeaningArticleZh, dndAlignmentChartArticleZh, dndRacesArticleZh, dndShatter5eArticleZh, dndGnomeNamesArticleZh, dndMaulArticleZh, dndQuarterstaffArticleZh, spectatorDndArticleZh, fireboltDnd5eArticleZh, dndDaggerArticleZh, dwelfDndArticleZh, dndFlumphArticleZh, dndDeathKnightArticleZh, dnd5eArmorerArticleZh, dndSwordSheathsArticleZh, dndThunderclapArticleZh, dndFindFamiliarArticleZh, dndHexArticleZh, paladin2024SpellsDndArticleZh, dndGlaiveArticleZh, dndSilveryBarbsArticleZh, dndShortswordArticleZh, dndBlessArticleZh, rapierDndArticleZh, dndRangerSpellsArticleZh, dndMaceArticleZh, dndDwarfNamesArticleZh, dndGhostArticleZh, dndDemonsArticleZh, dndBardSpellsArticleZh, dndMephistophelesArticleZh, dndClassesArticleZh, dndHuntersMarkArticleZh, dndNecromancerSpellsArticleZh, dndMageArmorArticleZh, dndGiantsArticleZh, dndCounterspellArticleZh, dndDhampirArticleZh, dndGrungArticleZh, dndClassesRankedArticleZh, dndArmorArticleZh, dndTokenGuideArticleZh, dndSmallPartyGuideArticleZh, dndConstitutionArticleZh, dndDruidSpellsArticleZh, dndRangerArticleZh, dndCampaignsArticleZh, dndWizardSpellsArticleZh, greenhouseStardewArticleZh].map(
     addHeadingAnchors,
   ),
 };
