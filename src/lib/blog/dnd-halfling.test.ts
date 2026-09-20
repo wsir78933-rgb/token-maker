@@ -43,24 +43,24 @@ const ZH_INLINE_PATHS = [
   DND_HALFLING_TOKEN_CROP_COMPARISON_IMAGE_PATH,
 ] as const;
 const EN_INLINE_ALTS = [
-  'Two-column diagram separating the 2014 legacy Halfling race from the 2024 Basic Rules Halfling species, with a single choice marker between the columns',
-  'Crop decision diagram showing one Halfling concept with the face and one prop retained across circle, square, and polygon examples, followed by a map-scale check',
+  'A curly-haired Halfling adventurer in a moss-green cloak reading a weathered travel book by candlelight in a fantasy tavern, with a shield and dice on the table',
+  'A curly-haired Halfling scout crouching at a sunlit forest edge with a short sword and leaf-patterned shield clearly visible',
 ] as const;
 const ZH_INLINE_ALTS = [
-  '2014 与 2024 半身人规则分流及角色卡字段示意图',
-  '按版本分栏的半身人角色卡字段示意图',
-  '半身人特性按触发条件、动作和限制排列的示意图',
-  '同一半身人肖像的圆形、方形和多边形裁切对比示意图',
+  '雨后村庄石路上的半身人冒险者，手持短剑、背着橡叶纹盾牌，远处是山村与薄雾',
+  '月夜营火旁的半身人冒险者用羽毛笔记录冒险准备，盾牌与短剑放在身边',
+  '雨中石桥战斗里的半身人冒险者举盾保护队友，手持短剑迎向远处的巨大敌人剪影',
+  '月夜森林营地中的半身人冒险者近景肖像，卷发、苔绿色斗篷、短剑和橡叶纹盾牌清晰可见',
 ] as const;
 const EN_INLINE_CAPTIONS = [
-  'Version lock: choose the table’s 2014/legacy or 2024 source before copying Halfling values; the two columns are not a combined rules block.',
-  'Crop from the chosen character cue: retain the face and one readable prop, then compare the result at the map scale you use. The shape is a design choice, not a rule for Small creatures.',
+  'A character scene for the source check: settle the table’s 2014/legacy or 2024 source before copying Halfling values.',
+  'Keep the face and one readable prop visible when checking the character at map scale. The shape is a design choice, not a rule for Small creatures.',
 ] as const;
 const ZH_INLINE_CAPTIONS = [
-  '先确认规则来源，再决定角色卡字段；示意图中的两栏不能合并。',
-  '角色卡示意按版本分栏；它不是官方角色卡版式。',
-  '半身人特性应按触发条件核对，不要按种族印象猜。',
-  '按肖像与地图缩放选择遮罩；Small 不是图片规格。',
+  '先确认规则来源，再把同一角色的身份线索带进角色卡和冒险场景。',
+  '把角色字段写清后，再保留一个能在画面里看见的身份线索；这张是场景插画，不是官方角色卡版式。',
+  '用角色场景记住特性触发时的行动，但仍以对应版本的规则文字为准。',
+  '先让脸部和一件身份道具在画面中保持可读，再按地图缩放选择裁切形状；这张是角色原画，不是 Token 框。',
 ] as const;
 
 function getBodyRoot(bodyHtml: string) {

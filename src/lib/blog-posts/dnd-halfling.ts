@@ -65,8 +65,8 @@ export const dndHalflingArticleHtml = String.raw`
 <p>For a table that permits an older Species or Background under 2024 creation, the <a href="https://www.dndbeyond.com/sources/dnd/br-2024/creating-a-character#BackgroundsandSpeciesfromOlderBooks" rel="noreferrer noopener">compatibility sidebar</a> says to ignore an older Species’ ability-score increases and use the Background’s. An older Background without those increases receives +2 and +1, or +1 to each of three scores; without a feat, it grants an Origin feat of choice. The sidebar does not settle every old option or DM permission, so keep other conversions as table decisions.</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
-  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_VERSION_LOCK_IMAGE_PATH}" alt="Two-column diagram separating the 2014 legacy Halfling race from the 2024 Basic Rules Halfling species, with a single choice marker between the columns" width="1536" height="1024" loading="lazy" decoding="async" />
-  <figcaption>Version lock: choose the table’s 2014/legacy or 2024 source before copying Halfling values; the two columns are not a combined rules block.</figcaption>
+  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_VERSION_LOCK_IMAGE_PATH}" alt="A curly-haired Halfling adventurer in a moss-green cloak reading a weathered travel book by candlelight in a fantasy tavern, with a shield and dice on the table" width="1536" height="1024" loading="lazy" decoding="async" />
+  <figcaption>A character scene for the source check: settle the table’s 2014/legacy or 2024 source before copying Halfling values.</figcaption>
 </figure>
 
 <h2>Copy the 2024 Basic Rules Halfling branch</h2>
@@ -263,8 +263,8 @@ export const dndHalflingArticleHtml = String.raw`
 <p>If the cue is already clear, no editor is required. To try the visible crop and mask workflow, use <a href="https://www.tokenmaker.one/" rel="noreferrer noopener">Token Maker</a> as an optional next step, then check the actual file and intended VTT workflow yourself; visible controls are not compatibility proof.</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
-  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_CROP_DECISION_IMAGE_PATH}" alt="Crop decision diagram showing one Halfling concept with the face and one prop retained across circle, square, and polygon examples, followed by a map-scale check" width="1536" height="1024" loading="lazy" decoding="async" />
-  <figcaption>Crop from the chosen character cue: retain the face and one readable prop, then compare the result at the map scale you use. The shape is a design choice, not a rule for Small creatures.</figcaption>
+  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_CROP_DECISION_IMAGE_PATH}" alt="A curly-haired Halfling scout crouching at a sunlit forest edge with a short sword and leaf-patterned shield clearly visible" width="1536" height="1024" loading="lazy" decoding="async" />
+  <figcaption>Keep the face and one readable prop visible when checking the character at map scale. The shape is a design choice, not a rule for Small creatures.</figcaption>
 </figure>
 
 <h2>Run the final character-card completion check</h2>
@@ -335,8 +335,8 @@ export const dndHalflingArticleHtmlZh = String.raw`
 <p>DM 允许在 2024 使用旧书 Species 或 Background 时，先按 <a href="https://www.dndbeyond.com/sources/dnd/br-2024/creating-a-character#BackgroundsandSpeciesfromOlderBooks" rel="noreferrer noopener">2024 的旧书兼容说明</a>处理：忽略旧 Species 属性值，改用 Background；没有属性值加成的旧 Background，按页面的 +2/+1 或三个 +1 处理；缺少 Feat 时取得一个自选 Origin Feat。兼容说明只覆盖属性值和缺失 Feat，不替 DM 决定其他旧特性、扩展书来源或桌规许可。能用后仍保留一个明确的版本标记。</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
-  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_VERSION_BRANCH_IMAGE_PATH}" alt="2014 与 2024 半身人规则分流及角色卡字段示意图" width="1536" height="1024" loading="lazy" decoding="async" />
-  <figcaption>先确认规则来源，再决定角色卡字段；示意图中的两栏不能合并。</figcaption>
+  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_VERSION_BRANCH_IMAGE_PATH}" alt="雨后村庄石路上的半身人冒险者，手持短剑、背着橡叶纹盾牌，远处是山村与薄雾" width="1536" height="1024" loading="lazy" decoding="async" />
+  <figcaption>先确认规则来源，再把同一角色的身份线索带进角色卡和冒险场景。</figcaption>
 </figure>
 
 <h2>按年份把半身人字段写进角色卡</h2>
@@ -432,8 +432,8 @@ export const dndHalflingArticleHtmlZh = String.raw`
 </table>
 
 <figure class="inline-figure inline-figure--wide-crop">
-  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_CHARACTER_CARD_FIELDS_IMAGE_PATH}" alt="按版本分栏的半身人角色卡字段示意图" width="1536" height="1024" loading="lazy" decoding="async" />
-  <figcaption>角色卡示意按版本分栏；它不是官方角色卡版式。</figcaption>
+  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_CHARACTER_CARD_FIELDS_IMAGE_PATH}" alt="月夜营火旁的半身人冒险者用羽毛笔记录冒险准备，盾牌与短剑放在身边" width="1536" height="1024" loading="lazy" decoding="async" />
+  <figcaption>把角色字段写清后，再保留一个能在画面里看见的身份线索；这张是场景插画，不是官方角色卡版式。</figcaption>
 </figure>
 
 <h2>把半身人特性变成桌边判断</h2>
@@ -465,8 +465,8 @@ export const dndHalflingArticleHtmlZh = String.raw`
 <p>写卡时 2024 特性留在 Species 栏、2014 Lightfoot 留在 subrace 栏。桌边先看遮挡来源再确认版本；墙、门、烟雾等环境因素不会被这条特性自动改写。</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
-  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_TRAIT_TRIGGER_MATRIX_IMAGE_PATH}" alt="半身人特性按触发条件、动作和限制排列的示意图" width="1536" height="1024" loading="lazy" decoding="async" />
-  <figcaption>半身人特性应按触发条件核对，不要按种族印象猜。</figcaption>
+  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_TRAIT_TRIGGER_MATRIX_IMAGE_PATH}" alt="雨中石桥战斗里的半身人冒险者举盾保护队友，手持短剑迎向远处的巨大敌人剪影" width="1536" height="1024" loading="lazy" decoding="async" />
+  <figcaption>用角色场景记住特性触发时的行动，但仍以对应版本的规则文字为准。</figcaption>
 </figure>
 
 <h2>只保留能帮助认角色的短称呼与身份线索</h2>
@@ -504,8 +504,8 @@ export const dndHalflingArticleHtmlZh = String.raw`
 <p>Token Maker 公开首页列出 JPG、PNG、WEBP 上传（不超过 10 MB）、圆形/方形/多边形遮罩、边框、文字设置及 256/512/1024/2048 PNG 导出控件。可在 <a href="https://www.tokenmaker.one/" rel="noreferrer noopener">Token Maker 官网工作区</a>查看；这些是页面展示，不是本文执行的上传、导出或 Roll20、Foundry、Owlbear 导入测试。官网未把 D&amp;D Small 换算为图片尺寸，仍应以画面和地图缩放为准。</p>
 
 <figure class="inline-figure inline-figure--wide-crop">
-  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_TOKEN_CROP_COMPARISON_IMAGE_PATH}" alt="同一半身人肖像的圆形、方形和多边形裁切对比示意图" width="1536" height="1024" loading="lazy" decoding="async" />
-  <figcaption>按肖像与地图缩放选择遮罩；Small 不是图片规格。</figcaption>
+  <img class="inline-figure__image inline-figure__image--wide" src="${DND_HALFLING_TOKEN_CROP_COMPARISON_IMAGE_PATH}" alt="月夜森林营地中的半身人冒险者近景肖像，卷发、苔绿色斗篷、短剑和橡叶纹盾牌清晰可见" width="1536" height="1024" loading="lazy" decoding="async" />
+  <figcaption>先让脸部和一件身份道具在画面中保持可读，再按地图缩放选择裁切形状；这张是角色原画，不是 Token 框。</figcaption>
 </figure>
 
 <h2>开团前用五项检查收口</h2>

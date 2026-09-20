@@ -4766,7 +4766,7 @@ const dndHalflingArticle: BlogPost = {
   coverLabel: 'Race Guide',
   coverImage: DND_HALFLING_COVER_PATH,
   coverAlt:
-    'Abstract two-column D&D Halfling source-lock diagram contrasting the 2014 legacy race and 2024 Basic Rules species with a single choice marker',
+    'Original fantasy RPG cover art of a curly-haired Halfling adventurer in a moss-green cloak and leather armor on a forest road at sunset, holding a leaf-patterned shield',
   bodyHtml: dndHalflingArticleHtml,
   faqItems: [],
   relatedSlugs: ['dnd-races'],
@@ -4785,7 +4785,7 @@ const dndHalflingArticleZh: BlogPost = {
   readTime: '12 分钟阅读',
   coverLabel: '种族指南',
   coverImage: DND_HALFLING_COVER_PATH,
-  coverAlt: '2014 与 2024 半身人规则分栏示意图，中间有单一来源选择标记',
+  coverAlt: '原创奇幻 RPG 封面插画：卷发半身人冒险者穿苔绿色斗篷和皮甲，手持橡叶纹盾牌，站在黄昏森林石路上',
   bodyHtml: dndHalflingArticleHtmlZh,
   faqItems: [],
   relatedSlugs: ['dnd-races', 'dnd-character-sheet'],
