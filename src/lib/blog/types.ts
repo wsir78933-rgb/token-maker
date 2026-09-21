@@ -1,3 +1,10 @@
+export type BlogCategorySlug =
+  | 'token-vtt'
+  | 'characters'
+  | 'monsters'
+  | 'spells'
+  | 'rules-and-prep';
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -16,6 +23,7 @@ export interface BlogPost {
   metaDescription?: string;
   featured?: boolean;
   placeholder?: boolean;
+  category?: BlogCategorySlug;
 }
 
 export interface BlogPostFaqItem {
