@@ -9,6 +9,8 @@ import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import {
   buildBlogHubStructuredData,
   formatBlogUpdatedAt,
+  getBlogCategories,
+  getBlogCategoryPath,
   getBlogHubDescription,
   getBlogHubTitle,
   getBlogHubPageContent,
@@ -22,11 +24,12 @@ import { getNavLabels } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
-type BlogPostItem = ReturnType<typeof getBlogPosts>[number];
+export type BlogPostItem = ReturnType<typeof getBlogPosts>[number];
 
 const copyByLocale = {
   en: {
     hubEyebrow: 'Token Maker Blog',
+    categoryNavLabel: 'Browse by category',
     topicTags: ['DnD Guides', 'VTT Tools', 'Square Tokens', 'Tabletop Resources'],
     resourceCards: [
       {
@@ -69,6 +72,7 @@ const copyByLocale = {
   },
   zh: {
     hubEyebrow: 'Token Maker 博客',
+    categoryNavLabel: '按分类浏览',
     topicTags: ['DnD 指南', 'VTT 工具', '方形 Token', '桌面跑团资源'],
     resourceCards: [
       {
@@ -174,6 +178,23 @@ function BlogHubHeader({ locale }: { locale: SiteLocale }) {
           </span>
         ))}
       </div>
+      <nav aria-label={copy.categoryNavLabel} className="space-y-3 pt-1">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#d7b46a]">
+          {copy.categoryNavLabel}
+        </p>
+        <div className="flex flex-wrap gap-2.5">
+          {getBlogCategories(locale).map((category) => (
+            <Link
+              key={category.slug}
+              href={getBlogCategoryPath(locale, category.slug)}
+              prefetch={false}
+              className="rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium text-stone-300 transition-colors hover:border-[#d7b46a]/35 hover:text-stone-100"
+            >
+              {category.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
       <div className="grid gap-3 pt-2 sm:grid-cols-2">
         {copy.resourceCards.map((card) => (
           <Link
@@ -256,7 +277,7 @@ function FeaturedArticleCard({ locale, post }: { locale: SiteLocale; post: BlogP
 
 // ─── Article grid card (image on top, text below) ────────────────────────────
 
-function ArticleCard({ locale, post }: { locale: SiteLocale; post: BlogPostItem }) {
+export function BlogArticleCard({ locale, post }: { locale: SiteLocale; post: BlogPostItem }) {
   const copy = copyByLocale[locale];
 
   return (
@@ -368,7 +389,7 @@ export function BlogHubPageView({
 
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
               {gridPosts.map((post) => (
-                <ArticleCard key={post.slug} locale={locale} post={post} />
+                <BlogArticleCard key={post.slug} locale={locale} post={post} />
               ))}
             </div>
           </section>

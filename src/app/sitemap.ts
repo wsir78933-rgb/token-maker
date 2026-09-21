@@ -1,7 +1,10 @@
 import type { MetadataRoute } from 'next';
 import {
   BLOG_PLACEHOLDER_MODE,
+  getBlogCategories,
+  getBlogCategoryPath,
   getBlogPageCount,
+  getBlogPostsByCategory,
   getBlogPosts,
 } from '@/lib/blog-content';
 import { getSiteUrl, getTemplatePages } from '@/lib/site-content';
@@ -58,6 +61,26 @@ function getStaticSupportPageFromPath(path: string): StaticSupportPage | null {
   if (path === '/about') return 'about';
   if (path === '/changelog') return 'changelog';
   return null;
+}
+
+function getBlogCategorySitemapRoutes(siteUrl: string): MetadataRoute.Sitemap {
+  const categorySlugs = getBlogCategories('en').map((category) => category.slug);
+
+  return LOCALES.flatMap((locale) =>
+    categorySlugs.map((categorySlug) => {
+      const canonicalPath = getBlogCategoryPath('en', categorySlug);
+      const localizedPath = getBlogCategoryPath(locale, categorySlug);
+      const categoryPosts = getBlogPostsByCategory(locale, categorySlug);
+
+      return {
+        url: `${siteUrl}${localizedPath}`,
+        lastModified: new Date(pickLatestIsoDate(categoryPosts.map((post) => post.updatedAt))),
+        changeFrequency: 'weekly' as const,
+        priority: 0.65,
+        alternates: buildAlternates(canonicalPath, siteUrl),
+      };
+    }),
+  );
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -126,6 +149,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
         });
       });
 
+  const blogCategoryRoutes: MetadataRoute.Sitemap = BLOG_PLACEHOLDER_MODE
+    ? []
+    : getBlogCategorySitemapRoutes(siteUrl);
+
   const blogPostRoutes: MetadataRoute.Sitemap = BLOG_PLACEHOLDER_MODE
     ? []
     : LOCALES.flatMap((locale) =>
@@ -152,5 +179,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
-  return [...staticRoutes, ...templateRoutes, ...blogHubRoutes, ...blogPostRoutes];
+  return [...staticRoutes, ...templateRoutes, ...blogHubRoutes, ...blogCategoryRoutes, ...blogPostRoutes];
 }

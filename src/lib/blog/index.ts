@@ -2,10 +2,25 @@ import type { Metadata } from 'next';
 
 import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { LOCALES, getLanguageAlternates, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
+import { requireBlogCategorySlug } from './categories';
 import type { BlogPost } from './types';
 
-export type { BlogPost, BlogPostFaqItem, BlogPostHeading, PlaceholderCopy } from './types';
+export type { BlogCategorySlug, BlogPost, BlogPostFaqItem, BlogPostHeading, PlaceholderCopy } from './types';
 export { addHeadingAnchors } from './html-utils';
+export {
+  BLOG_CATEGORY_SLUGS,
+  UNCATEGORIZED_BLOG_POST_SLUG,
+  assignBlogPostCategory,
+  buildBlogCategoryBreadcrumbStructuredData,
+  buildBlogCategoryCollectionStructuredData,
+  createBlogCategoryMetadata,
+  getBlogCategories,
+  getBlogCategory,
+  getBlogCategoryPath,
+  isBlogCategorySlug,
+  requireBlogCategorySlug,
+} from './categories';
+export type { BlogCategoryCopy } from './categories';
 
 export const BLOG_POSTS_PER_PAGE = 10;
 export const BLOG_PLACEHOLDER_MODE = false;
@@ -27,6 +42,11 @@ export function getFeaturedBlogPost(locale: SiteLocale) {
 
 export function getBlogPost(locale: SiteLocale, slug: string) {
   return getBlogPosts(locale).find((post) => post.slug === slug);
+}
+
+export function getBlogPostsByCategory(locale: SiteLocale, categorySlug: string) {
+  const category = requireBlogCategorySlug(categorySlug);
+  return getBlogPosts(locale).filter((post) => post.category === category);
 }
 
 function getBlogPostLanguageAlternates(slug: string) {
