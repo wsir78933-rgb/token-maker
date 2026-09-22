@@ -1,5 +1,6 @@
 import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
 import { SiteFooter } from '@/components/site/SiteFooter';
+import { getBlogCategories, getBlogCategoryPath } from '@/lib/blog-content';
 import { getNavLabels, getSiteConfig } from '@/lib/site-content';
 import { getLocalizedPath, stripLocalePrefix, switchLocalePath, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
@@ -31,12 +32,20 @@ export function InnerPageChrome({
 }: InnerPageChromeProps) {
   const siteConfig = getSiteConfig(locale);
   const navLabels = getNavLabels(locale);
+  const blogDropdownLinks = getBlogCategories(locale).map((category) => ({
+    href: getBlogCategoryPath(locale, category.slug),
+    label: category.label,
+  }));
   const navLinks = [
     { href: getLocalizedPath(locale, '/'), label: navLabels.editor },
     { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller },
     { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker },
     { href: getLocalizedPath(locale, '/contact'), label: navLabels.contact },
-    { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog },
+    {
+      href: getLocalizedPath(locale, '/blog'),
+      label: navLabels.blog,
+      dropdownLinks: blogDropdownLinks,
+    },
   ];
   const switchedPath = localeSwitchPath ?? switchLocalePath(currentPath, locale === 'en' ? 'zh' : 'en');
   const contentTopbarNavLinks = navLinks.map((link) => {

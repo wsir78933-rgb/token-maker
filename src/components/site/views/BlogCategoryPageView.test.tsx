@@ -11,11 +11,22 @@ import ChineseBlogCategoryPage, {
   generateMetadata as generateChineseBlogCategoryMetadata,
   generateStaticParams as generateChineseBlogCategoryStaticParams,
 } from '../../../app/(zh)/zh/blog/category/[category]/page';
+import EnglishBlogCategoryPaginationPage, {
+  generateMetadata as generateEnglishBlogCategoryPaginationMetadata,
+  generateStaticParams as generateEnglishBlogCategoryPaginationStaticParams,
+} from '../../../app/(en)/blog/category/[category]/page/[page]/page';
+import ChineseBlogCategoryPaginationPage, {
+  generateMetadata as generateChineseBlogCategoryPaginationMetadata,
+  generateStaticParams as generateChineseBlogCategoryPaginationStaticParams,
+} from '../../../app/(zh)/zh/blog/category/[category]/page/[page]/page';
 import {
   BLOG_CATEGORY_SLUGS,
   getBlogCategories,
   getBlogCategory,
+  getBlogCategoryPageCount,
+  getBlogCategoryPagePath,
   getBlogCategoryPath,
+  getBlogPlaceholderCopy,
   getBlogPostPath,
   getBlogPostsByCategory,
 } from '@/lib/blog-content';
@@ -41,9 +52,7 @@ const localeCases = [
 ];
 
 function getArticleCardPaths(container: HTMLElement) {
-  return Array.from(container.querySelectorAll('a.site-surface-card')).map((link) =>
-    link.getAttribute('href'),
-  );
+  return Array.from(container.querySelectorAll('a.site-surface-card')).map((link) => link.getAttribute('href'));
 }
 
 function readJsonLd(scriptId: string) {
@@ -113,7 +122,7 @@ describe('blog category routes', () => {
       expect(screen.getByText(categoryCopy.description)).not.toBeNull();
       expect(screen.getAllByText(articleCount)).toHaveLength(2);
       expect(getArticleCardPaths(container)).toEqual(
-        categoryPosts.map((post) => getBlogPostPath(locale, post.slug)),
+        categoryPosts.slice(0, 10).map((post) => getBlogPostPath(locale, post.slug)),
       );
 
       const collectionStructuredData = readJsonLd(`blog-category-${locale}-${category}`);
@@ -132,7 +141,9 @@ describe('blog category routes', () => {
     const categoryPosts = getBlogPostsByCategory(locale, category);
     const { container } = render(<BlogCategoryPageView locale={locale} category={category} />);
 
-    expect(getArticleCardPaths(container)).toEqual(categoryPosts.map((post) => getBlogPostPath(locale, post.slug)));
+    expect(getArticleCardPaths(container)).toEqual(
+      categoryPosts.slice(0, 10).map((post) => getBlogPostPath(locale, post.slug)),
+    );
     expect(getBlogPostPath('en', 'dnd-halfling')).toBe('/blog/dnd-halfling');
     expect(getBlogPostPath('zh', 'dnd-halfling')).toBe('/zh/blog/dnd-halfling');
   });
@@ -157,6 +168,114 @@ describe('blog category routes', () => {
         label: category.label,
       })),
     );
+  });
+
+  it.each(localeCases)('keeps the category shell for the $locale category page', ({ locale, categoryNavigationLabel }) => {
+    const category = 'monsters';
+    const { container } = render(<BlogCategoryPageView locale={locale} category={category} />);
+    const categoryNavigation = container.querySelector(`nav[aria-label="${categoryNavigationLabel}"]`);
+
+    if (!categoryNavigation) {
+      throw new Error(`Expected category navigation for locale=${locale}.`);
+    }
+
+    const categoryLinks = Array.from(categoryNavigation.querySelectorAll('a'));
+    expect(categoryLinks).toHaveLength(5);
+
+    const currentLink = categoryLinks.find(
+      (link) => link.getAttribute('href') === getBlogCategoryPath(locale, category),
+    );
+    expect(currentLink?.getAttribute('aria-current')).toBe('page');
+    for (const link of categoryLinks) {
+      if (link !== currentLink) {
+        expect(link.getAttribute('aria-current')).toBeNull();
+      }
+    }
+
+    const placeholderCopy = getBlogPlaceholderCopy(locale);
+    expect(screen.getByRole('heading', { level: 2, name: placeholderCopy.ctaTitle })).not.toBeNull();
+    expect(screen.queryByText(locale === 'zh' ? '分页' : 'Pages')).toBeNull();
+  });
+
+  it.each([
+    { locale: 'en' as const },
+    { locale: 'zh' as const },
+  ])('renders only the first page of more-than-ten $locale category articles with a pager', ({ locale }) => {
+    const category = 'characters';
+    const categoryPosts = getBlogPostsByCategory(locale, category);
+    const { container } = render(<BlogCategoryPageView locale={locale} category={category} />);
+
+    expect(categoryPosts.length).toBeGreaterThan(10);
+    expect(getArticleCardPaths(container)).toEqual(
+      categoryPosts.slice(0, 10).map((post) => getBlogPostPath(locale, post.slug)),
+    );
+    expect(container.querySelector('[data-blog-featured-article]')).toBeNull();
+
+    const paginationLabel = locale === 'zh' ? '分页' : 'Pages';
+    expect(screen.getByRole('heading', { level: 2, name: paginationLabel })).not.toBeNull();
+    expect(screen.getByRole('link', { name: /^2$/ }).getAttribute('href')).toBe(
+      getBlogCategoryPagePath(locale, category, 2),
+    );
+  });
+
+  it.each(localeCases)('renders the next $locale category slice without repeating page one', ({ locale }) => {
+    const category = 'characters';
+    const categoryPosts = getBlogPostsByCategory(locale, category);
+    const firstPageSlugs = new Set(categoryPosts.slice(0, 10).map((post) => post.slug));
+    const { container } = render(<BlogCategoryPageView locale={locale} category={category} page={2} />);
+
+    expect(getArticleCardPaths(container)).toEqual(
+      categoryPosts.slice(10, 20).map((post) => getBlogPostPath(locale, post.slug)),
+    );
+    expect(container.querySelector('[data-blog-featured-article]')).toBeNull();
+    expect(getArticleCardPaths(container).some((path) => {
+      const slug = path?.split('/').pop();
+      return slug !== undefined && firstPageSlugs.has(slug);
+    })).toBe(false);
+  });
+
+  it.each(localeCases)('omits the pager for a $locale category with ten or fewer published articles', ({ locale }) => {
+    const category = 'token-vtt';
+    expect(getBlogPostsByCategory(locale, category).length).toBeLessThanOrEqual(10);
+    render(<BlogCategoryPageView locale={locale} category={category} />);
+
+    expect(screen.queryByRole('heading', { level: 2, name: locale === 'zh' ? '分页' : 'Pages' })).toBeNull();
+  });
+
+  it.each([
+    {
+      locale: 'en' as const,
+      Page: EnglishBlogCategoryPaginationPage,
+      generateMetadata: generateEnglishBlogCategoryPaginationMetadata,
+      generateStaticParams: generateEnglishBlogCategoryPaginationStaticParams,
+    },
+    {
+      locale: 'zh' as const,
+      Page: ChineseBlogCategoryPaginationPage,
+      generateMetadata: generateChineseBlogCategoryPaginationMetadata,
+      generateStaticParams: generateChineseBlogCategoryPaginationStaticParams,
+    },
+  ])('rejects illegal $locale category page URLs before rendering', async ({ locale, Page, generateMetadata, generateStaticParams }) => {
+    const category = 'characters';
+    const pageCount = getBlogCategoryPageCount(locale, category);
+    const expectedStaticParams = BLOG_CATEGORY_SLUGS.flatMap((categorySlug) => {
+      const categoryPageCount = getBlogCategoryPageCount(locale, categorySlug);
+      return Array.from({ length: Math.max(0, categoryPageCount - 1) }, (_, index) => ({
+        category: categorySlug,
+        page: String(index + 2),
+      }));
+    });
+
+    expect(generateStaticParams()).toEqual(expectedStaticParams);
+    expect((await generateMetadata({ params: Promise.resolve({ category, page: '2' }) })).alternates?.canonical).toBe(
+      getBlogCategoryPagePath(locale, category, 2),
+    );
+
+    for (const page of ['1', '0', 'nope', String(pageCount + 1)]) {
+      notFoundMock.mockClear();
+      await expect(Page({ params: Promise.resolve({ category, page }) })).rejects.toThrow('NEXT_NOT_FOUND');
+      expect(notFoundMock).toHaveBeenCalledTimes(1);
+    }
   });
 
   it('renders category collection and breadcrumb JSON-LD through the view', () => {

@@ -1,13 +1,19 @@
 import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronDown, ChevronLeft } from 'lucide-react';
 import { SiteMark } from '@/components/site/SiteMark';
 import { TrackedEditorLink } from '@/components/site/TrackedEditorLink';
 import { cn } from '@/lib/utils';
+
+export interface ContentSiteTopbarDropdownLink {
+  href: string;
+  label: string;
+}
 
 export interface ContentSiteTopbarLink {
   href: string;
   label: string;
   isActive: boolean;
+  dropdownLinks?: ContentSiteTopbarDropdownLink[];
 }
 
 interface ContentSiteTopbarProps {
@@ -67,17 +73,47 @@ export function ContentSiteTopbar({
         </div>
 
         <nav className={navClassName}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              prefetch={false}
-              data-active={link.isActive}
-              className="site-nav-pill inline-flex shrink-0 items-center"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const hasDropdown = Boolean(link.dropdownLinks?.length);
+
+            return (
+              <div key={link.href} className="site-nav-item">
+                <Link
+                  href={link.href}
+                  prefetch={false}
+                  data-active={link.isActive}
+                  aria-haspopup={hasDropdown ? 'menu' : undefined}
+                  className="site-nav-pill inline-flex shrink-0 items-center"
+                >
+                  {link.label}
+                  {hasDropdown ? <ChevronDown aria-hidden="true" className="h-3.5 w-3.5" /> : null}
+                </Link>
+
+                {hasDropdown ? (
+                  <div
+                    aria-label={`${link.label} category menu`}
+                    className="site-nav-dropdown"
+                    data-nav-dropdown={link.href}
+                    role="menu"
+                  >
+                    <div className="site-nav-dropdown__panel">
+                      {link.dropdownLinks?.map((dropdownLink) => (
+                        <Link
+                          key={dropdownLink.href}
+                          href={dropdownLink.href}
+                          prefetch={false}
+                          className="site-nav-dropdown__link"
+                          role="menuitem"
+                        >
+                          {dropdownLink.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </nav>
       </div>
     </div>

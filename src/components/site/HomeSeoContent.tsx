@@ -7,6 +7,7 @@ import {
   getNavLabels,
   getSiteConfig,
 } from '@/lib/site-content';
+import { getBlogCategories, getBlogCategoryPath } from '@/lib/blog-content';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
 import { HomeTokenFaq, HomeTokenGuide } from '@/components/site/HomeTokenSeoSections';
@@ -203,12 +204,21 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
   const siteConfig = getSiteConfig(locale);
   const nextLocale = locale === 'zh' ? 'en' : 'zh';
   const homeHref = getLocalizedPath(locale, '/');
+  const blogDropdownLinks = getBlogCategories(locale).map((category) => ({
+    href: getBlogCategoryPath(locale, category.slug),
+    label: category.label,
+  }));
   const navLinks = [
     { href: `${homeHref}#editor-workspace`, label: navLabels.editor, isActive: true },
     { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller, isActive: false },
     { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker, isActive: false },
     { href: getLocalizedPath(locale, '/contact'), label: navLabels.contact, isActive: false },
-    { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog, isActive: false },
+    {
+      href: getLocalizedPath(locale, '/blog'),
+      label: navLabels.blog,
+      isActive: false,
+      dropdownLinks: blogDropdownLinks,
+    },
   ];
 
   return (

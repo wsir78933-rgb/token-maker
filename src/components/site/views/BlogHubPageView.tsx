@@ -188,7 +188,7 @@ function BlogHubHeader({ locale }: { locale: SiteLocale }) {
               key={category.slug}
               href={getBlogCategoryPath(locale, category.slug)}
               prefetch={false}
-              className="rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium text-stone-300 transition-colors hover:border-[#d7b46a]/35 hover:text-stone-100"
+              className="site-category-pill"
             >
               {category.label}
             </Link>
@@ -215,7 +215,7 @@ function BlogHubHeader({ locale }: { locale: SiteLocale }) {
   );
 }
 
-function FeaturedArticleCard({ locale, post }: { locale: SiteLocale; post: BlogPostItem }) {
+export function BlogFeaturedArticleCard({ locale, post }: { locale: SiteLocale; post: BlogPostItem }) {
   const copy = copyByLocale[locale];
 
   return (
@@ -224,6 +224,7 @@ function FeaturedArticleCard({ locale, post }: { locale: SiteLocale; post: BlogP
       prefetch={false}
       className="group block h-full"
       aria-label={post.title}
+      data-blog-featured-article="true"
     >
       <article className="site-surface-card site-surface-card--warm relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-[28px]">
         {/* ambient glow */}
@@ -370,7 +371,7 @@ export function BlogHubPageView({
 
           <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.72fr)] lg:items-stretch xl:gap-10">
             <BlogHubHeader locale={locale} />
-            <FeaturedArticleCard locale={locale} post={featuredPost} />
+            <BlogFeaturedArticleCard locale={locale} post={featuredPost} />
           </section>
 
           {/* ── Grid ── */}

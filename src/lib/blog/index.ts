@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { LOCALES, getLanguageAlternates, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
-import { requireBlogCategorySlug } from './categories';
+import { getBlogCategoryPath, requireBlogCategorySlug } from './categories';
 import type { BlogPost } from './types';
 
 export type { BlogCategorySlug, BlogPost, BlogPostFaqItem, BlogPostHeading, PlaceholderCopy } from './types';
@@ -47,6 +47,45 @@ export function getBlogPost(locale: SiteLocale, slug: string) {
 export function getBlogPostsByCategory(locale: SiteLocale, categorySlug: string) {
   const category = requireBlogCategorySlug(categorySlug);
   return getBlogPosts(locale).filter((post) => post.category === category);
+}
+
+function getBlogCategoryPageData(locale: SiteLocale, categorySlug: string) {
+  const categoryPosts = getBlogPostsByCategory(locale, categorySlug);
+  const pageCount = Math.max(1, Math.ceil(categoryPosts.length / BLOG_POSTS_PER_PAGE));
+
+  return { categoryPosts, pageCount };
+}
+
+function assertValidBlogCategoryPage(categorySlug: string, page: number, pageCount: number) {
+  if (!Number.isInteger(page) || page <= 0 || page > pageCount) {
+    throw new Error(
+      `Invalid blog category page: category=${JSON.stringify(categorySlug)}, page=${String(page)}, pageCount=${pageCount}.`,
+    );
+  }
+}
+
+export function getBlogCategoryPageCount(locale: SiteLocale, categorySlug: string) {
+  return getBlogCategoryPageData(locale, categorySlug).pageCount;
+}
+
+export function getBlogCategoryPagePath(locale: SiteLocale, categorySlug: string, page: number) {
+  const { pageCount } = getBlogCategoryPageData(locale, categorySlug);
+  assertValidBlogCategoryPage(categorySlug, page, pageCount);
+
+  const categoryPath = getBlogCategoryPath(locale, categorySlug);
+  return page === 1 ? categoryPath : `${categoryPath}/page/${page}`;
+}
+
+export function getBlogPostsForCategoryPage(
+  locale: SiteLocale,
+  categorySlug: string,
+  page: number,
+) {
+  const { categoryPosts, pageCount } = getBlogCategoryPageData(locale, categorySlug);
+  assertValidBlogCategoryPage(categorySlug, page, pageCount);
+
+  const startIndex = (page - 1) * BLOG_POSTS_PER_PAGE;
+  return categoryPosts.slice(startIndex, startIndex + BLOG_POSTS_PER_PAGE);
 }
 
 function getBlogPostLanguageAlternates(slug: string) {

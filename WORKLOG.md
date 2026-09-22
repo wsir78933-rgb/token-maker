@@ -1,5 +1,52 @@
 # WORKLOG
 
+## 交接单 · 2026-09-21 07:36 CST · Codex CLI
+
+### 本次目标
+
+完成 `dnd schools of magic` 中英文博客：中文页面纯中文化、替换中文页面图片、修正中文 metadata 标题后缀，并提交合并到 `main`，清理临时分支和工作树。
+
+### 已完成
+
+- 中文正文、H1、description、OG/Twitter title、图注、来源文案和无障碍文案已完成中文化。
+- 中文页面使用两张无文字游戏角色图：中文专用封面和文中施法者插画；英文页面图片保持原样。
+- 中文页面不再追加 `| Token Maker`；英文页面仍保留原有标题后缀。
+- 功能提交：`08fc690`；合并提交：`8cce019`。
+- 目标工作树 `/Users/wusir/orca/workspaces/token-maker-app/博客-dnd-zh-pure` 已删除。
+- 本地分支 `博客-dnd-schools-of-magic`、`博客-dnd-zh-pure` 已安全删除；远程只保留 `origin/main`。
+- 当前 `main` 为 `31182ea`，与 `origin/main` 一致，工作区干净；40007 本地服务已停止。
+
+### 做到一半
+
+无。
+
+### 下一步
+
+- 如继续处理博客分页测试中的既有 `dnd-kobold` / `dnd-halfling` 断言不一致，需要另开范围，不要回改本次已合并内容。
+- 如需生产页面验收，重新启动本地服务或按独立授权执行部署；本次未执行部署操作。
+
+### 踩过的坑
+
+- 新工作树曾默认落在旧基线，缺少目标文章；创建后必须核对基线并快进到当前 `main`。
+- 中文页面的英文来源不只是路由问题，还来自正文、图片内文字和公共 metadata 模板；需要分别检查 DOM、图片资源和 metadata。
+- 删除本地分支前必须确认 `git branch --merged main`、无关联 worktree，并使用 `git branch -d`，不要用 `-D`。
+- 本地服务删除工作树前必须确认 PID/cwd 和端口状态，避免遗留指向已删除目录的进程。
+
+### 怎么验证
+
+```bash
+git status --short --branch
+git log -1 --oneline --decorate
+git branch --format='%(refname:short)'
+git branch -r
+git worktree list --porcelain
+pnpm exec eslint src/lib/blog-posts/dnd-schools-of-magic.ts src/lib/blog-posts/shared.ts src/lib/blog/registry.ts src/lib/blog/dnd-schools-of-magic.test.ts src/lib/blog/index.ts
+pnpm exec vitest run src/lib/blog/dnd-schools-of-magic.test.ts
+git diff --check
+```
+
+已核对的结果：ESLint 和 diff 检查通过；D&D focused test 保留 1 个既有分页断言失败，其余通过。此前本地浏览器在中文/英文、桌面/窄屏四种组合中通过 66/66，中文正文英文命中为 0，图片加载正常且无横向溢出。当前临时服务已停止，原本的 40007 URL 不再提供服务。
+
 ## 交接单 · 2026-09-20 08:23 CST · Cursor CLI
 
 ### 本次目标

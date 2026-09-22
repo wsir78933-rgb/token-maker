@@ -7,6 +7,8 @@ import {
   buildBlogCategoryBreadcrumbStructuredData,
   buildBlogCategoryCollectionStructuredData,
   createBlogCategoryMetadata,
+  getBlogCategoryPageCount,
+  getBlogCategoryPagePath,
   getBlogCategories,
   getBlogCategory,
   getBlogCategoryPath,
@@ -15,6 +17,7 @@ import {
   getBlogPostPath,
   getBlogPosts,
   getBlogPostsByCategory,
+  getBlogPostsForCategoryPage,
   getBlogPostsForPage,
   isBlogCategorySlug,
   requireBlogCategorySlug,
@@ -186,6 +189,28 @@ describe('blog post category assignment', () => {
     expect(englishCharacters.map((post) => post.slug)).toEqual(chineseCharacters.map((post) => post.slug));
     expect(englishCharacters.some((post) => post.slug === 'best-dnd-classes-for-small-parties')).toBe(
       false,
+    );
+  });
+
+  test('paginates category posts in registry order and rejects illegal pages', () => {
+    const categoryPosts = getBlogPostsByCategory('en', 'characters');
+    const totalPages = getBlogCategoryPageCount('en', 'characters');
+    const firstPagePosts = getBlogPostsForCategoryPage('en', 'characters', 1);
+    const secondPagePosts = getBlogPostsForCategoryPage('en', 'characters', 2);
+
+    expect(totalPages).toBeGreaterThan(1);
+    expect(firstPagePosts).toEqual(categoryPosts.slice(0, 10));
+    expect(secondPagePosts).toEqual(categoryPosts.slice(10, 20));
+    expect(getBlogCategoryPagePath('en', 'characters', 1)).toBe('/blog/category/characters');
+    expect(getBlogCategoryPagePath('zh', 'characters', 2)).toBe('/zh/blog/category/characters/page/2');
+
+    expect(() => getBlogPostsForCategoryPage('en', 'characters', 0)).toThrow(
+      new RegExp(`characters.*page=0.*pageCount=${totalPages}`),
+    );
+
+    const pastEndPage = totalPages + 1;
+    expect(() => getBlogPostsForCategoryPage('en', 'characters', pastEndPage)).toThrow(
+      new RegExp(`characters.*page=${pastEndPage}.*pageCount=${totalPages}`),
     );
   });
 

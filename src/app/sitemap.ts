@@ -2,7 +2,8 @@ import type { MetadataRoute } from 'next';
 import {
   BLOG_PLACEHOLDER_MODE,
   getBlogCategories,
-  getBlogCategoryPath,
+  getBlogCategoryPageCount,
+  getBlogCategoryPagePath,
   getBlogPageCount,
   getBlogPostsByCategory,
   getBlogPosts,
@@ -67,18 +68,23 @@ function getBlogCategorySitemapRoutes(siteUrl: string): MetadataRoute.Sitemap {
   const categorySlugs = getBlogCategories('en').map((category) => category.slug);
 
   return LOCALES.flatMap((locale) =>
-    categorySlugs.map((categorySlug) => {
-      const canonicalPath = getBlogCategoryPath('en', categorySlug);
-      const localizedPath = getBlogCategoryPath(locale, categorySlug);
+    categorySlugs.flatMap((categorySlug) => {
+      const totalPages = getBlogCategoryPageCount(locale, categorySlug);
       const categoryPosts = getBlogPostsByCategory(locale, categorySlug);
 
-      return {
-        url: `${siteUrl}${localizedPath}`,
-        lastModified: new Date(pickLatestIsoDate(categoryPosts.map((post) => post.updatedAt))),
-        changeFrequency: 'weekly' as const,
-        priority: 0.65,
-        alternates: buildAlternates(canonicalPath, siteUrl),
-      };
+      return Array.from({ length: totalPages }, (_, index) => {
+        const pageNumber = index + 1;
+        const canonicalPath = getBlogCategoryPagePath('en', categorySlug, pageNumber);
+        const localizedPath = getBlogCategoryPagePath(locale, categorySlug, pageNumber);
+
+        return {
+          url: `${siteUrl}${localizedPath}`,
+          lastModified: new Date(pickLatestIsoDate(categoryPosts.map((post) => post.updatedAt))),
+          changeFrequency: 'weekly' as const,
+          priority: pageNumber === 1 ? 0.65 : 0.55,
+          alternates: buildAlternates(canonicalPath, siteUrl),
+        };
+      });
     }),
   );
 }

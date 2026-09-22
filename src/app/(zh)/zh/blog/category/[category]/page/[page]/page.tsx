@@ -1,0 +1,71 @@
+import { notFound } from 'next/navigation';
+
+import { BlogCategoryPageView } from '@/components/site/views/BlogCategoryPageView';
+import {
+  BLOG_CATEGORY_SLUGS,
+  createBlogCategoryMetadata,
+  getBlogCategoryPageCount,
+  getBlogCategoryPagePath,
+  isBlogCategorySlug,
+  type BlogCategorySlug,
+} from '@/lib/blog-content';
+
+const locale = 'zh';
+
+interface ChineseBlogCategoryPaginationPageProps {
+  params: Promise<{ category: string; page: string }>;
+}
+
+function resolveBlogCategoryPage(category: string, page: string): {
+  category: BlogCategorySlug;
+  page: number;
+} {
+  if (!isBlogCategorySlug(category)) {
+    notFound();
+  }
+
+  if (!/^[1-9]\d*$/.test(page)) {
+    notFound();
+  }
+
+  const pageNumber = Number(page);
+  if (pageNumber <= 1 || pageNumber > getBlogCategoryPageCount(locale, category)) {
+    notFound();
+  }
+
+  return { category, page: pageNumber };
+}
+
+export function generateStaticParams() {
+  return BLOG_CATEGORY_SLUGS.flatMap((category) => {
+    const totalPages = getBlogCategoryPageCount(locale, category);
+
+    return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => ({
+      category,
+      page: String(index + 2),
+    }));
+  });
+}
+
+export async function generateMetadata({ params }: ChineseBlogCategoryPaginationPageProps) {
+  const { category, page } = await params;
+  const resolvedPage = resolveBlogCategoryPage(category, page);
+  const metadata = createBlogCategoryMetadata(locale, resolvedPage.category);
+
+  return {
+    ...metadata,
+    alternates: {
+      ...metadata.alternates,
+      canonical: getBlogCategoryPagePath(locale, resolvedPage.category, resolvedPage.page),
+    },
+  };
+}
+
+export default async function ChineseBlogCategoryPaginationPage({
+  params,
+}: ChineseBlogCategoryPaginationPageProps) {
+  const { category, page } = await params;
+  const resolvedPage = resolveBlogCategoryPage(category, page);
+
+  return <BlogCategoryPageView locale={locale} category={resolvedPage.category} page={resolvedPage.page} />;
+}
