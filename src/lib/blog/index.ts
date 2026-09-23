@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 
 import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { LOCALES, getLanguageAlternates, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
-import { getBlogCategoryPath, requireBlogCategorySlug } from './categories';
+import {
+  getBlogCategoryPath as buildBlogCategoryPath,
+  requireBlogCategorySlug as requireKnownBlogCategorySlug,
+} from './categories';
 import type { BlogPost } from './types';
 
 export type { BlogCategorySlug, BlogPost, BlogPostFaqItem, BlogPostHeading, PlaceholderCopy } from './types';
@@ -45,7 +48,7 @@ export function getBlogPost(locale: SiteLocale, slug: string) {
 }
 
 export function getBlogPostsByCategory(locale: SiteLocale, categorySlug: string) {
-  const category = requireBlogCategorySlug(categorySlug);
+  const category = requireKnownBlogCategorySlug(categorySlug);
   return getBlogPosts(locale).filter((post) => post.category === category);
 }
 
@@ -72,7 +75,7 @@ export function getBlogCategoryPagePath(locale: SiteLocale, categorySlug: string
   const { pageCount } = getBlogCategoryPageData(locale, categorySlug);
   assertValidBlogCategoryPage(categorySlug, page, pageCount);
 
-  const categoryPath = getBlogCategoryPath(locale, categorySlug);
+  const categoryPath = buildBlogCategoryPath(locale, categorySlug);
   return page === 1 ? categoryPath : `${categoryPath}/page/${page}`;
 }
 

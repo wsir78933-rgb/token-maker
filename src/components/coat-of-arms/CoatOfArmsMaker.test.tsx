@@ -684,7 +684,7 @@ describe('CoatOfArmsMaker', () => {
     expect(navigationContent?.className).toBe('mx-auto max-w-6xl px-4 py-0 sm:px-6 lg:px-8');
     expect(brandTitle?.className).toBe('site-brand-title font-semibold text-base');
     expect(siteMark?.className).toBe('h-9 w-9 shrink-0 rounded-xl');
-    expect(navigation?.className).toBe('mt-0 flex flex-wrap items-center gap-2');
+    expect(navigation?.className).toBe('mt-0 flex w-full flex-wrap items-center justify-between gap-3');
   });
 
   it.each([
@@ -1507,7 +1507,7 @@ describe('CoatOfArmsMaker', () => {
     const workbenchStyles = readFileSync(resolve(process.cwd(), 'src/app/globals.css'), 'utf8');
 
     expect(workbenchStyles).toContain('.coat-maker-page > .site-topbar {\n  font-family: var(--font-sans);\n  box-sizing: border-box;\n}');
-    expect(workbenchStyles).toContain('@media (min-width: 1024px) {\n  .coat-maker-page > .site-topbar {\n    height: 99px;\n    min-height: 99px;\n    overflow: hidden;\n  }');
+    expect(workbenchStyles).toContain('@media (min-width: 1024px) {\n  .coat-maker-page > .site-topbar {\n    height: auto;\n    min-height: 0;\n    overflow: visible;\n  }');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-actionbar {\n  display: flex;\n  height: 50px;');
     expect(workbenchStyles).toContain('padding: 8.5px;');
     expect(workbenchStyles).toContain('.coat-target-workbench .coat-target-export > div > button { width: 109.375px; height: 38.25px; }');

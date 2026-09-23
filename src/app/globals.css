@@ -997,8 +997,7 @@
     visibility 180ms ease;
 }
 
-.site-nav-item:hover .site-nav-dropdown,
-.site-nav-item:focus-within .site-nav-dropdown {
+.site-nav-item[data-open='true'] > .site-nav-dropdown {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -1017,6 +1016,32 @@
   border-radius: 1rem;
   background: var(--site-nav-bg);
   box-shadow: 0 24px 60px -32px var(--workspace-shadow-color);
+}
+
+.site-nav-dropdown__panel--features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(40rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  padding: 0.75rem;
+  gap: 0.5rem;
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+}
+
+.site-nav-dropdown:has(.site-nav-dropdown__panel--features) {
+  left: auto;
+  right: 0;
+}
+
+.site-nav-dropdown__description {
+  color: var(--site-ink-soft);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.25rem;
+  text-transform: none;
+  white-space: normal;
 }
 
 .site-category-pill {
@@ -1058,6 +1083,14 @@
   text-decoration: none;
 }
 
+.site-nav-dropdown__link--feature {
+  flex-direction: column;
+  align-items: flex-start;
+  white-space: normal;
+  gap: 0.15rem;
+  padding: 0.75rem;
+}
+
 .site-nav-dropdown__link:hover,
 .site-nav-dropdown__link:focus-visible {
   background: color-mix(in oklab, var(--site-panel) 78%, white 10%);
@@ -1065,7 +1098,7 @@
   outline: none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .site-topbar {
     backdrop-filter: none;
   }
@@ -1782,12 +1815,12 @@
 }
 @media (min-width: 1024px) {
   .coat-maker-page > .site-topbar {
-    height: 99px;
-    min-height: 99px;
-    overflow: hidden;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
   }
   .coat-maker-page > .site-topbar > div {
-    height: 99px;
+    height: auto;
   }
 }
 

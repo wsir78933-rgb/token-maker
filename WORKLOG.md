@@ -1,5 +1,105 @@
 # WORKLOG
 
+## 交接单 · 2026-09-23 22:09 CST · Grok CLI
+
+### 本次目标
+
+分类页不要把一个分类的文章全放在同一页，要和博客总页一样：宽屏最多两行、每行 5 张，一页 10 篇，多出来的用上一页和下一页。另外修掉终端里的 `ReferenceError: getBlogCategoryPath is not defined`。
+
+### 已完成
+
+- 用户明确选择不存档。未提交，也没有 push。
+- 分类页分页和两行文章格已经在当前 `HEAD`（`3d87911`）的 `src/components/site/views/BlogCategoryPageView.tsx` 里，包括 `BlogCategoryPagination`。分类页不再把第一篇抽成页头大卡片。
+- 本次会话核对过 `http://127.0.0.1:40001/zh/blog/category/characters`：第一页 10 张，两行各 5 张，有分页；第二页 `/zh/blog/category/characters/page/2` 也是 10 张，和第一页不重复。当时页面正文没有 `getBlogCategoryPath is not defined`。
+- 未存档改动只在这两处：
+  - `src/lib/blog/index.ts`：本地调用改成别名 `buildBlogCategoryPath` 和 `requireKnownBlogCategorySlug`。对外仍是 `export { getBlogCategoryPath, requireBlogCategorySlug } from './categories'`。分页地址公式没变。
+  - 新文件 `src/lib/blog/category-page-path.test.ts`：从 `@/lib/blog-content` 测第 1 页、第 2 页路径，以及页码 0 和超出末页时抛错。
+- 已跑过并退出码为 0：`pnpm exec vitest run src/lib/blog/categories.test.ts src/lib/blog/category-page-path.test.ts`（2 个文件，9 项通过）。
+- 别名改完后再次请求 `/zh/blog/category/characters` 返回 200。为核对而开的开发服务器日志里没有新的 `ReferenceError`。
+
+### 做到一半
+
+- 角色分类当时数到 21 篇。第三页应剩 1 篇，这次没有单独打开第三页。
+- 修完 `ReferenceError` 之后，没有再单独验收英文 `/blog/category/characters`。
+- 为核对启动的 `pnpm dev`（端口 40001）已退出，退出码 143。当前不要假设 40001 还开着。
+- `WORKLOG.md` 也有未提交改动。不要把它加进提交。
+
+### 下一步
+
+- 若要存档，只提交 `src/lib/blog/index.ts` 和 `src/lib/blog/category-page-path.test.ts`。不要提交 `WORKLOG.md`，不要 push。提交前先再看一遍 `git status`。
+- 重新跑 `pnpm dev` 后，打开角色分类第 3 页和英文角色分类页，确认没有 `ReferenceError`，并且第 3 页只有剩下的那 1 篇。
+- 不要把 `token-vtt` 分类加回去。上一班已从分类列表移除，直接访问该分类地址应是 404。
+
+### 踩过的坑
+
+- 报错框把位置标成 `src/lib/blog/categories.ts:98` 和 `SiteFooter.tsx`。这两处对不上：第 98 行是分类名单里的文章 slug，`SiteFooter.tsx` 不是调用方。真正调用在 `src/lib/blog/index.ts` 的 `getBlogCategoryPagePath`，页面入口是 `BlogCategoryPageView` 算当前路径。
+- 终端里的 `[browser]` 前缀，是服务端渲染错误被 `src/app/error.tsx` 接住后送回开发服务器。`getBlogCategoryPagePath` 没有打进浏览器自己的脚本。请求仍可能是 200。
+- `index.ts` 里同名 `import` 再加 `export { 名字 } from './categories'`，调用点会变成未声明变量，于是报 `is not defined`。只改 `getBlogCategoryPath` 时，`requireBlogCategorySlug` 还是同一写法；审查指出后，内部调用也改成了 `requireKnownBlogCategorySlug`。
+- Vitest 走 Vite，测得到路径结果，覆盖不到这个打包绑定问题。
+- 用 `127.0.0.1` 打开 `localhost:40001` 时，Next 会刷 `allowedDevOrigins` 警告。这和 `ReferenceError` 不是同一件事。
+- 分类页曾经把第一篇拿去当页头大卡片，下面的格子变成 5 张加 4 张。这个大卡片已经不在当前 `BlogCategoryPageView` 里。
+
+### 怎么验证
+
+先在项目根目录启动本地站，再看页面。端口以实际启动输出为准，项目脚本默认是 40001。
+
+```bash
+pnpm dev
+pnpm exec vitest run src/lib/blog/categories.test.ts src/lib/blog/category-page-path.test.ts src/components/site/views/BlogCategoryPageView.test.tsx
+```
+
+页面：
+
+- `http://127.0.0.1:40001/zh/blog/category/characters`：10 张卡片，两行各 5 张，下面有「分页」。正文和终端都不应出现 `getBlogCategoryPath is not defined` 或 `requireBlogCategorySlug is not defined`。
+- 点「下一页」，地址应为 `/zh/blog/category/characters/page/2`，文章不和第一页重复。
+- 再打开第 3 页，确认只剩剩余文章。
+- `http://127.0.0.1:40001/blog/category/characters` 做同样的检查。
+
+## 交接单 · 2026-09-23 19:38 CST · Codex CLI
+
+### 本次目标
+
+移除博客下拉菜单中没有内容的 `Token & VTT Guides / Token 与 VTT 指南` 分类页，并让英文、中文入口和路由保持一致。
+
+### 已完成
+
+- 从博客分类类型、分类列表、双语文案和文章分类映射中移除 `token-vtt`。
+- 清理对应的未发布 Token 指南占位文章数据。
+- 英文和中文分类导航、Blog 下拉菜单、静态参数和 sitemap 均不再包含该分类。
+- `/blog/category/token-vtt` 与 `/zh/blog/category/token-vtt` 直接访问返回 404。
+- 更新分类、路由和 sitemap 测试。
+- 保留此前移动端博客下拉菜单定位修复。
+- 当前已核对：工作区干净，`main` 与 `origin/main` 均指向 `3d87911`。
+
+### 做到一半
+
+无。
+
+### 下一步
+
+- 如需继续处理完整测试、typecheck 或 build 的失败，另开范围排查现有文章排序、sitemap 日期和 TypeScript 基线问题，不要回退本次分类移除。
+- 不要提交 `WORKLOG.md`；本次未执行生产部署验收。
+
+### 踩过的坑
+
+- Blog 顶部链接点击会进入 Blog 首页；下拉菜单通过顶部链接的 hover/focus 展开，浏览器验收时应使用 focus 或 hover 后再读取 menu。
+- 移动端窄屏下拉菜单原先使用 `right: 0` 会向左越界；`globals.css` 中已有针对 430px 以下屏幕的 `left: 0` 修复。
+- 完整测试当前仍有 5 个文件、22 个测试失败，失败集中在既有文章顺序和 sitemap 日期断言；不是本次分类相关 focused tests 的失败。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/lib/blog/categories.test.ts src/components/site/views/BlogCategoryPageView.test.tsx src/app/sitemap-category.test.ts
+pnpm exec eslint src/lib/blog/types.ts src/lib/blog/categories.ts src/lib/blog/registry.ts src/lib/blog/categories.test.ts src/components/site/views/BlogCategoryPageView.test.tsx src/app/sitemap-category.test.ts
+git diff --check
+pnpm test
+pnpm run typecheck
+pnpm run build
+```
+
+已核对结果：分类相关 focused tests 为 3 个文件、28 个测试全部通过；相关 ESLint 和 diff 检查通过。Ego Browser 本地 40001 验收显示中英文下拉菜单各 4 项，两个 `token-vtt` 路由均为 HTTP 404。完整 test、typecheck 和 build 仍受仓库现有基线错误阻断；build 已编译成功后在 TypeScript 检查阶段失败。
+
+
 ## 交接单 · 2026-09-21 07:36 CST · Codex CLI
 
 ### 本次目标

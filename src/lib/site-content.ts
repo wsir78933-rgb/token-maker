@@ -267,6 +267,11 @@ export interface NavLabels {
   faq: string;
   privacy: string;
   switchLocale: string;
+  navigation: string;
+  openNavigation: string;
+  closeNavigation: string;
+  navigationMenuDescription: string;
+  blogCategoryMenu: string;
 }
 
 export interface ShellCopy {
@@ -540,6 +545,11 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
     faq: 'FAQ',
     privacy: 'Privacy',
     switchLocale: '中文',
+    navigation: 'Primary',
+    openNavigation: 'Open navigation',
+    closeNavigation: 'Close navigation',
+    navigationMenuDescription: 'Primary navigation links',
+    blogCategoryMenu: 'Blog categories',
   },
   zh: {
     editor: '编辑器',
@@ -552,6 +562,11 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
     faq: '常见问题',
     privacy: '隐私',
     switchLocale: 'English',
+    navigation: '主导航',
+    openNavigation: '打开导航',
+    closeNavigation: '关闭导航',
+    navigationMenuDescription: '主要导航链接',
+    blogCategoryMenu: '博客分类',
   },
 };
 

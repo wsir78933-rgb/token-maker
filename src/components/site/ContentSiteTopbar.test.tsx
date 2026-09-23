@@ -1,46 +1,201 @@
 // @vitest-environment jsdom
 
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { ContentSiteTopbar } from './ContentSiteTopbar';
 
-describe('ContentSiteTopbar', () => {
-  it('exposes Blog category links as an accessible dropdown menu', () => {
-    render(
-      <ContentSiteTopbar
-        brandHref="/"
-        brandName="Token Maker"
-        brandSubtitle="Back to the editor"
-        localeSwitchHref="/zh"
-        localeSwitchLabel="中文"
-        contentClassName="content"
-        navClassName="navigation"
-        topbarClassName="topbar"
-        navLinks={[
-          { href: '/', label: 'Editor', isActive: false },
-          {
-            href: '/blog',
-            label: 'Blog',
-            isActive: true,
-            dropdownLinks: [
-              { href: '/blog/category/characters', label: 'Characters' },
-              { href: '/blog/category/spells', label: 'Spells' },
-            ],
-          },
-        ]}
-      />,
-    );
+const topbarModel = {
+  navigationLabel: 'Primary',
+  featureMenuLabel: 'Blog',
+  featureMenuHref: '/blog',
+  featureMenuIsActive: true,
+  featureMenuAccessibleName: 'Blog categories',
+  features: [
+    { href: '/blog/category/characters', title: 'Characters', description: 'Build a character.' },
+    { href: '/blog/category/spells', title: 'Spells', description: 'Prepare spells.' },
+  ],
+  links: [
+    { href: '/', label: 'Editor', isActive: false },
+    { href: '/contact', label: 'Contact', isActive: false },
+  ],
+  localeSwitch: { href: '/zh', label: '中文' },
+  primaryAction: { href: '/#editor-workspace', label: 'Start making tokens' },
+  openMenuLabel: 'Open navigation',
+  closeMenuLabel: 'Close navigation',
+  menuDescription: 'Primary navigation links',
+};
 
-    expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('aria-haspopup')).toBe('menu');
-    expect(screen.getByRole('menu', { name: 'Blog category menu' })).not.toBeNull();
-    const charactersMenuitem = screen.getByRole('menuitem', { name: 'Characters' });
-    expect(charactersMenuitem.classList.contains('site-nav-dropdown__link')).toBe(true);
-    expect(charactersMenuitem.classList.contains('site-category-pill')).toBe(false);
-    expect(screen.getByRole('menuitem', { name: 'Characters' }).getAttribute('href')).toBe(
-      '/blog/category/characters',
+function renderContentSiteTopbar() {
+  return render(
+    <ContentSiteTopbar
+      brandHref="/"
+      brandName="Token Maker"
+      brandSubtitle="Back to the editor"
+      contentClassName="content"
+      model={topbarModel}
+      topbarClassName="topbar"
+    />,
+  );
+}
+
+function getBlogNavItem(): HTMLElement {
+  const blogLink = screen.getByRole('link', { name: 'Blog' });
+  const siteNavItem = blogLink.closest('.site-nav-item');
+  if (!(siteNavItem instanceof HTMLElement)) {
+    throw new Error(`Blog link is not inside .site-nav-item; href=${blogLink.getAttribute('href') ?? 'null'}`);
+  }
+  return siteNavItem;
+}
+
+function getSingleLink(linkName: string): HTMLElement {
+  const links = screen.queryAllByRole('link', { name: linkName });
+  if (links.length !== 1) {
+    const names = links.map((link) => link.textContent ?? 'null').join(', ') || 'none';
+    throw new Error(
+      `Expected one link named ${JSON.stringify(linkName)}, found ${links.length}: ${names}.`,
     );
-    expect(screen.getByRole('menuitem', { name: 'Spells' }).getAttribute('href')).toBe('/blog/category/spells');
+  }
+
+  const link = links[0];
+  if (!(link instanceof HTMLElement)) {
+    throw new Error(
+      `Link named ${JSON.stringify(linkName)} is not an HTMLElement. Received ${link === undefined ? 'undefined' : link.nodeName}.`,
+    );
+  }
+
+  return link;
+}
+
+function getBlogControlWrapper(): HTMLElement {
+  const siteNavItem = getBlogNavItem();
+  const activeElements = [...siteNavItem.querySelectorAll('[data-active]')];
+  if (activeElements.length !== 1) {
+    const descriptions = activeElements
+      .map((element) => `${element.tagName} class=${element.getAttribute('class') ?? 'null'}`)
+      .join('; ') || 'none';
+    throw new Error(
+      `Expected one [data-active] element inside .site-nav-item, found ${activeElements.length}: ${descriptions}.`,
+    );
+  }
+
+  const wrapper = activeElements[0];
+  if (!(wrapper instanceof HTMLElement)) {
+    throw new Error(
+      `Blog control wrapper is not an HTMLElement. Received ${wrapper === undefined ? 'undefined' : wrapper.nodeName}.`,
+    );
+  }
+
+  return wrapper;
+}
+
+describe('ContentSiteTopbar', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('marks only the Blog link as a menu popup', () => {
+    renderContentSiteTopbar();
+
+    const blogLink = screen.getByRole('link', { name: 'Blog' });
+    expect(blogLink.getAttribute('href')).toBe('/blog');
+    expect(blogLink.getAttribute('aria-haspopup')).toBe('menu');
     expect(screen.getByRole('link', { name: 'Editor' }).getAttribute('aria-haspopup')).toBeNull();
+  });
+
+  it('opens the Blog nav item when the pointer enters it', () => {
+    renderContentSiteTopbar();
+
+    const siteNavItem = getBlogNavItem();
+    fireEvent.mouseEnter(siteNavItem);
+
+    expect(siteNavItem.getAttribute('data-open')).toBe('true');
+  });
+
+  it('renders the Characters category as a feature menuitem', () => {
+    renderContentSiteTopbar();
+
+    const charactersMenuitem = screen.getByRole('menuitem', { name: 'Characters' });
+    expect(charactersMenuitem.getAttribute('href')).toBe('/blog/category/characters');
+    expect(charactersMenuitem.classList.contains('site-nav-dropdown__link')).toBe(true);
+    expect(charactersMenuitem.classList.contains('site-nav-dropdown__link--feature')).toBe(true);
+    expect(charactersMenuitem.classList.contains('site-category-pill')).toBe(false);
+  });
+
+  it('keeps the Characters category description in the document', () => {
+    renderContentSiteTopbar();
+
+    expect(screen.getByText('Build a character.')).toBeDefined();
+  });
+
+  it('names the category menu Blog categories', () => {
+    renderContentSiteTopbar();
+
+    expect(screen.getByRole('menu', { name: 'Blog categories' })).toBeDefined();
+  });
+
+  it('links the primary action to the editor workspace', () => {
+    renderContentSiteTopbar();
+
+    expect(screen.getByRole('link', { name: 'Start making tokens' }).getAttribute('href')).toBe(
+      '/#editor-workspace',
+    );
+  });
+
+  it('closes the Blog nav item when Escape is pressed', () => {
+    renderContentSiteTopbar();
+
+    const siteNavItem = getBlogNavItem();
+    fireEvent.mouseEnter(siteNavItem);
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    expect(siteNavItem.getAttribute('data-open')).toBe('false');
+  });
+
+  it('links the open mobile drawer to the blog index', () => {
+    renderContentSiteTopbar();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open navigation' }));
+
+    const dialog = screen.getByRole('dialog');
+    const blogLink = within(dialog).getByRole('link', { name: 'Blog' });
+    expect(blogLink.getAttribute('href')).toBe('/blog');
+    expect(within(dialog).getByRole('button', { name: 'Blog categories' })).toBeDefined();
+  });
+
+  it('gives the Editor link rounded-md and not a pill', () => {
+    renderContentSiteTopbar();
+
+    const editorLink = getSingleLink('Editor');
+    expect(editorLink.classList.contains('rounded-md')).toBe(true);
+    expect(editorLink.classList.contains('site-nav-pill')).toBe(false);
+    expect(editorLink.classList.contains('rounded-full')).toBe(false);
+  });
+
+  it('gives the 中文 locale link rounded-lg and not a switch chip', () => {
+    renderContentSiteTopbar();
+
+    const localeLink = getSingleLink('中文');
+    expect(localeLink.classList.contains('rounded-lg')).toBe(true);
+    expect(localeLink.classList.contains('site-switch-chip')).toBe(false);
+    expect(localeLink.classList.contains('rounded-full')).toBe(false);
+  });
+
+  it('gives the Start making tokens link rounded-lg and not a primary pill', () => {
+    renderContentSiteTopbar();
+
+    const primaryLink = getSingleLink('Start making tokens');
+    expect(primaryLink.classList.contains('rounded-lg')).toBe(true);
+    expect(primaryLink.classList.contains('site-cta-primary')).toBe(false);
+    expect(primaryLink.classList.contains('rounded-full')).toBe(false);
+  });
+
+  it('gives the Blog control wrapper rounded-md and not a pill', () => {
+    renderContentSiteTopbar();
+
+    const blogControlWrapper = getBlogControlWrapper();
+    expect(blogControlWrapper.classList.contains('rounded-md')).toBe(true);
+    expect(blogControlWrapper.classList.contains('site-nav-pill')).toBe(false);
+    expect(blogControlWrapper.classList.contains('rounded-full')).toBe(false);
   });
 });

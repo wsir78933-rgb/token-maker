@@ -1,13 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Bug, Gauge, ImagePlus, MessageSquareText, Sparkles } from 'lucide-react';
+import { getContentSiteTopbarModel } from '@/lib/content-site-navigation';
 import {
   getHomeCopy,
   getHomeSignals,
-  getNavLabels,
   getSiteConfig,
 } from '@/lib/site-content';
-import { getBlogCategories, getBlogCategoryPath } from '@/lib/blog-content';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
 import { HomeTokenFaq, HomeTokenGuide } from '@/components/site/HomeTokenSeoSections';
@@ -200,26 +199,14 @@ function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
 export function HomeHero({ locale }: { locale: SiteLocale }) {
   const copy = getHomeCopy(locale);
   const homeSignals = getHomeSignals(locale);
-  const navLabels = getNavLabels(locale);
   const siteConfig = getSiteConfig(locale);
   const nextLocale = locale === 'zh' ? 'en' : 'zh';
   const homeHref = getLocalizedPath(locale, '/');
-  const blogDropdownLinks = getBlogCategories(locale).map((category) => ({
-    href: getBlogCategoryPath(locale, category.slug),
-    label: category.label,
-  }));
-  const navLinks = [
-    { href: `${homeHref}#editor-workspace`, label: navLabels.editor, isActive: true },
-    { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller, isActive: false },
-    { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker, isActive: false },
-    { href: getLocalizedPath(locale, '/contact'), label: navLabels.contact, isActive: false },
-    {
-      href: getLocalizedPath(locale, '/blog'),
-      label: navLabels.blog,
-      isActive: false,
-      dropdownLinks: blogDropdownLinks,
-    },
-  ];
+  const topbarModel = getContentSiteTopbarModel({
+    locale,
+    currentPath: homeHref,
+    localeSwitchHref: getLocalizedPath(nextLocale, '/'),
+  });
 
   return (
     <>
@@ -227,13 +214,10 @@ export function HomeHero({ locale }: { locale: SiteLocale }) {
         brandHref={homeHref}
         brandName={siteConfig.name}
         brandSubtitle={copy.heroEyebrow}
-        brandTitleClassName="text-base"
+        model={topbarModel}
         contentClassName="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8"
-        localeSwitchHref={getLocalizedPath(nextLocale, '/')}
-        localeSwitchLabel={navLabels.switchLocale}
-        navClassName="mt-3 flex flex-wrap items-center gap-2 sm:mt-4"
-        navLinks={navLinks}
         topbarClassName="z-50"
+        brandTitleClassName="text-base"
       />
       <section className="site-hero-section">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.9fr)] lg:px-8 lg:py-20">

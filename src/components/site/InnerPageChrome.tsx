@@ -1,8 +1,8 @@
 import { ContentSiteTopbar } from '@/components/site/ContentSiteTopbar';
 import { SiteFooter } from '@/components/site/SiteFooter';
-import { getBlogCategories, getBlogCategoryPath } from '@/lib/blog-content';
-import { getNavLabels, getSiteConfig } from '@/lib/site-content';
-import { getLocalizedPath, stripLocalePrefix, switchLocalePath, type SiteLocale } from '@/lib/site-locale';
+import { getContentSiteTopbarModel } from '@/lib/content-site-navigation';
+import { getSiteConfig } from '@/lib/site-content';
+import { getLocalizedPath, switchLocalePath, type SiteLocale } from '@/lib/site-locale';
 import { cn } from '@/lib/utils';
 
 type InnerPageTone = 'template' | 'hub' | 'doc';
@@ -31,34 +31,11 @@ export function InnerPageChrome({
   localeSwitchPath,
 }: InnerPageChromeProps) {
   const siteConfig = getSiteConfig(locale);
-  const navLabels = getNavLabels(locale);
-  const blogDropdownLinks = getBlogCategories(locale).map((category) => ({
-    href: getBlogCategoryPath(locale, category.slug),
-    label: category.label,
-  }));
-  const navLinks = [
-    { href: getLocalizedPath(locale, '/'), label: navLabels.editor },
-    { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller },
-    { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker },
-    { href: getLocalizedPath(locale, '/contact'), label: navLabels.contact },
-    {
-      href: getLocalizedPath(locale, '/blog'),
-      label: navLabels.blog,
-      dropdownLinks: blogDropdownLinks,
-    },
-  ];
   const switchedPath = localeSwitchPath ?? switchLocalePath(currentPath, locale === 'en' ? 'zh' : 'en');
-  const contentTopbarNavLinks = navLinks.map((link) => {
-    const normalizedCurrentPath = stripLocalePrefix(currentPath);
-    const normalizedHref = stripLocalePrefix(link.href);
-    const isActive =
-      normalizedCurrentPath === normalizedHref ||
-      (normalizedHref !== '/' && normalizedCurrentPath.startsWith(`${normalizedHref}/`));
-
-    return {
-      ...link,
-      isActive,
-    };
+  const topbarModel = getContentSiteTopbarModel({
+    locale,
+    currentPath,
+    localeSwitchHref: switchedPath,
   });
 
   return (
@@ -74,14 +51,11 @@ export function InnerPageChrome({
         brandHref={`${getLocalizedPath(locale, '/')}#editor-workspace`}
         brandName={siteConfig.name}
         brandSubtitle={locale === 'zh' ? '返回首页编辑器' : 'Back to the editor'}
+        model={topbarModel}
         contentClassName="mx-auto max-w-7xl px-6 py-4 lg:px-8"
-        localeSwitchHref={switchedPath}
-        localeSwitchLabel={navLabels.switchLocale}
-        navClassName="mt-4 flex flex-wrap items-center gap-2"
-        navLinks={contentTopbarNavLinks}
+        topbarClassName="z-50"
         showBackIcon
         siteMarkClassName="h-8 w-8 rounded-lg"
-        topbarClassName="z-50"
       />
 
       <div className="relative">

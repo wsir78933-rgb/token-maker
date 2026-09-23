@@ -194,7 +194,7 @@ describe('site content-page performance styles', () => {
     const topbarRule = getUniqueCssRuleBody(stylesheet, '.site-topbar');
     const mobileTopbarRules = getDirectCssRuleBodies(
       stylesheet,
-      '@media (max-width: 767px)'
+      '@media (max-width: 1023px)'
     ).flatMap((mediaBody) =>
       getDirectCssRuleBodies(mediaBody, '.site-topbar')
     );

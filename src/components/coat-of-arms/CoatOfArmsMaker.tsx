@@ -9,7 +9,8 @@ import { useEditorPreferencesStore } from '@/lib/coat-of-arms/editor-preferences
 import { hydrateLocalUploadBlobsForProject } from '@/lib/coat-of-arms/project-storage';
 import { useCoatProjectStore } from '@/lib/coat-of-arms/store';
 import type { ChargeAssetCategory, CoatLocale, TopAssetCategory } from '@/lib/coat-of-arms/types';
-import { getHomeCopy, getNavLabels, getSiteConfig } from '@/lib/site-content';
+import { getContentSiteTopbarModel } from '@/lib/content-site-navigation';
+import { getHomeCopy, getSiteConfig } from '@/lib/site-content';
 import { getLocalizedPath } from '@/lib/site-locale';
 import { Button } from '@/components/ui/button';
 import { ChargeAndOrdinaryPanel } from './ChargeAndOrdinaryPanel';
@@ -93,16 +94,13 @@ export function CoatOfArmsMaker({ locale, pageHeading }: CoatOfArmsMakerProps) {
   const copy = getCoatWorkbenchCopy(locale);
   const homeCopy = getHomeCopy(locale);
   const siteConfig = getSiteConfig(locale);
-  const navLabels = getNavLabels(locale);
   const nextLocale = locale === 'en' ? 'zh' : 'en';
   const homeHref = getLocalizedPath(locale, '/');
-  const siteNavigationLinks = [
-    { href: homeHref, label: navLabels.editor, isActive: false },
-    { href: getLocalizedPath(locale, '/dice-roller-dnd'), label: navLabels.diceRoller, isActive: false },
-    { href: getLocalizedPath(locale, '/coat-of-arms-maker'), label: navLabels.coatMaker, isActive: true },
-    { href: getLocalizedPath(locale, '/contact'), label: navLabels.contact, isActive: false },
-    { href: getLocalizedPath(locale, '/blog'), label: navLabels.blog, isActive: false },
-  ];
+  const topbarModel = getContentSiteTopbarModel({
+    locale,
+    currentPath: getLocalizedPath(locale, '/coat-of-arms-maker'),
+    localeSwitchHref: getLocalizedPath(nextLocale, '/coat-of-arms-maker'),
+  });
   const appearance = useEditorPreferencesStore((state) => state.preferences.appearance);
   const project = useCoatProjectStore((state) => state.project);
   const selectedLayerIds = useCoatProjectStore((state) => state.selectedLayerIds);
@@ -323,13 +321,10 @@ export function CoatOfArmsMaker({ locale, pageHeading }: CoatOfArmsMakerProps) {
         brandHref={homeHref + '#editor-workspace'}
         brandName={siteConfig.name}
         brandSubtitle={homeCopy.heroEyebrow}
-        brandTitleClassName="text-base"
+        model={topbarModel}
         contentClassName="mx-auto max-w-6xl px-4 py-0 sm:px-6 lg:px-8"
-        localeSwitchHref={getLocalizedPath(nextLocale, '/coat-of-arms-maker')}
-        localeSwitchLabel={navLabels.switchLocale}
-        navClassName="mt-0 flex flex-wrap items-center gap-2"
-        navLinks={siteNavigationLinks}
         topbarClassName="z-50"
+        brandTitleClassName="text-base"
       />
       {pageHeading}
       <main id="coat-editor-workspace" aria-label={copy.workspace} className="coat-workbench coat-target-workbench" data-appearance={appearance} ref={workbenchRef}>
