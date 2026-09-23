@@ -27,7 +27,6 @@ import type { BlogPost } from './types';
 import type { SiteLocale } from '@/lib/site-locale';
 
 const EXPECTED_CATEGORY_SLUGS = [
-  'token-vtt',
   'characters',
   'monsters',
   'spells',
@@ -47,7 +46,7 @@ function minimalBlogPost(slug: string, category?: BlogPost['category']): BlogPos
 }
 
 describe('blog category configuration', () => {
-  test('exposes five stable bilingual category hubs', () => {
+  test('exposes four stable bilingual category hubs', () => {
     expect(BLOG_CATEGORY_SLUGS).toEqual([...EXPECTED_CATEGORY_SLUGS]);
 
     const englishCategories = getBlogCategories('en');
@@ -56,14 +55,6 @@ describe('blog category configuration', () => {
     expect(englishCategories.map((category) => category.slug)).toEqual([...EXPECTED_CATEGORY_SLUGS]);
     expect(chineseCategories.map((category) => category.slug)).toEqual([...EXPECTED_CATEGORY_SLUGS]);
 
-    expect(getBlogCategory('en', 'token-vtt')).toMatchObject({
-      slug: 'token-vtt',
-      label: 'Token & VTT Guides',
-    });
-    expect(getBlogCategory('zh', 'token-vtt')).toMatchObject({
-      slug: 'token-vtt',
-      label: 'Token 与 VTT 指南',
-    });
     expect(getBlogCategory('en', 'characters').label).toBe('Characters');
     expect(getBlogCategory('zh', 'characters').label).toBe('角色');
     expect(getBlogCategory('en', 'monsters').label).toBe('Monsters');
@@ -134,15 +125,14 @@ describe('blog category configuration', () => {
 });
 
 describe('blog post category assignment', () => {
-  test('covers all 69 unique slugs, keeps en/zh aligned, and leaves greenhouse-stardew uncategorized', () => {
+  test('covers all 68 unique slugs, keeps en/zh aligned, and leaves greenhouse-stardew uncategorized', () => {
     const englishSlugs = postsByLocale.en.map((post) => post.slug);
     const chineseSlugs = postsByLocale.zh.map((post) => post.slug);
 
-    expect(englishSlugs).toHaveLength(69);
-    expect(new Set(englishSlugs).size).toBe(69);
+    expect(englishSlugs).toHaveLength(68);
+    expect(new Set(englishSlugs).size).toBe(68);
     expect(chineseSlugs).toEqual(englishSlugs);
     expect(englishSlugs).toContain('dnd-schools-of-magic');
-    expect(englishSlugs).toContain('how-to-build-a-dnd-character-token');
     expect(englishSlugs).toContain('best-dnd-classes-for-small-parties');
     expect(englishSlugs).toContain(UNCATEGORIZED_BLOG_POST_SLUG);
 
@@ -162,7 +152,7 @@ describe('blog post category assignment', () => {
     }
 
     const categorizedCount = postsByLocale.en.filter((post) => post.category !== undefined).length;
-    expect(categorizedCount).toBe(68);
+    expect(categorizedCount).toBe(67);
 
     expect(getBlogPost('en', 'dnd-schools-of-magic')?.category).toBe('spells');
     expect(getBlogPost('zh', 'dnd-schools-of-magic')?.category).toBe('spells');
@@ -180,9 +170,6 @@ describe('blog post category assignment', () => {
     );
     expect(publishedMonsters.some((post) => post.placeholder)).toBe(false);
     expect(publishedMonsters.some((post) => post.slug === UNCATEGORIZED_BLOG_POST_SLUG)).toBe(false);
-
-    expect(getBlogPostsByCategory('en', 'token-vtt')).toEqual([]);
-    expect(getBlogPostsByCategory('zh', 'token-vtt')).toEqual([]);
 
     const englishCharacters = getBlogPostsByCategory('en', 'characters');
     const chineseCharacters = getBlogPostsByCategory('zh', 'characters');
@@ -220,12 +207,16 @@ describe('blog post category assignment', () => {
     expect(() => requireBlogCategorySlug('Characters')).toThrow(
       'Unknown blog category slug: "Characters".',
     );
+    expect(() => requireBlogCategorySlug('token-vtt')).toThrow(
+      'Unknown blog category slug: "token-vtt".',
+    );
     expect(() => getBlogCategory('en', 'wizard')).toThrow('Unknown blog category slug: "wizard".');
     expect(() => getBlogPostsByCategory('zh', 'token_vtt')).toThrow(
       'Unknown blog category slug: "token_vtt".',
     );
     expect(() => getBlogCategory('fr' as SiteLocale, 'spells')).toThrow('Unknown blog locale: "fr".');
     expect(isBlogCategorySlug('greenhouse-stardew')).toBe(false);
+    expect(isBlogCategorySlug('token-vtt')).toBe(false);
 
     expect(() => assignBlogPostCategory(minimalBlogPost('missing-slug-for-category'))).toThrow(
       'Blog post slug="missing-slug-for-category" is missing a required category.',

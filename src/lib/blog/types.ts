@@ -1,5 +1,4 @@
 export type BlogCategorySlug =
-  | 'token-vtt'
   | 'characters'
   | 'monsters'
   | 'spells'

@@ -1082,6 +1082,13 @@
   }
 }
 
+@media (max-width: 430px) {
+  .site-nav-dropdown {
+    right: auto;
+    left: 0;
+  }
+}
+
 .site-brand-link {
   color: var(--site-ink);
 }

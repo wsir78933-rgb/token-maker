@@ -7,15 +7,12 @@ import {
   getBlogCategoryPageCount,
   getBlogCategoryPagePath,
   getBlogCategoryPath,
-  getBlogPostsByCategory,
 } from '@/lib/blog-content';
 import type { BlogCategorySlug } from '@/lib/blog-content';
 
 const SITE_URL = 'https://www.tokenmaker.one';
 const CATEGORY_PRIORITY = 0.65;
-const EMPTY_CATEGORY_LAST_MODIFIED = '2026-03-12';
 const EXPECTED_CATEGORY_LAST_MODIFIED: Record<BlogCategorySlug, string> = {
-  'token-vtt': EMPTY_CATEGORY_LAST_MODIFIED,
   characters: '2026-09-20',
   monsters: '2026-09-16',
   spells: '2026-09-16',
@@ -51,7 +48,7 @@ describe('blog category sitemap entries', () => {
 
     expect(categoryEntries).toHaveLength(expectedCategoryEntryCount);
     expect(new Set(entries.map((entry) => entry.url)).size).toBe(entries.length);
-    expect(getBlogPostsByCategory('en', 'token-vtt')).toEqual([]);
+    expect(entries.some((entry) => entry.url.includes('/blog/category/token-vtt'))).toBe(false);
 
     for (const categorySlug of BLOG_CATEGORY_SLUGS) {
       for (const locale of ['en', 'zh'] as const) {

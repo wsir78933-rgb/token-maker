@@ -71,7 +71,7 @@ describe('blog category routes', () => {
     notFoundMock.mockClear();
   });
 
-  it('emits all five static category params in both locales', () => {
+  it('emits all four static category params in both locales', () => {
     const expectedParams = BLOG_CATEGORY_SLUGS.map((category) => ({ category }));
 
     expect(generateEnglishBlogCategoryStaticParams()).toEqual(expectedParams);
@@ -101,11 +101,12 @@ describe('blog category routes', () => {
   it.each([
     { page: EnglishBlogCategoryPage, locale: 'en' as const },
     { page: ChineseBlogCategoryPage, locale: 'zh' as const },
-  ])('calls notFound for an unknown $locale category', async ({ page }) => {
-    await expect(page({ params: Promise.resolve({ category: 'not-a-category' }) })).rejects.toThrow(
-      'NEXT_NOT_FOUND',
-    );
-    expect(notFoundMock).toHaveBeenCalledTimes(1);
+  ])('calls notFound for an invalid $locale category', async ({ page }) => {
+    for (const category of ['not-a-category', 'token-vtt']) {
+      notFoundMock.mockClear();
+      await expect(page({ params: Promise.resolve({ category }) })).rejects.toThrow('NEXT_NOT_FOUND');
+      expect(notFoundMock).toHaveBeenCalledTimes(1);
+    }
   });
 
   it.each(localeCases)('renders every $locale category with localized paths and JSON-LD', ({ locale }) => {
@@ -180,7 +181,7 @@ describe('blog category routes', () => {
     }
 
     const categoryLinks = Array.from(categoryNavigation.querySelectorAll('a'));
-    expect(categoryLinks).toHaveLength(5);
+    expect(categoryLinks).toHaveLength(4);
 
     const currentLink = categoryLinks.find(
       (link) => link.getAttribute('href') === getBlogCategoryPath(locale, category),
@@ -234,14 +235,6 @@ describe('blog category routes', () => {
     })).toBe(false);
   });
 
-  it.each(localeCases)('omits the pager for a $locale category with ten or fewer published articles', ({ locale }) => {
-    const category = 'token-vtt';
-    expect(getBlogPostsByCategory(locale, category).length).toBeLessThanOrEqual(10);
-    render(<BlogCategoryPageView locale={locale} category={category} />);
-
-    expect(screen.queryByRole('heading', { level: 2, name: locale === 'zh' ? '分页' : 'Pages' })).toBeNull();
-  });
-
   it.each([
     {
       locale: 'en' as const,
@@ -276,6 +269,12 @@ describe('blog category routes', () => {
       await expect(Page({ params: Promise.resolve({ category, page }) })).rejects.toThrow('NEXT_NOT_FOUND');
       expect(notFoundMock).toHaveBeenCalledTimes(1);
     }
+
+    notFoundMock.mockClear();
+    await expect(Page({ params: Promise.resolve({ category: 'token-vtt', page: '2' }) })).rejects.toThrow(
+      'NEXT_NOT_FOUND',
+    );
+    expect(notFoundMock).toHaveBeenCalledTimes(1);
   });
 
   it('renders category collection and breadcrumb JSON-LD through the view', () => {

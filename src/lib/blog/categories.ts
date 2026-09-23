@@ -8,7 +8,6 @@ import type { BlogCategorySlug, BlogPost } from './types';
 export type { BlogCategorySlug };
 
 export const BLOG_CATEGORY_SLUGS = [
-  'token-vtt',
   'characters',
   'monsters',
   'spells',
@@ -28,11 +27,6 @@ const BLOG_CATEGORY_PATH_PREFIX = '/blog/category';
 const BLOG_CATEGORY_COPY_BY_LOCALE: Record<SiteLocale, Record<BlogCategorySlug, { label: string; description: string }>> =
   {
     en: {
-      'token-vtt': {
-        label: 'Token & VTT Guides',
-        description:
-          'Guides for cropping portraits, exporting tokens, and preparing maps for Roll20, Foundry, and other virtual tabletops.',
-      },
       characters: {
         label: 'Characters',
         description:
@@ -54,10 +48,6 @@ const BLOG_CATEGORY_COPY_BY_LOCALE: Record<SiteLocale, Record<BlogCategorySlug, 
       },
     },
     zh: {
-      'token-vtt': {
-        label: 'Token 与 VTT 指南',
-        description: '裁切立绘、导出 Token，以及为 Roll20、Foundry 和其他虚拟桌面准备地图的指南。',
-      },
       characters: {
         label: '角色',
         description: '职业、物种、血统、名字和创角指南，用来完成一张可上场的 D&D 角色卡。',
@@ -88,7 +78,6 @@ const HOME_BREADCRUMB_LABEL_BY_LOCALE: Record<SiteLocale, string> = {
 };
 
 const BLOG_POST_CATEGORY_BY_SLUG: Record<string, BlogCategorySlug> = {
-  'how-to-build-a-dnd-character-token': 'token-vtt',
   'best-dnd-classes-for-small-parties': 'characters',
   'dnd-classes-explained': 'characters',
   'dnd-classes-ranked': 'characters',
