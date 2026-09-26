@@ -1,0 +1,214 @@
+{
+  "bodyHash": "8157eafe471a40936ed0fc0205eca51222126eacefd5d514c385c73b06710428",
+  "items": [
+    {
+      "id": "warlock-2024",
+      "label": "D&D Beyond Basic Rules (2024): Warlock",
+      "url": "https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Warlock",
+      "versionNote": "2024 revised rules; level-5 prepared-spell count, Pact Magic slots, Magical Cunning, and replacement rule.",
+      "appliesTo": [
+        {
+          "quote": "At Warlock level 5, the 2024 table gives you **six base prepared-spell entries** and **two Pact Magic slots**, each of **3rd level**.",
+          "occurrence": 1
+        },
+        {
+          "quote": "A 2024 Warlock can use Magical Cunning as a one-minute ritual to recover up to half the maximum number of Pact Magic slots, rounded up, then cannot use it again until a long rest.",
+          "occurrence": 1
+        },
+        {
+          "quote": "When you gain a Warlock level, the 2024 class rule permits replacing one spell on your list with another Warlock spell for which you have spell slots.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "warlock-2014",
+      "label": "D&D Beyond Basic Rules (2014): Warlock",
+      "url": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Warlock",
+      "versionNote": "2014 class terminology is used only for the Spells Known comparison.",
+      "appliesTo": [
+        {
+          "quote": "The 2014 Warlock rules use **Spells Known**: the class gives you a limited list, and gaining a Warlock level lets you replace one known spell with another eligible Warlock spell.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "spellcasting-2024",
+      "label": "D&D Beyond Basic Rules (2024): Spellcasting",
+      "url": "https://www.dndbeyond.com/sources/dnd/br-2024/spells",
+      "versionNote": "2024 preparation, slot use, and one-spell-slot-per-turn rules.",
+      "appliesTo": [
+        {
+          "quote": "Use the [2024 spellcasting rules](https://www.dndbeyond.com/sources/dnd/br-2024/spells) as the second check: preparing a spell does not spend a slot, while casting a spell with a slot does.",
+          "occurrence": 1
+        },
+        {
+          "quote": "2024 also limits a turn to one spell cast with a spell slot. This is narrower and more precise than saying “only one spell per turn.”",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "concentration-2024",
+      "label": "D&D Beyond Rules Glossary (2024): Concentration",
+      "url": "https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary#Concentration",
+      "versionNote": "2024 concentration replacement and damage-save conditions.",
+      "appliesTo": [
+        {
+          "quote": "Under the [2024 concentration rules](https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary#Concentration), beginning another concentration spell ends your current concentration immediately.",
+          "occurrence": 1
+        },
+        {
+          "quote": "Taking damage can force a Constitution saving throw: use the higher of DC 10 or half the damage rounded down, with a maximum DC of 30.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "warlock-spell-list",
+      "label": "D&D Beyond Warlock spell list",
+      "url": "https://www.dndbeyond.com/spells/class/7-warlock",
+      "versionNote": "Public class-list cross-check named in the article's source list.",
+      "appliesTo": [
+        {
+          "quote": "- [Warlock spell list](https://www.dndbeyond.com/spells/class/7-warlock)",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "eldritch-blast-2024",
+      "label": "D&D Beyond: Eldritch Blast",
+      "url": "https://www.dndbeyond.com/spells/2619161-eldritch-blast",
+      "versionNote": "2024 cantrip entry for action, range, beam, and damage fields.",
+      "appliesTo": [
+        {
+          "quote": "In the 2024 text it is a cantrip with a 1-action casting time and 120-foot range; each beam is a separate ranged spell attack that deals 1d10 force damage on a hit.",
+          "occurrence": 1
+        },
+        {
+          "quote": "At character levels 5, 11, and 17, the spell produces two, three, and four beams respectively.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "misty-step-2024",
+      "label": "D&D Beyond: Misty Step",
+      "url": "https://www.dndbeyond.com/spells/2619133-misty-step",
+      "versionNote": "2024 spell entry for bonus action, visible unoccupied destination, range, and upcast fields.",
+      "appliesTo": [
+        {
+          "quote": "A bonus-action teleport for yourself to a visible, unoccupied space within 30 feet.",
+          "occurrence": 1
+        },
+        {
+          "quote": "The 2024 text lists no upcast improvement. It is still a visible, unoccupied-space teleport of up to 30 feet.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "counterspell-2024",
+      "label": "D&D Beyond: Counterspell",
+      "url": "https://www.dndbeyond.com/spells/2619072-counterspell",
+      "versionNote": "2024 spell entry for reaction trigger, range, components, Constitution save, and slot outcome.",
+      "appliesTo": [
+        {
+          "quote": "A reaction when you see a creature within 60 feet casting a spell with verbal, somatic, or material components; that creature makes a Constitution save.",
+          "occurrence": 1
+        },
+        {
+          "quote": "If the countered spell's caster fails the save and that spell used a slot, the caster does not expend that slot.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "dispel-magic-2024",
+      "label": "D&D Beyond: Dispel Magic",
+      "url": "https://www.dndbeyond.com/spells/2619103-dispel-magic",
+      "versionNote": "2024 spell entry for ongoing-spell timing, range, and higher-level check conditions.",
+      "appliesTo": [
+        {
+          "quote": "An action at 120 feet that ends an ongoing spell of 3rd level or lower automatically; higher-level spells require a spellcasting-ability check.",
+          "occurrence": 1
+        },
+        {
+          "quote": "This is an answer to an effect already in place, not a reaction to the instant another creature begins casting.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "hypnotic-pattern-2024",
+      "label": "D&D Beyond: Hypnotic Pattern",
+      "url": "https://www.dndbeyond.com/spells/2619168-hypnotic-pattern",
+      "versionNote": "2024 spell entry for area, saving throw, conditions, and concentration limits.",
+      "appliesTo": [
+        {
+          "quote": "A 30-foot cube within 120 feet; creatures that see the pattern make Wisdom saves, and failures become Charmed, Incapacitated, and Speed 0.",
+          "occurrence": 1
+        },
+        {
+          "quote": "It requires concentration, affects every eligible creature in the area, and damage or another creature using an action to wake a target ends that target’s effect.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "hex-2024",
+      "label": "D&D Beyond: Hex",
+      "url": "https://www.dndbeyond.com/spells/2618988-hex",
+      "versionNote": "2024 spell entry for bonus action, range, concentration, ability-check condition, and upcast duration.",
+      "appliesTo": [
+        {
+          "quote": "A bonus-action, 90-foot, concentration spell. Hits against the chosen creature deal an extra 1d6 necrotic damage, and one chosen ability’s checks have disadvantage.",
+          "occurrence": 1
+        },
+        {
+          "quote": "The disadvantage is on ability checks, not saving throws. It competes for concentration and its transfer after the target reaches 0 hit points still costs a later bonus action.",
+          "occurrence": 1
+        },
+        {
+          "quote": "Its maximum concentration duration becomes 8 hours; the extra damage remains 1d6 per qualifying hit.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "invisibility-2024",
+      "label": "D&D Beyond: Invisibility",
+      "url": "https://www.dndbeyond.com/spells/2619116-invisibility",
+      "versionNote": "2024 spell entry for concentration, attack/spell termination, and additional-target upcast field.",
+      "appliesTo": [
+        {
+          "quote": "A touch spell that requires concentration; in the 2024 text, the target’s attack roll, damage, or spellcasting ends the spell early.",
+          "occurrence": 1
+        },
+        {
+          "quote": "The “one extra target per slot level above 2nd” rule adds one target, so the 3rd-level cast can affect two targets total.",
+          "occurrence": 1
+        }
+      ]
+    },
+    {
+      "id": "fly-2024",
+      "label": "D&D Beyond: Fly",
+      "url": "https://www.dndbeyond.com/spells/2618909-fly",
+      "versionNote": "2024 spell entry for flying speed, hover, concentration, and target-count upcast fields.",
+      "appliesTo": [
+        {
+          "quote": "A touch spell that grants a willing target a 60-foot flying speed and hover while concentration lasts.",
+          "occurrence": 1
+        },
+        {
+          "quote": "It remains one target; extra targets begin above 3rd level. The 60-foot flying speed and concentration requirement still govern the choice.",
+          "occurrence": 1
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,175 @@
+{
+  "locale": "zh-CN",
+  "country": null,
+  "body": "如果你正在查 dnd warlock spells，先别从“最强法术”开始。2024 规则下，契术师（Warlock，中文资料也常写作邪术师）要先锁定规则年份、自己的契术师等级、DM 允许使用的书目，再把准备法术数量、Pact Magic 法术位和始终准备的额外来源分开。完成后，你得到的不是一张无条件的榜单，而是一套能填进角色资料、也能解释为什么这样选的候选。\n\n下面的等级例子都按单职业 2024 契术师处理。第一个问题不是“这个法术强不强”，而是“我这一回合能用什么动作、手里有几个位、是否已经在维持专注”。规则年份请先在角色卡或团规中确认；2014 Legacy 与 2024 修订规则的职业页面不能拼成一套表。2024 契术师的职业表、Pact Magic 和法术准备说明可在 [D&D Beyond 的 2024 Warlock 规则](https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Warlock)中核对。\n\n## 先算资源：三栏数字不要混在一起\n\n“能准备几项”“能施放几次”“每个位是几环”是三个问题。2024 规则把职业表中的基础准备法术数量列成契术师等级对应的数字；升级时可以替换其中一项，但这不等于每次长休都能把整张表随意重选。Pact Magic 法术位是施放时消耗的资源，所有本职业位保持同一环阶，并在短休或长休后恢复。\n\n| 契术师等级 | 基础准备法术 | Pact Magic 法术位 | 每个位的环阶 | 先记下什么 |\n| --- | ---: | ---: | ---: | --- |\n| 1级 | 2项 | 1个 | 1环 | 先写两项准备法术，再另记戏法 |\n| 3级 | 4项 | 2个 | 2环 | 四项是名单数量，两个是当前等级拥有的 2 环法术位（同一回合最多消耗一个） |\n| 5级 | 6项 | 2个 | 3环 | 高环位可施放低环法术，但是否增强要看该法术的升环文字 |\n\n戏法不占这两类数字。Eldritch Blast 是零环戏法，不应从 1级的两项、3级的四项或 5级的六项里扣掉；它使用动作，也不消耗 Pact Magic 法术位。2024 版本中，Eldritch Blast 的射程是 120 英尺，每束命中时造成 1d10 力场伤害；到契术师 5级时发射两束，每束分别进行远程法术攻击，可以分配给不同目标。具体字段可在 [Eldritch Blast 的官方条目](https://www.dndbeyond.com/spells/2619161-eldritch-blast)复核。\n\n始终准备的法术也要单独记。子职或其他特性授予的法术，不占基础准备法术栏；它们不应该被抄进“我还剩几格”的计算里。反过来，看到某个子职表上的法术，也不能直接把它当作所有契术师都能用的通用选择。你可以在职业页先确认自己是否拥有这个来源，再把它放到额外栏。\n\n![2024 D&D Warlock 选法术决策图，区分基础准备法术数量、Pact Magic 法术位、always prepared 来源，并比较 Eldritch Blast、Hex、Hypnotic Pattern、Misty Step 与 Counterspell。](../../media/zh-CN/spell-choice.webp)\n\n*先核对准备数量和 Pact Magic，再按动作、专注与目标条件筛选；示例不构成必选清单。*\n\n## 给每个候选贴上五个标签\n\n法术名称只解决“我知道它叫什么”，不能解决“这场战斗该不该把它放进准备栏”。至少给每个候选记下施法动作、射程、目标或豁免、是否专注，以及用更高环法术位时会不会改变效果。下面这张速查表只列已经核对过的 2024 字段。\n\n| 法术 | 环阶与动作 | 射程和条件 | 专注与选择提醒 |\n| --- | --- | --- | --- |\n| Eldritch Blast | 戏法，动作 | 120英尺；每束独立进行远程法术攻击 | 不专注，不消耗法术位；5级为两束 |\n| Hex | 1环，附赠动作 | 90英尺；选择一个能看见的生物，攻击检定命中该目标时才加伤害 | 专注最多1小时；目标属性的属性检定处于劣势，不是豁免检定 |\n| Hellish Rebuke | 1环，反应 | 受到来自60英尺内可见生物的伤害后才能触发；目标作敏捷豁免 | 不专注；失败受2d10火焰伤害，成功减半 |\n| Misty Step | 2环，附赠动作 | 自身传送至最多30英尺内能看见且未被占据的位置 | 不专注；它解决的是位置问题，不是伤害问题 |\n| Hypnotic Pattern | 3环，动作 | 120英尺；30英尺立方内能看见图纹的生物作感知豁免 | 专注最多1分钟；失败后魅惑、失能且速度为0 |\n| Counterspell | 3环，反应 | 60英尺内看见生物以语言、姿势或材料成分施法时触发；对方作体质豁免 | 不专注；失败时对方法术无效，但你的法术位仍按施法消耗 |\n\n来源分别见 [Hex 官方条目](https://www.dndbeyond.com/spells/2618988-hex)、[Hypnotic Pattern 官方条目](https://www.dndbeyond.com/spells/2619168-hypnotic-pattern)、[Misty Step 官方条目](https://www.dndbeyond.com/spells/2619133-misty-step)、[Counterspell 官方条目](https://www.dndbeyond.com/spells/2619072-counterspell)和 [SRD 5.2.1 中的 Hellish Rebuke](https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf#page=140)。\n\n专注是最硬的筛选条件。正在维持一个需要专注的法术时，开始施放另一个需要专注的法术，原来的专注会立即结束；受到伤害通常还要进行体质豁免。2024 规则把受伤后的豁免 DC 写成 10 与伤害一半向下取整两者中较高者，并设有 30 的上限，具体可看 [2024 专注规则](https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary#Concentration)。所以 Hex 和 Hypnotic Pattern 应被视为两种不同计划，而不是能同时叠在同一目标上的两层加成。\n\n2024 还有一个回合内的资源限制：同一个回合只能消耗一个法术位来施法，不能把它简化成“每轮只能施放一个法术”。例如，你在自己的回合用法术位施放 Hex 后，可以用动作施放不消耗法术位的 Eldritch Blast；但不能在同一回合再用另一个法术位施放需要动作的法术。若在自己的回合已经消耗一个法术位，也不能把同回合的 Counterspell 再当作第二个法术位施法。规则原文见 [2024 Spellcasting：One Spell with a Spell Slot per Turn](https://www.dndbeyond.com/sources/dnd/br-2024/spells#OneSpellwithaSpellSlotperTurn)。\n\n## 按战术需要缩小选择\n\n### 想稳定进行远程攻击\n\nEldritch Blast 适合当作不占法术位的持续选项。5级时它有两束，每束单独攻击；你可以把两束都打向同一个目标，也可以在目标快倒下时分开分配。Hex 需要附赠动作、90英尺射程和专注，只有攻击检定命中被诅咒目标时才增加 1d6 黯蚀伤害；它还会让你指定的一项属性检定处于劣势，但不会让该属性的豁免检定处于劣势。\n\n因此，“远程攻击”不自动等于“必须准备 Hex”。如果你预计要尽快使用 Hypnotic Pattern，或者敌人的伤害会让专注很难维持，Hex 的位置成本就会上升；如果你需要一个不靠专注、也不消耗法术位的动作选项，Eldritch Blast 的优先级更稳定。Hex 用 2环位施放时，最长专注时间变为 4小时，但每次命中额外的 1d6 不会因为升环而变多；这是一项持续时间取舍，而不是伤害升级。\n\n### 队伍需要短时间控制\n\nHypnotic Pattern 是 3环、动作、120英尺、30英尺立方范围的专注法术。范围内能看见图纹的生物都要作感知豁免；失败后会被魅惑，处于失能状态且速度为 0。目标受到伤害，或有人花动作把它摇醒，效果就会在该目标身上结束。它没有“只选择敌人”的自动过滤，队友站位和图纹覆盖范围必须一起检查。\n\n### 需要离开危险位置\n\nMisty Step 是 2环附赠动作，传送到最多 30英尺内能看见、没有被占据的位置，不需要专注。它解决的是“我能否在这次行动中离开当前位置”，不是“我能否把队友一起带走”或“我能否穿过一个没有确认的落点”。准备它时，先在地图上找出几个确实能看见并且未被占据的落点，再决定是否值得用一个 2环法术位换位置。\n\n### 想保留反应\n\n1级时，Hellish Rebuke 是一个条件明确的反应候选：你必须受到来自 60英尺内、自己能看见的生物造成的伤害，然后才能把反应用在它身上；该生物作敏捷豁免，失败受 2d10 火焰伤害，成功减半。它不需要专注，升高施法环阶时每高一环多 1d10。这个候选适合你预计会遇到触发条件、又想把专注留给别的法术的情况；若本场不容易被符合条件的生物伤害，准备它就未必比另一个已核对的 1环选择更合适。\n\n## 三个等级例子：把资源账写在法术账旁边\n\n### 1级：两项基础准备，反应候选要看触发条件\n\n1级记录应先写成：2项基础准备法术；1个 1环 Pact Magic 法术位；Eldritch Blast 是另列的戏法，不占两项。一个可核对的示例是把 Hex 和 Hellish Rebuke 放进两项准备栏。\n\n这样选的理由并不相同。Hex 用附赠动作启动，需要专注，适合你准备持续用攻击检定命中同一目标；Hellish Rebuke 用反应，只有受到符合距离和可见条件的伤害后才有机会使用，而且不占专注。你不能把两者都描述成“每回合固定收益”：前者需要维持专注，后者需要敌人先满足触发条件。\n\n替代分支也要写在角色资料旁边。如果你已经确定这场要把专注留给另一个允许的 1环法术，就把 Hex 换出；如果 DM 的遭遇很少让你遇到 Hellish Rebuke 的触发条件，就不要因为它能造成伤害而强行占一格。每次替换都回到同一张字段表，核对环阶、动作、射程、目标条件和专注，而不是凭“常见推荐”抄答案。\n\n### 3级：四项准备与两个 2环位\n\n3级有 4项基础准备法术，Pact Magic 变为 2个 2环法术位。资源账和选择账要并排写：Eldritch Blast 依然不占 4项；Hex 仍是 1环法术，Hellish Rebuke 仍是 1环反应，Misty Step 是 2环附赠动作。一个偏向远程和脱离位置的示例，可以准备 Hex、Hellish Rebuke、Misty Step 和 Hold Person。Hold Person 是 2环、动作、60英尺、专注最多1分钟的控制法术；目标须是能看见的 Humanoid，并作感知豁免，字段可在 [SRD 5.2.1 的 Hold Person](https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf#page=141)核对。\n\n此时用 2环位施放 Hex，最长专注时间增加到 4小时，但每次命中仍只按法术文字增加 1d6；用一个 2环位施放 Misty Step，则换来一次不需要专注的 30英尺传送。两者都可能占用附赠动作，但它们解决的问题不同：一个要求你继续维持专注并攻击目标，另一个要求地图上存在可见且未被占据的落点。\n\n这个等级的替代理由应具体到场景。若队伍经常需要你跨过封锁线，Misty Step 的位置价值高；若敌人不是 Humanoid，Hold Person 就应换成 DM 允许且字段已核对的候选；若你总要维持另一个专注效果，Hex 的持续时间优势也不一定值得占一格。\n\n### 5级：六项准备与两个 3环位\n\n5级有 6项基础准备法术、2个 3环 Pact Magic 法术位，Eldritch Blast 变为两束。Hypnotic Pattern 与 Counterspell 都是 3环候选，但两者的使用窗口不同：前者是动作、30英尺立方和专注控制，后者是看到施法触发的反应、不需要专注。一个偏向控场和应对施法者的示例，可把 Hypnotic Pattern、Counterspell、Misty Step、Hex、Hellish Rebuke 和 Hold Person 放入六项准备栏；Hypnotic Pattern、Hex 与 Hold Person 是按场景互相替代的专注选项，不是同一时间维持的三项效果；Hold Person 只在目标属于 Humanoid 且你愿意占用专注时有对应价值。\n\n如果先用一个 3环位施放 Hypnotic Pattern，同一回合不能再用另一个法术位施放别的法术，因为 2024 规则同一回合只能消耗一个法术位；这是法术位限制。动作预算还要单独核对：Hypnotic Pattern 需要动作，Eldritch Blast 也需要动作，所以在本单职业例子没有额外动作时，Hypnotic Pattern 已占用本回合动作，就不能同一回合再用 Eldritch Blast；你可以在之后自己的回合用 Eldritch Blast，或本回合用 Hex（附赠动作）再用 Eldritch Blast（动作）。若你把两个 3环位都留给一次控场和一次反制，Hex 与 Hellish Rebuke 仍可作为准备好的替代计划，但不是额外获得的第三个法术位。\n\n## 最后一遍检查：让候选真的能填卡\n\n把最终候选写下后，按下面顺序复核一次：先确认是 2024 还是 2014，再确认契术师职业等级和 DM 允许书目；然后写基础准备数量，另列始终准备来源；再写 Pact Magic 位的数量和环阶。1级应能看到 2项与 1个 1环位，3级应能看到 4项与 2个 2环位，5级应能看到 6项与 2个 3环位。\n\n接着逐项补齐动作、射程、目标或豁免、专注和升环效果。发现一个法术需要附赠动作，就问自己本回合是否还想施放另一个消耗法术位的法术；发现两个法术都需要专注，就把它们标成替代计划；发现一个反应法术，就写出它真正的触发条件和距离。最后检查同一回合是否重复消耗法术位，并确认 Eldritch Blast 没有被误扣进准备数量。\n\n这样留下的不是一份宣称“最强”的答案，而是一份能说明条件的选择：在远程攻击、控场、位移和反应之间，你知道自己牺牲了什么、保留了什么，也能在换规则年份、等级或 DM 书目后重新核对，而不必整张角色表从头猜。\n",
+  "bodyHash": "7732341ce960c9d0eaa3feaa5310b0a22b98f482328b3c7664ef01467171b330",
+  "seo": {
+    "locale": "zh-CN",
+    "country": null,
+    "slug": "dnd-warlock-spells",
+    "title": "dnd warlock spells：远程、控场、位移、反应怎么选 | Token Maker",
+    "h1": "DND 契术师法术（Warlock）：远程、控场、位移、反应怎么选",
+    "description": "用 2024 规则把 dnd warlock spells 按远程、控场、位移和反应拆开：先分基础准备数、Pact Magic 法术位与始终准备来源，再按动作、射程、专注和触发条件保留可替换候选。",
+    "ogTitle": "DND 契术师法术（Warlock）：远程、控场、位移、反应怎么选",
+    "ogDescription": "按 2024 规则分开准备数量、Pact Magic 法术位与始终准备来源，再按战斗任务和规则字段选择契术师法术候选。"
+  },
+  "publicReferences": {
+    "bodyHash": "7732341ce960c9d0eaa3feaa5310b0a22b98f482328b3c7664ef01467171b330",
+    "items": [
+      {
+        "id": "warlock-2024",
+        "label": "D&D Beyond 2024 Warlock rules",
+        "url": "https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Warlock",
+        "versionNote": "2024 revised rules; Warlock class table, Pact Magic, and prepared-spell rules.",
+        "appliesTo": [
+          {"quote": "2014 Legacy 与 2024 修订规则的职业页面不能拼成一套表。", "occurrence": 1},
+          {"quote": "2024 规则把职业表中的基础准备法术数量列成契术师等级对应的数字", "occurrence": 1},
+          {"quote": "Pact Magic 法术位是施放时消耗的资源，所有本职业位保持同一环阶，并在短休或长休后恢复。", "occurrence": 1}
+        ]
+      },
+      {
+        "id": "eldritch-blast-2024",
+        "label": "D&D Beyond Eldritch Blast",
+        "url": "https://www.dndbeyond.com/spells/2619161-eldritch-blast",
+        "versionNote": "2024 spell entry read for range, beam count, action, and cantrip resource fields.",
+        "appliesTo": [
+          {"quote": "Eldritch Blast 是零环戏法，不应从 1级的两项、3级的四项或 5级的六项里扣掉；它使用动作，也不消耗 Pact Magic 法术位。", "occurrence": 1}
+        ]
+      },
+      {
+        "id": "hex-2024",
+        "label": "D&D Beyond Hex",
+        "url": "https://www.dndbeyond.com/spells/2618988-hex",
+        "versionNote": "2024 spell entry read for bonus action, range, concentration, ability-check condition, and upcast duration.",
+        "appliesTo": [
+          {"quote": "| Hex | 1环，附赠动作 | 90英尺；选择一个能看见的生物，攻击检定命中该目标时才加伤害 | 专注最多1小时；目标属性的属性检定处于劣势，不是豁免检定 |", "occurrence": 1},
+          {"quote": "Hex 用 2环位施放时，最长专注时间变为 4小时，但每次命中额外的 1d6 不会因为升环而变多", "occurrence": 1}
+        ]
+      },
+      {
+        "id": "hypnotic-pattern-2024",
+        "label": "D&D Beyond Hypnotic Pattern",
+        "url": "https://www.dndbeyond.com/spells/2619168-hypnotic-pattern",
+        "versionNote": "2024 spell entry read for area, action, saving throw, and concentration conditions.",
+        "appliesTo": [
+          {"quote": "Hypnotic Pattern 是 3环、动作、120英尺、30英尺立方范围的专注法术。", "occurrence": 1}
+        ]
+      },
+      {
+        "id": "misty-step-2024",
+        "label": "D&D Beyond Misty Step",
+        "url": "https://www.dndbeyond.com/spells/2619133-misty-step",
+        "versionNote": "2024 spell entry read for bonus action, visible unoccupied destination, range, and concentration fields.",
+        "appliesTo": [
+          {"quote": "Misty Step 是 2环附赠动作，传送到最多 30英尺内能看见、没有被占据的位置，不需要专注。", "occurrence": 1}
+        ]
+      },
+      {
+        "id": "counterspell-2024",
+        "label": "D&D Beyond Counterspell",
+        "url": "https://www.dndbeyond.com/spells/2619072-counterspell",
+        "versionNote": "2024 spell entry read for reaction trigger, range, Constitution save, and slot cost.",
+        "appliesTo": [
+          {"quote": "| Counterspell | 3环，反应 | 60英尺内看见生物以语言、姿势或材料成分施法时触发；对方作体质豁免 | 不专注；失败时对方法术无效，但你的法术位仍按施法消耗 |", "occurrence": 1}
+        ]
+      },
+      {
+        "id": "hellish-rebuke-srd-521",
+        "label": "System Reference Document 5.2.1: Hellish Rebuke",
+        "url": "https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf#page=140",
+        "versionNote": "SRD 5.2.1, page 140; public attribution is included separately in the handoff requirements.",
+        "appliesTo": [
+          {"quote": "Hellish Rebuke 是一个条件明确的反应候选：你必须受到来自 60英尺内、自己能看见的生物造成的伤害", "occurrence": 1}
+        ]
+      },
+      {
+        "id": "hold-person-srd-521",
+        "label": "System Reference Document 5.2.1: Hold Person",
+        "url": "https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf#page=141",
+        "versionNote": "SRD 5.2.1, page 141; public attribution is included separately in the handoff requirements.",
+        "appliesTo": [
+          {"quote": "Hold Person 是 2环、动作、60英尺、专注最多1分钟的控制法术；目标须是能看见的 Humanoid，并作感知豁免", "occurrence": 1}
+        ]
+      },
+      {
+        "id": "concentration-2024",
+        "label": "D&D Beyond 2024 Concentration rules",
+        "url": "https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary#Concentration",
+        "versionNote": "2024 rules glossary; concentration replacement and damage-save conditions.",
+        "appliesTo": [
+          {"quote": "专注是最硬的筛选条件。正在维持一个需要专注的法术时，开始施放另一个需要专注的法术，原来的专注会立即结束", "occurrence": 1}
+        ]
+      },
+      {
+        "id": "one-slot-per-turn-2024",
+        "label": "D&D Beyond 2024: One Spell with a Spell Slot per Turn",
+        "url": "https://www.dndbeyond.com/sources/dnd/br-2024/spells#OneSpellwithaSpellSlotperTurn",
+        "versionNote": "2024 spellcasting rule; one spell cast with a spell slot per turn.",
+        "appliesTo": [
+          {"quote": "2024 还有一个回合内的资源限制：同一个回合只能消耗一个法术位来施法，不能把它简化成“每轮只能施放一个法术”。", "occurrence": 1}
+        ]
+      }
+    ]
+  },
+  "publicRequirements": {
+    "mode": "content-only",
+    "readerArticle": {
+      "path": "article.md",
+      "h1": "DND 契术师法术（Warlock）：远程、控场、位移、反应怎么选",
+      "bodyBytesPreserved": true,
+      "attributionIncluded": true
+    },
+    "media": [
+      {
+        "role": "page-image",
+        "path": "../../media/zh-CN/spell-choice.webp",
+        "format": "webp",
+        "width": 780,
+        "height": 2100,
+        "bytes": 133876,
+        "sha256": "eeaf1525ebb8b4270118fd264ed16e20dafea92d479e86ae420fd5b2d7455893",
+        "alt": "2024 D&D Warlock 选法术决策图，区分基础准备法术数量、Pact Magic 法术位、always prepared 来源，并比较 Eldritch Blast、Hex、Hypnotic Pattern、Misty Step 与 Counterspell。",
+        "caption": "先核对准备数量和 Pact Magic，再按动作、专注与目标条件筛选；示例不构成必选清单。"
+      },
+      {
+        "role": "source-image",
+        "path": "../../media/zh-CN/spell-choice.svg",
+        "format": "svg",
+        "width": 780,
+        "height": 2100,
+        "bytes": 13461,
+        "sha256": "9560eb09ada1771eb8e271a0919085adeebca8b9842b183f967dd4f2588797c0",
+        "alt": "2024 D&D Warlock 选法术决策图，区分基础准备法术数量、Pact Magic 法术位、always prepared 来源，并比较 Eldritch Blast、Hex、Hypnotic Pattern、Misty Step 与 Counterspell。",
+        "caption": "先核对准备数量和 Pact Magic，再按动作、专注与目标条件筛选；示例不构成必选清单。"
+      }
+    ],
+    "attribution": {
+      "required": true,
+      "path": "attribution.md",
+      "text": "This work includes material from the System Reference Document 5.2.1 (“SRD 5.2.1”) by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode."
+    }
+  },
+  "integrity": {
+    "status": "CONTENT_FROZEN",
+    "summary": "Content-only technical freeze; not user-approved and not a website publication.",
+    "publicFieldsHash": "a584ffa2494326f86ea5a90b25d07eee1d40af8f89de930f9fbde190eab5475d",
+    "publicFieldsHashAlgorithm": "SHA-256 of canonical UTF-8 JSON with recursively lexicographically sorted object keys, preserved array order, no whitespace or trailing LF; root integrity field excluded.",
+    "bodyEncoding": "UTF-8 NFC with LF line endings",
+    "bodyNfcEqual": true,
+    "bodyHashVerified": true,
+    "bodyHash": "7732341ce960c9d0eaa3feaa5310b0a22b98f482328b3c7664ef01467171b330",
+    "seoHash": "34c4abb5eea95dbffa0d107a19ecefe66534e3d20be56ef716383aca96b0f6bd",
+    "publicReferencesHash": "9f5d5db454f807586c22da4acbaa493a04f5be506d57425ea6025160fc8f0dee",
+    "articleHash": "63d813d9a29f288e6b03a38305dd2473c61ec2c55cd614c49aef1e679a9db826",
+    "attributionHash": "c1d87a906c68bbc9b046d009cdbd190fbebe77be8a2793534eb051bb6441a173",
+    "count": {
+      "locale": "zh-CN",
+      "mechanicalUnits": 3210,
+      "requiredFloor": 2000,
+      "status": "PASS"
+    },
+    "bodyMediaShaStatus": "PASS",
+    "seoReview": "PASS",
+    "handoffFreeze": "CONTENT_FROZEN"
+  }
+}

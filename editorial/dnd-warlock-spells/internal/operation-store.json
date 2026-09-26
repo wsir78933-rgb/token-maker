@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "runId": "run_39994fa3f53e",
+  "taskId": "task_e72b1c6074bb",
+  "dispatchId": "ctx_73d6551ad3c6",
+  "sessionId": "01a0dbac-a80a-7ee2-85c7-59a84a7f0831",
+  "terminalId": "term_edce0f10-eb8c-4b6a-a9a2-73304669a7e3",
+  "coordinatorTerminalId": "term_2b5c6082-1ffd-43b2-9816-0e0baf5eea10",
+  "role": "A-site",
+  "scope": "content-only",
+  "keyword": "dnd warlock spells",
+  "site": "https://www.tokenmaker.one",
+  "locales": [
+    "en",
+    "zh-CN"
+  ],
+  "countries": {
+    "en": null,
+    "zh-CN": null
+  },
+  "workspace": "/Users/wusir/orca/workspaces/token-maker-app/博客",
+  "initialHead": "eb65956921988db3e6a16164e747d2e517429ad0",
+  "initialGitStatus": "clean",
+  "canary": {
+    "id": "ORCHESTRATOR_PRIVATE_1181e646-ea0a-4404-a366-859f4b811f75",
+    "sha256": "6445e423eb553dd44ae6be9a681fc3c8be6af26c1b11de906d4891738d30d396"
+  },
+  "canaryDisclosure": "Internal operation store only; do not provide this file or marker to C or public handoff.",
+  "isolation": {
+    "level": "logical",
+    "filesystemPermissionIsolation": "UNVERIFIED",
+    "reason": "Shared workspace and unrestricted filesystem; no per-role deny rule or C-context permission probe established.",
+    "writerPermissionProbe": "not performed; writer session is not owned by A-site"
+  },
+  "oldPackages": {
+    "currentEditorialDirectoryExistedAtStart": false,
+    "workflowAcceptanceSamples": "not opened",
+    "historicalDrafts": "not opened",
+    "repositoryPublishedArticles": "read only as requested for site conflict and recent metadata evidence"
+  },
+  "state": "initialized; readback PASS (JSON, Run, scope and canary SHA-256); exact marker scan of A-site research PASS; no C permission probe",
+  "createdAt": "2026-09-26T03:08:09.823Z"
+}

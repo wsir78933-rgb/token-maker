@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "runId": "run_39994fa3f53e",
+  "scope": "content-only",
+  "keyword": "dnd warlock spells",
+  "languages": {
+    "en": {
+      "used": 2,
+      "max": 3
+    },
+    "zh-CN": {
+      "used": 3,
+      "max": 3
+    }
+  },
+  "owner": "final validation owner assigned by coordinator",
+  "rule": "Shared across all stages per language; never reset on role/stage/candidate change; final validation owner records increments.",
+  "history": [
+    {
+      "language": "en",
+      "round": 1,
+      "stage": "B layout revision",
+      "taskId": "task_7a86b80000ed",
+      "dispatchId": "ctx_0a84857266b2",
+      "workerTerminal": "term_b61f38d1-d7ae-4baa-860c-4270cfd2143c",
+      "status": "completed",
+      "countsAsRevisionRound": true,
+      "scope": "layout only; corrected the level-3 Invisibility target count",
+      "note": "The initial English B layout task was superseded within this same Round1; no budget reset occurred. English body revision, D, E, and F remain incomplete."
+    },
+    {
+      "language": "en",
+      "round": 2,
+      "stage": "C body revision after D Round1 FAIL",
+      "taskId": "task_108b799a2d77",
+      "dispatchId": "ctx_f2f3d728361d",
+      "workerTerminal": "term_c1844d9d-8d3c-4d73-9900-8fe43536198f",
+      "status": "in_progress",
+      "countsAsRevisionRound": true,
+      "scope": "body revision; address D ResearchTrace, ReaderValue and Repetition FAIL findings",
+      "note": "Round2 has started and is not complete; no new body hash is claimed. D must rerun all three gates after C finishes, then E/F remain required."
+    },
+    {
+      "language": "zh-CN",
+      "round": 1,
+      "stage": "B layout revision",
+      "taskId": "task_639b0d17b04e",
+      "dispatchId": "ctx_209927af25c4",
+      "workerTerminal": "term_5e30edbd-f873-49bc-ad8d-0e38927e22b8",
+      "status": "completed",
+      "countsAsRevisionRound": true,
+      "scope": "layout only; replaced the invalid first Chinese layout input with an A-bound card"
+    },
+    {
+      "language": "zh-CN",
+      "round": 2,
+      "stage": "C body local revision",
+      "taskId": "task_9b1746e6c57c",
+      "dispatchId": "ctx_ebba294a82f8",
+      "workerTerminal": "term_94c81616-af68-4492-a4bf-574a906cea2a",
+      "status": "completed",
+      "countsAsRevisionRound": true,
+      "scope": "body revision; repaired the level-3 resource/action wording"
+    },
+    {
+      "language": "zh-CN",
+      "round": 3,
+      "stage": "C body action-budget clarification",
+      "taskId": "task_fe32a32bcfce",
+      "dispatchId": "ctx_b1f14c974eb4",
+      "workerTerminal": "term_3f734e55-73f9-4930-8b8e-46c7a5ae548c",
+      "status": "completed",
+      "countsAsRevisionRound": true,
+      "scope": "body revision; separated one-slot-per-turn from the Action budget"
+    }
+  ],
+  "notCountedAsRevision": [
+    {
+      "language": "zh-CN",
+      "stage": "D review-only clarification",
+      "taskId": "task_82f4243885e9",
+      "reason": "review report update; no body bytes changed"
+    },
+    {
+      "language": "zh-CN",
+      "stage": "media report relocation",
+      "taskId": "task_247457125235",
+      "reason": "mechanical report move; no body or media bytes changed"
+    },
+    {
+      "language": "zh-CN",
+      "stage": "E attribution-stage clarification",
+      "taskId": "task_7eff0516341b",
+      "reason": "review-stage ownership clarification; no body bytes changed"
+    },
+    {
+      "language": "zh-CN",
+      "stage": "E SEO and public handoff review",
+      "taskId": "task_3dba4a301145",
+      "reason": "SEO/handoff review; no body bytes changed"
+    },
+    {
+      "language": "zh-CN",
+      "stage": "F public freeze",
+      "taskId": "task_f9247a6bbc7c",
+      "reason": "handoff integrity update; no body bytes changed"
+    },
+    {
+      "language": "en + zh-CN",
+      "stage": "authorized character-image replacement and final delivery indexing",
+      "taskId": "task_d0e076a461e7",
+      "dispatchId": "ctx_51f354851341",
+      "reason": "User-authorized visual production exception plus mechanical delivery index; no hidden budget reset and no Round4.",
+      "countsAsRevisionRound": false,
+      "bodyChangedInThisTask": false,
+      "seoChangedInThisTask": false,
+      "handoffChangedInThisTask": false
+    }
+  ],
+  "reportCorrections": [
+    {
+      "taskId": "task_40116d07f843",
+      "dispatchId": "ctx_6f88eadb5f7d",
+      "scope": "report-only; corrected visual requirement status and independently reran English Sources-excluded count",
+      "countsAsRevisionRound": false,
+      "bodyChanged": false,
+      "seoChanged": false,
+      "mediaChanged": false,
+      "handoffChanged": false,
+      "characterOrGameImageGenerated": false
+    },
+    {
+      "taskId": "task_ded89f2bcf0b",
+      "dispatchId": "ctx_6d220c76bed0",
+      "scope": "report-only; corrected D completion state and recorded C Round2 dispatch",
+      "countsAsRevisionRound": false,
+      "bodyChanged": false,
+      "seoChanged": false,
+      "mediaChanged": false,
+      "handoffChanged": false,
+      "characterOrGameImageGenerated": false
+    }
+  ],
+  "visualRequirement": {
+    "status": "COMPLETED_BY_AUTHORIZED_CHARACTER_ASSETS",
+    "request": "Use original Warlock character artwork in place of the prior rule/process diagrams.",
+    "authorizedByUser": "确认，不用复审，我自己来审",
+    "currentPackageStatus": "USER_REVIEW_PENDING",
+    "currentEnglishAssets": [
+      "media/characters/eldritch-blast.webp",
+      "media/characters/arcane-flight.webp",
+      "media/characters/focused-concentration.webp"
+    ],
+    "currentChineseAsset": "media/characters/eldritch-blast.webp",
+    "oldDiagramFilesRetained": true,
+    "replacementAndAdditionalReview": "Character-image production completed; independent review skipped by user.",
+    "countsAsRevisionRound": false,
+    "doesNotResetBudget": true,
+    "round4Started": false,
+    "contentFreezeStatus": "NOT_APPLIED"
+  },
+  "activeRevision": {
+    "language": null,
+    "round": null,
+    "status": "CLOSED_FOR_USER_REVIEW",
+    "countsAsRevisionRound": false,
+    "nextRequired": "User review only; no automatic D/E or new revision round."
+  },
+  "userException": {
+    "runId": "run_39994fa3f53e",
+    "taskId": "task_d0e076a461e7",
+    "dispatchId": "ctx_51f354851341",
+    "workerTerminal": "term_616aa53c-bc6b-407a-9801-8a3739fb26d9",
+    "snapshotUtc": "2026-09-26T07:07:30Z",
+    "userDirective": "确认，不用复审，我自己来审",
+    "action": "Authorized original Warlock character-image replacement with necessary alt, caption, transition updates and bilingual content-only delivery.",
+    "countsAsRevisionRound": false,
+    "doesNotResetBudget": true,
+    "doesNotStartRound4": true,
+    "originalBudget": {
+      "en": {
+        "used": 2,
+        "max": 3
+      },
+      "zh-CN": {
+        "used": 3,
+        "max": 3
+      }
+    },
+    "independentReview": "SKIPPED_BY_USER",
+    "userReview": "PENDING",
+    "seoRole": "Production only; not independent review.",
+    "finalState": "USER_REVIEW_PENDING"
+  },
+  "currentDelivery": {
+    "runId": "run_39994fa3f53e",
+    "taskId": "task_d0e076a461e7",
+    "dispatchId": "ctx_51f354851341",
+    "scope": "Final delivery index and mechanical close only.",
+    "status": "USER_REVIEW_PENDING",
+    "independentReview": "SKIPPED_BY_USER",
+    "userReview": "PENDING",
+    "budgetsRetained": true,
+    "websiteWrite": false,
+    "pageGeneration": false,
+    "deploy": false,
+    "newReview": false,
+    "changedFiles": [
+      "editorial/dnd-warlock-spells/README.md",
+      "editorial/dnd-warlock-spells/reviews/delivery-user-review.md",
+      "editorial/dnd-warlock-spells/internal/provenance.json",
+      "editorial/dnd-warlock-spells/internal/revision-budget.json"
+    ]
+  }
+}

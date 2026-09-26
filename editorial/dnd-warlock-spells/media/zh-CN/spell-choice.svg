@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="2100" viewBox="0 0 780 2100" role="img" aria-labelledby="diagram-title diagram-description">
+  <title id="diagram-title">2024 契术师选法术：先分三栏</title>
+  <desc id="diagram-description">一张纵向规则示意图，按规则年份、契术师等级、允许来源和打法先确定条件，再分开记录基础准备数、Pact Magic 法术位与 always prepared 来源，最后按动作、射程、专注、目标和豁免筛选 Eldritch Blast、Hex、Hypnotic Pattern、Misty Step 与 Counterspell。</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#172A3A" flood-opacity="0.12" />
+    </filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L13,7 L1,13 Z" fill="#D85B4A" />
+    </marker>
+    <linearGradient id="condition-panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#EAF2FB" />
+      <stop offset="1" stop-color="#F6F9FD" />
+    </linearGradient>
+    <linearGradient id="ledger-panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#E8F7F3" />
+      <stop offset="1" stop-color="#F4FBF8" />
+    </linearGradient>
+    <linearGradient id="filter-panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#FFF0E5" />
+      <stop offset="1" stop-color="#FFF8F1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="780" height="2100" fill="#F7F4EE" />
+  <rect x="20" y="20" width="740" height="2060" rx="28" fill="none" stroke="#D6D0C6" stroke-width="3" />
+
+  <text x="50" y="78" fill="#3B7F79" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" letter-spacing="2">2024 BASIC RULES · WARLOCK SPELLS</text>
+  <text x="50" y="136" fill="#172A3A" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="800">2024 契术师选法术：先分三栏</text>
+  <text x="50" y="180" fill="#5B6670" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600">先分清名单、法术位和额外来源，再贴字段做选择。</text>
+
+  <rect x="40" y="220" width="700" height="160" rx="24" fill="url(#condition-panel)" stroke="#B7CAE1" stroke-width="3" filter="url(#shadow)" />
+  <rect x="40" y="220" width="16" height="160" rx="8" fill="#4D78A8" />
+  <text x="72" y="265" fill="#2D5C8B" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="800">1 先确认四件事</text>
+  <g fill="#FFFFFF" stroke="#B7CAE1" stroke-width="2">
+    <rect x="62" y="286" width="318" height="48" rx="14" />
+    <rect x="400" y="286" width="318" height="48" rx="14" />
+    <rect x="62" y="342" width="318" height="48" rx="14" />
+    <rect x="400" y="342" width="318" height="48" rx="14" />
+  </g>
+  <g fill="#345A83" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" text-anchor="middle">
+    <text x="221" y="317">规则年份：2024</text>
+    <text x="559" y="317">Warlock 等级</text>
+    <text x="221" y="373">DM 允许哪些来源</text>
+    <text x="559" y="373">队伍打法与职责</text>
+  </g>
+
+  <path d="M390 392 L390 410" fill="none" stroke="#D85B4A" stroke-width="6" marker-end="url(#arrow)" />
+
+  <rect x="40" y="420" width="700" height="320" rx="24" fill="url(#ledger-panel)" stroke="#B6DED5" stroke-width="3" filter="url(#shadow)" />
+  <rect x="40" y="420" width="16" height="320" rx="8" fill="#3B7F79" />
+  <text x="72" y="465" fill="#23615D" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="800">2 三栏分别记账</text>
+  <text x="72" y="496" fill="#5C6B70" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600">准备数、槽位与额外来源不是同一个数字。</text>
+
+  <g filter="url(#shadow)">
+    <rect x="62" y="520" width="208" height="190" rx="18" fill="#FFFFFF" stroke="#B6DED5" stroke-width="3" />
+    <rect x="286" y="520" width="208" height="190" rx="18" fill="#FFFDF9" stroke="#F1C2A5" stroke-width="3" />
+    <rect x="510" y="520" width="208" height="190" rx="18" fill="#F7F1FB" stroke="#D8C7E8" stroke-width="3" />
+  </g>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <text x="166" y="559" text-anchor="middle" fill="#23615D" font-size="23" font-weight="800">基础准备数</text>
+    <text x="166" y="596" text-anchor="middle" fill="#172A3A" font-size="23" font-weight="700">1级：2项</text>
+    <text x="166" y="630" text-anchor="middle" fill="#172A3A" font-size="23" font-weight="700">3级：4项</text>
+    <text x="166" y="664" text-anchor="middle" fill="#172A3A" font-size="23" font-weight="700">5级：6项</text>
+    <text x="166" y="696" text-anchor="middle" fill="#65727A" font-size="18" font-weight="600">不是法术位</text>
+
+    <text x="390" y="559" text-anchor="middle" fill="#9E3F34" font-size="23" font-weight="800">Pact Magic</text>
+    <text x="390" y="596" text-anchor="middle" fill="#172A3A" font-size="21" font-weight="700">1级：1×1环</text>
+    <text x="390" y="630" text-anchor="middle" fill="#172A3A" font-size="21" font-weight="700">3级：2×2环</text>
+    <text x="390" y="664" text-anchor="middle" fill="#172A3A" font-size="21" font-weight="700">5级：2×3环</text>
+    <text x="390" y="696" text-anchor="middle" fill="#7B6259" font-size="18" font-weight="600">按槽数＋环阶记</text>
+
+    <text x="614" y="555" text-anchor="middle" fill="#704C8D" font-size="21" font-weight="800">always prepared</text>
+    <text x="614" y="594" text-anchor="middle" fill="#3C3150" font-size="20" font-weight="700">特性 / 子职</text>
+    <text x="614" y="626" text-anchor="middle" fill="#3C3150" font-size="20" font-weight="700">额外来源</text>
+    <text x="614" y="668" text-anchor="middle" fill="#3C3150" font-size="20" font-weight="800">不占基础准备数</text>
+    <text x="614" y="696" text-anchor="middle" fill="#746581" font-size="18" font-weight="600">另列，不混入名单</text>
+  </g>
+
+  <path d="M390 752 L390 770" fill="none" stroke="#D85B4A" stroke-width="6" marker-end="url(#arrow)" />
+
+  <rect x="40" y="780" width="700" height="178" rx="24" fill="url(#filter-panel)" stroke="#F1C2A5" stroke-width="3" filter="url(#shadow)" />
+  <rect x="40" y="780" width="16" height="178" rx="8" fill="#D85B4A" />
+  <text x="72" y="824" fill="#9E3F34" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="800">3 贴字段，再做选择</text>
+  <g fill="#FFFDF9" stroke="#F1C2A5" stroke-width="2">
+    <rect x="62" y="846" width="206" height="48" rx="14" />
+    <rect x="282" y="846" width="174" height="48" rx="14" />
+    <rect x="470" y="846" width="248" height="48" rx="14" />
+  </g>
+  <g fill="#7D453B" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="800" text-anchor="middle">
+    <text x="165" y="877">动作 / 附赠动作 / 反应</text>
+    <text x="369" y="877">射程 / 位置</text>
+    <text x="594" y="877">专注 / 目标 / 豁免</text>
+  </g>
+  <text x="72" y="931" fill="#765E58" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600">每项只记已核验字段；选择取决于打法，不写无条件“必选”。</text>
+
+  <path d="M390 970 L390 990" fill="none" stroke="#D85B4A" stroke-width="6" marker-end="url(#arrow)" />
+
+  <rect x="40" y="1000" width="700" height="700" rx="24" fill="#F7FBFA" stroke="#B6DED5" stroke-width="3" filter="url(#shadow)" />
+  <rect x="40" y="1000" width="16" height="700" rx="8" fill="#3B7F79" />
+  <text x="72" y="1044" fill="#23615D" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="800">4 将候选贴在同一张选择表</text>
+  <text x="72" y="1076" fill="#5C6B70" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600">示例：保留与打法相符的一组，不做无条件强度榜。</text>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <rect x="62" y="1098" width="656" height="94" rx="16" fill="#FFFFFF" stroke="#B6DED5" stroke-width="2" />
+    <circle cx="91" cy="1145" r="20" fill="#D8F0EB" />
+    <text x="91" y="1152" text-anchor="middle" fill="#23615D" font-size="20" font-weight="900">1</text>
+    <text x="124" y="1138" fill="#172A3A" font-size="23" font-weight="800">Eldritch Blast</text>
+    <text x="124" y="1171" fill="#65727A" font-size="19" font-weight="600">戏法 · 动作 · 120英尺 · 无专注　5级：2束</text>
+
+    <rect x="62" y="1204" width="656" height="94" rx="16" fill="#FFFFFF" stroke="#B6DED5" stroke-width="2" />
+    <circle cx="91" cy="1251" r="20" fill="#D8F0EB" />
+    <text x="91" y="1258" text-anchor="middle" fill="#23615D" font-size="20" font-weight="900">2</text>
+    <text x="124" y="1244" fill="#172A3A" font-size="23" font-weight="800">Hex</text>
+    <text x="124" y="1277" fill="#65727A" font-size="19" font-weight="600">1环 · 附赠动作 · 90英尺 · 专注≤1小时</text>
+
+    <rect x="62" y="1310" width="656" height="116" rx="16" fill="#FFFFFF" stroke="#B6DED5" stroke-width="2" />
+    <circle cx="91" cy="1368" r="20" fill="#D8F0EB" />
+    <text x="91" y="1375" text-anchor="middle" fill="#23615D" font-size="20" font-weight="900">3</text>
+    <text x="124" y="1350" fill="#172A3A" font-size="23" font-weight="800">Hypnotic Pattern</text>
+    <text x="124" y="1381" fill="#65727A" font-size="19" font-weight="600">3环 · 动作 · 120英尺 · 30英尺立方</text>
+    <text x="124" y="1409" fill="#65727A" font-size="19" font-weight="600">感知豁免 · 专注≤1分钟</text>
+
+    <rect x="62" y="1438" width="656" height="116" rx="16" fill="#FFFFFF" stroke="#B6DED5" stroke-width="2" />
+    <circle cx="91" cy="1496" r="20" fill="#D8F0EB" />
+    <text x="91" y="1503" text-anchor="middle" fill="#23615D" font-size="20" font-weight="900">4</text>
+    <text x="124" y="1478" fill="#172A3A" font-size="23" font-weight="800">Misty Step</text>
+    <text x="124" y="1509" fill="#65727A" font-size="19" font-weight="600">2环 · 附赠动作 · 至多30英尺</text>
+    <text x="124" y="1537" fill="#65727A" font-size="19" font-weight="600">可见且未被占据 · 无专注</text>
+
+    <rect x="62" y="1566" width="656" height="116" rx="16" fill="#FFFFFF" stroke="#B6DED5" stroke-width="2" />
+    <circle cx="91" cy="1624" r="20" fill="#D8F0EB" />
+    <text x="91" y="1631" text-anchor="middle" fill="#23615D" font-size="20" font-weight="900">5</text>
+    <text x="124" y="1606" fill="#172A3A" font-size="23" font-weight="800">Counterspell</text>
+    <text x="124" y="1637" fill="#65727A" font-size="19" font-weight="600">3环 · 反应 · 60英尺 · 看见施法生物</text>
+    <text x="124" y="1665" fill="#65727A" font-size="19" font-weight="600">体质豁免</text>
+  </g>
+
+  <path d="M390 1720 L390 1740" fill="none" stroke="#D85B4A" stroke-width="6" marker-end="url(#arrow)" />
+
+  <rect x="40" y="1750" width="700" height="300" rx="24" fill="#172A3A" stroke="#172A3A" stroke-width="3" filter="url(#shadow)" />
+  <text x="72" y="1796" fill="#F2C14E" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="800">5 最终复核</text>
+  <g fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600">
+    <circle cx="82" cy="1840" r="11" fill="#F2C14E" />
+    <text x="106" y="1847">数量：基础准备 2 / 4 / 6 对上等级</text>
+    <circle cx="82" cy="1892" r="11" fill="#F2C14E" />
+    <text x="106" y="1899">资源：Pact Magic 看槽数＋环阶；always prepared 单列</text>
+    <circle cx="82" cy="1944" r="11" fill="#F2C14E" />
+    <text x="106" y="1951">冲突：专注不能叠加；2024 同一 turn 只消耗一个法术位</text>
+  </g>
+  <rect x="62" y="1980" width="656" height="48" rx="14" fill="#F2C14E" />
+  <text x="390" y="2012" text-anchor="middle" fill="#172A3A" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="900">结论：条件化候选，没有必选法术。</text>
+
+  <text x="50" y="2070" fill="#6F777C" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="600">图示依据 2024 规则；字段用于复核选择，不替代完整法术文本。</text>
+</svg>
