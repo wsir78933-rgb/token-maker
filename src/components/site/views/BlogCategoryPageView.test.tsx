@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import EnglishBlogCategoryPage, {
@@ -49,6 +49,21 @@ vi.mock('next/navigation', () => ({
 const localeCases = [
   { locale: 'en' as const, categoryNavigationLabel: 'Browse by category' },
   { locale: 'zh' as const, categoryNavigationLabel: '按分类浏览' },
+];
+
+const paginationRouteCases = [
+  {
+    locale: 'en' as const,
+    Page: EnglishBlogCategoryPaginationPage,
+    generateMetadata: generateEnglishBlogCategoryPaginationMetadata,
+    generateStaticParams: generateEnglishBlogCategoryPaginationStaticParams,
+  },
+  {
+    locale: 'zh' as const,
+    Page: ChineseBlogCategoryPaginationPage,
+    generateMetadata: generateChineseBlogCategoryPaginationMetadata,
+    generateStaticParams: generateChineseBlogCategoryPaginationStaticParams,
+  },
 ];
 
 function getArticleCardPaths(container: HTMLElement) {
@@ -120,7 +135,11 @@ describe('blog category routes', () => {
           : `${categoryPosts.length} ${categoryPosts.length === 1 ? 'article' : 'articles'}`;
 
       expect(screen.getByRole('heading', { level: 1, name: categoryCopy.label })).not.toBeNull();
-      expect(screen.getByText(categoryCopy.description)).not.toBeNull();
+      const categoryHeader = screen.getByRole('heading', { level: 1, name: categoryCopy.label }).closest('header');
+      if (!categoryHeader) {
+        throw new Error(`Expected category header for locale=${locale}, category=${category}.`);
+      }
+      expect(within(categoryHeader).getByText(categoryCopy.description)).not.toBeNull();
       expect(screen.getAllByText(articleCount)).toHaveLength(2);
       expect(getArticleCardPaths(container)).toEqual(
         categoryPosts.slice(0, 10).map((post) => getBlogPostPath(locale, post.slug)),
@@ -235,20 +254,56 @@ describe('blog category routes', () => {
     })).toBe(false);
   });
 
-  it.each([
-    {
-      locale: 'en' as const,
-      Page: EnglishBlogCategoryPaginationPage,
-      generateMetadata: generateEnglishBlogCategoryPaginationMetadata,
-      generateStaticParams: generateEnglishBlogCategoryPaginationStaticParams,
-    },
-    {
-      locale: 'zh' as const,
-      Page: ChineseBlogCategoryPaginationPage,
-      generateMetadata: generateChineseBlogCategoryPaginationMetadata,
-      generateStaticParams: generateChineseBlogCategoryPaginationStaticParams,
-    },
-  ])('rejects illegal $locale category page URLs before rendering', async ({ locale, Page, generateMetadata, generateStaticParams }) => {
+  it.each(paginationRouteCases.flatMap((route) =>
+    route.generateStaticParams().map((params) => ({ ...route, ...params })),
+  ))('aligns metadata and rendered JSON-LD for $locale/$category/page/$page', async ({ locale, Page, generateMetadata, category, page }) => {
+    const pageNumber = Number(page);
+    const localizedPath = getBlogCategoryPagePath(locale, category, pageNumber);
+    const englishPath = getBlogCategoryPagePath('en', category, pageNumber);
+    const chinesePath = getBlogCategoryPagePath('zh', category, pageNumber);
+    const metadata = await generateMetadata({ params: Promise.resolve({ category, page }) });
+    const pageLabel = locale === 'zh' ? `第 ${page} 页` : `Page ${page}`;
+
+    expect(metadata.title).toContain(pageLabel);
+    expect(metadata.description).toContain(pageLabel);
+    expect(metadata.alternates).toEqual({
+      canonical: localizedPath,
+      languages: { 'x-default': englishPath, 'en-US': englishPath, 'zh-CN': chinesePath },
+    });
+    expect(metadata.openGraph).toMatchObject({
+      url: `https://www.tokenmaker.one${localizedPath}`,
+      description: metadata.description,
+    });
+    expect(metadata.twitter).toMatchObject({
+      title: metadata.openGraph?.title,
+      description: metadata.description,
+    });
+
+    const { container } = render(await Page({ params: Promise.resolve({ category, page }) }));
+    const collection = readJsonLd(`blog-category-${locale}-${category}`);
+    const breadcrumb = readJsonLd(`blog-category-breadcrumb-${locale}-${category}`);
+    expect(collection).toMatchObject({
+      '@type': 'CollectionPage',
+      url: `https://www.tokenmaker.one${localizedPath}`,
+      name: metadata.title,
+      description: metadata.description,
+    });
+    expect(breadcrumb.itemListElement).toEqual([
+      { '@type': 'ListItem', position: 1, name: locale === 'zh' ? '首页' : 'Home', item: `https://www.tokenmaker.one${getLocalizedPath(locale, '/')}` },
+      { '@type': 'ListItem', position: 2, name: locale === 'zh' ? '博客' : 'Blog', item: `https://www.tokenmaker.one${getLocalizedPath(locale, '/blog')}` },
+      { '@type': 'ListItem', position: 3, name: getBlogCategory(locale, category).label, item: `https://www.tokenmaker.one${getBlogCategoryPath(locale, category)}` },
+      { '@type': 'ListItem', position: 4, name: pageLabel, item: `https://www.tokenmaker.one${localizedPath}` },
+    ]);
+    expect(getArticleCardPaths(container)).toEqual(
+      getBlogPostsByCategory(locale, category)
+        .slice((pageNumber - 1) * 10, pageNumber * 10)
+        .map((post) => getBlogPostPath(locale, post.slug)),
+    );
+    expect(container.querySelector('[data-blog-featured-article]')).toBeNull();
+    expect(screen.getByRole('heading', { level: 2, name: getBlogPlaceholderCopy(locale).ctaTitle })).not.toBeNull();
+  });
+
+  it.each(paginationRouteCases)('rejects illegal $locale category page URLs before rendering', async ({ locale, Page, generateMetadata, generateStaticParams }) => {
     const category = 'characters';
     const pageCount = getBlogCategoryPageCount(locale, category);
     const expectedStaticParams = BLOG_CATEGORY_SLUGS.flatMap((categorySlug) => {
@@ -264,9 +319,12 @@ describe('blog category routes', () => {
       getBlogCategoryPagePath(locale, category, 2),
     );
 
-    for (const page of ['1', '0', 'nope', String(pageCount + 1)]) {
+    for (const page of ['1', '0', '-1', '2.5', '02', '2e0', ' 2', 'Infinity', 'nope', String(pageCount + 1), String(Number.MAX_SAFE_INTEGER + 1)]) {
       notFoundMock.mockClear();
       await expect(Page({ params: Promise.resolve({ category, page }) })).rejects.toThrow('NEXT_NOT_FOUND');
+      expect(notFoundMock).toHaveBeenCalledTimes(1);
+      notFoundMock.mockClear();
+      await expect(generateMetadata({ params: Promise.resolve({ category, page }) })).rejects.toThrow('NEXT_NOT_FOUND');
       expect(notFoundMock).toHaveBeenCalledTimes(1);
     }
 

@@ -1885,8 +1885,10 @@ describe('CoatOfArmsMaker', () => {
     const generatedList = within(panel).getByRole('list', { name: 'Generated names' });
     expect(within(generatedList).getAllByRole('listitem')).toHaveLength(5);
     fireEvent.click(within(panel).getByRole('button', { name: 'Copy name Alder Harbor' }));
-    await waitFor(() => expect(writeText).toHaveBeenCalledWith('Alder Harbor'));
-    expect(within(panel).getByText('Saved Names')).toBeDefined();
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalledWith('Alder Harbor');
+      expect(within(panel).getByText('Saved Names')).toBeDefined();
+    });
     expect(within(panel).getByRole('button', { name: 'Remove saved name Alder Harbor' })).toBeDefined();
   });
 

@@ -353,11 +353,11 @@ export function BlogCategoryPageView({
     <>
       <StructuredData
         id={`blog-category-${locale}-${category}`}
-        data={buildBlogCategoryCollectionStructuredData(locale, category)}
+        data={buildBlogCategoryCollectionStructuredData(locale, category, page)}
       />
       <StructuredData
         id={`blog-category-breadcrumb-${locale}-${category}`}
-        data={buildBlogCategoryBreadcrumbStructuredData(locale, category)}
+        data={buildBlogCategoryBreadcrumbStructuredData(locale, category, page)}
       />
 
       <InnerPageChrome locale={locale} currentPath={currentPath} tone="hub">

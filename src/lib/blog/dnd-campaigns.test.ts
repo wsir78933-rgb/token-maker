@@ -87,10 +87,10 @@ describe('dnd campaigns blog post', () => {
     expect(getBlogPageCount('zh')).toBe(7);
     expect(getBlogPostsForPage('en', 6)).toHaveLength(10);
     expect(getBlogPostsForPage('zh', 6)).toHaveLength(10);
-    expect(getBlogPostsForPage('en', 7)).toHaveLength(2);
-    expect(getBlogPostsForPage('zh', 7)).toHaveLength(2);
-    expect(getBlogPostsForPage('en', 1)[0]?.slug).toBe('dnd-kobold');
-    expect(getBlogPostsForPage('zh', 1)[0]?.slug).toBe('dnd-kobold');
+    expect(getBlogPostsForPage('en', 7)).toHaveLength(6);
+    expect(getBlogPostsForPage('zh', 7)).toHaveLength(6);
+    expect(getBlogPostsForPage('en', 1)[0]?.slug).toBe('dnd-halfling');
+    expect(getBlogPostsForPage('zh', 1)[0]?.slug).toBe('dnd-halfling');
     expect(existsSync(`public${COVER_PATH}`)).toBe(true);
   });
 });

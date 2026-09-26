@@ -140,8 +140,8 @@ describe('dnd ranger blog post', () => {
       });
     }
 
-    expect(getBlogPostsForPage('en', 6).map((post) => post.slug)).toContain(DND_RANGER_SLUG);
-    expect(getBlogPostsForPage('zh', 6).map((post) => post.slug)).toContain(DND_RANGER_SLUG);
+    expect(getBlogPostsForPage('en', 7).map((post) => post.slug)).toContain(DND_RANGER_SLUG);
+    expect(getBlogPostsForPage('zh', 7).map((post) => post.slug)).toContain(DND_RANGER_SLUG);
 
     expect(existsSync(`public${COVER_PATH}`)).toBe(true);
     expect(existsSync(`public${INLINE_PATH}`)).toBe(true);

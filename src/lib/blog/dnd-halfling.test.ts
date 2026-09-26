@@ -279,7 +279,7 @@ describe('dnd halfling blog post', () => {
     for (const locale of ['en', 'zh'] as const) {
       expect(getBlogPageCount(locale)).toBe(7);
       expect([1, 2, 3, 4, 5, 6, 7].map((page) => getBlogPostsForPage(locale, page).length)).toEqual(
-        [10, 10, 10, 10, 10, 10, 5],
+        [10, 10, 10, 10, 10, 10, 6],
       );
       expect(getBlogPostsForPage(locale, 1)[0]?.slug).toBe(SLUG);
     }

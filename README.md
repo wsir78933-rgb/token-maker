@@ -65,10 +65,10 @@ R2 setup requirements:
 - Add a lifecycle rule that deletes `shares/*` objects after 30 days.
 - The app stores generated share images at `shares/{id}.png` and serves them with a 30-day immutable cache header.
 
-## Local vinext / Cloudflare Workers migration
+## Vinext / Cloudflare Workers release checks
 
-The existing `dev`, `build`, `start`, and test scripts continue to use Next.js. The
-incremental vinext commands are separate:
+`dev`, `build`, and `start` remain Next.js commands for local development. The
+Cloudflare production build uses Vinext:
 
 ```bash
 pnpm run check:vinext
@@ -76,14 +76,84 @@ pnpm run dev:vinext
 pnpm run build:vinext
 ```
 
-`vite.config.ts` uses vinext's App Router Cloudflare integration, and
-`wrangler.jsonc` declares the native `SHARE_BUCKET` R2 binding for the
-`tokenmaker-shares` bucket plus a `SHARE_RATE_LIMITER` binding (20 calls per
-60 seconds). Its `namespace_id` is the non-secret placeholder `999999999`;
-replace it with a unique positive integer before any deployment. Do not put
-Cloudflare account IDs, R2 access keys, Upstash tokens, or other credentials in
-the repository. This is local scaffolding and compatibility-check tooling; it
-does not claim that the entire application is Workers-ready or deploy anything.
+`pnpm run build:vinext` executes these gates sequentially and stops at the first
+nonzero exit:
+
+1. `pnpm lint` checks source and configuration, excluding generated `dist/` files.
+2. `pnpm typecheck` runs `next typegen` followed by `tsc --noEmit`. This regenerates
+   Next's route validators before checking all application and test TypeScript;
+   it does not run `next build` or replace the Vinext production output.
+3. `pnpm test` runs the complete Vitest suite.
+4. `pnpm check:workers-types` checks the committed Worker binding declarations.
+5. `vinext build` produces the Worker and client assets.
+6. `pnpm check:workers-build` runs Wrangler's deploy dry-run using
+   `dist/server/wrangler.json`. It validates packaging without uploading.
+
+The Cloudflare Worker `token-maker-app` is connected to `wsir78933-rgb/token-maker`
+on `main`. Its build command is `pnpm run build:vinext`; its subsequent deploy
+command is `npx wrangler deploy --config dist/server/wrangler.json`, and its version
+upload command is `npx wrangler versions upload --config dist/server/wrangler.json`.
+The checks are therefore in the Cloudflare build command itself. A failure stops
+that build before Cloudflare can run its subsequent deploy/version command.
+GitHub CI passing alone does not establish that Cloudflare ran these checks.
+
+`pnpm deploy:workers` and `pnpm upload:workers-preview` also run `build:vinext`
+before their upload command. These commands write to Cloudflare; running the
+build, dry-run, or local preview alone does not deploy anything.
+
+### Worker binding types
+
+Use the matching generation and freshness-check commands:
+
+```bash
+pnpm types:workers
+pnpm check:workers-types
+```
+
+Both use `CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false` and
+`wrangler types --config wrangler.jsonc --include-runtime=false`; the check adds
+`--check`. This keeps local `.env` files out of generated declarations. A local
+`.dev.vars` file can still affect Wrangler's generated bindings; keep this gate
+in a clean checkout without that file. Bare `wrangler types --check` does not
+set these options and can fail when local `.env` files differ from CI.
+
+`worker-configuration.d.ts` is generated only by Wrangler. The small
+`cloudflare-bindings.d.ts` declaration imports the existing
+`@cloudflare/workers-types` binding types and types the application's
+`cloudflare:workers` `env` import. It avoids merging Worker runtime globals such
+as HTMLRewriter's `Element` with browser DOM types. All source and test files
+remain included in the application type check.
+
+### Coverage and browser verification
+
+GitHub's `quality.yml` runs the same `pnpm run build:vinext` chain, then the full
+coverage check with the existing thresholds (branches 65%, functions/lines/
+statements 75%). It installs Chromium and its system dependencies using the
+existing Playwright CLI before running `pnpm test:e2e`.
+
+Playwright starts `pnpm preview:workers`, which serves the just-built
+`dist/server/wrangler.json` with Wrangler locally on `127.0.0.1:40001`, with remote
+bindings disabled. It refuses to reuse an existing server, so an unrelated
+Next.js server cannot satisfy this check. For local browser verification after
+building, run `pnpm test:e2e` with Chromium installed, or use
+`pnpm preview:workers` for manual browser checks; port 40001 must be free.
+
+Cloudflare Builds does not run coverage or browser E2E in this configuration.
+Its documented build image does not guarantee an installed browser, so no
+automatic system-library installation or browser availability is assumed there.
+Browser and coverage results remain GitHub/local checks, not Cloudflare deploy
+gates. Dry-run success proves packaging, not production runtime behavior or
+remote binding availability.
+
+`vite.config.ts` retains the App Router Cloudflare integration.
+`wrangler.jsonc` declares `SHARE_BUCKET` for `tokenmaker-shares`,
+`SHARE_RATE_LIMITER` (20 calls per 60 seconds, namespace `1001`), and
+`CONTACT_RATE_LIMITER` (5 calls per 60 seconds, namespace `1002`).
+
+References: [Cloudflare build configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/),
+[build image](https://developers.cloudflare.com/workers/ci-cd/builds/build-image/),
+[Worker TypeScript](https://developers.cloudflare.com/workers/languages/typescript/),
+and [Playwright CI setup](https://playwright.dev/docs/ci).
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

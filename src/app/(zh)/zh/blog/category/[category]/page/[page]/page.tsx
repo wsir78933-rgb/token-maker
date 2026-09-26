@@ -5,7 +5,6 @@ import {
   BLOG_CATEGORY_SLUGS,
   createBlogCategoryMetadata,
   getBlogCategoryPageCount,
-  getBlogCategoryPagePath,
   isBlogCategorySlug,
   type BlogCategorySlug,
 } from '@/lib/blog-content';
@@ -50,15 +49,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: ChineseBlogCategoryPaginationPageProps) {
   const { category, page } = await params;
   const resolvedPage = resolveBlogCategoryPage(category, page);
-  const metadata = createBlogCategoryMetadata(locale, resolvedPage.category);
-
-  return {
-    ...metadata,
-    alternates: {
-      ...metadata.alternates,
-      canonical: getBlogCategoryPagePath(locale, resolvedPage.category, resolvedPage.page),
-    },
-  };
+  return createBlogCategoryMetadata(locale, resolvedPage.category, resolvedPage.page);
 }
 
 export default async function ChineseBlogCategoryPaginationPage({

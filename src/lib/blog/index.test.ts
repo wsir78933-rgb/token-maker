@@ -42,7 +42,6 @@ const DND_ARTIFICER_SLUG = 'dnd-artificer';
 const DND_PALADIN_SLUG = 'dnd-paladin';
 const PLAYERS_HANDBOOK_DND_5E_SLUG = 'players-handbook-dnd-5e';
 const DND_FIGHTER_SLUG = 'dnd-fighter';
-const DND_CHARACTER_SHEET_SLUG = 'dnd-character-sheet';
 const DND_CLASSES_COMPARISON_SLUG = 'dnd-classes-comparison';
 const DND_BACKGROUNDS_SLUG = 'dnd-backgrounds';
 const DND_DRUID_SLUG = 'dnd-druid';
@@ -54,7 +53,9 @@ const DND_BEHOLDER_SLUG = 'dnd-beholder';
 const DND_CONDITIONS_SLUG = 'dnd-conditions';
 const DND_SKILLS_SLUG = 'dnd-skills';
 const DND_KOBOLD_SLUG = 'dnd-kobold';
+const DND_HALFLING_SLUG = 'dnd-halfling';
 const FIRST_BLOG_PAGE_SLUGS = [
+  DND_HALFLING_SLUG,
   DND_KOBOLD_SLUG,
   DND_SKILLS_SLUG,
   DND_CONDITIONS_SLUG,
@@ -64,9 +65,8 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DND_KENKU_SLUG,
   DND_DRAGONBORN_SLUG,
   DND_DRUID_SLUG,
-  DND_BACKGROUNDS_SLUG,
 ];
-const SECOND_BLOG_PAGE_START_SLUGS = [DND_CLASSES_COMPARISON_SLUG, DND_CHARACTER_SHEET_SLUG];
+const SECOND_BLOG_PAGE_START_SLUGS = [DND_BACKGROUNDS_SLUG, DND_CLASSES_COMPARISON_SLUG];
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -2414,7 +2414,7 @@ describe('dnd hex blog post', () => {
 });
 
 describe('paladin 2024 spells dnd blog post', () => {
-  test('moves the second blog page boundary after publishing the handbook guide', () => {
+  test('keeps the second blog page boundary after publishing the halfling guide', () => {
     expect(getBlogPageCount('en')).toBe(7);
     expect(getBlogPageCount('zh')).toBe(7);
 

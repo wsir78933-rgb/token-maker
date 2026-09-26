@@ -60,7 +60,7 @@ function getSingleLink(linkName: string): HTMLElement {
   const link = links[0];
   if (!(link instanceof HTMLElement)) {
     throw new Error(
-      `Link named ${JSON.stringify(linkName)} is not an HTMLElement. Received ${link === undefined ? 'undefined' : link.nodeName}.`,
+      `Link named ${JSON.stringify(linkName)} is not an HTMLElement. Received ${String(link)}.`,
     );
   }
 

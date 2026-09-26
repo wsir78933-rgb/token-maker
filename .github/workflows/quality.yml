@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   verify:
-    name: Lint, test, build, and browser checks
+    name: Worker release gates, coverage, and browser checks
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -34,22 +34,16 @@ jobs:
       - name: Check production dependency advisories
         run: pnpm audit:prod
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: Type check
-        run: pnpm typecheck
+      - name: Run Cloudflare build gates, build Vinext, and dry-run Worker
+        run: pnpm run build:vinext
 
       - name: Run tests with coverage thresholds
         run: pnpm test:coverage
 
-      - name: Build production application
-        run: pnpm build
-
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Run browser end-to-end checks
+      - name: Run browser checks against the built Worker
         run: pnpm test:e2e
 
       - name: Upload Playwright report on failure

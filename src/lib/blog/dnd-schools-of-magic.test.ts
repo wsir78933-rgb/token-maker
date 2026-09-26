@@ -283,8 +283,8 @@ describe('dnd schools of magic blog post', () => {
     expect(getFeaturedBlogPost('zh')?.slug).toBe('dnd-classes-explained');
     expect(getBlogPageCount('en')).toBe(7);
     expect(getBlogPageCount('zh')).toBe(7);
-    expect(getBlogPostsForPage('en', 1)[0]?.slug).toBe('dnd-kobold');
     for (const locale of ['en', 'zh'] as const) {
+      expect(getBlogPostsForPage(locale, 1)[0]?.slug).toBe('dnd-halfling');
       const regularPostSlugs = Array.from(
         { length: getBlogPageCount(locale) },
         (_, pageIndex) => getBlogPostsForPage(locale, pageIndex + 1),

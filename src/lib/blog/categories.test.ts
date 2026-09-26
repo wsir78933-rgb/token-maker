@@ -25,6 +25,7 @@ import {
 import { postsByLocale } from './registry';
 import type { BlogPost } from './types';
 import type { SiteLocale } from '@/lib/site-locale';
+import { getSiteConfig } from '@/lib/site-content';
 
 const EXPECTED_CATEGORY_SLUGS = [
   'characters',
@@ -122,6 +123,82 @@ describe('blog category configuration', () => {
       ],
     });
   });
+});
+
+describe('blog category pagination metadata', () => {
+  const categoryPages = (['en', 'zh'] as const).flatMap((locale) =>
+    BLOG_CATEGORY_SLUGS.flatMap((category) =>
+      Array.from({ length: getBlogCategoryPageCount(locale, category) }, (_, index) => ({
+        locale,
+        category,
+        page: index + 1,
+      })),
+    ),
+  );
+
+  test.each(categoryPages)('aligns every URL and description for $locale/$category page $page', ({ locale, category, page }) => {
+    const categoryCopy = getBlogCategory(locale, category);
+    const pageLabel = locale === 'zh' ? `第 ${page} 页` : `Page ${page}`;
+    const title = page === 1 ? categoryCopy.label : `${categoryCopy.label} - ${pageLabel}`;
+    const description = page === 1
+      ? categoryCopy.description
+      : `${pageLabel}${locale === 'zh' ? '。' : '. '}${categoryCopy.description}`;
+    const localizedPath = getBlogCategoryPagePath(locale, category, page);
+    const englishPath = getBlogCategoryPagePath('en', category, page);
+    const chinesePath = getBlogCategoryPagePath('zh', category, page);
+    const metadata = createBlogCategoryMetadata(locale, category, page);
+    const socialTitle = `${title} | ${getSiteConfig(locale).name}`;
+
+    expect(metadata).toMatchObject({
+      title,
+      description,
+      alternates: {
+        canonical: localizedPath,
+        languages: {
+          'x-default': englishPath,
+          'en-US': englishPath,
+          'zh-CN': chinesePath,
+        },
+      },
+      openGraph: {
+        title: socialTitle,
+        description,
+        url: `https://www.tokenmaker.one${localizedPath}`,
+      },
+      twitter: { title: socialTitle, description },
+    });
+    expect(buildBlogCategoryCollectionStructuredData(locale, category, page)).toMatchObject({
+      '@type': 'CollectionPage',
+      name: title,
+      description,
+      url: `https://www.tokenmaker.one${localizedPath}`,
+    });
+    const breadcrumbs = buildBlogCategoryBreadcrumbStructuredData(locale, category, page).itemListElement;
+    expect(breadcrumbs.at(-1)?.item).toBe(`https://www.tokenmaker.one${localizedPath}`);
+
+    if (page === 1) {
+      expect(metadata).toEqual(createBlogCategoryMetadata(locale, category));
+      expect(buildBlogCategoryCollectionStructuredData(locale, category, page)).toEqual(
+        buildBlogCategoryCollectionStructuredData(locale, category),
+      );
+      expect(buildBlogCategoryBreadcrumbStructuredData(locale, category, page)).toEqual(
+        buildBlogCategoryBreadcrumbStructuredData(locale, category),
+      );
+    }
+  });
+
+  test.each([0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, Number.MAX_SAFE_INTEGER + 1])(
+    'rejects invalid page %s in all category builders with the offending value',
+    (page) => {
+      for (const builder of [
+        createBlogCategoryMetadata,
+        buildBlogCategoryCollectionStructuredData,
+        buildBlogCategoryBreadcrumbStructuredData,
+      ]) {
+        expect(() => builder('en', 'characters', page)).toThrow(`page=${String(page)}`);
+      }
+    },
+  );
 });
 
 describe('blog post category assignment', () => {

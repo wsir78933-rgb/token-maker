@@ -231,50 +231,75 @@ export function assignBlogPostCategory(post: BlogPost): BlogPost {
   return { ...post, category: mappedCategory };
 }
 
-export function createBlogCategoryMetadata(locale: SiteLocale, categorySlug: string): Metadata {
+function getBlogCategorySeoPath(locale: SiteLocale, categorySlug: string, page: number): string {
+  if (!Number.isSafeInteger(page) || page < 1) {
+    throw new Error(
+      `Invalid blog category page: category=${JSON.stringify(categorySlug)}, page=${String(page)}.`,
+    );
+  }
+
+  const categoryPath = getBlogCategoryPath(locale, categorySlug);
+  return page === 1 ? categoryPath : `${categoryPath}/page/${page}`;
+}
+
+function getBlogCategoryPageCopy(locale: SiteLocale, category: BlogCategoryCopy, page: number) {
+  if (page === 1) {
+    return { title: category.label, description: category.description };
+  }
+
+  const pageLabel = locale === 'zh' ? `第 ${page} 页` : `Page ${page}`;
+  return {
+    title: `${category.label} - ${pageLabel}`,
+    description: `${pageLabel}${locale === 'zh' ? '。' : '. '}${category.description}`,
+  };
+}
+
+export function createBlogCategoryMetadata(locale: SiteLocale, categorySlug: string, page = 1): Metadata {
   const category = getBlogCategory(locale, categorySlug);
   const siteConfig = getSiteConfig(locale);
-  const path = getBlogCategoryPathSegment(category.slug);
-  const localizedPath = getBlogCategoryPath(locale, category.slug);
+  const path = getBlogCategorySeoPath('en', category.slug, page);
+  const localizedPath = getBlogCategorySeoPath(locale, category.slug, page);
+  const { title, description } = getBlogCategoryPageCopy(locale, category, page);
   const socialImage = getSeoImageUrl(locale, 'home');
 
   return {
     metadataBase: new URL(getSiteUrl()),
-    title: category.label,
-    description: category.description,
+    title,
+    description,
     alternates: {
       canonical: localizedPath,
       languages: getLanguageAlternates(path),
     },
     openGraph: {
-      title: `${category.label} | ${siteConfig.name}`,
-      description: category.description,
+      title: `${title} | ${siteConfig.name}`,
+      description,
       url: absoluteUrl(localizedPath),
       siteName: siteConfig.name,
       type: 'website',
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
-      images: [{ url: socialImage, alt: category.label }],
+      images: [{ url: socialImage, alt: title }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${category.label} | ${siteConfig.name}`,
-      description: category.description,
+      title: `${title} | ${siteConfig.name}`,
+      description,
       images: [socialImage],
     },
   };
 }
 
-export function buildBlogCategoryCollectionStructuredData(locale: SiteLocale, categorySlug: string) {
+export function buildBlogCategoryCollectionStructuredData(locale: SiteLocale, categorySlug: string, page = 1) {
   const category = getBlogCategory(locale, categorySlug);
   const siteConfig = getSiteConfig(locale);
-  const localizedPath = getBlogCategoryPath(locale, category.slug);
+  const localizedPath = getBlogCategorySeoPath(locale, category.slug, page);
+  const { title, description } = getBlogCategoryPageCopy(locale, category, page);
 
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: category.label,
+    name: title,
     url: absoluteUrl(localizedPath),
-    description: category.description,
+    description,
     inLanguage: locale === 'zh' ? 'zh-CN' : 'en-US',
     isPartOf: {
       '@type': 'WebSite',
@@ -284,10 +309,10 @@ export function buildBlogCategoryCollectionStructuredData(locale: SiteLocale, ca
   };
 }
 
-export function buildBlogCategoryBreadcrumbStructuredData(locale: SiteLocale, categorySlug: string) {
+export function buildBlogCategoryBreadcrumbStructuredData(locale: SiteLocale, categorySlug: string, page = 1) {
   const resolvedLocale = requireBlogLocale(locale);
   const category = getBlogCategory(resolvedLocale, categorySlug);
-  const localizedPath = getBlogCategoryPath(resolvedLocale, category.slug);
+  const localizedPath = getBlogCategorySeoPath(resolvedLocale, category.slug, page);
 
   return {
     '@context': 'https://schema.org',
@@ -309,8 +334,14 @@ export function buildBlogCategoryBreadcrumbStructuredData(locale: SiteLocale, ca
         '@type': 'ListItem',
         position: 3,
         name: category.label,
-        item: absoluteUrl(localizedPath),
+        item: absoluteUrl(getBlogCategoryPath(resolvedLocale, category.slug)),
       },
+      ...(page > 1 ? [{
+        '@type': 'ListItem',
+        position: 4,
+        name: resolvedLocale === 'zh' ? `第 ${page} 页` : `Page ${page}`,
+        item: absoluteUrl(localizedPath),
+      }] : []),
     ],
   };
 }
