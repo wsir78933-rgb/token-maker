@@ -273,7 +273,7 @@ const DND_DEATH_KNIGHT_UPDATED_AT = '2026-07-22';
 const DND_MACE_UPDATED_AT = '2026-05-12';
 const DND_RANGER_SPELLS_UPDATED_AT = '2026-07-07';
 const DND_RANGER_UPDATED_AT = '2026-09-09';
-const DND_CAMPAIGNS_UPDATED_AT = '2026-09-11';
+const DND_CAMPAIGNS_UPDATED_AT = '2026-09-24';
 const DND_RAPIER_UPDATED_AT = '2026-07-08';
 const DND_BLESS_UPDATED_AT = '2026-07-09';
 const DND_SHORTSWORD_UPDATED_AT = '2026-07-10';
@@ -5406,32 +5406,37 @@ const dndRangerArticleZh: BlogPost = {
 
 const dndCampaignsArticle: BlogPost = {
   slug: 'dnd-campaigns',
-  title: 'Pick a Premade DnD Campaign by Matching the Product to Your Table',
-  seoTitle: 'DnD Campaigns: Match Official Products to Your Table',
+  title: 'New DM? Compare DnD Campaigns by Player Count, Level, and Rules',
+  seoTitle: 'New DM? Compare DnD Campaigns by Player Count, Level, and Rules',
   metaDescription:
-    'Shortlist official D&D campaigns with five questions: who is DMing, horror, level band, 2014 book vs 2024 Greyhawk, and same party vs drop-in. Not a ranking.',
+    'Choose a first published adventure by checking official beginner wording, player counts, starting levels, and rules labels, with missing facts left to confirm.',
   excerpt:
-    'Pick a premade D&D campaign by matching the product to the table, not by copying a numbered “best” list.',
-  publishedAt: DND_CAMPAIGNS_UPDATED_AT,
+    'For a new Dungeon Master or beginner table choosing among published DnD campaigns, start with the official beginner wording, compare your player count and starting level, and read the rules label alongside the stated compatibility.',
+  publishedAt: '2026-09-11',
   updatedAt: DND_CAMPAIGNS_UPDATED_AT,
   readTime: '12 min read',
   coverLabel: 'Campaign Guide',
+  coverImage: '/blog/covers/en/dnd-campaigns.webp',
+  coverAlt:
+    'A new Dungeon Master at a wooden table comparing three different adventure books, respectively featuring a snowy mountain, a mine lantern, and a broken obelisk',
   bodyHtml: dndCampaignsArticleHtml,
   relatedSlugs: ['dnd-meaning', 'players-handbook-dnd-5e', 'dnd-classes-explained'],
 };
 
 const dndCampaignsArticleZh: BlogPost = {
   slug: 'dnd-campaigns',
-  title: '选下一部 DND 模组：按地下城主经验、气氛和规则年版对照官方现成书',
-  seoTitle: 'DND模组怎么选：按气氛、等级带和规则年版挑官方现成书',
+  title: 'DND入门模组：第一次带朋友，从哪部开始？',
+  seoTitle: 'DND入门模组：第一次带朋友，从哪部开始？',
   metaDescription:
-    '对照官方现成冒险和组织赛，不是排行。先看地下城主熟不熟、气氛、2014 还是 2024、等级跨度，以及能不能接受恐怖；官方页没写完成小时就不编。凡达林三本怎么分、哥特丛林城市巨人各对哪本，以及已跑矿坑或只要单场时先别买。',
+    '比较《冰塔峰之龙》《失落矿坑》和《破碎方尖碑》，按新 DM 适用说明、可用资料和目标等级选定第一部冒险；人数或资料条件尚未确认时，明确下一步该核对什么。',
   excerpt:
-    '选下一部 DND 模组，按这五件事筛：地下城主熟不熟、桌想要什么气氛、规则用 2014 年五版还是 2024、备团能扛多重、以及能不能接受恐怖。',
-  publishedAt: DND_CAMPAIGNS_UPDATED_AT,
+    '第一次带朋友玩 D&D，选 DND入门模组可以先看三件事：有没有针对新地下城主（DM）的说明、你能否使用完整资料、希望这部冒险把角色带到哪一级。',
+  publishedAt: '2026-09-11',
   updatedAt: DND_CAMPAIGNS_UPDATED_AT,
   readTime: '9 分钟阅读',
   coverLabel: '战役选型',
+  coverImage: '/blog/covers/en/dnd-campaigns.webp',
+  coverAlt: '一位新地下城主在木桌前比较三本不同的冒险书，分别带有雪山、矿洞灯和断裂方尖碑',
   bodyHtml: dndCampaignsArticleHtmlZh,
   relatedSlugs: ['dnd-meaning', 'players-handbook-dnd-5e', 'dnd-classes-explained'],
 };

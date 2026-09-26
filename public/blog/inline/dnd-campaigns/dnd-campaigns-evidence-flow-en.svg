@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1220" viewBox="0 0 1240 1220" role="img" aria-labelledby="evidence-title evidence-description">
+  <title id="evidence-title">Match the reader's brief to an official product field</title>
+  <desc id="evidence-description">A selection aid, not a ranking. Each row connects a reader input, an official field, and an editorial action. Both products explicitly address new players and new Dungeon Masters and display Fifth Edition labels. Icespire states one to five players, a level-1 start, and levels 1 to 7. Phandelver states levels 1 to 12; its player count and separate starting instruction remain not stated. A separate note records Phandelver's statement that fifth-edition content remains playable and that the 5.5e revisions are designed to be fully compatible with it. This compatibility statement is distinct from either product's exact label and from the group's rules choice.</desc>
+  <metadata>Official sources: https://marketplace.dndbeyond.com/adventures/SRC-00041 ; https://marketplace.dndbeyond.com/adventures/phandelver-and-below?pid=SRC-00113</metadata>
+  <defs>
+    <marker id="evidence-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9" fill="none" stroke="#6b7f8c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <g id="evidence-row-arrows" fill="none" stroke="#6b7f8c" stroke-width="2" marker-end="url(#evidence-arrow)">
+      <path d="M 306 0 H 382"/>
+      <path d="M 766 0 H 848"/>
+    </g>
+  </defs>
+  <rect width="1240" height="1220" fill="#faf9f5"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#172e3c">
+    <text x="40" y="57" font-size="32" font-weight="700">From your table's brief to a supported choice</text>
+    <text x="40" y="92" font-size="20" fill="#4d626f">Read across a row. A missing field stays open for a separate check.</text>
+    <g font-size="17" font-weight="700" letter-spacing="1.3" fill="#4d626f">
+      <text x="58" y="135">READER INPUT</text>
+      <text x="410" y="135">OFFICIAL FIELD</text>
+      <text x="878" y="135">EDITORIAL ACTION</text>
+    </g>
+
+    <rect x="32" y="156" width="1176" height="394" rx="14" fill="#ffffff" stroke="#c9d4db" stroke-width="1.5"/>
+    <path d="M 46 156 H 1194 Q 1208 156 1208 170 V 220 H 32 V 170 Q 32 156 46 156 Z" fill="#eaf0f4"/>
+    <text x="58" y="197" font-size="25" font-weight="700">Dragon of Icespire Peak / Essentials Kit</text>
+    <g stroke="#e2e8ec" stroke-width="1">
+      <path d="M 58 271 H 1180 M 58 321 H 1180 M 58 371 H 1180 M 58 421 H 1180 M 58 471 H 1180"/>
+    </g>
+    <g font-size="21">
+      <text x="58" y="253">New players</text>
+      <text x="410" y="253">Resource for new players</text>
+      <text x="878" y="253">Audience matches</text>
+      <use href="#evidence-row-arrows" transform="translate(0 246)"/>
+
+      <text x="58" y="303">New DM</text>
+      <text x="410" y="303">Resource for new DMs</text>
+      <text x="878" y="303">Audience matches</text>
+      <use href="#evidence-row-arrows" transform="translate(0 296)"/>
+
+      <text x="58" y="353">Player count</text>
+      <text x="410" y="353">One to five players</text>
+      <text x="878" y="353">Compare your count</text>
+      <use href="#evidence-row-arrows" transform="translate(0 346)"/>
+
+      <text x="58" y="403">Starting level</text>
+      <text x="410" y="403">Level 1</text>
+      <text x="878" y="403">Compare your start</text>
+      <use href="#evidence-row-arrows" transform="translate(0 396)"/>
+
+      <text x="58" y="453">Level band</text>
+      <text x="410" y="453">Levels 1–7</text>
+      <text x="878" y="453">Compare intended range</text>
+      <use href="#evidence-row-arrows" transform="translate(0 446)"/>
+
+      <text x="58" y="503">Rules label</text>
+      <text x="410" y="503">Fifth Edition</text>
+      <text x="878" y="503">Group chooses rules</text>
+      <use href="#evidence-row-arrows" transform="translate(0 496)"/>
+    </g>
+
+    <rect x="32" y="576" width="1176" height="394" rx="14" fill="#ffffff" stroke="#c9d4db" stroke-width="1.5"/>
+    <path d="M 46 576 H 1194 Q 1208 576 1208 590 V 640 H 32 V 590 Q 32 576 46 576 Z" fill="#eaf0f4"/>
+    <text x="58" y="617" font-size="25" font-weight="700">Phandelver and Below: The Shattered Obelisk</text>
+    <g stroke="#e2e8ec" stroke-width="1">
+      <path d="M 58 691 H 1180 M 58 741 H 1180 M 58 791 H 1180 M 58 841 H 1180 M 58 891 H 1180"/>
+    </g>
+    <g font-size="21">
+      <text x="58" y="673">New players</text>
+      <text x="410" y="673">Addresses new players</text>
+      <text x="878" y="673">Audience matches</text>
+      <use href="#evidence-row-arrows" transform="translate(0 666)"/>
+
+      <text x="58" y="723">New DM</text>
+      <text x="410" y="723">Addresses new DMs</text>
+      <text x="878" y="723">Audience matches</text>
+      <use href="#evidence-row-arrows" transform="translate(0 716)"/>
+
+      <text x="58" y="773">Player count</text>
+      <rect x="398" y="749" width="151" height="34" rx="5" fill="#fff0d2"/>
+      <text x="410" y="773" fill="#704f15">not stated</text>
+      <text x="878" y="773" fill="#704f15">Check this field</text>
+      <use href="#evidence-row-arrows" transform="translate(0 766)"/>
+
+      <text x="58" y="823">Starting level</text>
+      <rect x="398" y="799" width="151" height="34" rx="5" fill="#fff0d2"/>
+      <text x="410" y="823" fill="#704f15">not stated</text>
+      <text x="878" y="823" fill="#704f15">Check this field</text>
+      <use href="#evidence-row-arrows" transform="translate(0 816)"/>
+
+      <text x="58" y="873">Level band</text>
+      <text x="410" y="873">Levels 1–12</text>
+      <text x="878" y="873">Compare intended range</text>
+      <use href="#evidence-row-arrows" transform="translate(0 866)"/>
+
+      <text x="58" y="923">Rules label</text>
+      <text x="410" y="923">Fifth Edition</text>
+      <text x="878" y="923">Group chooses rules</text>
+      <use href="#evidence-row-arrows" transform="translate(0 916)"/>
+    </g>
+    <rect x="32" y="992" width="1176" height="142" rx="14" fill="#eaf0f4" stroke="#c9d4db" stroke-width="1.5"/>
+    <text x="56" y="1027" font-size="22" font-weight="700">Compatibility statement: separate from the product labels</text>
+    <text x="56" y="1060" font-size="20">Phandelver's “5.5e and BEYOND!”: fifth-edition content remains playable;</text>
+    <text x="56" y="1090" font-size="20">the 5.5e revisions are designed to be fully compatible with it.</text>
+    <text x="56" y="1119" font-size="19" fill="#4d626f">Choose the group's rules, then check any specific use still unanswered.</text>
+    <text x="40" y="1170" font-size="20">A level band and an explicit starting instruction are separate fields.</text>
+    <text x="40" y="1203" font-size="18" fill="#4d626f">Sources: official Essentials Kit and Phandelver and Below descriptions. No scores or ranking.</text>
+  </g>
+</svg>

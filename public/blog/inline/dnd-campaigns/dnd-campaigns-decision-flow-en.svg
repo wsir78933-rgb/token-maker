@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1400" viewBox="0 0 1240 1400" role="img" aria-labelledby="decision-title decision-description">
+  <title id="decision-title">First-campaign choices and concrete checks</title>
+  <desc id="decision-description">An action flow for hypothetical table briefs, not a ranking. Icespire matches a new-DM and new-player audience, one to five players, and a level-1 start; its label is Fifth Edition. Both products display Fifth Edition. Phandelver states 5.5e compatibility with fifth-edition content, and the rules article's March 2, 2026 note says both versions remain fully supported and compatible. Rules step 1 is the group's choice of rules. Step 2 asks whether a particular required use, such as a character conversion, still lacks instructions; only an unanswered requirement needs a missing-fact check. Phandelver's required player count is a separate missing-fact check. A start above level 12 has no supported match in Icespire's levels 1 to 7 or Phandelver's levels 1 to 12. The actions are editorial interpretations of the source fields and reader conditions.</desc>
+  <metadata>Official sources: https://marketplace.dndbeyond.com/adventures/SRC-00041 ; https://marketplace.dndbeyond.com/adventures/phandelver-and-below?pid=SRC-00113 ; https://www.dndbeyond.com/posts/1875-updating-your-campaign-to-the-5-5e-d-d-rules (editor's note: March 2, 2026)</metadata>
+  <defs>
+    <marker id="decision-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 1 1 L 10 6 L 1 11" fill="none" stroke="#486271" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="1240" height="1400" fill="#faf9f5"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#172e3c">
+    <text x="40" y="57" font-size="32" font-weight="700">From a table brief to one next action</text>
+    <text x="40" y="94" font-size="20" fill="#4d626f">Editorial examples. Follow the branch whose condition matches your brief.</text>
+    <g font-size="17" font-weight="700" letter-spacing="1.2" fill="#4d626f">
+      <text x="56" y="141">TABLE BRIEF + STATED FACTS</text>
+      <text x="572" y="141">FIELD BEHIND THE ARROW</text>
+      <text x="894" y="141">EDITORIAL ACTION</text>
+    </g>
+
+    <rect x="32" y="163" width="500" height="207" rx="14" fill="#ffffff" stroke="#c9d4db" stroke-width="1.5"/>
+    <text x="56" y="200" font-size="23" font-weight="700">New DM + new players</text>
+    <text x="56" y="233" font-size="21">Level-1 start; one to five players</text>
+    <path d="M 56 249 H 508" stroke="#dce5e9"/>
+    <text x="56" y="279" font-size="20">Icespire states all these conditions.</text>
+    <text x="56" y="312" font-size="20">Level band: 1–7</text>
+    <text x="56" y="345" font-size="20">Rules label: Fifth Edition</text>
+    <g font-size="19" fill="#486271">
+      <text x="572" y="231">Icespire: audience,</text>
+      <text x="572" y="257">start and player count</text>
+    </g>
+    <path d="M 553 277 H 846" fill="none" stroke="#486271" stroke-width="2.5" marker-end="url(#decision-arrow)"/>
+    <rect x="870" y="185" width="338" height="163" rx="14" fill="#e4f1ec" stroke="#538a74" stroke-width="1.5"/>
+    <text x="894" y="225" font-size="25" font-weight="700" fill="#1f5b45">fits stated facts</text>
+    <g font-size="20" fill="#284e40">
+      <text x="894" y="265">Choose a candidate;</text>
+      <text x="894" y="294">use the rules steps</text>
+      <text x="894" y="323">below.</text>
+    </g>
+
+    <rect x="32" y="394" width="500" height="220" rx="14" fill="#ffffff" stroke="#c9d4db" stroke-width="1.5"/>
+    <text x="56" y="433" font-size="23" font-weight="700">Rules step 1: group choice</text>
+    <path d="M 56 453 H 508" stroke="#dce5e9"/>
+    <text x="56" y="485" font-size="20">Both products: Fifth Edition</text>
+    <text x="56" y="517" font-size="20">5.5e compatibility: stated</text>
+    <text x="56" y="549" font-size="20">Both versions supported + compatible</text>
+    <text x="56" y="586" font-size="19" fill="#4d626f">Rules note: March 2, 2026</text>
+    <g font-size="19" fill="#486271">
+      <text x="572" y="476" font-size="18">Phandelver + rules note:</text>
+      <text x="572" y="502">compatibility stated</text>
+    </g>
+    <path d="M 553 522 H 846" fill="none" stroke="#486271" stroke-width="2.5" marker-end="url(#decision-arrow)"/>
+    <rect x="870" y="416" width="338" height="176" rx="14" fill="#eaf0f4" stroke="#6b8797" stroke-width="1.5"/>
+    <text x="894" y="456" font-size="24" font-weight="700">Group rules choice</text>
+    <text x="894" y="497" font-size="20">Agree on 5e or 5.5e.</text>
+    <text x="894" y="526" font-size="20">Already chosen?</text>
+    <text x="894" y="555" font-size="20">Continue to step 2.</text>
+
+    <rect x="32" y="638" width="500" height="220" rx="14" fill="#ffffff" stroke="#c9d4db" stroke-width="1.5"/>
+    <text x="56" y="676" font-size="23" font-weight="700">Rules step 2: a specific use?</text>
+    <path d="M 56 696 H 508" stroke="#dce5e9"/>
+    <text x="56" y="728" font-size="20">Does your brief require instructions</text>
+    <text x="56" y="758" font-size="20">for a particular character conversion?</text>
+    <text x="56" y="797" font-size="20">If yes, check that procedure.</text>
+    <text x="56" y="828" font-size="20">If no, continue with table conditions.</text>
+    <g font-size="18" fill="#486271">
+      <text x="572" y="708">Compatibility statements</text>
+      <text x="572" y="734">do not supply every procedure</text>
+    </g>
+    <path d="M 553 768 H 846" fill="none" stroke="#486271" stroke-width="2.5" marker-end="url(#decision-arrow)"/>
+    <rect x="870" y="656" width="338" height="184" rx="14" fill="#fff0d2" stroke="#b48c45" stroke-width="1.5"/>
+    <text x="894" y="694" font-size="24" font-weight="700" fill="#704f15">needs missing-fact</text>
+    <text x="894" y="723" font-size="24" font-weight="700" fill="#704f15">check</text>
+    <text x="894" y="760" font-size="20" fill="#704f15">Only if required instructions</text>
+    <text x="894" y="789" font-size="20" fill="#704f15">remain unanswered;</text>
+    <text x="894" y="818" font-size="20" fill="#704f15">otherwise continue.</text>
+
+    <rect x="32" y="882" width="500" height="180" rx="14" fill="#ffffff" stroke="#c9d4db" stroke-width="1.5"/>
+    <text x="56" y="922" font-size="23" font-weight="700">Phandelver: fixed player count</text>
+    <path d="M 56 942 H 508" stroke="#dce5e9"/>
+    <text x="56" y="976" font-size="20">New DMs + players; Fifth Edition</text>
+    <text x="56" y="1013" font-size="20" fill="#704f15">Player count: not stated</text>
+    <g font-size="19" fill="#486271">
+      <text x="572" y="939">Phandelver: audience</text>
+      <text x="572" y="965">and label; count not stated</text>
+    </g>
+    <path d="M 553 986 H 846" fill="none" stroke="#486271" stroke-width="2.5" marker-end="url(#decision-arrow)"/>
+    <rect x="870" y="893" width="338" height="158" rx="14" fill="#fff0d2" stroke="#b48c45" stroke-width="1.5"/>
+    <text x="894" y="933" font-size="24" font-weight="700" fill="#704f15">needs missing-fact</text>
+    <text x="894" y="962" font-size="24" font-weight="700" fill="#704f15">check</text>
+    <text x="894" y="1002" font-size="20" fill="#704f15">Confirm your required</text>
+    <text x="894" y="1031" font-size="20" fill="#704f15">player count.</text>
+
+    <rect x="32" y="1086" width="500" height="180" rx="14" fill="#ffffff" stroke="#c9d4db" stroke-width="1.5"/>
+    <text x="56" y="1125" font-size="23" font-weight="700">Required start above level 12</text>
+    <path d="M 56 1145 H 508" stroke="#dce5e9"/>
+    <text x="56" y="1180" font-size="21">Icespire: levels 1–7</text>
+    <text x="56" y="1217" font-size="21">Phandelver: levels 1–12</text>
+    <g font-size="19" fill="#486271">
+      <text x="572" y="1145">Both stated</text>
+      <text x="572" y="1171">level bands</text>
+    </g>
+    <path d="M 553 1191 H 846" fill="none" stroke="#486271" stroke-width="2.5" marker-end="url(#decision-arrow)"/>
+    <rect x="870" y="1097" width="338" height="158" rx="14" fill="#f6e8e3" stroke="#b17a67" stroke-width="1.5"/>
+    <text x="894" y="1140" font-size="24" font-weight="700" fill="#813f2a">no supported match</text>
+    <text x="894" y="1183" font-size="20" fill="#713e2e">Neither stated range</text>
+    <text x="894" y="1212" font-size="20" fill="#713e2e">supports this starting level.</text>
+    <text x="40" y="1310" font-size="20">A group decision and a missing product fact require different next actions.</text>
+    <text x="40" y="1344" font-size="18" fill="#4d626f">Sources: official Essentials Kit and Phandelver and Below descriptions;</text>
+    <text x="40" y="1375" font-size="18" fill="#4d626f">D&amp;D Beyond rules-transition article, March 2, 2026 editor's note.</text>
+  </g>
+</svg>

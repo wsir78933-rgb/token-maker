@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="600" viewBox="0 0 1280 600" role="img" aria-labelledby="level-range-title level-range-description" lang="zh-CN">
+  <title id="level-range-title">三部冒险的角色等级范围</title>
+  <desc id="level-range-description">横轴为角色等级一至十二，等距刻度。冰塔峰之龙从一级到七级，凡戴尔的失落矿坑从一级到五级，凡戴尔之下：破碎方尖碑从一级到十二级。三行分别表示独立冒险，不要求先玩旧矿坑再玩新书，色条不代表时间或难度。</desc>
+  <metadata>
+    Dragon of Icespire Peak: https://marketplace.dndbeyond.com/adventures/SRC-00041
+    Lost Mine of Phandelver: https://www.dndbeyond.com/posts/1558-guide-running-the-1st-chapter-of-phandelver-and
+    Phandelver and Below: The Shattered Obelisk: https://marketplace.dndbeyond.com/adventures/phandelver-and-below?pid=SRC-00113
+  </metadata>
+  <rect width="1280" height="600" rx="16" fill="#FAFAF7"/>
+  <g font-family="'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" fill="#202D38">
+    <text x="40" y="57" font-size="30" font-weight="700">三部冒险的角色等级范围</text>
+    <text x="40" y="94" font-size="19" fill="#536371">相同起点，不同终点；每行对应一部独立冒险</text>
+
+    <g stroke="#DFE4E7" stroke-width="1">
+      <path d="M500 146V478 M560 146V478 M620 146V478 M680 146V478 M740 146V478 M800 146V478 M860 146V478 M920 146V478 M980 146V478 M1040 146V478 M1100 146V478 M1160 146V478"/>
+    </g>
+    <path d="M500 146V478H1160" fill="none" stroke="#7A8995" stroke-width="2"/>
+
+    <g>
+      <text x="40" y="205" font-size="23" font-weight="600">《冰塔峰之龙》</text>
+      <text x="40" y="235" font-size="18" fill="#536371">Dragon of Icespire Peak</text>
+      <rect x="500" y="190" width="360" height="38" fill="#176B5B"/>
+      <circle cx="500" cy="209" r="5" fill="#FAFAF7" stroke="#176B5B" stroke-width="3"/>
+      <circle cx="860" cy="209" r="5" fill="#FAFAF7" stroke="#176B5B" stroke-width="3"/>
+      <text x="860" y="178" text-anchor="middle" font-size="21" font-weight="700" fill="#176B5B">7</text>
+    </g>
+
+    <g>
+      <text x="40" y="316" font-size="23" font-weight="600">《凡戴尔的失落矿坑》</text>
+      <text x="40" y="346" font-size="18" fill="#536371">Lost Mine of Phandelver</text>
+      <rect x="500" y="301" width="240" height="38" fill="#245C9A"/>
+      <circle cx="500" cy="320" r="5" fill="#FAFAF7" stroke="#245C9A" stroke-width="3"/>
+      <circle cx="740" cy="320" r="5" fill="#FAFAF7" stroke="#245C9A" stroke-width="3"/>
+      <text x="740" y="289" text-anchor="middle" font-size="21" font-weight="700" fill="#245C9A">5</text>
+    </g>
+
+    <g>
+      <text x="40" y="416" font-size="23" font-weight="600">《凡戴尔之下：破碎方尖碑》</text>
+      <text x="40" y="446" font-size="18" fill="#536371">Phandelver and Below:</text>
+      <text x="40" y="471" font-size="18" fill="#536371">The Shattered Obelisk</text>
+      <rect x="500" y="412" width="660" height="38" fill="#834A8E"/>
+      <circle cx="500" cy="431" r="5" fill="#FAFAF7" stroke="#834A8E" stroke-width="3"/>
+      <circle cx="1160" cy="431" r="5" fill="#FAFAF7" stroke="#834A8E" stroke-width="3"/>
+      <text x="1160" y="400" text-anchor="middle" font-size="21" font-weight="700" fill="#834A8E">12</text>
+    </g>
+
+    <g text-anchor="middle" font-size="19" fill="#354757">
+      <text x="500" y="508">1</text>
+      <text x="560" y="508">2</text>
+      <text x="620" y="508">3</text>
+      <text x="680" y="508">4</text>
+      <text x="740" y="508">5</text>
+      <text x="800" y="508">6</text>
+      <text x="860" y="508">7</text>
+      <text x="920" y="508">8</text>
+      <text x="980" y="508">9</text>
+      <text x="1040" y="508">10</text>
+      <text x="1100" y="508">11</text>
+      <text x="1160" y="508">12</text>
+      <text x="830" y="544" font-size="20">角色等级</text>
+    </g>
+    <text x="40" y="574" font-size="18" fill="#536371">色条表示等级范围，不表示游玩时间或难度。</text>
+  </g>
+</svg>

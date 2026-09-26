@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 
 import {
@@ -12,28 +12,38 @@ import {
 } from './index';
 
 const DND_CAMPAIGNS_SLUG = 'dnd-campaigns';
+const COVER_PATH = '/blog/covers/en/dnd-campaigns.webp';
+const ENGLISH_COVER_ALT =
+  'A new Dungeon Master at a wooden table comparing three different adventure books, respectively featuring a snowy mountain, a mine lantern, and a broken obelisk';
+const CHINESE_COVER_ALT = '一位新地下城主在木桌前比较三本不同的冒险书，分别带有雪山、矿洞灯和断裂方尖碑';
 
 describe('dnd campaigns blog post', () => {
-  test('publishes the bilingual official-product chooser without cover or FAQ', () => {
+  test('publishes the bilingual official-product chooser with cover and without FAQ', () => {
     const englishPost = getBlogPost('en', DND_CAMPAIGNS_SLUG);
     const chinesePost = getBlogPost('zh', DND_CAMPAIGNS_SLUG);
 
     expect(englishPost).toBeDefined();
     expect(englishPost?.slug).toBe(DND_CAMPAIGNS_SLUG);
-    expect(englishPost?.updatedAt).toBe('2026-09-11');
-    expect(englishPost?.bodyHtml).toContain('This page is a decision guide. It is not a ranking.');
+    expect(englishPost?.title).toBe('New DM? Compare DnD Campaigns by Player Count, Level, and Rules');
+    expect(englishPost?.publishedAt).toBe('2026-09-11');
+    expect(englishPost?.updatedAt).toBe('2026-09-24');
+    expect(englishPost?.bodyHtml).toContain('Choose a candidate when those facts fit your table; keep any requirement the page doesn\'t establish open for verification.');
     expect(englishPost?.bodyHtml).not.toContain('data-video-id=');
     expect(englishPost?.bodyHtml).not.toContain('<iframe');
-    expect(englishPost?.coverImage).toBeUndefined();
+    expect(englishPost?.coverImage).toBe(COVER_PATH);
+    expect(englishPost?.coverAlt).toBe(ENGLISH_COVER_ALT);
     expect(englishPost?.faqItems).toBeUndefined();
 
     expect(chinesePost).toBeDefined();
     expect(chinesePost?.slug).toBe(DND_CAMPAIGNS_SLUG);
-    expect(chinesePost?.updatedAt).toBe('2026-09-11');
-    expect(chinesePost?.bodyHtml).toContain('本稿是对照选型，不是排行。');
+    expect(chinesePost?.title).toBe('DND入门模组：第一次带朋友，从哪部开始？');
+    expect(chinesePost?.publishedAt).toBe('2026-09-11');
+    expect(chinesePost?.updatedAt).toBe('2026-09-24');
+    expect(chinesePost?.bodyHtml).toContain('没有明确偏好时，优先考察适用对象和玩家人数都对得上的候选；已有可用资料或明确等级目标时，再让这些条件决定取舍。');
     expect(chinesePost?.bodyHtml).not.toContain('data-video-id=');
     expect(chinesePost?.bodyHtml).not.toContain('<iframe');
-    expect(chinesePost?.coverImage).toBeUndefined();
+    expect(chinesePost?.coverImage).toBe(COVER_PATH);
+    expect(chinesePost?.coverAlt).toBe(CHINESE_COVER_ALT);
     expect(chinesePost?.faqItems).toBeUndefined();
   });
 
@@ -41,26 +51,28 @@ describe('dnd campaigns blog post', () => {
     expect(getBlogPostPath('en', DND_CAMPAIGNS_SLUG)).toBe('/blog/dnd-campaigns');
     expect(getBlogPostPath('zh', DND_CAMPAIGNS_SLUG)).toBe('/zh/blog/dnd-campaigns');
     expect(createBlogPostMetadata('en', DND_CAMPAIGNS_SLUG)).toMatchObject({
-      title: 'DnD Campaigns: Match Official Products to Your Table',
+      title: 'New DM? Compare DnD Campaigns by Player Count, Level, and Rules',
       description:
-        'Shortlist official D&D campaigns with five questions: who is DMing, horror, level band, 2014 book vs 2024 Greyhawk, and same party vs drop-in. Not a ranking.',
+        'Choose a first published adventure by checking official beginner wording, player counts, starting levels, and rules labels, with missing facts left to confirm.',
       alternates: { canonical: '/blog/dnd-campaigns' },
     });
     expect(createBlogPostMetadata('zh', DND_CAMPAIGNS_SLUG)).toMatchObject({
-      title: 'DND模组怎么选：按气氛、等级带和规则年版挑官方现成书',
+      title: 'DND入门模组：第一次带朋友，从哪部开始？',
       description:
-        '对照官方现成冒险和组织赛，不是排行。先看地下城主熟不熟、气氛、2014 还是 2024、等级跨度，以及能不能接受恐怖；官方页没写完成小时就不编。凡达林三本怎么分、哥特丛林城市巨人各对哪本，以及已跑矿坑或只要单场时先别买。',
+        '比较《冰塔峰之龙》《失落矿坑》和《破碎方尖碑》，按新 DM 适用说明、可用资料和目标等级选定第一部冒险；人数或资料条件尚未确认时，明确下一步该核对什么。',
       alternates: { canonical: '/zh/blog/dnd-campaigns' },
     });
     expect(buildBlogPostStructuredData('en', DND_CAMPAIGNS_SLUG)).toMatchObject({
       '@type': 'Article',
       datePublished: '2026-09-11',
-      dateModified: '2026-09-11',
+      dateModified: '2026-09-24',
       inLanguage: 'en-US',
       url: 'https://www.tokenmaker.one/blog/dnd-campaigns',
     });
     expect(buildBlogPostStructuredData('zh', DND_CAMPAIGNS_SLUG)).toMatchObject({
       '@type': 'Article',
+      datePublished: '2026-09-11',
+      dateModified: '2026-09-24',
       inLanguage: 'zh-CN',
       url: 'https://www.tokenmaker.one/zh/blog/dnd-campaigns',
     });
@@ -79,5 +91,6 @@ describe('dnd campaigns blog post', () => {
     expect(getBlogPostsForPage('zh', 7)).toHaveLength(2);
     expect(getBlogPostsForPage('en', 1)[0]?.slug).toBe('dnd-kobold');
     expect(getBlogPostsForPage('zh', 1)[0]?.slug).toBe('dnd-kobold');
+    expect(existsSync(`public${COVER_PATH}`)).toBe(true);
   });
 });
