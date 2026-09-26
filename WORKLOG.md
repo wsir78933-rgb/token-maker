@@ -1,5 +1,53 @@
 # WORKLOG
 
+## 交接单 · 2026-09-24 07:28 CST · Grok CLI
+
+### 本次目标
+
+公开页顶栏做成一行：左边标志，中间普通链接加博客分类菜单，右边语言切换和打开编辑器。颜色保持深色和金色。按钮不要胶囊，形状按用户贴的 Navbar5：小圆角文字、圆角矩形按钮。
+
+### 已完成
+
+- 工作区干净，没有未提交改动。这些改动已经在 `2d532d4`（提交说明是 `1`）。`main` 与 `origin/main` 一致。本交接单还不在该提交里。
+- 首页、内页、纹章制作器共用 `ContentSiteTopbar`。编辑器工作区的 `src/components/layout/Header.tsx` 没有改。
+- 导航数据在 `src/lib/content-site-navigation.ts`。博客分类是 4 个：`characters`、`monsters`、`spells`、`rules-and-prep`。没有 `token-vtt`。
+- 桌面链接是 `rounded-md`、高 40px、圆角 8px，没有全大写。语言切换和主按钮是 `rounded-lg`、高 40px、圆角 10px。颜色用现有站点变量。
+- 手机抽屉里有博客总目录：英文 `/blog`，中文 `/zh/blog`。四个分类在「Blog categories」或「博客分类」下面。
+- `.site-topbar` 的 `backdrop-filter: none` 写在 `@media (max-width: 1023px)`。1280px 宽仍是 `blur(8px)`。
+- 博客页上 Blog 按钮字色是 `rgb(241, 212, 146)`，底是 `rgba(215, 180, 106, 0.12)`。骰子页上 Blog 不是这个激活色。
+- Ego Lite 已从 0.5.1.11 升到 0.5.1.13。升级后 `ego-browser nodejs -e 'console.log("ego-browser ready")'` 没有再提示有更新。
+- 已跑过并退出码为 0：`pnpm exec vitest run src/components/site/ContentSiteTopbar.test.tsx src/components/site/HomeSeoContent.test.tsx src/components/coat-of-arms/CoatOfArmsMaker.test.tsx src/app/site-performance-styles.test.ts`（4 个文件，137 项）。其中顶栏测试 12 项也单独通过过。
+- 交接时 `http://localhost:40001/` 返回 200。1280px 看过首页、`/zh`、`/dice-roller-dnd`、`/coat-of-arms-maker`。390px 从英文抽屉点进 `/blog`，中文抽屉有 `/zh/blog`。900px 遮罩高度铺满视口，点外面能关掉抽屉。
+
+### 做到一半
+
+- 英文顶栏在 1024px 会不会折成两行：审查提过，这次没有在 1024px 打开页面，也没有改。
+- 博客菜单没有方向键。Tab 离开后会不会还开着，这次没有单独测。
+- 用户发的参考图是白底黑按钮。已经确定只改形状，不改成白底。
+- 页面正文的胶囊按钮故意留着。首页大按钮仍用 `site-cta-primary`。
+
+### 下一步
+
+- 无必须接着改的导航代码。除非用户要白底黑按钮，或要处理 1024px 折行和键盘方向键。
+- 不要把这份 `WORKLOG.md` 提交进去，除非用户另说。不要 push。
+
+### 踩过的坑
+
+- 用 `127.0.0.1:40001` 打开时，Next 会拦住开发脚本，菜单点了没反应。要用 `http://localhost:40001`。
+- `.site-topbar` 有 `backdrop-filter` 时，里面的 `position: fixed` 抽屉相对顶栏而不是整页。只在 767px 以下关掉磨砂时，768px 到 1023px 点外面关不掉。
+- 博客按钮同时写 `text-[var(--site-ink-strong)]` 和 `text-[var(--site-accent-strong)]` 时，样式表里普通字色更靠后，金色不生效。激活时只能留一个文字颜色类。
+- 胶囊来自全局 `.site-nav-pill`、`.site-switch-chip`、`.site-cta-primary`。顶栏不能改这三条全局规则，正文还在用。
+- 用户贴的 Navbar5 依赖 `@/components/ui/sheet`。仓库里没有这个文件。手机抽屉是手写的，没有新装包。
+- 博客分类在代码里是 4 个。不要把 `token-vtt` 加回去。
+
+### 怎么验证
+
+```bash
+pnpm exec vitest run src/components/site/ContentSiteTopbar.test.tsx src/lib/content-site-navigation.test.ts src/app/site-performance-styles.test.ts
+```
+
+开发服务器若已停，在项目根运行 `pnpm dev`，用 `http://localhost:40001` 打开。看首页、`/zh`、`/dice-roller-dnd`、`/coat-of-arms-maker`：中间链接不是圆形胶囊，右边两个是圆角矩形。悬停 Blog，分类是两列。把窗口拉到约 390px，打开菜单，点「Blog」应到 `/blog`；中文点「博客」应到 `/zh/blog`。约 900px 时打开菜单，点页面空白处应关上。
+
 ## 交接单 · 2026-09-23 22:09 CST · Grok CLI
 
 ### 本次目标
