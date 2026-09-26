@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { renderToken, drawCheckerboard } from '@/lib/renderer/pipeline';
 import { useI18n } from '@/lib/i18n';
@@ -18,6 +18,9 @@ const MAX_WHEEL_DELTA = 100;
 const WHEEL_ZOOM_SENSITIVITY = 0.0015;
 const PIXELS_PER_WHEEL_LINE = 16;
 const BATCH_PREVIEW_BORDER_INSET_RATIO = 0.008;
+const KEYBOARD_PAN_STEP = 4;
+const KEYBOARD_PAN_LARGE_STEP = 20;
+const KEYBOARD_SCALE_STEP = 0.1;
 
 interface CanvasProps {
   previewMode?: 'default' | 'batch';
@@ -43,8 +46,16 @@ function getNextImageScaleForWheel(currentImageScale: number, wheelDeltaY: numbe
   return Math.max(MIN_IMAGE_SCALE, Math.min(MAX_IMAGE_SCALE, nextImageScale));
 }
 
+function getNextImageScaleForKeyboard(currentImageScale: number, direction: 1 | -1) {
+  return Math.max(
+    MIN_IMAGE_SCALE,
+    Math.min(MAX_IMAGE_SCALE, currentImageScale + direction * KEYBOARD_SCALE_STEP),
+  );
+}
+
 export function Canvas({ previewMode = 'default' }: CanvasProps) {
   const { t } = useI18n();
+  const canvasHelpId = useId();
   const isBatchPreview = previewMode === 'batch';
   const {
     imageUrl,
@@ -352,6 +363,54 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
     }
   };
 
+  const handleCanvasKeyDown = (event: React.KeyboardEvent<HTMLCanvasElement>) => {
+    if (!imageElement || event.ctrlKey || event.metaKey || event.altKey) {
+      return;
+    }
+
+    const panStep = event.shiftKey ? KEYBOARD_PAN_LARGE_STEP : KEYBOARD_PAN_STEP;
+    let nextOffset: { x: number; y: number } | null = null;
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        nextOffset = { x: imageOffsetX - panStep, y: imageOffsetY };
+        break;
+      case 'ArrowRight':
+        nextOffset = { x: imageOffsetX + panStep, y: imageOffsetY };
+        break;
+      case 'ArrowUp':
+        nextOffset = { x: imageOffsetX, y: imageOffsetY - panStep };
+        break;
+      case 'ArrowDown':
+        nextOffset = { x: imageOffsetX, y: imageOffsetY + panStep };
+        break;
+      case '+':
+      case '=':
+        event.preventDefault();
+        flushPendingImageScaleCommitRef.current();
+        imageScaleRef.current = getNextImageScaleForKeyboard(imageScaleRef.current, 1);
+        setImageScale(imageScaleRef.current);
+        return;
+      case '-':
+      case '_':
+        event.preventDefault();
+        flushPendingImageScaleCommitRef.current();
+        imageScaleRef.current = getNextImageScaleForKeyboard(imageScaleRef.current, -1);
+        setImageScale(imageScaleRef.current);
+        return;
+      default:
+        return;
+    }
+
+    if (nextOffset === null) {
+      return;
+    }
+
+    event.preventDefault();
+    flushPendingImageOffset();
+    setImageOffset(nextOffset.x, nextOffset.y);
+  };
+
   // ======== 交互事件 ========
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!imageElement) return;
@@ -404,12 +463,22 @@ export function Canvas({ previewMode = 'default' }: CanvasProps) {
             {/* 主渲染层（带交互） */}
             <canvas
               ref={canvasRef}
-              className="absolute inset-0 cursor-move touch-none w-full h-full"
+              role="application"
+              tabIndex={0}
+              aria-label={t('editorCanvasLabel')}
+              aria-describedby={canvasHelpId}
+              aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Shift+ArrowLeft Shift+ArrowRight Shift+ArrowUp Shift+ArrowDown + -"
+              className="absolute inset-0 h-full w-full cursor-move touch-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
+              onKeyDown={handleCanvasKeyDown}
             />
+
+            <span id={canvasHelpId} className="sr-only">
+              {t('editorCanvasHelp')}
+            </span>
             
             {/* 文字交互层 */}
             <TextCanvasOverlay previewScale={previewCssSize / EDITOR_REFERENCE_SIZE || 1} />

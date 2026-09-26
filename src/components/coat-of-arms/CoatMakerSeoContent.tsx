@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowUp } from 'lucide-react';
 
 import { CoatMakerFaqAccordion } from '@/components/coat-of-arms/CoatMakerFaqAccordion';
@@ -22,11 +23,14 @@ function renderUseCaseCards(useCases: CoatMakerSeoCopy['useCases'], locale: Site
         key={useCase.title}
         className="rounded-2xl border border-white/10 bg-black/25 p-4 transition-[border-color,transform,background-color] duration-200 hover:-translate-y-0.5 hover:border-[#d7b46a]/40 hover:bg-black/40 sm:p-5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       >
-        <img
+        <Image
           src={useCase.imageSrc}
           alt={useCase.imageAlt}
           width={1254}
           height={1254}
+          sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
+          loading="lazy"
+          decoding="async"
           className="mb-4 aspect-square h-auto w-full rounded-xl object-cover ring-1 ring-white/10"
         />
         <h3 className="text-base font-semibold leading-6 text-stone-50 text-balance">{useCase.title}</h3>

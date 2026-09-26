@@ -228,14 +228,14 @@ describe('CoatMakerPageHeading', () => {
     expect(actionLinks.every((actionLink) => actionLink.getAttribute('aria-label') === actionLink.textContent)).toBe(true);
 
     expect(heroImages).toHaveLength(3);
-    expect(heroImages.map((heroImage) => heroImage.getAttribute('src'))).toEqual([
+    expect(heroImages.map((heroImage) => new URL(heroImage.getAttribute('src')!, 'http://localhost').searchParams.get('url'))).toEqual([
       '/coat-of-arms-maker/hero/hero-crimson-lion.webp',
       '/coat-of-arms-maker/hero/hero-azure-stag.webp',
       '/coat-of-arms-maker/hero/hero-verdant-phoenix.webp',
     ]);
     expect(heroImages.map((heroImage) => heroImage.getAttribute('alt'))).toEqual(expectedImageAlts);
-    expect(heroImages.every((heroImage) => heroImage.getAttribute('width') === '800')).toBe(true);
-    expect(heroImages.every((heroImage) => heroImage.getAttribute('height') === '1000')).toBe(true);
+    expect(heroImages.every((heroImage) => heroImage.getAttribute('width') === '1120')).toBe(true);
+    expect(heroImages.every((heroImage) => heroImage.getAttribute('height') === '1400')).toBe(true);
     expect(heroImages.map((heroImage) => heroImage.getAttribute('loading'))).toEqual(['lazy', 'eager', 'lazy']);
     expect(heroImages.every((heroImage) => heroImage.getAttribute('decoding') === 'async')).toBe(true);
     expect(headingRoot.querySelectorAll('.coat-maker-page-heading-card')).toHaveLength(3);

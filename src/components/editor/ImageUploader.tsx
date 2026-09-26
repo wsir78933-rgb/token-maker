@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { UploadCloud, Image as ImageIcon } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useBatchStore } from '@/lib/store/batch-store';
@@ -74,6 +74,7 @@ export function ImageUploader() {
   const { t, locale } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragDepthRef = useRef(0);
+  const promptId = useId();
   const [isDragActive, setIsDragActive] = useState(false);
 
   const handleFiles = (files: File[]) => {
@@ -180,23 +181,37 @@ export function ImageUploader() {
     e.target.value = '';
   };
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Enter' && e.key !== ' ') {
+      return;
+    }
+
+    e.preventDefault();
+    fileInputRef.current?.click();
+  };
+
   return (
     <div
       onDragEnter={onDragEnter}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
-      className={`flex h-full min-h-0 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors ${
+      role="button"
+      tabIndex={0}
+      aria-labelledby={promptId}
+      className={`flex h-full min-h-0 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset ${
         isDragActive
           ? 'border-primary bg-primary/10 shadow-[0_0_0_1px_color-mix(in_oklab,var(--color-primary)_45%,transparent)]'
           : 'border-border bg-muted/20 hover:bg-muted/40'
       }`}
       onClick={() => fileInputRef.current?.click()}
+      onKeyDown={onKeyDown}
     >
       <input
         type="file"
         ref={fileInputRef}
         onChange={onChange}
+        onClick={(event) => event.stopPropagation()}
         accept={SUPPORTED_IMAGE_ACCEPT}
         className="hidden"
         multiple
@@ -206,7 +221,7 @@ export function ImageUploader() {
           <UploadCloud className="h-6 w-6 sm:h-8 sm:w-8" />
         </div>
         <div>
-          <h3 className="mb-1 text-base font-medium text-foreground sm:text-lg">
+          <h3 id={promptId} className="mb-1 text-base font-medium text-foreground sm:text-lg">
             {t('dropHint')}
           </h3>
           <p className="text-xs sm:text-sm">

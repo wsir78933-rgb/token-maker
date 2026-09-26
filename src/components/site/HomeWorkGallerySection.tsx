@@ -117,6 +117,8 @@ export function HomeWorkGallerySection({ locale }: { locale: SiteLocale }) {
                   width={work.width}
                   height={work.height}
                   sizes={galleryImageSizes}
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover object-center"
                 />
                 <a

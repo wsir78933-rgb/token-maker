@@ -163,6 +163,50 @@ describe('ContentSiteTopbar', () => {
     expect(within(dialog).getByRole('button', { name: 'Blog categories' })).toBeDefined();
   });
 
+  it('moves focus into the mobile drawer and restores it after Escape', () => {
+    renderContentSiteTopbar();
+
+    const openButton = screen.getByRole('button', { name: 'Open navigation' });
+    fireEvent.click(openButton);
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog.contains(document.activeElement)).toBe(true);
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Open navigation' }));
+  });
+
+  it('wraps Tab focus within the mobile drawer', () => {
+    renderContentSiteTopbar();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open navigation' }));
+    const dialog = screen.getByRole('dialog');
+    const focusableElements = dialog.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+    const firstFocusableElement = focusableElements[0];
+    const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+    lastFocusableElement.focus();
+    fireEvent.keyDown(lastFocusableElement, { key: 'Tab' });
+    expect(document.activeElement).toBe(firstFocusableElement);
+
+    fireEvent.keyDown(firstFocusableElement, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(lastFocusableElement);
+  });
+
+  it('opens the desktop feature menu and focuses the first item with ArrowDown', () => {
+    renderContentSiteTopbar();
+
+    const blogLink = screen.getByRole('link', { name: 'Blog' });
+    blogLink.focus();
+    fireEvent.keyDown(blogLink, { key: 'ArrowDown' });
+
+    expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Characters' }));
+  });
+
   it('gives the Editor link rounded-md and not a pill', () => {
     renderContentSiteTopbar();
 

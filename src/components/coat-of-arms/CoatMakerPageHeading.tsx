@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import Image from 'next/image';
 
 import { getCoatMakerSeoCopy } from '@/components/coat-of-arms/coat-maker-seo-copy';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
@@ -150,11 +151,12 @@ function CoatMakerHeroImageFan({ images, accessibleLabel }: { images: readonly C
     <div className="coat-maker-page-heading-fan" role="group" aria-label={accessibleLabel}>
       {images.map((image, imageIndex) => (
         <div key={image.src} className={getCoatMakerHeroCardClassName(imageIndex)}>
-          <img
+          <Image
             src={image.src}
             alt={image.alt}
-            width={800}
-            height={1000}
+            width={1120}
+            height={1400}
+            sizes="(min-width: 1024px) 20vw, (min-width: 768px) 24vw, 30vw"
             loading={imageIndex === 1 ? 'eager' : 'lazy'}
             decoding="async"
           />

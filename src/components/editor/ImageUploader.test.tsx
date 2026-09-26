@@ -63,6 +63,18 @@ describe('ImageUploader', () => {
     expect(input.className).toContain('hidden');
   });
 
+  it('opens the file input from the keyboard', () => {
+    render(<ImageUploader />);
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const inputClick = vi.spyOn(input, 'click');
+    const dropZone = screen.getAllByRole('button', { name: 'dropHint' })[0];
+
+    fireEvent.keyDown(dropZone, { key: 'Enter' });
+    fireEvent.keyDown(dropZone, { key: ' ' });
+
+    expect(inputClick).toHaveBeenCalledTimes(2);
+  });
+
   it('calls loadEditorImageFile when a single image is selected via input', () => {
     render(<ImageUploader />);
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;

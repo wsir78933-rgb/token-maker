@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
+import { getSeoImageUrl } from '@/lib/site-seo';
 import { getLanguageAlternates, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
 import type { BlogCategorySlug, BlogPost } from './types';
@@ -129,6 +130,7 @@ const BLOG_POST_CATEGORY_BY_SLUG: Record<string, BlogCategorySlug> = {
   'dnd-shatter-5e': 'spells',
   'dnd-wizard-spells': 'spells',
   'dnd-schools-of-magic': 'spells',
+  'dnd-warlock-spells': 'spells',
   'dnd-character-sheet': 'rules-and-prep',
   'dnd-armor-guide': 'rules-and-prep',
   'dnd-constitution-guide': 'rules-and-prep',
@@ -234,6 +236,7 @@ export function createBlogCategoryMetadata(locale: SiteLocale, categorySlug: str
   const siteConfig = getSiteConfig(locale);
   const path = getBlogCategoryPathSegment(category.slug);
   const localizedPath = getBlogCategoryPath(locale, category.slug);
+  const socialImage = getSeoImageUrl(locale, 'home');
 
   return {
     metadataBase: new URL(getSiteUrl()),
@@ -250,11 +253,13 @@ export function createBlogCategoryMetadata(locale: SiteLocale, categorySlug: str
       siteName: siteConfig.name,
       type: 'website',
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
+      images: [{ url: socialImage, alt: category.label }],
     },
     twitter: {
       card: 'summary_large_image',
       title: `${category.label} | ${siteConfig.name}`,
       description: category.description,
+      images: [socialImage],
     },
   };
 }

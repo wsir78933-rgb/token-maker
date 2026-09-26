@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import {
   UploadCloud,
   X,
@@ -53,6 +53,7 @@ export function BatchPanel() {
   const downloadZip = useBatchStore((state) => state.downloadZip);
   const { exportSize, getEditorSnapshot, firstImagePreviewOptions } = useBatchEditorBridge();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dropZoneLabelId = useId();
   const editorLoadedItemIdRef = useRef<string | null>(null);
   const editorLoadingItemIdRef = useRef<string | null>(null);
   const dragDepthRef = useRef(0);
@@ -224,6 +225,17 @@ export function BatchPanel() {
     event.target.value = '';
   };
 
+  const onEmptyDropZoneKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') {
+      return;
+    }
+
+    event.preventDefault();
+    if (!isMutationLocked) {
+      fileInputRef.current?.click();
+    }
+  };
+
   const handleCompleteCurrent = async () => {
     if (!selectedItemId || editorLoadedItemIdRef.current !== selectedItemId) {
       return;
@@ -320,7 +332,12 @@ export function BatchPanel() {
             onClick={() => {
               if (!isMutationLocked) fileInputRef.current?.click();
             }}
-            className={`flex w-full max-w-xl flex-col items-center justify-center rounded-2xl border-2 border-dashed p-12 transition-all ${
+            onKeyDown={onEmptyDropZoneKeyDown}
+            role="button"
+            tabIndex={isMutationLocked ? -1 : 0}
+            aria-disabled={isMutationLocked}
+            aria-labelledby={dropZoneLabelId}
+            className={`flex w-full max-w-xl flex-col items-center justify-center rounded-2xl border-2 border-dashed p-12 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset ${
               isMutationLocked ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
             } ${
               isDragActive
@@ -332,7 +349,9 @@ export function BatchPanel() {
               type="file"
               ref={fileInputRef}
               onChange={onFileInputChange}
+              onClick={(event) => event.stopPropagation()}
               accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+              aria-label={t('batchOrClick')}
               className="hidden"
               multiple
               disabled={isMutationLocked}
@@ -340,7 +359,7 @@ export function BatchPanel() {
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
               <UploadCloud className="h-8 w-8" />
             </div>
-            <h3 className="mt-4 text-lg font-medium text-foreground">{t('batchDropHint')}</h3>
+            <h3 id={dropZoneLabelId} className="mt-4 text-lg font-medium text-foreground">{t('batchDropHint')}</h3>
             <p className="mt-1 text-sm text-muted-foreground">{t('batchOrClick')}</p>
             <p className="mt-4 text-xs text-muted-foreground/60">{t('batchStartHint')}</p>
           </div>
@@ -508,7 +527,13 @@ function BatchItemCard({
         {displayUrl ? (
           // Blob/object URLs are generated locally and cannot be optimized by next/image.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={displayUrl} alt={item.fileName} className="h-full w-full object-cover" />
+          <img
+            src={displayUrl}
+            alt={item.fileName}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
         ) : (
           <span className="flex h-full w-full items-center justify-center bg-muted/20">
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground/50" />

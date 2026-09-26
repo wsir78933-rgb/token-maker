@@ -25,6 +25,8 @@ const zh = {
   controlPanel: '控制面板',
   imageSettings: '图片设置',
   imageScale: '缩放',
+  editorCanvasLabel: 'Token 图片画布',
+  editorCanvasHelp: '使用方向键移动图片，按住 Shift 可进行更大步进，使用加号和减号缩放。',
   resetPosition: '重置位置',
   clearWorkspace: '清空工作区',
 

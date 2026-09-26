@@ -271,6 +271,13 @@ export const DND_SCHOOLS_OF_MAGIC_EIGHT_SCHOOLS_ZH_IMAGE_PATH =
   '/blog/inline/dnd-schools-of-magic/eight-schools-peer-grid-zh.webp';
 export const DND_SCHOOLS_OF_MAGIC_CASTERS_ZH_IMAGE_PATH =
   '/blog/inline/dnd-schools-of-magic/spellcasters-zh.webp';
+export const DND_WARLOCK_SPELLS_ELDRITCH_BLAST_IMAGE_PATH =
+  '/blog/inline/dnd-warlock-spells/eldritch-blast.webp';
+export const DND_WARLOCK_SPELLS_ARCANE_FLIGHT_IMAGE_PATH =
+  '/blog/inline/dnd-warlock-spells/arcane-flight.webp';
+export const DND_WARLOCK_SPELLS_FOCUSED_CONCENTRATION_IMAGE_PATH =
+  '/blog/inline/dnd-warlock-spells/focused-concentration.webp';
+export const DND_WARLOCK_SPELLS_COVER_PATH = DND_WARLOCK_SPELLS_ELDRITCH_BLAST_IMAGE_PATH;
 export const DND_HALFLING_VERSION_LOCK_IMAGE_PATH =
   '/blog/inline/dnd-halfling/dnd-halfling-version-lock.webp';
 export const DND_HALFLING_CROP_DECISION_IMAGE_PATH =

@@ -176,7 +176,7 @@ describe('greenhouse stardew blog post', () => {
         description: ENGLISH_DESCRIPTION,
       },
       twitter: {
-        card: 'summary',
+        card: 'summary_large_image',
       },
     });
     expect(createBlogPostMetadata('zh', SLUG)).toMatchObject({
@@ -195,7 +195,7 @@ describe('greenhouse stardew blog post', () => {
         description: CHINESE_DESCRIPTION,
       },
       twitter: {
-        card: 'summary',
+        card: 'summary_large_image',
       },
     });
 

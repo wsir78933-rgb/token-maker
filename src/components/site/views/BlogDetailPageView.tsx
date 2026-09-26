@@ -20,6 +20,7 @@ import {
 import { getSiteUiCopy } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
+import { getBlogCoverDimensions } from '@/lib/blog/cover-dimensions';
 
 const copyByLocale = {
   en: {
@@ -193,15 +194,21 @@ export function BlogDetailPageView({
 
                 {post.coverImage ? (
                   <div className="relative overflow-hidden rounded-[34px] border border-white/10 bg-black/25">
-                    <Image
-                      src={post.coverImage}
-                      alt={post.coverAlt ?? post.title}
-                      width={2770}
-                      height={1504}
-                      preload
-                      sizes="(min-width: 1024px) 50vw, 100vw"
-                      className="h-auto w-full object-cover"
-                    />
+                    {(() => {
+                      const coverDimensions = getBlogCoverDimensions(post.coverImage);
+
+                      return (
+                        <Image
+                          src={post.coverImage}
+                          alt={post.coverAlt ?? post.title}
+                          width={coverDimensions.width}
+                          height={coverDimensions.height}
+                          preload
+                          sizes="(min-width: 1024px) 50vw, 100vw"
+                          className="h-auto w-full object-cover"
+                        />
+                      );
+                    })()}
                   </div>
                 ) : null}
               </div>

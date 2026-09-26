@@ -15,7 +15,7 @@ const CATEGORY_PRIORITY = 0.65;
 const EXPECTED_CATEGORY_LAST_MODIFIED: Record<BlogCategorySlug, string> = {
   characters: '2026-09-20',
   monsters: '2026-09-16',
-  spells: '2026-09-16',
+  spells: '2026-09-26',
   'rules-and-prep': '2026-09-13',
 };
 

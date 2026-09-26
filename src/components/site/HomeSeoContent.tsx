@@ -24,7 +24,11 @@ function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
       visualEyebrow: 'Export goal',
       visualTitle: 'Export once, drop it into your VTT',
       visualBody: 'The target is simple: clean transparent edges, readable portraits at battle-map scale, and token files that need less resizing after they land in Roll20, Foundry, or Owlbear.',
-      imageAlt: 'Finished fantasy character token made in Token Maker',
+      imageAlts: [
+        'Radiant paladin token with a gold circular border',
+        'Dusk rogue token with a dark ring border',
+        'Frost ranger token with an icy blue border',
+      ],
       prompts: [
         {
           title: 'Export issue',
@@ -54,7 +58,11 @@ function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
       visualEyebrow: '导出目标',
       visualTitle: '导出后少修一次图',
       visualBody: '目标很直接：透明 PNG 边缘干净，头像在战斗地图缩放下看得清，导入 Roll20、Foundry 或 Owlbear 后不用反复裁切和改尺寸。',
-      imageAlt: '使用 Token Maker 制作完成的奇幻角色 Token',
+      imageAlts: [
+        '带金色圆形边框的圣武士 Token',
+        '带深色环形边框的潜行者 Token',
+        '带冰蓝色边框的寒霜游侠 Token',
+      ],
       prompts: [
         {
           title: '导出有问题',
@@ -146,25 +154,31 @@ function HomeFeedbackSection({ locale }: { locale: SiteLocale }) {
               <div className="relative mt-6 h-40 sm:h-48">
                 <Image
                   src="/showcase/radiant-paladin-circle.webp"
-                  alt={copy.imageAlt}
+                  alt={copy.imageAlts[0]}
                   width={260}
                   height={260}
+                  loading="lazy"
+                  decoding="async"
                   sizes="(min-width: 1024px) 180px, 42vw"
                   className="absolute left-0 top-4 h-32 w-32 rounded-full border border-white/12 bg-black/35 object-contain p-2 shadow-[0_22px_54px_-24px_rgba(0,0,0,0.9)] sm:h-40 sm:w-40"
                 />
                 <Image
                   src="/showcase/dusk-rogue-ring.webp"
-                  alt={copy.imageAlt}
+                  alt={copy.imageAlts[1]}
                   width={260}
                   height={260}
+                  loading="lazy"
+                  decoding="async"
                   sizes="(min-width: 1024px) 180px, 42vw"
                   className="absolute left-1/2 top-0 h-36 w-36 -translate-x-1/2 rounded-full border border-[#d7b46a]/28 bg-black/40 object-contain p-2 shadow-[0_28px_70px_-24px_rgba(215,180,106,0.42)] sm:h-44 sm:w-44"
                 />
                 <Image
                   src="/showcase/frost-ranger-ice.webp"
-                  alt={copy.imageAlt}
+                  alt={copy.imageAlts[2]}
                   width={260}
                   height={260}
+                  loading="lazy"
+                  decoding="async"
                   sizes="(min-width: 1024px) 180px, 42vw"
                   className="absolute right-0 top-8 h-28 w-28 rounded-full border border-[#8fb7ff]/24 bg-black/35 object-contain p-2 shadow-[0_22px_54px_-24px_rgba(143,183,255,0.34)] sm:h-36 sm:w-36"
                 />

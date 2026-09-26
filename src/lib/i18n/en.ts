@@ -23,6 +23,8 @@ const en = {
   controlPanel: 'Controls',
   imageSettings: 'Image',
   imageScale: 'Scale',
+  editorCanvasLabel: 'Token image canvas',
+  editorCanvasHelp: 'Use the arrow keys to move the image. Hold Shift for larger steps. Use plus and minus to zoom.',
   resetPosition: 'Reset Position',
   clearWorkspace: 'Clear Workspace',
 

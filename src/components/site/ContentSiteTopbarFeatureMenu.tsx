@@ -1,6 +1,13 @@
 'use client';
 
-import { useEffect, useId, useRef, useState, type JSX } from 'react';
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type JSX,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from 'react';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import type { ContentSiteTopbarFeature } from '@/lib/content-site-navigation';
@@ -39,6 +46,7 @@ function listenForFeatureMenuDismiss(
   menuRootRef: { current: HTMLDivElement | null },
   closeTimerIdRef: CloseTimerIdRef,
   closeMenu: () => void,
+  restoreFocusOnEscape: () => void,
 ) {
   function closeIfPointerDownOutside(event: PointerEvent) {
     const menuRoot = menuRootRef.current;
@@ -59,6 +67,7 @@ function listenForFeatureMenuDismiss(
       return;
     }
 
+    restoreFocusOnEscape();
     closeMenu();
   }
 
@@ -100,6 +109,34 @@ function featureMenuTriggerClassName(menuIsOpen: boolean, featureMenuIsActive: b
   return triggerClassNames.join(' ');
 }
 
+function getNextFeatureMenuItemIndex(
+  currentIndex: number,
+  itemCount: number,
+  key: ReactKeyboardEvent<HTMLElement>['key'],
+): number | null {
+  if (itemCount === 0) {
+    return null;
+  }
+
+  if (key === 'Home') {
+    return 0;
+  }
+
+  if (key === 'End') {
+    return itemCount - 1;
+  }
+
+  if (key === 'ArrowDown') {
+    return (currentIndex + 1) % itemCount;
+  }
+
+  if (key === 'ArrowUp') {
+    return (currentIndex - 1 + itemCount) % itemCount;
+  }
+
+  return null;
+}
+
 export function ContentSiteTopbarFeatureMenu(props: {
   featureMenuLabel: string;
   featureMenuHref: string;
@@ -116,7 +153,11 @@ export function ContentSiteTopbarFeatureMenu(props: {
   } = props;
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const menuRootRef = useRef<HTMLDivElement>(null);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+  const menuItemRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const closeTimerIdRef = useRef<number | null>(null);
+  const pendingMenuItemFocusRef = useRef<number | null>(null);
+  const restoreFocusOnCloseRef = useRef(false);
   const panelId = useId();
 
   function openMenu() {
@@ -129,6 +170,11 @@ export function ContentSiteTopbarFeatureMenu(props: {
     setMenuIsOpen(false);
   }
 
+  function closeMenuAndRestoreFocus() {
+    restoreFocusOnCloseRef.current = true;
+    closeMenu();
+  }
+
   function toggleMenu() {
     clearFeatureMenuCloseTimer(closeTimerIdRef);
     setMenuIsOpen((currentlyOpen) => !currentlyOpen);
@@ -138,12 +184,74 @@ export function ContentSiteTopbarFeatureMenu(props: {
     scheduleFeatureMenuClose(closeTimerIdRef, closeMenu);
   }
 
+  function focusMenuItem(index: number) {
+    if (features.length === 0) {
+      return;
+    }
+
+    pendingMenuItemFocusRef.current = Math.max(0, Math.min(index, features.length - 1));
+    setMenuIsOpen(true);
+  }
+
+  function handleTriggerKeyDown(event: ReactKeyboardEvent<HTMLElement>) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeMenuAndRestoreFocus();
+      return;
+    }
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      focusMenuItem(0);
+      return;
+    }
+
+    if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+      event.preventDefault();
+      focusMenuItem(features.length - 1);
+    }
+  }
+
+  function handleMenuItemKeyDown(event: ReactKeyboardEvent<HTMLAnchorElement>, itemIndex: number) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeMenuAndRestoreFocus();
+      return;
+    }
+
+    const nextItemIndex = getNextFeatureMenuItemIndex(itemIndex, features.length, event.key);
+    if (nextItemIndex === null) {
+      return;
+    }
+
+    event.preventDefault();
+    menuItemRefs.current[nextItemIndex]?.focus();
+  }
+
   useEffect(() => {
     return listenForFeatureMenuDismiss(menuRootRef, closeTimerIdRef, () => {
       clearFeatureMenuCloseTimer(closeTimerIdRef);
       setMenuIsOpen(false);
+    }, () => {
+      restoreFocusOnCloseRef.current = true;
     });
   }, []);
+
+  useEffect(() => {
+    if (menuIsOpen) {
+      const pendingMenuItemFocus = pendingMenuItemFocusRef.current;
+      if (pendingMenuItemFocus !== null) {
+        menuItemRefs.current[pendingMenuItemFocus]?.focus();
+        pendingMenuItemFocusRef.current = null;
+      }
+      return;
+    }
+
+    if (restoreFocusOnCloseRef.current) {
+      restoreFocusOnCloseRef.current = false;
+      menuToggleRef.current?.focus();
+    }
+  }, [menuIsOpen]);
 
   return (
     <div
@@ -157,18 +265,22 @@ export function ContentSiteTopbarFeatureMenu(props: {
         <Link
           href={featureMenuHref}
           prefetch={false}
+          aria-controls={panelId}
           aria-expanded={menuIsOpen}
           aria-haspopup="menu"
           onFocus={openMenu}
+          onKeyDown={handleTriggerKeyDown}
         >
           {featureMenuLabel}
         </Link>
         <button
           type="button"
+          ref={menuToggleRef}
           aria-controls={panelId}
           aria-expanded={menuIsOpen}
           aria-label={featureMenuAccessibleName}
           onClick={toggleMenu}
+          onKeyDown={handleTriggerKeyDown}
         >
           <ChevronDown aria-hidden="true" className={featureMenuChevronClassName(menuIsOpen)} />
         </button>
@@ -186,8 +298,13 @@ export function ContentSiteTopbarFeatureMenu(props: {
               href={feature.href}
               prefetch={false}
               role="menuitem"
+              tabIndex={menuIsOpen ? 0 : -1}
               className="site-nav-dropdown__link site-nav-dropdown__link--feature"
               aria-label={feature.title}
+              ref={(element) => {
+                menuItemRefs.current[features.indexOf(feature)] = element;
+              }}
+              onKeyDown={(event) => handleMenuItemKeyDown(event, features.indexOf(feature))}
             >
               <span>{feature.title}</span>
               <span className="site-nav-dropdown__description">{feature.description}</span>

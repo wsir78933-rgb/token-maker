@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
+import { getSeoImageUrl } from '@/lib/site-seo';
 import { LOCALES, getLanguageAlternates, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import {
   getBlogCategoryPath as buildBlogCategoryPath,
@@ -211,6 +212,7 @@ export function createBlogHubMetadata(locale: SiteLocale, page = 1): Metadata {
   const localizedPath = getLocalizedPath(locale, path);
   const title = getBlogHubTitle(locale, page);
   const description = getBlogHubPageDescription(locale, page);
+  const socialImage = getSeoImageUrl(locale, 'home');
 
   return {
     metadataBase: new URL(getSiteUrl()),
@@ -227,11 +229,13 @@ export function createBlogHubMetadata(locale: SiteLocale, page = 1): Metadata {
       siteName: siteConfig.name,
       type: 'website',
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
+      images: [{ url: socialImage, alt: title }],
     },
     twitter: {
       card: 'summary_large_image',
       title: `${title} | ${siteConfig.name}`,
       description,
+      images: [socialImage],
     },
     robots: BLOG_PLACEHOLDER_MODE ? { index: false, follow: false } : undefined,
   };
@@ -252,6 +256,7 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
   const socialTitle = isChineseSchoolsPost ? metadataTitle : `${metadataTitle} | ${siteConfig.name}`;
   const description = post.metaDescription ?? post.excerpt;
   const absoluteCoverImage = post.coverImage ? absoluteUrl(post.coverImage) : undefined;
+  const socialImage = absoluteCoverImage ?? getSeoImageUrl(locale, 'home');
   const publishedTime = post.publishedAt ?? post.updatedAt;
 
   return {
@@ -271,15 +276,13 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
       publishedTime,
       modifiedTime: post.updatedAt,
-      images: absoluteCoverImage
-        ? [{ url: absoluteCoverImage, alt: post.coverAlt ?? post.title }]
-        : undefined,
+      images: [{ url: socialImage, alt: post.coverAlt ?? post.title }],
     },
     twitter: {
-      card: absoluteCoverImage ? 'summary_large_image' : 'summary',
+      card: 'summary_large_image',
       title: socialTitle,
       description,
-      images: absoluteCoverImage ? [absoluteCoverImage] : undefined,
+      images: [socialImage],
     },
     robots: BLOG_PLACEHOLDER_MODE ? { index: false, follow: false } : undefined,
   };

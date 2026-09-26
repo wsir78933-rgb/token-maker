@@ -1,6 +1,15 @@
 'use client';
 
-import { useCallback, useEffect, useId, useState, type JSX, type MouseEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type JSX,
+  type MouseEvent,
+  type RefObject,
+} from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import {
@@ -24,25 +33,62 @@ function closeMenuIfAnchorClicked(event: MouseEvent<HTMLElement>, closeMenu: () 
   closeMenu();
 }
 
-function useCloseMenuOnEscape(menuOpen: boolean, closeMenu: () => void) {
+const MOBILE_MENU_FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+function getMobileMenuFocusableElements(panel: HTMLElement): HTMLElement[] {
+  return Array.from(panel.querySelectorAll<HTMLElement>(MOBILE_MENU_FOCUSABLE_SELECTOR));
+}
+
+function useCloseMenuOnEscape(
+  menuOpen: boolean,
+  closeMenu: () => void,
+  panelRef: RefObject<HTMLDivElement | null>,
+) {
   useEffect(() => {
     if (!menuOpen) {
       return;
     }
 
     function closeOnEscape(event: KeyboardEvent) {
-      if (event.key !== 'Escape') {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu();
         return;
       }
 
-      closeMenu();
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const panel = panelRef.current;
+      if (!panel) {
+        return;
+      }
+
+      const focusableElements = getMobileMenuFocusableElements(panel);
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const firstFocusableElement = focusableElements[0];
+      const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstFocusableElement) {
+        event.preventDefault();
+        lastFocusableElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastFocusableElement) {
+        event.preventDefault();
+        firstFocusableElement.focus();
+      }
     }
 
     document.addEventListener('keydown', closeOnEscape);
     return () => {
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, [menuOpen, closeMenu]);
+  }, [menuOpen, closeMenu, panelRef]);
 }
 
 function MobileMenuTrigger(props: {
@@ -50,17 +96,19 @@ function MobileMenuTrigger(props: {
   panelId: string;
   openMenuLabel: string;
   closeMenuLabel: string;
+  triggerRef: RefObject<HTMLButtonElement | null>;
   onToggle: () => void;
 }) {
-  const { menuOpen, panelId, openMenuLabel, closeMenuLabel, onToggle } = props;
+  const { menuOpen, panelId, openMenuLabel, closeMenuLabel, triggerRef, onToggle } = props;
 
   return (
     <button
       type="button"
+      ref={triggerRef}
       className="inline-flex size-10 items-center justify-center rounded-lg border border-[var(--site-border-soft)] bg-transparent text-[var(--site-ink-strong)] lg:hidden"
       aria-label={menuOpen ? closeMenuLabel : openMenuLabel}
       aria-expanded={menuOpen}
-      aria-controls={menuOpen ? panelId : undefined}
+      aria-controls={panelId}
       onClick={onToggle}
     >
       <Menu aria-hidden="true" />
@@ -175,13 +223,15 @@ function MobileMenuPanel(props: {
   model: ContentSiteTopbarModel;
   brandHref: string;
   brandName: string;
+  panelRef: RefObject<HTMLDivElement | null>;
   onClose: () => void;
 }) {
-  const { panelId, titleId, model, brandHref, brandName, onClose } = props;
+  const { panelId, titleId, model, brandHref, brandName, panelRef, onClose } = props;
 
   return (
     <div
       id={panelId}
+      ref={panelRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
@@ -233,10 +283,29 @@ export function ContentSiteTopbarMobileMenu(props: {
   const [menuOpen, setMenuOpen] = useState(false);
   const panelId = useId();
   const titleId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const wasMenuOpenRef = useRef(false);
   const closeMenu = useCallback(() => {
     setMenuOpen(false);
   }, []);
-  useCloseMenuOnEscape(menuOpen, closeMenu);
+  useCloseMenuOnEscape(menuOpen, closeMenu, panelRef);
+
+  useEffect(() => {
+    if (menuOpen) {
+      wasMenuOpenRef.current = true;
+      const firstFocusableElement = panelRef.current
+        ? getMobileMenuFocusableElements(panelRef.current)[0]
+        : undefined;
+      firstFocusableElement?.focus();
+      return;
+    }
+
+    if (wasMenuOpenRef.current) {
+      wasMenuOpenRef.current = false;
+      triggerRef.current?.focus();
+    }
+  }, [menuOpen]);
 
   return (
     <>
@@ -245,6 +314,7 @@ export function ContentSiteTopbarMobileMenu(props: {
         panelId={panelId}
         openMenuLabel={model.openMenuLabel}
         closeMenuLabel={model.closeMenuLabel}
+        triggerRef={triggerRef}
         onToggle={() => setMenuOpen((currentlyOpen) => !currentlyOpen)}
       />
       {menuOpen ? (
@@ -256,6 +326,7 @@ export function ContentSiteTopbarMobileMenu(props: {
             model={model}
             brandHref={brandHref}
             brandName={brandName}
+            panelRef={panelRef}
             onClose={closeMenu}
           />
         </>

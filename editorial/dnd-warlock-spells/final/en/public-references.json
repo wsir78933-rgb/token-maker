@@ -1,5 +1,5 @@
 {
-  "bodyHash": "8157eafe471a40936ed0fc0205eca51222126eacefd5d514c385c73b06710428",
+  "bodyHash": "1eae6c71bdfa52844ba4df0e111f8cdcc366276433a0c2e5dffb3b369beafbbe",
   "items": [
     {
       "id": "warlock-2024",
@@ -72,7 +72,7 @@
       "versionNote": "Public class-list cross-check named in the article's source list.",
       "appliesTo": [
         {
-          "quote": "- [Warlock spell list](https://www.dndbeyond.com/spells/class/7-warlock)",
+          "quote": "| [Warlock spell list](https://www.dndbeyond.com/spells/class/7-warlock) | The public class-list cross-check for eligible Warlock spells. |",
           "occurrence": 1
         }
       ]
@@ -211,4 +211,3 @@
     }
   ]
 }
-

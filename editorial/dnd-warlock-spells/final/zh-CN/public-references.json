@@ -1,97 +1,136 @@
 {
-  "bodyHash": "31df1846c4bc36a50535fc4f0d3e2d2c30468c42c585d60b540f7434cb610e3e",
+  "bodyHash": "34a04c5635fec4a14d44d4492d721225c6e4ebb8bf52171581725ac3d82386fa",
   "items": [
     {
       "id": "warlock-2024",
-      "label": "D&D Beyond 2024 Warlock rules",
+      "label": "D&D Beyond：2024 契术师规则",
       "url": "https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Warlock",
-      "versionNote": "2024 revised rules; Warlock class table, Pact Magic, and prepared-spell rules.",
+      "versionNote": "2024 修订规则；契术师职业表、契术魔法和法术准备规则。",
       "appliesTo": [
-        {"quote": "2014 Legacy 与 2024 修订规则的职业页面不能拼成一套表。", "occurrence": 1},
-        {"quote": "2024 规则把职业表中的基础准备法术数量列成契术师等级对应的数字", "occurrence": 1},
-        {"quote": "Pact Magic 法术位是施放时消耗的资源，所有本职业位保持同一环阶，并在短休或长休后恢复。", "occurrence": 1}
+        {
+          "quote": "2014 旧版与 2024 修订规则的职业页面不能拼成一套表。",
+          "occurrence": 1
+        },
+        {
+          "quote": "2024 规则把职业表中的基础准备法术数量列成契术师等级对应的数字",
+          "occurrence": 1
+        },
+        {
+          "quote": "契术魔法法术位是施放时消耗的资源，所有本职业位保持同一环阶，并在短休或长休后恢复。",
+          "occurrence": 1
+        }
       ]
     },
     {
       "id": "eldritch-blast-2024",
-      "label": "D&D Beyond Eldritch Blast",
+      "label": "D&D Beyond：魔能爆",
       "url": "https://www.dndbeyond.com/spells/2619161-eldritch-blast",
-      "versionNote": "2024 spell entry read for range, beam count, action, and cantrip resource fields.",
+      "versionNote": "2024 法术条目；射程、射线数量、动作和戏法资源。",
       "appliesTo": [
-        {"quote": "Eldritch Blast 是零环戏法，不应从 1级的两项、3级的四项或 5级的六项里扣掉；它使用动作，也不消耗 Pact Magic 法术位。", "occurrence": 1}
+        {
+          "quote": "魔能爆（Eldritch Blast）是零环戏法，不应从 1级的两项、3级的四项或 5级的六项里扣掉；它使用动作，也不消耗契术魔法法术位。",
+          "occurrence": 1
+        }
       ]
     },
     {
       "id": "hex-2024",
-      "label": "D&D Beyond Hex",
+      "label": "D&D Beyond：脆弱诅咒",
       "url": "https://www.dndbeyond.com/spells/2618988-hex",
-      "versionNote": "2024 spell entry read for bonus action, range, concentration, ability-check condition, and upcast duration.",
+      "versionNote": "2024 法术条目；附赠动作、射程、专注、属性检定条件与升环持续时间。",
       "appliesTo": [
-        {"quote": "| Hex | 1环，附赠动作 | 90英尺；选择一个能看见的生物，攻击检定命中该目标时才加伤害 | 专注最多1小时；目标属性的属性检定处于劣势，不是豁免检定 |", "occurrence": 1},
-        {"quote": "Hex 用 2环位施放时，最长专注时间变为 4小时，但每次命中额外的 1d6 不会因为升环而变多", "occurrence": 1}
+        {
+          "quote": "| 脆弱诅咒（Hex） | 1环，附赠动作 | 90英尺；选择一个能看见的生物，攻击检定命中该目标时才加伤害 | 专注最多1小时；目标属性的属性检定处于劣势，不是豁免检定 |",
+          "occurrence": 1
+        },
+        {
+          "quote": "脆弱诅咒用 2环位施放时，最长专注时间变为 4小时，但每次命中额外的 1d6 不会因为升环而变多",
+          "occurrence": 1
+        }
       ]
     },
     {
       "id": "hypnotic-pattern-2024",
-      "label": "D&D Beyond Hypnotic Pattern",
+      "label": "D&D Beyond：催眠图纹",
       "url": "https://www.dndbeyond.com/spells/2619168-hypnotic-pattern",
-      "versionNote": "2024 spell entry read for area, action, saving throw, and concentration conditions.",
+      "versionNote": "2024 法术条目；范围、动作、豁免和专注条件。",
       "appliesTo": [
-        {"quote": "Hypnotic Pattern 是 3环、动作、120英尺、30英尺立方范围的专注法术。", "occurrence": 1}
+        {
+          "quote": "催眠图纹是 3环、动作、120英尺、30英尺立方范围的专注法术。",
+          "occurrence": 1
+        }
       ]
     },
     {
       "id": "misty-step-2024",
-      "label": "D&D Beyond Misty Step",
+      "label": "D&D Beyond：迷踪步",
       "url": "https://www.dndbeyond.com/spells/2619133-misty-step",
-      "versionNote": "2024 spell entry read for bonus action, visible unoccupied destination, range, and concentration fields.",
+      "versionNote": "2024 法术条目；附赠动作、可见且未被占据的落点、射程和专注要求。",
       "appliesTo": [
-        {"quote": "Misty Step 是 2环附赠动作，传送到最多 30英尺内能看见、没有被占据的位置，不需要专注。", "occurrence": 1}
+        {
+          "quote": "迷踪步是 2环附赠动作，传送到最多 30英尺内能看见、没有被占据的位置，不需要专注。",
+          "occurrence": 1
+        }
       ]
     },
     {
       "id": "counterspell-2024",
-      "label": "D&D Beyond Counterspell",
+      "label": "D&D Beyond：法术反制",
       "url": "https://www.dndbeyond.com/spells/2619072-counterspell",
-      "versionNote": "2024 spell entry read for reaction trigger, range, Constitution save, and slot cost.",
+      "versionNote": "2024 法术条目；反应触发、射程、体质豁免和法术位消耗。",
       "appliesTo": [
-        {"quote": "| Counterspell | 3环，反应 | 60英尺内看见生物以语言、姿势或材料成分施法时触发；对方作体质豁免 | 不专注；失败时对方法术无效，但你的法术位仍按施法消耗 |", "occurrence": 1}
+        {
+          "quote": "| 法术反制（Counterspell） | 3环，反应 | 60英尺内看见生物以语言、姿势或材料成分施法时触发；对方作体质豁免 | 不专注；失败时对方法术无效，但你的法术位仍按施法消耗 |",
+          "occurrence": 1
+        }
       ]
     },
     {
       "id": "hellish-rebuke-srd-521",
-      "label": "System Reference Document 5.2.1: Hellish Rebuke",
+      "label": "系统参考文档 5.2.1：炼狱叱喝",
       "url": "https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf#page=140",
-      "versionNote": "SRD 5.2.1, page 140; public attribution is included separately in the handoff requirements.",
+      "versionNote": "SRD 5.2.1，第 140 页；交付要求中另附公开署名。",
       "appliesTo": [
-        {"quote": "Hellish Rebuke 是一个条件明确的反应候选：你必须受到来自 60英尺内、自己能看见的生物造成的伤害", "occurrence": 1}
+        {
+          "quote": "炼狱叱喝是一个条件明确的反应候选：你必须受到来自 60英尺内、自己能看见的生物造成的伤害",
+          "occurrence": 1
+        }
       ]
     },
     {
       "id": "hold-person-srd-521",
-      "label": "System Reference Document 5.2.1: Hold Person",
+      "label": "系统参考文档 5.2.1：人类定身术",
       "url": "https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf#page=141",
-      "versionNote": "SRD 5.2.1, page 141; public attribution is included separately in the handoff requirements.",
+      "versionNote": "SRD 5.2.1，第 141 页；交付要求中另附公开署名。",
       "appliesTo": [
-        {"quote": "Hold Person 是 2环、动作、60英尺、专注最多1分钟的控制法术；目标须是能看见的 Humanoid，并作感知豁免", "occurrence": 1}
+        {
+          "quote": "人类定身术（Hold Person）。人类定身术是 2环、动作、60英尺、专注最多1分钟的控制法术；目标须是能看见的类人生物，并作感知豁免",
+          "occurrence": 1
+        }
       ]
     },
     {
       "id": "concentration-2024",
-      "label": "D&D Beyond 2024 Concentration rules",
+      "label": "D&D Beyond：2024 专注规则",
       "url": "https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary#Concentration",
-      "versionNote": "2024 rules glossary; concentration replacement and damage-save conditions.",
+      "versionNote": "2024 规则术语表；更换专注法术和受伤后的豁免条件。",
       "appliesTo": [
-        {"quote": "专注是最硬的筛选条件。正在维持一个需要专注的法术时，开始施放另一个需要专注的法术，原来的专注会立即结束", "occurrence": 1}
+        {
+          "quote": "专注是最硬的筛选条件。正在维持一个需要专注的法术时，开始施放另一个需要专注的法术，原来的专注会立即结束",
+          "occurrence": 1
+        }
       ]
     },
     {
       "id": "one-slot-per-turn-2024",
-      "label": "D&D Beyond 2024: One Spell with a Spell Slot per Turn",
+      "label": "D&D Beyond：2024 每回合只能用一个法术位施法",
       "url": "https://www.dndbeyond.com/sources/dnd/br-2024/spells#OneSpellwithaSpellSlotperTurn",
-      "versionNote": "2024 spellcasting rule; one spell cast with a spell slot per turn.",
+      "versionNote": "2024 施法规则；同一回合只能消耗一个法术位来施法。",
       "appliesTo": [
-        {"quote": "2024 还有一个回合内的资源限制：同一个回合只能消耗一个法术位来施法，不能把它简化成“每轮只能施放一个法术”。", "occurrence": 1}
+        {
+          "quote": "2024 还有一个回合内的资源限制：同一个回合只能消耗一个法术位来施法，不能把它简化成“每轮只能施放一个法术”。",
+          "occurrence": 1
+        }
       ]
     }
   ]

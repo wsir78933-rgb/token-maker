@@ -125,14 +125,15 @@ describe('blog category configuration', () => {
 });
 
 describe('blog post category assignment', () => {
-  test('covers all 68 unique slugs, keeps en/zh aligned, and leaves greenhouse-stardew uncategorized', () => {
+  test('covers all 69 unique slugs, keeps en/zh aligned, and leaves greenhouse-stardew uncategorized', () => {
     const englishSlugs = postsByLocale.en.map((post) => post.slug);
     const chineseSlugs = postsByLocale.zh.map((post) => post.slug);
 
-    expect(englishSlugs).toHaveLength(68);
-    expect(new Set(englishSlugs).size).toBe(68);
+    expect(englishSlugs).toHaveLength(69);
+    expect(new Set(englishSlugs).size).toBe(69);
     expect(chineseSlugs).toEqual(englishSlugs);
     expect(englishSlugs).toContain('dnd-schools-of-magic');
+    expect(englishSlugs).toContain('dnd-warlock-spells');
     expect(englishSlugs).toContain('best-dnd-classes-for-small-parties');
     expect(englishSlugs).toContain(UNCATEGORIZED_BLOG_POST_SLUG);
 
@@ -152,10 +153,12 @@ describe('blog post category assignment', () => {
     }
 
     const categorizedCount = postsByLocale.en.filter((post) => post.category !== undefined).length;
-    expect(categorizedCount).toBe(67);
+    expect(categorizedCount).toBe(68);
 
     expect(getBlogPost('en', 'dnd-schools-of-magic')?.category).toBe('spells');
     expect(getBlogPost('zh', 'dnd-schools-of-magic')?.category).toBe('spells');
+    expect(getBlogPost('en', 'dnd-warlock-spells')?.category).toBe('spells');
+    expect(getBlogPost('zh', 'dnd-warlock-spells')?.category).toBe('spells');
     expect(getBlogPost('en', UNCATEGORIZED_BLOG_POST_SLUG)?.category).toBeUndefined();
     expect(getBlogPost('zh', UNCATEGORIZED_BLOG_POST_SLUG)?.category).toBeUndefined();
   });

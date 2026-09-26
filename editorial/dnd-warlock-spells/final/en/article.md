@@ -1,6 +1,6 @@
 # DnD Warlock Spells: Six Choices, Two Slots, One Missing Party Job
 
-If you are searching for **dnd warlock spells**, start by writing `2024` at the top of your worksheet. This guide uses a level-5 Warlock as a worked case: six base prepared-spell entries, two level-3 Pact Magic slots, and a party job that still needs coverage. Any spells made always prepared by a feature are separate from those six entries. The result is a conditional six-name list you can check against your table, not a universal ranking of the “best” spells.
+Start a level-5 Warlock worksheet by writing `2024` at the top, then organize your **dnd warlock spells** around six base prepared-spell entries, two level-3 Pact Magic slots, and the party job that still needs coverage. Any spells made always prepared by a feature are separate from those six entries. The result is a conditional six-name list you can check against your table, not a universal ranking of the “best” spells.
 
 The distinction matters because a spell list answers “which names can I prepare?” while Pact Magic answers “what resources can I spend right now?” A good level-5 plan keeps those questions separate, then connects them with the job your next session actually requires.
 
@@ -142,13 +142,23 @@ If any line fails, revise that line instead of adding another spell name. A fini
 
 ## Sources
 
-- [Warlock — D&D Beyond Basic Rules (2024)](https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Warlock)
-- [Warlock — Basic Rules (2014)](https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Warlock)
-- [Spellcasting rules — D&D Beyond Basic Rules (2024)](https://www.dndbeyond.com/sources/dnd/br-2024/spells)
-- [Concentration — D&D Beyond Rules Glossary (2024)](https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary#Concentration)
-- [Warlock spell list](https://www.dndbeyond.com/spells/class/7-warlock)
-- [Eldritch Blast](https://www.dndbeyond.com/spells/2619161-eldritch-blast), [Hex](https://www.dndbeyond.com/spells/2618988-hex), [Hypnotic Pattern](https://www.dndbeyond.com/spells/2619168-hypnotic-pattern), [Misty Step](https://www.dndbeyond.com/spells/2619133-misty-step)
-- [Invisibility](https://www.dndbeyond.com/spells/2619116-invisibility), [Fly](https://www.dndbeyond.com/spells/2618909-fly), [Counterspell](https://www.dndbeyond.com/spells/2619072-counterspell), [Dispel Magic](https://www.dndbeyond.com/spells/2619103-dispel-magic)
+| Source | What to verify |
+| --- | --- |
+| [Warlock — D&D Beyond Basic Rules (2024)](https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Warlock) | Level-5 prepared-spell entries, Pact Magic slots, Magical Cunning, and the one-spell replacement rule. |
+| [Warlock — Basic Rules (2014)](https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Warlock) | The older Spells Known terminology used for the version comparison. |
+| [Spellcasting rules — D&D Beyond Basic Rules (2024)](https://www.dndbeyond.com/sources/dnd/br-2024/spells) | Preparation, slot use, and the one-spell-slot-per-turn limit. |
+| [Concentration — D&D Beyond Rules Glossary (2024)](https://www.dndbeyond.com/sources/dnd/br-2024/rules-glossary#Concentration) | When concentration ends and how the damage save is set. |
+| [Warlock spell list](https://www.dndbeyond.com/spells/class/7-warlock) | The public class-list cross-check for eligible Warlock spells. |
+| [Eldritch Blast](https://www.dndbeyond.com/spells/2619161-eldritch-blast) | Cantrip action, range, beam count, and damage fields. |
+| [Hex](https://www.dndbeyond.com/spells/2618988-hex) | Concentration, bonus-action targeting, ability-check disadvantage, and duration when upcast. |
+| [Hypnotic Pattern](https://www.dndbeyond.com/spells/2619168-hypnotic-pattern) | Area, saving throw, conditions, and concentration limits. |
+| [Misty Step](https://www.dndbeyond.com/spells/2619133-misty-step) | Bonus-action teleport, range, and visible unoccupied destination. |
+| [Invisibility](https://www.dndbeyond.com/spells/2619116-invisibility) | Concentration, attack or spell termination, and extra-target upcast rule. |
+| [Fly](https://www.dndbeyond.com/spells/2618909-fly) | Flying speed, hover, concentration, and target-count upcast rule. |
+| [Counterspell](https://www.dndbeyond.com/spells/2619072-counterspell) | Reaction trigger, range, components, Constitution save, and slot outcome. |
+| [Dispel Magic](https://www.dndbeyond.com/spells/2619103-dispel-magic) | Ongoing-spell timing, range, and higher-level check threshold. |
+
+---
 
 ## 公开署名
 

@@ -284,6 +284,25 @@ describe('Canvas', () => {
     expect(screen.getAllByTestId('text-overlay').length).toBeGreaterThan(0);
   });
 
+  it('exposes keyboard controls for panning and zooming the image', () => {
+    const img = new Image();
+    useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img });
+
+    render(<Canvas />);
+
+    const canvas = screen.getByRole('application', { name: 'editorCanvasLabel' });
+    expect(canvas.getAttribute('tabindex')).toBe('0');
+    expect(canvas.getAttribute('aria-describedby')).not.toBeNull();
+
+    fireEvent.keyDown(canvas, { key: 'ArrowRight' });
+    fireEvent.keyDown(canvas, { key: 'ArrowDown', shiftKey: true });
+    fireEvent.keyDown(canvas, { key: '+' });
+
+    expect(useEditorStore.getState().imageOffsetX).toBe(4);
+    expect(useEditorStore.getState().imageOffsetY).toBe(20);
+    expect(useEditorStore.getState().imageScale).toBeCloseTo(1.1);
+  });
+
   it('displays current scale percentage', () => {
     const img = new Image();
     useEditorStore.setState({ imageUrl: 'blob:test', imageElement: img, imageScale: 1.5 });

@@ -157,7 +157,16 @@ describe('CoatMakerSeoContent', () => {
         )),
         `Missing ${locale} heading: ${useCase.title}`,
       ).toBe(true);
-      expect(visibleUseCaseImages[useCaseIndex]?.getAttribute('src')).toBe(useCase.imageSrc);
+      const visibleUseCaseImage = visibleUseCaseImages[useCaseIndex];
+      if (!visibleUseCaseImage) {
+        throw new Error(`Missing ${locale} use-case image at index ${useCaseIndex}.`);
+      }
+
+      const visibleUseCaseImageSource = visibleUseCaseImage.getAttribute('src');
+      expect(visibleUseCaseImageSource).not.toBeNull();
+      expect(new URL(visibleUseCaseImageSource ?? '', 'http://localhost').searchParams.get('url')).toBe(
+        useCase.imageSrc,
+      );
       expect(visibleUseCaseImages[useCaseIndex]?.getAttribute('alt')).toBe(useCase.imageAlt);
       expect(
         existsSync(resolvePublicAssetFilePath(useCase.imageSrc)),
