@@ -52,6 +52,7 @@ describe('content site topbar model', () => {
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
       { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: false },
       { href: '/armor-creator', label: 'Armor', isActive: false },
+      { href: '/army-formation-creator', label: 'Army formation creator', isActive: false },
       { href: '/contact', label: 'Contact', isActive: false },
     ]);
     expect(model.featureMenuLabel).toBe('Blog');
@@ -82,6 +83,7 @@ describe('content site topbar model', () => {
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
       { href: '/zh/coat-of-arms-maker', label: '纹章制作器', isActive: false },
       { href: '/zh/armor-creator', label: '护甲', isActive: false },
+      { href: '/zh/army-formation-creator', label: '军阵', isActive: false },
       { href: '/zh/contact', label: '联系', isActive: false },
     ]);
     expect(model.featureMenuLabel).toBe('博客');
@@ -111,9 +113,49 @@ describe('content site topbar model', () => {
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
       { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: true },
       { href: '/armor-creator', label: 'Armor', isActive: false },
+      { href: '/army-formation-creator', label: 'Army formation creator', isActive: false },
       { href: '/contact', label: 'Contact', isActive: false },
     ]);
     expect(model.featureMenuIsActive).toBe(false);
+  });
+
+  it('activates only Armor for /armor-creator and keeps Army formation creator inactive', () => {
+    const model = readTopbar('en', '/armor-creator', '/zh/armor-creator');
+
+    expect(model.links).toEqual([
+      { href: '/', label: 'Editor', isActive: false },
+      { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
+      { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: false },
+      { href: '/armor-creator', label: 'Armor', isActive: true },
+      { href: '/army-formation-creator', label: 'Army formation creator', isActive: false },
+      { href: '/contact', label: 'Contact', isActive: false },
+    ]);
+  });
+
+  it('activates only Army formation creator and keeps the armor link', () => {
+    const englishModel = readTopbar('en', '/army-formation-creator', '/zh/army-formation-creator');
+    const chineseModel = readTopbar('zh', '/zh/army-formation-creator', '/army-formation-creator');
+    const nestedModel = readTopbar('en', '/army-formation-creator/saved', '/zh/army-formation-creator/saved');
+    const siblingModel = readTopbar('en', '/army-formation-creator-extra', '/zh');
+
+    expect(englishModel.links).toEqual([
+      { href: '/', label: 'Editor', isActive: false },
+      { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
+      { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: false },
+      { href: '/armor-creator', label: 'Armor', isActive: false },
+      { href: '/army-formation-creator', label: 'Army formation creator', isActive: true },
+      { href: '/contact', label: 'Contact', isActive: false },
+    ]);
+    expect(chineseModel.links).toEqual([
+      { href: '/zh', label: '编辑器', isActive: false },
+      { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
+      { href: '/zh/coat-of-arms-maker', label: '纹章制作器', isActive: false },
+      { href: '/zh/armor-creator', label: '护甲', isActive: false },
+      { href: '/zh/army-formation-creator', label: '军阵', isActive: true },
+      { href: '/zh/contact', label: '联系', isActive: false },
+    ]);
+    expect(nestedModel.links.map((link) => link.isActive)).toEqual([false, false, false, false, true, false]);
+    expect(siblingModel.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
   });
 
   it('activates the blog menu, not plain links, for /zh/blog/category/characters', () => {
@@ -122,7 +164,7 @@ describe('content site topbar model', () => {
     expect(model.featureMenuIsActive).toBe(true);
     expect(model.featureMenuLabel).toBe('博客');
     expect(model.featureMenuHref).toBe('/zh/blog');
-    expect(model.links.map((link) => link.isActive)).toEqual([false, false, false, false, false]);
+    expect(model.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
   });
 
   it('activates only Editor for /', () => {
@@ -133,6 +175,7 @@ describe('content site topbar model', () => {
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
       { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: false },
       { href: '/armor-creator', label: 'Armor', isActive: false },
+      { href: '/army-formation-creator', label: 'Army formation creator', isActive: false },
       { href: '/contact', label: 'Contact', isActive: false },
     ]);
     expect(model.featureMenuIsActive).toBe(false);
@@ -142,9 +185,9 @@ describe('content site topbar model', () => {
     const englishModel = readTopbar('en', '/zh', '/');
     const chineseModel = readTopbar('zh', '/zh', '/');
 
-    expect(englishModel.links.map((link) => link.isActive)).toEqual([true, false, false, false, false]);
+    expect(englishModel.links.map((link) => link.isActive)).toEqual([true, false, false, false, false, false]);
     expect(englishModel.links[0]?.href).toBe('/');
-    expect(chineseModel.links.map((link) => link.isActive)).toEqual([true, false, false, false, false]);
+    expect(chineseModel.links.map((link) => link.isActive)).toEqual([true, false, false, false, false, false]);
     expect(chineseModel.links[0]?.href).toBe('/zh');
     expect(englishModel.featureMenuIsActive).toBe(false);
     expect(chineseModel.featureMenuIsActive).toBe(false);
@@ -156,7 +199,7 @@ describe('content site topbar model', () => {
     expect(model.featureMenuIsActive).toBe(true);
     expect(model.featureMenuHref).toBe('/blog');
     expect(model.featureMenuLabel).toBe('Blog');
-    expect(model.links.map((link) => link.isActive)).toEqual([false, false, false, false, false]);
+    expect(model.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
   });
 
   it('drops the query and hash before choosing the active link', () => {
@@ -167,6 +210,7 @@ describe('content site topbar model', () => {
       { href: '/zh/dice-roller-dnd', isActive: false },
       { href: '/zh/coat-of-arms-maker', isActive: true },
       { href: '/zh/armor-creator', isActive: false },
+      { href: '/zh/army-formation-creator', isActive: false },
       { href: '/zh/contact', isActive: false },
     ]);
     expect(model.featureMenuIsActive).toBe(false);
@@ -178,12 +222,12 @@ describe('content site topbar model', () => {
     const contactSibling = readTopbar('en', '/contact-us', '/zh');
     const blogSibling = readTopbar('en', '/blogging', '/zh');
 
-    expect(nested.links.map((link) => link.isActive)).toEqual([false, false, true, false, false]);
+    expect(nested.links.map((link) => link.isActive)).toEqual([false, false, true, false, false, false]);
     expect(nested.featureMenuIsActive).toBe(false);
-    expect(sibling.links.map((link) => link.isActive)).toEqual([false, false, false, false, false]);
-    expect(contactSibling.links.map((link) => link.isActive)).toEqual([false, false, false, false, false]);
+    expect(sibling.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
+    expect(contactSibling.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
     expect(blogSibling.featureMenuIsActive).toBe(false);
-    expect(blogSibling.links.map((link) => link.isActive)).toEqual([false, false, false, false, false]);
+    expect(blogSibling.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
   });
 
   it('throws for locale fr', () => {
