@@ -868,7 +868,7 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
   }
 
   return (
-    <div className="space-y-6 text-[var(--site-ink)]">
+    <div className="space-y-6 rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-4 text-[var(--site-ink)] sm:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         <div className="order-2 min-w-0 flex-1 lg:order-1">
           <ArmorPicker

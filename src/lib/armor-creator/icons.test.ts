@@ -132,4 +132,21 @@ describe('armorPieceSvg', () => {
       armorPieceSvg('male:plate:shoulderRight:20'),
     );
   });
+
+  it('不同部位的轮廓不同', () => {
+    const outlines = [
+      armorPieceSvg('male:plate:helm:1'),
+      armorPieceSvg('male:plate:chest:1'),
+      armorPieceSvg('male:plate:feet:1'),
+      armorPieceSvg('male:plate:shoulderLeft:1'),
+      armorPieceSvg('male:plate:legs:1'),
+      armorPieceSvg('male:plate:gloves:1'),
+      armorPieceSvg('male:plate:cloakFront:1'),
+      armorPieceSvg('male:plate:cloakBack:1'),
+      armorPieceSvg('shared:crown:1'),
+      armorPieceSvg('shared:wing:1'),
+    ];
+
+    expect(new Set(outlines).size).toBe(outlines.length);
+  });
 });

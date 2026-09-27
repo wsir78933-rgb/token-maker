@@ -260,15 +260,50 @@ function layerBox(slot: ArmorRenderSlot): ArmorLayerBox {
   return box;
 }
 
+const FIGURE_SKIN = '#e6d3b1';
+const FIGURE_TORSO = '#c4a574';
+const FIGURE_STROKE = '#1a140f';
+
+function figurePaint(fill: string): string {
+  return `fill="${fill}" stroke="${FIGURE_STROKE}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"`;
+}
+
+function figureLegsMarkup(): string {
+  const paint = figurePaint(FIGURE_SKIN);
+  return [
+    `<path ${paint} d="M 248 250 C 244 320 246 390 250 430 C 254 456 236 472 286 474 L 324 474 L 330 430 L 318 280 L 300 248 Z"/>`,
+    `<path ${paint} d="M 352 250 C 356 320 354 390 350 430 C 346 456 364 472 314 474 L 276 474 L 270 430 L 282 280 L 300 248 Z"/>`,
+  ].join('');
+}
+
+function figureArmsMarkup(): string {
+  const paint = figurePaint(FIGURE_SKIN);
+  return [
+    `<path ${paint} d="M 300 170 C 246 162 186 180 174 214 C 164 242 170 270 206 276 L 300 280 Z"/>`,
+    `<path ${paint} d="M 300 170 C 354 162 414 180 426 214 C 436 242 430 270 394 276 L 300 280 Z"/>`,
+  ].join('');
+}
+
+function figureNeckMarkup(): string {
+  return `<path ${figurePaint(FIGURE_SKIN)} d="M 290 96 L 288 120 L 272 190 L 328 190 L 312 120 L 310 96 Z"/>`;
+}
+
+function figureTorsoMarkup(): string {
+  return `<path ${figurePaint(FIGURE_TORSO)} d="M 284 164 C 248 160 224 170 216 188 L 226 250 C 236 280 254 302 274 306 L 326 306 C 346 302 364 280 374 250 L 384 188 C 376 170 352 160 316 164 Q 300 184 284 164 Z"/>`;
+}
+
+function figureHeadMarkup(): string {
+  return `<ellipse cx="300" cy="74" rx="42" ry="46" ${figurePaint(FIGURE_SKIN)}/>`;
+}
+
 function bodySvg(): string {
   return [
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500">',
-    '<rect x="260" y="36" width="80" height="80" fill="#d2b48c"/>',
-    '<rect x="245" y="120" width="110" height="150" fill="#8a6244"/>',
-    '<rect x="190" y="130" width="50" height="130" fill="#d2b48c"/>',
-    '<rect x="360" y="130" width="50" height="130" fill="#d2b48c"/>',
-    '<rect x="250" y="270" width="45" height="150" fill="#5c4634"/>',
-    '<rect x="305" y="270" width="45" height="150" fill="#5c4634"/>',
+    figureLegsMarkup(),
+    figureArmsMarkup(),
+    figureNeckMarkup(),
+    figureTorsoMarkup(),
+    figureHeadMarkup(),
     '</svg>',
   ].join('');
 }
