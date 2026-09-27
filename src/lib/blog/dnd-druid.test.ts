@@ -17,6 +17,12 @@ const COVER_PATH = '/blog/covers/en/dnd-druid-guide.webp';
 const INLINE_PATH = '/blog/inline/dnd-druid/druid-turn-plan.webp';
 const VIDEO_PLACEHOLDER_PATH = '/blog/inline/dnd-druid/dnd-druid-video-placeholder.webp';
 const VIDEO_ID = 'WMo_gCRMSfA';
+const DND_2014_DRUID_SOURCE_URL =
+  'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Druid';
+const DND_2024_DRUID_SOURCE_URL =
+  'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Druid';
+const DND_2024_WILD_SHAPE_ARTICLE_URL =
+  'https://www.dndbeyond.com/posts/1755-the-2024-circle-of-the-moon-druid-and-changes-to';
 
 function getVisibleBodyRoot(bodyHtml: string) {
   const body = new DOMParser().parseFromString(bodyHtml, 'text/html').body;
@@ -114,6 +120,18 @@ describe('dnd druid blog post', () => {
     expect(chinesePost?.bodyHtml).toContain(`src="${VIDEO_PLACEHOLDER_PATH}"`);
     expect(chinesePost?.bodyHtml).toContain('loading="lazy"');
     expect(chinesePost?.bodyHtml).not.toContain('<iframe');
+    expect(chinesePost?.bodyHtml).toContain(DND_2014_DRUID_SOURCE_URL);
+    expect(chinesePost?.bodyHtml).toContain(DND_2024_DRUID_SOURCE_URL);
+    expect(chinesePost?.bodyHtml).toContain(DND_2024_WILD_SHAPE_ARTICLE_URL);
+    expect(chinesePost?.bodyHtml).toContain('变形后说话');
+    expect(chinesePost?.bodyHtml).toContain('说话能力受野兽形态限制');
+    expect(chinesePost?.bodyHtml).toContain('保留说话能力；仍不能施法');
+    expect(chinesePost?.bodyHtml).toContain(
+      '回合结束即记录已消耗的法术位、荒野变形次数和其他一次性资源',
+    );
+    expect(chinesePost?.bodyHtml).toContain('href="/zh/blog/dnd-druid-spells"');
+    expect(chinesePost?.bodyHtml).toContain('href="/zh#editor-workspace"');
+    expect(chinesePost?.bodyHtml).toContain('Token Maker 中文编辑工作区');
     expect(getVisibleChineseCharacterCount(chinesePost?.bodyHtml ?? '')).toBeGreaterThanOrEqual(
       2_000,
     );

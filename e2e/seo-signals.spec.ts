@@ -6,13 +6,20 @@ import {
   getBlogPost,
   getBlogPostsForPage,
   type BlogCategoryCopy,
+  type BlogPost,
 } from '../src/lib/blog-content';
 import { getSiteConfig, getSiteUrl } from '../src/lib/site-content';
 import type { SiteLocale } from '../src/lib/site-locale';
 
 type SchemaObject = Record<string, unknown>;
 type SchemaExpectation = { id: string; types: string[] };
-type RouteExpectation = { route: string; locale: SiteLocale; scripts: SchemaExpectation[] };
+type ArticleFixture = { slug: string; post: BlogPost };
+type RouteExpectation = {
+  route: string;
+  locale: SiteLocale;
+  scripts: SchemaExpectation[];
+  article?: ArticleFixture;
+};
 type CategoryPageExpectation = { slug: BlogCategoryCopy['slug']; pageCount: number };
 type RuntimeMessageKind = 'pageerror' | 'console.warn' | 'console.error';
 type RuntimeMessage = { kind: RuntimeMessageKind; route: string; text: string };
@@ -161,6 +168,12 @@ function readMeta(snapshot: SeoSnapshot, name: string, context: string) {
   return requireText(matches[0].content, `${context}: meta ${name}`);
 }
 
+function readOptionalMeta(snapshot: SeoSnapshot, name: string, context: string) {
+  const matches = snapshot.metas.filter((entry) => entry.name === name);
+  expect(matches.length, `${context}: meta ${name} must appear at most once`).toBeLessThanOrEqual(1);
+  return matches.length === 0 ? undefined : requireText(matches[0].content, `${context}: meta ${name}`);
+}
+
 function readTitle(snapshot: SeoSnapshot, context: string) {
   expect(snapshot.titles, `${context}: title`).toHaveLength(1);
   return requireText(snapshot.titles[0], `${context}: title`);
@@ -175,6 +188,17 @@ function assertQuestions(value: unknown, context: string) {
     expect(answer['@type'], context).toBe('Answer');
     requireText(answer.text, `${context}[${index}].acceptedAnswer.text`);
   }
+}
+
+function requireArticleFixture(fixture: RouteExpectation, context: string) {
+  const article = fixture.article;
+  if (!article) throw new Error(`${context}: missing article fixture for route=${fixture.route}`);
+  if (article.post.slug !== article.slug) {
+    throw new Error(
+      `${context}: article fixture slug mismatch: expected=${JSON.stringify(article.slug)}, actual=${JSON.stringify(article.post.slug)}`,
+    );
+  }
+  return article;
 }
 
 function assertSchemaSemantics(object: SchemaObject, fixture: RouteExpectation, context: string) {
@@ -221,8 +245,19 @@ function assertSchemaSemantics(object: SchemaObject, fixture: RouteExpectation, 
     expect(object.isPartOf, context).toMatchObject({ '@type': 'WebSite', url: homeUrl });
   }
   if (schemaType === 'Article') {
-    requireText(object.datePublished, `${context}.datePublished`);
-    requireText(object.dateModified, `${context}.dateModified`);
+    const { post } = requireArticleFixture(fixture, context);
+    if (post.publishedAt !== undefined) {
+      expect(requireText(object.datePublished, `${context}.datePublished`), context).toBe(post.publishedAt);
+    } else {
+      expect(object, context).not.toHaveProperty('datePublished');
+    }
+    expect(requireText(object.dateModified, `${context}.dateModified`), context).toBe(post.updatedAt);
+    expect(object.publisher, context).toEqual({
+      '@type': 'Organization',
+      name: 'Token Maker',
+      url: canonicalUrl(localizedRoute(fixture.locale, '/about')),
+    });
+    expect(object, context).not.toHaveProperty('author');
   }
   if (schemaType === 'SoftwareApplication' || schemaType === 'WebApplication') {
     expect(object.offers, context).toEqual({ '@type': 'Offer', price: '0', priceCurrency: 'USD' });
@@ -298,6 +333,27 @@ async function visitRoute(page: Page, fixture: RouteExpectation) {
   return assertLoadedRoute(page, fixture);
 }
 
+function assertArticleMetadata(snapshot: SeoSnapshot, fixture: RouteExpectation, phase: string) {
+  const context = `${fixture.route} ${phase}`;
+  const { post } = requireArticleFixture(fixture, context);
+  const publishedTime = readOptionalMeta(snapshot, 'article:published_time', context);
+  if (post.publishedAt !== undefined) {
+    expect(publishedTime, context).toBe(post.publishedAt);
+  } else {
+    expect(publishedTime, context).toBeUndefined();
+  }
+  expect(readMeta(snapshot, 'article:modified_time', context), context).toBe(post.updatedAt);
+}
+
+function getArticleFixture(locale: SiteLocale, path: string, route: string): ArticleFixture {
+  const slug = path.slice('/blog/'.length);
+  const post = getBlogPost(locale, slug);
+  if (!post) {
+    throw new Error(`Missing article fixture: locale=${locale}, route=${route}, slug=${JSON.stringify(slug)}`);
+  }
+  return { slug, post };
+}
+
 function contentFixture(locale: SiteLocale, path: string): RouteExpectation {
   const route = localizedRoute(locale, path);
   if (path === '/') return { route, locale, scripts: [
@@ -316,14 +372,14 @@ function contentFixture(locale: SiteLocale, path: string): RouteExpectation {
     { id: `template-${locale}-${templateSlug}-jsonld`, types: ['WebApplication', 'HowTo', 'FAQPage', 'VideoObject'] },
     { id: `template-${locale}-${templateSlug}-breadcrumb-jsonld`, types: ['BreadcrumbList'] },
   ] };
-  const slug = path.slice('/blog/'.length);
-  const post = path.startsWith('/blog/') ? getBlogPost(locale, slug) : undefined;
-  if (!post) throw new Error(`No published SEO article fixture: locale=${locale}, route=${route}`);
+  const article = path.startsWith('/blog/') ? getArticleFixture(locale, path, route) : undefined;
+  if (!article) throw new Error(`No published SEO article fixture: locale=${locale}, route=${route}, path=${JSON.stringify(path)}`);
+  const { post } = article;
   return { route, locale, scripts: [
-    { id: `blog-post-${locale}-${slug}`, types: ['Article'] },
-    ...(post.faqItems?.length ? [{ id: `blog-post-faq-${locale}-${slug}`, types: ['FAQPage'] }] : []),
-    { id: `blog-post-breadcrumb-${locale}-${slug}`, types: ['BreadcrumbList'] },
-  ] };
+    { id: `blog-post-${locale}-${article.slug}`, types: ['Article'] },
+    ...(post.faqItems?.length ? [{ id: `blog-post-faq-${locale}-${article.slug}`, types: ['FAQPage'] }] : []),
+    { id: `blog-post-breadcrumb-${locale}-${article.slug}`, types: ['BreadcrumbList'] },
+  ], article };
 }
 
 function categoryFixture(locale: SiteLocale, slug: string, pageNumber: number): RouteExpectation {
@@ -404,10 +460,23 @@ for (const locale of ['en', 'zh'] as const) {
       runtimeDiagnosticsByPage.set(page, createRuntimeDiagnostics(page));
     });
 
-    for (const path of ['/', '/blog', '/blog/dnd-campaigns', '/faq', `/templates/${templateSlug}`]) {
+    for (const path of [
+      '/',
+      '/blog',
+      '/blog/dnd-campaigns',
+      '/blog/dnd-meaning',
+      '/blog/dnd-bard-spells',
+      '/faq',
+      `/templates/${templateSlug}`,
+    ]) {
       const fixture = contentFixture(locale, path);
       test(`${fixture.route}: unique semantic JSON-LD in raw HTML and hydrated DOM`, async ({ page }) => {
-        await visitRoute(page, fixture);
+        const snapshots = await visitRoute(page, fixture);
+        if (fixture.article) {
+          for (const [phase, snapshot] of Object.entries(snapshots)) {
+            assertArticleMetadata(snapshot, fixture, phase);
+          }
+        }
       });
     }
 

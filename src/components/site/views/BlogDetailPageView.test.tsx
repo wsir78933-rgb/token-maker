@@ -30,6 +30,45 @@ const localeCases = [
   },
 ];
 
+const editorialMetadataCases = [
+  {
+    locale: 'en' as const,
+    slug: 'dnd-meaning',
+    byline: 'Published and maintained by Token Maker',
+    aboutHref: '/about',
+    publishedLabel: 'Published',
+    updatedLabel: 'Updated',
+    expectedDateTimes: ['2026-08-12', '2026-08-12'],
+  },
+  {
+    locale: 'zh' as const,
+    slug: 'dnd-meaning',
+    byline: '由 Token Maker 发布与维护',
+    aboutHref: '/zh/about',
+    publishedLabel: '发布于',
+    updatedLabel: '更新于',
+    expectedDateTimes: ['2026-08-12', '2026-08-12'],
+  },
+  {
+    locale: 'en' as const,
+    slug: 'dnd-classes-explained',
+    byline: 'Published and maintained by Token Maker',
+    aboutHref: '/about',
+    publishedLabel: 'Published',
+    updatedLabel: 'Updated',
+    expectedDateTimes: ['2026-03-29'],
+  },
+  {
+    locale: 'zh' as const,
+    slug: 'dnd-classes-explained',
+    byline: '由 Token Maker 发布与维护',
+    aboutHref: '/zh/about',
+    publishedLabel: '发布于',
+    updatedLabel: '更新于',
+    expectedDateTimes: ['2026-03-29'],
+  },
+];
+
 describe('BlogDetailPageView CTA links', () => {
   afterEach(() => {
     cleanup();
@@ -61,4 +100,32 @@ describe('BlogDetailPageView CTA links', () => {
     expect(actionCardDiceLink.getAttribute('href')).toBe(testCase.expectedDiceHref);
     expect(bottomCtaDiceLink.getAttribute('href')).toBe(testCase.expectedDiceHref);
   });
+});
+
+describe('BlogDetailPageView editorial metadata', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it.each(editorialMetadataCases)(
+    'renders the localized Token Maker byline and date semantics for $locale $slug',
+    (testCase) => {
+      const { container } = render(<BlogDetailPageView locale={testCase.locale} slug={testCase.slug} />);
+
+      const bylineLink = screen.getByRole('link', { name: testCase.byline });
+      expect(bylineLink.getAttribute('href')).toBe(testCase.aboutHref);
+
+      const renderedTimes = Array.from(container.querySelectorAll('time'));
+      expect(renderedTimes.map((timeElement) => timeElement.getAttribute('datetime'))).toEqual(
+        testCase.expectedDateTimes,
+      );
+      expect(renderedTimes.at(-1)?.parentElement?.textContent).toContain(testCase.updatedLabel);
+
+      if (testCase.expectedDateTimes.length === 2) {
+        expect(renderedTimes[0]?.parentElement?.textContent).toContain(testCase.publishedLabel);
+      } else {
+        expect(renderedTimes[0]?.parentElement?.textContent).not.toContain(testCase.publishedLabel);
+      }
+    },
+  );
 });

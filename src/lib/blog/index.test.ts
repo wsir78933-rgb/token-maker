@@ -13,6 +13,7 @@ import {
 } from '@/lib/blog-content';
 
 const DND_BLESS_SLUG = 'dnd-bless';
+const DND_BARD_SPELLS_SLUG = 'dnd-bard-spells';
 const DND_THUNDERCLAP_SLUG = 'dnd-thunderclap';
 const DND_FIND_FAMILIAR_SLUG = 'dnd-find-familiar';
 const DND_HEX_SLUG = 'dnd-hex';
@@ -126,6 +127,72 @@ describe('published blog body voice', () => {
         }
       }
     }
+  });
+});
+
+describe('blog article metadata publisher and dates', () => {
+  test('uses localized Token Maker publisher and preserves missing publication dates', () => {
+    const englishDatedMetadata = createBlogPostMetadata('en', DND_MEANING_SLUG);
+    const chineseDatedMetadata = createBlogPostMetadata('zh', DND_MEANING_SLUG);
+    const englishDatedStructuredData = buildBlogPostStructuredData('en', DND_MEANING_SLUG);
+    const chineseDatedStructuredData = buildBlogPostStructuredData('zh', DND_MEANING_SLUG);
+
+    expect(englishDatedMetadata.openGraph).toMatchObject({
+      publishedTime: '2026-08-12',
+      modifiedTime: '2026-08-12',
+    });
+    expect(chineseDatedMetadata.openGraph).toMatchObject({
+      publishedTime: '2026-08-12',
+      modifiedTime: '2026-08-12',
+    });
+    expect(englishDatedStructuredData).toMatchObject({
+      datePublished: '2026-08-12',
+      dateModified: '2026-08-12',
+      publisher: {
+        '@type': 'Organization',
+        name: 'Token Maker',
+        url: 'https://www.tokenmaker.one/about',
+      },
+    });
+    expect(chineseDatedStructuredData).toMatchObject({
+      datePublished: '2026-08-12',
+      dateModified: '2026-08-12',
+      publisher: {
+        '@type': 'Organization',
+        name: 'Token Maker',
+        url: 'https://www.tokenmaker.one/zh/about',
+      },
+    });
+    expect(englishDatedStructuredData).not.toHaveProperty('author');
+    expect(chineseDatedStructuredData).not.toHaveProperty('author');
+
+    const englishUndatedMetadata = createBlogPostMetadata('en', DND_BARD_SPELLS_SLUG);
+    const chineseUndatedMetadata = createBlogPostMetadata('zh', DND_BARD_SPELLS_SLUG);
+    const englishUndatedStructuredData = buildBlogPostStructuredData('en', DND_BARD_SPELLS_SLUG);
+    const chineseUndatedStructuredData = buildBlogPostStructuredData('zh', DND_BARD_SPELLS_SLUG);
+
+    expect(englishUndatedMetadata.openGraph).toMatchObject({ modifiedTime: '2026-05-06' });
+    expect(chineseUndatedMetadata.openGraph).toMatchObject({ modifiedTime: '2026-05-06' });
+    expect(englishUndatedMetadata.openGraph).not.toHaveProperty('publishedTime');
+    expect(chineseUndatedMetadata.openGraph).not.toHaveProperty('publishedTime');
+    expect(englishUndatedStructuredData).toMatchObject({
+      dateModified: '2026-05-06',
+      publisher: {
+        '@type': 'Organization',
+        name: 'Token Maker',
+        url: 'https://www.tokenmaker.one/about',
+      },
+    });
+    expect(chineseUndatedStructuredData).toMatchObject({
+      dateModified: '2026-05-06',
+      publisher: {
+        '@type': 'Organization',
+        name: 'Token Maker',
+        url: 'https://www.tokenmaker.one/zh/about',
+      },
+    });
+    expect(englishUndatedStructuredData).not.toHaveProperty('datePublished');
+    expect(chineseUndatedStructuredData).not.toHaveProperty('datePublished');
   });
 });
 
@@ -1418,46 +1485,6 @@ describe('dnd death knight blog post', () => {
     'Lock one Death Knight object before the map: current Monster Manual, 2014 Legacy, Aspirant, or the playtest path. Then cut tokens the table can tell apart.';
   const chineseLockedDescription =
     '开团前先锁当前图鉴、2014 Legacy 或志从条目，再布置能打完的亡灵指挥官遭遇，并用 Token Maker 把指挥官、志从和随从做成分得清的标记。';
-  const englishLockedFaq = [
-    {
-      question: 'Which official Death Knight listing should I lock?',
-      answer:
-        'Start from the catalog-identity table: current Monster Manual Death Knight, 2014 Legacy Death Knight, or Death Knight Aspirant, matching the book on the table.',
-    },
-    {
-      question: 'Does a later token replace the official stat block?',
-      answer:
-        'No. Cut tokens only after the listing is locked. Token Maker is not an encounter manager and does not fill unpaid combat numbers.',
-    },
-    {
-      question: 'Is Path of the Death Knight a Player’s Handbook class?',
-      answer:
-        'No. It is an Unearthed Arcana playtest feat path. Talk with the Dungeon Master before using it.',
-    },
-    {
-      question: 'What can I copy without the paid combat block?',
-      answer:
-        'Creature name, source-book label, Undead type, size, alignment, habitat when listed, and Challenge.',
-    },
-  ];
-  const chineseLockedFaq = [
-    {
-      question: '手头没有完整属性块还能准备吗？',
-      answer: '可以。只用目录上已经看见的身份字段，不要补生命值或护甲等级。',
-    },
-    {
-      question: '志从能不能当挑战等级 17 的指挥官？',
-      answer: '不能。Death Knight Aspirant 是挑战等级 11 的另一行。',
-    },
-    {
-      question: '试玩路径是不是职业？',
-      answer: '不是。Path of the Death Knight 是试玩专长路径，不是玩家手册职业。',
-    },
-    {
-      question: '私密立绘该不该生成公开链接？',
-      answer: '不该。本地下载 PNG 带到桌子上；公开链接谁拿到都能看。',
-    },
-  ];
   const factoryLeakPhrases = [
     'claimIds',
     'evidenceRefs',
@@ -1656,14 +1683,14 @@ describe('dnd death knight blog post', () => {
     }
   });
 
-  test('uses locked bilingual FAQ metadata without copying factory fields into the body', () => {
+  test('does not emit FAQ structured data for metadata-only FAQ content', () => {
     const englishPost = getBlogPost('en', DND_DEATH_KNIGHT_SLUG);
     const chinesePost = getBlogPost('zh', DND_DEATH_KNIGHT_SLUG);
 
-    expect(englishPost?.faqItems).toEqual(englishLockedFaq);
-    expect(chinesePost?.faqItems).toEqual(chineseLockedFaq);
-    expect(englishPost?.bodyHtml).not.toContain(englishLockedFaq[0].question);
-    expect(chinesePost?.bodyHtml).not.toContain(chineseLockedFaq[0].question);
+    expect(englishPost?.faqItems).toBeUndefined();
+    expect(chinesePost?.faqItems).toBeUndefined();
+    expect(buildBlogPostFaqStructuredData('en', DND_DEATH_KNIGHT_SLUG)).toBeNull();
+    expect(buildBlogPostFaqStructuredData('zh', DND_DEATH_KNIGHT_SLUG)).toBeNull();
   });
 
   test('builds localized metadata, routes, and schema from the locked Death Knight copy', () => {
@@ -1703,24 +1730,8 @@ describe('dnd death knight blog post', () => {
       inLanguage: 'zh-CN',
       url: 'https://www.tokenmaker.one/zh/blog/dnd-death-knight',
     });
-    expect(buildBlogPostFaqStructuredData('en', DND_DEATH_KNIGHT_SLUG)).toMatchObject({
-      '@type': 'FAQPage',
-      inLanguage: 'en-US',
-      mainEntity: englishLockedFaq.map((item) => ({
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: { '@type': 'Answer', text: item.answer },
-      })),
-    });
-    expect(buildBlogPostFaqStructuredData('zh', DND_DEATH_KNIGHT_SLUG)).toMatchObject({
-      '@type': 'FAQPage',
-      inLanguage: 'zh-CN',
-      mainEntity: chineseLockedFaq.map((item) => ({
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: { '@type': 'Answer', text: item.answer },
-      })),
-    });
+    expect(buildBlogPostFaqStructuredData('en', DND_DEATH_KNIGHT_SLUG)).toBeNull();
+    expect(buildBlogPostFaqStructuredData('zh', DND_DEATH_KNIGHT_SLUG)).toBeNull();
   });
 
   test('uses a WebP cover and projects both localized Death Knight lines in llms.txt', () => {

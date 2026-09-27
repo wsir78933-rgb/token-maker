@@ -108,7 +108,7 @@ describe('dnd beholder blog post', () => {
     expect(
       chinesePost?.bodyHtml?.includes('先锁') || chinesePost?.bodyHtml?.includes('先把今晚这只'),
     ).toBe(true);
-    expect(chinesePost?.bodyHtml).not.toContain('常见问题');
+    expect(chinesePost?.bodyHtml).toContain('常见问题');
     expect(chinesePost?.bodyHtml).not.toContain('FAQ about dnd beholder');
     for (const inlinePath of ZH_INLINE_PATHS) {
       expect(chinesePost?.bodyHtml).toContain(inlinePath);
@@ -117,7 +117,12 @@ describe('dnd beholder blog post', () => {
     expect(chinesePost?.bodyHtml).not.toContain('data-video-id=');
     expect(chinesePost?.bodyHtml).not.toContain('lite-video');
     expect(chinesePost?.bodyHtml).not.toContain('<iframe');
-    expect(chinesePost?.faqItems ?? []).toHaveLength(0);
+    expect(chinesePost?.faqItems).toHaveLength(5);
+    expectVisibleFaqItems(chinesePost?.bodyHtml ?? '', chinesePost?.faqItems ?? []);
+    for (const faqItem of chinesePost?.faqItems ?? []) {
+      expect(chinesePost?.bodyHtml).toContain(`>${faqItem.question}</h3>`);
+      expect(chinesePost?.bodyHtml).toContain(`<p>${faqItem.answer}</p>`);
+    }
 
     expect(spectatorPost?.slug).toBe('spectator-dnd');
     expect(mindFlayerPost?.slug).toBe('mind-flayer-dnd');
@@ -181,8 +186,14 @@ describe('dnd beholder blog post', () => {
         answer: acceptedAnswer.text,
       })),
     ).toEqual(englishPost?.faqItems);
-    expect(buildBlogPostFaqStructuredData('zh', DND_BEHOLDER_SLUG)).toBeNull();
-    expect(chinesePost?.faqItems ?? []).toHaveLength(0);
+    const chineseFaqSchema = buildBlogPostFaqStructuredData('zh', DND_BEHOLDER_SLUG);
+    expect(chineseFaqSchema).toMatchObject({ '@type': 'FAQPage' });
+    expect(
+      chineseFaqSchema?.mainEntity.map(({ name, acceptedAnswer }) => ({
+        question: name,
+        answer: acceptedAnswer.text,
+      })),
+    ).toEqual(chinesePost?.faqItems);
 
     const expectedAlternates = {
       'x-default': 'https://www.tokenmaker.one/blog/dnd-beholder',

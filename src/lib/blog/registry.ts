@@ -2055,28 +2055,6 @@ const dndDeathKnightArticle: BlogPost = {
   coverAlt:
     'dnd death knight guide cover showing an undead commander in black plate with skeletal troops on a ruined moonlit battle map',
   bodyHtml: dndDeathKnightArticleHtml,
-  faqItems: [
-    {
-      question: 'Which official Death Knight listing should I lock?',
-      answer:
-        'Start from the catalog-identity table: current Monster Manual Death Knight, 2014 Legacy Death Knight, or Death Knight Aspirant, matching the book on the table.',
-    },
-    {
-      question: 'Does a later token replace the official stat block?',
-      answer:
-        'No. Cut tokens only after the listing is locked. Token Maker is not an encounter manager and does not fill unpaid combat numbers.',
-    },
-    {
-      question: 'Is Path of the Death Knight a Player’s Handbook class?',
-      answer:
-        'No. It is an Unearthed Arcana playtest feat path. Talk with the Dungeon Master before using it.',
-    },
-    {
-      question: 'What can I copy without the paid combat block?',
-      answer:
-        'Creature name, source-book label, Undead type, size, alignment, habitat when listed, and Challenge.',
-    },
-  ],
   relatedSlugs: ['dnd-ghost', 'dnd-necromancer-spells', 'dnd-armor-guide', 'dnd-sword-sheaths'],
 };
 
@@ -2096,24 +2074,6 @@ const dndDeathKnightArticleZh: BlogPost = {
   coverAlt:
     'DND 死亡骑士指南封面图：黑色板甲中的亡灵指挥官、骷髅部属，以及月光下的废墟战斗地图',
   bodyHtml: dndDeathKnightArticleHtmlZh,
-  faqItems: [
-    {
-      question: '手头没有完整属性块还能准备吗？',
-      answer: '可以。只用目录上已经看见的身份字段，不要补生命值或护甲等级。',
-    },
-    {
-      question: '志从能不能当挑战等级 17 的指挥官？',
-      answer: '不能。Death Knight Aspirant 是挑战等级 11 的另一行。',
-    },
-    {
-      question: '试玩路径是不是职业？',
-      answer: '不是。Path of the Death Knight 是试玩专长路径，不是玩家手册职业。',
-    },
-    {
-      question: '私密立绘该不该生成公开链接？',
-      answer: '不该。本地下载 PNG 带到桌子上；公开链接谁拿到都能看。',
-    },
-  ],
   relatedSlugs: ['dnd-ghost', 'dnd-necromancer-spells', 'dnd-armor-guide', 'dnd-sword-sheaths'],
 };
 
@@ -5177,7 +5137,33 @@ const dndBeholderArticleZh: BlogPost = {
   coverAlt:
     '球体眼魔悬在桌面地图旁，圆形 Token 里仍能看出中央眼和十根眼柄',
   bodyHtml: dndBeholderArticleHtmlZh,
-  faqItems: [],
+  faqItems: [
+    {
+      question: '挑战等级 13 的眼魔该用哪一本《怪物图鉴》？',
+      answer:
+        '先锁 2014 或 2024，并把年份写在卡边；反魔锥、眼射线和传奇动作都只用同一本书。数字以印本为准，公开转写只作核对，不要把两版拼在一起。',
+    },
+    {
+      question: '眼魔在自己的回合会射几条眼射线？',
+      answer:
+        '2014 的眼射线动作会随机射三条，重复则重骰，目标是 120 尺内一到三个可见生物；2024 的多重攻击会使用眼射线三次，每次随机一条，本回合已经用过的射线要重骰。两套流程不能混用。',
+    },
+    {
+      question: '观察者眼魔是缩小版眼魔吗？',
+      answer:
+        '不是。观察者眼魔只有四根眼柄，不是十根眼柄的挑战等级 13 眼魔；眼魔 Token 还要留下中央眼和十根眼柄。',
+    },
+    {
+      question: '眼魔在 SRD 5.2 里吗？',
+      answer:
+        '不在。不要把完整属性块贴进手册后称为 SRD 合法；已锁定的《怪物图鉴》才是规则来源，公开转写只作核对，不是授权。',
+    },
+    {
+      question: '眼魔 Token 里必须留下什么？',
+      answer:
+        '中央眼和十根眼柄要留在裁切框里；四根眼柄会看起来像观察者眼魔。大型占两格见方，透明 PNG 是裁切结果，不代表 VTT 导入后完全不需要设置。',
+    },
+  ],
   relatedSlugs: ['spectator-dnd', 'mind-flayer-dnd', 'dnd-flumph'],
 };
 

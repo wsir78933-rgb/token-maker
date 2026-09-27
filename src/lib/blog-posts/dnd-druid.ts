@@ -125,6 +125,7 @@ export const dndDruidArticleHtmlZh = String.raw`
 <h2>五步完成 1 级建卡</h2>
 <h3>第一步：锁定规则版本</h3>
 <p>在角色卡顶部写“2014”或“2024”。如果桌上使用 2024，就按该版的准备法术数量、Primal Order 和 2 级荒野变形记录；2014 角色要跳过 Primal Order，并且只用下文的 2014 荒野变形栏。遇到网上构筑时，先看发布日期和规则来源，再看结论。</p>
+<p>官方复核入口：<a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes#Druid" rel="noreferrer noopener">2014 德鲁伊规则</a>、<a href="https://www.dndbeyond.com/sources/dnd/br-2024/character-classes#Druid" rel="noreferrer noopener">2024 德鲁伊规则</a>、<a href="https://www.dndbeyond.com/posts/1755-the-2024-circle-of-the-moon-druid-and-changes-to" rel="noreferrer noopener">2024 荒野变形说明</a>。</p>
 <h3>第二步：写一句队伍职责</h3>
 <p>“我用法术拖住入口，让近战逐个处理目标”比“我是自然法师”更能指导选择。也可以写“我保留支援选择，并用野兽形态侦察”，或“我在前排旁边支援，但不抢主坦的位置”。之后每个法术、装备和形态都用这句话检查。</p>
 <h3>第三步：先放感知，再处理体质</h3>
@@ -144,6 +145,7 @@ export const dndDruidArticleHtmlZh = String.raw`
 <tr><th>初始次数与恢复</th><td>两次；短休或长休后恢复全部</td><td>两次；短休恢复一次，长休恢复全部</td></tr>
 <tr><th>初始形态</th><td>见过的野兽；CR 1/4，不能有飞行或游泳速度</td><td>四种已掌握野兽；CR 1/4，不能有飞行速度</td></tr>
 <tr><th>生命值</th><td>使用野兽生命值，归零后的过量伤害转回本体</td><td>保留本体生命值，并获得等于德鲁伊等级的临时生命值</td></tr>
+<tr><th>变形后说话</th><td>说话能力受野兽形态限制</td><td>保留说话能力；仍不能施法</td></tr>
 </tbody></table></div>
 <p>两版低级德鲁伊在野兽形态中都不能施法，但已经建立的专注不会因为变形自动中断。实战中常见的顺序是先施放需要专注的法术，再决定是否变形。别把“还能专注”误写成“还能继续施法”。</p>
 <h2>第一回合怎么选</h2>
@@ -151,6 +153,7 @@ export const dndDruidArticleHtmlZh = String.raw`
 <img class="inline-article-image" src="${DND_DRUID_TURN_PLAN_IMAGE_PATH}" alt="自然施法者在战术地图前比较法术与野兽形态" loading="lazy" decoding="async" fetchpriority="low" width="1536" height="1024" />
 <p>如果当前最缺的是控场或支援，先施法并走到更安全的位置。若法术已经生效，而你需要野兽形态的移动或身体条件，再用荒野变形。2024 变形用附赠动作，2014 用动作，第一回合能做的事会明显不同，所以不能照搬同一套连招。</p>
 <p>后续回合不用追求每次都换方案。先维护正在工作的专注，再看队友是否需要支援，然后处理位置，最后才比较单次伤害。你的职责如果仍在发挥，就没有必要为了“更像德鲁伊”而强行变形。</p>
+<p>回合结束即记录已消耗的法术位、荒野变形次数和其他一次性资源，并按版本注明恢复方式。</p>
 <h2>容易踩的坑</h2>
 <p>第一，把法术清单当成职业计划。法术很多不等于每回合都要重新选择；先固定两三个场景，再去看 <a href="${ZH_DND_DRUID_SPELLS_PATH}">DND 德鲁伊法术指南</a>。第二，把荒野变形当成两套规则通用的额外血条，2024 与 2014 的生命值处理不同。第三，先变形再发现必须施法；低级形态不能施法，顺序要在回合前决定。</p>
 <h2>角色概念定下后，再做 VTT Token</h2>

@@ -257,8 +257,6 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
   const description = post.metaDescription ?? post.excerpt;
   const absoluteCoverImage = post.coverImage ? absoluteUrl(post.coverImage) : undefined;
   const socialImage = absoluteCoverImage ?? getSeoImageUrl(locale, 'home');
-  const publishedTime = post.publishedAt ?? post.updatedAt;
-
   return {
     metadataBase: new URL(getSiteUrl()),
     title: isChineseSchoolsPost ? { absolute: metadataTitle } : metadataTitle,
@@ -274,7 +272,7 @@ export function createBlogPostMetadata(locale: SiteLocale, slug: string): Metada
       siteName: siteConfig.name,
       type: 'article',
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
-      publishedTime,
+      ...(post.publishedAt ? { publishedTime: post.publishedAt } : {}),
       modifiedTime: post.updatedAt,
       images: [{ url: socialImage, alt: post.coverAlt ?? post.title }],
     },
@@ -309,6 +307,7 @@ export function buildBlogHubStructuredData(locale: SiteLocale, page = 1) {
 }
 
 export function buildBlogPostStructuredData(locale: SiteLocale, slug: string) {
+  const siteConfig = getSiteConfig(locale);
   const post = getBlogPost(locale, slug);
   if (!post) return null;
 
@@ -318,7 +317,12 @@ export function buildBlogPostStructuredData(locale: SiteLocale, slug: string) {
     headline: post.seoTitle ?? post.title,
     description: post.metaDescription ?? post.excerpt,
     dateModified: post.updatedAt,
-    datePublished: post.publishedAt ?? post.updatedAt,
+    ...(post.publishedAt ? { datePublished: post.publishedAt } : {}),
+    publisher: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+      url: absoluteUrl(getLocalizedPath(locale, '/about')),
+    },
     inLanguage: locale === 'zh' ? 'zh-CN' : 'en-US',
     url: absoluteUrl(getBlogPostPath(locale, slug)),
     image: post.coverImage ? [absoluteUrl(post.coverImage)] : undefined,

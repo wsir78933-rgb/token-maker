@@ -7,20 +7,12 @@ import * as exportModule from '@/lib/coat-of-arms/export';
 import { ExportMenu } from './ExportMenu';
 
 const mocks = vi.hoisted(() => {
-  class CoatExportUploadError extends Error {
-    constructor(public readonly code: string) {
-      super(code);
-      this.name = 'CoatExportUploadError';
-    }
-  }
   return {
-    CoatExportUploadError,
     uploadCoatExportToCloud: vi.fn(async () => undefined),
   };
 });
 
 vi.mock('@/lib/coat-of-arms/cloud-export/client-upload', () => ({
-  CoatExportUploadError: mocks.CoatExportUploadError,
   uploadCoatExportToCloud: mocks.uploadCoatExportToCloud,
 }));
 
@@ -42,7 +34,6 @@ describe('ExportMenu', () => {
   beforeEach(() => {
     window.localStorage.clear();
     mocks.uploadCoatExportToCloud.mockReset();
-    mocks.uploadCoatExportToCloud.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -129,12 +120,8 @@ describe('ExportMenu', () => {
     )).toThrow('Export menu ID must be non-empty; received "  "');
   });
 
-  it('downloads locally before uploading and shows cloudExportSaved without a URL', async () => {
+  it('downloads a PNG locally without calling cloud upload', async () => {
     const downloadClicks = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
-    let downloadedBeforeUpload = false;
-    mocks.uploadCoatExportToCloud.mockImplementation(async () => {
-      downloadedBeforeUpload = downloadClicks.mock.calls.length > 0;
-    });
     Object.defineProperty(URL, 'createObjectURL', {
       configurable: true,
       value: vi.fn(() => 'blob:coat-export'),
@@ -149,27 +136,16 @@ describe('ExportMenu', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
     fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
 
-    const status = await screen.findByText('PNG exported locally. Export saved.');
-    expect(downloadedBeforeUpload).toBe(true);
-    expect(mocks.uploadCoatExportToCloud).toHaveBeenCalledTimes(1);
-    expect(mocks.uploadCoatExportToCloud).toHaveBeenCalledWith({
-      file: expect.any(Blob),
-      fileType: 'png',
-      width: 1024,
-      height: 614,
-      locale: 'en',
-    });
-    expect(status.textContent).toContain('Export saved.');
-    expect(status.textContent).not.toMatch(/https?:\/\//);
-    expect(status.textContent).not.toContain('blob:');
-    expect(status.textContent).not.toContain('imageUrl');
-    expect(status.textContent).not.toContain('shareUrl');
+    expect(await screen.findByText('PNG exported locally.')).toBeDefined();
+    expect(exportModule.exportCoatPng).toHaveBeenCalledTimes(1);
+    expect(downloadClicks).toHaveBeenCalledTimes(1);
+    expect(mocks.uploadCoatExportToCloud).not.toHaveBeenCalled();
     downloadClicks.mockRestore();
   });
 
-  it('keeps the local download and shows cloudExportFailed when upload fails', async () => {
+  it('shows export failure without downloading or calling cloud upload', async () => {
     const downloadClicks = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
-    mocks.uploadCoatExportToCloud.mockRejectedValueOnce(new mocks.CoatExportUploadError('storage_not_configured'));
+    vi.mocked(exportModule.exportCoatPng).mockRejectedValueOnce(new Error('png export failed'));
     Object.defineProperty(URL, 'createObjectURL', {
       configurable: true,
       value: vi.fn(() => 'blob:coat-export'),
@@ -183,14 +159,13 @@ describe('ExportMenu', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
     fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
 
-    expect((await screen.findByRole('alert')).textContent).toBe('Cloud save failed: storage_not_configured');
-    expect(downloadClicks).toHaveBeenCalled();
-    expect(screen.getByText('PNG exported locally.').textContent).toBe('PNG exported locally.');
-    expect(screen.queryByText(/https?:\/\//)).toBeNull();
+    expect((await screen.findByRole('alert')).textContent).toBe('Export failed: png export failed');
+    expect(downloadClicks).not.toHaveBeenCalled();
+    expect(mocks.uploadCoatExportToCloud).not.toHaveBeenCalled();
     downloadClicks.mockRestore();
   });
 
-  it('uploads JPEG and PDF downloads with matching fileType and does not upload Share or Print', async () => {
+  it('downloads JPEG and PDF locally without cloud upload and keeps Share and Print', async () => {
     const downloadClicks = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
     const share = vi.fn(async () => undefined);
     class TestFile extends Blob {
@@ -216,31 +191,23 @@ describe('ExportMenu', () => {
 
     fireEvent.change(screen.getByLabelText('File type'), { target: { value: 'jpeg' } });
     fireEvent.click(screen.getByRole('button', { name: 'Download JPG' }));
-    await waitFor(() => expect(mocks.uploadCoatExportToCloud).toHaveBeenCalledTimes(1));
-    expect(mocks.uploadCoatExportToCloud).toHaveBeenLastCalledWith(expect.objectContaining({
-      fileType: 'jpeg',
-      width: 1024,
-      height: 614,
-      locale: 'en',
-    }));
+    await waitFor(() => expect(exportModule.exportCoatJpeg).toHaveBeenCalledTimes(1));
+    expect(screen.getByText('JPG exported locally.')).toBeDefined();
 
     fireEvent.change(screen.getByLabelText('File type'), { target: { value: 'pdf' } });
     fireEvent.click(screen.getByRole('button', { name: 'Download PDF' }));
-    await waitFor(() => expect(mocks.uploadCoatExportToCloud).toHaveBeenCalledTimes(2));
-    expect(mocks.uploadCoatExportToCloud).toHaveBeenLastCalledWith(expect.objectContaining({
-      fileType: 'pdf',
-      locale: 'en',
-    }));
+    await waitFor(() => expect(exportModule.exportCoatPdf).toHaveBeenCalledTimes(1));
+    expect(screen.getByText('PDF exported locally.')).toBeDefined();
+    expect(downloadClicks).toHaveBeenCalledTimes(2);
+    expect(mocks.uploadCoatExportToCloud).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole('button', { name: 'Share' }));
     expect((await screen.findByText('Native share sheet opened.')).textContent).toBe('Native share sheet opened.');
     fireEvent.click(screen.getByRole('button', { name: 'Print' }));
     await waitFor(() => expect(exportModule.printCoatScene).toHaveBeenCalledTimes(1));
 
-    expect(mocks.uploadCoatExportToCloud).toHaveBeenCalledTimes(2);
-    expect(downloadClicks).toHaveBeenCalledTimes(2);
+    expect(mocks.uploadCoatExportToCloud).not.toHaveBeenCalled();
     expect(share).toHaveBeenCalledTimes(1);
     downloadClicks.mockRestore();
   });
 });
-

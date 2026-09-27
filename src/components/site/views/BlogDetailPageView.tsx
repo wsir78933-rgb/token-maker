@@ -28,6 +28,9 @@ const copyByLocale = {
     placeholderEyebrow: 'Coming Soon',
     blog: 'Blog',
     liveLabel: 'Published Article',
+    publishedBy: 'Published and maintained by Token Maker',
+    publishedLabel: 'Published',
+    updatedLabel: 'Updated',
     placeholderLabel: 'Draft Article',
     detailHeading: 'Full article',
     placeholderDetailHeading: 'Article coming soon',
@@ -54,6 +57,9 @@ const copyByLocale = {
     placeholderEyebrow: '文章准备中',
     blog: '博客',
     liveLabel: '正式文章',
+    publishedBy: '由 Token Maker 发布与维护',
+    publishedLabel: '发布于',
+    updatedLabel: '更新于',
     placeholderLabel: '草稿文章',
     detailHeading: '正文',
     placeholderDetailHeading: '文章准备中',
@@ -180,15 +186,31 @@ export function BlogDetailPageView({
                   {post.title}
                 </h1>
                 <p className="max-w-3xl text-base leading-8 text-stone-300">{post.excerpt}</p>
-                <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.24em] text-stone-300">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-stone-300">
                   <span className="rounded-full border border-[#d7b46a]/30 bg-[#d7b46a]/12 px-3 py-1.5 text-[#f1d492]">
                     {isPlaceholder ? copy.placeholderLabel : copy.liveLabel}
                   </span>
                   <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
-                    {formatBlogUpdatedAt(locale, post.updatedAt)}
-                  </span>
-                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
                     {post.readTime}
+                  </span>
+                  <Link
+                    href={getLocalizedPath(locale, '/about')}
+                    prefetch={false}
+                    className="text-[#f1d492] underline decoration-[#d7b46a]/45 underline-offset-4 transition hover:decoration-[#f1d492]"
+                  >
+                    {copy.publishedBy}
+                  </Link>
+                  {post.publishedAt ? (
+                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
+                      {copy.publishedLabel}{' '}
+                      <time dateTime={post.publishedAt}>
+                        {formatBlogUpdatedAt(locale, post.publishedAt)}
+                      </time>
+                    </span>
+                  ) : null}
+                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
+                    {copy.updatedLabel}{' '}
+                    <time dateTime={post.updatedAt}>{formatBlogUpdatedAt(locale, post.updatedAt)}</time>
                   </span>
                 </div>
 

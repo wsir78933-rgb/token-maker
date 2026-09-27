@@ -12,6 +12,8 @@ import {
 } from './index';
 
 const DND_CAMPAIGNS_SLUG = 'dnd-campaigns';
+const DND_RULES_UPDATE_URL =
+  'https://www.dndbeyond.com/posts/1875-updating-your-campaign-to-the-5-5e-d-d-rules';
 const COVER_PATH = '/blog/covers/en/dnd-campaigns.webp';
 const ENGLISH_COVER_ALT =
   'A new Dungeon Master at a wooden table comparing three different adventure books, respectively featuring a snowy mountain, a mine lantern, and a broken obelisk';
@@ -40,6 +42,10 @@ describe('dnd campaigns blog post', () => {
     expect(chinesePost?.publishedAt).toBe('2026-09-11');
     expect(chinesePost?.updatedAt).toBe('2026-09-24');
     expect(chinesePost?.bodyHtml).toContain('没有明确偏好时，优先考察适用对象和玩家人数都对得上的候选；已有可用资料或明确等级目标时，再让这些条件决定取舍。');
+    expect(chinesePost?.bodyHtml).toContain(`<a href="${DND_RULES_UPDATE_URL}">更新 5.5e 规则的官方说明</a>`);
+    expect(chinesePost?.bodyHtml).toContain('此前标为“2024”的内容现在标为“5.5e”，2014 内容标为“5e”');
+    expect(chinesePost?.bodyHtml).toContain('官方所说的兼容不等于两套规则的每条机制完全相同');
+    expect(chinesePost?.bodyHtml).toContain('不能把“未说明”当成“不兼容”');
     expect(chinesePost?.bodyHtml).not.toContain('data-video-id=');
     expect(chinesePost?.bodyHtml).not.toContain('<iframe');
     expect(chinesePost?.coverImage).toBe(COVER_PATH);

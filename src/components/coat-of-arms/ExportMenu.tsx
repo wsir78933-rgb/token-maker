@@ -22,7 +22,6 @@ import {
   type EditorPreferences,
 } from '@/lib/coat-of-arms/editor-preferences';
 import { sanitizeCoatFileBaseName } from '@/lib/coat-of-arms/file-name';
-import { uploadCoatExportToCloud } from '@/lib/coat-of-arms/cloud-export/client-upload';
 import type { CoatLocale, CoatProject } from '@/lib/coat-of-arms/types';
 import { Button } from '@/components/ui/button';
 import { getCoatWorkbenchCopy } from './workbench-copy';
@@ -267,27 +266,14 @@ export function ExportMenu({ locale, menuId, project }: ExportMenuProps) {
     if (nextFileType === 'jpeg') setTransparentBackground(false);
   };
 
-  const downloadSelectedExportThenUpload = async () => {
+  const downloadSelectedExportLocally = async () => {
     try {
       setError(null);
       const { size, quality } = readLatestExportPreferences();
       const renderOptions = getCoatExportRenderOptions(transparentBackground);
-      const { width, height } = getCoatExportDimensions(project, size);
       const exportedBlob = await createCoatExportBlob(fileType, project, size, quality, renderOptions);
       downloadCoatBlob(exportedBlob, getCoatExportDownloadFileName(baseName, size, fileType));
       setStatus(getDownloadSuccessMessage(fileType, copy));
-      try {
-        await uploadCoatExportToCloud({
-          file: exportedBlob,
-          fileType,
-          width,
-          height,
-          locale,
-        });
-        setStatus(`${getDownloadSuccessMessage(fileType, copy)} ${copy.cloudExportSaved}`);
-      } catch (uploadCaught) {
-        setError(copy.cloudExportFailed(getErrorMessage(uploadCaught)));
-      }
     } catch (caught) {
       setStatus(null);
       setError(copy.exportOperationFailed(getErrorMessage(caught)));
@@ -370,7 +356,7 @@ export function ExportMenu({ locale, menuId, project }: ExportMenuProps) {
         <Button
           className="coat-workbench-export-download"
           type="button"
-          onClick={() => void downloadSelectedExportThenUpload()}
+          onClick={() => void downloadSelectedExportLocally()}
         ><Download aria-hidden="true" /><span>{copy.downloadExport(fileType)}</span></Button>
         <div className="coat-workbench-export-secondary">
           <Button type="button" variant="outline" onClick={() => void runExport(shareSelectedPng, copy.imageShared)}><Share2 aria-hidden="true" /><span>{copy.exportShare}</span></Button>
