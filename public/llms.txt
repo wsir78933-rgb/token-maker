@@ -79,6 +79,18 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [dnd dwarf names: 100+ Names, Clans, and Nicknames](https://www.tokenmaker.one/blog/dnd-dwarf-names): Dwarf first names, clan surnames, funny dwarf names, naming rules, VTT token label tips, FAQ, and companion video.
 - [dnd mace 5e: 1d6 Stats, Sap, and Best Uses](https://www.tokenmaker.one/blog/dnd-mace): Mace weapon stats, 2014/2024 Sap notes, weapon comparisons, best users, VTT token tips, FAQ, and companion video.
 - [New DM? Compare DnD Campaigns by Player Count, Level, and Rules](https://www.tokenmaker.one/blog/dnd-campaigns): Choose a first published adventure by checking official beginner wording, player counts, starting levels, and rules labels, with missing facts left to confirm.
+- [dnd hunter's mark Guide: 2024/2014 Rules, Damage, and VTT Tips](https://www.tokenmaker.one/blog/dnd-hunters-mark): Learn dnd hunter's mark fast: 2024 and 2014 rules, concentration, damage, bonus action timing, table rulings, VTT token tracking, and FAQ.
+- [DND Mage Armor Guide: AC Rules, Best Uses, and Common Rulings](https://www.tokenmaker.one/blog/dnd-mage-armor): Learn how dnd mage armor works, how to calculate AC, what it stacks with, who should use it, and the overlooked touch-target trick many players miss.
+- [DND Giants: Split Type, Huge Space, and Encounter Controls](https://www.tokenmaker.one/blog/dnd-giants): Split Giant type from the six true DND giants, check 2014 and current Basic Rules, treat the Ordning as status, then lock map, morale, and tokens.
+- [DND Dhampir Guide: Traits, Vampiric Bite, Best Classes, and Roleplay Tips](https://www.tokenmaker.one/blog/dnd-dhampir): Learn what a DND dhampir is, how Vampiric Bite works, which classes fit best, and how to roleplay the lineage without annoying your table.
+- [DND Grung Guide: Traits, Best Classes, Poison Rules, and DM Tips](https://www.tokenmaker.one/blog/dnd-grung): Learn what a DND grung is, how poison and water dependency work, which classes fit best, and what to ask your DM before playing one.
+- [DnD Classes Ranked: The Best D&D Classes for Beginners, Power, and Fun](https://www.tokenmaker.one/blog/dnd-classes-ranked): Looking for a simple DnD classes ranked guide? Here is an easy-to-read ranking of all 12 D&D classes based on power, versatility, beginner-friendliness, and overall fun.
+- [D&D Constitution Guide](https://www.tokenmaker.one/blog/dnd-constitution-guide): Learn how D&D Constitution affects hit points, saving throws, concentration checks, and survivability. Includes score tables, class tips, FAQ, and a dice roller link.
+- [D&D Druid Spells Guide: Best Cantrips, Prepared Lists, and Circle Magic](https://www.tokenmaker.one/blog/dnd-druid-spells): Complete DND druid spells guide for 5e with best cantrips, 1st-3rd level spell picks, concentration advice, prepared spell examples, Circle notes, traps, and FAQ.
+- [DND Ranger Guide for 2014 and 2024 Rules](https://www.tokenmaker.one/blog/dnd-ranger): Build a DND Ranger with a clear 2014 or 2024 path, level 1–5 decisions, party-role checks, source-labeled subclasses, and an optional VTT token workflow.
+- [DnD Wizard Spells: Prepare From the Spellbook, Not the Catalog](https://www.tokenmaker.one/blog/dnd-wizard-spells): dnd wizard spells on a legal sheet are prepared names from your spellbook, not a mixed catalog. Write 2014 or 2024 first, count spellbook / prepared / slots, skip rituals when the year allows, and keep one concentration job. 2014 uses Intelligence plus Wizard level; 2024 uses the Prepared Spells column (four at level 1, six at level 3).
+- [D&D Schools of Magic Explained: The Eight Spell Schools and How to Read Them](https://www.tokenmaker.one/blog/dnd-schools-of-magic): dnd schools of magic names eight 2024 spell categories, not class features. Pair each school with a checked example, then check the spell, class list, and rules year.
+- [DnD Warlock Spells: Six Choices, Two Slots, One Missing Party Job](https://www.tokenmaker.one/blog/dnd-warlock-spells): For a level-5 Warlock, use the 2024 rules to separate six base prepared-spell entries from two level-3 Pact Magic slots, then match each choice to your party's missing job.
 
 ## Site Files
 
@@ -144,3 +156,15 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [dnd dwarf names：100+ 个能直接上桌的矮人名字](https://www.tokenmaker.one/zh/blog/dnd-dwarf-names)
 - [dnd mace 指南：1d6 数据、Sap 与最佳用法](https://www.tokenmaker.one/zh/blog/dnd-mace)
 - [DND入门模组：第一次带朋友，从哪部开始？](https://www.tokenmaker.one/zh/blog/dnd-campaigns): 比较《冰塔峰之龙》《失落矿坑》和《破碎方尖碑》，按新 DM 适用说明、可用资料和目标等级选定第一部冒险；人数或资料条件尚未确认时，明确下一步该核对什么。
+- [dnd hunter's mark 指南：2024/2014 规则、伤害与 VTT Token](https://www.tokenmaker.one/zh/blog/dnd-hunters-mark): 这篇 dnd hunter's mark 指南快速讲清 2024/2014 规则差异、伤害、专注、附赠动作、常见裁定与 VTT Token 标记建议。
+- [dnd mage armor 指南：AC 规则、最佳用法与常见裁定](https://www.tokenmaker.one/zh/blog/dnd-mage-armor): 这篇 dnd mage armor 指南会讲清 AC 怎么算、能和什么叠加、谁最适合使用，以及很多玩家会忽略的 Touch 目标技巧。
+- [巨人遭遇：先锁规则版本，再写占位、目标和士气](https://www.tokenmaker.one/zh/blog/dnd-giants): 分开 2014 年的巨人类和六种经典巨人，核验当前巨型体型条目，把巨人等级秩序当身份而不是伤害，再写地图、目标和停手规则。
+- [DND Dhampir 指南：种族特性、咬击机制、最佳职业与跑团演法](https://www.tokenmaker.one/zh/blog/dnd-dhampir): 想玩 DND Dhampir？这篇指南会讲清 Dhampir 强不强、Vampiric Bite 怎么用、哪些职业最适合，以及怎样把这个谱系演得有张力又不烦人。
+- [DND Grung 指南：特性、最佳职业、毒素规则与 DM 建议](https://www.tokenmaker.one/zh/blog/dnd-grung): 想知道 dnd grung 到底值不值得玩？这篇指南会讲清 Grung 的官方出处、毒素和 Water Dependency 怎么算、哪些职业最适合，以及 DM 最在意什么。
+- [DND 职业排名：最适合新手、强度和乐趣都在线的 D&D 职业](https://www.tokenmaker.one/zh/blog/dnd-classes-ranked): 想看一份简单直接的 DND 职业排名？这篇文章会从强度、泛用性、上手难度和实际乐趣出发，对全部 12 个 D&D 职业做清晰排序。
+- [D&D Constitution 指南：生命值与专注判定的核心机制](https://www.tokenmaker.one/zh/blog/dnd-constitution-guide): 在 D&D 中，Constitution 决定了你的角色能活多久。本文提供 dnd constitution 的实战数据、法术专注机制解析与种族选择推荐，并内置工具辅助检定。
+- [DND 德鲁伊法术 (Druid Spells) 指南：最佳戏法、准备列表与避坑](https://www.tokenmaker.one/zh/blog/dnd-druid-spells): 完整 DND 德鲁伊法术指南，覆盖 5e 最佳戏法、1-3 环法术推荐、专注选择、每日准备列表、结社差异、陷阱法术和 FAQ。
+- [DND 游侠指南：从版本选择到 1 级职责与首回合](https://www.tokenmaker.one/zh/blog/dnd-ranger): 先区分 2014 与 2024 Ranger，再按队伍职责安排属性、技能、装备和首回合；附 1–5 级检查点与可选 VTT Token 制作流程。
+- [DND 法师法术：书里有 6 个，不等于今天准备 6 个](https://www.tokenmaker.one/zh/blog/dnd-wizard-spells): 开团前先写 2014 或 2024，再把法术书、准备法术和法术位分成三栏；按场景写出可回算的 1–3 级低环清单。
+- [龙与地下城法术学派详解：八大学派与查阅方法](https://www.tokenmaker.one/zh/blog/dnd-schools-of-magic): 了解龙与地下城八大法术学派及其代表法术，分清法术分类、职业法术列表与法师子职，并通过疗伤术和侦测魔法核对 2014 年与 2024 年规则的区别。
+- [龙与地下城契术师法术：远程、控场、位移、反应怎么选](https://www.tokenmaker.one/zh/blog/dnd-warlock-spells): 按 2024 规则选择契术师的远程、控场、位移与反应法术：先分清基础准备数量、契术魔法法术位和始终准备的额外来源，再核对动作、射程、专注与触发条件。

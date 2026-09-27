@@ -137,6 +137,36 @@ function getNextFeatureMenuItemIndex(
   return null;
 }
 
+function readFeatureMenuItem(menuItem: unknown, itemIndex: number): HTMLAnchorElement {
+  if (menuItem instanceof HTMLAnchorElement) {
+    return menuItem;
+  }
+
+  const received = menuItem instanceof Node ? menuItem.nodeName : String(menuItem);
+  throw new Error(`Feature menu item ${itemIndex} is missing. Received ${received}.`);
+}
+
+function readFeatureMenuToggle(menuToggle: HTMLButtonElement | null): HTMLButtonElement {
+  if (!(menuToggle instanceof HTMLButtonElement)) {
+    throw new Error(`Feature menu toggle is missing. Received ${menuToggle === null ? 'null' : typeof menuToggle}.`);
+  }
+
+  return menuToggle;
+}
+
+function triggerTabLeavesFeatureMenu(
+  currentTarget: EventTarget,
+  menuToggle: HTMLButtonElement | null,
+  shiftKey: boolean,
+): boolean {
+  const onMenuToggle = currentTarget === menuToggle;
+  if (shiftKey) {
+    return !onMenuToggle;
+  }
+
+  return onMenuToggle;
+}
+
 export function ContentSiteTopbarFeatureMenu(props: {
   featureMenuLabel: string;
   featureMenuHref: string;
@@ -189,11 +219,28 @@ export function ContentSiteTopbarFeatureMenu(props: {
       return;
     }
 
-    pendingMenuItemFocusRef.current = Math.max(0, Math.min(index, features.length - 1));
+    const nextIndex = Math.max(0, Math.min(index, features.length - 1));
+    clearFeatureMenuCloseTimer(closeTimerIdRef);
+
+    if (menuIsOpen) {
+      readFeatureMenuItem(menuItemRefs.current[nextIndex], nextIndex).focus();
+      return;
+    }
+
+    pendingMenuItemFocusRef.current = nextIndex;
     setMenuIsOpen(true);
   }
 
   function handleTriggerKeyDown(event: ReactKeyboardEvent<HTMLElement>) {
+    if (event.key === 'Tab') {
+      if (!triggerTabLeavesFeatureMenu(event.currentTarget, menuToggleRef.current, event.shiftKey)) {
+        return;
+      }
+
+      closeMenu();
+      return;
+    }
+
     if (event.key === 'Escape') {
       event.preventDefault();
       closeMenuAndRestoreFocus();
@@ -219,13 +266,18 @@ export function ContentSiteTopbarFeatureMenu(props: {
       return;
     }
 
+    if (event.key === 'Tab') {
+      closeMenu();
+      return;
+    }
+
     const nextItemIndex = getNextFeatureMenuItemIndex(itemIndex, features.length, event.key);
     if (nextItemIndex === null) {
       return;
     }
 
     event.preventDefault();
-    menuItemRefs.current[nextItemIndex]?.focus();
+    readFeatureMenuItem(menuItemRefs.current[nextItemIndex], nextItemIndex).focus();
   }
 
   useEffect(() => {
@@ -239,18 +291,21 @@ export function ContentSiteTopbarFeatureMenu(props: {
 
   useEffect(() => {
     if (menuIsOpen) {
+      restoreFocusOnCloseRef.current = false;
       const pendingMenuItemFocus = pendingMenuItemFocusRef.current;
       if (pendingMenuItemFocus !== null) {
-        menuItemRefs.current[pendingMenuItemFocus]?.focus();
         pendingMenuItemFocusRef.current = null;
+        readFeatureMenuItem(menuItemRefs.current[pendingMenuItemFocus], pendingMenuItemFocus).focus();
       }
       return;
     }
 
-    if (restoreFocusOnCloseRef.current) {
-      restoreFocusOnCloseRef.current = false;
-      menuToggleRef.current?.focus();
+    if (!restoreFocusOnCloseRef.current) {
+      return;
     }
+
+    restoreFocusOnCloseRef.current = false;
+    readFeatureMenuToggle(menuToggleRef.current).focus();
   }, [menuIsOpen]);
 
   return (
@@ -298,7 +353,7 @@ export function ContentSiteTopbarFeatureMenu(props: {
               href={feature.href}
               prefetch={false}
               role="menuitem"
-              tabIndex={menuIsOpen ? 0 : -1}
+              tabIndex={-1}
               className="site-nav-dropdown__link site-nav-dropdown__link--feature"
               aria-label={feature.title}
               ref={(element) => {

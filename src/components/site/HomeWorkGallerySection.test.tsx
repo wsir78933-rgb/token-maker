@@ -1,10 +1,15 @@
 // @vitest-environment jsdom
 
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { HOME_WORK_GALLERY_IMAGES } from '@/lib/home-work-gallery';
 import { HomeWorkGallerySection } from './HomeWorkGallerySection';
+
+const publicDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../public');
 
 const galleryLocales = [
   {
@@ -47,23 +52,37 @@ const initialWorkGalleryPaths = [
 ];
 
 const nextOptimizedWorkGallerySources = [
-  '/_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F0k-6UsJzfB.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F0yJc-ZgsHP.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F1AWcSOmW1a.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F1irw8Z5hC1.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F22t2gS4KtX.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F2943TclzYk.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F2dUk1xDhem.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F3_5ByLuSkp.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F3uLXUQNVJv.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F4f8zZkiHbB.png&w=3840&q=75',
-  '/_next/image?url=%2Fwork-gallery%2F6A4e-G8MAO.png&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F0k-6UsJzfB.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F0yJc-ZgsHP.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F1AWcSOmW1a.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F1irw8Z5hC1.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F22t2gS4KtX.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F2943TclzYk.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F2dUk1xDhem.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F3_5ByLuSkp.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F3uLXUQNVJv.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F4f8zZkiHbB.webp&w=3840&q=75',
+  '/_next/image?url=%2Fwork-gallery%2F6A4e-G8MAO.webp&w=3840&q=75',
 ];
 
 const workGalleryImageSizes = '(min-width: 1024px) 16.666vw, (min-width: 768px) 33.333vw, 50vw';
 const firstNextWorkGallerySrcSet =
-  '/_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=384&q=75 384w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=640&q=75 640w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=750&q=75 750w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=828&q=75 828w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=1080&q=75 1080w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=1200&q=75 1200w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=1920&q=75 1920w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=2048&q=75 2048w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.png&w=3840&q=75 3840w';
+  '/_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=384&q=75 384w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=640&q=75 640w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=750&q=75 750w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=828&q=75 828w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=1080&q=75 1080w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=1200&q=75 1200w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=1920&q=75 1920w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=2048&q=75 2048w, /_next/image?url=%2Fwork-gallery%2F0bmBL-1G0X.webp&w=3840&q=75 3840w';
+
+function optimizedGalleryPreviewSrc(previewSrc: string) {
+  return `/_next/image?url=${encodeURIComponent(previewSrc)}&w=3840&q=75`;
+}
+
+function prefetchedWebpFilePath(optimizedSrc: string) {
+  const assetUrl = new URL(optimizedSrc, 'http://gallery.local').searchParams.get('url');
+
+  if (assetUrl === null || !assetUrl.startsWith('/work-gallery/') || !assetUrl.endsWith('.webp')) {
+    throw new Error(`Prefetched gallery source is not a work-gallery WebP path: ${optimizedSrc}`);
+  }
+
+  return path.join(publicDirectory, assetUrl.slice(1));
+}
 
 afterEach(() => {
   cleanup();
@@ -96,8 +115,16 @@ describe('HomeWorkGallerySection', () => {
       expect(galleryGrid.className).toContain('lg:grid-cols-6');
       expect(within(galleryGrid).getAllByRole('listitem')).toHaveLength(12);
       expect(within(galleryGrid).getAllByRole('img')).toHaveLength(12);
+      expect(
+        within(galleryGrid)
+          .getAllByRole('img')
+          .map((galleryImage) => galleryImage.getAttribute('src')),
+      ).toEqual(HOME_WORK_GALLERY_IMAGES.slice(0, 12).map((work) => optimizedGalleryPreviewSrc(work.previewSrc)));
       expect(downloadLinks).toHaveLength(12);
       expect(downloadLinks.map((downloadLink) => downloadLink.getAttribute('href'))).toEqual(initialWorkGalleryPaths);
+      expect(downloadLinks.map((downloadLink) => downloadLink.getAttribute('href'))).toEqual(
+        HOME_WORK_GALLERY_IMAGES.slice(0, 12).map((work) => work.src),
+      );
       expect(downloadLinks.every((downloadLink) => downloadLink.hasAttribute('download'))).toBe(true);
       expect(within(gallerySection).getByText(`12 ${countSeparator} 54`).getAttribute('aria-live')).toBe('polite');
     },
@@ -137,9 +164,17 @@ describe('HomeWorkGallerySection', () => {
       });
 
       expect(within(galleryGrid).getAllByRole('listitem')).toHaveLength(54);
+      expect(
+        within(galleryGrid)
+          .getAllByRole('img')
+          .map((galleryImage) => galleryImage.getAttribute('src')),
+      ).toEqual(HOME_WORK_GALLERY_IMAGES.map((work) => optimizedGalleryPreviewSrc(work.previewSrc)));
       expect(completeDownloadLinks).toHaveLength(54);
       expect(completeDownloadLinks.map((downloadLink) => downloadLink.getAttribute('href'))).toEqual(
         HOME_WORK_GALLERY_IMAGES.map((work) => work.src),
+      );
+      expect(completeDownloadLinks.every((downloadLink) => downloadLink.getAttribute('href')?.endsWith('.png'))).toBe(
+        true,
       );
       expect(completeDownloadLinks.every((downloadLink) => downloadLink.hasAttribute('download'))).toBe(true);
       expect(completeCountStatus.getAttribute('aria-live')).toBe('polite');
@@ -197,6 +232,14 @@ describe('HomeWorkGallerySection', () => {
       expect(preloadedImageRecords.map((preloadedImageRecord) => preloadedImageRecord.src)).toEqual(
         nextOptimizedWorkGallerySources,
       );
+      expect(
+        preloadedImageRecords.map(
+          (preloadedImageRecord) => new URL(preloadedImageRecord.src, 'http://gallery.local').searchParams.get('url'),
+        ),
+      ).toEqual(HOME_WORK_GALLERY_IMAGES.slice(12, 24).map((work) => work.previewSrc));
+      expect(
+        preloadedImageRecords.every((preloadedImageRecord) => existsSync(prefetchedWebpFilePath(preloadedImageRecord.src))),
+      ).toBe(true);
       expect(preloadedImageRecords[0]).toEqual({
         sizes: workGalleryImageSizes,
         srcset: firstNextWorkGallerySrcSet,

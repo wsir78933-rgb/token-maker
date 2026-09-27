@@ -1002,6 +1002,10 @@
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0);
+  /* visibility must apply immediately. A delayed visibility transition rejects focus(). */
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
 }
 
 .site-nav-dropdown__panel {

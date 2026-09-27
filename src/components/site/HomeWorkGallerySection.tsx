@@ -18,7 +18,7 @@ const HOME_WORK_GALLERY_PRELOAD_DELAY_MS = 1000;
 function preloadGalleryImages(galleryImages: readonly HomeWorkGalleryImage[]) {
   for (const galleryImage of galleryImages) {
     const { props: responsiveImageProps } = getImageProps({
-      src: galleryImage.src,
+      src: galleryImage.previewSrc,
       alt: '',
       width: galleryImage.width,
       height: galleryImage.height,
@@ -26,7 +26,7 @@ function preloadGalleryImages(galleryImages: readonly HomeWorkGalleryImage[]) {
     });
 
     if (responsiveImageProps.sizes === undefined || responsiveImageProps.srcSet === undefined) {
-      throw new Error(`Missing responsive preload props for gallery image: ${galleryImage.src}`);
+      throw new Error(`Missing responsive preload props for gallery image: ${galleryImage.previewSrc}`);
     }
 
     const preloadedImage = new window.Image();
@@ -112,7 +112,7 @@ export function HomeWorkGallerySection({ locale }: { locale: SiteLocale }) {
             return (
               <li key={work.id} className="group relative aspect-square overflow-hidden border border-white/10 bg-black/35">
                 <Image
-                  src={work.src}
+                  src={work.previewSrc}
                   alt={workLabel}
                   width={work.width}
                   height={work.height}

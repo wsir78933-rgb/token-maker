@@ -193,7 +193,7 @@ describe('BatchPanel item editing workflow', () => {
     });
   });
 
-  it('opens the empty batch uploader from the keyboard', () => {
+  it('opens the empty batch uploader from Enter and Space', () => {
     render(<BatchPanel />);
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
@@ -201,8 +201,10 @@ describe('BatchPanel item editing workflow', () => {
     const dropZone = screen.getByRole('button', { name: 'batchDropHint' });
 
     fireEvent.keyDown(dropZone, { key: 'Enter' });
-
     expect(inputClick).toHaveBeenCalledTimes(1);
+
+    fireEvent.keyDown(dropZone, { key: ' ' });
+    expect(inputClick).toHaveBeenCalledTimes(2);
   });
 
   it('keeps initial selection and exposes the concrete initial load failure', async () => {

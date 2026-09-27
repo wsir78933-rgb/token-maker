@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ContentSiteTopbar } from './ContentSiteTopbar';
 
@@ -37,6 +37,34 @@ function renderContentSiteTopbar() {
       topbarClassName="topbar"
     />,
   );
+}
+
+function getFeatureMenuitem(itemName: string): HTMLElement {
+  const menuItem = screen.getByRole('menuitem', { name: itemName });
+  if (!(menuItem instanceof HTMLElement)) {
+    throw new Error(
+      `Feature menuitem ${JSON.stringify(itemName)} is not an HTMLElement. Received ${String(menuItem)}.`,
+    );
+  }
+
+  return menuItem;
+}
+
+function openFeatureMenuOnFirstItem(): HTMLElement {
+  const blogLink = screen.getByRole('link', { name: 'Blog' });
+  blogLink.focus();
+  fireEvent.keyDown(blogLink, { key: 'ArrowDown' });
+  return getFeatureMenuitem('Characters');
+}
+
+// jsdom does not move focus on Tab. This checks the handler left the browser default alone.
+function expectFeatureMenuTabLeavesWithoutStealingFocus(target: HTMLElement, shiftKey = false): void {
+  const activeElementBeforeTab = document.activeElement;
+  const tabDefaultWasNotCanceled = fireEvent.keyDown(target, { key: 'Tab', shiftKey });
+
+  expect(tabDefaultWasNotCanceled).toBe(true);
+  expect(getBlogNavItem().getAttribute('data-open')).toBe('false');
+  expect(document.activeElement).toBe(activeElementBeforeTab);
 }
 
 function getBlogNavItem(): HTMLElement {
@@ -205,6 +233,173 @@ describe('ContentSiteTopbar', () => {
     fireEvent.keyDown(blogLink, { key: 'ArrowDown' });
 
     expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Characters' }));
+  });
+
+  it('moves ArrowDown into the feature menu when focus already opened it', () => {
+    renderContentSiteTopbar();
+
+    const blogLink = screen.getByRole('link', { name: 'Blog' });
+    fireEvent.focus(blogLink);
+    expect(getBlogNavItem().getAttribute('data-open')).toBe('true');
+
+    fireEvent.keyDown(blogLink, { key: 'ArrowDown' });
+
+    expect(document.activeElement).toBe(getFeatureMenuitem('Characters'));
+  });
+
+  it('keeps closed feature menuitems out of the tab order', () => {
+    renderContentSiteTopbar();
+
+    expect(getFeatureMenuitem('Characters').getAttribute('tabindex')).toBe('-1');
+    expect(getFeatureMenuitem('Spells').getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('cycles feature menuitems with ArrowUp, ArrowDown, Home, and End', () => {
+    renderContentSiteTopbar();
+
+    const charactersMenuitem = openFeatureMenuOnFirstItem();
+    const spellsMenuitem = getFeatureMenuitem('Spells');
+    expect(charactersMenuitem.getAttribute('tabindex')).toBe('-1');
+    expect(spellsMenuitem.getAttribute('tabindex')).toBe('-1');
+
+    fireEvent.keyDown(charactersMenuitem, { key: 'ArrowDown' });
+    expect(document.activeElement).toBe(spellsMenuitem);
+
+    fireEvent.keyDown(spellsMenuitem, { key: 'ArrowDown' });
+    expect(document.activeElement).toBe(charactersMenuitem);
+
+    fireEvent.keyDown(charactersMenuitem, { key: 'ArrowUp' });
+    expect(document.activeElement).toBe(spellsMenuitem);
+
+    fireEvent.keyDown(spellsMenuitem, { key: 'Home' });
+    expect(document.activeElement).toBe(charactersMenuitem);
+
+    fireEvent.keyDown(charactersMenuitem, { key: 'End' });
+    expect(document.activeElement).toBe(spellsMenuitem);
+  });
+
+  it('opens the feature menu on the last item with ArrowUp', () => {
+    renderContentSiteTopbar();
+
+    const blogLink = screen.getByRole('link', { name: 'Blog' });
+    blogLink.focus();
+    fireEvent.keyDown(blogLink, { key: 'ArrowUp' });
+
+    expect(document.activeElement).toBe(getFeatureMenuitem('Spells'));
+  });
+
+  it('restores the feature menu trigger when Escape closes the menu', () => {
+    renderContentSiteTopbar();
+
+    const charactersMenuitem = openFeatureMenuOnFirstItem();
+    const escapeDefaultWasCanceled = fireEvent.keyDown(charactersMenuitem, { key: 'Escape' });
+
+    expect(escapeDefaultWasCanceled).toBe(false);
+    expect(getBlogNavItem().getAttribute('data-open')).toBe('false');
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Blog categories' }));
+    expect(charactersMenuitem.getAttribute('tabindex')).toBe('-1');
+    expect(getFeatureMenuitem('Spells').getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('closes the feature menu on Tab and Shift+Tab without canceling the key or moving focus', () => {
+    renderContentSiteTopbar();
+
+    const charactersMenuitem = openFeatureMenuOnFirstItem();
+    expectFeatureMenuTabLeavesWithoutStealingFocus(charactersMenuitem);
+    expect(charactersMenuitem.getAttribute('tabindex')).toBe('-1');
+    expect(getFeatureMenuitem('Spells').getAttribute('tabindex')).toBe('-1');
+
+    openFeatureMenuOnFirstItem();
+    const spellsMenuitem = getFeatureMenuitem('Spells');
+    fireEvent.keyDown(getFeatureMenuitem('Characters'), { key: 'ArrowDown' });
+    expect(document.activeElement).toBe(spellsMenuitem);
+    expectFeatureMenuTabLeavesWithoutStealingFocus(spellsMenuitem, true);
+  });
+
+  it('closes the feature menu when Tab leaves the trigger and keeps it open inside the trigger', () => {
+    renderContentSiteTopbar();
+
+    const blogLink = screen.getByRole('link', { name: 'Blog' });
+    act(() => {
+      blogLink.focus();
+    });
+    expect(document.activeElement).toBe(blogLink);
+    expect(getBlogNavItem().getAttribute('data-open')).toBe('true');
+
+    const tabInsideTriggerWasNotCanceled = fireEvent.keyDown(blogLink, { key: 'Tab' });
+    expect(tabInsideTriggerWasNotCanceled).toBe(true);
+    expect(getBlogNavItem().getAttribute('data-open')).toBe('true');
+    expect(document.activeElement).toBe(blogLink);
+
+    expectFeatureMenuTabLeavesWithoutStealingFocus(blogLink, true);
+
+    fireEvent.focus(blogLink);
+    const blogCategoriesButton = screen.getByRole('button', { name: 'Blog categories' });
+    act(() => {
+      blogCategoriesButton.focus();
+    });
+    expect(getBlogNavItem().getAttribute('data-open')).toBe('true');
+    expect(document.activeElement).toBe(blogCategoriesButton);
+    expectFeatureMenuTabLeavesWithoutStealingFocus(blogCategoriesButton);
+  });
+
+  it('does not restore the feature menu toggle when Tab follows Escape while the menu was closed', () => {
+    renderContentSiteTopbar();
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(getBlogNavItem().getAttribute('data-open')).toBe('false');
+
+    const charactersMenuitem = openFeatureMenuOnFirstItem();
+    expect(document.activeElement).toBe(charactersMenuitem);
+
+    expectFeatureMenuTabLeavesWithoutStealingFocus(charactersMenuitem);
+    expect(document.activeElement).not.toBe(screen.getByRole('button', { name: 'Blog categories' }));
+  });
+
+  it('closes the feature menu on Tab without canceling the key or focusing a hidden stop', () => {
+    renderContentSiteTopbar();
+
+    const hiddenStop = document.createElement('button');
+    hiddenStop.type = 'button';
+    hiddenStop.id = 'hidden-tab-stop';
+    hiddenStop.hidden = true;
+    hiddenStop.tabIndex = 0;
+    hiddenStop.textContent = 'hidden between';
+    getBlogNavItem().insertAdjacentElement('afterend', hiddenStop);
+
+    const charactersMenuitem = openFeatureMenuOnFirstItem();
+    expect(hiddenStop.tabIndex).toBe(0);
+    expect(document.activeElement).toBe(charactersMenuitem);
+
+    expectFeatureMenuTabLeavesWithoutStealingFocus(charactersMenuitem);
+    expect(document.activeElement).not.toBe(hiddenStop);
+  });
+
+  it('does not move focus to the feature menu toggle when the pointer leaves after Escape while closed', () => {
+    vi.useFakeTimers();
+    try {
+      renderContentSiteTopbar();
+
+      const contactLink = getSingleLink('Contact');
+      contactLink.focus();
+      fireEvent.keyDown(document, { key: 'Escape' });
+      expect(getBlogNavItem().getAttribute('data-open')).toBe('false');
+
+      const siteNavItem = getBlogNavItem();
+      fireEvent.mouseEnter(siteNavItem);
+      expect(siteNavItem.getAttribute('data-open')).toBe('true');
+      expect(document.activeElement).toBe(contactLink);
+
+      fireEvent.mouseLeave(siteNavItem);
+      act(() => {
+        vi.advanceTimersByTime(120);
+      });
+
+      expect(siteNavItem.getAttribute('data-open')).toBe('false');
+      expect(document.activeElement).toBe(contactLink);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('gives the Editor link rounded-md and not a pill', () => {

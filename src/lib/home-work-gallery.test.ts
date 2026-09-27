@@ -61,6 +61,7 @@ const expectedImageIds = [
 ] as const;
 
 const expectedImagePaths = expectedImageIds.map((imageId) => `/work-gallery/${imageId}.png`);
+const expectedPreviewPaths = expectedImageIds.map((imageId) => `/work-gallery/${imageId}.webp`);
 
 const publicWorkGalleryDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../public/work-gallery');
 
@@ -83,6 +84,42 @@ function getPngDimensions(pngPath: string) {
   };
 }
 
+function getWebpDimensions(webpPath: string) {
+  const webpBuffer = readFileSync(webpPath);
+
+  if (webpBuffer.length < 30) {
+    throw new Error(`WebP is too small to contain a header: ${webpPath}`);
+  }
+
+  if (webpBuffer.toString('ascii', 0, 4) !== 'RIFF' || webpBuffer.toString('ascii', 8, 12) !== 'WEBP') {
+    throw new Error(`Invalid WebP signature: ${webpPath}`);
+  }
+
+  const chunkType = webpBuffer.toString('ascii', 12, 16);
+
+  if (chunkType === 'VP8X') {
+    return {
+      width: 1 + webpBuffer.readUIntLE(24, 3),
+      height: 1 + webpBuffer.readUIntLE(27, 3),
+    };
+  }
+
+  if (chunkType === 'VP8L') {
+    if (webpBuffer[20] !== 0x2f) {
+      throw new Error(`Invalid VP8L signature: ${webpPath}`);
+    }
+
+    const dimensionBits = webpBuffer.readUInt32LE(21);
+
+    return {
+      width: (dimensionBits & 0x3fff) + 1,
+      height: ((dimensionBits >> 14) & 0x3fff) + 1,
+    };
+  }
+
+  throw new Error(`Unsupported WebP chunk ${chunkType}: ${webpPath}`);
+}
+
 async function loadHomeWorkGalleryModule() {
   return import('./home-work-gallery');
 }
@@ -100,14 +137,19 @@ describe('home work gallery manifest', () => {
     expect(HOME_WORK_GALLERY_IMAGES).toHaveLength(54);
     expect(HOME_WORK_GALLERY_IMAGES.map((image) => image.id)).toEqual(expectedImageIds);
     expect(HOME_WORK_GALLERY_IMAGES.map((image) => image.src)).toEqual(expectedImagePaths);
+    expect(HOME_WORK_GALLERY_IMAGES.map((image) => image.previewSrc)).toEqual(expectedPreviewPaths);
     expect(new Set(HOME_WORK_GALLERY_IMAGES.map((image) => image.id)).size).toBe(54);
     expect(new Set(HOME_WORK_GALLERY_IMAGES.map((image) => image.src)).size).toBe(54);
+    expect(new Set(HOME_WORK_GALLERY_IMAGES.map((image) => image.previewSrc)).size).toBe(54);
 
     for (const image of HOME_WORK_GALLERY_IMAGES) {
       expect(image.width).toBe(1200);
       expect(image.height).toBe(630);
       expect(image.src.endsWith('.png')).toBe(true);
+      expect(image.previewSrc.endsWith('.webp')).toBe(true);
       expect(image.src.startsWith('/work-gallery/')).toBe(true);
+      expect(image.previewSrc.startsWith('/work-gallery/')).toBe(true);
+      expect(image.previewSrc).not.toBe(image.src);
     }
   });
 
@@ -136,19 +178,22 @@ describe('home work gallery manifest', () => {
     });
   });
 
-  it('matches the public work gallery directory and real PNG dimensions to the manifest', async () => {
+  it('matches the public work gallery directory and real PNG and WebP dimensions to the manifest', async () => {
     const { HOME_WORK_GALLERY_IMAGES } = await loadHomeWorkGalleryModule();
-    const manifestFileNames = HOME_WORK_GALLERY_IMAGES.map((image) => path.basename(image.src)).sort();
+    const pngFileNames = HOME_WORK_GALLERY_IMAGES.map((image) => path.basename(image.src)).sort();
+    const webpFileNames = HOME_WORK_GALLERY_IMAGES.map((image) => path.basename(image.previewSrc)).sort();
     const publicWorkGalleryFileNames = readdirSync(publicWorkGalleryDirectory).sort();
 
-    expect(publicWorkGalleryFileNames).toEqual(manifestFileNames);
+    expect(publicWorkGalleryFileNames).toEqual([...pngFileNames, ...webpFileNames].sort());
 
     for (const image of HOME_WORK_GALLERY_IMAGES) {
-      const publicWorkGalleryImagePath = path.join(publicWorkGalleryDirectory, path.basename(image.src));
-      const pngDimensions = getPngDimensions(publicWorkGalleryImagePath);
+      const pngPath = path.join(publicWorkGalleryDirectory, path.basename(image.src));
+      const webpPath = path.join(publicWorkGalleryDirectory, path.basename(image.previewSrc));
+      const pngDimensions = getPngDimensions(pngPath);
+      const webpDimensions = getWebpDimensions(webpPath);
 
-      expect(pngDimensions.width).toBe(1200);
-      expect(pngDimensions.height).toBe(630);
+      expect(pngDimensions).toEqual({ width: 1200, height: 630 });
+      expect(webpDimensions).toEqual({ width: 1200, height: 630 });
     }
   });
 });
