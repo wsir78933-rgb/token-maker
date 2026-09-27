@@ -91,7 +91,7 @@ function getBlogCategorySitemapRoutes(siteUrl: string): MetadataRoute.Sitemap {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const staticPaths = ['/', '/faq', '/privacy', '/about', '/changelog', '/dice-roller-dnd', '/coat-of-arms-maker', '/contact'] as const;
+  const staticPaths = ['/', '/faq', '/privacy', '/about', '/changelog', '/dice-roller-dnd', '/armor-creator', '/coat-of-arms-maker', '/contact'] as const;
 
   const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     staticPaths.map((path) => {

@@ -170,6 +170,7 @@ function buildContentSitePlainLinks(
     buildEditorLink(locale, normalizedCurrentPath, navLabels.editor),
     buildSectionLink(locale, normalizedCurrentPath, '/dice-roller-dnd', navLabels.diceRoller),
     buildSectionLink(locale, normalizedCurrentPath, '/coat-of-arms-maker', navLabels.coatMaker),
+    buildSectionLink(locale, normalizedCurrentPath, '/armor-creator', navLabels.armor),
     buildSectionLink(locale, normalizedCurrentPath, '/contact', navLabels.contact),
   ];
 }

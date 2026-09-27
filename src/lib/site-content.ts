@@ -260,6 +260,7 @@ export interface NavLabels {
   editor: string;
   diceRoller: string;
   coatMaker: string;
+  armor: string;
   coatMakerBackToEditor: string;
   templates: string;
   blog: string;
@@ -538,6 +539,7 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
     editor: 'Editor',
     diceRoller: 'Dice Roller',
     coatMaker: 'Coat Maker',
+    armor: 'Armor',
     coatMakerBackToEditor: 'Back to the editor',
     templates: 'Templates',
     blog: 'Blog',
@@ -555,6 +557,7 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
     editor: '编辑器',
     diceRoller: '骰子',
     coatMaker: '纹章制作器',
+    armor: '护甲',
     coatMakerBackToEditor: '返回首页编辑器',
     templates: '模板页',
     blog: '博客',

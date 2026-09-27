@@ -22,6 +22,8 @@ const RETAINED_NON_ARTICLE_PATHS = [
   '/zh',
   '/dice-roller-dnd',
   '/zh/dice-roller-dnd',
+  '/armor-creator',
+  '/zh/armor-creator',
   '/templates/square-token-maker',
   '/zh/templates/square-token-maker',
   '/faq',
