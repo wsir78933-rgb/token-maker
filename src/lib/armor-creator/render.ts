@@ -8,9 +8,11 @@ import {
   requireArmorMaterial,
   requireArmorPieceId,
   requireArmorSlot,
+  type ArmorGender,
+  type ArmorMaterial,
   type ArmorSlot,
 } from '@/lib/armor-creator/catalog';
-import { armorPieceSvg } from '@/lib/armor-creator/icons';
+import { armorBodyImagePath, armorPieceImagePath } from '@/lib/armor-creator/icons';
 import type { ArmorSelection } from '@/lib/armor-creator/selection';
 
 const ARMOR_RENDER_SLOTS = [
@@ -57,24 +59,6 @@ type ArmorDrawContext = {
 
 type ArmorPngCanvas = {
   toBlob: (callback: (blob: Blob | null) => void, type?: string) => void;
-};
-
-const PIECE_SVG_SIZE = 64;
-
-const ARMOR_LAYER_BOXES: Record<ArmorRenderSlot, ArmorLayerBox> = {
-  wing: { x: 150, y: 100, width: 300, height: 220 },
-  cloakBack: { x: 210, y: 120, width: 180, height: 300 },
-  body: { x: 0, y: 0, width: ARMOR_PREVIEW_WIDTH, height: ARMOR_PREVIEW_HEIGHT },
-  feetBack: { x: 235, y: 390, width: 130, height: 40 },
-  legs: { x: 245, y: 275, width: 110, height: 140 },
-  feet: { x: 225, y: 400, width: 150, height: 60 },
-  gloves: { x: 175, y: 210, width: 250, height: 70 },
-  chest: { x: 245, y: 130, width: 110, height: 130 },
-  cloakFront: { x: 215, y: 145, width: 170, height: 250 },
-  shoulderLeft: { x: 185, y: 125, width: 75, height: 75 },
-  shoulderRight: { x: 340, y: 125, width: 75, height: 75 },
-  helm: { x: 250, y: 24, width: 100, height: 100 },
-  crown: { x: 245, y: 4, width: 110, height: 64 },
 };
 
 function describeReceivedValue(value: unknown): string {
@@ -249,8 +233,152 @@ export function listArmorRenderLayers(selection: ArmorSelection): ArmorRenderLay
   return layers;
 }
 
-function layerBox(slot: ArmorRenderSlot): ArmorLayerBox {
-  const box = ARMOR_LAYER_BOXES[slot];
+function fixedLayerBox(slot: ArmorRenderSlot): ArmorLayerBox | null {
+  if (slot === 'wing') {
+    return { x: 0, y: 0, width: 600, height: 500 };
+  }
+
+  if (slot === 'cloakBack') {
+    return { x: 219, y: 215, width: 175, height: 260 };
+  }
+
+  if (slot === 'body') {
+    return { x: 200, y: 102, width: 200, height: 400 };
+  }
+
+  if (slot === 'legs') {
+    return { x: 239, y: 280, width: 120, height: 180 };
+  }
+
+  if (slot === 'gloves') {
+    return { x: 220, y: 249, width: 160, height: 90 };
+  }
+
+  if (slot === 'crown') {
+    return { x: 269, y: 121, width: 60, height: 60 };
+  }
+
+  return null;
+}
+
+function requireWornMaterial(layer: ArmorRenderLayer): ArmorMaterial {
+  const pieceId = requireLayerPieceId(layer);
+  const material = pieceMaterial(pieceId);
+  if (material === null) {
+    throw new Error(
+      `Armor piece ${JSON.stringify(pieceId)} on ${JSON.stringify(layer.slot)} has no material. Received null.`,
+    );
+  }
+
+  return material;
+}
+
+function helmLayerBox(material: ArmorMaterial): ArmorLayerBox {
+  if (material === 'plate') {
+    return { x: 250, y: 105, width: 100, height: 100 };
+  }
+
+  if (material === 'leather') {
+    return { x: 250, y: 112, width: 100, height: 100 };
+  }
+
+  if (material === 'cloth') {
+    return { x: 250, y: 106, width: 100, height: 120 };
+  }
+
+  throw new Error(`Armor helm material ${JSON.stringify(material)} has no preview box.`);
+}
+
+function chestLayerBox(material: ArmorMaterial): ArmorLayerBox {
+  if (material === 'plate') {
+    return { x: 231, y: 179, width: 135, height: 135 };
+  }
+
+  if (material === 'leather') {
+    return { x: 230, y: 177, width: 135, height: 166 };
+  }
+
+  if (material === 'cloth') {
+    return { x: 222, y: 183, width: 155, height: 300 };
+  }
+
+  throw new Error(`Armor chest material ${JSON.stringify(material)} has no preview box.`);
+}
+
+function cloakFrontLayerBox(material: ArmorMaterial): ArmorLayerBox {
+  if (material === 'plate') {
+    return { x: 254, y: 164, width: 90, height: 90 };
+  }
+
+  if (material === 'leather') {
+    return { x: 235, y: 164, width: 130, height: 110 };
+  }
+
+  if (material === 'cloth') {
+    return { x: 255, y: 188, width: 90, height: 95 };
+  }
+
+  throw new Error(`Armor cloak front material ${JSON.stringify(material)} has no preview box.`);
+}
+
+function feetLayerBox(material: ArmorMaterial): ArmorLayerBox {
+  if (material === 'plate' || material === 'leather') {
+    return { x: 239, y: 402, width: 120, height: 120 };
+  }
+
+  if (material === 'cloth') {
+    return { x: 238, y: 402, width: 120, height: 120 };
+  }
+
+  throw new Error(`Armor feet material ${JSON.stringify(material)} has no preview box.`);
+}
+
+function shoulderLayerBox(
+  slot: 'shoulderLeft' | 'shoulderRight',
+  material: ArmorMaterial,
+): ArmorLayerBox {
+  const x = slot === 'shoulderLeft' ? 208 : 302;
+  if (material === 'plate' || material === 'leather') {
+    return { x, y: 151, width: 90, height: 90 };
+  }
+
+  if (material === 'cloth') {
+    return { x, y: 151, width: 90, height: 110 };
+  }
+
+  throw new Error(`Armor shoulder material ${JSON.stringify(material)} has no preview box.`);
+}
+
+function materialLayerBox(layer: ArmorRenderLayer): ArmorLayerBox {
+  const material = requireWornMaterial(layer);
+  const slot = layer.slot;
+
+  if (slot === 'helm') {
+    return helmLayerBox(material);
+  }
+
+  if (slot === 'chest') {
+    return chestLayerBox(material);
+  }
+
+  if (slot === 'cloakFront') {
+    return cloakFrontLayerBox(material);
+  }
+
+  if (slot === 'feet' || slot === 'feetBack') {
+    return feetLayerBox(material);
+  }
+
+  if (slot === 'shoulderLeft' || slot === 'shoulderRight') {
+    return shoulderLayerBox(slot, material);
+  }
+
+  throw new Error(
+    `Armor layer ${JSON.stringify(slot)} has no preview box for material ${JSON.stringify(material)}.`,
+  );
+}
+
+function requirePositiveBox(slot: ArmorRenderSlot, box: ArmorLayerBox): ArmorLayerBox {
   if (box.width < 1 || box.height < 1) {
     throw new Error(
       `Armor layer ${JSON.stringify(slot)} has an empty preview box ${box.width}x${box.height}.`,
@@ -260,104 +388,13 @@ function layerBox(slot: ArmorRenderSlot): ArmorLayerBox {
   return box;
 }
 
-const FIGURE_SKIN = '#e6d3b1';
-const FIGURE_TORSO = '#c4a574';
-const FIGURE_STROKE = '#1a140f';
-
-function figurePaint(fill: string): string {
-  return `fill="${fill}" stroke="${FIGURE_STROKE}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"`;
-}
-
-function figureLegsMarkup(): string {
-  const paint = figurePaint(FIGURE_SKIN);
-  return [
-    `<path ${paint} d="M 248 250 C 244 320 246 390 250 430 C 254 456 236 472 286 474 L 324 474 L 330 430 L 318 280 L 300 248 Z"/>`,
-    `<path ${paint} d="M 352 250 C 356 320 354 390 350 430 C 346 456 364 472 314 474 L 276 474 L 270 430 L 282 280 L 300 248 Z"/>`,
-  ].join('');
-}
-
-function figureArmsMarkup(): string {
-  const paint = figurePaint(FIGURE_SKIN);
-  return [
-    `<path ${paint} d="M 300 170 C 246 162 186 180 174 214 C 164 242 170 270 206 276 L 300 280 Z"/>`,
-    `<path ${paint} d="M 300 170 C 354 162 414 180 426 214 C 436 242 430 270 394 276 L 300 280 Z"/>`,
-  ].join('');
-}
-
-function figureNeckMarkup(): string {
-  return `<path ${figurePaint(FIGURE_SKIN)} d="M 290 96 L 288 120 L 272 190 L 328 190 L 312 120 L 310 96 Z"/>`;
-}
-
-function figureTorsoMarkup(): string {
-  return `<path ${figurePaint(FIGURE_TORSO)} d="M 284 164 C 248 160 224 170 216 188 L 226 250 C 236 280 254 302 274 306 L 326 306 C 346 302 364 280 374 250 L 384 188 C 376 170 352 160 316 164 Q 300 184 284 164 Z"/>`;
-}
-
-function figureHeadMarkup(): string {
-  return `<ellipse cx="300" cy="74" rx="42" ry="46" ${figurePaint(FIGURE_SKIN)}/>`;
-}
-
-function bodySvg(): string {
-  return [
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500">',
-    figureLegsMarkup(),
-    figureArmsMarkup(),
-    figureNeckMarkup(),
-    figureTorsoMarkup(),
-    figureHeadMarkup(),
-    '</svg>',
-  ].join('');
-}
-
-function svgWithPixelSize(svg: string, width: number, height: number, label: string): string {
-  const openTagEnd = svg.indexOf('>');
-  if (!svg.startsWith('<svg') || openTagEnd < 0) {
-    throw new Error(
-      `Armor SVG for ${JSON.stringify(label)} is not an <svg> element. Received ${JSON.stringify(svg.slice(0, 80))}.`,
-    );
+function layerBox(layer: ArmorRenderLayer): ArmorLayerBox {
+  const fixedBox = fixedLayerBox(layer.slot);
+  if (fixedBox !== null) {
+    return requirePositiveBox(layer.slot, fixedBox);
   }
 
-  if (svg.slice(0, openTagEnd).includes('width=')) {
-    return svg;
-  }
-
-  return `<svg width="${width}" height="${height}"${svg.slice(4)}`;
-}
-
-function svgDataUrl(svg: string): string {
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-function loadSvgImage(svg: string, label: string): Promise<CanvasImageSource> {
-  if (svg.length === 0) {
-    throw new Error(`Armor SVG for ${JSON.stringify(label)} is empty.`);
-  }
-
-  const ImageConstructor = globalThis.Image;
-  if (typeof ImageConstructor !== 'function') {
-    throw new Error(
-      `Armor SVG for ${JSON.stringify(label)} cannot be drawn because Image is not a function. Received typeof ${typeof ImageConstructor}.`,
-    );
-  }
-
-  const sourceUrl = svgDataUrl(svg);
-  return new Promise((resolve, reject) => {
-    const image = new ImageConstructor();
-    image.onload = () => resolve(image);
-    image.onerror = () => {
-      reject(
-        new Error(
-          `Armor SVG for ${JSON.stringify(label)} could not be decoded. Received label ${JSON.stringify(label)}.`,
-        ),
-      );
-    };
-
-    try {
-      image.src = sourceUrl;
-    } catch (error) {
-      const detail = error instanceof Error ? error.message : describeReceivedValue(error);
-      reject(new Error(`Armor SVG for ${JSON.stringify(label)} could not be loaded. ${detail}`));
-    }
-  });
+  return requirePositiveBox(layer.slot, materialLayerBox(layer));
 }
 
 function requireLayerPieceId(layer: ArmorRenderLayer): string {
@@ -370,38 +407,102 @@ function requireLayerPieceId(layer: ArmorRenderLayer): string {
   return layer.pieceId;
 }
 
-function pieceDrawError(pieceId: string, error: unknown): Error {
-  const detail = error instanceof Error ? error.message : describeReceivedValue(error);
-  if (detail.includes(pieceId) && error instanceof Error) {
-    return error;
+function imageOwnerLabel(layer: ArmorRenderLayer): string {
+  if (layer.pieceId === null) {
+    return JSON.stringify(layer.slot);
   }
 
-  return new Error(`Armor piece ${JSON.stringify(pieceId)} failed to draw. ${detail}`);
+  return `piece ${JSON.stringify(layer.pieceId)}`;
 }
 
-async function loadLayerImage(layer: ArmorRenderLayer): Promise<CanvasImageSource> {
+function imageLoadError(layer: ArmorRenderLayer, sourceUrl: string, detail: string): Error {
+  return new Error(
+    `Armor image for ${imageOwnerLabel(layer)} could not be loaded from ${JSON.stringify(sourceUrl)}. ${detail}`,
+  );
+}
+
+function rethrowWithPieceId(pieceId: string, error: unknown): never {
+  const detail = error instanceof Error ? error.message : describeReceivedValue(error);
+  if (error instanceof Error && detail.includes(pieceId)) {
+    throw error;
+  }
+
+  throw new Error(`Armor piece ${JSON.stringify(pieceId)} image path failed. ${detail}`);
+}
+
+function requireImagePath(sourceUrl: unknown, layer: ArmorRenderLayer): string {
+  if (typeof sourceUrl === 'string' && sourceUrl.length > 0) {
+    return sourceUrl;
+  }
+
+  throw new Error(
+    `Armor image path for ${imageOwnerLabel(layer)} must be a non-empty string. Received ${describeReceivedValue(sourceUrl)}.`,
+  );
+}
+
+function pieceImagePath(layer: ArmorRenderLayer, pieceId: string): string {
+  if (layer.slot === 'feetBack') {
+    return armorPieceImagePath(pieceId, { feetBack: true });
+  }
+
+  if (layer.flatChest) {
+    return armorPieceImagePath(pieceId, { flatChest: true });
+  }
+
+  return armorPieceImagePath(pieceId);
+}
+
+function layerSourceUrl(layer: ArmorRenderLayer, gender: ArmorGender): string {
   if (layer.slot === 'body') {
-    const svg = svgWithPixelSize(bodySvg(), ARMOR_PREVIEW_WIDTH, ARMOR_PREVIEW_HEIGHT, 'body');
-    return loadSvgImage(svg, 'body');
+    return requireImagePath(armorBodyImagePath(gender), layer);
   }
 
   const pieceId = requireLayerPieceId(layer);
+  let sourceUrl: unknown;
   try {
-    const svg = armorPieceSvg(pieceId, layer.flatChest ? { flatChest: true } : undefined);
-    return await loadSvgImage(svgWithPixelSize(svg, PIECE_SVG_SIZE, PIECE_SVG_SIZE, pieceId), pieceId);
-  } catch (error) {
-    throw pieceDrawError(pieceId, error);
+    sourceUrl = pieceImagePath(layer, pieceId);
+  } catch (error: unknown) {
+    rethrowWithPieceId(pieceId, error);
   }
+
+  return requireImagePath(sourceUrl, layer);
 }
 
-async function loadLayerImages(layers: readonly ArmorRenderLayer[]): Promise<CanvasImageSource[]> {
-  const images: CanvasImageSource[] = [];
-
-  for (const layer of layers) {
-    images.push(await loadLayerImage(layer));
+function loadArmorImage(sourceUrl: string, layer: ArmorRenderLayer): Promise<CanvasImageSource> {
+  const ImageConstructor = globalThis.Image;
+  if (typeof ImageConstructor !== 'function') {
+    throw new Error(
+      `Armor image for ${imageOwnerLabel(layer)} cannot be drawn from ${JSON.stringify(sourceUrl)} because Image is not a function. Received typeof ${typeof ImageConstructor}.`,
+    );
   }
 
-  return images;
+  return new Promise((resolve, reject) => {
+    const image = new ImageConstructor();
+    image.onload = () => {
+      resolve(image);
+    };
+    image.onerror = () => {
+      reject(imageLoadError(layer, sourceUrl, 'The image failed to decode.'));
+    };
+
+    try {
+      image.src = sourceUrl;
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : describeReceivedValue(error);
+      reject(imageLoadError(layer, sourceUrl, detail));
+    }
+  });
+}
+
+function loadLayerImage(layer: ArmorRenderLayer, gender: ArmorGender): Promise<CanvasImageSource> {
+  return loadArmorImage(layerSourceUrl(layer, gender), layer);
+}
+
+function loadLayerImages(
+  layers: readonly ArmorRenderLayer[],
+  gender: ArmorGender,
+): Promise<CanvasImageSource[]> {
+  return Promise.all(layers.map((layer) => loadLayerImage(layer, gender)));
 }
 
 function drawMirroredImage(
@@ -421,13 +522,22 @@ function drawLayerImage(
   layer: ArmorRenderLayer,
   image: CanvasImageSource,
 ): void {
-  const box = layerBox(layer.slot);
+  const box = layerBox(layer);
   if (layer.mirror) {
     drawMirroredImage(context, image, box);
     return;
   }
 
   context.drawImage(image, box.x, box.y, box.width, box.height);
+}
+
+function pieceDrawError(pieceId: string, error: unknown): Error {
+  const detail = error instanceof Error ? error.message : describeReceivedValue(error);
+  if (detail.includes(pieceId) && error instanceof Error) {
+    return error;
+  }
+
+  return new Error(`Armor piece ${JSON.stringify(pieceId)} failed to draw. ${detail}`);
 }
 
 function drawLoadedLayer(
@@ -483,14 +593,35 @@ function requireDrawContext(context: unknown): ArmorDrawContext {
   return context as ArmorDrawContext;
 }
 
-export async function drawArmorLayers(
+function requireShouldDraw(shouldDraw: unknown): () => boolean {
+  if (shouldDraw === undefined) {
+    return () => true;
+  }
+
+  if (typeof shouldDraw !== 'function') {
+    throw new Error(
+      `Armor draw predicate must be a function. Received ${describeReceivedValue(shouldDraw)}.`,
+    );
+  }
+
+  return () => {
+    const allowed: unknown = (shouldDraw as () => unknown)();
+    if (typeof allowed !== 'boolean') {
+      throw new Error(
+        `Armor draw predicate must return a boolean. Received ${describeReceivedValue(allowed)}.`,
+      );
+    }
+
+    return allowed;
+  };
+}
+
+function paintArmorLayers(
   context: ArmorDrawContext,
-  selection: ArmorSelection,
-): Promise<void> {
-  const drawContext = requireDrawContext(context);
-  const layers = listArmorRenderLayers(selection);
-  const images = await loadLayerImages(layers);
-  drawContext.clearRect(0, 0, ARMOR_PREVIEW_WIDTH, ARMOR_PREVIEW_HEIGHT);
+  layers: readonly ArmorRenderLayer[],
+  images: readonly CanvasImageSource[],
+): void {
+  context.clearRect(0, 0, ARMOR_PREVIEW_WIDTH, ARMOR_PREVIEW_HEIGHT);
 
   for (let index = 0; index < layers.length; index += 1) {
     const layer = layers[index];
@@ -501,8 +632,25 @@ export async function drawArmorLayers(
       );
     }
 
-    drawLoadedLayer(drawContext, layer, image);
+    drawLoadedLayer(context, layer, image);
   }
+}
+
+export async function drawArmorLayers(
+  context: ArmorDrawContext,
+  selection: ArmorSelection,
+  shouldDraw?: () => boolean,
+): Promise<void> {
+  const drawContext = requireDrawContext(context);
+  const allowDraw = requireShouldDraw(shouldDraw);
+  const layers = listArmorRenderLayers(selection);
+  const gender = requireArmorGender(selection.gender);
+  const images = await loadLayerImages(layers, gender);
+  if (!allowDraw()) {
+    return;
+  }
+
+  paintArmorLayers(drawContext, layers, images);
 }
 
 function requirePngCanvas(canvas: unknown): ArmorPngCanvas {

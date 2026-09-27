@@ -9,13 +9,14 @@ import {
   ARMOR_PREVIEW_WIDTH,
   listArmorPieceIds,
   pieceIndex,
+  pieceSlot,
   requireArmorGender,
   requireArmorMaterial,
   type ArmorGender,
   type ArmorMaterial,
 } from '@/lib/armor-creator/catalog';
 import { getArmorCreatorCopy, type ArmorCreatorCopy } from '@/lib/armor-creator/copy';
-import { armorPieceSvg } from '@/lib/armor-creator/icons';
+import { armorPieceImagePath } from '@/lib/armor-creator/icons';
 import { canvasToArmorPng, drawArmorLayers } from '@/lib/armor-creator/render';
 import {
   ARMOR_SAVE_STORAGE_KEY,
@@ -61,6 +62,9 @@ type SaveSlotNumber = (typeof ARMOR_SAVE_SLOT_NUMBERS)[number];
 type EquippedArmorSaveSlots = Array<ArmorSaveRecord | null>;
 
 const EMPTY_ARMOR_SAVE_SLOTS: EquippedArmorSaveSlots = [null, null, null, null];
+
+const ARMOR_LINE_ART_SURFACE_CLASS =
+  'border border-[var(--site-accent-strong)] bg-[#fffaf4]';
 
 function stringifyFailureReason(error: unknown): string {
   if (error instanceof Error) {
@@ -222,35 +226,51 @@ function confirmReplaceArmorSave(message: string): boolean {
   return confirmed;
 }
 
-function previewDrawContext(context: CanvasRenderingContext2D) {
-  return {
-    canvas: context.canvas,
-    clearRect(x: number, y: number, width: number, height: number) {
-      context.clearRect(x, y, width, height);
-    },
-    save() {
-      context.save();
-    },
-    restore() {
-      context.restore();
-    },
-    translate(x: number, y: number) {
-      context.translate(x, y);
-    },
-    scale(x: number, y: number) {
-      context.scale(x, y);
-    },
-    drawImage(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number) {
-      context.drawImage(image, dx, dy, dw, dh);
-    },
-  };
+function createArmorExportCanvas(): HTMLCanvasElement {
+  if (typeof document.createElement !== 'function') {
+    throw new Error(
+      `Armor export requires document.createElement. Received typeof ${typeof document.createElement}.`,
+    );
+  }
+
+  const canvas = document.createElement('canvas');
+  if (!(canvas instanceof HTMLCanvasElement)) {
+    throw new Error(
+      `Armor export canvas must be an HTMLCanvasElement. Received ${Object.prototype.toString.call(canvas)}.`,
+    );
+  }
+
+  canvas.width = ARMOR_PREVIEW_WIDTH;
+  canvas.height = ARMOR_PREVIEW_HEIGHT;
+  if (canvas.width !== ARMOR_PREVIEW_WIDTH || canvas.height !== ARMOR_PREVIEW_HEIGHT) {
+    throw new Error(
+      `Armor export canvas must be ${String(ARMOR_PREVIEW_WIDTH)}x${String(ARMOR_PREVIEW_HEIGHT)}. Received ${String(canvas.width)}x${String(canvas.height)}.`,
+    );
+  }
+
+  if (canvas.isConnected) {
+    throw new Error(
+      `Armor export canvas must be independent from the preview. Received a connected canvas ${String(canvas.width)}x${String(canvas.height)}.`,
+    );
+  }
+
+  return canvas;
 }
 
-async function paintArmorPreview(
-  context: CanvasRenderingContext2D,
-  selection: ArmorSelection,
-): Promise<void> {
-  await drawArmorLayers(previewDrawContext(context), selection);
+function requireCanvasContext2d(canvas: HTMLCanvasElement, action: string): CanvasRenderingContext2D {
+  const context = canvas.getContext('2d');
+  if (context === null) {
+    throw new Error(`Armor ${action} canvas has no 2d context. Received null.`);
+  }
+
+  return context;
+}
+
+async function paintSelectionForExport(selection: ArmorSelection): Promise<HTMLCanvasElement> {
+  const canvas = createArmorExportCanvas();
+  const context = requireCanvasContext2d(canvas, 'export');
+  await drawArmorLayers(context, selection);
+  return canvas;
 }
 
 function describeFileReaderError(readerError: DOMException | null): string {
@@ -300,7 +320,6 @@ async function saveArmorPreviewSlot(input: {
   storage: ArmorSaveStorage;
   slotNumber: number;
   selection: ArmorSelection;
-  canvas: HTMLCanvasElement;
   replaceMessage: string;
   confirmReplace: (message: string) => boolean;
 }): Promise<ArmorSaveRecord | null> {
@@ -312,7 +331,8 @@ async function saveArmorPreviewSlot(input: {
     }
   }
 
-  const thumbnailDataUrl = await readCanvasPngDataUrl(input.canvas);
+  const canvas = await paintSelectionForExport(input.selection);
+  const thumbnailDataUrl = await readCanvasPngDataUrl(canvas);
   writeArmorSaveSlot(input.storage, slotNumber, {
     snapshot: input.selection,
     thumbnailDataUrl,
@@ -326,14 +346,6 @@ async function saveArmorPreviewSlot(input: {
   return stored;
 }
 
-function requirePreviewCanvas(canvas: HTMLCanvasElement | null, action: string): HTMLCanvasElement {
-  if (canvas === null) {
-    throw new Error(`Armor ${action} is missing the preview canvas. Received null.`);
-  }
-
-  return canvas;
-}
-
 function requireDownloadUrlFunction(
   urlFunction: unknown,
   functionName: 'createObjectURL' | 'revokeObjectURL',
@@ -343,6 +355,11 @@ function requireDownloadUrlFunction(
       `Armor download requires URL.${functionName}. Received typeof ${typeof urlFunction}.`,
     );
   }
+}
+
+async function downloadArmorSelection(selection: ArmorSelection): Promise<void> {
+  const canvas = await paintSelectionForExport(selection);
+  await downloadArmorPreview(canvas);
 }
 
 async function downloadArmorPreview(canvas: HTMLCanvasElement): Promise<void> {
@@ -482,35 +499,148 @@ function choiceButtonClass(selected: boolean): string {
   return 'border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-[var(--site-ink)]';
 }
 
+function flatChestImageOptions(
+  selection: ArmorSelection,
+  pieceId: string,
+): { flatChest: true } | undefined {
+  if (selection.chestCurve) {
+    return undefined;
+  }
+
+  if (!chestCurveControlEnabled(selection)) {
+    return undefined;
+  }
+
+  if (pieceSlot(pieceId) !== 'chest') {
+    return undefined;
+  }
+
+  return { flatChest: true };
+}
+
+function thumbnailIsFlipped(pieceId: string): boolean {
+  return pieceSlot(pieceId) === 'shoulderLeft';
+}
+
+function requireLocalArmorPngPath(imagePath: unknown, pieceId: string): string {
+  const pieceLabel = JSON.stringify(pieceId);
+  if (typeof imagePath !== 'string') {
+    throw new Error(
+      `Armor piece image path for ${pieceLabel} must be a string. Received ${describeReceivedValue(imagePath)}.`,
+    );
+  }
+
+  if (
+    !imagePath.startsWith('/armor-creator/') ||
+    !imagePath.endsWith('.png') ||
+    imagePath.includes('//') ||
+    imagePath.includes('..') ||
+    imagePath.includes('\\') ||
+    imagePath.includes(' ') ||
+    imagePath.includes('?') ||
+    imagePath.includes('#')
+  ) {
+    throw new Error(
+      `Armor piece image path for ${pieceLabel} must be a local /armor-creator PNG. Received ${JSON.stringify(imagePath)}.`,
+    );
+  }
+
+  return imagePath;
+}
+
+function readArmorPieceImagePath(selection: ArmorSelection, pieceId: string): string {
+  const flatChestOptions = flatChestImageOptions(selection, pieceId);
+  const imagePath =
+    flatChestOptions === undefined
+      ? armorPieceImagePath(pieceId)
+      : armorPieceImagePath(pieceId, flatChestOptions);
+
+  return requireLocalArmorPngPath(imagePath, pieceId);
+}
+
+function ArmorPieceImage({
+  imagePath,
+  flipped,
+  onLoadError,
+}: {
+  imagePath: string;
+  flipped: boolean;
+  onLoadError: (imagePath: string) => void;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        'pointer-events-none block h-full w-full overflow-hidden rounded-sm',
+        ARMOR_LINE_ART_SURFACE_CLASS,
+      )}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element -- public armor PNG must stay unoptimized so the original line art is not recolored */}
+      <img
+        src={imagePath}
+        alt=""
+        className={cn('h-full w-full object-contain', flipped && '-scale-x-100')}
+        onError={() => {
+          onLoadError(imagePath);
+        }}
+      />
+    </span>
+  );
+}
+
 function ArmorPieceButton({
   pieceId,
   label,
   equipped,
+  selection,
   onToggle,
 }: {
   pieceId: string;
   label: string;
   equipped: boolean;
+  selection: ArmorSelection;
   onToggle: (pieceId: string) => void;
 }) {
-  const markup = armorPieceSvg(pieceId);
+  const [failedImagePath, setFailedImagePath] = useState<string | null>(null);
+  const buttonName = pieceButtonName(label, pieceId);
+  let imagePath: string | null = null;
+  let pathFailure: string | null = null;
+
+  try {
+    imagePath = readArmorPieceImagePath(selection, pieceId);
+  } catch (failure: unknown) {
+    pathFailure = describeFailure(failure);
+  }
+
+  const loadFailure =
+    imagePath !== null && failedImagePath === imagePath
+      ? `Armor piece image failed to load. Received ${JSON.stringify(imagePath)}.`
+      : null;
+  const visibleFailure = pathFailure ?? loadFailure;
 
   return (
     <button
       type="button"
       aria-pressed={equipped}
+      aria-label={buttonName}
       className={cn(
-        'relative flex aspect-square items-center justify-center rounded-md border p-1',
+        'relative flex aspect-square items-center justify-center overflow-hidden rounded-md border p-1',
         choiceButtonClass(equipped),
       )}
       onClick={() => onToggle(pieceId)}
     >
-      <span className="sr-only">{pieceButtonName(label, pieceId)}</span>
-      <span
-        aria-hidden="true"
-        className="pointer-events-none block h-full w-full text-current [&_svg]:h-full [&_svg]:w-full"
-        dangerouslySetInnerHTML={{ __html: markup }}
-      />
+      {imagePath === null || visibleFailure !== null ? (
+        <span className="break-all px-0.5 text-left text-[10px] leading-tight text-red-800">
+          {visibleFailure ??
+            `Armor piece image path for ${JSON.stringify(pieceId)} is missing. Received null.`}
+        </span>
+      ) : (
+        <ArmorPieceImage
+          imagePath={imagePath}
+          flipped={thumbnailIsFlipped(pieceId)}
+          onLoadError={setFailedImagePath}
+        />
+      )}
     </button>
   );
 }
@@ -534,6 +664,7 @@ function ArmorPieceGrid({
           pieceId={pieceId}
           label={label}
           equipped={isArmorPieceEquipped(selection, pieceId)}
+          selection={selection}
           onToggle={onToggle}
         />
       ))}
@@ -656,12 +787,12 @@ function ArmorPreview({
   return (
     <section className="order-1 w-full lg:sticky lg:top-24 lg:order-2 lg:w-[600px] lg:shrink-0">
       <h2 className="font-display text-xl text-[var(--site-accent-strong)]">{copy.preview}</h2>
-      <div className="mt-3 rounded-2xl border border-[var(--site-border-strong)] bg-black/50 p-3">
+      <div className={cn('mt-3 rounded-2xl p-3', ARMOR_LINE_ART_SURFACE_CLASS)}>
         <canvas
           ref={canvasRef}
           width={ARMOR_PREVIEW_WIDTH}
           height={ARMOR_PREVIEW_HEIGHT}
-          className="h-auto w-full bg-black/40"
+          className="h-auto w-full bg-[#fffaf4]"
         />
       </div>
       {failureMessage !== null ? (
@@ -809,16 +940,20 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
     }
 
     let ignore = false;
-    paintArmorPreview(context, selection)
+    drawArmorLayers(context, selection, () => !ignore)
       .then(() => {
-        if (!ignore) {
-          setFailureMessage(null);
+        if (ignore) {
+          return;
         }
+
+        setFailureMessage(null);
       })
       .catch((failure: unknown) => {
-        if (!ignore) {
-          setFailureMessage(describeFailure(failure));
+        if (ignore) {
+          return;
         }
+
+        setFailureMessage(describeFailure(failure));
       });
 
     return () => {
@@ -835,13 +970,12 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
   }
 
   function onSave(slotNumber: SaveSlotNumber) {
+    const selectionAtClick = selection;
     try {
-      const canvas = requirePreviewCanvas(canvasRef.current, `save slot ${slotNumber}`);
       void saveArmorPreviewSlot({
         storage: requireBrowserSaveStorage(),
         slotNumber,
-        selection,
-        canvas,
+        selection: selectionAtClick,
         replaceMessage: copy.replaceSaveConfirm(slotNumber),
         confirmReplace: confirmReplaceArmorSave,
       }).catch(reportFailure);
@@ -859,12 +993,8 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
   }
 
   function onDownload() {
-    try {
-      const canvas = requirePreviewCanvas(canvasRef.current, 'download');
-      void downloadArmorPreview(canvas).catch(reportFailure);
-    } catch (failure: unknown) {
-      reportFailure(failure);
-    }
+    const selectionAtClick = selection;
+    void downloadArmorSelection(selectionAtClick).catch(reportFailure);
   }
 
   return (
