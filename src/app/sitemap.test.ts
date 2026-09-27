@@ -978,3 +978,35 @@ describe('coat maker sitemap entries', () => {
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 });
+
+describe('army formation creator sitemap entries', () => {
+  test('includes bilingual army formation creator routes and keeps armor creator routes', () => {
+    const englishArmyEntry = findSitemapEntry('https://www.tokenmaker.one/army-formation-creator');
+    const chineseArmyEntry = findSitemapEntry('https://www.tokenmaker.one/zh/army-formation-creator');
+    const englishArmorEntry = findSitemapEntry('https://www.tokenmaker.one/armor-creator');
+    const chineseArmorEntry = findSitemapEntry('https://www.tokenmaker.one/zh/armor-creator');
+    const armyAlternates = {
+      'x-default': 'https://www.tokenmaker.one/army-formation-creator',
+      'en-US': 'https://www.tokenmaker.one/army-formation-creator',
+      'zh-CN': 'https://www.tokenmaker.one/zh/army-formation-creator',
+    };
+    const armorAlternates = {
+      'x-default': 'https://www.tokenmaker.one/armor-creator',
+      'en-US': 'https://www.tokenmaker.one/armor-creator',
+      'zh-CN': 'https://www.tokenmaker.one/zh/armor-creator',
+    };
+
+    expect(englishArmyEntry.changeFrequency).toBe('weekly');
+    expect(englishArmyEntry.priority).toBe(0.8);
+    expect(englishArmyEntry.alternates?.languages).toEqual(armyAlternates);
+    expect(chineseArmyEntry.changeFrequency).toBe('weekly');
+    expect(chineseArmyEntry.priority).toBe(0.8);
+    expect(chineseArmyEntry.alternates?.languages).toEqual(armyAlternates);
+    expect(englishArmorEntry.changeFrequency).toBe('weekly');
+    expect(englishArmorEntry.priority).toBe(0.8);
+    expect(englishArmorEntry.alternates?.languages).toEqual(armorAlternates);
+    expect(chineseArmorEntry.changeFrequency).toBe('weekly');
+    expect(chineseArmorEntry.priority).toBe(0.8);
+    expect(chineseArmorEntry.alternates?.languages).toEqual(armorAlternates);
+  });
+});

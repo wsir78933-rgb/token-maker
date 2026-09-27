@@ -1,8 +1,10 @@
+import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
 import { getBlogCategories, getBlogCategoryPath, type BlogCategoryCopy } from '@/lib/blog-content';
 import { getHomeCopy, getNavLabels, type NavLabels } from '@/lib/site-content';
 import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } from '@/lib/site-locale';
 
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
+const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
 
 export type ContentSiteTopbarFeature = {
   href: string;
@@ -161,6 +163,17 @@ function requireBlogFeatureField(
   return value;
 }
 
+function readArmyFormationNavigationName(locale: SiteLocale): string {
+  const navigationName = getArmyFormationCreatorCopy(locale).navigationName;
+  if (navigationName.trim() === '') {
+    throw new Error(
+      `Army formation creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
+    );
+  }
+
+  return navigationName;
+}
+
 function buildContentSitePlainLinks(
   locale: SiteLocale,
   normalizedCurrentPath: string,
@@ -171,6 +184,12 @@ function buildContentSitePlainLinks(
     buildSectionLink(locale, normalizedCurrentPath, '/dice-roller-dnd', navLabels.diceRoller),
     buildSectionLink(locale, normalizedCurrentPath, '/coat-of-arms-maker', navLabels.coatMaker),
     buildSectionLink(locale, normalizedCurrentPath, '/armor-creator', navLabels.armor),
+    buildSectionLink(
+      locale,
+      normalizedCurrentPath,
+      ARMY_FORMATION_CREATOR_PATH,
+      readArmyFormationNavigationName(locale),
+    ),
     buildSectionLink(locale, normalizedCurrentPath, '/contact', navLabels.contact),
   ];
 }
