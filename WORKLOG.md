@@ -1,5 +1,64 @@
 # WORKLOG
 
+## 交接单 · 2026-09-27 13:38 CST (UTC+08:00) · Codex CLI（Grok CLI 代写）
+
+### 本次目标
+
+把第三阶段优化写成交接单。范围是首页作品墙的无损 WebP 展示图、PNG 原图下载、博客分类菜单的键盘焦点，以及 llms.txt 的文章链接。性能基线用户已经明确暂缓。本单只记录现状，不改功能。运行环境是 Grok CLI，按 Codex 本机 handoff skill 代写。
+
+### 已完成
+
+- 写入前母仓库 `/Users/wusir/Desktop/开发项目集合/token-maker-app` 的 `git status --porcelain=v1 --untracked-files=all` 为空。HEAD 是 `c0317a6b7356495e2fdb2693a5cef1ec9dc861e0`，树是 `60de7c069f387b977cfe84cf114ad67c93e48c10`，父提交是 `3d52715c682fc93b1e05ee42a3ddb008fd7e1da6`。`main` 比 `origin/main`（`a8f5adfd7634feaaf47d1bf9f8d322c0eaa5fc18`）超前 3 个提交，`git rev-list --left-right --count origin/main...HEAD` 为 `0 3`。没有 push，没有部署。这次不能写成生产环境已通过。
+- 用户明确授权后提交了 64 个文件，说明是 `Optimize gallery assets, keyboard navigation, and llms coverage`。`git show --shortstat` 为 64 files changed, 804 insertions(+), 90 deletions(-)。发布记录写明暂存是 64 次精确路径 `git add`，随后 `git merge --ff-only 优化` 退出码 0。当前 HEAD 的父提交就是合并前的 `3d52715c682fc93b1e05ee42a3ddb008fd7e1da6`。本交接单不在该提交里。
+- 复查时优化目录 `/Users/wusir/orca/workspaces/token-maker-app/优化` 不存在，`refs/heads/优化` 也没有。`git worktree list --porcelain` 有两条：母仓库 `main`，以及 `/Users/wusir/orca/workspaces/token-maker-app/Armor-creator` 的分支 `Armor-creator`。两边 HEAD 都是 `c0317a6b7356495e2fdb2693a5cef1ec9dc861e0`。发布记录里 `orca worktree rm` 返回 `removed: true`。这次没有再列 Orca 注册表。
+- `public/work-gallery` 有 54 个 PNG 和 54 个同名 WebP。PNG 合计 51,133,146 字节，WebP 合计 20,251,820 字节，少 60.39%。展示用 WebP，下载文件仍是原来的 PNG。写入前再比过一次：`/tmp/token-maker-optimization-acceptance-en-original-download-natural.png` 与 `public/work-gallery/-CHRu5fo-1.png` 逐字节相同，586452 字节，签名 `89504e470d0a1a0a`。验收记录里的取得方式是刷新英文首页、不改页面，Tab 到下载链接后按 Enter。
+- 菜单打开状态在 `src/app/globals.css` 里不再过渡 `visibility`。验收记录的冷打开是页面加载完成后，Tab 到箭头按钮，Escape 关到 `visibility: hidden`，再只按一次键。英文 `/blog` 的 ArrowDown 进入 Characters，ArrowUp 进入 Rules & Game Prep。中文 `/zh/blog` 的 ArrowDown 进入「角色」，ArrowUp 进入「规则与游戏准备」。同一轮里，菜单项上向前 Tab 会关闭菜单，Escape 把焦点还回箭头按钮。桌面和 390 宽的手机菜单也在这份验收里操作过。
+- 提交里的 `public/llms.txt` 新增 24 条链接、删除 0 条。这 24 条都是文章 URL，英文 12 条、中文 12 条。当前文件有 151 条不重复 Markdown 链接，其中文章 URL 136 条：英文 68 篇、中文 68 篇，两边 slug 相同。`src/lib/llms.test.ts` 用已发布文章名单核对，缺漏、重复或名单外都会抛出具体 URL。
+- 这次 64 个文件里没有字体、纹章封面或博客封面。`public` 下现有 10 个 `.woff2` 文件。验收记录抽查过 `/coat-of-arms-maker` 的 `hero-crimson-lion.webp`，以及 `/blog/dnd-ranger` 封面 `dnd-ranger-guide.webp`。
+- 复测日志 `/tmp/token-maker-optimization-build-retest.log` 的命令链是 `pnpm lint && pnpm typecheck && pnpm test && pnpm check:workers-types && vinext build && pnpm check:workers-build`，由 `CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false pnpm build:vinext` 启动。结束行是 `=== RETEST BUILD END exit=0 2026-09-27T04:27:12Z ===`。同一份日志有 `Test Files  170 passed (170)`、`Tests  1780 passed (1780)`、`6 problems (0 errors, 6 warnings)`、`Types at worker-configuration.d.ts are up to date.`，以及 `wrangler deploy --dry-run` 后的 `--dry-run: exiting now.`。验收记录写明这 6 条 warning 在 `src/lib/blog/index.test.ts` 第 40–45 行，是原有项。写交接单时没有重跑这条链。
+- 验收记录还核对过首页编辑器：空上传区按 Enter，选中 `public/apple-touch-icon.png` 的副本后主画布出现；`+` 变成 Scale 110%，`-` 回到 Scale 100%；Shift+方向键后画布中心像素有变化；本地下载是 PNG，来源是 `blob:`。清空后按空格再次打开选择器。批量区域按 Enter 放入同一张图。没有点 Start Batch，也没有点分享。
+- 没有采集 LCP、INP、CLS、trace、CrUX 或 GSC。性能基线是用户明确暂缓的事项。
+
+### 做到一半
+
+无。画廊展示图、菜单键盘和 llms.txt 已经在提交 `c0317a6b7356495e2fdb2693a5cef1ec9dc861e0` 里。性能基线由用户明确暂缓，当前没有进行中的实现。
+
+### 下一步
+
+- 下一班在项目根输入 `$pickup` 接手。
+- 不要自动 push，不要部署。
+- 要做性能基线或其他新任务时，先对齐范围。
+- 不要把 `WORKLOG.md` 放进任何提交。
+
+### 踩过的坑
+
+- jsdom 里的焦点测试守的是按键调用。真实页面要从菜单关闭且 `visibility: hidden` 开始，只按一次方向键。菜单已经可见再按的记录不能代替这次冷打开。
+- 复测 JSON 没有 ArrowLeft、ArrowRight，也没有菜单已经打开之后的 Home / End。组件里 Left 与 Up、Right 与 Down 共用一个函数。浏览器通过记录覆盖的是冷打开的 ArrowDown、ArrowUp，以及同一轮的 Tab 和 Escape。
+- 手机画廊截图要先把真正的 work-gallery 区块滚进视口，并回读图片。第一张 390 宽图拍到的是 Frost Ranger 预设。后来滚进视口的是 `en-work-gallery-mobile-390.png` 和 `zh-work-gallery-mobile-390.png`。
+- 第一次英文下载改过链接的行内透明度。算数的是后来刷新页面、用 Tab 和 Enter 保存的那份原图。
+- Orca 的 user_takeover 状态标签不等于已经有人做了接管操作。
+- `//handoff` 曾误开新会话。交班要用本机 handoff skill 写根目录 `WORKLOG.md`。误开的 terminal `term_2054b60c-bdb0-40e0-be06-b88ae55fb3f7` 已由协调者查到 `connected: false`、`writable: false`、`exitCause: operator_close`。这次交接没有操作它。
+- 关闭优化工作树终端时，`term_c87010d5-1fee-47e2-9bb7-2c8268457ca2` 的 `exitCause` 是 `cause_unreported`。公开命令没有报告这个进程的退出码。
+- 12:58 的发布记录写过 `git worktree list` 只剩母仓库。13:32 这次复查还有 Armor-creator。优化目录和 `refs/heads/优化` 仍然不在。
+
+### 怎么验证
+
+写这份交接单时没有执行下面的产品命令。证据在这四份记录：
+
+- `/tmp/token-maker-optimization-build-retest.log`
+- `/tmp/token-maker-optimization-acceptance.md`
+- `/tmp/token-maker-optimization-cold-menu-review.md`
+- `/tmp/token-maker-optimization-release.md`
+
+```bash
+git status --short --branch
+git log -1 --oneline
+git worktree list --porcelain
+CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false pnpm build:vinext
+```
+
+浏览器需要重新启动本地服务。验收清理记录写明 `127.0.0.1:40007` 已经释放。起来之后看英文 `/blog` 和中文 `/zh/blog`：从关闭且 hidden 的菜单冷开，各按一次 ArrowDown 和 ArrowUp，再看 Tab 和 Escape。首页和 `/zh` 在约 390 宽看作品墙 12 张、24 张、54 张，确认展示是 WebP、下载是 PNG 原图。首页上传区用 Enter 和空格选文件，并在画布上做本地导出。
+
 ## 交接单 · 2026-09-24 07:28 CST · Grok CLI
 
 ### 本次目标
