@@ -14,6 +14,9 @@ export type ArmyFormationImageScene = {
   pieces: ArmyFormationImagePiece[];
 };
 
+const ARMY_FORMATION_ICON_ASSET_PATTERN =
+  /(<image\b[^>]*\bhref=")((?:\/army-formation-icons\/roll-for-fantasy\/)[^"]+\.png)(")/g;
+
 type PieceBox = {
   widthPx: number;
   heightPx: number;
@@ -25,6 +28,63 @@ const FALLBACK_PIECE_HEIGHT_PX = 30;
 export function buildArmyFormationSvg(scene: ArmyFormationImageScene): string {
   assertScene(scene);
   return renderBattlefieldSvg(scene);
+}
+
+export async function inlineArmyFormationSvgAssets(svg: string): Promise<string> {
+  if (typeof svg !== 'string') {
+    throw new Error(`Army formation SVG must be a string. svg=${formatReceivedValue(svg)}`);
+  }
+
+  const assetUrls = [
+    ...new Set([...svg.matchAll(ARMY_FORMATION_ICON_ASSET_PATTERN)].map((match) => match[2])),
+  ];
+  if (assetUrls.length === 0) {
+    return svg;
+  }
+
+  const dataUrls = await Promise.all(
+    assetUrls.map(async (assetUrl) => [assetUrl, await readArmyFormationAssetDataUrl(assetUrl)] as const),
+  );
+
+  let inlinedSvg = svg;
+  for (const [assetUrl, dataUrl] of dataUrls) {
+    inlinedSvg = inlinedSvg.replaceAll(`href="${assetUrl}"`, `href="${dataUrl}"`);
+  }
+
+  return inlinedSvg;
+}
+
+async function readArmyFormationAssetDataUrl(assetUrl: string): Promise<string> {
+  const response = await fetch(assetUrl);
+  if (!response.ok) {
+    throw new Error(
+      `Army formation icon asset request failed. assetUrl=${assetUrl} status=${response.status}`,
+    );
+  }
+
+  const contentType = response.headers.get('content-type') ?? 'image/png';
+  if (!contentType.startsWith('image/')) {
+    throw new Error(
+      `Army formation icon asset response must be an image. assetUrl=${assetUrl} contentType=${contentType}`,
+    );
+  }
+
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  return `data:${contentType};base64,${encodeBase64(bytes)}`;
+}
+
+function encodeBase64(bytes: Uint8Array): string {
+  if (typeof btoa !== 'function') {
+    throw new Error('Army formation icon asset export requires btoa. Received undefined.');
+  }
+
+  let binary = '';
+  const chunkSize = 0x8000;
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+
+  return btoa(binary);
 }
 
 function assertScene(scene: ArmyFormationImageScene): void {

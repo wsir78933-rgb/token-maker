@@ -42,6 +42,32 @@ describe('listArmyFormationIconCatalog', () => {
     expect(nato[96]?.id).toBe('nato-097');
     expect(nato[143]?.id).toBe('nato-144');
     expect(catalog[0]?.svgMarkup).toContain('<svg');
+    expect(helmets[0]?.svgMarkup).toContain(
+      '/army-formation-icons/roll-for-fantasy/helm1.png',
+    );
+    expect(weapons[22]?.svgMarkup).toContain(
+      '/army-formation-icons/roll-for-fantasy/wep23.png',
+    );
+    expect(animals[35]?.svgMarkup).toContain(
+      '/army-formation-icons/roll-for-fantasy/animal36.png',
+    );
+    expect(animals[36]?.svgMarkup).toContain(
+      '/army-formation-icons/roll-for-fantasy/ani37.png',
+    );
+    expect(animals[59]?.svgMarkup).toContain(
+      '/army-formation-icons/roll-for-fantasy/ani60.png',
+    );
+    expect(vehicles[25]?.svgMarkup).toContain(
+      '/army-formation-icons/roll-for-fantasy/siege26.png',
+    );
+    expect(nato[0]?.svgMarkup).toContain('/army-formation-icons/roll-for-fantasy/nfr1.png');
+    expect(nato[35]?.svgMarkup).toContain('/army-formation-icons/roll-for-fantasy/nfr36.png');
+    expect(nato[36]?.svgMarkup).toContain('/army-formation-icons/roll-for-fantasy/nhs1.png');
+    expect(nato[72]?.svgMarkup).toContain('/army-formation-icons/roll-for-fantasy/nnt1.png');
+    expect(nato[108]?.svgMarkup).toContain('/army-formation-icons/roll-for-fantasy/nun1.png');
+    expect(nato[143]?.svgMarkup).toContain('/army-formation-icons/roll-for-fantasy/nun36.png');
+    expect(catalog.every((icon) => icon.svgMarkup.includes('<image href="/'))).toBe(true);
+    expect(catalog.some((icon) => icon.svgMarkup.includes('://'))).toBe(false);
     expect(requireArmyFormationCatalogIcon('helmet-01')).toBe(helmets[0]);
   });
 
