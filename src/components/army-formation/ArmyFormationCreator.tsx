@@ -895,7 +895,7 @@ function ArmyFormationPieceButton({
       aria-label={piece.id}
       aria-pressed={selected}
       className={cn(
-        'absolute touch-none p-0 text-[var(--site-ink-strong)]',
+        'absolute touch-none p-0 text-[oklch(0.29_0.03_72)]',
         selected
           ? 'z-20 outline outline-2 outline-[var(--site-accent-strong)]'
           : 'z-10 outline outline-1 outline-[var(--site-border-strong)]',
@@ -925,7 +925,7 @@ function ArmyFormationPieceButton({
 function ArmyFormationEmptySlot({ slot, label }: { slot: EmptySlot; label: string }) {
   return (
     <div
-      className="pointer-events-none absolute z-0 flex items-center justify-center border border-dashed border-[var(--site-border-strong)] text-center text-[9px] leading-tight text-[var(--site-ink-soft)]"
+      className="pointer-events-none absolute z-0 flex items-center justify-center border border-dashed border-[oklch(0.29_0.03_72)] text-center text-[9px] leading-tight text-[oklch(0.29_0.03_72)]"
       style={{ left: slot.x, top: slot.y, width: ARMY_PIECE_WIDTH, height: ARMY_PIECE_HEIGHT }}
     >
       {label}
