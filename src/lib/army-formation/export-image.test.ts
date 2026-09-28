@@ -1,7 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   buildArmyFormationSvg,
+  inlineArmyFormationSvgAssets,
   type ArmyFormationImagePiece,
   type ArmyFormationImageScene,
 } from '@/lib/army-formation/export-image';
@@ -37,6 +38,28 @@ function battlefieldScene(
 }
 
 describe('buildArmyFormationSvg', () => {
+  it('导出时把本地图标 PNG 内嵌成 data URL，离线打开仍保留素材', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(Uint8Array.from([0, 1, 2]), {
+        status: 200,
+        headers: { 'content-type': 'image/png' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    try {
+      const svg = await inlineArmyFormationSvgAssets(
+        '<svg><image href="/army-formation-icons/roll-for-fantasy/helm1.png"/></svg>',
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith('/army-formation-icons/roll-for-fantasy/helm1.png');
+      expect(svg).toContain('href="data:image/png;base64,AAEC"');
+      expect(svg).not.toContain('/army-formation-icons/roll-for-fantasy/helm1.png');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('把棋子坐标、旋转和底色写进完整战场 SVG', () => {
     const svg = buildArmyFormationSvg(
       battlefieldScene([spearPiece()], {

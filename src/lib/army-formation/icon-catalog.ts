@@ -1,12 +1,3 @@
-import { listArmyAnimalIconsPart1 } from '@/lib/army-formation/icons/animals-1';
-import { listArmyAnimalIconsPart2 } from '@/lib/army-formation/icons/animals-2';
-import { listArmyHelmetIcons } from '@/lib/army-formation/icons/helmets';
-import { listArmyNatoIconsPart1 } from '@/lib/army-formation/icons/nato-1';
-import { listArmyNatoIconsPart2 } from '@/lib/army-formation/icons/nato-2';
-import { listArmyNatoIconsPart3 } from '@/lib/army-formation/icons/nato-3';
-import { listArmyVehicleIcons } from '@/lib/army-formation/icons/vehicles';
-import { listArmyWeaponIcons } from '@/lib/army-formation/icons/weapons';
-
 export const ARMY_FORMATION_ICON_CATEGORY_IDS = [
   'helmet',
   'weapon',
@@ -32,6 +23,10 @@ const ARMY_FORMATION_ICON_CATEGORY_COUNTS: Record<ArmyFormationIconCategoryId, n
   vehicle: 26,
   nato: 144,
 };
+
+const ARMY_FORMATION_ASSET_ROOT = '/army-formation-icons/roll-for-fantasy';
+const ARMY_FORMATION_ICON_WIDTH = 50;
+const ARMY_FORMATION_ICON_HEIGHT = 30;
 
 type SourceArmyFormationIcon = {
   id: string;
@@ -69,6 +64,60 @@ function assertCategoryCountSum(): void {
       `Army formation icon category counts must add up to ${ARMY_FORMATION_ICON_TOTAL_COUNT}, received ${sum}.`,
     );
   }
+}
+
+function formatAssetNumber(value: number, width: number): string {
+  return String(value).padStart(width, '0');
+}
+
+function assetSvgMarkup(filename: string): string {
+  return `<svg width="${ARMY_FORMATION_ICON_WIDTH}" height="${ARMY_FORMATION_ICON_HEIGHT}" viewBox="0 0 ${ARMY_FORMATION_ICON_WIDTH} ${ARMY_FORMATION_ICON_HEIGHT}"><image href="${ARMY_FORMATION_ASSET_ROOT}/${filename}" x="0" y="0" width="${ARMY_FORMATION_ICON_WIDTH}" height="${ARMY_FORMATION_ICON_HEIGHT}" preserveAspectRatio="none"/></svg>`;
+}
+
+function buildIndexedAssetIcons(
+  categoryId: Exclude<ArmyFormationIconCategoryId, 'animal' | 'nato'>,
+  assetPrefix: string,
+  count: number,
+): SourceArmyFormationIcon[] {
+  return Array.from({ length: count }, (_, index) => {
+    const number = index + 1;
+    const idPrefix = categoryId === 'helmet' ? 'helmet' : categoryId === 'weapon' ? 'weapon' : 'vehicle';
+    const id = `${idPrefix}-${formatAssetNumber(number, 2)}`;
+    return {
+      id,
+      svgMarkup: assetSvgMarkup(`${assetPrefix}${number}.png`),
+    };
+  });
+}
+
+function buildAnimalAssetIcons(): SourceArmyFormationIcon[] {
+  return Array.from({ length: ARMY_FORMATION_ICON_CATEGORY_COUNTS.animal }, (_, index) => {
+    const number = index + 1;
+    const assetPrefix = number <= 36 ? 'animal' : 'ani';
+    return {
+      id: `animal-${formatAssetNumber(number, 2)}`,
+      svgMarkup: assetSvgMarkup(`${assetPrefix}${number}.png`),
+    };
+  });
+}
+
+function buildNatoAssetIcons(): SourceArmyFormationIcon[] {
+  const groups = [
+    { assetPrefix: 'nfr', firstIconNumber: 1 },
+    { assetPrefix: 'nhs', firstIconNumber: 37 },
+    { assetPrefix: 'nnt', firstIconNumber: 73 },
+    { assetPrefix: 'nun', firstIconNumber: 109 },
+  ] as const;
+
+  return groups.flatMap(({ assetPrefix, firstIconNumber }) =>
+    Array.from({ length: 36 }, (_, index) => {
+      const iconNumber = firstIconNumber + index;
+      return {
+        id: `nato-${formatAssetNumber(iconNumber, 3)}`,
+        svgMarkup: assetSvgMarkup(`${assetPrefix}${index + 1}.png`),
+      };
+    }),
+  );
 }
 
 function toCatalogIcon(
@@ -163,18 +212,20 @@ function buildIconIdMap(
 
 function buildArmyFormationIconCatalog(): BuiltArmyFormationIconCatalog {
   assertCategoryCountSum();
-  const helmetIcons = collectCategoryIcons('helmet', listArmyHelmetIcons());
-  const weaponIcons = collectCategoryIcons('weapon', listArmyWeaponIcons());
-  const animalIcons = collectCategoryIcons('animal', [
-    ...listArmyAnimalIconsPart1(),
-    ...listArmyAnimalIconsPart2(),
-  ]);
-  const vehicleIcons = collectCategoryIcons('vehicle', listArmyVehicleIcons());
-  const natoIcons = collectCategoryIcons('nato', [
-    ...listArmyNatoIconsPart1(),
-    ...listArmyNatoIconsPart2(),
-    ...listArmyNatoIconsPart3(),
-  ]);
+  const helmetIcons = collectCategoryIcons(
+    'helmet',
+    buildIndexedAssetIcons('helmet', 'helm', ARMY_FORMATION_ICON_CATEGORY_COUNTS.helmet),
+  );
+  const weaponIcons = collectCategoryIcons(
+    'weapon',
+    buildIndexedAssetIcons('weapon', 'wep', ARMY_FORMATION_ICON_CATEGORY_COUNTS.weapon),
+  );
+  const animalIcons = collectCategoryIcons('animal', buildAnimalAssetIcons());
+  const vehicleIcons = collectCategoryIcons(
+    'vehicle',
+    buildIndexedAssetIcons('vehicle', 'siege', ARMY_FORMATION_ICON_CATEGORY_COUNTS.vehicle),
+  );
+  const natoIcons = collectCategoryIcons('nato', buildNatoAssetIcons());
   const icons = Object.freeze([
     ...helmetIcons,
     ...weaponIcons,

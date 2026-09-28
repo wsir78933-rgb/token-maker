@@ -36,6 +36,7 @@ import {
 } from '@/lib/army-formation/document';
 import {
   buildArmyFormationSvg,
+  inlineArmyFormationSvgAssets,
   type ArmyFormationImagePiece,
 } from '@/lib/army-formation/export-image';
 import {
@@ -1171,14 +1172,16 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     });
   }
 
-  function onExportImage() {
-    reportArmyFormationAction(() => {
-      downloadArmyFormationFile(
-        ARMY_FORMATION_IMAGE_NAME,
+  async function onExportImage() {
+    try {
+      const svg = await inlineArmyFormationSvgAssets(
         buildActiveBattlefieldSvg(armyDocument, ARMY_FIELD_WIDTH_PX),
-        'image/svg+xml',
       );
-    });
+      downloadArmyFormationFile(ARMY_FORMATION_IMAGE_NAME, svg, 'image/svg+xml');
+      setFailureMessage(null);
+    } catch (failure: unknown) {
+      setFailureMessage(describeArmyFormationFailure(failure));
+    }
   }
 
   function onStep(direction: -1 | 1) {

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ArmyFormationCreator } from '@/components/army-formation/ArmyFormationCreator';
@@ -200,7 +200,7 @@ describe('ArmyFormationCreator', () => {
     expect(pieceButtons()).toHaveLength(0);
   });
 
-  it('导出图片直接下载，页面上不留下图片预览', () => {
+  it('导出图片直接下载，页面上不留下图片预览', async () => {
     const createObjectURL = vi.fn(() => 'blob:army-formation');
     const revokeObjectURL = vi.fn();
     vi.spyOn(URL, 'createObjectURL').mockImplementation(createObjectURL);
@@ -210,7 +210,7 @@ describe('ArmyFormationCreator', () => {
     render(<ArmyFormationCreator locale="zh" />);
     fireEvent.click(screen.getByRole('button', { name: '导出图片' }));
 
-    expect(createObjectURL).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(createObjectURL).toHaveBeenCalledTimes(1));
     const blob = createObjectURL.mock.calls[0]?.[0];
     expect(blob).toBeInstanceOf(Blob);
     expect(document.querySelector('svg[aria-label="Army formation creator"]')).toBeNull();
