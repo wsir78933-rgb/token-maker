@@ -549,7 +549,7 @@ function ArmyFormationCategoryTabs({
   onCategory: (categoryId: ArmyFormationIconCategoryId) => void;
 }) {
   return (
-    <div className="grid grid-cols-5 gap-2">
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
       {listArmyFormationIconCategories().map((categoryId) => {
         const selected = categoryId === activeCategoryId;
         return (
@@ -558,7 +558,7 @@ function ArmyFormationCategoryTabs({
             type="button"
             aria-pressed={selected}
             className={cn(
-              'rounded-md border px-2 py-2 text-center text-sm',
+              'min-w-0 whitespace-normal rounded-md border px-2 py-2 text-center text-sm leading-tight',
               selected
                 ? 'border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] text-[var(--site-accent-strong)]'
                 : 'border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-[var(--site-ink)]',
@@ -770,17 +770,17 @@ function ArmyFormationFieldControls({
           {copy.changeBackgroundColor}
         </button>
       </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <label className="flex min-w-0 flex-1 items-center gap-2 text-sm text-[var(--site-ink)]">
+      <div className="flex flex-col gap-2 sm:max-[1439px]:flex-row sm:max-[1439px]:items-center">
+        <label className="flex w-full min-w-0 flex-1 flex-col gap-1 text-sm text-[var(--site-ink)]">
           <span>{copy.backgroundImage}</span>
           <input
-            className={`${ARMY_FORMATION_INPUT_CLASS} min-w-0 flex-1`}
+            className={`${ARMY_FORMATION_INPUT_CLASS} w-full min-w-0`}
             type="text"
             value={backgroundImageText}
             onChange={(event) => onBackgroundImageText(event.target.value)}
           />
         </label>
-        <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onApplyBackgroundImage}>
+        <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-fit shrink-0`} onClick={onApplyBackgroundImage}>
           {copy.setBackgroundImage}
         </button>
       </div>
@@ -1274,7 +1274,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   return (
     <section
       aria-label={copy.productName}
-      className="mx-auto w-full max-w-[84rem] space-y-4 rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-4 text-[var(--site-ink)] shadow-[var(--site-card-shadow)] sm:p-6"
+      className="mx-auto w-full max-w-[84rem] space-y-3 rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-3 text-[var(--site-ink)] shadow-[var(--site-card-shadow)] sm:p-4"
     >
       {failureMessage !== null ? <ArmyFormationFailure message={failureMessage} /> : null}
       <ArmyFormationCategoryTabs
@@ -1283,8 +1283,8 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
         onCategory={setActiveCategoryId}
       />
       <ArmyFormationIconShelf categoryId={activeCategoryId} onPlace={onPlaceIcon} />
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-        <div className="flex w-full flex-col gap-4 lg:w-[400px] lg:shrink-0">
+      <div className="flex flex-col gap-3 min-[1440px]:flex-row min-[1440px]:items-start">
+        <div className="flex w-full min-w-0 flex-col gap-3 min-[1440px]:w-[400px] min-[1440px]:shrink-0">
           <ArmyFormationColorControls
             copy={copy}
             colorText={colorText}
