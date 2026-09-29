@@ -46,9 +46,9 @@ const PICKER_SLOTS = [
   'helm',
   'chest',
   'feet',
-  'shoulderLeft',
   'legs',
   'gloves',
+  'shoulderLeft',
   'shoulderRight',
   'cloak',
   'crown',
@@ -720,7 +720,7 @@ function ArmorPicker({
           </button>
         ))}
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-5">
         {PICKER_SLOTS.map((slot) => {
           const selected = activeSlot === slot;
           return (
@@ -728,7 +728,10 @@ function ArmorPicker({
               key={slot}
               type="button"
               aria-pressed={selected}
-              className={cn('relative rounded-md border px-3 py-2 text-sm', choiceButtonClass(selected))}
+              className={cn(
+                'relative h-full min-w-0 whitespace-normal break-words rounded-md border px-3 py-2 text-center text-sm leading-5',
+                choiceButtonClass(selected),
+              )}
               onClick={() => onSlot(slot)}
             >
               {pickerSlotLabel(copy, slot)}
