@@ -1,5 +1,46 @@
 # WORKLOG
 
+## 交接单 · 2026-09-29 20:51 CST · Codex CLI
+
+### 本次目标
+
+记录 Armor Creator 分类按钮布局调整、提交到 main，以及清理本协调者创建的 staging 工作树的最终状态。
+
+### 已完成
+
+- 通过 commit 9c7dedc30a089c9ba6ddf721de11d368a448cf9f（fix(armor-creator): adjust slot picker layout）提交到 main；commit 只包含 src/components/armor-creator/ArmorCreatorWorkbench.tsx，6 行新增、3 行删除。
+- main 当前工作区干净，HEAD 为该 commit，main 比 origin/main 超前 18 个提交；没有 push 或部署。
+- 分类布局顺序为 helm、chest、feet、legs、gloves、shoulderLeft、shoulderRight、cloak、crown、wing；已验证 1440px 为 5 列、1024px 为 3 列、390px 为 2 列，按钮等宽、标签完整、无横向溢出。
+- ArmorCreatorWorkbench 测试 17 项通过：pnpm exec vitest run src/components/armor-creator/ArmorCreatorWorkbench.test.tsx；该文件 ESLint 退出码 0。
+- 删除前将 armor-hd-all-staging 工作树中的 4 个已跟踪 PNG 和未跟踪 public/armor-creator/generated-highres/（删除前约 26MB、594 个未跟踪文件；连同 4 个已跟踪 PNG 合计 598 个文件）保存为 stash@{0}，对象 f9d76bf3fe52a7cf7e9e31616c01c21fb4916446；这些素材没有进入布局 commit。
+- 已删除我创建的 /Users/wusir/orca/workspaces/token-maker-app/armor-hd-all-staging 工作树及 armor-hd-all-staging 分支。main、Armor-creator、第二工具工作树保留。
+
+### 做到一半
+
+无。当前没有进行中的 Armor 布局实现。
+
+### 下一步
+
+- 下一班在项目根输入 $pickup 接手。
+- 不要自动 push 或部署。
+- 若需要恢复旧 staging 素材，先检查后再使用 git stash apply stash@{0}；不要把它们误加入布局 commit。
+- WORKLOG.md 不要加入任何提交，除非用户另行授权。
+
+### 踩过的坑
+
+- 共享 main 工作树会让另一个 agent 的清理操作覆盖未提交改动；本次先核对范围并由独立 Grok 实现/复核，最后才提交。
+- 40001 的静态布局测量通过，但 6 个跨域客户端脚本返回 403，React hydration 和浏览器点击交互无法确认；4002 未监听，因此 4002 验收为 UNVERIFIED。
+- 全项目 typecheck 退出码 2，唯一错误是范围外 src/components/army-formation/ArmyFormationCreator.test.tsx(214,50) 的 TS2493；未处理范围外错误。
+
+### 怎么验证
+
+- git status --short --branch
+- git show --stat --oneline 9c7dedc30a089c9ba6ddf721de11d368a448cf9f
+- pnpm exec vitest run src/components/armor-creator/ArmorCreatorWorkbench.test.tsx
+- pnpm exec eslint src/components/armor-creator/ArmorCreatorWorkbench.tsx
+- pnpm exec tsc --noEmit --pretty false --incremental false（预期仍报告上述 Army 测试的范围外 TS2493）
+- 浏览器若要复核布局，使用已存在服务检查 1440、1024、390 宽度；不要因为 4002 未运行而自行启动或重启服务。
+
 ## 交接单 · 2026-09-27 13:38 CST (UTC+08:00) · Codex CLI（Grok CLI 代写）
 
 ### 本次目标
