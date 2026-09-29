@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { getArmorCreatorCopy, type ArmorCreatorCopy } from '@/lib/armor-creator/copy';
+import {
+  getArmorCreatorCopy,
+  getArmorCreatorHeroTitle,
+  type ArmorCreatorCopy,
+} from '@/lib/armor-creator/copy';
 
 const STRING_FIELD_NAMES = [
   'genderMale',
@@ -27,6 +31,9 @@ const STRING_FIELD_NAMES = [
   'preview',
   'pageTitle',
   'pageDescription',
+  'heroTitleLead',
+  'heroTitleEmphasis',
+  'heroTitleTail',
 ] as const satisfies readonly (keyof ArmorCreatorCopy)[];
 
 const SAVE_SLOT_NUMBERS = [1, 2, 3, 4] as const;
@@ -56,6 +63,9 @@ const englishStringFields = {
   preview: 'Preview',
   pageTitle: 'Armor creator',
   pageDescription: 'Mix and match armor in the browser and download an image.',
+  heroTitleLead: "Build your character's",
+  heroTitleEmphasis: 'armor',
+  heroTitleTail: 'look',
 } as const satisfies Record<(typeof STRING_FIELD_NAMES)[number], string>;
 
 const chineseStringFields = {
@@ -83,6 +93,9 @@ const chineseStringFields = {
   preview: '预览',
   pageTitle: '护甲制作',
   pageDescription: '在浏览器里搭配护甲并下载图片。',
+  heroTitleLead: '在浏览器里搭配你的',
+  heroTitleEmphasis: '护甲',
+  heroTitleTail: '造型',
 } as const satisfies Record<(typeof STRING_FIELD_NAMES)[number], string>;
 
 function expectNonEmptyStringFields(
@@ -137,6 +150,24 @@ describe('getArmorCreatorCopy', () => {
 
   it('locale 为 fr 时抛错，并且错误信息包含 fr', () => {
     expect(() => getArmorCreatorCopy('fr')).toThrowError(/^Unknown armor creator locale: "fr"\.$/);
+    expect(() => getArmorCreatorHeroTitle('fr')).toThrowError(/^Unknown armor creator locale: "fr"\.$/);
+  });
+
+  it('页面标题把关键词单独拿出来，英文词之间留空格，中文不留', () => {
+    expect(getArmorCreatorHeroTitle('en')).toEqual({
+      lead: "Build your character's",
+      lineGap: ' ',
+      emphasis: 'armor',
+      tail: 'look',
+      gap: ' ',
+    });
+    expect(getArmorCreatorHeroTitle('zh')).toEqual({
+      lead: '在浏览器里搭配你的',
+      lineGap: '',
+      emphasis: '护甲',
+      tail: '造型',
+      gap: '',
+    });
   });
 
   it('保存槽位超出 1 到 4 时抛错，并且错误信息包含收到的槽位号', () => {

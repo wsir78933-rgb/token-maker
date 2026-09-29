@@ -30,6 +30,17 @@ export type ArmorCreatorCopy = {
   replaceSaveConfirm: (slotNumber: number) => string;
   pageTitle: string;
   pageDescription: string;
+  heroTitleLead: string;
+  heroTitleEmphasis: string;
+  heroTitleTail: string;
+};
+
+export type ArmorCreatorHeroTitle = {
+  lead: string;
+  lineGap: string;
+  emphasis: string;
+  tail: string;
+  gap: string;
 };
 
 const englishArmorCreatorCopy: ArmorCreatorCopy = {
@@ -66,6 +77,9 @@ const englishArmorCreatorCopy: ArmorCreatorCopy = {
   },
   pageTitle: 'Armor creator',
   pageDescription: 'Mix and match armor in the browser and download an image.',
+  heroTitleLead: "Build your character's",
+  heroTitleEmphasis: 'armor',
+  heroTitleTail: 'look',
 };
 
 const chineseArmorCreatorCopy: ArmorCreatorCopy = {
@@ -102,6 +116,9 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   },
   pageTitle: '护甲制作',
   pageDescription: '在浏览器里搭配护甲并下载图片。',
+  heroTitleLead: '在浏览器里搭配你的',
+  heroTitleEmphasis: '护甲',
+  heroTitleTail: '造型',
 };
 
 function isArmorCreatorLocale(locale: string): locale is ArmorCreatorLocale {
@@ -150,6 +167,43 @@ function formatArmorReplaceSaveConfirm(
   return `${sentencePrefix} ${slotNumber}${questionMark}`;
 }
 
+function requireArmorHeroTitlePart(value: string, fieldName: string, locale: ArmorCreatorLocale): string {
+  if (value.trim().length === 0) {
+    throw new Error(
+      `Armor creator ${fieldName} is empty for locale ${JSON.stringify(locale)}. Received ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return value;
+}
+
+function armorHeroWordGap(locale: ArmorCreatorLocale): string {
+  if (locale === 'en') {
+    return ' ';
+  }
+
+  if (locale === 'zh') {
+    return '';
+  }
+
+  throw new Error(`Armor creator hero title has no word gap for locale ${JSON.stringify(locale)}.`);
+}
+
 export function getArmorCreatorCopy(locale: string): ArmorCreatorCopy {
   return readArmorCreatorCopy(requireArmorCreatorLocale(locale));
+}
+
+export function getArmorCreatorHeroTitle(locale: string): ArmorCreatorHeroTitle {
+  const supportedLocale = requireArmorCreatorLocale(locale);
+  const copy = readArmorCreatorCopy(supportedLocale);
+
+  const wordGap = armorHeroWordGap(supportedLocale);
+
+  return {
+    lead: requireArmorHeroTitlePart(copy.heroTitleLead, 'heroTitleLead', supportedLocale),
+    lineGap: wordGap,
+    emphasis: requireArmorHeroTitlePart(copy.heroTitleEmphasis, 'heroTitleEmphasis', supportedLocale),
+    tail: requireArmorHeroTitlePart(copy.heroTitleTail, 'heroTitleTail', supportedLocale),
+    gap: wordGap,
+  };
 }
