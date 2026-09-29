@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   getArmyFormationCreatorCopy,
+  getArmyFormationCreatorHero,
   type ArmyFormationCreatorCopy,
 } from '@/lib/army-formation/copy';
 
@@ -10,6 +11,10 @@ const STRING_FIELD_NAMES = [
   'navigationName',
   'pageTitle',
   'pageDescription',
+  'heroTitleLead',
+  'heroTitleEmphasis',
+  'heroSubtitle',
+  'heroAction',
   'helmets',
   'weapons',
   'animals',
@@ -49,6 +54,10 @@ const englishStringFields = {
   navigationName: 'Army formation creator',
   pageTitle: 'Army formation creator',
   pageDescription: 'Place battlefield pieces in the browser and download an image.',
+  heroTitleLead: 'Place battlefield pieces in your browser',
+  heroTitleEmphasis: 'Army formation creator',
+  heroSubtitle: 'Arrange the formation on the battlefield, then download an image.',
+  heroAction: 'Try for Free',
   helmets: 'Helmets',
   weapons: 'Weapons',
   animals: 'Animals',
@@ -88,6 +97,10 @@ const chineseStringFields = {
   navigationName: '军阵',
   pageTitle: '军阵',
   pageDescription: '在浏览器里摆放战场棋子并下载图片。',
+  heroTitleLead: '在浏览器里摆放战场棋子',
+  heroTitleEmphasis: 'Army formation creator',
+  heroSubtitle: '在战场上把阵型摆好，然后下载图片。',
+  heroAction: '免费试用',
   helmets: '头盔',
   weapons: '武器',
   animals: '动物',
@@ -168,6 +181,32 @@ describe('getArmyFormationCreatorCopy', () => {
   it('空 locale 抛错，并且错误信息包含收到的空字符串', () => {
     expect(() => getArmyFormationCreatorCopy('')).toThrowError(
       /^Unknown army formation creator locale: ""$/,
+    );
+  });
+});
+
+describe('getArmyFormationCreatorHero', () => {
+  it('英文 hero 用关键词做大标题，并带上说明和按钮', () => {
+    expect(getArmyFormationCreatorHero('en')).toEqual({
+      lead: 'Place battlefield pieces in your browser',
+      emphasis: 'Army formation creator',
+      subtitle: 'Arrange the formation on the battlefield, then download an image.',
+      action: 'Try for Free',
+    });
+  });
+
+  it('中文 hero 的强调词仍是 Army formation creator', () => {
+    expect(getArmyFormationCreatorHero('zh')).toEqual({
+      lead: '在浏览器里摆放战场棋子',
+      emphasis: 'Army formation creator',
+      subtitle: '在战场上把阵型摆好，然后下载图片。',
+      action: '免费试用',
+    });
+  });
+
+  it('未知 locale 抛错，并且错误信息包含收到的 locale', () => {
+    expect(() => getArmyFormationCreatorHero('fr')).toThrowError(
+      /^Unknown army formation creator locale: "fr"$/,
     );
   });
 });
