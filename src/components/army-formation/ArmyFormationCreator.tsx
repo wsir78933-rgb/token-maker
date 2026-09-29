@@ -231,12 +231,33 @@ function requireArmyFormationRestoreDocument(
   return restoreDocument;
 }
 
+function readStoredArmyFormationStartupDocument(
+  storage: ArmyFormationDocumentStorage,
+): ArmyFormationDocument | null {
+  return readArmyFormationBrowserSave(storage);
+}
+
+function removeBlankArmyFormationStartupDocument(
+  storage: ArmyFormationDocumentStorage,
+  armyDocument: ArmyFormationDocument,
+): boolean {
+  if (!isBlankArmyFormationDocument(armyDocument)) {
+    return false;
+  }
+
+  removeArmyFormationBrowserSave(storage);
+  return true;
+}
+
 function readArmyFormationStartupRecord(
   storage: ArmyFormationDocumentStorage,
 ): ArmyFormationStartupRecord {
   let storedDocument: ArmyFormationDocument | null;
   try {
-    storedDocument = readArmyFormationBrowserSave(storage);
+    storedDocument = readStoredArmyFormationStartupDocument(storage);
+    if (storedDocument !== null) {
+      assertKnownArmyFormationIcons(storedDocument);
+    }
   } catch (failure: unknown) {
     return {
       status: 'invalid',
@@ -244,12 +265,11 @@ function readArmyFormationStartupRecord(
     };
   }
 
-  if (storedDocument !== null && isBlankArmyFormationDocument(storedDocument)) {
-    removeArmyFormationBrowserSave(storage);
+  if (storedDocument === null) {
     return { status: 'absent' };
   }
 
-  if (storedDocument === null) {
+  if (removeBlankArmyFormationStartupDocument(storage, storedDocument)) {
     return { status: 'absent' };
   }
 
@@ -1289,11 +1309,26 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     armyFormationAutosaveOpenRef.current = true;
   }
 
+  function publishAbsentAfterWritingOverInvalidStartup(savedDocument: ArmyFormationDocument): void {
+    if (isBlankArmyFormationDocument(savedDocument)) {
+      return;
+    }
+
+    if (startupStore.readSnapshot().status !== 'invalid') {
+      return;
+    }
+
+    startupStore.publishRecord({ status: 'absent' });
+  }
+
   function commitArmyFormationDocument(next: ArmyFormationDocument) {
     setArmyDocument(next);
-    if (armyFormationAutosaveOpenRef.current) {
-      saveArmyFormationDocument(next);
+    if (!armyFormationAutosaveOpenRef.current) {
+      return;
     }
+
+    saveArmyFormationDocument(next);
+    publishAbsentAfterWritingOverInvalidStartup(next);
   }
 
   useEffect(() => {

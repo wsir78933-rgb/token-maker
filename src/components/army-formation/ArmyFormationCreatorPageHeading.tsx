@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef } from 'react';
+
 import { getArmyFormationCreatorHero } from '@/lib/army-formation/copy';
 import type { SiteLocale } from '@/lib/site-locale';
 
@@ -5,6 +9,8 @@ export const ARMY_FORMATION_CREATOR_EDITOR_ID = 'army-formation-creator-editor';
 
 const ARMY_FORMATION_HERO_FADE_CLASS = 'army-formation-hero-fade';
 const ARMY_FORMATION_HERO_UNDERLINE_CLASS = 'army-formation-hero-underline';
+const ARMY_FORMATION_HERO_BUTTON_CLASS = 'army-formation-hero-button';
+const ARMY_FORMATION_HERO_BOUNCE_CLASS = 'is-bouncing';
 
 function ArmyFormationHeroStyles() {
   return (
@@ -13,9 +19,8 @@ function ArmyFormationHeroStyles() {
         position: absolute;
         left: 0;
         width: 100%;
-        height: 0.42em;
         top: 100%;
-        margin-top: -0.08em;
+        margin-top: -5px;
         pointer-events: none;
       }
 
@@ -31,8 +36,30 @@ function ArmyFormationHeroStyles() {
       .${ARMY_FORMATION_HERO_FADE_CLASS}.is-delayed-1 { animation-delay: 0.2s; }
       .${ARMY_FORMATION_HERO_FADE_CLASS}.is-delayed-2 { animation-delay: 0.4s; }
 
+      .${ARMY_FORMATION_HERO_BUTTON_CLASS} {
+        transition: none;
+      }
+
+      @keyframes army-formation-hero-button-bounce {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.95); }
+        100% { transform: scale(1); }
+      }
+
+      .${ARMY_FORMATION_HERO_BUTTON_CLASS}.${ARMY_FORMATION_HERO_BOUNCE_CLASS} {
+        animation: army-formation-hero-button-bounce 0.3s cubic-bezier(0.36, 0, 0.66, -0.56);
+      }
+
+      .${ARMY_FORMATION_HERO_BUTTON_CLASS}:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 3px;
+      }
+
       @media (prefers-reduced-motion: reduce) {
-        .${ARMY_FORMATION_HERO_FADE_CLASS} { animation: none; }
+        .${ARMY_FORMATION_HERO_FADE_CLASS},
+        .${ARMY_FORMATION_HERO_BUTTON_CLASS}.${ARMY_FORMATION_HERO_BOUNCE_CLASS} {
+          animation: none;
+        }
       }
     `}</style>
   );
@@ -60,6 +87,40 @@ function ArmyFormationHeroUnderline() {
   );
 }
 
+function ArmyFormationHeroButton({ label }: { label: string }) {
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  const handleClick = () => {
+    const button = buttonRef.current;
+    if (button === null) {
+      throw new Error('Army formation creator hero button is missing. Received null.');
+    }
+
+    button.classList.add(ARMY_FORMATION_HERO_BOUNCE_CLASS);
+    window.setTimeout(() => button.classList.remove(ARMY_FORMATION_HERO_BOUNCE_CLASS), 300);
+
+    const editor = document.getElementById(ARMY_FORMATION_CREATOR_EDITOR_ID);
+    if (editor === null) {
+      throw new Error(
+        `Army formation creator editor is missing. id=${JSON.stringify(ARMY_FORMATION_CREATOR_EDITOR_ID)}.`,
+      );
+    }
+
+    editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      className={`${ARMY_FORMATION_HERO_BUTTON_CLASS} ${ARMY_FORMATION_HERO_FADE_CLASS} is-delayed-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-black px-8 py-6 text-base font-medium text-white`}
+      onClick={handleClick}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function ArmyFormationCreatorPageHeading({ locale }: { locale: SiteLocale }) {
   const hero = getArmyFormationCreatorHero(locale);
 
@@ -69,12 +130,12 @@ export function ArmyFormationCreatorPageHeading({ locale }: { locale: SiteLocale
       <div className="mx-auto flex max-w-4xl flex-col items-center">
         <h1
           id="army-formation-creator-heading"
-          className={`${ARMY_FORMATION_HERO_FADE_CLASS} mb-8 text-4xl font-bold leading-tight tracking-tighter sm:text-5xl md:text-6xl`}
+          className={`${ARMY_FORMATION_HERO_FADE_CLASS} mb-6 text-4xl font-bold leading-tight tracking-tighter sm:text-5xl md:text-6xl`}
         >
           {hero.lead}{' '}
           <br />
           <span className="relative inline-block">
-            <span className="font-display text-5xl font-normal italic sm:text-6xl md:text-7xl">{hero.emphasis}</span>
+            <span className="text-5xl font-normal sm:text-6xl md:text-7xl">{hero.emphasis}</span>
             <ArmyFormationHeroUnderline />
           </span>
         </h1>
@@ -83,12 +144,7 @@ export function ArmyFormationCreatorPageHeading({ locale }: { locale: SiteLocale
         >
           {hero.subtitle}
         </p>
-        <a
-          href={`#${ARMY_FORMATION_CREATOR_EDITOR_ID}`}
-          className={`${ARMY_FORMATION_HERO_FADE_CLASS} is-delayed-2 inline-flex items-center justify-center rounded-lg bg-foreground px-8 py-6 text-base font-medium text-background focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-foreground`}
-        >
-          {hero.action}
-        </a>
+        <ArmyFormationHeroButton label={hero.action} />
       </div>
     </section>
   );

@@ -94,7 +94,7 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   pageTitle: '军阵',
   pageDescription: '在浏览器里摆放战场棋子并下载图片。',
   heroTitleLead: '在浏览器里摆放战场棋子',
-  heroTitleEmphasis: 'Army formation creator',
+  heroTitleEmphasis: '军阵制作器',
   heroSubtitle: '在战场上把阵型摆好，然后下载图片。',
   heroAction: '免费试用',
   helmets: '头盔',

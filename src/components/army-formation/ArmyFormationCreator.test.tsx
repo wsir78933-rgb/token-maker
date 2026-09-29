@@ -317,6 +317,39 @@ describe('ArmyFormationCreator', () => {
     expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toBe(raw);
   });
 
+  it('坏档警告在写入 helmet-01 后消失，钥匙换成新文档', () => {
+    const raw = 'broken-army-formation-save';
+    localStorage.setItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY, raw);
+    render(<ArmyFormationCreator locale="zh" />);
+
+    expect(screen.getByRole('alert').textContent).toContain(raw);
+
+    fireEvent.click(screen.getByRole('button', { name: /^helmet-01$/ }));
+
+    expect(screen.queryByRole('alert')?.textContent ?? '').not.toContain(raw);
+    const stored = localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY);
+    expect(stored).toContain('helmet-01');
+    expect(stored).not.toContain(raw);
+  });
+
+  it('未知图标的存档显示 icon id，不询问也不画出棋子', () => {
+    const missingIconId = 'missing-icon-99';
+    const armyDocument = addArmyFormationPiece(
+      createEmptyArmyFormationDocument(),
+      missingIconId,
+      'piece-missing-icon',
+      780,
+    );
+    localStorage.setItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY, serializeArmyFormationDocument(armyDocument));
+
+    render(<ArmyFormationCreator locale="zh" />);
+
+    expect(screen.getByRole('alert').textContent).toContain(missingIconId);
+    expect(screen.queryByRole('button', { name: '回到上次' })).toBeNull();
+    expect(pieceButtons()).toHaveLength(0);
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toContain(missingIconId);
+  });
+
   it('导出图片直接下载，页面上不留下图片预览', async () => {
     const createObjectURL = vi.fn(() => 'blob:army-formation');
     const revokeObjectURL = vi.fn();
