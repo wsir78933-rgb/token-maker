@@ -9,6 +9,7 @@ export const ARMY_FORMATION_DOCUMENT_STORAGE_KEY = 'tokenmaker.army-formation-cr
 export type ArmyFormationDocumentStorage = {
   getItem: (key: string) => string | null;
   setItem: (key: string, value: string) => void;
+  removeItem: (key: string) => void;
 };
 
 function describeJsonReceivedValue(value: object): string {
@@ -67,6 +68,12 @@ function requireArmyFormationDocumentStorage(
   if (typeof storage.setItem !== 'function') {
     throw new Error(
       `Army formation document storage setItem must be a function, received ${describeReceivedValue(storage.setItem)}.`,
+    );
+  }
+
+  if (typeof storage.removeItem !== 'function') {
+    throw new Error(
+      `Army formation document storage removeItem must be a function, received ${describeReceivedValue(storage.removeItem)}.`,
     );
   }
 
@@ -131,4 +138,9 @@ export function writeArmyFormationBrowserSave(
   const validatedStorage = requireArmyFormationDocumentStorage(storage);
   const serialized = serializeArmyFormationDocument(armyDocument);
   validatedStorage.setItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY, serialized);
+}
+
+export function removeArmyFormationBrowserSave(storage: ArmyFormationDocumentStorage): void {
+  const validatedStorage = requireArmyFormationDocumentStorage(storage);
+  validatedStorage.removeItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY);
 }

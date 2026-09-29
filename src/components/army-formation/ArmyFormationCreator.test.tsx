@@ -40,10 +40,6 @@ function requireHeading(name: string): HTMLElement {
   return heading;
 }
 
-function headingIndex(name: string): number {
-  return [...document.querySelectorAll('h2')].indexOf(requireHeading(name));
-}
-
 function controlGroup(title: string): HTMLElement {
   const group = requireHeading(title).parentElement;
   if (!(group instanceof HTMLElement) || group.tagName !== 'SECTION') {
@@ -54,6 +50,24 @@ function controlGroup(title: string): HTMLElement {
   }
 
   return group;
+}
+
+function expectButtonFollowsHeading(buttonName: string, headingName: string): HTMLElement {
+  const button = screen.getByRole('button', { name: buttonName });
+  const heading = requireHeading(headingName);
+  const buttonFollowsHeading = heading.compareDocumentPosition(button) & Node.DOCUMENT_POSITION_FOLLOWING;
+  expect(buttonFollowsHeading).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  return button;
+}
+
+function storeArmyFormationHelmet(pieceId: string) {
+  const armyDocument = addArmyFormationPiece(
+    createEmptyArmyFormationDocument(),
+    'helmet-01',
+    pieceId,
+    780,
+  );
+  localStorage.setItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY, serializeArmyFormationDocument(armyDocument));
 }
 
 function chooseArmyFormationFile(file: File) {
@@ -85,8 +99,19 @@ describe('ArmyFormationCreator', () => {
 
     expect(screen.getByRole('region', { name: 'Army formation creator' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Helmets' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Save battlefield 1' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Save battlefield 1' })).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Save in this browser' })).toBeNull();
     expect(screen.queryByRole('navigation', { name: 'Editor' })).toBeNull();
+  });
+
+  it('页面上没有保存战场，也没有保存在这个浏览器', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+
+    expect(screen.queryByText('保存在这个浏览器')).toBeNull();
+    expect(screen.queryByRole('button', { name: '保存战场 1' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '保存战场 2' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '保存战场 3' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '保存战场 4' })).toBeNull();
   });
 
   it('点一个图标后战场出现棋子，再点一个不会叠在同一个位置', () => {
@@ -120,21 +145,22 @@ describe('ArmyFormationCreator', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /^helmet-01$/ }));
     expect(pieceButtons()).toHaveLength(1);
+    expect(screen.getByRole('heading', { name: '战场', exact: true })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: /战场 \d/ })).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: '切换到下一场' }));
-    expect(screen.getByRole('button', { name: '保存战场 2' })).toBeTruthy();
     expect(pieceButtons()).toHaveLength(0);
 
     fireEvent.click(screen.getByRole('button', { name: '切换到下一场' }));
-    expect(screen.getByRole('button', { name: '保存战场 3' })).toBeTruthy();
+    expect(pieceButtons()).toHaveLength(0);
     fireEvent.click(screen.getByRole('button', { name: '切换到下一场' }));
-    expect(screen.getByRole('button', { name: '保存战场 4' })).toBeTruthy();
+    expect(pieceButtons()).toHaveLength(0);
     fireEvent.click(screen.getByRole('button', { name: '切换到下一场' }));
-    expect(screen.getByRole('button', { name: '保存战场 1' })).toBeTruthy();
     expect(pieceButtons()).toHaveLength(1);
+    expect(screen.getByRole('heading', { name: '战场', exact: true })).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: '切换到上一场' }));
-    expect(screen.getByRole('button', { name: '保存战场 4' })).toBeTruthy();
+    expect(pieceButtons()).toHaveLength(0);
   });
 
   it('点棋子选中再点取消，删除和旋转只动选中的，清空只清棋子', () => {
@@ -196,23 +222,86 @@ describe('ArmyFormationCreator', () => {
 
     expect(await screen.findByRole('button', { name: 'piece-from-file' })).toBeTruthy();
     expect(piecePosition(pieceButtons()[0] as HTMLButtonElement)).toBe('0,0');
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toContain('helmet-01');
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toContain('piece-from-file');
 
     chooseArmyFormationFile(new File(['not-json-at-all'], 'broken.txt', { type: 'text/plain' }));
 
     expect((await screen.findByRole('alert')).textContent).toContain('not-json-at-all');
   });
 
-  it('保存在这个浏览器后，重新打开还能看到棋子', () => {
-    const first = render(<ArmyFormationCreator locale="zh" />);
+  it('不点保存按钮，摆上 helmet-01 后记录里就有这枚棋子', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: /^helmet-01$/ }));
-    fireEvent.click(screen.getByRole('button', { name: '保存战场 1' }));
+
     expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toContain('helmet-01');
+  });
+
+  it('有上次记录时先询问，回到上次后棋子出现且记录还在', () => {
+    storeArmyFormationHelmet('piece-from-record');
+    render(<ArmyFormationCreator locale="zh" />);
+
+    expect(pieceButtons()).toHaveLength(0);
+    const dialog = screen.getByRole('dialog');
+    expect(dialog.getAttribute('aria-modal')).toBe('true');
+    expect(screen.getByText('发现上次的记录。要回到上次的记录吗？')).toBeTruthy();
+    expect(screen.getByRole('button', { name: '回到上次' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '从空白开始' })).toBeTruthy();
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toContain('helmet-01');
+
+    fireEvent.click(screen.getByRole('button', { name: '回到上次' }));
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(pieceButtons()).toHaveLength(1);
+    expect(pieceButtons()[0]?.getAttribute('aria-label')).toBe('piece-from-record');
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toContain('helmet-01');
+  });
+
+  it('从空白开始会立刻删掉旧记录，再次打开不再询问', () => {
+    storeArmyFormationHelmet('piece-from-record');
+    const first = render(<ArmyFormationCreator locale="zh" />);
+
+    expect(pieceButtons()).toHaveLength(0);
+    fireEvent.click(screen.getByRole('button', { name: '从空白开始' }));
+
+    expect(pieceButtons()).toHaveLength(0);
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toBeNull();
+    expect(screen.queryByRole('dialog')).toBeNull();
 
     first.unmount();
     render(<ArmyFormationCreator locale="zh" />);
 
-    expect(pieceButtons()).toHaveLength(1);
-    expect(piecePosition(pieceButtons()[0] as HTMLButtonElement)).toBe('0,0');
+    expect(screen.queryByText('发现上次的记录。要回到上次的记录吗？')).toBeNull();
+    expect(screen.queryByRole('button', { name: '回到上次' })).toBeNull();
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(pieceButtons()).toHaveLength(0);
+  });
+
+  it('空白记录不是可恢复记录，读到后会删掉钥匙', () => {
+    localStorage.setItem(
+      ARMY_FORMATION_DOCUMENT_STORAGE_KEY,
+      serializeArmyFormationDocument(createEmptyArmyFormationDocument()),
+    );
+    render(<ArmyFormationCreator locale="zh" />);
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(pieceButtons()).toHaveLength(0);
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toBeNull();
+  });
+
+  it('英文询问显示上次记录的三句文案', () => {
+    storeArmyFormationHelmet('piece-from-record');
+    render(<ArmyFormationCreator locale="en" />);
+
+    expect(pieceButtons()).toHaveLength(0);
+    const dialog = screen.getByRole('dialog');
+    expect(dialog.getAttribute('aria-modal')).toBe('true');
+    expect(screen.getByText('A previous record was found. Restore it?')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Restore' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Start blank' })).toBeTruthy();
   });
 
   it('坏的浏览器存档会抛到页面上并带上原字符串', () => {
@@ -222,7 +311,10 @@ describe('ArmyFormationCreator', () => {
     render(<ArmyFormationCreator locale="zh" />);
 
     expect(screen.getByRole('alert').textContent).toContain(raw);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.queryByText('发现上次的记录。要回到上次的记录吗？')).toBeNull();
     expect(pieceButtons()).toHaveLength(0);
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toBe(raw);
   });
 
   it('导出图片直接下载，页面上不留下图片预览', async () => {
@@ -242,14 +334,18 @@ describe('ArmyFormationCreator', () => {
     expect(screen.queryByRole('img', { name: 'Army formation creator' })).toBeNull();
   });
 
-  it('保存区标题在战场标题后面，并且不在改战场那一组里', () => {
+  it('导出文件、导出图片、选择文件在战场标题后面，并且不在改战场那一组里', () => {
     render(<ArmyFormationCreator locale="zh" />);
-    expect(headingIndex('保存在这个浏览器')).toBeGreaterThan(headingIndex('战场'));
-    expect(controlGroup('改战场').contains(requireHeading('保存在这个浏览器'))).toBe(false);
+    for (const label of ['导出文件', '导出图片', '选择文件']) {
+      const button = expectButtonFollowsHeading(label, '战场');
+      expect(controlGroup('改战场').contains(button)).toBe(false);
+    }
 
     cleanup();
     render(<ArmyFormationCreator locale="en" />);
-    expect(headingIndex('Save in this browser')).toBeGreaterThan(headingIndex('Battlefield'));
-    expect(controlGroup('Change battlefield').contains(requireHeading('Save in this browser'))).toBe(false);
+    for (const label of ['Export file', 'Export image', 'Choose file']) {
+      const button = expectButtonFollowsHeading(label, 'Battlefield');
+      expect(controlGroup('Change battlefield').contains(button)).toBe(false);
+    }
   });
 });

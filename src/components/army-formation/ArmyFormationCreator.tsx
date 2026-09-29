@@ -1,10 +1,10 @@
 'use client';
 
-import { useId, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode, type RefObject } from 'react';
+import { useEffect, useId, useRef, useState, type PointerEvent, type ReactNode, type RefObject } from 'react';
 
 import {
-  ARMY_FORMATION_DOCUMENT_STORAGE_KEY,
   readArmyFormationBrowserSave,
+  removeArmyFormationBrowserSave,
   writeArmyFormationBrowserSave,
   type ArmyFormationDocumentStorage,
 } from '@/lib/army-formation/browser-saves';
@@ -55,8 +55,6 @@ const ARMY_FORMATION_IMAGE_NAME = 'army-formation-creator.svg';
 
 const ARMY_FORMATION_BUTTON_CLASS =
   'rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-4 py-3 text-base text-[var(--site-ink)]';
-const ARMY_FORMATION_SAVE_BUTTON_CLASS =
-  'w-full rounded-md border border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] px-4 py-3 text-center text-base text-[var(--site-accent-strong)]';
 const ARMY_FORMATION_INPUT_CLASS =
   'rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] px-2 py-1 text-sm text-[var(--site-ink)]';
 const ARMY_FORMATION_NATO_ICONS_PER_PAGE = 60;
@@ -77,20 +75,10 @@ type EmptySlot = {
   y: number;
 };
 
-type ArmyFormationSeed = {
-  storedText: string | null;
-  armyDocument: ArmyFormationDocument;
-  failureMessage: string | null;
-};
-
-const SERVER_ARMY_FORMATION_SEED: ArmyFormationSeed = {
-  storedText: null,
-  armyDocument: createEmptyArmyFormationDocument(),
-  failureMessage: null,
-};
-
-let cachedStoredText: string | null = null;
-let cachedArmyFormationSeed: ArmyFormationSeed | null = null;
+type ArmyFormationStartupRecord =
+  | { status: 'absent' }
+  | { status: 'invalid'; message: string }
+  | { status: 'restore'; armyDocument: ArmyFormationDocument };
 
 function describeJsonReceivedValue(value: object): string {
   try {
@@ -153,6 +141,65 @@ function requireWindowArmyFormationStorage(): ArmyFormationDocumentStorage {
   return storage;
 }
 
+function isBlankArmyFormationDocument(armyDocument: ArmyFormationDocument): boolean {
+  const emptySerialized = serializeArmyFormationDocument(createEmptyArmyFormationDocument());
+  const receivedSerialized = serializeArmyFormationDocument(armyDocument);
+  return receivedSerialized === emptySerialized;
+}
+
+function saveArmyFormationDocument(armyDocument: ArmyFormationDocument): void {
+  const storage = requireWindowArmyFormationStorage();
+  if (isBlankArmyFormationDocument(armyDocument)) {
+    removeArmyFormationBrowserSave(storage);
+    return;
+  }
+
+  writeArmyFormationBrowserSave(storage, armyDocument);
+}
+
+function readArmyFormationStorageFailureMessage(failure: unknown): string {
+  if (failure instanceof Error && failure.message.length > 0) {
+    return failure.message;
+  }
+
+  throw failure;
+}
+
+function requireArmyFormationRestoreDocument(
+  restoreDocument: ArmyFormationDocument | null,
+): ArmyFormationDocument {
+  if (restoreDocument === null) {
+    throw new Error('Army formation previous record is missing. Received null.');
+  }
+
+  return restoreDocument;
+}
+
+function readArmyFormationStartupRecord(
+  storage: ArmyFormationDocumentStorage,
+): ArmyFormationStartupRecord {
+  let storedDocument: ArmyFormationDocument | null;
+  try {
+    storedDocument = readArmyFormationBrowserSave(storage);
+  } catch (failure: unknown) {
+    return {
+      status: 'invalid',
+      message: readArmyFormationStorageFailureMessage(failure),
+    };
+  }
+
+  if (storedDocument !== null && isBlankArmyFormationDocument(storedDocument)) {
+    removeArmyFormationBrowserSave(storage);
+    return { status: 'absent' };
+  }
+
+  if (storedDocument === null) {
+    return { status: 'absent' };
+  }
+
+  return { status: 'restore', armyDocument: storedDocument };
+}
+
 function readActiveBattlefield(armyDocument: ArmyFormationDocument): ArmyBattlefield {
   const battlefield = armyDocument.battlefields[armyDocument.activeBattlefieldIndex];
   if (battlefield === undefined) {
@@ -170,83 +217,6 @@ function assertKnownArmyFormationIcons(armyDocument: ArmyFormationDocument): voi
       requireArmyFormationCatalogIcon(piece.iconId);
     }
   }
-}
-
-function readWindowStoredArmyFormationText(): string | null {
-  const stored = requireWindowArmyFormationStorage().getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY);
-  if (stored === null) {
-    return null;
-  }
-
-  if (typeof stored !== 'string') {
-    throw new Error(
-      `Army formation browser save must be a string, received ${describeReceivedValue(stored)}.`,
-    );
-  }
-
-  return stored;
-}
-
-function seedStorageForText(storedText: string | null): ArmyFormationDocumentStorage {
-  return {
-    getItem(key: string) {
-      if (key !== ARMY_FORMATION_DOCUMENT_STORAGE_KEY) {
-        throw new Error(
-          `Army formation document storage key must be ${JSON.stringify(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)}, received ${JSON.stringify(key)}.`,
-        );
-      }
-
-      return storedText;
-    },
-    setItem() {
-      throw new Error('Army formation seed storage cannot be written.');
-    },
-  };
-}
-
-function seedFromStoredText(storedText: string | null): ArmyFormationSeed {
-  try {
-    const stored = readArmyFormationBrowserSave(seedStorageForText(storedText));
-    if (stored === null) {
-      return {
-        storedText,
-        armyDocument: createEmptyArmyFormationDocument(),
-        failureMessage: null,
-      };
-    }
-
-    assertKnownArmyFormationIcons(stored);
-    return {
-      storedText,
-      armyDocument: stored,
-      failureMessage: null,
-    };
-  } catch (failure: unknown) {
-    return {
-      storedText,
-      armyDocument: createEmptyArmyFormationDocument(),
-      failureMessage: describeArmyFormationFailure(failure),
-    };
-  }
-}
-
-function readClientArmyFormationSeed(): ArmyFormationSeed {
-  const storedText = readWindowStoredArmyFormationText();
-  if (cachedArmyFormationSeed !== null && cachedStoredText === storedText) {
-    return cachedArmyFormationSeed;
-  }
-
-  cachedStoredText = storedText;
-  cachedArmyFormationSeed = seedFromStoredText(storedText);
-  return cachedArmyFormationSeed;
-}
-
-function readServerArmyFormationSeed(): ArmyFormationSeed {
-  return SERVER_ARMY_FORMATION_SEED;
-}
-
-function subscribeArmyFormationSeed(): () => void {
-  return () => {};
 }
 
 function createArmyPieceId(pieces: readonly { id: string }[]): string {
@@ -293,25 +263,6 @@ function readColorInputValue(color: string): string {
   }
 
   return color.toLowerCase();
-}
-
-function battlefieldNumber(activeBattlefieldIndex: number): number {
-  if (
-    activeBattlefieldIndex !== 0 &&
-    activeBattlefieldIndex !== 1 &&
-    activeBattlefieldIndex !== 2 &&
-    activeBattlefieldIndex !== 3
-  ) {
-    throw new Error(
-      `Active battlefield index must be 0, 1, 2, or 3, received ${String(activeBattlefieldIndex)}.`,
-    );
-  }
-
-  return activeBattlefieldIndex + 1;
-}
-
-function saveBattlefieldButtonLabel(saveBattlefield: string, activeBattlefieldIndex: number): string {
-  return `${saveBattlefield} ${battlefieldNumber(activeBattlefieldIndex)}`;
 }
 
 function categoryLabel(
@@ -945,24 +896,6 @@ function ArmyFormationFieldControls({
   );
 }
 
-function ArmyFormationSaveControls({
-  copy,
-  saveLabel,
-  onSave,
-}: {
-  copy: ArmyFormationCreatorCopy;
-  saveLabel: string;
-  onSave: () => void;
-}) {
-  return (
-    <ArmyFormationControlGroup title={copy.saveInThisBrowser}>
-      <button type="button" className={ARMY_FORMATION_SAVE_BUTTON_CLASS} onClick={onSave}>
-        {saveLabel}
-      </button>
-    </ArmyFormationControlGroup>
-  );
-}
-
 function ArmyFormationFileChooser({
   label,
   inputRef,
@@ -1117,26 +1050,21 @@ function ArmyFormationStepButton({
   );
 }
 
-function ArmyFormationBattlefieldSaveRow({
+function ArmyFormationBattlefieldTransferRow({
   copy,
-  saveLabel,
   fileInputRef,
-  onSave,
   onExportFile,
   onExportImage,
   onChooseFile,
 }: {
   copy: ArmyFormationCreatorCopy;
-  saveLabel: string;
   fileInputRef: RefObject<HTMLInputElement | null>;
-  onSave: () => void;
   onExportFile: () => void;
   onExportImage: () => void;
   onChooseFile: (file: File) => void;
 }) {
   return (
     <div className="col-start-2 row-start-3 flex min-w-0 flex-col gap-3">
-      <ArmyFormationSaveControls copy={copy} saveLabel={saveLabel} onSave={onSave} />
       <ArmyFormationTransferControls
         copy={copy}
         inputRef={fileInputRef}
@@ -1152,9 +1080,7 @@ function ArmyFormationBattlefieldPane({
   copy,
   battlefield,
   emptySlot,
-  saveLabel,
   fileInputRef,
-  onSave,
   onExportFile,
   onExportImage,
   onChooseFile,
@@ -1169,9 +1095,7 @@ function ArmyFormationBattlefieldPane({
   copy: ArmyFormationCreatorCopy;
   battlefield: ArmyBattlefield;
   emptySlot: EmptySlot | null;
-  saveLabel: string;
   fileInputRef: RefObject<HTMLInputElement | null>;
-  onSave: () => void;
   onExportFile: () => void;
   onExportImage: () => void;
   onChooseFile: (file: File) => void;
@@ -1233,11 +1157,9 @@ function ArmyFormationBattlefieldPane({
         columnClass="col-start-3"
         onStep={onStepNext}
       />
-      <ArmyFormationBattlefieldSaveRow
+      <ArmyFormationBattlefieldTransferRow
         copy={copy}
-        saveLabel={saveLabel}
         fileInputRef={fileInputRef}
-        onSave={onSave}
         onExportFile={onExportFile}
         onExportImage={onExportImage}
         onChooseFile={onChooseFile}
@@ -1246,38 +1168,89 @@ function ArmyFormationBattlefieldPane({
   );
 }
 
+function ArmyFormationRestoreDialog({
+  copy,
+  onRestorePreviousRecord,
+  onStartBlank,
+}: {
+  copy: ArmyFormationCreatorCopy;
+  onRestorePreviousRecord: () => void;
+  onStartBlank: () => void;
+}) {
+  const promptId = useId();
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={promptId}
+      className="absolute inset-0 z-30 flex items-center justify-center bg-[var(--site-panel)] p-4"
+    >
+      <div className="flex w-full max-w-md flex-col gap-3 rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-4">
+        <p id={promptId} className="text-base font-semibold text-[var(--site-ink-strong)]">
+          {copy.previousRecordPrompt}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onRestorePreviousRecord}>
+            {copy.restorePreviousRecord}
+          </button>
+          <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onStartBlank}>
+            {copy.startBlank}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   const copy = getArmyFormationCreatorCopy(locale);
-  const seed = useSyncExternalStore(
-    subscribeArmyFormationSeed,
-    readClientArmyFormationSeed,
-    readServerArmyFormationSeed,
-  );
-  const seedBattlefield = readActiveBattlefield(seed.armyDocument);
-  const [armyDocument, setArmyDocument] = useState<ArmyFormationDocument>(seed.armyDocument);
-  const [failureMessage, setFailureMessage] = useState<string | null>(seed.failureMessage);
-  const [seenStoredText, setSeenStoredText] = useState<string | null>(seed.storedText);
+  const [armyDocument, setArmyDocument] = useState(() => createEmptyArmyFormationDocument());
+  const [failureMessage, setFailureMessage] = useState<string | null>(null);
+  const [restoreDocument, setRestoreDocument] = useState<ArmyFormationDocument | null>(null);
   const [activeCategoryId, setActiveCategoryId] = useState<ArmyFormationIconCategoryId>('helmet');
   const [colorText, setColorText] = useState('#000000');
   const [angleText, setAngleText] = useState('90');
-  const [heightText, setHeightText] = useState(String(seedBattlefield.heightPx));
-  const [fieldBackgroundColorText, setFieldBackgroundColorText] = useState(
-    readColorInputValue(seedBattlefield.fieldBackgroundColor),
+  const [heightText, setHeightText] = useState(() =>
+    String(readActiveBattlefield(createEmptyArmyFormationDocument()).heightPx),
   );
-  const [backgroundImageText, setBackgroundImageText] = useState(seedBattlefield.backgroundImageUrl);
+  const [fieldBackgroundColorText, setFieldBackgroundColorText] = useState(() =>
+    readColorInputValue(readActiveBattlefield(createEmptyArmyFormationDocument()).fieldBackgroundColor),
+  );
+  const [backgroundImageText, setBackgroundImageText] = useState(
+    () => readActiveBattlefield(createEmptyArmyFormationDocument()).backgroundImageUrl,
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const pieceDragRef = useRef<PieceDragSession | null>(null);
   const suppressClickRef = useRef(false);
+  const armyFormationAutosaveOpenRef = useRef(false);
 
-  if (seed.storedText !== seenStoredText) {
-    const battlefield = readActiveBattlefield(seed.armyDocument);
-    setSeenStoredText(seed.storedText);
-    setArmyDocument(seed.armyDocument);
-    setFailureMessage(seed.failureMessage);
-    setHeightText(String(battlefield.heightPx));
-    setFieldBackgroundColorText(readColorInputValue(battlefield.fieldBackgroundColor));
-    setBackgroundImageText(battlefield.backgroundImageUrl);
+  function openArmyFormationAutosave() {
+    armyFormationAutosaveOpenRef.current = true;
   }
+
+  function commitArmyFormationDocument(next: ArmyFormationDocument) {
+    setArmyDocument(next);
+    if (armyFormationAutosaveOpenRef.current) {
+      saveArmyFormationDocument(next);
+    }
+  }
+
+  useEffect(() => {
+    // Read after mount so the first server and client render both stay empty.
+    const startupRecord = readArmyFormationStartupRecord(requireWindowArmyFormationStorage());
+    if (startupRecord.status === 'invalid') {
+      setFailureMessage(startupRecord.message);
+      openArmyFormationAutosave();
+      return;
+    }
+
+    if (startupRecord.status === 'restore') {
+      setRestoreDocument(startupRecord.armyDocument);
+      return;
+    }
+
+    openArmyFormationAutosave();
+  }, []);
 
   function syncBattlefieldDrafts(battlefield: ArmyBattlefield) {
     setHeightText(String(battlefield.heightPx));
@@ -1294,80 +1267,68 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     }
   }
 
-  function replaceArmyDocument(next: ArmyFormationDocument) {
-    setArmyDocument(next);
-  }
-
   function onPlaceIcon(iconId: string) {
     reportArmyFormationAction(() => {
       requireArmyFormationCatalogIcon(iconId);
       const pieceId = createArmyPieceId(readActiveBattlefield(armyDocument).pieces);
-      replaceArmyDocument(addArmyFormationPiece(armyDocument, iconId, pieceId, ARMY_FIELD_WIDTH_PX));
+      commitArmyFormationDocument(addArmyFormationPiece(armyDocument, iconId, pieceId, ARMY_FIELD_WIDTH_PX));
     });
   }
 
   function onAddColor() {
     reportArmyFormationAction(() => {
       const swatchId = createArmySwatchId(readActiveBattlefield(armyDocument).palette);
-      replaceArmyDocument(addArmyPaletteSwatch(armyDocument, swatchId, colorText));
+      commitArmyFormationDocument(addArmyPaletteSwatch(armyDocument, swatchId, colorText));
     });
   }
 
   function onDeleteColor() {
     reportArmyFormationAction(() => {
-      replaceArmyDocument(deleteSelectedArmyPaletteSwatch(armyDocument));
+      commitArmyFormationDocument(deleteSelectedArmyPaletteSwatch(armyDocument));
     });
   }
 
   function onSelectSwatch(swatchId: string) {
     reportArmyFormationAction(() => {
-      replaceArmyDocument(selectArmyPaletteSwatch(armyDocument, swatchId));
+      commitArmyFormationDocument(selectArmyPaletteSwatch(armyDocument, swatchId));
     });
   }
 
   function onDeletePieces() {
     reportArmyFormationAction(() => {
-      replaceArmyDocument(deleteSelectedArmyFormationPieces(armyDocument));
+      commitArmyFormationDocument(deleteSelectedArmyFormationPieces(armyDocument));
     });
   }
 
   function onRotate() {
     reportArmyFormationAction(() => {
       const rotationDegrees = readFiniteNumberInput(angleText, 'Rotation degrees');
-      replaceArmyDocument(rotateSelectedArmyFormationPieces(armyDocument, rotationDegrees));
+      commitArmyFormationDocument(rotateSelectedArmyFormationPieces(armyDocument, rotationDegrees));
     });
   }
 
   function onClear() {
     reportArmyFormationAction(() => {
-      replaceArmyDocument(clearArmyFormationPieces(armyDocument));
+      commitArmyFormationDocument(clearArmyFormationPieces(armyDocument));
     });
   }
 
   function onApplyHeight() {
     reportArmyFormationAction(() => {
       const heightPx = readFiniteNumberInput(heightText, 'Battlefield height');
-      replaceArmyDocument(setArmyBattlefieldHeight(armyDocument, heightPx));
+      commitArmyFormationDocument(setArmyBattlefieldHeight(armyDocument, heightPx));
     });
   }
 
   function onApplyFieldBackground() {
     reportArmyFormationAction(() => {
-      replaceArmyDocument(setArmyFieldBackgroundColor(armyDocument, fieldBackgroundColorText));
+      commitArmyFormationDocument(setArmyFieldBackgroundColor(armyDocument, fieldBackgroundColorText));
     });
   }
 
   function onApplyBackgroundImage() {
     reportArmyFormationAction(() => {
-      replaceArmyDocument(setArmyBackgroundImageUrl(armyDocument, backgroundImageText));
-    });
-  }
-
-  function onSave() {
-    reportArmyFormationAction(() => {
-      const serialized = serializeArmyFormationDocument(armyDocument);
-      writeArmyFormationBrowserSave(requireWindowArmyFormationStorage(), armyDocument);
-      setSeenStoredText(serialized);
+      commitArmyFormationDocument(setArmyBackgroundImageUrl(armyDocument, backgroundImageText));
     });
   }
 
@@ -1396,7 +1357,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   function onStep(direction: -1 | 1) {
     reportArmyFormationAction(() => {
       const next = stepArmyBattlefield(armyDocument, direction);
-      replaceArmyDocument(next);
+      commitArmyFormationDocument(next);
       syncBattlefieldDrafts(readActiveBattlefield(next));
     });
   }
@@ -1404,13 +1365,32 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   function onChooseFile(file: File) {
     void readArmyFormationFile(file)
       .then((loaded) => {
-        setArmyDocument(loaded);
+        commitArmyFormationDocument(loaded);
         syncBattlefieldDrafts(readActiveBattlefield(loaded));
         setFailureMessage(null);
       })
       .catch((failure: unknown) => {
         setFailureMessage(describeArmyFormationFailure(failure));
       });
+  }
+
+  function onRestorePreviousRecord() {
+    reportArmyFormationAction(() => {
+      const restoredDocument = requireArmyFormationRestoreDocument(restoreDocument);
+      openArmyFormationAutosave();
+      setRestoreDocument(null);
+      commitArmyFormationDocument(restoredDocument);
+      syncBattlefieldDrafts(readActiveBattlefield(restoredDocument));
+    });
+  }
+
+  function onStartBlank() {
+    reportArmyFormationAction(() => {
+      requireArmyFormationRestoreDocument(restoreDocument);
+      removeArmyFormationBrowserSave(requireWindowArmyFormationStorage());
+      openArmyFormationAutosave();
+      setRestoreDocument(null);
+    });
   }
 
   function onPiecePointerDown(event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) {
@@ -1444,7 +1424,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     }
 
     reportArmyFormationAction(() => {
-      replaceArmyDocument(
+      commitArmyFormationDocument(
         moveDraggedArmyFormationPiece(
           armyDocument,
           drag.pieceId,
@@ -1473,7 +1453,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     }
 
     reportArmyFormationAction(() => {
-      replaceArmyDocument(toggleArmyFormationPieceSelection(armyDocument, pieceId));
+      commitArmyFormationDocument(toggleArmyFormationPieceSelection(armyDocument, pieceId));
     });
   }
 
@@ -1483,8 +1463,9 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   return (
     <section
       aria-label={copy.productName}
-      className="mx-auto w-full max-w-[84rem] space-y-3 rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-3 text-[var(--site-ink)] shadow-[var(--site-card-shadow)] sm:p-4"
+      className="relative mx-auto w-full max-w-[84rem] rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-3 text-[var(--site-ink)] shadow-[var(--site-card-shadow)] sm:p-4"
     >
+      <div className="space-y-3" inert={restoreDocument !== null ? true : undefined}>
       {failureMessage !== null ? <ArmyFormationFailure message={failureMessage} /> : null}
       <ArmyFormationCategoryTabs
         copy={copy}
@@ -1529,9 +1510,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
           copy={copy}
           battlefield={battlefield}
           emptySlot={emptySlot}
-          saveLabel={saveBattlefieldButtonLabel(copy.saveBattlefield, armyDocument.activeBattlefieldIndex)}
           fileInputRef={fileInputRef}
-          onSave={onSave}
           onExportFile={onExportFile}
           onExportImage={onExportImage}
           onChooseFile={onChooseFile}
@@ -1544,6 +1523,14 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
           onPieceClick={onPieceClick}
         />
       </div>
+      </div>
+      {restoreDocument !== null ? (
+        <ArmyFormationRestoreDialog
+          copy={copy}
+          onRestorePreviousRecord={onRestorePreviousRecord}
+          onStartBlank={onStartBlank}
+        />
+      ) : null}
     </section>
   );
 }

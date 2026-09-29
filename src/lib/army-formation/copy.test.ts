@@ -30,8 +30,9 @@ const STRING_FIELD_NAMES = [
   'changeBackgroundColor',
   'backgroundImage',
   'setBackgroundImage',
-  'saveInThisBrowser',
-  'saveBattlefield',
+  'previousRecordPrompt',
+  'restorePreviousRecord',
+  'startBlank',
   'exportFile',
   'exportImage',
   'chooseFile',
@@ -68,8 +69,9 @@ const englishStringFields = {
   changeBackgroundColor: 'Change background color',
   backgroundImage: 'Background image',
   setBackgroundImage: 'Set background image',
-  saveInThisBrowser: 'Save in this browser',
-  saveBattlefield: 'Save battlefield',
+  previousRecordPrompt: 'A previous record was found. Restore it?',
+  restorePreviousRecord: 'Restore',
+  startBlank: 'Start blank',
   exportFile: 'Export file',
   exportImage: 'Export image',
   chooseFile: 'Choose file',
@@ -106,8 +108,9 @@ const chineseStringFields = {
   changeBackgroundColor: '改变底色',
   backgroundImage: '背景图',
   setBackgroundImage: '设置背景图',
-  saveInThisBrowser: '保存在这个浏览器',
-  saveBattlefield: '保存战场',
+  previousRecordPrompt: '发现上次的记录。要回到上次的记录吗？',
+  restorePreviousRecord: '回到上次',
+  startBlank: '从空白开始',
   exportFile: '导出文件',
   exportImage: '导出图片',
   chooseFile: '选择文件',
@@ -140,8 +143,9 @@ describe('getArmyFormationCreatorCopy', () => {
     expect(copy.navigationName).toBe('Army formation creator');
     expect(copy.pageTitle).toBe('Army formation creator');
     expectStringFields(copy, englishStringFields);
-    expect(copy.saveBattlefield).toBe('Save battlefield');
-    expect(copy.saveBattlefield).not.toMatch(/\d/);
+    expect(copy.previousRecordPrompt).toBe('A previous record was found. Restore it?');
+    expect(copy.restorePreviousRecord).toBe('Restore');
+    expect(copy.startBlank).toBe('Start blank');
   });
 
   it('中文产品名和导航名是军阵', () => {
@@ -150,8 +154,9 @@ describe('getArmyFormationCreatorCopy', () => {
     expect(copy.productName).toBe('军阵');
     expect(copy.navigationName).toBe('军阵');
     expectStringFields(copy, chineseStringFields);
-    expect(copy.saveBattlefield).toBe('保存战场');
-    expect(copy.saveBattlefield).not.toMatch(/\d/);
+    expect(copy.previousRecordPrompt).toBe('发现上次的记录。要回到上次的记录吗？');
+    expect(copy.restorePreviousRecord).toBe('回到上次');
+    expect(copy.startBlank).toBe('从空白开始');
   });
 
   it('locale 为 fr 时抛错，并且错误信息包含收到的 locale', () => {

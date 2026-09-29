@@ -27,8 +27,9 @@ export type ArmyFormationCreatorCopy = {
   changeBackgroundColor: string;
   backgroundImage: string;
   setBackgroundImage: string;
-  saveInThisBrowser: string;
-  saveBattlefield: string;
+  previousRecordPrompt: string;
+  restorePreviousRecord: string;
+  startBlank: string;
   exportFile: string;
   exportImage: string;
   chooseFile: string;
@@ -65,8 +66,9 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   changeBackgroundColor: 'Change background color',
   backgroundImage: 'Background image',
   setBackgroundImage: 'Set background image',
-  saveInThisBrowser: 'Save in this browser',
-  saveBattlefield: 'Save battlefield',
+  previousRecordPrompt: 'A previous record was found. Restore it?',
+  restorePreviousRecord: 'Restore',
+  startBlank: 'Start blank',
   exportFile: 'Export file',
   exportImage: 'Export image',
   chooseFile: 'Choose file',
@@ -103,8 +105,9 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   changeBackgroundColor: '改变底色',
   backgroundImage: '背景图',
   setBackgroundImage: '设置背景图',
-  saveInThisBrowser: '保存在这个浏览器',
-  saveBattlefield: '保存战场',
+  previousRecordPrompt: '发现上次的记录。要回到上次的记录吗？',
+  restorePreviousRecord: '回到上次',
+  startBlank: '从空白开始',
   exportFile: '导出文件',
   exportImage: '导出图片',
   chooseFile: '选择文件',

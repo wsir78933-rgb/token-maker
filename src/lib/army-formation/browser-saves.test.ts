@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ARMY_FORMATION_DOCUMENT_STORAGE_KEY,
   readArmyFormationBrowserSave,
+  removeArmyFormationBrowserSave,
   writeArmyFormationBrowserSave,
   type ArmyFormationDocumentStorage,
 } from '@/lib/army-formation/browser-saves';
@@ -42,6 +43,15 @@ function createMemoryArmyFormationStorage(initialText: string | null): MemoryArm
       }
 
       storedText = value;
+    },
+    removeItem(key: string) {
+      if (key !== ARMY_FORMATION_DOCUMENT_STORAGE_KEY) {
+        throw new Error(
+          `Army formation document storage key must be ${JSON.stringify(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)}, received ${JSON.stringify(key)}.`,
+        );
+      }
+
+      storedText = null;
     },
     readStoredText() {
       return storedText;
@@ -90,5 +100,37 @@ describe('army formation browser saves', () => {
     expect(() =>
       readArmyFormationBrowserSave(null as unknown as ArmyFormationDocumentStorage),
     ).toThrow('received null');
+  });
+
+  it('删除后读到 null，内存里的原文也不再存在', () => {
+    const storage = createMemoryArmyFormationStorage(null);
+    const armyDocument = addArmyFormationPiece(
+      createEmptyArmyFormationDocument(),
+      'helmet-01',
+      'piece-1',
+      240,
+    );
+
+    writeArmyFormationBrowserSave(storage, armyDocument);
+    expect(storage.readStoredText()).toBe(serializeArmyFormationDocument(armyDocument));
+
+    removeArmyFormationBrowserSave(storage);
+
+    expect(readArmyFormationBrowserSave(storage)).toBeNull();
+    expect(storage.readStoredText()).toBeNull();
+  });
+
+  it('removeItem 不是函数时抛出并带上原值', () => {
+    const storage = {
+      getItem() {
+        return null;
+      },
+      setItem() {},
+      removeItem: 'not-a-function',
+    } as unknown as ArmyFormationDocumentStorage;
+
+    expect(() => removeArmyFormationBrowserSave(storage)).toThrow(
+      'Army formation document storage removeItem must be a function, received "not-a-function".',
+    );
   });
 });
