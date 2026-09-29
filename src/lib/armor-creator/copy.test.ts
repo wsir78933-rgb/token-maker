@@ -98,6 +98,15 @@ function expectNonEmptyStringFields(
   }
 }
 
+function expectOutfitSlotLabels(copy: ArmorCreatorCopy, outfitPrefix: string) {
+  for (const slotNumber of SAVE_SLOT_NUMBERS) {
+    const outfitLabel = copy.outfitSlot(slotNumber);
+
+    expect(outfitLabel).toBe(`${outfitPrefix} ${slotNumber}`);
+    expect(outfitLabel.trim()).not.toBe('');
+  }
+}
+
 function expectSaveSlotLabels(
   copy: ArmorCreatorCopy,
   savePrefix: string,
@@ -126,6 +135,7 @@ describe('getArmorCreatorCopy', () => {
 
     expectNonEmptyStringFields(copy, englishStringFields);
     expectSaveSlotLabels(copy, 'Save', 'Load', 'Replace save', '?');
+    expectOutfitSlotLabels(copy, 'Outfit');
   });
 
   it('中文短标签都不是空字符串', () => {
@@ -133,6 +143,7 @@ describe('getArmorCreatorCopy', () => {
 
     expectNonEmptyStringFields(copy, chineseStringFields);
     expectSaveSlotLabels(copy, '保存', '读取', '替换保存', '？');
+    expectOutfitSlotLabels(copy, '套装');
   });
 
   it('locale 为 fr 时抛错，并且错误信息包含 fr', () => {
@@ -145,5 +156,6 @@ describe('getArmorCreatorCopy', () => {
     expect(() => copy.saveSlot(5)).toThrowError(/Received slot number: 5/);
     expect(() => copy.loadSlot(0)).toThrowError(/Received slot number: 0/);
     expect(() => copy.replaceSaveConfirm(1.5)).toThrowError(/Received slot number: 1\.5/);
+    expect(() => copy.outfitSlot(5)).toThrowError(/Received slot number: 5/);
   });
 });

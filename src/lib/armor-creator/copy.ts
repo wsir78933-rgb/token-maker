@@ -25,6 +25,7 @@ export type ArmorCreatorCopy = {
   clearEquipment: string;
   saveSlot: (slotNumber: number) => string;
   loadSlot: (slotNumber: number) => string;
+  outfitSlot: (slotNumber: number) => string;
   downloadImage: string;
   preview: string;
   replaceSaveConfirm: (slotNumber: number) => string;
@@ -58,6 +59,9 @@ const englishArmorCreatorCopy: ArmorCreatorCopy = {
   },
   loadSlot(slotNumber: number) {
     return formatArmorSaveSlotLabel('Load', slotNumber);
+  },
+  outfitSlot(slotNumber: number) {
+    return formatArmorSaveSlotLabel('Outfit', slotNumber);
   },
   downloadImage: 'Download image',
   preview: 'Preview',
@@ -94,6 +98,9 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   },
   loadSlot(slotNumber: number) {
     return formatArmorSaveSlotLabel('读取', slotNumber);
+  },
+  outfitSlot(slotNumber: number) {
+    return formatArmorSaveSlotLabel('套装', slotNumber);
   },
   downloadImage: '下载图片',
   preview: '预览',

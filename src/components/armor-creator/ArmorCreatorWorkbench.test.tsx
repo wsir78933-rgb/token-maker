@@ -46,6 +46,22 @@ type PendingArmorImage = {
   fail: () => void;
 };
 
+function installImmediateFileReader(): void {
+  class ImmediateFileReader {
+    result: string | ArrayBuffer | null = null;
+    error: DOMException | null = null;
+    onload: (() => void) | null = null;
+    onerror: (() => void) | null = null;
+
+    readAsDataURL(): void {
+      this.result = 'data:image/png;base64,QkJCQg==';
+      this.onload?.();
+    }
+  }
+
+  vi.stubGlobal('FileReader', ImmediateFileReader);
+}
+
 function installManualArmorImages(): PendingArmorImage[] {
   const pendingImages: PendingArmorImage[] = [];
 
@@ -112,14 +128,15 @@ describe('ArmorCreatorWorkbench', () => {
     expect(chestCurve.disabled).toBe(true);
   });
 
-  it('空的读取 2 是 disabled', () => {
+  it('空的套装 2 可以点，按钮里没有缩略图', () => {
     render(<ArmorCreatorWorkbench locale="zh" />);
 
-    const loadTwo = screen.getByRole('button', { name: '读取 2' }) as HTMLButtonElement;
-    expect(loadTwo.disabled).toBe(true);
+    const outfitTwo = buttonByExactName('套装 2') as HTMLButtonElement;
+    expect(outfitTwo.disabled).toBe(false);
+    expect(outfitTwo.querySelector('img')).toBeNull();
   });
 
-  it('读取时装备不是对象，提示里带上原值', () => {
+  it('点套装时装备不是对象，提示里带上原值', () => {
     const snapshot = {
       gender: 'male',
       material: 'plate',
@@ -134,10 +151,10 @@ describe('ArmorCreatorWorkbench', () => {
     });
 
     render(<ArmorCreatorWorkbench locale="zh" />);
-    fireEvent.click(screen.getByRole('button', { name: '读取 1' }));
+    fireEvent.click(screen.getByRole('button', { name: '套装 1' }));
 
     expect(screen.getByRole('alert').textContent).toBe(
-      'Armor save slot 1 equipped pieces must be an object. Received ["nope"].',
+      'Armor outfit slot 1 equippedPieceIds must be a non-array object. Received ["nope"].',
     );
   });
 
@@ -147,6 +164,7 @@ describe('ArmorCreatorWorkbench', () => {
     expect(screen.getByRole('heading', { name: 'Preview' })).toBeTruthy();
     expect(screen.getByRole('button', { name: (accessibleName) => accessibleName === 'Male' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Download image' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Outfit 1' })).toBeTruthy();
   });
 
   it('编辑器仍是左选择右预览，并保留原有按钮', () => {
@@ -154,12 +172,30 @@ describe('ArmorCreatorWorkbench', () => {
 
     const preview = screen.getByRole('heading', { name: '预览' }).closest('section');
     expect(preview?.className).toContain('lg:order-2');
+    expect(preview?.className).toContain('lg:w-[600px]');
+    expect(preview?.className).not.toContain('sticky');
     expect(preview?.parentElement?.parentElement?.className).toContain('rounded-2xl');
     expect(preview?.parentElement?.parentElement?.className).toContain('bg-[var(--site-panel)]');
 
-    for (const name of ['男', '女', '板甲', '头盔', '左右肩对称', '胸甲曲线', '清空', '保存 1', '读取 2', '下载图片']) {
+    for (const name of [
+      '男',
+      '女',
+      '板甲',
+      '头盔',
+      '左右肩对称',
+      '胸甲曲线',
+      '清空',
+      '套装 1',
+      '套装 2',
+      '套装 3',
+      '套装 4',
+      '下载图片',
+    ]) {
       expect(buttonByExactName(name)).toBeTruthy();
     }
+
+    expect(screen.queryByRole('button', { name: (accessibleName) => accessibleName === '保存 1' })).toBeNull();
+    expect(screen.queryByRole('button', { name: (accessibleName) => accessibleName === '读取 2' })).toBeNull();
   });
 
   it('部件缩略图使用本地 PNG，并保持比例，左肩水平翻转', () => {
@@ -219,6 +255,7 @@ describe('ArmorCreatorWorkbench', () => {
       armorIcons.armorPieceImagePath('female:leather:chest:1'),
     );
     expect(pieceImage('胸甲 1').getAttribute('src')).not.toContain('bchest');
+    expect(localStorage.getItem(ARMOR_SAVE_STORAGE_KEY)).toBeNull();
   });
 
   it('预览底用米色和金边，让黑线稿看得见', () => {
@@ -328,18 +365,34 @@ describe('ArmorCreatorWorkbench', () => {
       expect(downloads).toEqual(['armor.png']);
     });
     expect(pngCanvases).toEqual([exportDraws[0]?.canvas]);
+    expect(localStorage.getItem(ARMOR_SAVE_STORAGE_KEY)).toBeNull();
   });
 
-  it('保存先画点击时的选择，快速卸下装备也不会存成新装', async () => {
+  it('还没点套装时，改性别、材质、装备、肩对称和清空都不写存档', () => {
+    render(<ArmorCreatorWorkbench locale="zh" />);
+
+    fireEvent.click(buttonByExactName('女'));
+    fireEvent.click(buttonByExactName('皮甲'));
+    fireEvent.click(buttonByExactName('头盔 1'));
+    fireEvent.click(buttonByExactName('左右肩对称'));
+    fireEvent.click(buttonByExactName('清空'));
+
+    expect(localStorage.getItem(ARMOR_SAVE_STORAGE_KEY)).toBeNull();
+    expect(buttonByExactName('女').getAttribute('aria-pressed')).toBe('true');
+    expect(buttonByExactName('头盔 1').getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('自动保存画出点击当时的选择，旧写回不会盖住后来的写回', async () => {
     installCanvas2d();
+    installImmediateFileReader();
     const exportDraws: Array<{ canvas: HTMLCanvasElement; selection: ArmorSelection }> = [];
-    let releaseExport = () => {};
+    const releaseExports: Array<() => void> = [];
     vi.spyOn(armorRender, 'drawArmorLayers').mockImplementation(async (context, selection) => {
       const canvas = context.canvas as HTMLCanvasElement;
       if (!canvas.isConnected) {
         exportDraws.push({ canvas, selection });
         await new Promise<void>((resolve) => {
-          releaseExport = resolve;
+          releaseExports.push(resolve);
         });
       }
     });
@@ -348,27 +401,218 @@ describe('ArmorCreatorWorkbench', () => {
       pngCanvases.push(canvas as HTMLCanvasElement);
       return new Blob([Uint8Array.from([137, 80, 78, 71])], { type: 'image/png' });
     });
+    vi.spyOn(window, 'confirm').mockImplementation(() => {
+      throw new Error('Outfit autosave must not ask to replace a save. Received a confirm call.');
+    });
 
     render(<ArmorCreatorWorkbench locale="zh" />);
+    fireEvent.click(buttonByExactName('套装 1'));
+    await act(async () => {
+      releaseExports[0]?.();
+    });
+    await waitFor(() => {
+      expect(localStorage.getItem(ARMOR_SAVE_STORAGE_KEY)).toContain('"equippedPieceIds":{}');
+    });
+
     fireEvent.click(buttonByExactName('头盔 1'));
-    fireEvent.click(buttonByExactName('保存 1'));
     fireEvent.click(buttonByExactName('头盔 1'));
 
-    expect(exportDraws[0]?.selection.equippedPieceIds.helm).toBe('male:plate:helm:1');
-    expect(exportDraws[0]?.canvas.isConnected).toBe(false);
-    expect(pngCanvases).toHaveLength(0);
+    expect(exportDraws[1]?.selection.equippedPieceIds.helm).toBe('male:plate:helm:1');
+    expect(exportDraws[1]?.canvas.isConnected).toBe(false);
+    expect(exportDraws[2]?.selection.equippedPieceIds.helm).toBeUndefined();
+    expect(pngCanvases).toHaveLength(1);
+
+    await act(async () => {
+      releaseExports[1]?.();
+    });
+
+    expect(pngCanvases).toEqual([exportDraws[0]?.canvas, exportDraws[1]?.canvas]);
+    const savedAfterStaleHelmWrite = localStorage.getItem(ARMOR_SAVE_STORAGE_KEY);
+    expect(savedAfterStaleHelmWrite).toContain('"equippedPieceIds":{}');
+    expect(savedAfterStaleHelmWrite).not.toContain('male:plate:helm:1');
+    expect(screen.queryByRole('alert')).toBeNull();
+
+    await act(async () => {
+      releaseExports[2]?.();
+    });
+
+    const saved = localStorage.getItem(ARMOR_SAVE_STORAGE_KEY);
+    expect(saved).toContain('"gender":"male"');
+    expect(saved).toContain('"equippedPieceIds":{}');
+    expect(saved).not.toContain('male:plate:helm:1');
+    expect(pngCanvases).toEqual([
+      exportDraws[0]?.canvas,
+      exportDraws[1]?.canvas,
+      exportDraws[2]?.canvas,
+    ]);
+    expect(buttonByExactName('头盔 1').getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('空套装的旧写回不能盖住后来的头盔写回', async () => {
+    installCanvas2d();
+    installImmediateFileReader();
+    const exportDraws: Array<{ canvas: HTMLCanvasElement; selection: ArmorSelection }> = [];
+    const releaseExports: Array<() => void> = [];
+    vi.spyOn(armorRender, 'drawArmorLayers').mockImplementation(async (context, selection) => {
+      const canvas = context.canvas as HTMLCanvasElement;
+      if (!canvas.isConnected) {
+        exportDraws.push({ canvas, selection });
+        await new Promise<void>((resolve) => {
+          releaseExports.push(resolve);
+        });
+      }
+    });
+    vi.spyOn(armorRender, 'canvasToArmorPng').mockResolvedValue(
+      new Blob([Uint8Array.from([137, 80, 78, 71])], { type: 'image/png' }),
+    );
+    vi.spyOn(window, 'confirm').mockImplementation(() => {
+      throw new Error('Outfit autosave must not ask to replace a save. Received a confirm call.');
+    });
+
+    render(<ArmorCreatorWorkbench locale="zh" />);
+    fireEvent.click(buttonByExactName('套装 1'));
+    fireEvent.click(buttonByExactName('头盔 1'));
+
+    expect(exportDraws[0]?.selection.equippedPieceIds).toEqual({});
+    expect(exportDraws[1]?.selection.equippedPieceIds.helm).toBe('male:plate:helm:1');
+    expect(buttonByExactName('头盔 1').getAttribute('aria-pressed')).toBe('true');
+
+    await act(async () => {
+      releaseExports[0]?.();
+    });
+
+    expect(localStorage.getItem(ARMOR_SAVE_STORAGE_KEY)).toBeNull();
+    expect(screen.queryByRole('alert')).toBeNull();
+
+    await act(async () => {
+      releaseExports[1]?.();
+    });
+
+    const saved = localStorage.getItem(ARMOR_SAVE_STORAGE_KEY);
+    expect(saved).toContain('male:plate:helm:1');
+    expect(saved).toContain('"gender":"male"');
+    expect(buttonByExactName('头盔 1').getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('套装写回还没落盘时再点同一格，不会读回旧快照', async () => {
+    installCanvas2d();
+    installImmediateFileReader();
+    const exportDraws: ArmorSelection[] = [];
+    let releaseExport = () => {};
+    vi.spyOn(armorRender, 'drawArmorLayers').mockImplementation(async (context, selection) => {
+      const canvas = context.canvas as HTMLCanvasElement;
+      if (!canvas.isConnected) {
+        exportDraws.push(selection);
+        await new Promise<void>((resolve) => {
+          releaseExport = resolve;
+        });
+      }
+    });
+    vi.spyOn(armorRender, 'canvasToArmorPng').mockResolvedValue(
+      new Blob([Uint8Array.from([137, 80, 78, 71])], { type: 'image/png' }),
+    );
+    vi.spyOn(window, 'confirm').mockImplementation(() => {
+      throw new Error('Outfit autosave must not ask to replace a save. Received a confirm call.');
+    });
+    writeArmorSaveSlot(localStorage, 1, {
+      snapshot: {
+        gender: 'female',
+        material: 'leather',
+        shoulderSymmetry: true,
+        chestCurve: false,
+        equippedPieceIds: { chest: 'female:leather:chest:2' },
+      },
+      thumbnailDataUrl: 'data:image/png;base64,AAAA',
+    });
+    const getItem = vi.spyOn(Storage.prototype, 'getItem');
+
+    render(<ArmorCreatorWorkbench locale="zh" />);
+    fireEvent.click(buttonByExactName('套装 1'));
+    expect(buttonByExactName('女').getAttribute('aria-pressed')).toBe('true');
+
+    fireEvent.click(buttonByExactName('男'));
+    expect(exportDraws).toHaveLength(1);
+    expect(exportDraws[0]?.gender).toBe('male');
+    expect(buttonByExactName('男').getAttribute('aria-pressed')).toBe('true');
+
+    const storageReads = getItem.mock.calls.filter((call) => call[0] === ARMOR_SAVE_STORAGE_KEY).length;
+    expect(storageReads).toBeGreaterThan(0);
+    fireEvent.click(buttonByExactName('套装 1'));
+
+    expect(buttonByExactName('男').getAttribute('aria-pressed')).toBe('true');
+    expect(buttonByExactName('女').getAttribute('aria-pressed')).toBe('false');
+    expect(exportDraws).toHaveLength(1);
+    expect(getItem.mock.calls.filter((call) => call[0] === ARMOR_SAVE_STORAGE_KEY).length).toBe(
+      storageReads,
+    );
+    expect(localStorage.getItem(ARMOR_SAVE_STORAGE_KEY)).toContain('data:image/png;base64,AAAA');
+    expect(localStorage.getItem(ARMOR_SAVE_STORAGE_KEY)).toContain('"gender":"female"');
+    expect(screen.queryByRole('alert')).toBeNull();
 
     await act(async () => {
       releaseExport();
     });
 
-    await waitFor(() => {
-      expect(localStorage.getItem(ARMOR_SAVE_STORAGE_KEY)).toContain('male:plate:helm:1');
-    });
     const saved = localStorage.getItem(ARMOR_SAVE_STORAGE_KEY);
     expect(saved).toContain('"gender":"male"');
-    expect(pngCanvases).toEqual([exportDraws[0]?.canvas]);
-    expect(buttonByExactName('头盔 1').getAttribute('aria-pressed')).toBe('false');
+    expect(saved).not.toContain('data:image/png;base64,AAAA');
+    expect(buttonByExactName('男').getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('点套装 1 会换成这一格保存的人物，并且不询问替换', async () => {
+    installCanvas2d();
+    vi.spyOn(armorRender, 'drawArmorLayers').mockResolvedValue(undefined);
+    const canvasToPng = vi.spyOn(armorRender, 'canvasToArmorPng').mockResolvedValue(
+      new Blob([Uint8Array.from([137, 80, 78, 71])], { type: 'image/png' }),
+    );
+    vi.spyOn(window, 'confirm').mockImplementation(() => {
+      throw new Error('Outfit autosave must not ask to replace a save. Received a confirm call.');
+    });
+    writeArmorSaveSlot(localStorage, 1, {
+      snapshot: {
+        gender: 'female',
+        material: 'leather',
+        shoulderSymmetry: true,
+        chestCurve: false,
+        equippedPieceIds: {},
+      },
+      thumbnailDataUrl: 'data:image/png;base64,AAAA',
+    });
+
+    const savedBeforeClick = localStorage.getItem(ARMOR_SAVE_STORAGE_KEY);
+    render(<ArmorCreatorWorkbench locale="zh" />);
+    fireEvent.click(buttonByExactName('套装 1'));
+
+    expect(buttonByExactName('女').getAttribute('aria-pressed')).toBe('true');
+    expect(buttonByExactName('皮甲').getAttribute('aria-pressed')).toBe('true');
+    expect(buttonByExactName('套装 1').getAttribute('aria-pressed')).toBe('true');
+    expect(buttonByExactName('套装 2').getAttribute('aria-pressed')).toBe('false');
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(canvasToPng).not.toHaveBeenCalled();
+    expect(localStorage.getItem(ARMOR_SAVE_STORAGE_KEY)).toBe(savedBeforeClick);
+    expect(savedBeforeClick).toContain('data:image/png;base64,AAAA');
+    expect(savedBeforeClick).toContain('"gender":"female"');
+    expect(savedBeforeClick).toContain('"material":"leather"');
+  });
+
+  it('自动保存画布失败时提示原始错误', async () => {
+    installCanvas2d();
+    vi.spyOn(armorRender, 'drawArmorLayers').mockImplementation(async (context) => {
+      const canvas = context.canvas as HTMLCanvasElement;
+      if (!canvas.isConnected) {
+        throw new Error('Armor export canvas failed for outfit slot 1.');
+      }
+    });
+
+    render(<ArmorCreatorWorkbench locale="zh" />);
+    fireEvent.click(buttonByExactName('套装 1'));
+
+    expect((await screen.findByRole('alert')).textContent).toBe(
+      'Armor export canvas failed for outfit slot 1.',
+    );
   });
 
   it('绘制失败时提示带上原始错误', async () => {

@@ -1,30 +1,30 @@
 'use client';
 
-import { useEffect, useRef, useState, useSyncExternalStore, type Ref } from 'react';
+import { useEffect, useRef, useState, type Ref } from 'react';
 
+import { ArmorPickerHeader } from '@/components/armor-creator/ArmorPickerHeader';
+import { ArmorPreviewOutfitSlots } from '@/components/armor-creator/ArmorPreviewOutfitSlots';
 import {
-  ARMOR_GENDERS,
-  ARMOR_MATERIALS,
   ARMOR_PREVIEW_HEIGHT,
   ARMOR_PREVIEW_WIDTH,
   listArmorPieceIds,
   pieceIndex,
   pieceSlot,
-  requireArmorGender,
-  requireArmorMaterial,
   type ArmorGender,
   type ArmorMaterial,
 } from '@/lib/armor-creator/catalog';
 import { getArmorCreatorCopy, type ArmorCreatorCopy } from '@/lib/armor-creator/copy';
 import { armorPieceImagePath } from '@/lib/armor-creator/icons';
+import {
+  activeOutfitSlotForAutosave,
+  selectionForOutfitSlot,
+} from '@/lib/armor-creator/outfit-slot';
 import { canvasToArmorPng, drawArmorLayers } from '@/lib/armor-creator/render';
 import {
-  ARMOR_SAVE_STORAGE_KEY,
-  armorSaveSlotIsFilled,
   readArmorSaveSlot,
-  requireArmorSaveSlotNumber,
   writeArmorSaveSlot,
   type ArmorSaveRecord,
+  type ArmorSaveSlotNumber,
   type ArmorSaveStorage,
 } from '@/lib/armor-creator/saves';
 import {
@@ -55,13 +55,22 @@ const PICKER_SLOTS = [
   'wing',
 ] as const;
 
-const ARMOR_SAVE_SLOT_NUMBERS = [1, 2, 3, 4] as const;
-
 type PickerSlot = (typeof PICKER_SLOTS)[number];
-type SaveSlotNumber = (typeof ARMOR_SAVE_SLOT_NUMBERS)[number];
-type EquippedArmorSaveSlots = Array<ArmorSaveRecord | null>;
+type OutfitWriteGenerations = Record<ArmorSaveSlotNumber, number>;
 
-const EMPTY_ARMOR_SAVE_SLOTS: EquippedArmorSaveSlots = [null, null, null, null];
+type LoadedOutfitSlot = {
+  storage: ArmorSaveStorage;
+  activeOutfitSlot: ArmorSaveSlotNumber;
+  selection: ArmorSelection;
+  storedRecord: ArmorSaveRecord | null;
+};
+
+type OutfitSelectionWrite = {
+  storage: ArmorSaveStorage;
+  slotNumber: ArmorSaveSlotNumber;
+  selection: ArmorSelection;
+  outfitWriteIsLatest: () => boolean;
+};
 
 const ARMOR_LINE_ART_SURFACE_CLASS =
   'border border-[var(--site-accent-strong)] bg-[#fffaf4]';
@@ -160,70 +169,51 @@ function requireBrowserSaveStorage(): ArmorSaveStorage {
   return storage;
 }
 
-const armorSaveListeners = new Set<() => void>();
-
-function subscribeArmorSaves(onStoreChange: () => void): () => void {
-  armorSaveListeners.add(onStoreChange);
-  const onStorage = (event: StorageEvent) => {
-    if (event.key === ARMOR_SAVE_STORAGE_KEY || event.key === null) {
-      onStoreChange();
-    }
-  };
-  window.addEventListener('storage', onStorage);
-  return () => {
-    armorSaveListeners.delete(onStoreChange);
-    window.removeEventListener('storage', onStorage);
+function createOutfitWriteGenerations(): OutfitWriteGenerations {
+  return {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
   };
 }
 
-function publishArmorSaves(): void {
-  for (const listener of armorSaveListeners) {
-    listener();
-  }
+function nextOutfitWriteGeneration(
+  generations: OutfitWriteGenerations,
+  slotNumber: ArmorSaveSlotNumber,
+): number {
+  const nextGeneration = generations[slotNumber] + 1;
+  generations[slotNumber] = nextGeneration;
+  return nextGeneration;
 }
 
-function readArmorSaveRaw(): string {
-  const raw = requireBrowserSaveStorage().getItem(ARMOR_SAVE_STORAGE_KEY);
-  if (raw === null) {
-    return '';
-  }
-
-  if (typeof raw !== 'string') {
-    throw new Error(`Armor saves must be a string. Received ${describeReceivedValue(raw)}.`);
-  }
-
-  return raw;
+function outfitWriteGenerationIsCurrent(
+  generations: OutfitWriteGenerations,
+  slotNumber: ArmorSaveSlotNumber,
+  generation: number,
+): boolean {
+  return generations[slotNumber] === generation;
 }
 
-function readServerArmorSaveRaw(): string {
-  return '';
-}
-
-function readBrowserArmorSaveSlots(storage: ArmorSaveStorage): EquippedArmorSaveSlots {
-  return ARMOR_SAVE_SLOT_NUMBERS.map((slotNumber) => readArmorSaveSlot(storage, slotNumber));
-}
-
-function armorSaveSlotsFromRaw(raw: string): EquippedArmorSaveSlots {
-  if (raw === '') {
-    return EMPTY_ARMOR_SAVE_SLOTS;
+function snapshotFromSaveRecord(record: ArmorSaveRecord | null): ArmorSelection | null {
+  if (record === null) {
+    return null;
   }
 
-  return readBrowserArmorSaveSlots(requireBrowserSaveStorage());
+  return record.snapshot;
 }
 
-function confirmReplaceArmorSave(message: string): boolean {
-  if (typeof window.confirm !== 'function') {
-    throw new Error(
-      `Armor save replace confirmation requires window.confirm. Received ${typeof window.confirm}.`,
-    );
-  }
+function loadOutfitSlot(slotNumber: ArmorSaveSlotNumber): LoadedOutfitSlot {
+  const storage = requireBrowserSaveStorage();
+  const storedRecord = readArmorSaveSlot(storage, slotNumber);
+  const loadedOutfit = selectionForOutfitSlot(slotNumber, snapshotFromSaveRecord(storedRecord));
 
-  const confirmed = window.confirm(message);
-  if (typeof confirmed !== 'boolean') {
-    throw new Error(`Armor save confirmation must be a boolean. Received ${String(confirmed)}.`);
-  }
-
-  return confirmed;
+  return {
+    storage,
+    activeOutfitSlot: loadedOutfit.activeOutfitSlot,
+    selection: loadedOutfit.selection,
+    storedRecord,
+  };
 }
 
 function createArmorExportCanvas(): HTMLCanvasElement {
@@ -316,34 +306,25 @@ async function readCanvasPngDataUrl(canvas: HTMLCanvasElement): Promise<string> 
   return readBlobPngDataUrl(blob);
 }
 
-async function saveArmorPreviewSlot(input: {
-  storage: ArmorSaveStorage;
-  slotNumber: number;
-  selection: ArmorSelection;
-  replaceMessage: string;
-  confirmReplace: (message: string) => boolean;
-}): Promise<ArmorSaveRecord | null> {
-  const slotNumber = requireArmorSaveSlotNumber(input.slotNumber);
-  if (armorSaveSlotIsFilled(input.storage, slotNumber)) {
-    const confirmed = input.confirmReplace(input.replaceMessage);
-    if (!confirmed) {
-      return null;
-    }
+async function readOutfitThumbnailDataUrl(selection: ArmorSelection): Promise<string> {
+  const canvas = await paintSelectionForExport(selection);
+  return readCanvasPngDataUrl(canvas);
+}
+
+function writeLatestOutfitSave(input: OutfitSelectionWrite, thumbnailDataUrl: string): void {
+  if (!input.outfitWriteIsLatest()) {
+    return;
   }
 
-  const canvas = await paintSelectionForExport(input.selection);
-  const thumbnailDataUrl = await readCanvasPngDataUrl(canvas);
-  writeArmorSaveSlot(input.storage, slotNumber, {
+  writeArmorSaveSlot(input.storage, input.slotNumber, {
     snapshot: input.selection,
     thumbnailDataUrl,
   });
-  publishArmorSaves();
-  const stored = readArmorSaveSlot(input.storage, slotNumber);
-  if (stored === null) {
-    throw new Error(`Armor save slot ${slotNumber} was not stored.`);
-  }
+}
 
-  return stored;
+async function writeOutfitSelection(input: OutfitSelectionWrite): Promise<void> {
+  const thumbnailDataUrl = await readOutfitThumbnailDataUrl(input.selection);
+  writeLatestOutfitSave(input, thumbnailDataUrl);
 }
 
 function requireDownloadUrlFunction(
@@ -376,66 +357,6 @@ async function downloadArmorPreview(canvas: HTMLCanvasElement): Promise<void> {
   anchor.click();
   anchor.remove();
   urlApi.revokeObjectURL(objectUrl);
-}
-
-function loadArmorSaveSelection(storage: ArmorSaveStorage, slotNumber: number): ArmorSelection {
-  const saveSlotNumber = requireArmorSaveSlotNumber(slotNumber);
-  const record = readArmorSaveSlot(storage, saveSlotNumber);
-  if (record === null) {
-    throw new Error(`Armor save slot ${saveSlotNumber} is empty.`);
-  }
-
-  requireArmorGender(record.snapshot.gender);
-  requireArmorMaterial(record.snapshot.material);
-  if (typeof record.snapshot.shoulderSymmetry !== 'boolean') {
-    throw new Error(
-      `Armor save slot ${saveSlotNumber} shoulderSymmetry must be a boolean. Received ${String(record.snapshot.shoulderSymmetry)}.`,
-    );
-  }
-  if (typeof record.snapshot.chestCurve !== 'boolean') {
-    throw new Error(
-      `Armor save slot ${saveSlotNumber} chestCurve must be a boolean. Received ${String(record.snapshot.chestCurve)}.`,
-    );
-  }
-  if (
-    record.snapshot.equippedPieceIds === null ||
-    typeof record.snapshot.equippedPieceIds !== 'object' ||
-    Array.isArray(record.snapshot.equippedPieceIds)
-  ) {
-    throw new Error(
-      `Armor save slot ${saveSlotNumber} equipped pieces must be an object. Received ${describeReceivedValue(record.snapshot.equippedPieceIds)}.`,
-    );
-  }
-
-  return record.snapshot;
-}
-
-function genderLabel(copy: ArmorCreatorCopy, gender: ArmorGender): string {
-  if (gender === 'male') {
-    return copy.genderMale;
-  }
-
-  if (gender === 'female') {
-    return copy.genderFemale;
-  }
-
-  throw new Error(`Unknown armor gender ${JSON.stringify(gender)}.`);
-}
-
-function materialLabel(copy: ArmorCreatorCopy, material: ArmorMaterial): string {
-  if (material === 'plate') {
-    return copy.materialPlate;
-  }
-
-  if (material === 'leather') {
-    return copy.materialLeather;
-  }
-
-  if (material === 'cloth') {
-    return copy.materialCloth;
-  }
-
-  throw new Error(`Unknown armor material ${JSON.stringify(material)}.`);
 }
 
 function pickerSlotLabel(copy: ArmorCreatorCopy, slot: PickerSlot): string {
@@ -678,6 +599,10 @@ function ArmorPicker({
   activeSlot,
   onGender,
   onMaterial,
+  onShoulderSymmetry,
+  onChestCurve,
+  onClear,
+  onDownload,
   onSlot,
   onTogglePiece,
 }: {
@@ -686,40 +611,29 @@ function ArmorPicker({
   activeSlot: PickerSlot;
   onGender: (gender: ArmorGender) => void;
   onMaterial: (material: ArmorMaterial) => void;
+  onShoulderSymmetry: () => void;
+  onChestCurve: () => void;
+  onClear: () => void;
+  onDownload: () => void;
   onSlot: (slot: PickerSlot) => void;
   onTogglePiece: (pieceId: string) => void;
 }) {
   return (
     <section className="min-w-0 flex-1 space-y-4">
-      <div className="flex flex-wrap gap-2">
-        {ARMOR_GENDERS.map((gender) => (
-          <button
-            key={gender}
-            type="button"
-            aria-pressed={selection.gender === gender}
-            className={cn('rounded-md border px-3 py-2 text-sm', choiceButtonClass(selection.gender === gender))}
-            onClick={() => onGender(gender)}
-          >
-            {genderLabel(copy, gender)}
-          </button>
-        ))}
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {ARMOR_MATERIALS.map((material) => (
-          <button
-            key={material}
-            type="button"
-            aria-pressed={selection.material === material}
-            className={cn(
-              'rounded-md border px-3 py-2 text-sm',
-              choiceButtonClass(selection.material === material),
-            )}
-            onClick={() => onMaterial(material)}
-          >
-            {materialLabel(copy, material)}
-          </button>
-        ))}
-      </div>
+      <ArmorPickerHeader
+        copy={copy}
+        gender={selection.gender}
+        material={selection.material}
+        shoulderSymmetry={selection.shoulderSymmetry}
+        chestCurve={selection.chestCurve}
+        chestCurveEnabled={chestCurveControlEnabled(selection)}
+        onGender={onGender}
+        onMaterial={onMaterial}
+        onShoulderSymmetry={onShoulderSymmetry}
+        onChestCurve={onChestCurve}
+        onClear={onClear}
+        onDownload={onDownload}
+      />
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-5">
         {PICKER_SLOTS.map((slot) => {
           const selected = activeSlot === slot;
@@ -778,17 +692,25 @@ function ArmorPicker({
   );
 }
 
+function outfitSlotLabels(copy: ArmorCreatorCopy): readonly [string, string, string, string] {
+  return [copy.outfitSlot(1), copy.outfitSlot(2), copy.outfitSlot(3), copy.outfitSlot(4)];
+}
+
 function ArmorPreview({
   copy,
   canvasRef,
   failureMessage,
+  activeOutfitSlot,
+  onSelectOutfitSlot,
 }: {
   copy: ArmorCreatorCopy;
   canvasRef: Ref<HTMLCanvasElement>;
   failureMessage: string | null;
+  activeOutfitSlot: ArmorSaveSlotNumber | null;
+  onSelectOutfitSlot: (slotNumber: ArmorSaveSlotNumber) => void;
 }) {
   return (
-    <section className="order-1 w-full lg:sticky lg:top-24 lg:order-2 lg:w-[600px] lg:shrink-0">
+    <section className="order-1 w-full lg:order-2 lg:w-[600px] lg:shrink-0">
       <h2 className="font-display text-xl text-[var(--site-accent-strong)]">{copy.preview}</h2>
       <div className={cn('mt-3 rounded-2xl p-3', ARMOR_LINE_ART_SURFACE_CLASS)}>
         <canvas
@@ -796,6 +718,13 @@ function ArmorPreview({
           width={ARMOR_PREVIEW_WIDTH}
           height={ARMOR_PREVIEW_HEIGHT}
           className="h-auto w-full bg-[#fffaf4]"
+        />
+      </div>
+      <div className="mt-3">
+        <ArmorPreviewOutfitSlots
+          labels={outfitSlotLabels(copy)}
+          activeOutfitSlot={activeOutfitSlot}
+          onSelect={onSelectOutfitSlot}
         />
       </div>
       {failureMessage !== null ? (
@@ -807,122 +736,16 @@ function ArmorPreview({
   );
 }
 
-function ArmorBottomBar({
-  copy,
-  selection,
-  saveSlots,
-  onShoulderSymmetry,
-  onChestCurve,
-  onClear,
-  onSave,
-  onLoad,
-  onDownload,
-}: {
-  copy: ArmorCreatorCopy;
-  selection: ArmorSelection;
-  saveSlots: EquippedArmorSaveSlots;
-  onShoulderSymmetry: () => void;
-  onChestCurve: () => void;
-  onClear: () => void;
-  onSave: (slotNumber: SaveSlotNumber) => void;
-  onLoad: (slotNumber: SaveSlotNumber) => void;
-  onDownload: () => void;
-}) {
-  const chestCurveEnabled = chestCurveControlEnabled(selection);
-
-  return (
-    <div className="flex flex-wrap items-center gap-2 border-t border-[var(--site-border-soft)] pt-4">
-      <button
-        type="button"
-        aria-pressed={selection.shoulderSymmetry}
-        className={cn('rounded-md border px-3 py-2 text-sm', choiceButtonClass(selection.shoulderSymmetry))}
-        onClick={onShoulderSymmetry}
-      >
-        {copy.shoulderSymmetry}
-      </button>
-      <button
-        type="button"
-        aria-pressed={selection.chestCurve}
-        disabled={!chestCurveEnabled}
-        className={cn(
-          'rounded-md border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40',
-          chestCurveEnabled
-            ? choiceButtonClass(selection.chestCurve)
-            : 'border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-[var(--site-ink)]',
-        )}
-        onClick={onChestCurve}
-      >
-        {copy.chestCurve}
-      </button>
-      <button
-        type="button"
-        className="rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-3 py-2 text-sm text-[var(--site-ink)]"
-        onClick={onClear}
-      >
-        {copy.clearEquipment}
-      </button>
-      {ARMOR_SAVE_SLOT_NUMBERS.map((slotNumber) => {
-        const record = saveSlots[slotNumber - 1];
-        if (record === undefined) {
-          throw new Error(`Armor save slot ${slotNumber} is missing from the save list.`);
-        }
-
-        return (
-          <button
-            key={`save-${slotNumber}`}
-            type="button"
-            className="inline-flex items-center gap-2 rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-3 py-2 text-sm text-[var(--site-ink)]"
-            onClick={() => onSave(slotNumber)}
-          >
-            {copy.saveSlot(slotNumber)}
-            {record !== null ? (
-              // eslint-disable-next-line @next/next/no-img-element -- local png data URL thumbnail
-              <img
-                src={record.thumbnailDataUrl}
-                alt=""
-                className="h-8 w-8 rounded-sm object-cover"
-              />
-            ) : null}
-          </button>
-        );
-      })}
-      {ARMOR_SAVE_SLOT_NUMBERS.map((slotNumber) => {
-        const record = saveSlots[slotNumber - 1];
-        if (record === undefined) {
-          throw new Error(`Armor save slot ${slotNumber} is missing from the save list.`);
-        }
-
-        return (
-          <button
-            key={`load-${slotNumber}`}
-            type="button"
-            disabled={record === null}
-            className="rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-3 py-2 text-sm text-[var(--site-ink)] disabled:cursor-not-allowed disabled:opacity-40"
-            onClick={() => onLoad(slotNumber)}
-          >
-            {copy.loadSlot(slotNumber)}
-          </button>
-        );
-      })}
-      <button
-        type="button"
-        className="rounded-md border border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] px-3 py-2 text-sm text-[var(--site-accent-strong)]"
-        onClick={onDownload}
-      >
-        {copy.downloadImage}
-      </button>
-    </div>
-  );
-}
-
 export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
   const copy = getArmorCreatorCopy(locale);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const actionFailureRef = useRef(false);
+  const activeOutfitSlotRef = useRef<ArmorSaveSlotNumber | null>(null);
+  const outfitWriteGenerationsRef = useRef(createOutfitWriteGenerations());
   const [selection, setSelection] = useState<ArmorSelection>(createInitialArmorSelection);
   const [activeSlot, setActiveSlot] = useState<PickerSlot>('helm');
+  const [activeOutfitSlot, setActiveOutfitSlot] = useState<ArmorSaveSlotNumber | null>(null);
   const [failureMessage, setFailureMessage] = useState<string | null>(null);
-  const saveRaw = useSyncExternalStore(subscribeArmorSaves, readArmorSaveRaw, readServerArmorSaveRaw);
-  const saveSlots = armorSaveSlotsFromRaw(saveRaw);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -949,6 +772,10 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
           return;
         }
 
+        if (actionFailureRef.current) {
+          return;
+        }
+
         setFailureMessage(null);
       })
       .catch((failure: unknown) => {
@@ -964,38 +791,74 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
     };
   }, [selection]);
 
+  function beginArmorAction(): void {
+    actionFailureRef.current = false;
+  }
+
   function reportFailure(failure: unknown) {
+    actionFailureRef.current = true;
     setFailureMessage(describeFailure(failure));
   }
 
-  function onTogglePiece(pieceId: string) {
-    setSelection((current) => wearOrRemoveArmorPiece(current, pieceId));
+  function startOutfitWrite(
+    storage: ArmorSaveStorage,
+    slotNumber: ArmorSaveSlotNumber,
+    selectionAtClick: ArmorSelection,
+  ): void {
+    const generation = nextOutfitWriteGeneration(outfitWriteGenerationsRef.current, slotNumber);
+    void writeOutfitSelection({
+      storage,
+      slotNumber,
+      selection: selectionAtClick,
+      outfitWriteIsLatest: () =>
+        outfitWriteGenerationIsCurrent(outfitWriteGenerationsRef.current, slotNumber, generation),
+    }).catch(reportFailure);
   }
 
-  function onSave(slotNumber: SaveSlotNumber) {
-    const selectionAtClick = selection;
+  function showLoadedOutfit(loadedOutfit: LoadedOutfitSlot): void {
+    activeOutfitSlotRef.current = loadedOutfit.activeOutfitSlot;
+    setActiveOutfitSlot(loadedOutfit.activeOutfitSlot);
+    setSelection(loadedOutfit.selection);
+  }
+
+  function commitArmorSelection(nextSelection: ArmorSelection): void {
+    beginArmorAction();
+    setSelection(nextSelection);
     try {
-      void saveArmorPreviewSlot({
-        storage: requireBrowserSaveStorage(),
-        slotNumber,
-        selection: selectionAtClick,
-        replaceMessage: copy.replaceSaveConfirm(slotNumber),
-        confirmReplace: confirmReplaceArmorSave,
-      }).catch(reportFailure);
+      const slotNumber = activeOutfitSlotForAutosave(activeOutfitSlotRef.current);
+      if (slotNumber === null) {
+        return;
+      }
+
+      startOutfitWrite(requireBrowserSaveStorage(), slotNumber, nextSelection);
     } catch (failure: unknown) {
       reportFailure(failure);
     }
   }
 
-  function onLoad(slotNumber: SaveSlotNumber) {
+  function onTogglePiece(pieceId: string): void {
+    commitArmorSelection(wearOrRemoveArmorPiece(selection, pieceId));
+  }
+
+  function selectOutfitSlot(slotNumber: ArmorSaveSlotNumber): void {
+    if (activeOutfitSlotRef.current === slotNumber) {
+      return;
+    }
+
+    beginArmorAction();
     try {
-      setSelection(loadArmorSaveSelection(requireBrowserSaveStorage(), slotNumber));
+      const loadedOutfit = loadOutfitSlot(slotNumber);
+      showLoadedOutfit(loadedOutfit);
+      if (loadedOutfit.storedRecord === null) {
+        startOutfitWrite(loadedOutfit.storage, loadedOutfit.activeOutfitSlot, loadedOutfit.selection);
+      }
     } catch (failure: unknown) {
       reportFailure(failure);
     }
   }
 
-  function onDownload() {
+  function onDownload(): void {
+    beginArmorAction();
     const selectionAtClick = selection;
     void downloadArmorSelection(selectionAtClick).catch(reportFailure);
   }
@@ -1008,27 +871,26 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
             copy={copy}
             selection={selection}
             activeSlot={activeSlot}
-            onGender={(gender) => setSelection((current) => selectArmorGender(current, gender))}
-            onMaterial={(material) => setSelection((current) => selectArmorMaterial(current, material))}
+            onGender={(gender) => commitArmorSelection(selectArmorGender(selection, gender))}
+            onMaterial={(material) => commitArmorSelection(selectArmorMaterial(selection, material))}
+            onShoulderSymmetry={() =>
+              commitArmorSelection(setShoulderSymmetry(selection, !selection.shoulderSymmetry))
+            }
+            onChestCurve={() => commitArmorSelection(setChestCurve(selection, !selection.chestCurve))}
+            onClear={() => commitArmorSelection(clearArmorEquipment(selection))}
+            onDownload={onDownload}
             onSlot={setActiveSlot}
             onTogglePiece={onTogglePiece}
           />
         </div>
-        <ArmorPreview copy={copy} canvasRef={canvasRef} failureMessage={failureMessage} />
+        <ArmorPreview
+          copy={copy}
+          canvasRef={canvasRef}
+          failureMessage={failureMessage}
+          activeOutfitSlot={activeOutfitSlot}
+          onSelectOutfitSlot={selectOutfitSlot}
+        />
       </div>
-      <ArmorBottomBar
-        copy={copy}
-        selection={selection}
-        saveSlots={saveSlots}
-        onShoulderSymmetry={() =>
-          setSelection((current) => setShoulderSymmetry(current, !current.shoulderSymmetry))
-        }
-        onChestCurve={() => setSelection((current) => setChestCurve(current, !current.chestCurve))}
-        onClear={() => setSelection((current) => clearArmorEquipment(current))}
-        onSave={onSave}
-        onLoad={onLoad}
-        onDownload={onDownload}
-      />
     </div>
   );
 }
