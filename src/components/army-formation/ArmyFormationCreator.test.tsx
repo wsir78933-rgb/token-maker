@@ -332,6 +332,27 @@ describe('ArmyFormationCreator', () => {
     expect(stored).not.toContain(raw);
   });
 
+  it('坏档警告在导入空白文档后消失，钥匙被删掉', async () => {
+    const raw = 'broken-army-formation-save';
+    localStorage.setItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY, raw);
+    render(<ArmyFormationCreator locale="zh" />);
+
+    expect(screen.getByRole('alert').textContent).toContain(raw);
+
+    chooseArmyFormationFile(
+      new File(
+        [serializeArmyFormationDocument(createEmptyArmyFormationDocument())],
+        'empty-formation.txt',
+        { type: 'text/plain' },
+      ),
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByRole('alert')?.textContent ?? '').not.toContain(raw);
+    });
+    expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toBeNull();
+  });
+
   it('未知图标的存档显示 icon id，不询问也不画出棋子', () => {
     const missingIconId = 'missing-icon-99';
     const armyDocument = addArmyFormationPiece(
