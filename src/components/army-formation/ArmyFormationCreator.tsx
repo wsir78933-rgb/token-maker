@@ -1117,10 +1117,47 @@ function ArmyFormationStepButton({
   );
 }
 
+function ArmyFormationBattlefieldSaveRow({
+  copy,
+  saveLabel,
+  fileInputRef,
+  onSave,
+  onExportFile,
+  onExportImage,
+  onChooseFile,
+}: {
+  copy: ArmyFormationCreatorCopy;
+  saveLabel: string;
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  onSave: () => void;
+  onExportFile: () => void;
+  onExportImage: () => void;
+  onChooseFile: (file: File) => void;
+}) {
+  return (
+    <div className="col-start-2 row-start-3 flex min-w-0 flex-col gap-3">
+      <ArmyFormationSaveControls copy={copy} saveLabel={saveLabel} onSave={onSave} />
+      <ArmyFormationTransferControls
+        copy={copy}
+        inputRef={fileInputRef}
+        onExportFile={onExportFile}
+        onExportImage={onExportImage}
+        onChooseFile={onChooseFile}
+      />
+    </div>
+  );
+}
+
 function ArmyFormationBattlefieldPane({
   copy,
   battlefield,
   emptySlot,
+  saveLabel,
+  fileInputRef,
+  onSave,
+  onExportFile,
+  onExportImage,
+  onChooseFile,
   onStepPrevious,
   onStepNext,
   onPiecePointerDown,
@@ -1132,6 +1169,12 @@ function ArmyFormationBattlefieldPane({
   copy: ArmyFormationCreatorCopy;
   battlefield: ArmyBattlefield;
   emptySlot: EmptySlot | null;
+  saveLabel: string;
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  onSave: () => void;
+  onExportFile: () => void;
+  onExportImage: () => void;
+  onChooseFile: (file: File) => void;
   onStepPrevious: () => void;
   onStepNext: () => void;
   onPiecePointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
@@ -1189,6 +1232,15 @@ function ArmyFormationBattlefieldPane({
         glyph=">"
         columnClass="col-start-3"
         onStep={onStepNext}
+      />
+      <ArmyFormationBattlefieldSaveRow
+        copy={copy}
+        saveLabel={saveLabel}
+        fileInputRef={fileInputRef}
+        onSave={onSave}
+        onExportFile={onExportFile}
+        onExportImage={onExportImage}
+        onChooseFile={onChooseFile}
       />
     </div>
   );
@@ -1472,23 +1524,17 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
             onApplyBackgroundImage={onApplyBackgroundImage}
             onClear={onClear}
           />
-          <ArmyFormationSaveControls
-            copy={copy}
-            saveLabel={saveBattlefieldButtonLabel(copy.saveBattlefield, armyDocument.activeBattlefieldIndex)}
-            onSave={onSave}
-          />
-          <ArmyFormationTransferControls
-            copy={copy}
-            inputRef={fileInputRef}
-            onExportFile={onExportFile}
-            onExportImage={onExportImage}
-            onChooseFile={onChooseFile}
-          />
         </div>
         <ArmyFormationBattlefieldPane
           copy={copy}
           battlefield={battlefield}
           emptySlot={emptySlot}
+          saveLabel={saveBattlefieldButtonLabel(copy.saveBattlefield, armyDocument.activeBattlefieldIndex)}
+          fileInputRef={fileInputRef}
+          onSave={onSave}
+          onExportFile={onExportFile}
+          onExportImage={onExportImage}
+          onChooseFile={onChooseFile}
           onStepPrevious={() => onStep(-1)}
           onStepNext={() => onStep(1)}
           onPiecePointerDown={onPiecePointerDown}

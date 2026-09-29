@@ -31,6 +31,31 @@ function piecePosition(piece: HTMLButtonElement): string {
   return `${x},${y}`;
 }
 
+function requireHeading(name: string): HTMLElement {
+  const heading = [...document.querySelectorAll('h2')].find((node) => node.textContent === name);
+  if (!(heading instanceof HTMLElement)) {
+    throw new Error(`Army formation heading is missing. Received ${JSON.stringify(name)}.`);
+  }
+
+  return heading;
+}
+
+function headingIndex(name: string): number {
+  return [...document.querySelectorAll('h2')].indexOf(requireHeading(name));
+}
+
+function controlGroup(title: string): HTMLElement {
+  const group = requireHeading(title).parentElement;
+  if (!(group instanceof HTMLElement) || group.tagName !== 'SECTION') {
+    const received = group === null ? 'null' : group.tagName;
+    throw new Error(
+      `Army formation control group is missing. Received ${received} for ${JSON.stringify(title)}.`,
+    );
+  }
+
+  return group;
+}
+
 function chooseArmyFormationFile(file: File) {
   const input = screen.getByLabelText('选择文件');
   if (!(input instanceof HTMLInputElement)) {
@@ -215,5 +240,16 @@ describe('ArmyFormationCreator', () => {
     expect(blob).toBeInstanceOf(Blob);
     expect(document.querySelector('svg[aria-label="Army formation creator"]')).toBeNull();
     expect(screen.queryByRole('img', { name: 'Army formation creator' })).toBeNull();
+  });
+
+  it('保存区标题在战场标题后面，并且不在改战场那一组里', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    expect(headingIndex('保存在这个浏览器')).toBeGreaterThan(headingIndex('战场'));
+    expect(controlGroup('改战场').contains(requireHeading('保存在这个浏览器'))).toBe(false);
+
+    cleanup();
+    render(<ArmyFormationCreator locale="en" />);
+    expect(headingIndex('Save in this browser')).toBeGreaterThan(headingIndex('Battlefield'));
+    expect(controlGroup('Change battlefield').contains(requireHeading('Save in this browser'))).toBe(false);
   });
 });
