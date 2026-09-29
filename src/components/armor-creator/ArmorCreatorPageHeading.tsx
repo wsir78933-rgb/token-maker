@@ -1,6 +1,8 @@
 import { getArmorCreatorHeroTitle } from '@/lib/armor-creator/copy';
 import type { SiteLocale } from '@/lib/site-locale';
 
+export const ARMOR_CREATOR_EDITOR_ID = 'armor-creator-editor';
+
 const ARMOR_HERO_FADE_CLASS = 'armor-creator-hero-fade';
 const ARMOR_HERO_UNDERLINE_CLASS = 'armor-creator-hero-underline';
 
@@ -24,6 +26,9 @@ function ArmorCreatorHeroStyles() {
       .${ARMOR_HERO_FADE_CLASS} {
         animation: armor-creator-hero-fade-in-up 0.6s ease-out both;
       }
+
+      .armor-creator-hero-fade-delay-1 { animation-delay: 0.2s; }
+      .armor-creator-hero-fade-delay-2 { animation-delay: 0.4s; }
 
       @media (prefers-reduced-motion: reduce) {
         .${ARMOR_HERO_FADE_CLASS} { animation: none; }
@@ -58,22 +63,44 @@ export function ArmorCreatorPageHeading({ locale }: { locale: SiteLocale }) {
   const title = getArmorCreatorHeroTitle(locale);
 
   return (
-    <header className="mx-auto max-w-4xl text-center text-foreground">
+    <section
+      className="flex min-h-svh items-center justify-center px-4 py-24 text-center text-foreground md:py-32"
+      aria-labelledby="armor-creator-heading"
+    >
       <ArmorCreatorHeroStyles />
-      <h1
-        id="armor-creator-heading"
-        className={`${ARMOR_HERO_FADE_CLASS} mb-8 text-4xl font-bold leading-tight tracking-tighter sm:text-5xl md:text-6xl`}
-      >
-        {title.lead}
-        {title.lineGap}
-        <br />
-        <span className="relative inline-block">
-          <span className="text-5xl font-normal sm:text-6xl md:text-7xl">{title.emphasis}</span>
-          <ArmorCreatorHeroUnderline />
-        </span>
-        {title.gap}
-        {title.tail}
-      </h1>
-    </header>
+      <div className="mx-auto flex max-w-4xl flex-col items-center">
+        <h1
+          id="armor-creator-heading"
+          className={`${ARMOR_HERO_FADE_CLASS} mb-6 text-4xl font-bold leading-tight tracking-tighter sm:text-5xl md:text-6xl`}
+        >
+          {title.lead}
+          {title.lineGap}
+          <br />
+          <span className="relative inline-block">
+            <span className="font-display text-5xl font-normal italic tracking-normal sm:text-6xl md:text-7xl">
+              {title.emphasis}
+            </span>
+            <ArmorCreatorHeroUnderline />
+          </span>
+          {title.gap}
+          {title.tail}
+        </h1>
+
+        <div className={`${ARMOR_HERO_FADE_CLASS} armor-creator-hero-fade-delay-1 mx-auto mb-9 max-w-2xl`}>
+          <p id="armor-creator-hero-description" className="text-base leading-snug text-muted-foreground sm:text-lg">
+            {title.description}
+          </p>
+        </div>
+
+        <div className={`${ARMOR_HERO_FADE_CLASS} armor-creator-hero-fade-delay-2`}>
+          <a
+            href={`#${ARMOR_CREATOR_EDITOR_ID}`}
+            className="inline-flex items-center justify-center rounded-lg bg-foreground px-8 py-6 text-base font-medium text-background focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-foreground"
+          >
+            {title.action}
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }

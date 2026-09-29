@@ -33,6 +33,7 @@ export type ArmorCreatorCopy = {
   heroTitleLead: string;
   heroTitleEmphasis: string;
   heroTitleTail: string;
+  heroAction: string;
 };
 
 export type ArmorCreatorHeroTitle = {
@@ -41,6 +42,8 @@ export type ArmorCreatorHeroTitle = {
   emphasis: string;
   tail: string;
   gap: string;
+  description: string;
+  action: string;
 };
 
 const englishArmorCreatorCopy: ArmorCreatorCopy = {
@@ -80,6 +83,7 @@ const englishArmorCreatorCopy: ArmorCreatorCopy = {
   heroTitleLead: "Build your character's",
   heroTitleEmphasis: 'armor',
   heroTitleTail: 'look',
+  heroAction: 'Start mixing',
 };
 
 const chineseArmorCreatorCopy: ArmorCreatorCopy = {
@@ -119,6 +123,7 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   heroTitleLead: '在浏览器里搭配你的',
   heroTitleEmphasis: '护甲',
   heroTitleTail: '造型',
+  heroAction: '开始搭配',
 };
 
 function isArmorCreatorLocale(locale: string): locale is ArmorCreatorLocale {
@@ -205,5 +210,7 @@ export function getArmorCreatorHeroTitle(locale: string): ArmorCreatorHeroTitle 
     emphasis: requireArmorHeroTitlePart(copy.heroTitleEmphasis, 'heroTitleEmphasis', supportedLocale),
     tail: requireArmorHeroTitlePart(copy.heroTitleTail, 'heroTitleTail', supportedLocale),
     gap: wordGap,
+    description: requireArmorHeroTitlePart(copy.pageDescription, 'pageDescription', supportedLocale),
+    action: requireArmorHeroTitlePart(copy.heroAction, 'heroAction', supportedLocale),
   };
 }

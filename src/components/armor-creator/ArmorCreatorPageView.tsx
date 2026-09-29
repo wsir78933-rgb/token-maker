@@ -1,4 +1,7 @@
-import { ArmorCreatorPageHeading } from '@/components/armor-creator/ArmorCreatorPageHeading';
+import {
+  ARMOR_CREATOR_EDITOR_ID,
+  ArmorCreatorPageHeading,
+} from '@/components/armor-creator/ArmorCreatorPageHeading';
 import { ArmorCreatorWorkbench } from '@/components/armor-creator/ArmorCreatorWorkbench';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import type { SiteLocale } from '@/lib/site-locale';
@@ -7,10 +10,15 @@ const ARMOR_CREATOR_PATH = '/armor-creator';
 
 function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
   return (
-    <div className="mx-auto w-full max-w-[82rem] px-5 py-8 lg:px-8 lg:py-10">
+    <>
       <ArmorCreatorPageHeading locale={locale} />
-      <ArmorCreatorWorkbench locale={locale} />
-    </div>
+      <div
+        id={ARMOR_CREATOR_EDITOR_ID}
+        className="mx-auto w-full max-w-[82rem] scroll-mt-8 px-5 py-8 lg:px-8 lg:py-10"
+      >
+        <ArmorCreatorWorkbench locale={locale} />
+      </div>
+    </>
   );
 }
 
