@@ -7,6 +7,10 @@ export type ArmyFormationCreatorCopy = {
   navigationName: string;
   pageTitle: string;
   pageDescription: string;
+  heroTitleLead: string;
+  heroTitleEmphasis: string;
+  heroSubtitle: string;
+  heroAction: string;
   helmets: string;
   weapons: string;
   animals: string;
@@ -46,6 +50,10 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   navigationName: 'Army formation creator',
   pageTitle: 'Army formation creator',
   pageDescription: 'Place battlefield pieces in the browser and download an image.',
+  heroTitleLead: 'Place battlefield pieces in your browser',
+  heroTitleEmphasis: 'Army formation creator',
+  heroSubtitle: 'Arrange the formation on the battlefield, then download an image.',
+  heroAction: 'Try for Free',
   helmets: 'Helmets',
   weapons: 'Weapons',
   animals: 'Animals',
@@ -85,6 +93,10 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   navigationName: '军阵',
   pageTitle: '军阵',
   pageDescription: '在浏览器里摆放战场棋子并下载图片。',
+  heroTitleLead: '在浏览器里摆放战场棋子',
+  heroTitleEmphasis: 'Army formation creator',
+  heroSubtitle: '在战场上把阵型摆好，然后下载图片。',
+  heroAction: '免费试用',
   helmets: '头盔',
   weapons: '武器',
   animals: '动物',
@@ -143,6 +155,39 @@ function readArmyFormationCreatorCopy(locale: ArmyFormationCreatorLocale): ArmyF
   throw new Error(`Unknown army formation creator locale: ${JSON.stringify(locale)}`);
 }
 
+function requireArmyFormationHeroTitlePart(
+  value: string,
+  fieldName: string,
+  locale: ArmyFormationCreatorLocale,
+): string {
+  if (value.trim().length === 0) {
+    throw new Error(
+      `Army formation creator ${fieldName} is empty for locale ${JSON.stringify(locale)}. Received ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return value;
+}
+
+export type ArmyFormationCreatorHero = {
+  lead: string;
+  emphasis: string;
+  subtitle: string;
+  action: string;
+};
+
 export function getArmyFormationCreatorCopy(locale: string): ArmyFormationCreatorCopy {
   return readArmyFormationCreatorCopy(requireArmyFormationCreatorLocale(locale));
+}
+
+export function getArmyFormationCreatorHero(locale: string): ArmyFormationCreatorHero {
+  const supportedLocale = requireArmyFormationCreatorLocale(locale);
+  const copy = readArmyFormationCreatorCopy(supportedLocale);
+
+  return {
+    lead: requireArmyFormationHeroTitlePart(copy.heroTitleLead, 'heroTitleLead', supportedLocale),
+    emphasis: requireArmyFormationHeroTitlePart(copy.heroTitleEmphasis, 'heroTitleEmphasis', supportedLocale),
+    subtitle: requireArmyFormationHeroTitlePart(copy.heroSubtitle, 'heroSubtitle', supportedLocale),
+    action: requireArmyFormationHeroTitlePart(copy.heroAction, 'heroAction', supportedLocale),
+  };
 }
