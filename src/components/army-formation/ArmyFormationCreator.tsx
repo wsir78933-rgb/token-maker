@@ -54,9 +54,9 @@ const ARMY_FORMATION_FILE_NAME = 'army-formation-creator.txt';
 const ARMY_FORMATION_IMAGE_NAME = 'army-formation-creator.svg';
 
 const ARMY_FORMATION_BUTTON_CLASS =
-  'rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-3 py-2 text-sm text-[var(--site-ink)]';
+  'rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-4 py-3 text-base text-[var(--site-ink)]';
 const ARMY_FORMATION_SAVE_BUTTON_CLASS =
-  'rounded-md border border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] px-4 py-3 text-base text-[var(--site-accent-strong)]';
+  'w-full rounded-md border border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] px-4 py-3 text-center text-base text-[var(--site-accent-strong)]';
 const ARMY_FORMATION_INPUT_CLASS =
   'rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] px-2 py-1 text-sm text-[var(--site-ink)]';
 
@@ -530,8 +530,8 @@ function ArmyFormationFailure({ message }: { message: string }) {
 function ArmyFormationControlGroup({ title, children }: { title: string; children: ReactNode }) {
   const titleId = useId();
   return (
-    <section aria-labelledby={titleId} className="space-y-2">
-      <h2 id={titleId} className="text-sm font-semibold text-[var(--site-ink-strong)]">
+    <section aria-labelledby={titleId} className="space-y-3">
+      <h2 id={titleId} className="text-base font-semibold text-[var(--site-ink-strong)]">
         {title}
       </h2>
       {children}
@@ -770,7 +770,7 @@ function ArmyFormationFieldControls({
           {copy.changeBackgroundColor}
         </button>
       </div>
-      <div className="flex flex-col gap-2 sm:max-[1439px]:flex-row sm:max-[1439px]:items-center">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <label className="flex w-full min-w-0 flex-1 flex-col gap-1 text-sm text-[var(--site-ink)]">
           <span>{copy.backgroundImage}</span>
           <input
@@ -817,7 +817,7 @@ function ArmyFormationFileChooser({
 }) {
   return (
     <>
-      <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={() => openFilePicker(inputRef.current)}>
+      <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={() => openFilePicker(inputRef.current)}>
         {label}
       </button>
       <input
@@ -856,11 +856,11 @@ function ArmyFormationTransferControls({
   onChooseFile: (file: File) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
-      <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onExportFile}>
+    <div className="grid grid-cols-3 gap-2">
+      <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onExportFile}>
         {copy.exportFile}
       </button>
-      <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onExportImage}>
+      <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onExportImage}>
         {copy.exportImage}
       </button>
       <ArmyFormationFileChooser label={copy.chooseFile} inputRef={inputRef} onChooseFile={onChooseFile} />
@@ -1284,7 +1284,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
       />
       <ArmyFormationIconShelf categoryId={activeCategoryId} onPlace={onPlaceIcon} />
       <div className="flex flex-col gap-3 min-[1440px]:flex-row min-[1440px]:items-start">
-        <div className="flex w-full min-w-0 flex-col gap-3 min-[1440px]:w-[400px] min-[1440px]:shrink-0">
+        <div className="flex w-full min-w-0 flex-col gap-3 rounded-2xl border border-[var(--site-border-strong)] p-3 min-[1440px]:w-[400px] min-[1440px]:shrink-0">
           <ArmyFormationColorControls
             copy={copy}
             colorText={colorText}
