@@ -59,6 +59,8 @@ const ARMY_FORMATION_SAVE_BUTTON_CLASS =
   'w-full rounded-md border border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] px-4 py-3 text-center text-base text-[var(--site-accent-strong)]';
 const ARMY_FORMATION_INPUT_CLASS =
   'rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] px-2 py-1 text-sm text-[var(--site-ink)]';
+const ARMY_FORMATION_NATO_ICONS_PER_PAGE = 60;
+const ARMY_FORMATION_ICON_SHELF_MAX_HEIGHT_CLASS = 'max-h-[calc(2.25rem*3+0.25rem*2)]';
 
 type PieceDragSession = {
   pieceId: string;
@@ -573,6 +575,66 @@ function ArmyFormationCategoryTabs({
   );
 }
 
+function readNatoIconPageCount(iconCount: number): number {
+  if (!Number.isInteger(iconCount) || iconCount < 1) {
+    throw new Error(`NATO icon count must be a positive integer. Received ${String(iconCount)}.`);
+  }
+
+  return Math.ceil(iconCount / ARMY_FORMATION_NATO_ICONS_PER_PAGE);
+}
+
+function readNatoIconPage(
+  icons: readonly ArmyFormationCatalogIcon[],
+  pageIndex: number,
+): readonly ArmyFormationCatalogIcon[] {
+  const pageCount = readNatoIconPageCount(icons.length);
+  if (!Number.isInteger(pageIndex) || pageIndex < 0 || pageIndex >= pageCount) {
+    throw new Error(
+      `NATO icon page index must be an integer from 0 to ${pageCount - 1}. Received ${String(pageIndex)}.`,
+    );
+  }
+
+  const startIndex = pageIndex * ARMY_FORMATION_NATO_ICONS_PER_PAGE;
+  const pageIcons = icons.slice(startIndex, startIndex + ARMY_FORMATION_NATO_ICONS_PER_PAGE);
+  if (pageIcons.length === 0) {
+    throw new Error(`NATO icon page ${pageIndex} is empty. Icon count is ${icons.length}.`);
+  }
+
+  return pageIcons;
+}
+
+function stepNatoIconPageIndex(pageIndex: number, pageCount: number, direction: -1 | 1): number {
+  if (!Number.isInteger(pageCount) || pageCount < 1) {
+    throw new Error(`NATO icon page count must be a positive integer. Received ${String(pageCount)}.`);
+  }
+  if (!Number.isInteger(pageIndex) || pageIndex < 0 || pageIndex >= pageCount) {
+    throw new Error(
+      `NATO icon page index must be an integer from 0 to ${pageCount - 1}. Received ${String(pageIndex)}.`,
+    );
+  }
+
+  const nextPageIndex = pageIndex + direction;
+  if (nextPageIndex < 0 || nextPageIndex >= pageCount) {
+    throw new Error(
+      `NATO icon page index must stay inside 0..${pageCount - 1}. Received ${nextPageIndex}.`,
+    );
+  }
+
+  return nextPageIndex;
+}
+
+function readVisibleArmyFormationIcons(
+  categoryId: ArmyFormationIconCategoryId,
+  icons: readonly ArmyFormationCatalogIcon[],
+  natoIconPageIndex: number,
+): readonly ArmyFormationCatalogIcon[] {
+  if (categoryId !== 'nato') {
+    return icons;
+  }
+
+  return readNatoIconPage(icons, natoIconPageIndex);
+}
+
 function ArmyFormationIconButton({
   icon,
   onPlace,
@@ -595,21 +657,116 @@ function ArmyFormationIconButton({
   );
 }
 
+function ArmyFormationNatoIconPager({
+  copy,
+  pageIndex,
+  pageCount,
+  onPreviousPage,
+  onNextPage,
+}: {
+  copy: ArmyFormationCreatorCopy;
+  pageIndex: number;
+  pageCount: number;
+  onPreviousPage: () => void;
+  onNextPage: () => void;
+}) {
+  if (!Number.isInteger(pageCount) || pageCount < 1) {
+    throw new Error(`NATO icon page count must be a positive integer. Received ${String(pageCount)}.`);
+  }
+  if (!Number.isInteger(pageIndex) || pageIndex < 0 || pageIndex >= pageCount) {
+    throw new Error(
+      `NATO icon page index must be an integer from 0 to ${pageCount - 1}. Received ${String(pageIndex)}.`,
+    );
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        className={cn(ARMY_FORMATION_BUTTON_CLASS, 'disabled:cursor-not-allowed disabled:opacity-40')}
+        disabled={pageIndex === 0}
+        onClick={onPreviousPage}
+      >
+        {copy.previousNatoIconPage}
+      </button>
+      <p className="min-w-12 text-center text-sm text-[var(--site-ink)]">
+        {pageIndex + 1} / {pageCount}
+      </p>
+      <button
+        type="button"
+        className={cn(ARMY_FORMATION_BUTTON_CLASS, 'disabled:cursor-not-allowed disabled:opacity-40')}
+        disabled={pageIndex === pageCount - 1}
+        onClick={onNextPage}
+      >
+        {copy.nextNatoIconPage}
+      </button>
+    </div>
+  );
+}
+
 function ArmyFormationIconShelf({
+  copy,
   categoryId,
   onPlace,
 }: {
+  copy: ArmyFormationCreatorCopy;
   categoryId: ArmyFormationIconCategoryId;
   onPlace: (iconId: string) => void;
 }) {
   const icons = listArmyFormationIconsInCategory(categoryId);
+  const [natoIconPageIndex, setNatoIconPageIndex] = useState(0);
+  const [natoIconPageCategoryId, setNatoIconPageCategoryId] = useState(categoryId);
+  let visibleNatoIconPageIndex = natoIconPageIndex;
+  if (natoIconPageCategoryId !== categoryId) {
+    setNatoIconPageCategoryId(categoryId);
+    setNatoIconPageIndex(0);
+    visibleNatoIconPageIndex = 0;
+  }
+
+  const visibleIcons = readVisibleArmyFormationIcons(categoryId, icons, visibleNatoIconPageIndex);
+  const natoIconPageCount = categoryId === 'nato' ? readNatoIconPageCount(icons.length) : null;
+
+  function onPreviousNatoIconPage() {
+    if (natoIconPageCount === null) {
+      throw new Error(
+        `NATO icon pages are only available for the nato category. Received ${JSON.stringify(categoryId)}.`,
+      );
+    }
+    setNatoIconPageIndex(stepNatoIconPageIndex(visibleNatoIconPageIndex, natoIconPageCount, -1));
+  }
+
+  function onNextNatoIconPage() {
+    if (natoIconPageCount === null) {
+      throw new Error(
+        `NATO icon pages are only available for the nato category. Received ${JSON.stringify(categoryId)}.`,
+      );
+    }
+    setNatoIconPageIndex(stepNatoIconPageIndex(visibleNatoIconPageIndex, natoIconPageCount, 1));
+  }
+
   return (
-    <div className="max-h-28 overflow-y-auto rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-strong)] p-2">
-      <div className="flex flex-wrap gap-1">
-        {icons.map((icon) => (
-          <ArmyFormationIconButton key={icon.id} icon={icon} onPlace={onPlace} />
-        ))}
+    <div className="space-y-2">
+      <div className="rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-strong)] p-2">
+        <div
+          className={cn(
+            'flex content-start flex-wrap gap-1 overflow-hidden',
+            ARMY_FORMATION_ICON_SHELF_MAX_HEIGHT_CLASS,
+          )}
+        >
+          {visibleIcons.map((icon) => (
+            <ArmyFormationIconButton key={icon.id} icon={icon} onPlace={onPlace} />
+          ))}
+        </div>
       </div>
+      {natoIconPageCount !== null ? (
+        <ArmyFormationNatoIconPager
+          copy={copy}
+          pageIndex={visibleNatoIconPageIndex}
+          pageCount={natoIconPageCount}
+          onPreviousPage={onPreviousNatoIconPage}
+          onNextPage={onNextNatoIconPage}
+        />
+      ) : null}
     </div>
   );
 }
@@ -1282,7 +1439,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
         activeCategoryId={activeCategoryId}
         onCategory={setActiveCategoryId}
       />
-      <ArmyFormationIconShelf categoryId={activeCategoryId} onPlace={onPlaceIcon} />
+      <ArmyFormationIconShelf copy={copy} categoryId={activeCategoryId} onPlace={onPlaceIcon} />
       <div className="flex flex-col gap-3 min-[1440px]:flex-row min-[1440px]:items-start">
         <div className="flex w-full min-w-0 flex-col gap-3 rounded-2xl border border-[var(--site-border-strong)] p-3 min-[1440px]:w-[400px] min-[1440px]:shrink-0">
           <ArmyFormationColorControls

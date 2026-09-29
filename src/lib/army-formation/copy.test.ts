@@ -39,6 +39,8 @@ const STRING_FIELD_NAMES = [
   'emptySlot',
   'switchToPreviousBattle',
   'switchToNextBattle',
+  'previousNatoIconPage',
+  'nextNatoIconPage',
 ] as const satisfies readonly (keyof ArmyFormationCreatorCopy)[];
 
 const englishStringFields = {
@@ -75,6 +77,8 @@ const englishStringFields = {
   emptySlot: 'Empty slot',
   switchToPreviousBattle: 'Switch to previous battle',
   switchToNextBattle: 'Switch to next battle',
+  previousNatoIconPage: 'Previous page',
+  nextNatoIconPage: 'Next page',
 } as const satisfies Record<(typeof STRING_FIELD_NAMES)[number], string>;
 
 const chineseStringFields = {
@@ -111,6 +115,8 @@ const chineseStringFields = {
   emptySlot: '空位',
   switchToPreviousBattle: '切换到上一场',
   switchToNextBattle: '切换到下一场',
+  previousNatoIconPage: '上一页',
+  nextNatoIconPage: '下一页',
 } as const satisfies Record<(typeof STRING_FIELD_NAMES)[number], string>;
 
 function expectStringFields(

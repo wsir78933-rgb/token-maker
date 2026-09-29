@@ -36,6 +36,8 @@ export type ArmyFormationCreatorCopy = {
   emptySlot: string;
   switchToPreviousBattle: string;
   switchToNextBattle: string;
+  previousNatoIconPage: string;
+  nextNatoIconPage: string;
 };
 
 const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
@@ -72,6 +74,8 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   emptySlot: 'Empty slot',
   switchToPreviousBattle: 'Switch to previous battle',
   switchToNextBattle: 'Switch to next battle',
+  previousNatoIconPage: 'Previous page',
+  nextNatoIconPage: 'Next page',
 };
 
 const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
@@ -108,6 +112,8 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   emptySlot: '空位',
   switchToPreviousBattle: '切换到上一场',
   switchToNextBattle: '切换到下一场',
+  previousNatoIconPage: '上一页',
+  nextNatoIconPage: '下一页',
 };
 
 function isArmyFormationCreatorLocale(locale: string): locale is ArmyFormationCreatorLocale {
