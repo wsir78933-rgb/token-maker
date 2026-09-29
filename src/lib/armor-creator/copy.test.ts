@@ -67,7 +67,7 @@ const englishStringFields = {
   heroTitleLead: "Build your character's",
   heroTitleEmphasis: 'armor',
   heroTitleTail: 'look',
-  heroAction: 'Start mixing',
+  heroAction: 'Try for Free',
 } as const satisfies Record<(typeof STRING_FIELD_NAMES)[number], string>;
 
 const chineseStringFields = {
@@ -98,7 +98,7 @@ const chineseStringFields = {
   heroTitleLead: '在浏览器里搭配你的',
   heroTitleEmphasis: '护甲',
   heroTitleTail: '造型',
-  heroAction: '开始搭配',
+  heroAction: 'Try for Free',
 } as const satisfies Record<(typeof STRING_FIELD_NAMES)[number], string>;
 
 function expectNonEmptyStringFields(
@@ -164,7 +164,7 @@ describe('getArmorCreatorCopy', () => {
       tail: 'look',
       gap: ' ',
       description: 'Mix and match armor in the browser and download an image.',
-      action: 'Start mixing',
+      action: 'Try for Free',
     });
     expect(getArmorCreatorHeroTitle('zh')).toEqual({
       lead: '在浏览器里搭配你的',
@@ -173,7 +173,7 @@ describe('getArmorCreatorCopy', () => {
       tail: '造型',
       gap: '',
       description: '在浏览器里搭配护甲并下载图片。',
-      action: '开始搭配',
+      action: 'Try for Free',
     });
   });
 

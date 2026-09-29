@@ -83,7 +83,7 @@ const englishArmorCreatorCopy: ArmorCreatorCopy = {
   heroTitleLead: "Build your character's",
   heroTitleEmphasis: 'armor',
   heroTitleTail: 'look',
-  heroAction: 'Start mixing',
+  heroAction: 'Try for Free',
 };
 
 const chineseArmorCreatorCopy: ArmorCreatorCopy = {
@@ -123,7 +123,7 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   heroTitleLead: '在浏览器里搭配你的',
   heroTitleEmphasis: '护甲',
   heroTitleTail: '造型',
-  heroAction: '开始搭配',
+  heroAction: 'Try for Free',
 };
 
 function isArmorCreatorLocale(locale: string): locale is ArmorCreatorLocale {
