@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useRef, useState, type PointerEvent, type ReactNode, type RefObject } from 'react';
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode, type RefObject } from 'react';
 
 import {
   readArmyFormationBrowserSave,
@@ -79,6 +79,62 @@ type ArmyFormationStartupRecord =
   | { status: 'absent' }
   | { status: 'invalid'; message: string }
   | { status: 'restore'; armyDocument: ArmyFormationDocument };
+
+const UNREAD_ARMY_FORMATION_STARTUP = { status: 'unread' } as const;
+
+type ArmyFormationStartupSnapshot =
+  | typeof UNREAD_ARMY_FORMATION_STARTUP
+  | { status: 'absent' }
+  | { status: 'invalid'; message: string }
+  | { status: 'restore' };
+
+type ArmyFormationStartupStore = {
+  subscribe: (onStoreChange: () => void) => () => void;
+  readSnapshot: () => ArmyFormationStartupSnapshot;
+  readRestoreDocument: () => ArmyFormationDocument | null;
+  publishRecord: (record: ArmyFormationStartupRecord) => void;
+};
+
+function createArmyFormationStartupStore(): ArmyFormationStartupStore {
+  let snapshot: ArmyFormationStartupSnapshot = UNREAD_ARMY_FORMATION_STARTUP;
+  let restoreDocument: ArmyFormationDocument | null = null;
+  const listeners = new Set<() => void>();
+
+  return {
+    subscribe(onStoreChange: () => void) {
+      listeners.add(onStoreChange);
+      return () => {
+        listeners.delete(onStoreChange);
+      };
+    },
+    readSnapshot() {
+      return snapshot;
+    },
+    readRestoreDocument() {
+      return restoreDocument;
+    },
+    publishRecord(record: ArmyFormationStartupRecord) {
+      if (record.status === 'restore') {
+        restoreDocument = record.armyDocument;
+        snapshot = { status: 'restore' };
+      } else if (record.status === 'invalid') {
+        restoreDocument = null;
+        snapshot = { status: 'invalid', message: record.message };
+      } else {
+        restoreDocument = null;
+        snapshot = { status: 'absent' };
+      }
+
+      for (const listener of listeners) {
+        listener();
+      }
+    },
+  };
+}
+
+function readServerArmyFormationStartupSnapshot(): ArmyFormationStartupSnapshot {
+  return UNREAD_ARMY_FORMATION_STARTUP;
+}
 
 function describeJsonReceivedValue(value: object): string {
   try {
@@ -1206,7 +1262,12 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   const copy = getArmyFormationCreatorCopy(locale);
   const [armyDocument, setArmyDocument] = useState(() => createEmptyArmyFormationDocument());
   const [failureMessage, setFailureMessage] = useState<string | null>(null);
-  const [restoreDocument, setRestoreDocument] = useState<ArmyFormationDocument | null>(null);
+  const [startupStore] = useState<ArmyFormationStartupStore>(createArmyFormationStartupStore);
+  const startupSnapshot = useSyncExternalStore(
+    startupStore.subscribe,
+    startupStore.readSnapshot,
+    readServerArmyFormationStartupSnapshot,
+  );
   const [activeCategoryId, setActiveCategoryId] = useState<ArmyFormationIconCategoryId>('helmet');
   const [colorText, setColorText] = useState('#000000');
   const [angleText, setAngleText] = useState('90');
@@ -1236,21 +1297,13 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   }
 
   useEffect(() => {
-    // Read after mount so the first server and client render both stay empty.
+    // Read after mount. The client snapshot stays unread on the first paint, so saved pieces are not drawn.
     const startupRecord = readArmyFormationStartupRecord(requireWindowArmyFormationStorage());
-    if (startupRecord.status === 'invalid') {
-      setFailureMessage(startupRecord.message);
+    startupStore.publishRecord(startupRecord);
+    if (startupRecord.status !== 'restore') {
       openArmyFormationAutosave();
-      return;
     }
-
-    if (startupRecord.status === 'restore') {
-      setRestoreDocument(startupRecord.armyDocument);
-      return;
-    }
-
-    openArmyFormationAutosave();
-  }, []);
+  }, [startupStore]);
 
   function syncBattlefieldDrafts(battlefield: ArmyBattlefield) {
     setHeightText(String(battlefield.heightPx));
@@ -1376,9 +1429,9 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
   function onRestorePreviousRecord() {
     reportArmyFormationAction(() => {
-      const restoredDocument = requireArmyFormationRestoreDocument(restoreDocument);
+      const restoredDocument = requireArmyFormationRestoreDocument(startupStore.readRestoreDocument());
       openArmyFormationAutosave();
-      setRestoreDocument(null);
+      startupStore.publishRecord({ status: 'absent' });
       commitArmyFormationDocument(restoredDocument);
       syncBattlefieldDrafts(readActiveBattlefield(restoredDocument));
     });
@@ -1386,10 +1439,10 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
   function onStartBlank() {
     reportArmyFormationAction(() => {
-      requireArmyFormationRestoreDocument(restoreDocument);
+      requireArmyFormationRestoreDocument(startupStore.readRestoreDocument());
       removeArmyFormationBrowserSave(requireWindowArmyFormationStorage());
       openArmyFormationAutosave();
-      setRestoreDocument(null);
+      startupStore.publishRecord({ status: 'absent' });
     });
   }
 
@@ -1459,14 +1512,17 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
   const battlefield = readActiveBattlefield(armyDocument);
   const emptySlot = readNextEmptySlot(armyDocument, ARMY_FIELD_WIDTH_PX);
+  const restorePromptOpen = startupSnapshot.status === 'restore';
+  const startupFailureMessage = startupSnapshot.status === 'invalid' ? startupSnapshot.message : null;
+  const visibleFailureMessage = failureMessage ?? startupFailureMessage;
 
   return (
     <section
       aria-label={copy.productName}
       className="relative mx-auto w-full max-w-[84rem] rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-3 text-[var(--site-ink)] shadow-[var(--site-card-shadow)] sm:p-4"
     >
-      <div className="space-y-3" inert={restoreDocument !== null ? true : undefined}>
-      {failureMessage !== null ? <ArmyFormationFailure message={failureMessage} /> : null}
+      <div className="space-y-3" inert={restorePromptOpen ? true : undefined}>
+      {visibleFailureMessage !== null ? <ArmyFormationFailure message={visibleFailureMessage} /> : null}
       <ArmyFormationCategoryTabs
         copy={copy}
         activeCategoryId={activeCategoryId}
@@ -1524,7 +1580,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
         />
       </div>
       </div>
-      {restoreDocument !== null ? (
+      {restorePromptOpen ? (
         <ArmyFormationRestoreDialog
           copy={copy}
           onRestorePreviousRecord={onRestorePreviousRecord}
