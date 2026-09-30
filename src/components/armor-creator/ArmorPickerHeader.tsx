@@ -11,36 +11,44 @@ import {
 import type { ArmorCreatorCopy } from '@/lib/armor-creator/copy';
 
 const ARMOR_PICKER_HEADER_CLASS = 'space-y-2';
-const ARMOR_PICKER_ROW_CLASS = 'flex flex-wrap items-center gap-2';
-const ARMOR_PICKER_BUTTON_CLASS = 'rounded-md border px-3 py-2 text-sm';
+const ARMOR_PICKER_HALF_ROW_CLASS = 'grid grid-cols-2 gap-2';
+const ARMOR_PICKER_THIRD_ROW_CLASS = 'grid grid-cols-3 gap-2';
+const ARMOR_PICKER_ACTION_ROW_CLASS = 'grid grid-cols-4 gap-2';
+const ARMOR_PICKER_BUTTON_CLASS = 'w-full rounded-md border px-3 py-2 text-center text-sm';
 const ARMOR_PICKER_SELECTED_CLASS =
   'border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] text-[var(--site-accent-strong)] ring-2 ring-[var(--site-accent-strong)]';
 const ARMOR_PICKER_IDLE_CLASS =
   'border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-[var(--site-ink)]';
 const ARMOR_PICKER_DISABLED_CLASS = 'disabled:cursor-not-allowed disabled:opacity-40';
 
-type ArmorPickerLabelField =
+type ArmorPickerChoiceLabelField =
   | 'genderMale'
   | 'genderFemale'
   | 'materialPlate'
   | 'materialLeather'
-  | 'materialCloth'
-  | 'shoulderSymmetry'
-  | 'chestCurve'
-  | 'clearEquipment'
-  | 'downloadImage';
+  | 'materialCloth';
 
-type ArmorPickerHeaderLabels = Record<ArmorPickerLabelField, string>;
+type ArmorPickerActionLabelField = 'shoulderSymmetry' | 'chestCurve' | 'clearEquipment' | 'downloadImage';
+
+type ArmorPickerLabelField = ArmorPickerChoiceLabelField | ArmorPickerActionLabelField;
+
+type ArmorPickerHeaderLabels = Record<ArmorPickerChoiceLabelField, string>;
+
+type ArmorPickerActionLabels = Record<ArmorPickerActionLabelField, string>;
 
 type ArmorPickerHeaderProps = {
   copy: ArmorCreatorCopy;
   gender: ArmorGender;
   material: ArmorMaterial;
+  onGender: (gender: ArmorGender) => void;
+  onMaterial: (material: ArmorMaterial) => void;
+};
+
+type ArmorPickerActionsProps = {
+  copy: ArmorCreatorCopy;
   shoulderSymmetry: boolean;
   chestCurve: boolean;
   chestCurveEnabled: boolean;
-  onGender: (gender: ArmorGender) => void;
-  onMaterial: (material: ArmorMaterial) => void;
   onShoulderSymmetry: () => void;
   onChestCurve: () => void;
   onClear: () => void;
@@ -51,11 +59,15 @@ type ArmorPickerHeaderState = {
   labels: ArmorPickerHeaderLabels;
   gender: ArmorGender;
   material: ArmorMaterial;
+  onGender: (gender: ArmorGender) => void;
+  onMaterial: (material: ArmorMaterial) => void;
+};
+
+type ArmorPickerActionsState = {
+  labels: ArmorPickerActionLabels;
   shoulderSymmetry: boolean;
   chestCurve: boolean;
   chestCurveEnabled: boolean;
-  onGender: (gender: ArmorGender) => void;
-  onMaterial: (material: ArmorMaterial) => void;
   onShoulderSymmetry: () => void;
   onChestCurve: () => void;
   onClear: () => void;
@@ -119,21 +131,34 @@ function requireArmorPickerLabel(copyRecord: Record<string, unknown>, fieldName:
   );
 }
 
-function readArmorPickerLabels(copy: unknown): ArmorPickerHeaderLabels {
+function requireArmorPickerCopyRecord(copy: unknown): Record<string, unknown> {
   if (!isArmorPickerCopyRecord(copy)) {
     throw new Error(`Armor picker copy must be an object. Received ${describeArmorPickerValue(copy)}.`);
   }
 
+  return copy;
+}
+
+function readArmorPickerHeaderLabels(copy: unknown): ArmorPickerHeaderLabels {
+  const copyRecord = requireArmorPickerCopyRecord(copy);
+
   return {
-    genderMale: requireArmorPickerLabel(copy, 'genderMale'),
-    genderFemale: requireArmorPickerLabel(copy, 'genderFemale'),
-    materialPlate: requireArmorPickerLabel(copy, 'materialPlate'),
-    materialLeather: requireArmorPickerLabel(copy, 'materialLeather'),
-    materialCloth: requireArmorPickerLabel(copy, 'materialCloth'),
-    shoulderSymmetry: requireArmorPickerLabel(copy, 'shoulderSymmetry'),
-    chestCurve: requireArmorPickerLabel(copy, 'chestCurve'),
-    clearEquipment: requireArmorPickerLabel(copy, 'clearEquipment'),
-    downloadImage: requireArmorPickerLabel(copy, 'downloadImage'),
+    genderMale: requireArmorPickerLabel(copyRecord, 'genderMale'),
+    genderFemale: requireArmorPickerLabel(copyRecord, 'genderFemale'),
+    materialPlate: requireArmorPickerLabel(copyRecord, 'materialPlate'),
+    materialLeather: requireArmorPickerLabel(copyRecord, 'materialLeather'),
+    materialCloth: requireArmorPickerLabel(copyRecord, 'materialCloth'),
+  };
+}
+
+function readArmorPickerActionLabels(copy: unknown): ArmorPickerActionLabels {
+  const copyRecord = requireArmorPickerCopyRecord(copy);
+
+  return {
+    shoulderSymmetry: requireArmorPickerLabel(copyRecord, 'shoulderSymmetry'),
+    chestCurve: requireArmorPickerLabel(copyRecord, 'chestCurve'),
+    clearEquipment: requireArmorPickerLabel(copyRecord, 'clearEquipment'),
+    downloadImage: requireArmorPickerLabel(copyRecord, 'downloadImage'),
   };
 }
 
@@ -222,19 +247,52 @@ function armorPickerButtonClass(selected: boolean, disabled: boolean): string {
 
 function readArmorPickerHeader(props: ArmorPickerHeaderProps): ArmorPickerHeaderState {
   return {
-    labels: readArmorPickerLabels(props.copy),
+    labels: readArmorPickerHeaderLabels(props.copy),
     gender: requireArmorGender(props.gender),
     material: requireArmorMaterial(props.material),
+    onGender: requireArmorPickerGenderHandler(props.onGender, 'onGender'),
+    onMaterial: requireArmorPickerMaterialHandler(props.onMaterial, 'onMaterial'),
+  };
+}
+
+function readArmorPickerActions(props: ArmorPickerActionsProps): ArmorPickerActionsState {
+  return {
+    labels: readArmorPickerActionLabels(props.copy),
     shoulderSymmetry: requireArmorPickerBoolean(props.shoulderSymmetry, 'shoulderSymmetry'),
     chestCurve: requireArmorPickerBoolean(props.chestCurve, 'chestCurve'),
     chestCurveEnabled: requireArmorPickerBoolean(props.chestCurveEnabled, 'chestCurveEnabled'),
-    onGender: requireArmorPickerGenderHandler(props.onGender, 'onGender'),
-    onMaterial: requireArmorPickerMaterialHandler(props.onMaterial, 'onMaterial'),
     onShoulderSymmetry: requireArmorPickerAction(props.onShoulderSymmetry, 'onShoulderSymmetry'),
     onChestCurve: requireArmorPickerAction(props.onChestCurve, 'onChestCurve'),
     onClear: requireArmorPickerAction(props.onClear, 'onClear'),
     onDownload: requireArmorPickerAction(props.onDownload, 'onDownload'),
   };
+}
+
+function renderArmorPickerToggleButton(
+  label: string,
+  pressed: boolean,
+  disabled: boolean,
+  onClick: () => void,
+) {
+  return (
+    <button
+      type="button"
+      aria-pressed={pressed}
+      disabled={disabled}
+      className={armorPickerButtonClass(pressed, disabled)}
+      onClick={() => onClick()}
+    >
+      {label}
+    </button>
+  );
+}
+
+function renderArmorPickerActionButton(label: string, onClick: () => void) {
+  return (
+    <button type="button" className={armorPickerButtonClass(false, false)} onClick={() => onClick()}>
+      {label}
+    </button>
+  );
 }
 
 function renderArmorPickerGenderButton(header: ArmorPickerHeaderState, gender: ArmorGender) {
@@ -269,70 +327,40 @@ function renderArmorPickerMaterialButton(header: ArmorPickerHeaderState, materia
   );
 }
 
-function renderArmorPickerToggleButton(
-  label: string,
-  pressed: boolean,
-  disabled: boolean,
-  onClick: () => void,
-) {
-  return (
-    <button
-      type="button"
-      aria-pressed={pressed}
-      disabled={disabled}
-      className={armorPickerButtonClass(pressed, disabled)}
-      onClick={() => onClick()}
-    >
-      {label}
-    </button>
-  );
-}
-
-function renderArmorPickerActionButton(label: string, onClick: () => void) {
-  return (
-    <button type="button" className={armorPickerButtonClass(false, false)} onClick={() => onClick()}>
-      {label}
-    </button>
-  );
-}
-
-function renderArmorPickerGenderAndToggleRow(header: ArmorPickerHeaderState) {
-  return (
-    <div className={ARMOR_PICKER_ROW_CLASS}>
-      {ARMOR_GENDERS.map((gender) => renderArmorPickerGenderButton(header, gender))}
-      {renderArmorPickerToggleButton(
-        header.labels.shoulderSymmetry,
-        header.shoulderSymmetry,
-        false,
-        header.onShoulderSymmetry,
-      )}
-      {renderArmorPickerToggleButton(
-        header.labels.chestCurve,
-        header.chestCurve,
-        !header.chestCurveEnabled,
-        header.onChestCurve,
-      )}
-    </div>
-  );
-}
-
-function renderArmorPickerMaterialAndActionRow(header: ArmorPickerHeaderState) {
-  return (
-    <div className={ARMOR_PICKER_ROW_CLASS}>
-      {ARMOR_MATERIALS.map((material) => renderArmorPickerMaterialButton(header, material))}
-      {renderArmorPickerActionButton(header.labels.clearEquipment, header.onClear)}
-      {renderArmorPickerActionButton(header.labels.downloadImage, header.onDownload)}
-    </div>
-  );
-}
-
 export function ArmorPickerHeader(props: ArmorPickerHeaderProps) {
   const header = readArmorPickerHeader(props);
 
   return (
     <div className={ARMOR_PICKER_HEADER_CLASS}>
-      {renderArmorPickerGenderAndToggleRow(header)}
-      {renderArmorPickerMaterialAndActionRow(header)}
+      <div className={ARMOR_PICKER_HALF_ROW_CLASS}>
+        {ARMOR_GENDERS.map((gender) => renderArmorPickerGenderButton(header, gender))}
+      </div>
+      <div className={ARMOR_PICKER_THIRD_ROW_CLASS}>
+        {ARMOR_MATERIALS.map((material) => renderArmorPickerMaterialButton(header, material))}
+      </div>
+    </div>
+  );
+}
+
+export function ArmorPickerActions(props: ArmorPickerActionsProps) {
+  const actions = readArmorPickerActions(props);
+
+  return (
+    <div className={ARMOR_PICKER_ACTION_ROW_CLASS}>
+      {renderArmorPickerToggleButton(
+        actions.labels.shoulderSymmetry,
+        actions.shoulderSymmetry,
+        false,
+        actions.onShoulderSymmetry,
+      )}
+      {renderArmorPickerToggleButton(
+        actions.labels.chestCurve,
+        actions.chestCurve,
+        !actions.chestCurveEnabled,
+        actions.onChestCurve,
+      )}
+      {renderArmorPickerActionButton(actions.labels.clearEquipment, actions.onClear)}
+      {renderArmorPickerActionButton(actions.labels.downloadImage, actions.onDownload)}
     </div>
   );
 }

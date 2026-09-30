@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type Ref } from 'react';
 
-import { ArmorPickerHeader } from '@/components/armor-creator/ArmorPickerHeader';
+import { ArmorPickerActions, ArmorPickerHeader } from '@/components/armor-creator/ArmorPickerHeader';
 import { ArmorPreviewOutfitSlots } from '@/components/armor-creator/ArmorPreviewOutfitSlots';
 import {
   ARMOR_PREVIEW_HEIGHT,
@@ -599,10 +599,6 @@ function ArmorPicker({
   activeSlot,
   onGender,
   onMaterial,
-  onShoulderSymmetry,
-  onChestCurve,
-  onClear,
-  onDownload,
   onSlot,
   onTogglePiece,
 }: {
@@ -611,10 +607,6 @@ function ArmorPicker({
   activeSlot: PickerSlot;
   onGender: (gender: ArmorGender) => void;
   onMaterial: (material: ArmorMaterial) => void;
-  onShoulderSymmetry: () => void;
-  onChestCurve: () => void;
-  onClear: () => void;
-  onDownload: () => void;
   onSlot: (slot: PickerSlot) => void;
   onTogglePiece: (pieceId: string) => void;
 }) {
@@ -624,15 +616,8 @@ function ArmorPicker({
         copy={copy}
         gender={selection.gender}
         material={selection.material}
-        shoulderSymmetry={selection.shoulderSymmetry}
-        chestCurve={selection.chestCurve}
-        chestCurveEnabled={chestCurveControlEnabled(selection)}
         onGender={onGender}
         onMaterial={onMaterial}
-        onShoulderSymmetry={onShoulderSymmetry}
-        onChestCurve={onChestCurve}
-        onClear={onClear}
-        onDownload={onDownload}
       />
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-5">
         {PICKER_SLOTS.map((slot) => {
@@ -701,13 +686,27 @@ function ArmorPreview({
   canvasRef,
   failureMessage,
   activeOutfitSlot,
+  shoulderSymmetry,
+  chestCurve,
+  chestCurveEnabled,
   onSelectOutfitSlot,
+  onShoulderSymmetry,
+  onChestCurve,
+  onClear,
+  onDownload,
 }: {
   copy: ArmorCreatorCopy;
   canvasRef: Ref<HTMLCanvasElement>;
   failureMessage: string | null;
   activeOutfitSlot: ArmorSaveSlotNumber | null;
+  shoulderSymmetry: boolean;
+  chestCurve: boolean;
+  chestCurveEnabled: boolean;
   onSelectOutfitSlot: (slotNumber: ArmorSaveSlotNumber) => void;
+  onShoulderSymmetry: () => void;
+  onChestCurve: () => void;
+  onClear: () => void;
+  onDownload: () => void;
 }) {
   return (
     <section className="order-1 w-full lg:order-2 lg:w-[600px] lg:shrink-0">
@@ -725,6 +724,18 @@ function ArmorPreview({
           labels={outfitSlotLabels(copy)}
           activeOutfitSlot={activeOutfitSlot}
           onSelect={onSelectOutfitSlot}
+        />
+      </div>
+      <div className="mt-3">
+        <ArmorPickerActions
+          copy={copy}
+          shoulderSymmetry={shoulderSymmetry}
+          chestCurve={chestCurve}
+          chestCurveEnabled={chestCurveEnabled}
+          onShoulderSymmetry={onShoulderSymmetry}
+          onChestCurve={onChestCurve}
+          onClear={onClear}
+          onDownload={onDownload}
         />
       </div>
       {failureMessage !== null ? (
@@ -873,12 +884,6 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
             activeSlot={activeSlot}
             onGender={(gender) => commitArmorSelection(selectArmorGender(selection, gender))}
             onMaterial={(material) => commitArmorSelection(selectArmorMaterial(selection, material))}
-            onShoulderSymmetry={() =>
-              commitArmorSelection(setShoulderSymmetry(selection, !selection.shoulderSymmetry))
-            }
-            onChestCurve={() => commitArmorSelection(setChestCurve(selection, !selection.chestCurve))}
-            onClear={() => commitArmorSelection(clearArmorEquipment(selection))}
-            onDownload={onDownload}
             onSlot={setActiveSlot}
             onTogglePiece={onTogglePiece}
           />
@@ -888,7 +893,16 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
           canvasRef={canvasRef}
           failureMessage={failureMessage}
           activeOutfitSlot={activeOutfitSlot}
+          shoulderSymmetry={selection.shoulderSymmetry}
+          chestCurve={selection.chestCurve}
+          chestCurveEnabled={chestCurveControlEnabled(selection)}
           onSelectOutfitSlot={selectOutfitSlot}
+          onShoulderSymmetry={() =>
+            commitArmorSelection(setShoulderSymmetry(selection, !selection.shoulderSymmetry))
+          }
+          onChestCurve={() => commitArmorSelection(setChestCurve(selection, !selection.chestCurve))}
+          onClear={() => commitArmorSelection(clearArmorEquipment(selection))}
+          onDownload={onDownload}
         />
       </div>
     </div>

@@ -3,7 +3,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ArmorPickerHeader } from '@/components/armor-creator/ArmorPickerHeader';
+import { ArmorPickerActions, ArmorPickerHeader } from '@/components/armor-creator/ArmorPickerHeader';
 import type { ArmorGender } from '@/lib/armor-creator/catalog';
 import { getArmorCreatorCopy, type ArmorCreatorCopy } from '@/lib/armor-creator/copy';
 
@@ -53,23 +53,31 @@ function buttonNamed(row: HTMLElement, name: string): HTMLButtonElement {
   return button;
 }
 
-function renderArmorPickerHeader(copy: ArmorCreatorCopy, chestCurveEnabled: boolean) {
+function renderArmorPickerHeader(copy: ArmorCreatorCopy) {
   const onGender = vi.fn();
   const onMaterial = vi.fn();
+  const view = render(
+    <ArmorPickerHeader copy={copy} gender="male" material="plate" onGender={onGender} onMaterial={onMaterial} />,
+  );
+
+  return {
+    ...view,
+    onGender,
+    onMaterial,
+  };
+}
+
+function renderArmorPickerActions(copy: ArmorCreatorCopy, chestCurveEnabled: boolean) {
   const onShoulderSymmetry = vi.fn();
   const onChestCurve = vi.fn();
   const onClear = vi.fn();
   const onDownload = vi.fn();
   const view = render(
-    <ArmorPickerHeader
+    <ArmorPickerActions
       copy={copy}
-      gender="male"
-      material="plate"
       shoulderSymmetry
       chestCurve
       chestCurveEnabled={chestCurveEnabled}
-      onGender={onGender}
-      onMaterial={onMaterial}
       onShoulderSymmetry={onShoulderSymmetry}
       onChestCurve={onChestCurve}
       onClear={onClear}
@@ -79,8 +87,6 @@ function renderArmorPickerHeader(copy: ArmorCreatorCopy, chestCurveEnabled: bool
 
   return {
     ...view,
-    onGender,
-    onMaterial,
     onShoulderSymmetry,
     onChestCurve,
     onClear,
@@ -93,87 +99,97 @@ describe('ArmorPickerHeader', () => {
     cleanup();
   });
 
-  it('renders both rows and marks male, plate, and a disabled chest curve', () => {
+  it('stretches gender across one row and materials across the next', () => {
     const copy = getArmorCreatorCopy('zh');
-    const { container } = renderArmorPickerHeader(copy, false);
+    const { container } = renderArmorPickerHeader(copy);
     const header = armorPickerHeaderElement(container);
     const [choiceRow, materialRow] = armorPickerHeaderRows(header);
 
     expect(header.className).toBe('space-y-2');
-    expect(choiceRow.className).toBe('flex flex-wrap items-center gap-2');
-    expect(materialRow.className).toBe('flex flex-wrap items-center gap-2');
-    expect(buttonLabels(choiceRow)).toEqual([
-      copy.genderMale,
-      copy.genderFemale,
-      copy.shoulderSymmetry,
-      copy.chestCurve,
-    ]);
-    expect(buttonLabels(materialRow)).toEqual([
-      copy.materialPlate,
-      copy.materialLeather,
-      copy.materialCloth,
-      copy.clearEquipment,
-      copy.downloadImage,
-    ]);
+    expect(choiceRow.className).toBe('grid grid-cols-2 gap-2');
+    expect(materialRow.className).toBe('grid grid-cols-3 gap-2');
+    expect(buttonLabels(choiceRow)).toEqual([copy.genderMale, copy.genderFemale]);
+    expect(buttonLabels(materialRow)).toEqual([copy.materialPlate, copy.materialLeather, copy.materialCloth]);
 
     const maleButton = buttonNamed(choiceRow, copy.genderMale);
     const femaleButton = buttonNamed(choiceRow, copy.genderFemale);
-    const shoulderButton = buttonNamed(choiceRow, copy.shoulderSymmetry);
-    const chestButton = buttonNamed(choiceRow, copy.chestCurve);
     const plateButton = buttonNamed(materialRow, copy.materialPlate);
-    const leatherButton = buttonNamed(materialRow, copy.materialLeather);
-    const clearButton = buttonNamed(materialRow, copy.clearEquipment);
-    const downloadButton = buttonNamed(materialRow, copy.downloadImage);
 
     expect(maleButton.getAttribute('aria-pressed')).toBe('true');
     expect(femaleButton.getAttribute('aria-pressed')).toBe('false');
     expect(plateButton.getAttribute('aria-pressed')).toBe('true');
-    expect(leatherButton.getAttribute('aria-pressed')).toBe('false');
-    expect(shoulderButton.getAttribute('aria-pressed')).toBe('true');
-    expect(chestButton.getAttribute('aria-pressed')).toBe('true');
-    expect(chestButton.disabled).toBe(true);
-    expect(clearButton.hasAttribute('aria-pressed')).toBe(false);
-    expect(downloadButton.hasAttribute('aria-pressed')).toBe(false);
+    expect(maleButton.className).toContain('w-full');
+    expect(femaleButton.className).toContain('w-full');
+    expect(plateButton.className).toContain('w-full');
     expect(maleButton.className).toContain(SELECTED_CLASS);
     expect(plateButton.className).toContain(SELECTED_CLASS);
     expect(femaleButton.className).toContain(IDLE_CLASS);
-    expect(clearButton.className).toContain(IDLE_CLASS);
-    expect(downloadButton.className).toContain(IDLE_CLASS);
-    expect(chestButton.className).toContain(DISABLED_CLASS);
     expect(maleButton.getAttribute('type')).toBe('button');
-    expect(clearButton.getAttribute('type')).toBe('button');
-    expect(downloadButton.getAttribute('type')).toBe('button');
   });
 
-  it('calls the callback for the clicked control', () => {
+  it('calls the gender and material callbacks', () => {
     const copy = getArmorCreatorCopy('zh');
-    const { container, onGender, onMaterial, onShoulderSymmetry, onChestCurve, onClear, onDownload } =
-      renderArmorPickerHeader(copy, true);
+    const { container, onGender, onMaterial } = renderArmorPickerHeader(copy);
     const [choiceRow, materialRow] = armorPickerHeaderRows(armorPickerHeaderElement(container));
-    const chestButton = buttonNamed(choiceRow, copy.chestCurve);
-
-    expect(chestButton.disabled).toBe(false);
 
     fireEvent.click(buttonNamed(choiceRow, copy.genderFemale));
     fireEvent.click(buttonNamed(choiceRow, copy.genderMale));
-    fireEvent.click(buttonNamed(choiceRow, copy.shoulderSymmetry));
-    fireEvent.click(chestButton);
     fireEvent.click(buttonNamed(materialRow, copy.materialLeather));
     fireEvent.click(buttonNamed(materialRow, copy.materialCloth));
     fireEvent.click(buttonNamed(materialRow, copy.materialPlate));
-    fireEvent.click(buttonNamed(materialRow, copy.clearEquipment));
-    fireEvent.click(buttonNamed(materialRow, copy.downloadImage));
 
     expect(onGender.mock.calls).toEqual([['female'], ['male']]);
     expect(onMaterial.mock.calls).toEqual([['leather'], ['cloth'], ['plate']]);
+  });
+
+  it('stretches the four preview actions across one row', () => {
+    const copy = getArmorCreatorCopy('zh');
+    const { container } = renderArmorPickerActions(copy, false);
+    const actions = armorPickerHeaderElement(container);
+
+    expect(actions.className).toBe('grid grid-cols-4 gap-2');
+    expect(buttonLabels(actions)).toEqual([
+      copy.shoulderSymmetry,
+      copy.chestCurve,
+      copy.clearEquipment,
+      copy.downloadImage,
+    ]);
+
+    const shoulderButton = buttonNamed(actions, copy.shoulderSymmetry);
+    const chestButton = buttonNamed(actions, copy.chestCurve);
+    const clearButton = buttonNamed(actions, copy.clearEquipment);
+    const downloadButton = buttonNamed(actions, copy.downloadImage);
+
+    expect(shoulderButton.getAttribute('aria-pressed')).toBe('true');
+    expect(chestButton.disabled).toBe(true);
+    expect(chestButton.className).toContain(DISABLED_CLASS);
+    expect(clearButton.className).toContain(IDLE_CLASS);
+    expect(shoulderButton.className).toContain('w-full');
+    expect(clearButton.className).toContain('w-full');
+    expect(downloadButton.className).toContain('w-full');
+    expect(downloadButton.getAttribute('type')).toBe('button');
+  });
+
+  it('calls the action callbacks', () => {
+    const copy = getArmorCreatorCopy('zh');
+    const { container, onShoulderSymmetry, onChestCurve, onClear, onDownload } = renderArmorPickerActions(
+      copy,
+      true,
+    );
+    const actions = armorPickerHeaderElement(container);
+    const chestButton = buttonNamed(actions, copy.chestCurve);
+
+    expect(chestButton.disabled).toBe(false);
+
+    fireEvent.click(buttonNamed(actions, copy.shoulderSymmetry));
+    fireEvent.click(chestButton);
+    fireEvent.click(buttonNamed(actions, copy.clearEquipment));
+    fireEvent.click(buttonNamed(actions, copy.downloadImage));
+
     expect(onShoulderSymmetry).toHaveBeenCalledTimes(1);
-    expect(onShoulderSymmetry).toHaveBeenCalledWith();
     expect(onChestCurve).toHaveBeenCalledTimes(1);
-    expect(onChestCurve).toHaveBeenCalledWith();
     expect(onClear).toHaveBeenCalledTimes(1);
-    expect(onClear).toHaveBeenCalledWith();
     expect(onDownload).toHaveBeenCalledTimes(1);
-    expect(onDownload).toHaveBeenCalledWith();
   });
 
   it('rejects a gender that is not male or female', () => {
@@ -185,15 +201,8 @@ describe('ArmorPickerHeader', () => {
           copy={copy}
           gender={'child' as ArmorGender}
           material="plate"
-          shoulderSymmetry={false}
-          chestCurve={false}
-          chestCurveEnabled={false}
           onGender={vi.fn()}
           onMaterial={vi.fn()}
-          onShoulderSymmetry={vi.fn()}
-          onChestCurve={vi.fn()}
-          onClear={vi.fn()}
-          onDownload={vi.fn()}
         />,
       ),
     ).toThrow('Invalid armor gender. Received "child".');

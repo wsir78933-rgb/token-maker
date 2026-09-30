@@ -196,6 +196,33 @@ describe('ArmorCreatorWorkbench', () => {
 
     expect(screen.queryByRole('button', { name: (accessibleName) => accessibleName === '保存 1' })).toBeNull();
     expect(screen.queryByRole('button', { name: (accessibleName) => accessibleName === '读取 2' })).toBeNull();
+
+    const male = buttonByExactName('男');
+    const plate = buttonByExactName('板甲');
+    const outfitOne = buttonByExactName('套装 1');
+    const shoulderSymmetry = buttonByExactName('左右肩对称');
+    const clearEquipment = buttonByExactName('清空');
+    const downloadImage = buttonByExactName('下载图片');
+    expect(preview?.contains(male)).toBe(false);
+    expect(preview?.contains(plate)).toBe(false);
+    expect(preview?.contains(shoulderSymmetry)).toBe(true);
+    expect(preview?.contains(clearEquipment)).toBe(true);
+    expect(preview?.contains(downloadImage)).toBe(true);
+    expect(male.parentElement).toBe(buttonByExactName('女').parentElement);
+    expect(male.parentElement?.className).toBe('grid grid-cols-2 gap-2');
+    expect(plate.parentElement).toBe(buttonByExactName('布甲').parentElement);
+    expect(plate.parentElement?.className).toBe('grid grid-cols-3 gap-2');
+    expect(plate.parentElement).not.toBe(clearEquipment.parentElement);
+    expect(outfitOne.compareDocumentPosition(shoulderSymmetry) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(shoulderSymmetry.parentElement?.className).toBe('grid grid-cols-4 gap-2');
+    expect(shoulderSymmetry.parentElement).toBe(clearEquipment.parentElement);
+    expect(shoulderSymmetry.parentElement).toBe(downloadImage.parentElement);
+    expect(male.className).toContain('w-full');
+    expect(plate.className).toContain('w-full');
+    expect(shoulderSymmetry.className).toContain('w-full');
+    expect(downloadImage.className).toContain('w-full');
   });
 
   it('部件缩略图使用本地 PNG，并保持比例，左肩水平翻转', () => {

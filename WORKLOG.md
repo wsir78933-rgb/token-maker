@@ -1,5 +1,90 @@
 # WORKLOG
 
+## 交接单 · 2026-09-30 21:18 CST · Cursor
+
+### 本次目标
+
+护甲制作器：把「左右肩对称」「胸甲曲线」「清空」「下载图片」放到右侧预览的套装按钮下面，四格撑满那一行。上面「男 / 女」各占半行，「板甲 / 皮甲 / 布甲」三格撑满下一行。用户最后说预览里的人物没了，点击也没反应。未存档。
+
+### 已完成
+
+- 未提交。用户 2026-09-30 21:17 CST 回复「不要」存档。`git status --short` 有改动：`WORKLOG.md`，以及下面 4 个文件。`git diff --stat`：4 个护甲文件合计 242 行新增、164 行删除。不要把 `WORKLOG.md` 加进提交。
+- `src/components/armor-creator/ArmorPickerHeader.tsx`：`ArmorPickerHeader` 只渲染两行。第一行 `grid grid-cols-2 gap-2`，男、女按钮 `w-full`。第二行 `grid grid-cols-3 gap-2`，板甲、皮甲、布甲按钮 `w-full`。
+- 同文件导出 `ArmorPickerActions`：`grid grid-cols-4 gap-2`，四个按钮都是 `w-full`，顺序是左右肩对称、胸甲曲线、清空、下载图片。
+- `src/components/armor-creator/ArmorCreatorWorkbench.tsx`：这四个按钮从选择区拿掉，放在 `ArmorPreview` 里，套装槽 `ArmorPreviewOutfitSlots` 的下面。
+- 2026-09-30 08:25 CST 跑过 `npx vitest run src/components/armor-creator/ArmorPickerHeader.test.tsx src/components/armor-creator/ArmorCreatorWorkbench.test.tsx`：2 个文件、27 个测试通过。接着对这 4 个改过的文件跑 `npx eslint`，退出码 0。
+- 同一时刻用 ego-browser 在 1440×1000 打开 `http://127.0.0.1:40001/zh/armor-creator`，读到的位置：男 left 114 right 397，女 left 405 right 688；板甲、皮甲、布甲各宽 186，布甲 right 688；套装 1 left 712，套装 4 right 1312；四个操作按钮 top 1744，左右肩对称 left 712，下载图片 right 1312，都在预览区内。这次没有看画布上有没有人物。
+
+### 做到一半
+
+- 用户 21:13 发来页面截图，预览大块是空的米色，并说人物没了、点击处理不了。还没核对原因。
+- 21:14 查 `lsof` 时 40001 没有在听。21:15 看到新的 `next dev --port 40001` 进程。随后 `curl http://127.0.0.1:40001/zh/armor-creator` 返回成功。接着用 ego-browser 量画布像素和点「头盔 1」，命令被用户打断，没有结果。
+- 绘制仍走 `ArmorCreatorWorkbench` 里的 `drawArmorLayers`。这次改动没有改这个绘制函数。`public/armor-creator/male/body.png` 和 `public/armor-creator/female/body.png` 都在，时间是 9 月 27 日。
+
+### 下一步
+
+- 下一班在项目根输入 `/pickup` 接手。
+- 先在 `http://localhost:40001/zh/armor-creator` 看预览里有没有身体，再点一个部件，看按钮 `aria-pressed` 和画布是否变化。页面上若有 `role="alert"`，记下原文。
+- 人物和点击恢复之前，不要再改按钮布局。
+- 不要提交，除非用户另外说要存档。不要 push。不要把 `WORKLOG.md` 加进提交。
+
+### 踩过的坑
+
+- 四个按钮先被放到左侧部件格子下面，用户指出箭头是预览下方。后又被放回选择区顶部。用户要的是：四个按钮留在套装下面；上面只把男、女和三种材质撑满各自的行。
+- 四个按钮曾经缩在套装下面左侧，没有撑满预览宽度。
+- 上一张交接单写过：开发脚本要用 `localhost`，不要用 `127.0.0.1`。用户这次截图地址是 `http://127.0.0.1:40001/zh/armor-creator`。这次没有再验证 Next 会不会拦住这个地址。
+- 40001 上已经有 `next dev` 时，不要再开一个，也不要杀掉现有进程。
+
+### 怎么验证
+
+- 布局：`npx vitest run src/components/armor-creator/ArmorPickerHeader.test.tsx src/components/armor-creator/ArmorCreatorWorkbench.test.tsx`
+- 页面：打开 `http://localhost:40001/zh/armor-creator`。上面第一行只有男、女，第二行只有板甲、皮甲、布甲，三格一样宽。预览下面先是套装 1 到套装 4，再是左右肩对称、胸甲曲线、清空、下载图片，四格和套装左右对齐。预览里要有人物。点「头盔 1」后，按钮变为按下，人物上出现头盔。
+
+## 交接单 · 2026-09-30 07:47 CST · Grok CLI
+
+### 本次目标
+
+军阵制作器改成自动保存到这个浏览器。打开页面时，如果有上次记录，先问要不要回到上次；选「从空白开始」就立刻删掉记录。完成后把未提交改动提交到 main，并删除「军阵」工作树。不推送。
+
+### 已完成
+
+- main 上的新提交是 `f67288a`，说明是 `fix(army-formation): center the restore prompt and clear a bad save`。只包含 `src/components/army-formation/ArmyFormationCreator.tsx` 和 `src/components/army-formation/ArmyFormationCreator.test.tsx`，25 行新增、8 行删除。
+- 2026-09-30 07:47 CST 核对：工作区干净，HEAD 是 `f67288a`，main 比 `origin/main` 超前 32 个提交。没有 push。
+- 保存钥匙是 `tokenmaker.army-formation-creator.document`。有非空记录时，中文问「发现上次的记录。要回到上次的记录吗？」，按钮是「回到上次」「从空白开始」；英文是 “A previous record was found. Restore it?”，按钮是 Restore、Start blank。「从空白开始」会删掉钥匙，不写入空白 JSON。坏档把原文显示出来，不弹出恢复询问。导出文件、导出图片不会清掉坏档警告；导入空白文档会清掉警告并删掉钥匙。
+- 询问框是视口固定层：外层 `fixed inset-0 z-[60] bg-black/60`，卡片 `bg-[var(--card)]`。
+- 提交前在同一份改动上跑过 `pnpm exec vitest run src/components/army-formation/ArmyFormationCreator.test.tsx src/lib/army-formation/copy.test.ts src/lib/army-formation/browser-saves.test.ts`：3 个文件、34 个测试通过，开始时间 00:06:09，用时 1.70 秒。提交后没有重跑。
+- 在已有的 `http://localhost:40001` 上用 ego-browser 走过中文和英文：摆头盔、刷新、回到上次、换战场、从空白开始、再刷新、导出文件 `army-formation-creator.txt`、导出图片 `army-formation-creator.svg`、坏档原文、导入空白文档。1600×1000 和 390×844 上，询问框的文字和两个按钮都在屏幕内，卡片背景不透明。
+- `/Users/wusir/orca/workspaces/token-maker-app/军阵` 已用 `git worktree remove` 删除。`git worktree list` 只剩桌面 main。分支名「军阵」还在，指向 `f6b6c4c`。
+
+### 做到一半
+
+无。这次要求的自动保存、提交和删除工作树都已做完。
+
+### 下一步
+
+- 下一班在项目根输入 `/pickup` 接手。
+- 不要自动 push 或部署。
+- 不要删除本地分支「军阵」，除非用户另外要求。
+- 不要把 `WORKLOG.md` 加入提交，除非用户另行授权。
+- 历史里 `d76e685`、`0bc14a8`、`7b83a4b` 的提交说明是 `1`。它们和护甲、页面标题提交夹在一起，没有改写历史。
+
+### 踩过的坑
+
+- 页面地址要用 `localhost`。用 `127.0.0.1` 时，Next 会拦住开发脚本。
+- 这个目录里已经有 `next dev` 占着 40001 时，再开一个会立刻退出。不要杀掉 40001 上的进程。
+- `orca worktree rm` 会尝试删除工作树对应的本地分支。这次只执行了 `git worktree remove`，分支「军阵」还在。
+- 深色主题的 `--site-panel` 是 `rgba(255, 255, 255, 0.03)`。询问框若用这个背景并盖在英雄区上，后面的「免费试用」或 Try for Free 会透进按钮。
+- 询问框原先是 `absolute inset-0`，盖住整块编辑器。英雄区把编辑器顶下去后，1000 像素高的屏幕里按钮在首屏下面。
+
+### 怎么验证
+
+- `git status --short --branch`
+- `git show --stat --oneline f67288a`
+- `git worktree list`
+- `git branch --list 军阵`
+- `pnpm exec vitest run src/components/army-formation/ArmyFormationCreator.test.tsx src/lib/army-formation/copy.test.ts src/lib/army-formation/browser-saves.test.ts`
+- 开发服务器已在 40001 时，打开 `http://localhost:40001/zh/army-formation-creator`：摆一枚棋子，刷新，点「回到上次」，再刷新后点「从空白开始」，然后再刷新。英文页是 `http://localhost:40001/army-formation-creator`。
+
 ## 交接单 · 2026-09-29 20:51 CST · Codex CLI
 
 ### 本次目标
