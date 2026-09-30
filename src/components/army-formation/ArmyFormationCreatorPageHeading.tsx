@@ -113,7 +113,7 @@ function ArmyFormationHeroButton({ label }: { label: string }) {
     <button
       ref={buttonRef}
       type="button"
-      className={`${ARMY_FORMATION_HERO_BUTTON_CLASS} ${ARMY_FORMATION_HERO_FADE_CLASS} is-delayed-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-black px-8 py-6 text-base font-medium text-white`}
+      className={`${ARMY_FORMATION_HERO_BUTTON_CLASS} ${ARMY_FORMATION_HERO_FADE_CLASS} is-delayed-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-foreground px-8 py-6 text-base font-medium text-background`}
       onClick={handleClick}
     >
       {label}
@@ -125,7 +125,7 @@ export function ArmyFormationCreatorPageHeading({ locale }: { locale: SiteLocale
   const hero = getArmyFormationCreatorHero(locale);
 
   return (
-    <section className="flex items-center justify-center px-4 pt-16 pb-20 text-center text-foreground md:pt-24 md:pb-28">
+    <section className="flex min-h-screen items-center justify-center px-4 pt-32 pb-24 md:pt-40 md:pb-32 text-center text-foreground">
       <ArmyFormationHeroStyles />
       <div className="mx-auto flex max-w-4xl flex-col items-center">
         <h1
