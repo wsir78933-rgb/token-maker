@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import EnglishArmyFormationCreatorPage, {
@@ -46,13 +46,26 @@ describe('army formation creator routes', () => {
     render(<EnglishArmyFormationCreatorPage />);
 
     const topbar = readSiteTopbar();
-    const armorLink = within(topbar).getByRole('link', { name: 'Armor' });
-    const armyLink = within(topbar).getByRole('link', { name: 'Army formation creator' });
+    const freeToolsLink = within(topbar).getByRole('link', { name: 'Free tools' });
+    expect(freeToolsLink.getAttribute('href')).toBe('/');
+    const freeToolsNavItem = freeToolsLink.closest('.site-nav-item');
+    if (!(freeToolsNavItem instanceof HTMLElement)) {
+      throw new Error('Free tools link is not inside .site-nav-item');
+    }
+    fireEvent.mouseEnter(freeToolsNavItem);
 
-    expect(armorLink.getAttribute('href')).toBe('/armor-creator');
-    expect(armorLink.getAttribute('data-active')).toBe('false');
-    expect(armyLink.getAttribute('href')).toBe('/army-formation-creator');
-    expect(armyLink.getAttribute('data-active')).toBe('true');
+    const freeToolsMenu = within(freeToolsNavItem).getByRole('menu', { name: 'Free tools' });
+    expect(within(freeToolsMenu).getByRole('menuitem', { name: 'Armor' }).getAttribute('href')).toBe(
+      '/armor-creator',
+    );
+    expect(
+      within(freeToolsMenu).getByRole('menuitem', { name: 'Army formation creator' }).getAttribute('href'),
+    ).toBe('/army-formation-creator');
+    const activeFreeToolsTrigger = freeToolsLink.closest('[data-active]');
+    if (!(activeFreeToolsTrigger instanceof HTMLElement)) {
+      throw new Error('Free tools trigger is missing its active state.');
+    }
+    expect(activeFreeToolsTrigger.getAttribute('data-active')).toBe('true');
     expectToolFollowsTopbar(topbar, 'Army formation creator');
   });
 
@@ -69,13 +82,26 @@ describe('army formation creator routes', () => {
     render(<ChineseArmyFormationCreatorPage />);
 
     const topbar = readSiteTopbar();
-    const armorLink = within(topbar).getByRole('link', { name: '护甲' });
-    const armyLink = within(topbar).getByRole('link', { name: '军阵' });
+    const freeToolsLink = within(topbar).getByRole('link', { name: '免费工具' });
+    expect(freeToolsLink.getAttribute('href')).toBe('/zh');
+    const freeToolsNavItem = freeToolsLink.closest('.site-nav-item');
+    if (!(freeToolsNavItem instanceof HTMLElement)) {
+      throw new Error('免费工具链接不在 .site-nav-item 内');
+    }
+    fireEvent.mouseEnter(freeToolsNavItem);
 
-    expect(armorLink.getAttribute('href')).toBe('/zh/armor-creator');
-    expect(armorLink.getAttribute('data-active')).toBe('false');
-    expect(armyLink.getAttribute('href')).toBe('/zh/army-formation-creator');
-    expect(armyLink.getAttribute('data-active')).toBe('true');
+    const freeToolsMenu = within(freeToolsNavItem).getByRole('menu', { name: '免费工具' });
+    expect(within(freeToolsMenu).getByRole('menuitem', { name: '护甲' }).getAttribute('href')).toBe(
+      '/zh/armor-creator',
+    );
+    expect(within(freeToolsMenu).getByRole('menuitem', { name: '军阵' }).getAttribute('href')).toBe(
+      '/zh/army-formation-creator',
+    );
+    const activeFreeToolsTrigger = freeToolsLink.closest('[data-active]');
+    if (!(activeFreeToolsTrigger instanceof HTMLElement)) {
+      throw new Error('免费工具触发器缺少活动状态。');
+    }
+    expect(activeFreeToolsTrigger.getAttribute('data-active')).toBe('true');
     expectToolFollowsTopbar(topbar, '军阵');
   });
 });

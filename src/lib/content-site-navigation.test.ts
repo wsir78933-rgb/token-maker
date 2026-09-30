@@ -39,20 +39,28 @@ function expectNonEmptyFeatureCopy(features: readonly ContentSiteTopbarFeature[]
   expect(features).toHaveLength(4);
   for (const feature of features) {
     expect(feature.title.trim().length).toBeGreaterThan(0);
-    expect(feature.description.trim().length).toBeGreaterThan(0);
+    if (feature.description !== undefined) {
+      expect(feature.description.trim().length).toBeGreaterThan(0);
+    }
   }
 }
 
 describe('content site topbar model', () => {
-  it('returns the English topbar links, four blog features, and editor action', () => {
+  it('returns English free tools, plain links, four blog features, and editor action', () => {
     const model = readTopbar('en', '/privacy', '/zh/passed-through');
 
+    expect(model.freeToolsMenuLabel).toBe('Free tools');
+    expect(model.freeToolsMenuHref).toBe('/');
+    expect(model.freeToolsMenuAccessibleName).toBe('Free tools');
+    expect(model.freeToolsMenuIsActive).toBe(false);
+    expect(model.freeTools).toEqual([
+      { href: '/', title: 'Editor' },
+      { href: '/coat-of-arms-maker', title: 'Coat Maker' },
+      { href: '/armor-creator', title: 'Armor' },
+      { href: '/army-formation-creator', title: 'Army formation creator' },
+    ]);
     expect(model.links).toEqual([
-      { href: '/', label: 'Editor', isActive: false },
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
-      { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: false },
-      { href: '/armor-creator', label: 'Armor', isActive: false },
-      { href: '/army-formation-creator', label: 'Army formation creator', isActive: false },
       { href: '/contact', label: 'Contact', isActive: false },
     ]);
     expect(model.featureMenuLabel).toBe('Blog');
@@ -75,15 +83,21 @@ describe('content site topbar model', () => {
     expect(model.menuDescription).toBe('Primary navigation links');
   });
 
-  it('returns Chinese hrefs prefixed with /zh and the blog label', () => {
+  it('returns Chinese free tools, localized tool paths, plain links, and blog label', () => {
     const model = readTopbar('zh', '/zh/privacy', '/passed-through');
 
+    expect(model.freeToolsMenuLabel).toBe('免费工具');
+    expect(model.freeToolsMenuHref).toBe('/zh');
+    expect(model.freeToolsMenuAccessibleName).toBe('免费工具');
+    expect(model.freeToolsMenuIsActive).toBe(false);
+    expect(model.freeTools).toEqual([
+      { href: '/zh', title: '编辑器' },
+      { href: '/zh/coat-of-arms-maker', title: '纹章制作器' },
+      { href: '/zh/armor-creator', title: '护甲' },
+      { href: '/zh/army-formation-creator', title: '军阵' },
+    ]);
     expect(model.links).toEqual([
-      { href: '/zh', label: '编辑器', isActive: false },
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
-      { href: '/zh/coat-of-arms-maker', label: '纹章制作器', isActive: false },
-      { href: '/zh/armor-creator', label: '护甲', isActive: false },
-      { href: '/zh/army-formation-creator', label: '军阵', isActive: false },
       { href: '/zh/contact', label: '联系', isActive: false },
     ]);
     expect(model.featureMenuLabel).toBe('博客');
@@ -105,129 +119,65 @@ describe('content site topbar model', () => {
     expect(model.menuDescription).toBe('主要导航链接');
   });
 
-  it('activates only Coat Maker for /coat-of-arms-maker', () => {
-    const model = readTopbar('en', '/coat-of-arms-maker', '/zh/coat-of-arms-maker');
+  it('activates the free tools menu for each tool path and its nested paths', () => {
+    const editor = readTopbar('en', '/', '/zh');
+    const chineseEditor = readTopbar('zh', '/zh', '/');
+    const coat = readTopbar('en', '/coat-of-arms-maker', '/zh/coat-of-arms-maker');
+    const coatNested = readTopbar('en', '/coat-of-arms-maker/gallery', '/zh/coat-of-arms-maker/gallery');
+    const armor = readTopbar('en', '/armor-creator', '/zh/armor-creator');
+    const armorNested = readTopbar('en', '/armor-creator/saved', '/zh/armor-creator/saved');
+    const army = readTopbar('en', '/army-formation-creator', '/zh/army-formation-creator');
+    const nested = readTopbar('en', '/army-formation-creator/saved', '/zh/army-formation-creator/saved');
+    const sibling = readTopbar('en', '/army-formation-creator-extra', '/zh');
 
-    expect(model.links).toEqual([
-      { href: '/', label: 'Editor', isActive: false },
-      { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
-      { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: true },
-      { href: '/armor-creator', label: 'Armor', isActive: false },
-      { href: '/army-formation-creator', label: 'Army formation creator', isActive: false },
-      { href: '/contact', label: 'Contact', isActive: false },
-    ]);
-    expect(model.featureMenuIsActive).toBe(false);
+    expect(editor.freeToolsMenuIsActive).toBe(true);
+    expect(chineseEditor.freeToolsMenuIsActive).toBe(true);
+    expect(coat.freeToolsMenuIsActive).toBe(true);
+    expect(coatNested.freeToolsMenuIsActive).toBe(true);
+    expect(armor.freeToolsMenuIsActive).toBe(true);
+    expect(armorNested.freeToolsMenuIsActive).toBe(true);
+    expect(army.freeToolsMenuIsActive).toBe(true);
+    expect(nested.freeToolsMenuIsActive).toBe(true);
+    expect(sibling.freeToolsMenuIsActive).toBe(false);
+    expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
+    expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
   });
 
-  it('activates only Armor for /armor-creator and keeps Army formation creator inactive', () => {
-    const model = readTopbar('en', '/armor-creator', '/zh/armor-creator');
+  it('activates only Dice Roller or Contact among the remaining plain links', () => {
+    const dice = readTopbar('en', '/dice-roller-dnd', '/zh/dice-roller-dnd');
+    const contact = readTopbar('zh', '/zh/contact/forms', '/contact/forms');
+    const diceSibling = readTopbar('en', '/dice-roller-dnd-extra', '/zh');
+    const contactSibling = readTopbar('en', '/contact-us', '/zh');
 
-    expect(model.links).toEqual([
-      { href: '/', label: 'Editor', isActive: false },
-      { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
-      { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: false },
-      { href: '/armor-creator', label: 'Armor', isActive: true },
-      { href: '/army-formation-creator', label: 'Army formation creator', isActive: false },
-      { href: '/contact', label: 'Contact', isActive: false },
-    ]);
+    expect(dice.links.map((link) => link.isActive)).toEqual([true, false]);
+    expect(contact.links.map((link) => link.isActive)).toEqual([false, true]);
+    expect(diceSibling.links.map((link) => link.isActive)).toEqual([false, false]);
+    expect(contactSibling.links.map((link) => link.isActive)).toEqual([false, false]);
   });
 
-  it('activates only Army formation creator and keeps the armor link', () => {
-    const englishModel = readTopbar('en', '/army-formation-creator', '/zh/army-formation-creator');
-    const chineseModel = readTopbar('zh', '/zh/army-formation-creator', '/army-formation-creator');
-    const nestedModel = readTopbar('en', '/army-formation-creator/saved', '/zh/army-formation-creator/saved');
-    const siblingModel = readTopbar('en', '/army-formation-creator-extra', '/zh');
+  it('activates the blog menu, not plain links, for blog paths', () => {
+    const category = readTopbar('zh', '/zh/blog/category/characters', '/blog/category/characters');
+    const index = readTopbar('en', '/blog', '/zh/blog');
+    const sibling = readTopbar('en', '/blogging', '/zh');
 
-    expect(englishModel.links).toEqual([
-      { href: '/', label: 'Editor', isActive: false },
-      { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
-      { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: false },
-      { href: '/armor-creator', label: 'Armor', isActive: false },
-      { href: '/army-formation-creator', label: 'Army formation creator', isActive: true },
-      { href: '/contact', label: 'Contact', isActive: false },
-    ]);
-    expect(chineseModel.links).toEqual([
-      { href: '/zh', label: '编辑器', isActive: false },
-      { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
-      { href: '/zh/coat-of-arms-maker', label: '纹章制作器', isActive: false },
-      { href: '/zh/armor-creator', label: '护甲', isActive: false },
-      { href: '/zh/army-formation-creator', label: '军阵', isActive: true },
-      { href: '/zh/contact', label: '联系', isActive: false },
-    ]);
-    expect(nestedModel.links.map((link) => link.isActive)).toEqual([false, false, false, false, true, false]);
-    expect(siblingModel.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
+    expect(category.featureMenuIsActive).toBe(true);
+    expect(category.featureMenuLabel).toBe('博客');
+    expect(category.featureMenuHref).toBe('/zh/blog');
+    expect(category.freeToolsMenuIsActive).toBe(false);
+    expect(category.links.map((link) => link.isActive)).toEqual([false, false]);
+    expect(index.featureMenuIsActive).toBe(true);
+    expect(sibling.featureMenuIsActive).toBe(false);
   });
 
-  it('activates the blog menu, not plain links, for /zh/blog/category/characters', () => {
-    const model = readTopbar('zh', '/zh/blog/category/characters', '/blog/category/characters');
-
-    expect(model.featureMenuIsActive).toBe(true);
-    expect(model.featureMenuLabel).toBe('博客');
-    expect(model.featureMenuHref).toBe('/zh/blog');
-    expect(model.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
-  });
-
-  it('activates only Editor for /', () => {
-    const model = readTopbar('en', '/', '/zh');
-
-    expect(model.links).toEqual([
-      { href: '/', label: 'Editor', isActive: true },
-      { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
-      { href: '/coat-of-arms-maker', label: 'Coat Maker', isActive: false },
-      { href: '/armor-creator', label: 'Armor', isActive: false },
-      { href: '/army-formation-creator', label: 'Army formation creator', isActive: false },
-      { href: '/contact', label: 'Contact', isActive: false },
-    ]);
-    expect(model.featureMenuIsActive).toBe(false);
-  });
-
-  it('activates only Editor for /zh', () => {
-    const englishModel = readTopbar('en', '/zh', '/');
-    const chineseModel = readTopbar('zh', '/zh', '/');
-
-    expect(englishModel.links.map((link) => link.isActive)).toEqual([true, false, false, false, false, false]);
-    expect(englishModel.links[0]?.href).toBe('/');
-    expect(chineseModel.links.map((link) => link.isActive)).toEqual([true, false, false, false, false, false]);
-    expect(chineseModel.links[0]?.href).toBe('/zh');
-    expect(englishModel.featureMenuIsActive).toBe(false);
-    expect(chineseModel.featureMenuIsActive).toBe(false);
-  });
-
-  it('activates the blog menu for /blog', () => {
-    const model = readTopbar('en', '/blog', '/zh/blog');
-
-    expect(model.featureMenuIsActive).toBe(true);
-    expect(model.featureMenuHref).toBe('/blog');
-    expect(model.featureMenuLabel).toBe('Blog');
-    expect(model.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
-  });
-
-  it('drops the query and hash before choosing the active link', () => {
+  it('drops the query and hash before choosing active sections', () => {
     const model = readTopbar('zh', '/zh/coat-of-arms-maker?tab=shield#preview', '/coat-of-arms-maker');
 
+    expect(model.freeToolsMenuIsActive).toBe(true);
     expect(model.links.map((link) => ({ href: link.href, isActive: link.isActive }))).toEqual([
-      { href: '/zh', isActive: false },
       { href: '/zh/dice-roller-dnd', isActive: false },
-      { href: '/zh/coat-of-arms-maker', isActive: true },
-      { href: '/zh/armor-creator', isActive: false },
-      { href: '/zh/army-formation-creator', isActive: false },
       { href: '/zh/contact', isActive: false },
     ]);
     expect(model.featureMenuIsActive).toBe(false);
-  });
-
-  it('activates Coat Maker for a nested path but not a longer sibling slug', () => {
-    const nested = readTopbar('en', '/coat-of-arms-maker/gallery', '/zh/coat-of-arms-maker/gallery');
-    const sibling = readTopbar('en', '/coat-of-arms-maker-extra', '/zh');
-    const contactSibling = readTopbar('en', '/contact-us', '/zh');
-    const blogSibling = readTopbar('en', '/blogging', '/zh');
-
-    expect(nested.links.map((link) => link.isActive)).toEqual([false, false, true, false, false, false]);
-    expect(nested.featureMenuIsActive).toBe(false);
-    expect(sibling.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
-    expect(contactSibling.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
-    expect(blogSibling.featureMenuIsActive).toBe(false);
-    expect(blogSibling.links.map((link) => link.isActive)).toEqual([false, false, false, false, false, false]);
   });
 
   it('throws for locale fr', () => {
@@ -274,6 +224,17 @@ describe('content site topbar model', () => {
         features: [],
       }),
     ).toThrowError(/^ContentSiteTopbar: features must be a non-empty array\. Received \[\]\.$/);
+  });
+
+  it('rejects an empty free tools array', () => {
+    const model = readTopbar('en', '/', '/zh');
+
+    expect(() =>
+      assertContentSiteTopbarModel({
+        ...model,
+        freeTools: [],
+      }),
+    ).toThrowError(/^ContentSiteTopbar: freeTools must be a non-empty array\. Received \[\]\.$/);
   });
 
   it('rejects a feature that is not a plain object', () => {

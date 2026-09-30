@@ -169,7 +169,9 @@ function MobileFeatureList(props: {
                   className="flex flex-col"
                 >
                   <span>{feature.title}</span>
-                  <span className="site-nav-dropdown__description">{feature.description}</span>
+                  {feature.description ? (
+                    <span className="site-nav-dropdown__description">{feature.description}</span>
+                  ) : null}
                 </Link>
               </li>
             ))}
@@ -258,6 +260,15 @@ function MobileMenuPanel(props: {
           </button>
         </div>
         <p className="sr-only">{model.menuDescription}</p>
+        <MobileFeatureHubLink
+          featureMenuLabel={model.freeToolsMenuLabel}
+          featureMenuHref={model.freeToolsMenuHref}
+          featureMenuIsActive={model.freeToolsMenuIsActive}
+        />
+        <MobileFeatureList
+          featureMenuAccessibleName={model.freeToolsMenuAccessibleName}
+          features={model.freeTools}
+        />
         <MobileFeatureHubLink
           featureMenuLabel={model.featureMenuLabel}
           featureMenuHref={model.featureMenuHref}

@@ -205,11 +205,6 @@ export function ContentSiteTopbarFeatureMenu(props: {
     closeMenu();
   }
 
-  function toggleMenu() {
-    clearFeatureMenuCloseTimer(closeTimerIdRef);
-    setMenuIsOpen((currentlyOpen) => !currentlyOpen);
-  }
-
   function scheduleClose() {
     scheduleFeatureMenuClose(closeTimerIdRef, closeMenu);
   }
@@ -334,7 +329,7 @@ export function ContentSiteTopbarFeatureMenu(props: {
           aria-controls={panelId}
           aria-expanded={menuIsOpen}
           aria-label={featureMenuAccessibleName}
-          onClick={toggleMenu}
+          onClick={openMenu}
           onKeyDown={handleTriggerKeyDown}
         >
           <ChevronDown aria-hidden="true" className={featureMenuChevronClassName(menuIsOpen)} />
@@ -362,7 +357,9 @@ export function ContentSiteTopbarFeatureMenu(props: {
               onKeyDown={(event) => handleMenuItemKeyDown(event, features.indexOf(feature))}
             >
               <span>{feature.title}</span>
-              <span className="site-nav-dropdown__description">{feature.description}</span>
+              {feature.description ? (
+                <span className="site-nav-dropdown__description">{feature.description}</span>
+              ) : null}
             </Link>
           ))}
         </div>

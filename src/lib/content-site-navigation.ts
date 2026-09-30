@@ -5,11 +5,28 @@ import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } fr
 
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
+const FREE_TOOLS_PATHS = [
+  '/',
+  '/coat-of-arms-maker',
+  '/armor-creator',
+  ARMY_FORMATION_CREATOR_PATH,
+] as const;
+
+const FREE_TOOLS_MENU_COPY = {
+  en: {
+    label: 'Free tools',
+    accessibleName: 'Free tools',
+  },
+  zh: {
+    label: '免费工具',
+    accessibleName: '免费工具',
+  },
+} as const;
 
 export type ContentSiteTopbarFeature = {
   href: string;
   title: string;
-  description: string;
+  description?: string;
 };
 
 export type ContentSiteTopbarPlainLink = {
@@ -25,6 +42,11 @@ export type ContentSiteTopbarAction = {
 
 export type ContentSiteTopbarModel = {
   navigationLabel: string;
+  freeToolsMenuLabel: string;
+  freeToolsMenuHref: string;
+  freeToolsMenuIsActive: boolean;
+  freeToolsMenuAccessibleName: string;
+  freeTools: readonly ContentSiteTopbarFeature[];
   featureMenuLabel: string;
   featureMenuHref: string;
   featureMenuIsActive: boolean;
@@ -110,7 +132,9 @@ function buildContentSiteTopbarModel(input: {
 
   return {
     navigationLabel: navLabels.navigation,
+    ...buildContentSiteFreeToolsMenu(input.locale, input.normalizedCurrentPath),
     ...buildContentSiteFeatureMenu(input.locale, input.normalizedCurrentPath, navLabels),
+    freeTools: buildContentSiteFreeToolFeatures(input.locale, navLabels),
     features: buildContentSiteBlogFeatures(input.locale),
     links: buildContentSitePlainLinks(input.locale, input.normalizedCurrentPath, navLabels),
     localeSwitch: buildContentSiteLocaleSwitch(input.localeSwitchHref, navLabels.switchLocale),
@@ -118,6 +142,50 @@ function buildContentSiteTopbarModel(input: {
     openMenuLabel: navLabels.openNavigation,
     closeMenuLabel: navLabels.closeNavigation,
     menuDescription: navLabels.navigationMenuDescription,
+  };
+}
+
+function buildContentSiteFreeToolsMenu(
+  locale: SiteLocale,
+  normalizedCurrentPath: string,
+): Pick<
+  ContentSiteTopbarModel,
+  'freeToolsMenuLabel' | 'freeToolsMenuHref' | 'freeToolsMenuIsActive' | 'freeToolsMenuAccessibleName'
+> {
+  const menuCopy = FREE_TOOLS_MENU_COPY[locale];
+
+  return {
+    freeToolsMenuLabel: menuCopy.label,
+    freeToolsMenuHref: getLocalizedPath(locale, '/'),
+    freeToolsMenuIsActive: isFreeToolsSectionPath(normalizedCurrentPath),
+    freeToolsMenuAccessibleName: menuCopy.accessibleName,
+  };
+}
+
+function buildContentSiteFreeToolFeatures(
+  locale: SiteLocale,
+  navLabels: NavLabels,
+): ContentSiteTopbarFeature[] {
+  return [
+    buildContentSiteFreeToolFeature(locale, '/', navLabels.editor),
+    buildContentSiteFreeToolFeature(locale, '/coat-of-arms-maker', navLabels.coatMaker),
+    buildContentSiteFreeToolFeature(locale, '/armor-creator', navLabels.armor),
+    buildContentSiteFreeToolFeature(
+      locale,
+      ARMY_FORMATION_CREATOR_PATH,
+      readArmyFormationNavigationName(locale),
+    ),
+  ];
+}
+
+function buildContentSiteFreeToolFeature(
+  locale: SiteLocale,
+  path: string,
+  title: string,
+): ContentSiteTopbarFeature {
+  return {
+    href: getLocalizedPath(locale, path),
+    title: requireFreeToolField(path, title),
   };
 }
 
@@ -147,6 +215,16 @@ function buildContentSiteBlogFeature(locale: SiteLocale, category: BlogCategoryC
     title: requireBlogFeatureField(category.slug, 'title', category.label),
     description: requireBlogFeatureField(category.slug, 'description', category.description),
   };
+}
+
+function requireFreeToolField(path: string, value: unknown): string {
+  if (typeof value !== 'string' || value.trim() === '') {
+    throw new Error(
+      `Free tool path ${JSON.stringify(path)} title must be a non-empty string. Received ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return value;
 }
 
 function requireBlogFeatureField(
@@ -180,30 +258,9 @@ function buildContentSitePlainLinks(
   navLabels: NavLabels,
 ): ContentSiteTopbarPlainLink[] {
   return [
-    buildEditorLink(locale, normalizedCurrentPath, navLabels.editor),
     buildSectionLink(locale, normalizedCurrentPath, '/dice-roller-dnd', navLabels.diceRoller),
-    buildSectionLink(locale, normalizedCurrentPath, '/coat-of-arms-maker', navLabels.coatMaker),
-    buildSectionLink(locale, normalizedCurrentPath, '/armor-creator', navLabels.armor),
-    buildSectionLink(
-      locale,
-      normalizedCurrentPath,
-      ARMY_FORMATION_CREATOR_PATH,
-      readArmyFormationNavigationName(locale),
-    ),
     buildSectionLink(locale, normalizedCurrentPath, '/contact', navLabels.contact),
   ];
-}
-
-function buildEditorLink(
-  locale: SiteLocale,
-  normalizedCurrentPath: string,
-  label: string,
-): ContentSiteTopbarPlainLink {
-  return {
-    href: getLocalizedPath(locale, '/'),
-    label,
-    isActive: isEditorPath(normalizedCurrentPath),
-  };
 }
 
 function buildSectionLink(
@@ -220,8 +277,8 @@ function buildSectionLink(
   };
 }
 
-function isEditorPath(normalizedCurrentPath: string): boolean {
-  return normalizedCurrentPath === '/';
+function isFreeToolsSectionPath(normalizedCurrentPath: string): boolean {
+  return FREE_TOOLS_PATHS.some((path) => isContentSiteSectionPath(normalizedCurrentPath, path));
 }
 
 // A section matches its own path or a child path. `/` is not a section prefix.
@@ -260,12 +317,17 @@ function buildEditorWorkspaceHref(locale: SiteLocale): string {
 export function assertContentSiteTopbarModel(model: ContentSiteTopbarModel): void {
   assertContentSiteTopbarPlainObject(model, 'model');
   assertContentSiteTopbarText(model.navigationLabel, 'navigationLabel');
+  assertContentSiteTopbarText(model.freeToolsMenuLabel, 'freeToolsMenuLabel');
+  assertContentSiteTopbarText(model.freeToolsMenuHref, 'freeToolsMenuHref');
+  assertContentSiteTopbarBoolean(model.freeToolsMenuIsActive, 'freeToolsMenuIsActive');
+  assertContentSiteTopbarText(model.freeToolsMenuAccessibleName, 'freeToolsMenuAccessibleName');
+  assertContentSiteTopbarFeatures(model.freeTools, 'freeTools');
   assertContentSiteTopbarText(model.featureMenuLabel, 'featureMenuLabel');
   assertContentSiteTopbarText(model.featureMenuHref, 'featureMenuHref');
   assertContentSiteTopbarBoolean(model.featureMenuIsActive, 'featureMenuIsActive');
   assertContentSiteTopbarText(model.featureMenuAccessibleName, 'featureMenuAccessibleName');
-  assertContentSiteTopbarFeatures(model.features);
   assertContentSiteTopbarLinks(model.links);
+  assertContentSiteTopbarFeatures(model.features, 'features');
   assertContentSiteTopbarAction(model.localeSwitch, 'localeSwitch');
   assertPrimaryAction(model.primaryAction);
   assertContentSiteTopbarText(model.openMenuLabel, 'openMenuLabel');
@@ -273,18 +335,20 @@ export function assertContentSiteTopbarModel(model: ContentSiteTopbarModel): voi
   assertContentSiteTopbarText(model.menuDescription, 'menuDescription');
 }
 
-function assertContentSiteTopbarFeatures(features: unknown): void {
-  assertContentSiteTopbarNonEmptyArray(features, 'features');
+function assertContentSiteTopbarFeatures(features: unknown, fieldPath: string): void {
+  assertContentSiteTopbarNonEmptyArray(features, fieldPath);
   for (let index = 0; index < features.length; index += 1) {
-    assertContentSiteTopbarFeature(features[index], `features[${index}]`);
+    assertContentSiteTopbarFeature(features[index], `${fieldPath}[${index}]`);
   }
 }
 
 function assertContentSiteTopbarFeature(feature: unknown, fieldPath: string): void {
   assertContentSiteTopbarPlainObject(feature, fieldPath);
   assertContentSiteTopbarText(feature.title, `${fieldPath}.title`);
-  assertContentSiteTopbarText(feature.description, `${fieldPath}.description`);
   assertContentSiteTopbarText(feature.href, `${fieldPath}.href`);
+  if ('description' in feature && feature.description !== undefined) {
+    assertContentSiteTopbarText(feature.description, `${fieldPath}.description`);
+  }
 }
 
 function assertContentSiteTopbarLinks(links: unknown): void {

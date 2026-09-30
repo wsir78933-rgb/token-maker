@@ -139,6 +139,13 @@ export function ContentSiteTopbar({
             siteMarkClassName={siteMarkClassName}
           />
           <div className="hidden min-w-0 items-center lg:flex">
+            <ContentSiteTopbarFeatureMenu
+              featureMenuLabel={model.freeToolsMenuLabel}
+              featureMenuHref={model.freeToolsMenuHref}
+              featureMenuIsActive={model.freeToolsMenuIsActive}
+              featureMenuAccessibleName={model.freeToolsMenuAccessibleName}
+              features={model.freeTools}
+            />
             <ContentSiteTopbarPlainLinks links={model.links} />
             <ContentSiteTopbarFeatureMenu
               featureMenuLabel={model.featureMenuLabel}

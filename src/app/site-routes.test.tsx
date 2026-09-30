@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getCoatMakerSeoCopy } from '@/components/coat-of-arms/coat-maker-seo-copy';
@@ -487,10 +487,14 @@ describe('coat maker routes', () => {
       PageComponent: EnglishCoatOfArmsMakerPage,
       exportLabel: 'Export',
       removedArtworkLinkLabel: 'User Artwork',
-      sharedNavigationLinks: [
+      freeToolsMenuLabel: 'Free tools',
+      freeToolsMenuHref: '/',
+      freeToolMenuItems: [
         { label: 'Editor', href: '/' },
-        { label: 'Dice Roller', href: '/dice-roller-dnd' },
         { label: 'Coat Maker', href: '/coat-of-arms-maker' },
+      ],
+      sharedNavigationLinks: [
+        { label: 'Dice Roller', href: '/dice-roller-dnd' },
         { label: 'Contact', href: '/contact' },
         { label: 'Blog', href: '/blog' },
       ],
@@ -501,10 +505,14 @@ describe('coat maker routes', () => {
       PageComponent: ChineseCoatOfArmsMakerPage,
       exportLabel: '导出',
       removedArtworkLinkLabel: '用户作品',
-      sharedNavigationLinks: [
+      freeToolsMenuLabel: '免费工具',
+      freeToolsMenuHref: '/zh',
+      freeToolMenuItems: [
         { label: '编辑器', href: '/zh' },
-        { label: '骰子', href: '/zh/dice-roller-dnd' },
         { label: '纹章制作器', href: '/zh/coat-of-arms-maker' },
+      ],
+      sharedNavigationLinks: [
+        { label: '骰子', href: '/zh/dice-roller-dnd' },
         { label: '联系', href: '/zh/contact' },
         { label: '博客', href: '/zh/blog' },
       ],
@@ -515,6 +523,9 @@ describe('coat maker routes', () => {
     PageComponent,
     exportLabel,
     removedArtworkLinkLabel,
+    freeToolsMenuLabel,
+    freeToolsMenuHref,
+    freeToolMenuItems,
     sharedNavigationLinks,
     localeSwitchLabel,
     localeSwitchHref,
@@ -526,6 +537,19 @@ describe('coat maker routes', () => {
     expect(sharedTopbar.nextElementSibling).toBe(document.querySelector('[data-testid="coat-maker-page-heading"]'));
 
     expect(screen.queryByRole('link', { name: removedArtworkLinkLabel })).toBeNull();
+    const freeToolsLink = within(sharedTopbar).getByRole('link', { name: freeToolsMenuLabel });
+    expect(freeToolsLink.getAttribute('href')).toBe(freeToolsMenuHref);
+    const freeToolsNavItem = freeToolsLink.closest('.site-nav-item');
+    if (!(freeToolsNavItem instanceof HTMLElement)) {
+      throw new Error(`${freeToolsMenuLabel} link is not inside .site-nav-item`);
+    }
+    fireEvent.mouseEnter(freeToolsNavItem);
+    const freeToolsMenu = within(freeToolsNavItem).getByRole('menu', { name: freeToolsMenuLabel });
+    for (const tool of freeToolMenuItems) {
+      expect(within(freeToolsMenu).getByRole('menuitem', { name: tool.label }).getAttribute('href')).toBe(
+        tool.href,
+      );
+    }
     for (const link of sharedNavigationLinks) {
       expect(within(sharedTopbar).getByRole('link', { name: link.label }).getAttribute('href')).toBe(link.href);
     }

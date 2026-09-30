@@ -7,6 +7,16 @@ import { ContentSiteTopbar } from './ContentSiteTopbar';
 
 const topbarModel = {
   navigationLabel: 'Primary',
+  freeToolsMenuLabel: 'Free tools',
+  freeToolsMenuHref: '/',
+  freeToolsMenuIsActive: true,
+  freeToolsMenuAccessibleName: 'Free tools',
+  freeTools: [
+    { href: '/', title: 'Editor' },
+    { href: '/coat-of-arms-maker', title: 'Coat Maker' },
+    { href: '/armor-creator', title: 'Armor' },
+    { href: '/army-formation-creator', title: 'Army formation creator' },
+  ],
   featureMenuLabel: 'Blog',
   featureMenuHref: '/blog',
   featureMenuIsActive: true,
@@ -16,7 +26,7 @@ const topbarModel = {
     { href: '/blog/category/spells', title: 'Spells', description: 'Prepare spells.' },
   ],
   links: [
-    { href: '/', label: 'Editor', isActive: false },
+    { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
     { href: '/contact', label: 'Contact', isActive: false },
   ],
   localeSwitch: { href: '/zh', label: '中文' },
@@ -122,13 +132,66 @@ describe('ContentSiteTopbar', () => {
     cleanup();
   });
 
-  it('marks only the Blog link as a menu popup', () => {
+  it('marks the Free tools and Blog links as menu popups', () => {
     renderContentSiteTopbar();
 
+    const freeToolsLink = screen.getByRole('link', { name: 'Free tools' });
     const blogLink = screen.getByRole('link', { name: 'Blog' });
+    expect(freeToolsLink.getAttribute('href')).toBe('/');
+    expect(freeToolsLink.getAttribute('aria-haspopup')).toBe('menu');
     expect(blogLink.getAttribute('href')).toBe('/blog');
     expect(blogLink.getAttribute('aria-haspopup')).toBe('menu');
-    expect(screen.getByRole('link', { name: 'Editor' }).getAttribute('aria-haspopup')).toBeNull();
+    expect(screen.getByRole('link', { name: 'Dice Roller' }).getAttribute('aria-haspopup')).toBeNull();
+  });
+
+  it('opens the Free tools nav item when the pointer enters it', () => {
+    renderContentSiteTopbar();
+
+    const freeToolsLink = screen.getByRole('link', { name: 'Free tools' });
+    const siteNavItem = freeToolsLink.closest('.site-nav-item');
+    if (!(siteNavItem instanceof HTMLElement)) {
+      throw new Error('Free tools link is not inside .site-nav-item');
+    }
+
+    fireEvent.mouseEnter(siteNavItem);
+
+    expect(siteNavItem.getAttribute('data-open')).toBe('true');
+  });
+
+  it('keeps the Free tools menu open when its toggle is clicked after pointer entry', () => {
+    renderContentSiteTopbar();
+
+    const freeToolsLink = screen.getByRole('link', { name: 'Free tools' });
+    const freeToolsToggle = screen.getByRole('button', { name: 'Free tools' });
+    const siteNavItem = freeToolsLink.closest('.site-nav-item');
+    if (!(siteNavItem instanceof HTMLElement)) {
+      throw new Error('Free tools link is not inside .site-nav-item');
+    }
+
+    fireEvent.mouseEnter(siteNavItem);
+    fireEvent.click(freeToolsToggle);
+
+    expect(freeToolsToggle.getAttribute('aria-expanded')).toBe('true');
+    expect(siteNavItem.getAttribute('data-open')).toBe('true');
+  });
+
+  it('renders all four free tools with their existing paths', () => {
+    renderContentSiteTopbar();
+
+    expect(screen.getByRole('menuitem', { name: 'Editor' }).getAttribute('href')).toBe('/');
+    expect(screen.getByRole('menuitem', { name: 'Coat Maker' }).getAttribute('href')).toBe(
+      '/coat-of-arms-maker',
+    );
+    expect(screen.getByRole('menuitem', { name: 'Armor' }).getAttribute('href')).toBe('/armor-creator');
+    expect(screen.getByRole('menuitem', { name: 'Army formation creator' }).getAttribute('href')).toBe(
+      '/army-formation-creator',
+    );
+  });
+
+  it('names the Free tools menu', () => {
+    renderContentSiteTopbar();
+
+    expect(screen.getByRole('menu', { name: 'Free tools' })).toBeDefined();
   });
 
   it('opens the Blog nav item when the pointer enters it', () => {
@@ -189,6 +252,26 @@ describe('ContentSiteTopbar', () => {
     const blogLink = within(dialog).getByRole('link', { name: 'Blog' });
     expect(blogLink.getAttribute('href')).toBe('/blog');
     expect(within(dialog).getByRole('button', { name: 'Blog categories' })).toBeDefined();
+  });
+
+  it('links the open mobile drawer to the free tools and renders all tool items', () => {
+    renderContentSiteTopbar();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open navigation' }));
+
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByRole('link', { name: 'Free tools' }).getAttribute('href')).toBe('/');
+    const freeToolsAccordion = within(dialog).getByRole('button', { name: 'Free tools' });
+    expect(freeToolsAccordion).toBeDefined();
+    fireEvent.click(freeToolsAccordion);
+    expect(within(dialog).getByRole('link', { name: 'Editor' }).getAttribute('href')).toBe('/');
+    expect(within(dialog).getByRole('link', { name: 'Coat Maker' }).getAttribute('href')).toBe(
+      '/coat-of-arms-maker',
+    );
+    expect(within(dialog).getByRole('link', { name: 'Armor' }).getAttribute('href')).toBe('/armor-creator');
+    expect(within(dialog).getByRole('link', { name: 'Army formation creator' }).getAttribute('href')).toBe(
+      '/army-formation-creator',
+    );
   });
 
   it('moves focus into the mobile drawer and restores it after Escape', () => {
@@ -402,13 +485,13 @@ describe('ContentSiteTopbar', () => {
     }
   });
 
-  it('gives the Editor link rounded-md and not a pill', () => {
+  it('gives the Dice Roller link rounded-md and not a pill', () => {
     renderContentSiteTopbar();
 
-    const editorLink = getSingleLink('Editor');
-    expect(editorLink.classList.contains('rounded-md')).toBe(true);
-    expect(editorLink.classList.contains('site-nav-pill')).toBe(false);
-    expect(editorLink.classList.contains('rounded-full')).toBe(false);
+    const diceRollerLink = getSingleLink('Dice Roller');
+    expect(diceRollerLink.classList.contains('rounded-md')).toBe(true);
+    expect(diceRollerLink.classList.contains('site-nav-pill')).toBe(false);
+    expect(diceRollerLink.classList.contains('rounded-full')).toBe(false);
   });
 
   it('gives the 中文 locale link rounded-lg and not a switch chip', () => {
