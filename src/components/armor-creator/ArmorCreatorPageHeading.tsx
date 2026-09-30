@@ -64,7 +64,7 @@ export function ArmorCreatorPageHeading({ locale }: { locale: SiteLocale }) {
 
   return (
     <section
-      className="flex min-h-svh items-center justify-center px-4 py-24 text-center text-foreground md:py-32"
+      className="flex min-h-screen items-center justify-center px-4 pt-32 pb-24 text-center text-foreground md:pt-40 md:pb-32"
       aria-labelledby="armor-creator-heading"
     >
       <ArmorCreatorHeroStyles />
