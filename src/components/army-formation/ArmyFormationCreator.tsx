@@ -54,7 +54,7 @@ const ARMY_FORMATION_FILE_NAME = 'army-formation-creator.txt';
 const ARMY_FORMATION_IMAGE_NAME = 'army-formation-creator.svg';
 
 const ARMY_FORMATION_BUTTON_CLASS =
-  'rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-4 py-3 text-base text-[var(--site-ink)]';
+  'cursor-pointer rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-4 py-3 text-base text-[var(--site-ink)] transition-colors enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)]';
 const ARMY_FORMATION_INPUT_CLASS =
   'rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] px-2 py-1 text-sm text-[var(--site-ink)]';
 const ARMY_FORMATION_NATO_ICONS_PER_PAGE = 60;
@@ -587,10 +587,10 @@ function ArmyFormationCategoryTabs({
             type="button"
             aria-pressed={selected}
             className={cn(
-              'min-w-0 whitespace-normal rounded-md border px-2 py-2 text-center text-sm leading-tight',
+              'min-w-0 cursor-pointer whitespace-normal rounded-md border px-2 py-2 text-center text-sm leading-tight transition-colors enabled:hover:shadow-sm',
               selected
                 ? 'border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] text-[var(--site-accent-strong)]'
-                : 'border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-[var(--site-ink)]',
+                : 'border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-[var(--site-ink)] enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)]',
             )}
             onClick={() => onCategory(categoryId)}
           >
@@ -673,7 +673,7 @@ function ArmyFormationIconButton({
     <button
       type="button"
       aria-label={icon.id}
-      className="inline-flex h-9 w-14 items-center justify-center rounded-sm border border-[var(--site-border-strong)] bg-[var(--site-card-plain-top)] p-0.5 text-[var(--site-ink-strong)]"
+      className="inline-flex h-9 w-14 cursor-pointer items-center justify-center rounded-sm border border-[var(--site-border-strong)] bg-[var(--site-card-plain-top)] p-0.5 text-[var(--site-ink-strong)] transition-colors hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)] hover:text-[var(--site-accent-strong)] hover:shadow-sm"
       onClick={() => onPlace(icon.id)}
     >
       <span
@@ -823,7 +823,7 @@ function ArmyFormationColorControls({
         <input
           type="color"
           aria-label={copy.color}
-          className="h-9 w-9 rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)]"
+          className="h-9 w-9 cursor-pointer rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] transition-colors hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)]"
           value={colorText}
           onChange={(event) => onColorText(event.target.value)}
         />
@@ -846,7 +846,7 @@ function ArmyFormationColorControls({
                 aria-label={`${copy.palette} ${swatch.color} ${swatch.id}`}
                 aria-pressed={selected}
                 className={cn(
-                  'h-7 w-7 rounded-sm border',
+                  'relative z-0 h-7 w-7 cursor-pointer rounded-sm border transition-transform enabled:hover:z-10 enabled:hover:scale-105 enabled:hover:outline enabled:hover:outline-2 enabled:hover:outline-[var(--site-accent-strong)]',
                   selected
                     ? 'border-[var(--site-accent-strong)] outline outline-2 outline-[var(--site-accent-strong)]'
                     : 'border-[var(--site-border-strong)]',
@@ -946,7 +946,7 @@ function ArmyFormationFieldControls({
         <input
           type="color"
           aria-label={copy.changeBackgroundColor}
-          className="h-9 w-9 rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)]"
+          className="h-9 w-9 cursor-pointer rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] transition-colors hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)]"
           value={fieldBackgroundColorText}
           onChange={(event) => onFieldBackgroundColorText(event.target.value)}
         />
@@ -1062,7 +1062,7 @@ function ArmyFormationPieceButton({
       aria-label={piece.id}
       aria-pressed={selected}
       className={cn(
-        'absolute touch-none p-0 text-[oklch(0.29_0.03_72)]',
+        'absolute cursor-pointer touch-none p-0 text-[oklch(0.29_0.03_72)] transition-[filter,outline-color] hover:brightness-110 hover:outline-2 hover:outline-[var(--site-accent-strong)]',
         selected
           ? 'z-20 outline outline-2 outline-[var(--site-accent-strong)]'
           : 'z-10 outline outline-1 outline-[var(--site-border-strong)]',
@@ -1117,7 +1117,7 @@ function ArmyFormationStepButton({
       aria-label={label}
       className={cn(
         columnClass,
-        'row-start-2 h-40 self-center rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-2xl text-[var(--site-ink)]',
+        'row-start-2 h-40 cursor-pointer self-center rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-2xl text-[var(--site-ink)] transition-colors hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)] hover:text-[var(--site-accent-strong)]',
       )}
       onClick={onStep}
     >
@@ -1550,7 +1550,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   return (
     <section
       aria-label={copy.productName}
-      className="relative mx-auto w-full max-w-[84rem] rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-3 text-[var(--site-ink)] shadow-[var(--site-card-shadow)] sm:p-4"
+      className="relative w-full min-w-0 rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-3 text-[var(--site-ink)] shadow-[var(--site-card-shadow)] sm:p-4"
     >
       <div className="space-y-3" inert={restorePromptOpen ? true : undefined}>
       {visibleFailureMessage !== null ? <ArmyFormationFailure message={visibleFailureMessage} /> : null}

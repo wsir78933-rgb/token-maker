@@ -14,7 +14,8 @@ const ARMOR_PICKER_HEADER_CLASS = 'space-y-2';
 const ARMOR_PICKER_HALF_ROW_CLASS = 'grid grid-cols-2 gap-2';
 const ARMOR_PICKER_THIRD_ROW_CLASS = 'grid grid-cols-3 gap-2';
 const ARMOR_PICKER_ACTION_ROW_CLASS = 'grid grid-cols-4 gap-2';
-const ARMOR_PICKER_BUTTON_CLASS = 'w-full rounded-md border px-3 py-2 text-center text-sm';
+const ARMOR_PICKER_BUTTON_CLASS =
+  'w-full cursor-pointer rounded-md border px-3 py-2 text-center text-sm transition-colors enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)] enabled:hover:shadow-sm';
 const ARMOR_PICKER_SELECTED_CLASS =
   'border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] text-[var(--site-accent-strong)] ring-2 ring-[var(--site-accent-strong)]';
 const ARMOR_PICKER_IDLE_CLASS =

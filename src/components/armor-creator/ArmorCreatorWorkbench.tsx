@@ -413,11 +413,14 @@ function pieceButtonName(label: string, pieceId: string): string {
 }
 
 function choiceButtonClass(selected: boolean): string {
+  const interactionClass =
+    'cursor-pointer transition-colors enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)] enabled:hover:shadow-sm';
+
   if (selected) {
-    return 'border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] text-[var(--site-accent-strong)] ring-2 ring-[var(--site-accent-strong)]';
+    return `${interactionClass} border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] text-[var(--site-accent-strong)] ring-2 ring-[var(--site-accent-strong)]`;
   }
 
-  return 'border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-[var(--site-ink)]';
+  return `${interactionClass} border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-[var(--site-ink)]`;
 }
 
 function flatChestImageOptions(

@@ -14,7 +14,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
       <ArmorCreatorPageHeading locale={locale} />
       <div
         id={ARMOR_CREATOR_EDITOR_ID}
-        className="mx-auto w-full max-w-[82rem] scroll-mt-8 px-5 py-8 lg:px-8 lg:py-10"
+        className="mx-auto w-full scroll-mt-8 px-5 py-8 lg:px-8 lg:py-10"
       >
         <ArmorCreatorWorkbench locale={locale} />
       </div>

@@ -2,7 +2,8 @@ const ARMOR_PREVIEW_OUTFIT_SLOT_NUMBERS = [1, 2, 3, 4] as const;
 const ARMOR_PREVIEW_OUTFIT_LABEL_COUNT = ARMOR_PREVIEW_OUTFIT_SLOT_NUMBERS.length;
 
 const ARMOR_PREVIEW_OUTFIT_SLOT_ROW_CLASS = 'grid grid-cols-4 gap-2';
-const ARMOR_PREVIEW_OUTFIT_SLOT_BUTTON_SHAPE_CLASS = 'rounded-md border px-3 py-2 text-sm';
+const ARMOR_PREVIEW_OUTFIT_SLOT_BUTTON_SHAPE_CLASS =
+  'cursor-pointer rounded-md border px-3 py-2 text-sm transition-colors enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)] enabled:hover:shadow-sm';
 const ARMOR_PREVIEW_OUTFIT_SLOT_SELECTED_CLASS =
   'border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] text-[var(--site-accent-strong)] ring-2 ring-[var(--site-accent-strong)]';
 const ARMOR_PREVIEW_OUTFIT_SLOT_IDLE_CLASS =

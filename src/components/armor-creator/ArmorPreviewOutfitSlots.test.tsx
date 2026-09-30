@@ -8,7 +8,8 @@ import { ArmorPreviewOutfitSlots } from '@/components/armor-creator/ArmorPreview
 const OUTFIT_LABELS = ['套装 1', '套装 2', '套装 3', '套装 4'] as const;
 
 const OUTFIT_SLOT_ROW_CLASS = 'grid grid-cols-4 gap-2';
-const OUTFIT_SLOT_SHAPE_CLASS = 'rounded-md border px-3 py-2 text-sm';
+const OUTFIT_SLOT_SHAPE_CLASS =
+  'cursor-pointer rounded-md border px-3 py-2 text-sm transition-colors enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)] enabled:hover:shadow-sm';
 const SELECTED_OUTFIT_SLOT_CLASS = `${OUTFIT_SLOT_SHAPE_CLASS} border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] text-[var(--site-accent-strong)] ring-2 ring-[var(--site-accent-strong)]`;
 const IDLE_OUTFIT_SLOT_CLASS = `${OUTFIT_SLOT_SHAPE_CLASS} border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] text-[var(--site-ink)]`;
 
