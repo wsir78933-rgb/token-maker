@@ -2,6 +2,11 @@ const ARMOR_CREATOR_LOCALES = ['en', 'zh'] as const;
 
 type ArmorCreatorLocale = (typeof ARMOR_CREATOR_LOCALES)[number];
 
+type ArmorCreatorHowToUseStepCopy = {
+  title: string;
+  description: string;
+};
+
 export type ArmorCreatorCopy = {
   genderMale: string;
   genderFemale: string;
@@ -37,6 +42,14 @@ export type ArmorCreatorCopy = {
   heroAction: string;
   whatIsTitle: string;
   whatIsDescription: string;
+  howToUseEyebrow: string;
+  howToUseTitle: string;
+  howToUseSteps: readonly [
+    ArmorCreatorHowToUseStepCopy,
+    ArmorCreatorHowToUseStepCopy,
+    ArmorCreatorHowToUseStepCopy,
+  ];
+  howToUseAction: string;
 };
 
 export type ArmorCreatorHeroTitle = {
@@ -94,6 +107,25 @@ const englishArmorCreatorCopy: ArmorCreatorCopy = {
   whatIsTitle: 'What is the Armor Creator?',
   whatIsDescription:
     'The Armor Creator is an online visual tool for RPG/TTRPG players and GMs, as well as creators developing fantasy characters and worlds. Mix plate, leather, and cloth armor pieces to preview character looks and find visual inspiration for characters, NPCs, and campaign settings.',
+  howToUseEyebrow: 'How it works',
+  howToUseTitle: 'How to use the Armor Creator',
+  howToUseSteps: [
+    {
+      title: 'Choose a character and armor type',
+      description: 'Pick a character and choose plate, leather, or cloth armor to browse matching pieces.',
+    },
+    {
+      title: 'Mix and match armor pieces',
+      description:
+        'Select a helm, chest piece, legs, gloves, shoulders, cloak, crown, or wings, and preview the look as you build.',
+    },
+    {
+      title: 'Refine and download your look',
+      description:
+        'Adjust shoulder symmetry or chest curves, switch between four outfit slots, and download your finished image.',
+    },
+  ],
+  howToUseAction: 'Start creating',
 };
 
 const chineseArmorCreatorCopy: ArmorCreatorCopy = {
@@ -141,6 +173,24 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   whatIsTitle: '什么是护甲搭配工具？',
   whatIsDescription:
     '护甲搭配工具是一款面向 RPG/TTRPG 玩家与 GM，以及奇幻角色和世界观创作者的在线视觉工具。你可以组合板甲、皮甲与布甲等部件，预览不同护甲造型，为角色设定、NPC 塑造和战役世界观创作获取灵感。',
+  howToUseEyebrow: '操作步骤',
+  howToUseTitle: '如何使用护甲搭配工具？',
+  howToUseSteps: [
+    {
+      title: '选择角色和护甲类型',
+      description: '选择男性或女性角色，再选板甲、皮甲或布甲，浏览对应的护甲部件。',
+    },
+    {
+      title: '组合护甲部件',
+      description: '挑选头盔、胸甲、腿部、手套、肩甲、斗篷、王冠或翅膀，并在预览中查看造型。',
+    },
+    {
+      title: '微调并下载造型',
+      description:
+        '按需启用左右肩对称或胸甲曲线，切换套装 1–4 保存不同搭配，完成后下载图片。',
+    },
+  ],
+  howToUseAction: '开始搭配',
 };
 
 function isArmorCreatorLocale(locale: string): locale is ArmorCreatorLocale {

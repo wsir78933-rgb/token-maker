@@ -61,11 +61,16 @@ describe('ArmorCreatorPageView', () => {
       level: 2,
       name: '什么是护甲搭配工具？',
     });
+    const howToUseHeading = screen.getByRole('heading', {
+      level: 2,
+      name: '如何使用护甲搭配工具？',
+    });
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(heading.textContent).toBe('免费护甲搭配工具：为 RPG 角色、NPC 与奇幻世界提供灵感');
     const editor = document.getElementById('armor-creator-editor');
     const action = screen.getByRole('link', { name: 'Try for Free' });
+    const howToUseAction = screen.getByRole('link', { name: '开始搭配' });
     const footerLink = screen.getByRole('link', { name: 'Token Maker 首页' });
 
     expect(editor).toBeTruthy();
@@ -86,6 +91,16 @@ describe('ArmorCreatorPageView', () => {
     expect(
       whatIsHeading.compareDocumentPosition(footerLink) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      whatIsHeading.compareDocumentPosition(howToUseHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      howToUseHeading.compareDocumentPosition(footerLink) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(howToUseAction.getAttribute('href')).toBe('#armor-creator-editor');
+    expect(
+      screen.getAllByRole('heading', { level: 3 }).map((stepHeading) => stepHeading.textContent),
+    ).toEqual(['选择角色和护甲类型', '组合护甲部件', '微调并下载造型']);
   });
 
   it('英文页面标题在编辑器前面', () => {
@@ -100,6 +115,9 @@ describe('ArmorCreatorPageView', () => {
     );
     expect(
       screen.queryByRole('heading', { level: 2, name: 'What is the Armor Creator?' }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole('heading', { level: 2, name: 'How to use the Armor Creator' }),
     ).toBeNull();
     expect(heading.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
