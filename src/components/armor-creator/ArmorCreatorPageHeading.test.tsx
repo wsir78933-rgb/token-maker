@@ -65,12 +65,19 @@ describe('ArmorCreatorPageView', () => {
       level: 2,
       name: '如何使用护甲搭配工具？',
     });
+    const faqHeading = screen.getByRole('heading', {
+      level: 2,
+      name: '护甲搭配工具常见问题',
+    });
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(heading.textContent).toBe('免费护甲搭配工具：为 RPG 角色、NPC 与奇幻世界提供灵感');
     const editor = document.getElementById('armor-creator-editor');
     const action = screen.getByRole('link', { name: 'Try for Free' });
     const howToUseAction = screen.getByRole('link', { name: '开始搭配' });
+    const faqQuestion = screen.getByRole('button', {
+      name: '护甲搭配工具可以免费使用吗？',
+    });
     const footerLink = screen.getByRole('link', { name: 'Token Maker 首页' });
 
     expect(editor).toBeTruthy();
@@ -97,10 +104,26 @@ describe('ArmorCreatorPageView', () => {
     expect(
       howToUseHeading.compareDocumentPosition(footerLink) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-    expect(howToUseAction.getAttribute('href')).toBe('#armor-creator-editor');
     expect(
-      screen.getAllByRole('heading', { level: 3 }).map((stepHeading) => stepHeading.textContent),
-    ).toEqual(['选择角色和护甲类型', '组合护甲部件', '微调并下载造型']);
+      whatIsHeading.compareDocumentPosition(faqHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      howToUseHeading.compareDocumentPosition(faqHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      faqHeading.compareDocumentPosition(footerLink) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(faqQuestion).toBeTruthy();
+    expect(howToUseAction.getAttribute('href')).toBe('#armor-creator-editor');
+    const howToUseStepHeadings = screen
+      .getAllByRole('heading', { level: 3 })
+      .filter((stepHeading) => stepHeading.closest('section') === howToUseHeading.closest('section'));
+
+    expect(howToUseStepHeadings.map((stepHeading) => stepHeading.textContent)).toEqual([
+      '选择角色和护甲类型',
+      '组合护甲部件',
+      '微调并下载造型',
+    ]);
   });
 
   it('英文页面标题在编辑器前面', () => {
@@ -109,6 +132,7 @@ describe('ArmorCreatorPageView', () => {
     const heading = screen.getByRole('heading', { level: 1 });
     const preview = screen.getByRole('heading', { level: 2, name: 'Preview' });
 
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(heading.textContent).toBe('Free Armor Creator for RPG Characters, NPCs & Fantasy Worlds');
     expect(screen.getByRole('link', { name: 'Try for Free' }).getAttribute('href')).toBe(
       '#armor-creator-editor',
@@ -118,6 +142,10 @@ describe('ArmorCreatorPageView', () => {
     ).toBeNull();
     expect(
       screen.queryByRole('heading', { level: 2, name: 'How to use the Armor Creator' }),
+    ).toBeNull();
+    expect(screen.queryByRole('heading', { level: 2, name: 'Armor Creator FAQ' })).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'Is the Armor Creator free to use?' }),
     ).toBeNull();
     expect(heading.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,

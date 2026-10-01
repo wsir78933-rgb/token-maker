@@ -4,6 +4,7 @@ import {
   ARMOR_CREATOR_EDITOR_ID,
   ArmorCreatorPageHeading,
 } from '@/components/armor-creator/ArmorCreatorPageHeading';
+import { Faq1 } from '@/components/armor-creator/Faq1';
 import { ArmorCreatorWorkbench } from '@/components/armor-creator/ArmorCreatorWorkbench';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { getArmorCreatorCopy, type ArmorCreatorCopy } from '@/lib/armor-creator/copy';
@@ -92,6 +93,12 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
             </p>
           </section>
           <ArmorCreatorHowToUse copy={copy} />
+          <Faq1
+            eyebrow={copy.faqEyebrow}
+            title={copy.faqTitle}
+            description={copy.faqDescription}
+            items={copy.faqItems}
+          />
         </>
       )}
     </>

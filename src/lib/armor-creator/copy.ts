@@ -7,6 +7,11 @@ type ArmorCreatorHowToUseStepCopy = {
   description: string;
 };
 
+type ArmorCreatorFaqItemCopy = {
+  question: string;
+  answer: string;
+};
+
 export type ArmorCreatorCopy = {
   genderMale: string;
   genderFemale: string;
@@ -50,6 +55,16 @@ export type ArmorCreatorCopy = {
     ArmorCreatorHowToUseStepCopy,
   ];
   howToUseAction: string;
+  faqEyebrow: string;
+  faqTitle: string;
+  faqDescription: string;
+  faqItems: readonly [
+    ArmorCreatorFaqItemCopy,
+    ArmorCreatorFaqItemCopy,
+    ArmorCreatorFaqItemCopy,
+    ArmorCreatorFaqItemCopy,
+    ArmorCreatorFaqItemCopy,
+  ];
 };
 
 export type ArmorCreatorHeroTitle = {
@@ -126,6 +141,35 @@ const englishArmorCreatorCopy: ArmorCreatorCopy = {
     },
   ],
   howToUseAction: 'Start creating',
+  faqEyebrow: 'FAQ',
+  faqTitle: 'Armor Creator FAQ',
+  faqDescription:
+    'Learn which armor types and pieces are available, and how to save or export your look.',
+  faqItems: [
+    {
+      question: 'Who is the Armor Creator for?',
+      answer:
+        'It is for RPG/TTRPG players and GMs, as well as creators developing fantasy characters and worlds.',
+    },
+    {
+      question: 'Is the Armor Creator free to use?',
+      answer: 'Yes. The Armor Creator is free to use.',
+    },
+    {
+      question: 'Which armor types can I choose?',
+      answer: 'Choose plate, leather, or cloth armor.',
+    },
+    {
+      question: 'Which armor pieces are available?',
+      answer:
+        'Available parts include a helm, chest armor, feet, left and right shoulders, legs, gloves, a cloak, a crown, and wings.',
+    },
+    {
+      question: 'Can I save and export an outfit?',
+      answer:
+        'You can save and reload outfits using four outfit slots, then download the current look as a PNG.',
+    },
+  ],
 };
 
 const chineseArmorCreatorCopy: ArmorCreatorCopy = {
@@ -191,6 +235,31 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
     },
   ],
   howToUseAction: '开始搭配',
+  faqEyebrow: '常见问题',
+  faqTitle: '护甲搭配工具常见问题',
+  faqDescription: '了解可选的护甲类型与部件，以及如何保存或导出造型。',
+  faqItems: [
+    {
+      question: '护甲搭配工具适合哪些人使用？',
+      answer: '适合 RPG/TTRPG 玩家与 GM，也适合创作奇幻角色和世界观的创作者。',
+    },
+    {
+      question: '护甲搭配工具可以免费使用吗？',
+      answer: '可以，护甲搭配工具可免费使用。',
+    },
+    {
+      question: '可以选择哪些护甲类型？',
+      answer: '可以选择板甲、皮甲或布甲。',
+    },
+    {
+      question: '现有哪些护甲部件？',
+      answer: '现有部件包括头盔、胸甲、脚部、左肩、腿部、手套、右肩、斗篷、王冠和翅膀。',
+    },
+    {
+      question: '可以保存并导出搭配吗？',
+      answer: '可以使用四个套装槽位保存和读取搭配，并将当前造型下载为 PNG 图片。',
+    },
+  ],
 };
 
 function isArmorCreatorLocale(locale: string): locale is ArmorCreatorLocale {
