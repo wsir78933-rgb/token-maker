@@ -94,7 +94,7 @@ const englishStringFields = {
 
 const chineseStringFields = {
   productName: '军阵',
-  navigationName: '军阵',
+  navigationName: '军队阵型制作器',
   pageTitle: '军阵',
   pageDescription: '在浏览器里摆放战场棋子并下载图片。',
   heroTitleLead: '在浏览器里摆放战场棋子',
@@ -161,11 +161,11 @@ describe('getArmyFormationCreatorCopy', () => {
     expect(copy.startBlank).toBe('Start blank');
   });
 
-  it('中文产品名和导航名是军阵', () => {
+  it('保留中文军阵产品名并直译导航名', () => {
     const copy = getArmyFormationCreatorCopy('zh');
 
     expect(copy.productName).toBe('军阵');
-    expect(copy.navigationName).toBe('军阵');
+    expect(copy.navigationName).toBe('军队阵型制作器');
     expectStringFields(copy, chineseStringFields);
     expect(copy.previousRecordPrompt).toBe('发现上次的记录。要回到上次的记录吗？');
     expect(copy.restorePreviousRecord).toBe('回到上次');

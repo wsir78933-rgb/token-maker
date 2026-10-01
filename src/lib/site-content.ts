@@ -554,10 +554,10 @@ export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
     blogCategoryMenu: 'Blog categories',
   },
   zh: {
-    editor: '编辑器',
+    editor: '令牌制作器',
     diceRoller: '骰子',
     coatMaker: '纹章制作器',
-    armor: '护甲',
+    armor: '护甲制作器',
     coatMakerBackToEditor: '返回首页编辑器',
     templates: '模板页',
     blog: '博客',

@@ -90,7 +90,7 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
 
 const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   productName: '军阵',
-  navigationName: '军阵',
+  navigationName: '军队阵型制作器',
   pageTitle: '军阵',
   pageDescription: '在浏览器里摆放战场棋子并下载图片。',
   heroTitleLead: '在浏览器里摆放战场棋子',

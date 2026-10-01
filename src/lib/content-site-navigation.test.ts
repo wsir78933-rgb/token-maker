@@ -91,10 +91,10 @@ describe('content site topbar model', () => {
     expect(model.freeToolsMenuAccessibleName).toBe('免费工具');
     expect(model.freeToolsMenuIsActive).toBe(false);
     expect(model.freeTools).toEqual([
-      { href: '/zh', title: '编辑器' },
+      { href: '/zh', title: '令牌制作器' },
       { href: '/zh/coat-of-arms-maker', title: '纹章制作器' },
-      { href: '/zh/armor-creator', title: '护甲' },
-      { href: '/zh/army-formation-creator', title: '军阵' },
+      { href: '/zh/armor-creator', title: '护甲制作器' },
+      { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },

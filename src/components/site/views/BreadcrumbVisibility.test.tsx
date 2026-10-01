@@ -58,12 +58,12 @@ describe('content page breadcrumb visibility', () => {
 
     const breadcrumbNavigation = screen.getByRole('navigation', { name: '面包屑' });
 
-    expect(within(breadcrumbNavigation).getByRole('link', { name: '编辑器' }).getAttribute('href')).toBe('/zh');
+    expect(within(breadcrumbNavigation).getByRole('link', { name: '令牌制作器' }).getAttribute('href')).toBe('/zh');
     expect(within(breadcrumbNavigation).getByRole('link', { name: '博客' }).getAttribute('href')).toBe('/zh/blog');
     expect(within(breadcrumbNavigation).getByText('第 2 页')).not.toBeNull();
     expect(within(breadcrumbNavigation).queryByRole('link', { name: '第 2 页' })).toBeNull();
     expect(readStructuredData('blog-hub-breadcrumb-zh-2').itemListElement.map((item) => item.name)).toEqual([
-      '编辑器',
+      '令牌制作器',
       '博客',
       '第 2 页',
     ]);
@@ -74,7 +74,7 @@ describe('content page breadcrumb visibility', () => {
     {
       locale: 'en' as const,
       navigationLabel: 'Breadcrumb',
-      editor: 'Editor',
+      editor: 'Token Maker',
       blog: 'Blog',
       rootPath: '/',
       breadcrumbScriptId: 'blog-hub-breadcrumb-en-1',
@@ -82,7 +82,7 @@ describe('content page breadcrumb visibility', () => {
     {
       locale: 'zh' as const,
       navigationLabel: '面包屑',
-      editor: '编辑器',
+      editor: '令牌制作器',
       blog: '博客',
       rootPath: '/zh',
       breadcrumbScriptId: 'blog-hub-breadcrumb-zh-1',
@@ -103,7 +103,7 @@ describe('content page breadcrumb visibility', () => {
     {
       locale: 'en' as const,
       navigationLabel: 'Breadcrumb',
-      editor: 'Editor',
+      editor: 'Token Maker',
       diceRoller: 'Dice Roller',
       rootPath: '/',
       breadcrumbScriptId: 'dice-roller-dnd-en-breadcrumb-jsonld',
@@ -111,7 +111,7 @@ describe('content page breadcrumb visibility', () => {
     {
       locale: 'zh' as const,
       navigationLabel: '面包屑',
-      editor: '编辑器',
+      editor: '令牌制作器',
       diceRoller: '骰子',
       rootPath: '/zh',
       breadcrumbScriptId: 'dice-roller-dnd-zh-breadcrumb-jsonld',
