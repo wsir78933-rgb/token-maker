@@ -83,6 +83,25 @@ function chooseArmyFormationFile(file: File) {
   fireEvent.change(input);
 }
 
+function placeArmyFormationPiece(iconName: string): string {
+  const buttonsBeforePlacement = screen.getAllByRole('button');
+  fireEvent.click(screen.getByRole('button', { name: iconName }));
+
+  const addedPieceButton = screen.getAllByRole('button').find(
+    (button) => !buttonsBeforePlacement.includes(button),
+  );
+  if (!(addedPieceButton instanceof HTMLButtonElement)) {
+    throw new Error(`Placing ${JSON.stringify(iconName)} did not add an accessible piece button.`);
+  }
+
+  const accessibleName = addedPieceButton.getAttribute('aria-label');
+  if (accessibleName === null || accessibleName.length === 0) {
+    throw new Error(`Piece placed from ${JSON.stringify(iconName)} has no accessible name.`);
+  }
+
+  return accessibleName;
+}
+
 describe('ArmyFormationCreator', () => {
   beforeEach(() => {
     cleanup();
@@ -161,27 +180,83 @@ describe('ArmyFormationCreator', () => {
     expect(screen.getByText('空位')).toBeTruthy();
   });
 
-  it('左右箭头在 4 场之间绕回，棋子留在自己的场', () => {
+  it.each([
+    {
+      locale: 'zh',
+      battlefieldLabel: '战场',
+      nextButton: '切换到下一场',
+      previousButton: '切换到上一场',
+    },
+    {
+      locale: 'en',
+      battlefieldLabel: 'Battlefield',
+      nextButton: 'Switch to next battle',
+      previousButton: 'Switch to previous battle',
+    },
+  ] as const)(
+    '$locale battlefield indicator follows next and previous controls through wrap-around',
+    ({ locale, battlefieldLabel, nextButton, previousButton }) => {
+      render(<ArmyFormationCreator locale={locale} />);
+
+      const nextBattlefieldButton = screen.getByRole('button', { name: nextButton });
+      const previousBattlefieldButton = screen.getByRole('button', { name: previousButton });
+      const expectActiveBattlefield = (position: number) => {
+        expect(
+          screen.getByText(`${battlefieldLabel} ${position}/4`, { exact: true }),
+        ).toBeTruthy();
+      };
+
+      expectActiveBattlefield(1);
+      for (let position = 2; position <= 4; position += 1) {
+        fireEvent.click(nextBattlefieldButton);
+        expectActiveBattlefield(position);
+      }
+
+      fireEvent.click(nextBattlefieldButton);
+      expectActiveBattlefield(1);
+
+      fireEvent.click(previousBattlefieldButton);
+      expectActiveBattlefield(4);
+      for (let position = 3; position >= 1; position -= 1) {
+        fireEvent.click(previousBattlefieldButton);
+        expectActiveBattlefield(position);
+      }
+
+      fireEvent.click(previousBattlefieldButton);
+      expectActiveBattlefield(4);
+    },
+  );
+
+  it('棋子只显示在自己的战场，切换回来后仍然可见', async () => {
     render(<ArmyFormationCreator locale="zh" />);
 
-    fireEvent.click(screen.getByRole('button', { name: /^helmet-01$/ }));
-    expect(pieceButtons()).toHaveLength(1);
-    expect(screen.getByRole('heading', { name: '战场', exact: true })).toBeTruthy();
-    expect(screen.queryByRole('heading', { name: /战场 \d/ })).toBeNull();
+    const nextBattlefieldButton = screen.getByRole('button', { name: '切换到下一场' });
+    const previousBattlefieldButton = screen.getByRole('button', { name: '切换到上一场' });
+    const firstPieceName = placeArmyFormationPiece('helmet-01');
+    expect(screen.getByRole('button', { name: firstPieceName })).toBeTruthy();
 
-    fireEvent.click(screen.getByRole('button', { name: '切换到下一场' }));
-    expect(pieceButtons()).toHaveLength(0);
+    fireEvent.click(nextBattlefieldButton);
+    await screen.findByText('空位');
+    expect(screen.queryByRole('button', { name: firstPieceName })).toBeNull();
 
-    fireEvent.click(screen.getByRole('button', { name: '切换到下一场' }));
-    expect(pieceButtons()).toHaveLength(0);
-    fireEvent.click(screen.getByRole('button', { name: '切换到下一场' }));
-    expect(pieceButtons()).toHaveLength(0);
-    fireEvent.click(screen.getByRole('button', { name: '切换到下一场' }));
-    expect(pieceButtons()).toHaveLength(1);
-    expect(screen.getByRole('heading', { name: '战场', exact: true })).toBeTruthy();
+    const secondPieceName = placeArmyFormationPiece('helmet-01');
+    expect(screen.getByRole('button', { name: secondPieceName })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: firstPieceName })).toBeNull();
 
-    fireEvent.click(screen.getByRole('button', { name: '切换到上一场' }));
-    expect(pieceButtons()).toHaveLength(0);
+    fireEvent.click(nextBattlefieldButton);
+    await screen.findByText('空位');
+    expect(screen.queryByRole('button', { name: firstPieceName })).toBeNull();
+    expect(screen.queryByRole('button', { name: secondPieceName })).toBeNull();
+
+    fireEvent.click(previousBattlefieldButton);
+    await screen.findByRole('button', { name: secondPieceName });
+    expect(screen.getByRole('button', { name: secondPieceName })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: firstPieceName })).toBeNull();
+
+    fireEvent.click(previousBattlefieldButton);
+    await screen.findByRole('button', { name: firstPieceName });
+    expect(screen.getByRole('button', { name: firstPieceName })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: secondPieceName })).toBeNull();
   });
 
   it('点棋子选中再点取消，删除和旋转只动选中的，清空只清棋子', () => {
@@ -218,9 +293,29 @@ describe('ArmyFormationCreator', () => {
 
   it('拖动棋子后位置按格子移动', () => {
     render(<ArmyFormationCreator locale="zh" />);
-    fireEvent.click(screen.getByRole('button', { name: /^helmet-01$/ }));
+    const placedPieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: placedPieceName });
 
-    const piece = pieceButtons()[0] as HTMLButtonElement;
+    const battlefieldField = piece.parentElement;
+    if (!(battlefieldField instanceof HTMLElement)) {
+      throw new Error('Placed army piece is missing its battlefield field in the drag test.');
+    }
+    const battlefieldWidth = Number.parseFloat(battlefieldField.style.width);
+    const battlefieldHeight = Number.parseFloat(battlefieldField.style.height);
+    if (
+      !Number.isFinite(battlefieldWidth)
+      || battlefieldWidth <= 0
+      || !Number.isFinite(battlefieldHeight)
+      || battlefieldHeight <= 0
+    ) {
+      throw new Error(
+        `Army formation drag field layout must be positive. width=${battlefieldWidth} height=${battlefieldHeight}.`,
+      );
+    }
+    vi.spyOn(battlefieldField, 'getBoundingClientRect').mockReturnValue(
+      new DOMRect(0, 0, battlefieldWidth, battlefieldHeight),
+    );
+
     fireEvent.pointerDown(piece, { pointerId: 1, clientX: 0, clientY: 0, button: 0 });
     fireEvent.pointerMove(piece, { pointerId: 1, clientX: 40, clientY: 20, button: 0 });
     fireEvent.pointerUp(piece, { pointerId: 1, clientX: 40, clientY: 20, button: 0 });
@@ -412,14 +507,14 @@ describe('ArmyFormationCreator', () => {
   it('导出文件、导出图片、选择文件在战场标题后面，并且不在改战场那一组里', () => {
     render(<ArmyFormationCreator locale="zh" />);
     for (const label of ['导出文件', '导出图片', '选择文件']) {
-      const button = expectButtonFollowsHeading(label, '战场');
+      const button = expectButtonFollowsHeading(label, '战场 1/4');
       expect(controlGroup('改战场').contains(button)).toBe(false);
     }
 
     cleanup();
     render(<ArmyFormationCreator locale="en" />);
     for (const label of ['Export file', 'Export image', 'Choose file']) {
-      const button = expectButtonFollowsHeading(label, 'Battlefield');
+      const button = expectButtonFollowsHeading(label, 'Battlefield 1/4');
       expect(controlGroup('Change battlefield').contains(button)).toBe(false);
     }
   });
