@@ -8,8 +8,6 @@ type ArmorCreatorFeatureExample = {
 };
 
 type ArmorCreatorFeatureSectionProps = {
-  description: string;
-  headingId: string;
   imagePosition: 'left' | 'right';
   title: string;
   examples: ArmorCreatorFeatureExample[];
@@ -94,28 +92,15 @@ const LIGHT_ARMOR_CASES: ArmorCreatorFeatureExample[] = [
 ];
 
 function ArmorCreatorFeatureSection({
-  description,
-  headingId,
   imagePosition,
   title,
   examples,
 }: ArmorCreatorFeatureSectionProps) {
   return (
     <section
-      aria-labelledby={headingId}
+      aria-label={title}
       className="mx-auto max-w-5xl border-t border-white/10 px-5 py-12 text-stone-100 sm:py-16 lg:px-8"
     >
-      <div className="mb-10 flex flex-col gap-3">
-        <h2
-          id={headingId}
-          className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl"
-        >
-          {title}
-        </h2>
-        <p className="max-w-3xl text-sm leading-7 text-stone-300 text-pretty sm:text-base">
-          {description}
-        </p>
-      </div>
       <CircularTestimonials
         testimonials={examples}
         ariaLabel={`${title}案例轮播`}
@@ -131,16 +116,12 @@ export function ArmorCreatorFeatures() {
   return (
     <>
       <ArmorCreatorFeatureSection
-        headingId="armor-creator-heavy-armor-heading"
         title="重甲与仪式造型"
-        description="从厚重板甲到典礼盔甲，查看不同防护层次与装饰语言。"
         examples={HEAVY_ARMOR_CASES}
         imagePosition="left"
       />
       <ArmorCreatorFeatureSection
-        headingId="armor-creator-light-armor-heading"
         title="轻装与奇幻职业"
-        description="通过皮甲、旅行装备、法袍与仪式长衣，呈现多样的职业轮廓。"
         examples={LIGHT_ARMOR_CASES}
         imagePosition="right"
       />
