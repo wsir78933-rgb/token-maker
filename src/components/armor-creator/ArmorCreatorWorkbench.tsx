@@ -581,7 +581,7 @@ function ArmorPieceGrid({
   onToggle: (pieceId: string) => void;
 }) {
   return (
-    <div className="grid grid-cols-5 gap-2 sm:grid-cols-6">
+    <div className="grid grid-cols-5 gap-2 sm:grid-cols-6 lg:grid-cols-[repeat(auto-fit,minmax(4rem,5.5rem))]">
       {pieceIds.map((pieceId) => (
         <ArmorPieceButton
           key={pieceId}
@@ -614,7 +614,7 @@ function ArmorPicker({
   onTogglePiece: (pieceId: string) => void;
 }) {
   return (
-    <section className="min-w-0 flex-1 space-y-4">
+    <section className="min-w-0 flex-1 space-y-4 lg:space-y-3">
       <ArmorPickerHeader
         copy={copy}
         gender={selection.gender}
@@ -712,7 +712,7 @@ function ArmorPreview({
   onDownload: () => void;
 }) {
   return (
-    <section className="order-1 w-full lg:order-2 lg:w-[600px] lg:shrink-0">
+    <section className="order-1 w-full lg:order-2 lg:w-[480px] lg:shrink-0">
       <h2 className="font-display text-xl text-[var(--site-accent-strong)]">{copy.preview}</h2>
       <div className={cn('mt-3 rounded-2xl p-3', ARMOR_LINE_ART_SURFACE_CLASS)}>
         <canvas
@@ -878,8 +878,8 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
   }
 
   return (
-    <div className="space-y-6 rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-4 text-[var(--site-ink)] sm:p-6">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+    <div className="space-y-6 rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-4 text-[var(--site-ink)] sm:p-6 lg:p-4">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-4">
         <div className="order-2 min-w-0 flex-1 lg:order-1">
           <ArmorPicker
             copy={copy}
