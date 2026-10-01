@@ -72,8 +72,15 @@ type OutfitSelectionWrite = {
   outfitWriteIsLatest: () => boolean;
 };
 
+type ArmorOutfitPreviewTransition = {
+  id: number;
+  previousImage: string;
+  ready: boolean;
+};
+
 const ARMOR_LINE_ART_SURFACE_CLASS =
   'border border-[var(--site-accent-strong)] bg-[#fffaf4]';
+const ARMOR_OUTFIT_TRANSITION_CLEANUP_DELAY_MS = 360;
 
 function stringifyFailureReason(error: unknown): string {
   if (error instanceof Error) {
@@ -689,10 +696,12 @@ function ArmorPreview({
   canvasRef,
   failureMessage,
   activeOutfitSlot,
+  outfitTransition,
   shoulderSymmetry,
   chestCurve,
   chestCurveEnabled,
   onSelectOutfitSlot,
+  onOutfitTransitionEnd,
   onShoulderSymmetry,
   onChestCurve,
   onClear,
@@ -702,10 +711,12 @@ function ArmorPreview({
   canvasRef: Ref<HTMLCanvasElement>;
   failureMessage: string | null;
   activeOutfitSlot: ArmorSaveSlotNumber | null;
+  outfitTransition: ArmorOutfitPreviewTransition | null;
   shoulderSymmetry: boolean;
   chestCurve: boolean;
   chestCurveEnabled: boolean;
   onSelectOutfitSlot: (slotNumber: ArmorSaveSlotNumber) => void;
+  onOutfitTransitionEnd: (transitionId: number) => void;
   onShoulderSymmetry: () => void;
   onChestCurve: () => void;
   onClear: () => void;
@@ -713,14 +724,59 @@ function ArmorPreview({
 }) {
   return (
     <section className="order-1 w-full lg:order-2 lg:w-[480px] lg:shrink-0">
+      <style>{`
+        @keyframes armor-creator-outfit-slide-in {
+          from { transform: translateX(100%); }
+          to { transform: translateX(0); }
+        }
+
+        @keyframes armor-creator-outfit-slide-out {
+          from { transform: translateX(0); }
+          to { transform: translateX(-100%); }
+        }
+
+        .armor-creator-outfit-slide-in {
+          animation: armor-creator-outfit-slide-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .armor-creator-outfit-slide-out {
+          animation: armor-creator-outfit-slide-out 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .armor-creator-outfit-slide-in,
+          .armor-creator-outfit-slide-out {
+            animation-duration: 1ms;
+          }
+        }
+      `}</style>
       <h2 className="font-display text-xl text-[var(--site-accent-strong)]">{copy.preview}</h2>
       <div className={cn('mt-3 rounded-2xl p-3', ARMOR_LINE_ART_SURFACE_CLASS)}>
-        <canvas
-          ref={canvasRef}
-          width={ARMOR_PREVIEW_WIDTH}
-          height={ARMOR_PREVIEW_HEIGHT}
-          className="h-auto w-full bg-[#fffaf4]"
-        />
+        <div className="relative overflow-hidden">
+          <canvas
+            ref={canvasRef}
+            width={ARMOR_PREVIEW_WIDTH}
+            height={ARMOR_PREVIEW_HEIGHT}
+            className={cn(
+              'block h-auto w-full bg-[#fffaf4]',
+              outfitTransition?.ready ? 'armor-creator-outfit-slide-in' : null,
+            )}
+          />
+          {outfitTransition !== null ? (
+            // Canvas snapshots are in-memory data URLs and must be shown at the canvas size during the transition.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              alt=""
+              aria-hidden="true"
+              src={outfitTransition.previousImage}
+              className={cn(
+                'pointer-events-none absolute inset-0 h-full w-full object-fill',
+                outfitTransition.ready ? 'armor-creator-outfit-slide-out' : null,
+              )}
+              onAnimationEnd={() => onOutfitTransitionEnd(outfitTransition.id)}
+            />
+          ) : null}
+        </div>
       </div>
       <div className="mt-3">
         <ArmorPreviewOutfitSlots
@@ -755,11 +811,26 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const actionFailureRef = useRef(false);
   const activeOutfitSlotRef = useRef<ArmorSaveSlotNumber | null>(null);
+  const previewCanvasReadyRef = useRef(false);
+  const pendingOutfitTransitionIdRef = useRef<number | null>(null);
+  const nextOutfitTransitionIdRef = useRef(0);
   const outfitWriteGenerationsRef = useRef(createOutfitWriteGenerations());
   const [selection, setSelection] = useState<ArmorSelection>(createInitialArmorSelection);
   const [activeSlot, setActiveSlot] = useState<PickerSlot>('helm');
   const [activeOutfitSlot, setActiveOutfitSlot] = useState<ArmorSaveSlotNumber | null>(null);
+  const [outfitTransition, setOutfitTransition] =
+    useState<ArmorOutfitPreviewTransition | null>(null);
   const [failureMessage, setFailureMessage] = useState<string | null>(null);
+
+  function finishOutfitTransition(transitionId: number): void {
+    if (pendingOutfitTransitionIdRef.current === transitionId) {
+      pendingOutfitTransitionIdRef.current = null;
+    }
+
+    setOutfitTransition((currentTransition) =>
+      currentTransition?.id === transitionId ? null : currentTransition,
+    );
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -779,11 +850,26 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
       };
     }
 
+    previewCanvasReadyRef.current = false;
+    const transitionId = pendingOutfitTransitionIdRef.current;
     let ignore = false;
     drawArmorLayers(context, selection, () => !ignore)
       .then(() => {
         if (ignore) {
           return;
+        }
+
+        previewCanvasReadyRef.current = true;
+        if (
+          transitionId !== null &&
+          pendingOutfitTransitionIdRef.current === transitionId
+        ) {
+          pendingOutfitTransitionIdRef.current = null;
+          setOutfitTransition((currentTransition) =>
+            currentTransition?.id === transitionId
+              ? { ...currentTransition, ready: true }
+              : currentTransition,
+          );
         }
 
         if (actionFailureRef.current) {
@@ -797,6 +883,17 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
           return;
         }
 
+        previewCanvasReadyRef.current = false;
+        if (
+          transitionId !== null &&
+          pendingOutfitTransitionIdRef.current === transitionId
+        ) {
+          pendingOutfitTransitionIdRef.current = null;
+          setOutfitTransition((currentTransition) =>
+            currentTransition?.id === transitionId ? null : currentTransition,
+          );
+        }
+
         setFailureMessage(describeFailure(failure));
       });
 
@@ -804,6 +901,21 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
       ignore = true;
     };
   }, [selection]);
+
+  useEffect(() => {
+    if (outfitTransition === null || !outfitTransition.ready) {
+      return;
+    }
+
+    const transitionId = outfitTransition.id;
+    const cleanupTimer = window.setTimeout(() => {
+      finishOutfitTransition(transitionId);
+    }, ARMOR_OUTFIT_TRANSITION_CLEANUP_DELAY_MS);
+
+    return () => {
+      window.clearTimeout(cleanupTimer);
+    };
+  }, [outfitTransition]);
 
   function beginArmorAction(): void {
     actionFailureRef.current = false;
@@ -830,6 +942,37 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
   }
 
   function showLoadedOutfit(loadedOutfit: LoadedOutfitSlot): void {
+    const previousOutfitSlot = activeOutfitSlotRef.current;
+    const canvas = canvasRef.current;
+    if (previousOutfitSlot !== null && previewCanvasReadyRef.current && canvas !== null) {
+      let previousImage: string;
+      try {
+        previousImage = canvas.toDataURL('image/png');
+      } catch (failure: unknown) {
+        reportFailure(failure);
+        pendingOutfitTransitionIdRef.current = null;
+        setOutfitTransition(null);
+        previousImage = '';
+      }
+
+      if (previousImage.length > 0) {
+        const transitionId = nextOutfitTransitionIdRef.current + 1;
+        nextOutfitTransitionIdRef.current = transitionId;
+        pendingOutfitTransitionIdRef.current = transitionId;
+        setOutfitTransition({
+          id: transitionId,
+          previousImage,
+          ready: false,
+        });
+      } else {
+        pendingOutfitTransitionIdRef.current = null;
+        setOutfitTransition(null);
+      }
+    } else {
+      pendingOutfitTransitionIdRef.current = null;
+      setOutfitTransition(null);
+    }
+
     activeOutfitSlotRef.current = loadedOutfit.activeOutfitSlot;
     setActiveOutfitSlot(loadedOutfit.activeOutfitSlot);
     setSelection(loadedOutfit.selection);
@@ -896,10 +1039,12 @@ export function ArmorCreatorWorkbench({ locale }: { locale: SiteLocale }) {
           canvasRef={canvasRef}
           failureMessage={failureMessage}
           activeOutfitSlot={activeOutfitSlot}
+          outfitTransition={outfitTransition}
           shoulderSymmetry={selection.shoulderSymmetry}
           chestCurve={selection.chestCurve}
           chestCurveEnabled={chestCurveControlEnabled(selection)}
           onSelectOutfitSlot={selectOutfitSlot}
+          onOutfitTransitionEnd={finishOutfitTransition}
           onShoulderSymmetry={() =>
             commitArmorSelection(setShoulderSymmetry(selection, !selection.shoulderSymmetry))
           }
