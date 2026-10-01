@@ -1,3 +1,6 @@
+import { ArrowRight } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 import {
   ARMY_FORMATION_CREATOR_EDITOR_ID,
   ArmyFormationCreatorPageHeading,
@@ -21,6 +24,7 @@ type ArmyFormationCreatorPageFaqCopy = {
 type ArmyFormationCreatorPageCopy = {
   overviewTitle: string;
   overviewDescription: string;
+  stepsEyebrow: string;
   stepsTitle: string;
   stepsLabel: string;
   steps: readonly ArmyFormationCreatorPageStepCopy[];
@@ -36,6 +40,7 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     overviewTitle: 'What is the Army Formation Creator?',
     overviewDescription:
       'The Army Formation Creator is an online tool for sketching battlefield formations. Place pieces from different categories on the battlefield, arrange troops and equipment, and adjust their angle, color, battlefield height, and background. When you are done, export an image or a formation file to save your ideas, discuss tactics, or share your plan.',
+    stepsEyebrow: 'How it works',
     stepsTitle: 'How to use the Army Formation Creator',
     stepsLabel: 'How to use the Army Formation Creator',
     steps: [
@@ -95,6 +100,7 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     overviewTitle: '什么是军阵制作器？',
     overviewDescription:
       '军阵制作器是一款用于绘制战场阵型示意图的在线工具。你可以在战场上放置不同类别的棋子，安排队伍与装备的位置，并调整角度、颜色、战场高度和背景。完成后可导出图片或方案文件，用于保存阵型构想、战术讨论与展示。',
+    stepsEyebrow: '操作流程',
     stepsTitle: '如何使用军阵制作器？',
     stepsLabel: '军阵制作器使用步骤',
     steps: [
@@ -160,36 +166,68 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
       </section>
 
       <section className="mt-10">
-        <h2 className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl">
-          {copy.stepsTitle}
-        </h2>
-        <ol aria-label={copy.stepsLabel} className="mt-5 space-y-4">
-          {copy.steps.map((step) => (
-            <li key={step.title}>
-              <h3 className="font-semibold leading-6 text-stone-50">{step.title}</h3>
-              <p className="mt-1 text-sm leading-6 text-stone-300 text-pretty">{step.description}</p>
-            </li>
-          ))}
-        </ol>
+        <div className="mb-14 flex flex-col items-center gap-3 text-center">
+          <span className="text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
+            {copy.stepsEyebrow}
+          </span>
+          <h2
+            className="font-display font-semibold tracking-tight text-stone-50 text-balance"
+            style={{ fontSize: 'clamp(1.85rem, 4vw, 2.75rem)', letterSpacing: '-0.03em' }}
+          >
+            {copy.stepsTitle}
+          </h2>
+        </div>
+
+        <div className="relative">
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 top-6 hidden h-px bg-white/15 md:block"
+          />
+          <ol aria-label={copy.stepsLabel} className="grid grid-cols-1 gap-8 md:grid-cols-4">
+            {copy.steps.map((step, index) => (
+              <li
+                key={step.title}
+                className="relative flex flex-col items-center gap-4 text-center"
+              >
+                <div className="relative z-10 flex size-12 items-center justify-center rounded-full border border-white/15 bg-background">
+                  <span className="text-xs font-semibold tabular-nums text-stone-400">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <h3 className="font-semibold tracking-tight text-stone-50">{step.title}</h3>
+                  <p className="max-w-xs text-sm leading-relaxed text-stone-300 text-pretty">
+                    {step.description}
+                  </p>
+                </div>
+                {index < copy.steps.length - 1 && (
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="mt-2 size-4 text-stone-500 md:hidden"
+                  />
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
-      <section className="mt-12 rounded-3xl border border-[#d7b46a]/25 bg-[#d7b46a]/[0.07] p-6 sm:p-8">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl">
-              {copy.callToActionTitle}
-            </h2>
-            <p className="mt-2 text-sm leading-7 text-stone-300 text-pretty">
-              {copy.callToActionDescription}
-            </p>
-          </div>
-          <a
-            href="#army-formation-creator-editor"
-            className="site-cta-primary min-h-11 shrink-0 justify-center focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none!"
-          >
-            {copy.callToActionLabel}
-          </a>
-        </div>
+      <section className="mt-14 flex flex-col items-center gap-3 text-center">
+        <h2 className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl">
+          {copy.callToActionTitle}
+        </h2>
+        <p className="max-w-3xl text-sm leading-7 text-stone-300 text-pretty sm:text-base">
+          {copy.callToActionDescription}
+        </p>
+        <Button
+          size="lg"
+          className="mt-2 rounded-full px-8"
+          nativeButton={false}
+          render={<a href="#army-formation-creator-editor" />}
+        >
+          {copy.callToActionLabel}
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </Button>
       </section>
 
       <section className="mt-12 border-t border-white/10 pt-10">
