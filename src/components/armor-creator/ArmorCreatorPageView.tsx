@@ -17,7 +17,7 @@ function ArmorCreatorHowToUse({ copy }: { copy: ArmorCreatorCopy }) {
   return (
     <section
       aria-labelledby="armor-creator-how-to-use-heading"
-      className="mx-auto max-w-5xl border-t border-white/10 px-5 py-12 text-stone-100 sm:py-16 lg:px-8"
+      className="mx-auto max-w-5xl border-t border-white/10 px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
     >
       <div className="mb-14 flex flex-col items-center gap-3 text-center">
         <span className="text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
@@ -73,7 +73,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
       <ArmorCreatorPageHeading locale={locale} />
       <div
         id={ARMOR_CREATOR_EDITOR_ID}
-        className="mx-auto w-full scroll-mt-8 px-5 py-8 lg:px-6 lg:py-4"
+        className="mx-auto w-full scroll-mt-8 px-5 py-12 lg:px-6 lg:py-10"
       >
         <ArmorCreatorWorkbench locale={locale} />
       </div>
@@ -82,7 +82,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
           <ArmorCreatorFeatures />
           <section
             aria-labelledby="armor-creator-what-is-heading"
-            className="mx-auto max-w-5xl border-t border-white/10 px-5 py-12 text-stone-100 sm:py-16 lg:px-8"
+            className="mx-auto max-w-5xl border-t border-white/10 px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
           >
             <h2
               id="armor-creator-what-is-heading"
@@ -109,7 +109,12 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
 
 export function ArmorCreatorPageView({ locale }: { locale: SiteLocale }) {
   return (
-    <InnerPageChrome locale={locale} currentPath={ARMOR_CREATOR_PATH} tone="hub">
+    <InnerPageChrome
+      locale={locale}
+      currentPath={ARMOR_CREATOR_PATH}
+      tone="hub"
+      className="armor-creator-page [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer"
+    >
       <ArmorCreatorPageGap locale={locale} />
     </InnerPageChrome>
   );
