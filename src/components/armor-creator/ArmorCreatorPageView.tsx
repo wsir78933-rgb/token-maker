@@ -4,6 +4,7 @@ import {
   ARMOR_CREATOR_EDITOR_ID,
   ArmorCreatorPageHeading,
 } from '@/components/armor-creator/ArmorCreatorPageHeading';
+import { ArmorCreatorFeatures } from '@/components/armor-creator/ArmorCreatorFeatures';
 import { Faq1 } from '@/components/armor-creator/Faq1';
 import { ArmorCreatorWorkbench } from '@/components/armor-creator/ArmorCreatorWorkbench';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
@@ -78,6 +79,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
       </div>
       {locale === 'zh' && (
         <>
+          <ArmorCreatorFeatures />
           <section
             aria-labelledby="armor-creator-what-is-heading"
             className="mx-auto max-w-5xl border-t border-white/10 px-5 py-12 text-stone-100 sm:py-16 lg:px-8"
