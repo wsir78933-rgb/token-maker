@@ -289,11 +289,12 @@ describe('ArmorCreatorWorkbench', () => {
     render(<ArmorCreatorWorkbench locale="zh" />);
 
     const canvas = document.querySelector('canvas');
+    const previewSurface = canvas?.parentElement?.parentElement;
     expect(canvas?.className).toContain('bg-[#fffaf4]');
     expect(canvas?.className).not.toContain('bg-black');
-    expect(canvas?.parentElement?.className).toContain('bg-[#fffaf4]');
-    expect(canvas?.parentElement?.className).toContain('border-[var(--site-accent-strong)]');
-    expect(canvas?.parentElement?.className).not.toContain('bg-black');
+    expect(previewSurface?.className).toContain('bg-[#fffaf4]');
+    expect(previewSurface?.className).toContain('border-[var(--site-accent-strong)]');
+    expect(previewSurface?.className).not.toContain('bg-black');
   });
 
   it('过期绘制失败不会盖住后来的成功', async () => {
@@ -623,6 +624,63 @@ describe('ArmorCreatorWorkbench', () => {
     expect(savedBeforeClick).toContain('data:image/png;base64,AAAA');
     expect(savedBeforeClick).toContain('"gender":"female"');
     expect(savedBeforeClick).toContain('"material":"leather"');
+  });
+
+  it('从已选套装切换时，旧预览左滑并由新预览右滑进入', async () => {
+    installCanvas2d();
+    vi.spyOn(armorRender, 'drawArmorLayers').mockResolvedValue(undefined);
+    vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL').mockReturnValue(
+      'data:image/png;base64,PREVIOUS',
+    );
+    writeArmorSaveSlot(localStorage, 1, {
+      snapshot: {
+        gender: 'female',
+        material: 'leather',
+        shoulderSymmetry: true,
+        chestCurve: false,
+        equippedPieceIds: {},
+      },
+      thumbnailDataUrl: 'data:image/png;base64,AAAA',
+    });
+    writeArmorSaveSlot(localStorage, 2, {
+      snapshot: {
+        gender: 'male',
+        material: 'plate',
+        shoulderSymmetry: false,
+        chestCurve: false,
+        equippedPieceIds: {},
+      },
+      thumbnailDataUrl: 'data:image/png;base64,BBBB',
+    });
+
+    render(<ArmorCreatorWorkbench locale="zh" />);
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    fireEvent.click(buttonByExactName('套装 1'));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    fireEvent.click(buttonByExactName('套装 2'));
+
+    await waitFor(() => {
+      const canvas = document.querySelector('canvas');
+      const previousPreview = document.querySelector('img[aria-hidden="true"]');
+      expect(canvas?.className).toContain('armor-creator-outfit-slide-in');
+      expect(previousPreview?.getAttribute('src')).toBe('data:image/png;base64,PREVIOUS');
+      expect(previousPreview?.className).toContain('armor-creator-outfit-slide-out');
+    });
+    expect(buttonByExactName('套装 2').getAttribute('aria-pressed')).toBe('true');
+
+    const previousPreview = document.querySelector('img[aria-hidden="true"]');
+    expect(previousPreview).toBeTruthy();
+    await act(async () => {
+      previousPreview?.dispatchEvent(new Event('animationend', { bubbles: true }));
+    });
+    await waitFor(() => {
+      expect(document.querySelector('img[aria-hidden="true"]')).toBeNull();
+    });
   });
 
   it('自动保存画布失败时提示原始错误', async () => {
