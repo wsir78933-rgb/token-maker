@@ -35,7 +35,7 @@ export type CircularTestimonialsFontSizes = Partial<Record<CircularTestimonialFo
 
 export type CircularTestimonialsProps = {
   testimonials: readonly CircularTestimonial[];
-  ariaLabel: string;
+  ariaLabel?: string;
   previousLabel: string;
   nextLabel: string;
   autoplay?: boolean;
@@ -105,7 +105,7 @@ function isPlainRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function requireCircularTestimonialsText(value: unknown, field: string): string {
-  if (typeof value === 'string' && value.length > 0) {
+  if (typeof value === 'string' && value.trim().length > 0) {
     return value;
   }
 
@@ -280,6 +280,7 @@ function CircularTestimonialQuote({ quote, fontSize, color }: { quote: string; f
         return (
           <motion.span
             key={`${index}-${wordOrSpace}`}
+            className="inline-block"
             initial={{ filter: 'blur(10px)', opacity: 0, y: 8 }}
             animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
             transition={{ delay, duration: 0.28, ease: 'easeOut' }}
@@ -294,7 +295,7 @@ function CircularTestimonialQuote({ quote, fontSize, color }: { quote: string; f
 
 export function CircularTestimonials({
   testimonials,
-  ariaLabel,
+  ariaLabel = 'Circular testimonials',
   previousLabel,
   nextLabel,
   autoplay = true,
@@ -313,6 +314,7 @@ export function CircularTestimonials({
   const resolvedColors = { ...DEFAULT_CIRCULAR_TESTIMONIAL_COLORS, ...validatedColors };
   const resolvedFontSizes = { ...DEFAULT_CIRCULAR_TESTIMONIAL_FONT_SIZES, ...validatedFontSizes };
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [autoplayPausedByInteraction, setAutoplayPausedByInteraction] = useState(false);
   const activeIndex = selectedIndex % validatedTestimonials.length;
   const activeTestimonial = validatedTestimonials[activeIndex];
   const previousTestimonial =
@@ -334,7 +336,7 @@ export function CircularTestimonials({
   } as CircularTestimonialsStyle;
 
   useEffect(() => {
-    if (!validatedAutoplay || validatedTestimonials.length < 2) {
+    if (!validatedAutoplay || autoplayPausedByInteraction || validatedTestimonials.length < 2) {
       return undefined;
     }
 
@@ -343,7 +345,19 @@ export function CircularTestimonials({
     }, CIRCULAR_TESTIMONIAL_AUTOPLAY_INTERVAL_MS);
 
     return () => window.clearInterval(autoplayInterval);
-  }, [validatedAutoplay, validatedTestimonials.length]);
+  }, [autoplayPausedByInteraction, validatedAutoplay, validatedTestimonials.length]);
+
+  function showPreviousTestimonial(): void {
+    setAutoplayPausedByInteraction(true);
+    setSelectedIndex((currentIndex) =>
+      circularTestimonialsWrappedIndex(currentIndex - 1, validatedTestimonials.length),
+    );
+  }
+
+  function showNextTestimonial(): void {
+    setAutoplayPausedByInteraction(true);
+    setSelectedIndex((currentIndex) => (currentIndex + 1) % validatedTestimonials.length);
+  }
 
   function handleCarouselKeyDown(event: KeyboardEvent<HTMLElement>): void {
     if (!event.currentTarget.contains(document.activeElement)) {
@@ -352,14 +366,12 @@ export function CircularTestimonials({
 
     if (event.key === 'ArrowLeft') {
       event.preventDefault();
-      setSelectedIndex((currentIndex) =>
-        circularTestimonialsWrappedIndex(currentIndex - 1, validatedTestimonials.length),
-      );
+      showPreviousTestimonial();
     }
 
     if (event.key === 'ArrowRight') {
       event.preventDefault();
-      setSelectedIndex((currentIndex) => (currentIndex + 1) % validatedTestimonials.length);
+      showNextTestimonial();
     }
   }
 
@@ -367,7 +379,7 @@ export function CircularTestimonials({
     <section
       aria-label={validatedAriaLabel}
       aria-roledescription="carousel"
-      className="relative isolate w-full rounded-3xl border border-white/10 bg-[#10100f] px-5 py-8 text-stone-100 shadow-[0_24px_64px_rgba(0,0,0,0.34)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d7b46a] sm:px-8 sm:py-10 lg:px-12"
+      className="relative isolate w-full px-5 py-8 text-stone-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d7b46a] sm:px-8 sm:py-10 lg:px-12"
       data-circular-testimonials="true"
       onKeyDown={handleCarouselKeyDown}
       tabIndex={0}
@@ -447,19 +459,14 @@ export function CircularTestimonials({
               initial={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
-              <CircularTestimonialQuote
-                quote={activeTestimonial.quote}
-                color={resolvedColors.testimony}
-                fontSize={resolvedFontSizes.quote}
-              />
               <div>
-                <h2
+                <h3
                   className="font-semibold leading-tight"
                   data-part="testimonial-name"
                   style={{ color: resolvedColors.name, fontSize: resolvedFontSizes.name }}
                 >
                   {activeTestimonial.name}
-                </h2>
+                </h3>
                 <p
                   className="mt-1"
                   data-part="testimonial-designation"
@@ -468,6 +475,11 @@ export function CircularTestimonials({
                   {activeTestimonial.designation}
                 </p>
               </div>
+              <CircularTestimonialQuote
+                quote={activeTestimonial.quote}
+                color={resolvedColors.testimony}
+                fontSize={resolvedFontSizes.quote}
+              />
             </motion.div>
           </AnimatePresence>
 
@@ -475,11 +487,7 @@ export function CircularTestimonials({
             <button
               aria-label={validatedPreviousLabel}
               className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d7b46a]/30 shadow-sm transition-colors hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d7b46a]"
-              onClick={() => {
-                setSelectedIndex((currentIndex) =>
-                  circularTestimonialsWrappedIndex(currentIndex - 1, validatedTestimonials.length),
-                );
-              }}
+              onClick={showPreviousTestimonial}
               style={arrowButtonStyle}
               type="button"
             >
@@ -488,9 +496,7 @@ export function CircularTestimonials({
             <button
               aria-label={validatedNextLabel}
               className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d7b46a]/30 shadow-sm transition-colors hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d7b46a]"
-              onClick={() => {
-                setSelectedIndex((currentIndex) => (currentIndex + 1) % validatedTestimonials.length);
-              }}
+              onClick={showNextTestimonial}
               style={arrowButtonStyle}
               type="button"
             >
