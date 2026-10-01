@@ -82,11 +82,12 @@ const englishArmorCreatorCopy: ArmorCreatorCopy = {
   replaceSaveConfirm(slotNumber: number) {
     return formatArmorReplaceSaveConfirm('Replace save', '?', slotNumber);
   },
-  pageTitle: 'Armor creator',
-  pageDescription: 'Mix and match armor in the browser and download an image.',
-  heroTitleLead: "Build your character's",
-  heroTitleEmphasis: 'armor',
-  heroTitleTail: 'look',
+  pageTitle: 'Free Armor Creator for RPG Characters, NPCs & Fantasy Worlds',
+  pageDescription:
+    'This free Armor Creator offers armor inspiration for RPG/TTRPG characters, campaign NPCs, and fantasy settings. Mix armor pieces and preview character looks.',
+  heroTitleLead: 'Free',
+  heroTitleEmphasis: 'Armor Creator',
+  heroTitleTail: 'for RPG Characters, NPCs & Fantasy Worlds',
   heroAction: 'Try for Free',
 };
 
@@ -125,11 +126,12 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   replaceSaveConfirm(slotNumber: number) {
     return formatArmorReplaceSaveConfirm('替换保存', '？', slotNumber);
   },
-  pageTitle: '护甲制作',
-  pageDescription: '在浏览器里搭配护甲并下载图片。',
-  heroTitleLead: '在浏览器里搭配你的',
-  heroTitleEmphasis: '护甲',
-  heroTitleTail: '造型',
+  pageTitle: '免费护甲搭配工具：为 RPG 角色、NPC 与奇幻世界提供灵感',
+  pageDescription:
+    '这是一款免费护甲搭配工具，为 RPG/TTRPG 角色、战役 NPC 和奇幻世界设定提供护甲造型灵感。你可以组合不同护甲部件、预览角色造型。',
+  heroTitleLead: '免费',
+  heroTitleEmphasis: '护甲搭配工具',
+  heroTitleTail: '：为 RPG 角色、NPC 与奇幻世界提供灵感',
   heroAction: 'Try for Free',
 };
 
