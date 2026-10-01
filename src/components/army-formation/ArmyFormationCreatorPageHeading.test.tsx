@@ -25,25 +25,31 @@ describe('ArmyFormationCreatorPageHeading', () => {
     const action = screen.getByRole('button', { name: 'Try for Free' });
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    expect(heading.textContent).toBe('Place battlefield pieces in your browser Army formation creator');
+    expect(heading.textContent).toBe('Plan D&D and tabletop RPG battles online Army formation creator');
     expect(heading.querySelector('span span')?.textContent).toBe('Army formation creator');
     expect(heading.querySelector('span span')?.className).toContain('font-normal');
     expect(heading.querySelector('span span')?.className).not.toContain('italic');
     expect(heading.querySelector('span span')?.className).toContain('md:text-7xl');
     expect(heading.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
-    expect(screen.getByText('Arrange the formation on the battlefield, then download an image.')).toBeTruthy();
+    expect(
+      screen.getByText(
+        'Arrange forces, creatures, and siege pieces, then export an image for your players or worldbuilding notes.',
+      ),
+    ).toBeTruthy();
     expect(action.className).toContain('bg-black');
     expect(action.className).toContain('text-white');
   });
 
-  it('中文 hero 全部是中文，按钮是黑底白字', () => {
+  it('中文 hero 点明 D&D 与 RPG 场景，按钮是黑底白字', () => {
     const heading = renderedHeading('zh');
     const action = screen.getByRole('button', { name: '免费试用' });
 
-    expect(heading.textContent).toBe('在浏览器里摆放战场棋子 军阵制作器');
-    expect(heading.querySelector('span span')?.textContent).toBe('军阵制作器');
+    expect(heading.textContent).toBe('在线规划 D&D 与桌面 RPG 战场 军队阵型制作器');
+    expect(heading.querySelector('span span')?.textContent).toBe('军队阵型制作器');
     expect(heading.textContent).not.toContain('Army');
-    expect(screen.getByText('在战场上把阵型摆好，然后下载图片。')).toBeTruthy();
+    expect(
+      screen.getByText('免费摆放军队、生物和攻城器械，导出阵型图片，分享给玩家或留作奇幻设定资料。'),
+    ).toBeTruthy();
     expect(action.className).toContain('bg-black');
     expect(action.className).toContain('text-white');
   });
@@ -59,7 +65,7 @@ describe('ArmyFormationCreatorPageView', () => {
 
     expect(editor).not.toBeNull();
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    expect(heading.textContent).toBe('在浏览器里摆放战场棋子 军阵制作器');
+    expect(heading.textContent).toBe('在线规划 D&D 与桌面 RPG 战场 军队阵型制作器');
     expect(heading.compareDocumentPosition(tool) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
@@ -72,7 +78,7 @@ describe('ArmyFormationCreatorPageView', () => {
     const heading = screen.getByRole('heading', { level: 1 });
     const tool = screen.getByRole('region', { name: 'Army formation creator' });
 
-    expect(heading.textContent).toBe('Place battlefield pieces in your browser Army formation creator');
+    expect(heading.textContent).toBe('Plan D&D and tabletop RPG battles online Army formation creator');
     expect(screen.getByRole('button', { name: 'Try for Free' }).className).toContain('bg-black');
     expect(heading.compareDocumentPosition(tool) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,

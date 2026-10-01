@@ -51,9 +51,10 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   pageTitle: 'Army formation creator: Free Online D&D & RPG Tool',
   pageDescription:
     'Help GMs plan D&D and tabletop RPG battles online for free. Arrange forces, creatures, and siege pieces, then export a formation image to share with players.',
-  heroTitleLead: 'Place battlefield pieces in your browser',
+  heroTitleLead: 'Plan D&D and tabletop RPG battles online',
   heroTitleEmphasis: 'Army formation creator',
-  heroSubtitle: 'Arrange the formation on the battlefield, then download an image.',
+  heroSubtitle:
+    'Arrange forces, creatures, and siege pieces, then export an image for your players or worldbuilding notes.',
   heroAction: 'Try for Free',
   helmets: 'Helmets',
   weapons: 'Weapons',
@@ -95,9 +96,9 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   pageTitle: '军队阵型制作器｜免费在线制作 D&D/RPG 战场',
   pageDescription:
     '帮助 GM 免费在线规划 D&D 与桌面 RPG 战场，摆放各方军队、生物和攻城器械，并导出阵型图片与玩家分享。',
-  heroTitleLead: '在浏览器里摆放战场棋子',
-  heroTitleEmphasis: '军阵制作器',
-  heroSubtitle: '在战场上把阵型摆好，然后下载图片。',
+  heroTitleLead: '在线规划 D&D 与桌面 RPG 战场',
+  heroTitleEmphasis: '军队阵型制作器',
+  heroSubtitle: '免费摆放军队、生物和攻城器械，导出阵型图片，分享给玩家或留作奇幻设定资料。',
   heroAction: '免费试用',
   helmets: '头盔',
   weapons: '武器',
