@@ -99,13 +99,15 @@ describe('ArmorPickerHeader', () => {
     cleanup();
   });
 
-  it('stretches gender across one row and materials across the next', () => {
+  it('keeps the gender and material grids compact on desktop', () => {
     const copy = getArmorCreatorCopy('zh');
     const { container } = renderArmorPickerHeader(copy);
     const header = armorPickerHeaderElement(container);
     const [choiceRow, materialRow] = armorPickerHeaderRows(header);
 
-    expect(header.className).toBe('space-y-2');
+    expect(header.className).toBe(
+      'space-y-2 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-stretch lg:gap-2 lg:space-y-0',
+    );
     expect(choiceRow.className).toBe('grid grid-cols-2 gap-2');
     expect(materialRow.className).toBe('grid grid-cols-3 gap-2');
     expect(buttonLabels(choiceRow)).toEqual([copy.genderMale, copy.genderFemale]);

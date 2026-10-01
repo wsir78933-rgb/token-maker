@@ -172,7 +172,7 @@ describe('ArmorCreatorWorkbench', () => {
 
     const preview = screen.getByRole('heading', { name: '预览' }).closest('section');
     expect(preview?.className).toContain('lg:order-2');
-    expect(preview?.className).toContain('lg:w-[600px]');
+    expect(preview?.className).toContain('lg:w-[480px]');
     expect(preview?.className).not.toContain('sticky');
     expect(preview?.parentElement?.parentElement?.className).toContain('rounded-2xl');
     expect(preview?.parentElement?.parentElement?.className).toContain('bg-[var(--site-panel)]');
