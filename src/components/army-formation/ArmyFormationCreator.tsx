@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode, type RefObject } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode, type RefObject } from 'react';
 
 import {
   readArmyFormationBrowserSave,
@@ -49,6 +49,8 @@ import {
 import { cn } from '@/lib/utils';
 
 const ARMY_FIELD_WIDTH_PX = 780;
+const ARMY_BATTLEFIELD_SLIDE_DURATION_MS = 280;
+const ARMY_BATTLEFIELD_SLIDE_CLEANUP_DELAY_MS = ARMY_BATTLEFIELD_SLIDE_DURATION_MS + 80;
 const ARMY_DRAG_START_PX = 3;
 const ARMY_FORMATION_FILE_NAME = 'army-formation-creator.txt';
 const ARMY_FORMATION_IMAGE_NAME = 'army-formation-creator.svg';
@@ -74,6 +76,13 @@ type PieceDragSession = {
 type EmptySlot = {
   x: number;
   y: number;
+};
+
+type ArmyFormationBattlefieldSlide = {
+  id: number;
+  direction: -1 | 1;
+  outgoingBattlefield: ArmyBattlefield;
+  outgoingEmptySlot: EmptySlot | null;
 };
 
 type ArmyFormationStartupRecord =
@@ -286,6 +295,29 @@ function readActiveBattlefield(armyDocument: ArmyFormationDocument): ArmyBattlef
   }
 
   return battlefield;
+}
+
+function prefersArmyFormationReducedMotion(): boolean {
+  return typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function readArmyFieldScaleFromPieceButton(target: HTMLButtonElement): number {
+  const fieldElement = target.parentElement;
+  if (fieldElement === null || !fieldElement.hasAttribute('data-army-field')) {
+    throw new Error('Army formation piece is not inside a battlefield. Received a missing parent field.');
+  }
+
+  const renderedFieldWidth = fieldElement.getBoundingClientRect().width;
+  const fieldScale = renderedFieldWidth / ARMY_FIELD_WIDTH_PX;
+  if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
+    throw new Error(
+      `Army formation field scale must be positive and finite. renderedFieldWidth=${renderedFieldWidth}.`,
+    );
+  }
+
+  return fieldScale;
 }
 
 function assertKnownArmyFormationIcons(armyDocument: ArmyFormationDocument): void {
@@ -1154,16 +1186,11 @@ function ArmyFormationBattlefieldTransferRow({
   );
 }
 
-function ArmyFormationBattlefieldPane({
+function ArmyFormationBattlefieldCanvas({
   copy,
   battlefield,
   emptySlot,
-  fileInputRef,
-  onExportFile,
-  onExportImage,
-  onChooseFile,
-  onStepPrevious,
-  onStepNext,
+  fieldScale,
   onPiecePointerDown,
   onPiecePointerMove,
   onPiecePointerUp,
@@ -1173,12 +1200,7 @@ function ArmyFormationBattlefieldPane({
   copy: ArmyFormationCreatorCopy;
   battlefield: ArmyBattlefield;
   emptySlot: EmptySlot | null;
-  fileInputRef: RefObject<HTMLInputElement | null>;
-  onExportFile: () => void;
-  onExportImage: () => void;
-  onChooseFile: (file: File) => void;
-  onStepPrevious: () => void;
-  onStepNext: () => void;
+  fieldScale: number;
   onPiecePointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onPiecePointerMove: (event: PointerEvent<HTMLButtonElement>) => void;
   onPiecePointerUp: (event: PointerEvent<HTMLButtonElement>) => void;
@@ -1186,47 +1208,222 @@ function ArmyFormationBattlefieldPane({
   onPieceClick: (pieceId: string) => void;
 }) {
   return (
+    <div
+      data-army-field=""
+      data-field-height={battlefield.heightPx}
+      className="relative origin-top-left"
+      style={{
+        width: ARMY_FIELD_WIDTH_PX,
+        height: battlefield.heightPx,
+        backgroundColor: battlefield.fieldBackgroundColor,
+        transform: `scale(${fieldScale})`,
+        transformOrigin: 'top left',
+      }}
+    >
+      {battlefield.backgroundImageUrl !== '' ? (
+        // Battlefield background comes from a URL the user pasted.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          alt=""
+          src={battlefield.backgroundImageUrl}
+          className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
+        />
+      ) : null}
+      {emptySlot !== null ? <ArmyFormationEmptySlot slot={emptySlot} label={copy.emptySlot} /> : null}
+      {battlefield.pieces.map((piece) => (
+        <ArmyFormationPieceButton
+          key={piece.id}
+          piece={piece}
+          selected={battlefield.selectedPieceIds.includes(piece.id)}
+          onPointerDown={onPiecePointerDown}
+          onPointerMove={onPiecePointerMove}
+          onPointerUp={onPiecePointerUp}
+          onPointerCancel={onPiecePointerCancel}
+          onClick={onPieceClick}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ArmyFormationBattlefieldPane({
+  copy,
+  battlefield,
+  emptySlot,
+  activeBattlefieldIndex,
+  battlefieldCount,
+  slide,
+  fileInputRef,
+  onExportFile,
+  onExportImage,
+  onChooseFile,
+  onStepPrevious,
+  onStepNext,
+  onSlideFinished,
+  onPiecePointerDown,
+  onPiecePointerMove,
+  onPiecePointerUp,
+  onPiecePointerCancel,
+  onPieceClick,
+}: {
+  copy: ArmyFormationCreatorCopy;
+  battlefield: ArmyBattlefield;
+  emptySlot: EmptySlot | null;
+  activeBattlefieldIndex: number;
+  battlefieldCount: number;
+  slide: ArmyFormationBattlefieldSlide | null;
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  onExportFile: () => void;
+  onExportImage: () => void;
+  onChooseFile: (file: File) => void;
+  onStepPrevious: () => void;
+  onStepNext: () => void;
+  onSlideFinished: (slideId: number) => void;
+  onPiecePointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onPiecePointerMove: (event: PointerEvent<HTMLButtonElement>) => void;
+  onPiecePointerUp: (event: PointerEvent<HTMLButtonElement>) => void;
+  onPiecePointerCancel: (event: PointerEvent<HTMLButtonElement>) => void;
+  onPieceClick: (pieceId: string) => void;
+}) {
+  const fieldViewportRef = useRef<HTMLDivElement | null>(null);
+  const [fieldViewportWidth, setFieldViewportWidth] = useState(ARMY_FIELD_WIDTH_PX);
+  const [movingSlideId, setMovingSlideId] = useState<number | null>(null);
+  const slideId = slide?.id ?? null;
+
+  useEffect(() => {
+    const fieldViewport = fieldViewportRef.current;
+    if (fieldViewport === null) {
+      throw new Error('Army formation field viewport is missing. Received null ref.');
+    }
+
+    function updateFieldViewportWidth(width: number): void {
+      if (!Number.isFinite(width) || width < 0) {
+        throw new Error(`Army formation viewport width must be finite and nonnegative. Received ${String(width)}.`);
+      }
+
+      setFieldViewportWidth((currentWidth) => (currentWidth === width ? currentWidth : width));
+    }
+
+    updateFieldViewportWidth(fieldViewport.clientWidth);
+    if (typeof ResizeObserver === 'function') {
+      const viewportObserver = new ResizeObserver((entries) => {
+        const entry = entries[0];
+        if (entry === undefined) {
+          throw new Error('Army formation viewport observer returned no entries. Received an empty list.');
+        }
+
+        updateFieldViewportWidth(entry.contentRect.width);
+      });
+      viewportObserver.observe(fieldViewport);
+      return () => viewportObserver.disconnect();
+    }
+
+    const updateFieldViewportFromWindow = () => updateFieldViewportWidth(fieldViewport.clientWidth);
+    window.addEventListener('resize', updateFieldViewportFromWindow);
+    return () => window.removeEventListener('resize', updateFieldViewportFromWindow);
+  }, []);
+
+  useEffect(() => {
+    if (slideId === null) {
+      return;
+    }
+
+    const animationFrame = window.requestAnimationFrame(() => setMovingSlideId(slideId));
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [slideId]);
+
+  useEffect(() => {
+    if (slideId === null || movingSlideId !== slideId) {
+      return;
+    }
+
+    const cleanupTimer = window.setTimeout(
+      () => onSlideFinished(slideId),
+      ARMY_BATTLEFIELD_SLIDE_CLEANUP_DELAY_MS,
+    );
+    return () => window.clearTimeout(cleanupTimer);
+  }, [movingSlideId, onSlideFinished, slideId]);
+
+  const fieldScale = fieldViewportWidth > 0 ? fieldViewportWidth / ARMY_FIELD_WIDTH_PX : 1;
+  const renderedFieldHeight = battlefield.heightPx * fieldScale;
+  const slideIsMoving = slide !== null && movingSlideId === slide.id;
+  const outgoingOffset = slide === null || !slideIsMoving ? 0 : -slide.direction * 100;
+  const incomingOffset = slide === null ? 0 : slideIsMoving ? 0 : slide.direction * 100;
+
+  return (
     <div className="grid min-w-0 flex-1 grid-cols-[2.25rem_minmax(0,1fr)_2.25rem] gap-x-2 gap-y-2">
-      <h2 className="col-start-2 text-sm font-semibold text-[var(--site-ink-strong)]">{copy.battlefield}</h2>
+      <h2
+        className="col-start-2 text-sm font-semibold text-[var(--site-ink-strong)]"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {copy.battlefield} {activeBattlefieldIndex + 1}/{battlefieldCount}
+      </h2>
       <ArmyFormationStepButton
         label={copy.switchToPreviousBattle}
         glyph="<"
         columnClass="col-start-1"
         onStep={onStepPrevious}
       />
-      <div className="col-start-2 row-start-2 overflow-auto rounded-md border border-[var(--site-border-strong)]">
-        <div
-          data-army-field=""
-          data-field-height={battlefield.heightPx}
-          className="relative"
-          style={{
-            width: ARMY_FIELD_WIDTH_PX,
-            height: battlefield.heightPx,
-            backgroundColor: battlefield.fieldBackgroundColor,
-          }}
-        >
-          {battlefield.backgroundImageUrl !== '' ? (
-            // Battlefield background comes from a URL the user pasted.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              alt=""
-              src={battlefield.backgroundImageUrl}
-              className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
+      <div
+        ref={fieldViewportRef}
+        className="col-start-2 row-start-2 min-w-0 overflow-hidden rounded-md border border-[var(--site-border-strong)]"
+      >
+        <div className="relative w-full" style={{ height: renderedFieldHeight }}>
+          {slide === null ? (
+            <ArmyFormationBattlefieldCanvas
+              copy={copy}
+              battlefield={battlefield}
+              emptySlot={emptySlot}
+              fieldScale={fieldScale}
+              onPiecePointerDown={onPiecePointerDown}
+              onPiecePointerMove={onPiecePointerMove}
+              onPiecePointerUp={onPiecePointerUp}
+              onPiecePointerCancel={onPiecePointerCancel}
+              onPieceClick={onPieceClick}
             />
-          ) : null}
-          {emptySlot !== null ? <ArmyFormationEmptySlot slot={emptySlot} label={copy.emptySlot} /> : null}
-          {battlefield.pieces.map((piece) => (
-            <ArmyFormationPieceButton
-              key={piece.id}
-              piece={piece}
-              selected={battlefield.selectedPieceIds.includes(piece.id)}
-              onPointerDown={onPiecePointerDown}
-              onPointerMove={onPiecePointerMove}
-              onPointerUp={onPiecePointerUp}
-              onPointerCancel={onPiecePointerCancel}
-              onClick={onPieceClick}
-            />
-          ))}
+          ) : (
+            <>
+              <div
+                key={`outgoing-${slide.id}`}
+                aria-hidden="true"
+                inert
+                className="pointer-events-none absolute inset-y-0 left-0 w-full overflow-hidden transition-transform duration-[280ms] ease-in-out motion-reduce:duration-0 motion-reduce:transition-none"
+                style={{ transform: `translateX(${outgoingOffset}%)` }}
+              >
+                <ArmyFormationBattlefieldCanvas
+                  copy={copy}
+                  battlefield={slide.outgoingBattlefield}
+                  emptySlot={slide.outgoingEmptySlot}
+                  fieldScale={fieldScale}
+                  onPiecePointerDown={onPiecePointerDown}
+                  onPiecePointerMove={onPiecePointerMove}
+                  onPiecePointerUp={onPiecePointerUp}
+                  onPiecePointerCancel={onPiecePointerCancel}
+                  onPieceClick={onPieceClick}
+                />
+              </div>
+              <div
+                key={`incoming-${slide.id}`}
+                aria-hidden="true"
+                inert
+                className="pointer-events-none absolute inset-y-0 left-0 w-full overflow-hidden transition-transform duration-[280ms] ease-in-out motion-reduce:duration-0 motion-reduce:transition-none"
+                style={{ transform: `translateX(${incomingOffset}%)` }}
+              >
+                <ArmyFormationBattlefieldCanvas
+                  copy={copy}
+                  battlefield={battlefield}
+                  emptySlot={emptySlot}
+                  fieldScale={fieldScale}
+                  onPiecePointerDown={onPiecePointerDown}
+                  onPiecePointerMove={onPiecePointerMove}
+                  onPiecePointerUp={onPiecePointerUp}
+                  onPiecePointerCancel={onPiecePointerCancel}
+                  onPieceClick={onPieceClick}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
       <ArmyFormationStepButton
@@ -1306,6 +1503,14 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   const pieceDragRef = useRef<PieceDragSession | null>(null);
   const suppressClickRef = useRef(false);
   const armyFormationAutosaveOpenRef = useRef(false);
+  const battlefieldSlideSequenceRef = useRef(0);
+  const [battlefieldSlide, setBattlefieldSlide] = useState<ArmyFormationBattlefieldSlide | null>(null);
+  const battlefield = readActiveBattlefield(armyDocument);
+  const emptySlot = readNextEmptySlot(armyDocument, ARMY_FIELD_WIDTH_PX);
+
+  const finishBattlefieldSlide = useCallback((slideId: number) => {
+    setBattlefieldSlide((currentSlide) => (currentSlide?.id === slideId ? null : currentSlide));
+  }, []);
 
   function openArmyFormationAutosave() {
     armyFormationAutosaveOpenRef.current = true;
@@ -1443,6 +1648,18 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   function onStep(direction: -1 | 1) {
     reportArmyFormationAction(() => {
       const next = stepArmyBattlefield(armyDocument, direction);
+      if (prefersArmyFormationReducedMotion()) {
+        setBattlefieldSlide(null);
+      } else {
+        battlefieldSlideSequenceRef.current += 1;
+        setBattlefieldSlide({
+          id: battlefieldSlideSequenceRef.current,
+          direction,
+          outgoingBattlefield: battlefield,
+          outgoingEmptySlot: emptySlot,
+        });
+      }
+
       commitArmyFormationDocument(next);
       syncBattlefieldDrafts(readActiveBattlefield(next));
     });
@@ -1510,12 +1727,13 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     }
 
     reportArmyFormationAction(() => {
+      const fieldScale = readArmyFieldScaleFromPieceButton(event.currentTarget);
       commitArmyFormationDocument(
         moveDraggedArmyFormationPiece(
           armyDocument,
           drag.pieceId,
-          drag.startPieceX + deltaX,
-          drag.startPieceY + deltaY,
+          drag.startPieceX + deltaX / fieldScale,
+          drag.startPieceY + deltaY / fieldScale,
           ARMY_FIELD_WIDTH_PX,
         ),
       );
@@ -1543,8 +1761,6 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     });
   }
 
-  const battlefield = readActiveBattlefield(armyDocument);
-  const emptySlot = readNextEmptySlot(armyDocument, ARMY_FIELD_WIDTH_PX);
   const restorePromptOpen = startupSnapshot.status === 'restore';
   const startupFailureMessage = startupSnapshot.status === 'invalid' ? startupSnapshot.message : null;
   const visibleFailureMessage = failureMessage ?? startupFailureMessage;
@@ -1599,12 +1815,16 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
           copy={copy}
           battlefield={battlefield}
           emptySlot={emptySlot}
+          activeBattlefieldIndex={armyDocument.activeBattlefieldIndex}
+          battlefieldCount={armyDocument.battlefields.length}
+          slide={battlefieldSlide}
           fileInputRef={fileInputRef}
           onExportFile={onExportFile}
           onExportImage={onExportImage}
           onChooseFile={onChooseFile}
           onStepPrevious={() => onStep(-1)}
           onStepNext={() => onStep(1)}
+          onSlideFinished={finishBattlefieldSlide}
           onPiecePointerDown={onPiecePointerDown}
           onPiecePointerMove={onPiecePointerMove}
           onPiecePointerUp={finishPiecePointer}

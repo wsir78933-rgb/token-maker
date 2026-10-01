@@ -2,6 +2,10 @@ import { ArrowRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
+  ArmyFormationCreatorFaq,
+  type ArmyFormationCreatorFaqItem,
+} from '@/components/army-formation/ArmyFormationCreatorFaq';
+import {
   ARMY_FORMATION_CREATOR_EDITOR_ID,
   ArmyFormationCreatorPageHeading,
 } from '@/components/army-formation/ArmyFormationCreatorPageHeading';
@@ -16,11 +20,6 @@ type ArmyFormationCreatorPageStepCopy = {
   description: string;
 };
 
-type ArmyFormationCreatorPageFaqCopy = {
-  question: string;
-  answer: string;
-};
-
 type ArmyFormationCreatorPageCopy = {
   overviewTitle: string;
   overviewDescription: string;
@@ -31,8 +30,10 @@ type ArmyFormationCreatorPageCopy = {
   callToActionTitle: string;
   callToActionDescription: string;
   callToActionLabel: string;
+  faqEyebrow: string;
   faqTitle: string;
-  faq: readonly ArmyFormationCreatorPageFaqCopy[];
+  faqDescription: string;
+  faq: readonly ArmyFormationCreatorFaqItem[];
 };
 
 const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorPageCopy> = {
@@ -68,7 +69,10 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     callToActionDescription:
       'Choose pieces, arrange your troops, and create a battlefield formation diagram.',
     callToActionLabel: 'Start creating',
+    faqEyebrow: 'Army Formation Creator',
     faqTitle: 'Frequently asked questions',
+    faqDescription:
+      'Quick answers about adding pieces, setting up the battlefield, saving your work, and exporting a formation.',
     faq: [
       {
         question: 'What types of pieces can I add?',
@@ -125,7 +129,9 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     callToActionTitle: '现在开始布置军阵',
     callToActionDescription: '挑选棋子，安排队伍位置，制作你的战场阵型示意图。',
     callToActionLabel: '开始制作',
+    faqEyebrow: '军阵制作器',
     faqTitle: '常见问题',
+    faqDescription: '了解棋子添加与调整、战场设置、内容保存和方案导出。',
     faq: [
       {
         question: '可以添加哪些类型的棋子？',
@@ -230,19 +236,12 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
         </Button>
       </section>
 
-      <section className="mt-12 border-t border-white/10 pt-10">
-        <h2 className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl">
-          {copy.faqTitle}
-        </h2>
-        <div className="mt-4 divide-y divide-white/10">
-          {copy.faq.map((item) => (
-            <article key={item.question} className="py-5 first:pt-0">
-              <h3 className="font-semibold leading-6 text-stone-50">{item.question}</h3>
-              <p className="mt-2 text-sm leading-7 text-stone-300 text-pretty">{item.answer}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <ArmyFormationCreatorFaq
+        eyebrow={copy.faqEyebrow}
+        title={copy.faqTitle}
+        description={copy.faqDescription}
+        items={copy.faq}
+      />
     </div>
   );
 }
