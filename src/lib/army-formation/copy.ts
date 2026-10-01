@@ -35,7 +35,7 @@ export type ArmyFormationCreatorCopy = {
   restorePreviousRecord: string;
   startBlank: string;
   exportFile: string;
-  exportImage: string;
+  exportPng: string;
   chooseFile: string;
   battlefield: string;
   emptySlot: string;
@@ -80,7 +80,7 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   restorePreviousRecord: 'Restore',
   startBlank: 'Start blank',
   exportFile: 'Export file',
-  exportImage: 'Export image',
+  exportPng: 'Export PNG',
   chooseFile: 'Choose file',
   battlefield: 'Battlefield',
   emptySlot: 'Empty slot',
@@ -124,7 +124,7 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   restorePreviousRecord: '回到上次',
   startBlank: '从空白开始',
   exportFile: '导出文件',
-  exportImage: '导出图片',
+  exportPng: '导出 PNG',
   chooseFile: '选择文件',
   battlefield: '战场',
   emptySlot: '空位',

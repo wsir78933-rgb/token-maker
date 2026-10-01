@@ -35,8 +35,8 @@ import {
   type ArmyPaletteSwatch,
 } from '@/lib/army-formation/document';
 import {
-  buildArmyFormationSvg,
-  inlineArmyFormationSvgAssets,
+  buildArmyFormationPng,
+  type ArmyFormationImageScene,
   type ArmyFormationImagePiece,
 } from '@/lib/army-formation/export-image';
 import {
@@ -53,7 +53,7 @@ const ARMY_BATTLEFIELD_SLIDE_DURATION_MS = 280;
 const ARMY_BATTLEFIELD_SLIDE_CLEANUP_DELAY_MS = ARMY_BATTLEFIELD_SLIDE_DURATION_MS + 80;
 const ARMY_DRAG_START_PX = 3;
 const ARMY_FORMATION_FILE_NAME = 'army-formation-creator.txt';
-const ARMY_FORMATION_IMAGE_NAME = 'army-formation-creator.svg';
+const ARMY_FORMATION_PNG_NAME = 'army-formation-creator.png';
 
 const ARMY_FORMATION_BUTTON_CLASS =
   'cursor-pointer rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-4 py-3 text-base text-[var(--site-ink)] transition-colors enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)]';
@@ -496,35 +496,45 @@ function toImagePiece(piece: ArmyFormationPiece): ArmyFormationImagePiece {
   };
 }
 
-function buildActiveBattlefieldSvg(armyDocument: ArmyFormationDocument, fieldWidthPx: number): string {
+function buildActiveBattlefieldImageScene(
+  armyDocument: ArmyFormationDocument,
+  fieldWidthPx: number,
+): ArmyFormationImageScene {
   const battlefield = readActiveBattlefield(armyDocument);
-  return buildArmyFormationSvg({
+  return {
     widthPx: fieldWidthPx,
     heightPx: battlefield.heightPx,
     fieldBackgroundColor: battlefield.fieldBackgroundColor,
     backgroundImageUrl: battlefield.backgroundImageUrl,
     pieces: battlefield.pieces.map(toImagePiece),
-  });
+  };
 }
 
-function downloadArmyFormationFile(filename: string, contents: string, mimeType: string): void {
+function downloadArmyFormationFile(filename: string, fileBlob: Blob): void {
   if (typeof document === 'undefined' || document.body === null) {
     throw new Error('Army formation download requires document.body. Received null.');
+  }
+  if (typeof Blob === 'undefined' || !(fileBlob instanceof Blob)) {
+    throw new Error(
+      `Army formation download requires a Blob. fileBlob=${typeof fileBlob === 'undefined' ? 'undefined' : String(fileBlob)}`,
+    );
   }
 
   if (typeof URL.createObjectURL !== 'function' || typeof URL.revokeObjectURL !== 'function') {
     throw new Error('URL.createObjectURL is unavailable. Received undefined.');
   }
 
-  const blob = new Blob([contents], { type: mimeType });
-  const objectUrl = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = objectUrl;
-  anchor.download = filename;
-  document.body.append(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(objectUrl);
+  const objectUrl = URL.createObjectURL(fileBlob);
+  try {
+    const anchor = document.createElement('a');
+    anchor.href = objectUrl;
+    anchor.download = filename;
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
 }
 
 function capturePiecePointer(target: HTMLButtonElement, pointerId: number): void {
@@ -1046,13 +1056,13 @@ function ArmyFormationTransferControls({
   copy,
   inputRef,
   onExportFile,
-  onExportImage,
+  onExportPng,
   onChooseFile,
 }: {
   copy: ArmyFormationCreatorCopy;
   inputRef: RefObject<HTMLInputElement | null>;
   onExportFile: () => void;
-  onExportImage: () => void;
+  onExportPng: () => void;
   onChooseFile: (file: File) => void;
 }) {
   return (
@@ -1060,8 +1070,8 @@ function ArmyFormationTransferControls({
       <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onExportFile}>
         {copy.exportFile}
       </button>
-      <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onExportImage}>
-        {copy.exportImage}
+      <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onExportPng}>
+        {copy.exportPng}
       </button>
       <ArmyFormationFileChooser label={copy.chooseFile} inputRef={inputRef} onChooseFile={onChooseFile} />
     </div>
@@ -1164,13 +1174,13 @@ function ArmyFormationBattlefieldTransferRow({
   copy,
   fileInputRef,
   onExportFile,
-  onExportImage,
+  onExportPng,
   onChooseFile,
 }: {
   copy: ArmyFormationCreatorCopy;
   fileInputRef: RefObject<HTMLInputElement | null>;
   onExportFile: () => void;
-  onExportImage: () => void;
+  onExportPng: () => void;
   onChooseFile: (file: File) => void;
 }) {
   return (
@@ -1179,7 +1189,7 @@ function ArmyFormationBattlefieldTransferRow({
         copy={copy}
         inputRef={fileInputRef}
         onExportFile={onExportFile}
-        onExportImage={onExportImage}
+        onExportPng={onExportPng}
         onChooseFile={onChooseFile}
       />
     </div>
@@ -1255,7 +1265,7 @@ function ArmyFormationBattlefieldPane({
   slide,
   fileInputRef,
   onExportFile,
-  onExportImage,
+  onExportPng,
   onChooseFile,
   onStepPrevious,
   onStepNext,
@@ -1274,7 +1284,7 @@ function ArmyFormationBattlefieldPane({
   slide: ArmyFormationBattlefieldSlide | null;
   fileInputRef: RefObject<HTMLInputElement | null>;
   onExportFile: () => void;
-  onExportImage: () => void;
+  onExportPng: () => void;
   onChooseFile: (file: File) => void;
   onStepPrevious: () => void;
   onStepNext: () => void;
@@ -1436,7 +1446,7 @@ function ArmyFormationBattlefieldPane({
         copy={copy}
         fileInputRef={fileInputRef}
         onExportFile={onExportFile}
-        onExportImage={onExportImage}
+        onExportPng={onExportPng}
         onChooseFile={onChooseFile}
       />
     </div>
@@ -1627,18 +1637,19 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     reportArmyFormationAction(() => {
       downloadArmyFormationFile(
         ARMY_FORMATION_FILE_NAME,
-        serializeArmyFormationDocument(armyDocument),
-        'text/plain;charset=utf-8',
+        new Blob([serializeArmyFormationDocument(armyDocument)], {
+          type: 'text/plain;charset=utf-8',
+        }),
       );
     });
   }
 
-  async function onExportImage() {
+  async function onExportPng() {
     try {
-      const svg = await inlineArmyFormationSvgAssets(
-        buildActiveBattlefieldSvg(armyDocument, ARMY_FIELD_WIDTH_PX),
+      const png = await buildArmyFormationPng(
+        buildActiveBattlefieldImageScene(armyDocument, ARMY_FIELD_WIDTH_PX),
       );
-      downloadArmyFormationFile(ARMY_FORMATION_IMAGE_NAME, svg, 'image/svg+xml');
+      downloadArmyFormationFile(ARMY_FORMATION_PNG_NAME, png);
       setFailureMessage(null);
     } catch (failure: unknown) {
       setFailureMessage(describeArmyFormationFailure(failure));
@@ -1820,7 +1831,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
           slide={battlefieldSlide}
           fileInputRef={fileInputRef}
           onExportFile={onExportFile}
-          onExportImage={onExportImage}
+          onExportPng={onExportPng}
           onChooseFile={onChooseFile}
           onStepPrevious={() => onStep(-1)}
           onStepNext={() => onStep(1)}

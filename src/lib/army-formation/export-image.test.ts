@@ -1,11 +1,19 @@
-import { describe, expect, it, vi } from 'vitest';
+// @vitest-environment jsdom
+
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  buildArmyFormationPng,
   buildArmyFormationSvg,
   inlineArmyFormationSvgAssets,
   type ArmyFormationImagePiece,
   type ArmyFormationImageScene,
 } from '@/lib/army-formation/export-image';
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
 
 const SPEAR_ICON =
   '<svg width="50" height="30" viewBox="0 0 50 30"><path d="M0 0h50v30z"/></svg>';
@@ -198,5 +206,67 @@ describe('buildArmyFormationSvg', () => {
         ]),
       ),
     ).toThrow('rotationDegrees="45"');
+  });
+});
+
+describe('buildArmyFormationPng', () => {
+  it('把当前战场背景和棋子渲染成场景尺寸的 PNG', async () => {
+    const backgroundImageUrl = 'https://example.com/field.png?x=1&y=2';
+    const scene = battlefieldScene([spearPiece()], {
+      backgroundImageUrl,
+      heightPx: 600.5,
+    });
+    const pngBlob = new Blob([Uint8Array.from([137, 80, 78, 71])], { type: 'image/png' });
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(Uint8Array.from([1, 2, 3]), {
+        status: 200,
+        headers: { 'content-type': 'image/png' },
+      }),
+    );
+    const drawImage = vi.fn();
+    const canvasContext = { drawImage } as unknown as CanvasRenderingContext2D;
+    const svgObjectUrl = 'blob:army-formation-svg';
+    const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue(svgObjectUrl);
+    const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    const getContext = vi
+      .spyOn(HTMLCanvasElement.prototype, 'getContext')
+      .mockReturnValue(canvasContext);
+    const toBlob = vi
+      .spyOn(HTMLCanvasElement.prototype, 'toBlob')
+      .mockImplementation((callback, mimeType) => {
+        expect(mimeType).toBe('image/png');
+        callback(pngBlob);
+      });
+
+    class ImmediateImage {
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      private imageSource = '';
+
+      set src(imageSource: string) {
+        this.imageSource = imageSource;
+        queueMicrotask(() => this.onload?.());
+      }
+
+      get src(): string {
+        return this.imageSource;
+      }
+    }
+
+    vi.stubGlobal('Image', ImmediateImage);
+    vi.stubGlobal('fetch', fetchMock);
+
+    const png = await buildArmyFormationPng(scene);
+
+    expect(fetchMock).toHaveBeenCalledWith(backgroundImageUrl);
+    expect(createObjectURL).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'image/svg+xml;charset=utf-8' }),
+    );
+    expect(getContext).toHaveBeenCalledWith('2d');
+    expect(drawImage).toHaveBeenCalledWith(expect.any(ImmediateImage), 0, 0, 800, 601);
+    expect(toBlob).toHaveBeenCalledTimes(1);
+    expect(png).toBe(pngBlob);
+    expect(png.type).toBe('image/png');
+    expect(revokeObjectURL).toHaveBeenCalledWith(svgObjectUrl);
   });
 });

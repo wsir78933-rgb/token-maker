@@ -10,6 +10,7 @@ import {
   createEmptyArmyFormationDocument,
   serializeArmyFormationDocument,
 } from '@/lib/army-formation/document';
+import * as armyFormationImageExport from '@/lib/army-formation/export-image';
 
 function pieceButtons(): HTMLButtonElement[] {
   return [...document.querySelectorAll('[data-army-piece]')].map((piece) => {
@@ -487,33 +488,94 @@ describe('ArmyFormationCreator', () => {
     expect(localStorage.getItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY)).toContain(missingIconId);
   });
 
-  it('导出图片直接下载，页面上不留下图片预览', async () => {
-    const createObjectURL = vi.fn(() => 'blob:army-formation');
+  it('导出 PNG 直接下载，不创建 SVG 导出文件或图片预览', async () => {
+    const createObjectURL = vi.fn((file: Blob | MediaSource) => {
+      if (!(file instanceof Blob) || file.type !== 'image/png') {
+        throw new Error(`Expected PNG download Blob. file=${String(file)}`);
+      }
+      return 'blob:army-formation';
+    });
     const revokeObjectURL = vi.fn();
+    const pngBlob = new Blob([Uint8Array.from([137, 80, 78, 71])], { type: 'image/png' });
+    const buildArmyFormationPng = vi
+      .spyOn(armyFormationImageExport, 'buildArmyFormationPng')
+      .mockResolvedValue(pngBlob);
+    const anchorClick = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
     vi.spyOn(URL, 'createObjectURL').mockImplementation(createObjectURL);
     vi.spyOn(URL, 'revokeObjectURL').mockImplementation(revokeObjectURL);
-    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
 
     render(<ArmyFormationCreator locale="zh" />);
-    fireEvent.click(screen.getByRole('button', { name: '导出图片' }));
+    fireEvent.click(screen.getByRole('button', { name: '导出 PNG' }));
 
     await waitFor(() => expect(createObjectURL).toHaveBeenCalledTimes(1));
-    const blob = createObjectURL.mock.calls[0]?.[0];
-    expect(blob).toBeInstanceOf(Blob);
+    const downloadedBlob = createObjectURL.mock.calls[0]?.[0];
+    const downloadLink = anchorClick.mock.contexts[0] as HTMLAnchorElement | undefined;
+    expect(buildArmyFormationPng).toHaveBeenCalledTimes(1);
+    expect(downloadedBlob).toBe(pngBlob);
+    expect(downloadedBlob).toMatchObject({ type: 'image/png' });
+    expect(downloadLink?.download).toBe('army-formation-creator.png');
+    expect(revokeObjectURL).toHaveBeenCalledTimes(1);
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:army-formation');
     expect(document.querySelector('svg[aria-label="Army formation creator"]')).toBeNull();
     expect(screen.queryByRole('img', { name: 'Army formation creator' })).toBeNull();
   });
 
-  it('导出文件、导出图片、选择文件在战场标题后面，并且不在改战场那一组里', () => {
+  it('PNG 下载点击失败时撤销对象 URL 并显示原始错误', async () => {
+    const clickFailure = new Error('Army formation download click failed.');
+    const createObjectURL = vi.fn(() => 'blob:army-formation-failure');
+    const revokeObjectURL = vi.fn();
+    const pngBlob = new Blob([Uint8Array.from([137, 80, 78, 71])], { type: 'image/png' });
+    vi.spyOn(armyFormationImageExport, 'buildArmyFormationPng').mockResolvedValue(pngBlob);
+    vi.spyOn(URL, 'createObjectURL').mockImplementation(createObjectURL);
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(revokeObjectURL);
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {
+      throw clickFailure;
+    });
+
     render(<ArmyFormationCreator locale="zh" />);
-    for (const label of ['导出文件', '导出图片', '选择文件']) {
+    fireEvent.click(screen.getByRole('button', { name: '导出 PNG' }));
+
+    expect((await screen.findByRole('alert')).textContent).toContain(clickFailure.message);
+    expect(revokeObjectURL).toHaveBeenCalledTimes(1);
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:army-formation-failure');
+  });
+
+  it('保留 TXT 阵型文件导出', async () => {
+    const createObjectURL = vi.fn((file: Blob | MediaSource) => {
+      if (!(file instanceof Blob) || file.type !== 'text/plain;charset=utf-8') {
+        throw new Error(`Expected TXT download Blob. file=${String(file)}`);
+      }
+      return 'blob:army-formation-text';
+    });
+    const anchorClick = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    vi.spyOn(URL, 'createObjectURL').mockImplementation(createObjectURL);
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    render(<ArmyFormationCreator locale="zh" />);
+    fireEvent.click(screen.getByRole('button', { name: '导出文件' }));
+
+    const downloadedBlob = createObjectURL.mock.calls[0]?.[0];
+    const downloadLink = anchorClick.mock.contexts[0] as HTMLAnchorElement | undefined;
+    expect(downloadedBlob).toBeInstanceOf(Blob);
+    if (!(downloadedBlob instanceof Blob)) {
+      throw new Error(`TXT download Blob is missing. downloadedBlob=${String(downloadedBlob)}`);
+    }
+    expect(JSON.parse(await downloadedBlob.text()).battlefields).toHaveLength(4);
+    expect(downloadLink?.download).toBe('army-formation-creator.txt');
+    expect(URL.revokeObjectURL).toHaveBeenCalledTimes(1);
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:army-formation-text');
+  });
+
+  it('导出文件、导出 PNG、选择文件在战场标题后面，并且不在改战场那一组里', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    for (const label of ['导出文件', '导出 PNG', '选择文件']) {
       const button = expectButtonFollowsHeading(label, '战场 1/4');
       expect(controlGroup('改战场').contains(button)).toBe(false);
     }
 
     cleanup();
     render(<ArmyFormationCreator locale="en" />);
-    for (const label of ['Export file', 'Export image', 'Choose file']) {
+    for (const label of ['Export file', 'Export PNG', 'Choose file']) {
       const button = expectButtonFollowsHeading(label, 'Battlefield 1/4');
       expect(controlGroup('Change battlefield').contains(button)).toBe(false);
     }

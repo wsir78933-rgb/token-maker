@@ -30,14 +30,33 @@ export function buildArmyFormationSvg(scene: ArmyFormationImageScene): string {
   return renderBattlefieldSvg(scene);
 }
 
-export async function inlineArmyFormationSvgAssets(svg: string): Promise<string> {
+export async function buildArmyFormationPng(scene: ArmyFormationImageScene): Promise<Blob> {
+  const svg = await inlineArmyFormationSvgAssets(
+    buildArmyFormationSvg(scene),
+    scene.backgroundImageUrl,
+  );
+  return renderArmyFormationPng(svg, scene.widthPx, scene.heightPx);
+}
+
+export async function inlineArmyFormationSvgAssets(
+  svg: string,
+  backgroundImageUrl = '',
+): Promise<string> {
   if (typeof svg !== 'string') {
     throw new Error(`Army formation SVG must be a string. svg=${formatReceivedValue(svg)}`);
   }
+  if (typeof backgroundImageUrl !== 'string') {
+    throw new Error(
+      `Army formation background image URL must be a string. backgroundImageUrl=${formatReceivedValue(backgroundImageUrl)}`,
+    );
+  }
 
-  const assetUrls = [
-    ...new Set([...svg.matchAll(ARMY_FORMATION_ICON_ASSET_PATTERN)].map((match) => match[2])),
-  ];
+  const assetUrls = [...new Set([
+    ...[...svg.matchAll(ARMY_FORMATION_ICON_ASSET_PATTERN)].map((match) => match[2]),
+    ...(backgroundImageUrl === '' || backgroundImageUrl.startsWith('data:')
+      ? []
+      : [backgroundImageUrl]),
+  ])];
   if (assetUrls.length === 0) {
     return svg;
   }
@@ -48,17 +67,112 @@ export async function inlineArmyFormationSvgAssets(svg: string): Promise<string>
 
   let inlinedSvg = svg;
   for (const [assetUrl, dataUrl] of dataUrls) {
-    inlinedSvg = inlinedSvg.replaceAll(`href="${assetUrl}"`, `href="${dataUrl}"`);
+    inlinedSvg = inlinedSvg.replaceAll(
+      `href="${escapeXmlAttribute(assetUrl)}"`,
+      `href="${dataUrl}"`,
+    );
   }
 
   return inlinedSvg;
 }
 
+async function renderArmyFormationPng(
+  svg: string,
+  widthPx: number,
+  heightPx: number,
+): Promise<Blob> {
+  if (typeof document === 'undefined') {
+    throw new Error('Army formation PNG export requires document. Received undefined.');
+  }
+  if (typeof Image === 'undefined') {
+    throw new Error('Army formation PNG export requires Image. Received undefined.');
+  }
+  if (typeof Blob === 'undefined') {
+    throw new Error('Army formation PNG export requires Blob. Received undefined.');
+  }
+  if (typeof URL.createObjectURL !== 'function' || typeof URL.revokeObjectURL !== 'function') {
+    throw new Error('URL.createObjectURL is unavailable. Received undefined.');
+  }
+
+  const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+  const svgObjectUrl = URL.createObjectURL(svgBlob);
+
+  try {
+    const image = await loadArmyFormationSvg(svgObjectUrl);
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(widthPx);
+    canvas.height = Math.ceil(heightPx);
+
+    const context = canvas.getContext('2d');
+    if (context === null || typeof context !== 'object') {
+      throw new Error(
+        `Army formation PNG export requires a 2D canvas context. context=${formatReceivedValue(context)}`,
+      );
+    }
+
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    return await encodeArmyFormationCanvas(canvas);
+  } finally {
+    URL.revokeObjectURL(svgObjectUrl);
+  }
+}
+
+function loadArmyFormationSvg(svgObjectUrl: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => {
+      reject(
+        new Error(
+          `Army formation SVG could not be rendered as PNG. svgObjectUrl=${JSON.stringify(svgObjectUrl)}`,
+        ),
+      );
+    };
+    image.src = svgObjectUrl;
+  });
+}
+
+function encodeArmyFormationCanvas(canvas: HTMLCanvasElement): Promise<Blob> {
+  if (typeof canvas.toBlob !== 'function') {
+    throw new Error(
+      `Army formation PNG export requires HTMLCanvasElement.toBlob. typeof canvas.toBlob=${typeof canvas.toBlob}`,
+    );
+  }
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((pngBlob) => {
+      if (pngBlob === null) {
+        reject(new Error('Army formation PNG encoding returned null. pngBlob=null'));
+        return;
+      }
+      if (pngBlob.type !== 'image/png') {
+        reject(
+          new Error(
+            `Army formation PNG encoding returned the wrong MIME type. pngBlob.type=${JSON.stringify(pngBlob.type)}`,
+          ),
+        );
+        return;
+      }
+
+      resolve(pngBlob);
+    }, 'image/png');
+  });
+}
+
 async function readArmyFormationAssetDataUrl(assetUrl: string): Promise<string> {
-  const response = await fetch(assetUrl);
+  let response: Response;
+  try {
+    response = await fetch(assetUrl);
+  } catch (failure: unknown) {
+    const cause = failure instanceof Error ? failure.message : formatReceivedValue(failure);
+    throw new Error(
+      `Army formation image asset request failed. assetUrl=${JSON.stringify(assetUrl)} cause=${cause}`,
+      { cause: failure },
+    );
+  }
   if (!response.ok) {
     throw new Error(
-      `Army formation icon asset request failed. assetUrl=${assetUrl} status=${response.status}`,
+      `Army formation image asset request failed. assetUrl=${assetUrl} status=${response.status}`,
     );
   }
 
