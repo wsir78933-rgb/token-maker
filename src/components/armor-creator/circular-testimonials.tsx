@@ -55,12 +55,12 @@ type CircularTestimonialsStyle = CSSProperties & {
 };
 
 const DEFAULT_CIRCULAR_TESTIMONIAL_COLORS: Required<CircularTestimonialsColors> = {
-  name: '#000',
-  designation: '#6b7280',
-  testimony: '#4b5563',
-  arrowBackground: '#141414',
-  arrowForeground: '#f1f1f7',
-  arrowHoverBackground: '#00a6fb',
+  name: '#f5f0e6',
+  designation: '#a8a29e',
+  testimony: '#d6d3d1',
+  arrowBackground: '#17130d',
+  arrowForeground: '#f3ddb0',
+  arrowHoverBackground: '#71521c',
 };
 
 const DEFAULT_CIRCULAR_TESTIMONIAL_FONT_SIZES: Required<CircularTestimonialsFontSizes> = {
@@ -243,7 +243,7 @@ function CircularTestimonialImage({ src, alt, frameClassName }: CircularTestimon
   return (
     <div
       data-part="testimonial-image-frame"
-      className={`relative overflow-hidden rounded-2xl border border-white/70 bg-[#f4eee5] shadow-xl ${frameClassName}`}
+      className={`relative overflow-hidden rounded-2xl border border-[#d7b46a]/30 bg-[#f4eee5] shadow-[0_18px_44px_rgba(0,0,0,0.36)] ${frameClassName}`}
     >
       <Image
         src={src}
@@ -367,7 +367,7 @@ export function CircularTestimonials({
     <section
       aria-label={validatedAriaLabel}
       aria-roledescription="carousel"
-      className="relative isolate w-full rounded-3xl bg-white px-5 py-8 text-stone-900 shadow-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00a6fb] sm:px-8 sm:py-10 lg:px-12"
+      className="relative isolate w-full rounded-3xl border border-white/10 bg-[#10100f] px-5 py-8 text-stone-100 shadow-[0_24px_64px_rgba(0,0,0,0.34)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d7b46a] sm:px-8 sm:py-10 lg:px-12"
       data-circular-testimonials="true"
       onKeyDown={handleCarouselKeyDown}
       tabIndex={0}
@@ -385,7 +385,7 @@ export function CircularTestimonials({
               <motion.div
                 animate={{ opacity: 0.72 }}
                 aria-hidden="true"
-                className="absolute left-0 top-1/2 z-0 hidden h-[15rem] w-[12rem] -translate-y-1/2 sm:block"
+                className="absolute -left-12 top-1/2 z-0 hidden h-[15rem] w-[12rem] -translate-y-1/2 sm:block"
                 initial={false}
                 style={{ transform: 'translateY(-50%) perspective(900px) rotateY(26deg) scale(0.82)' }}
               >
@@ -398,7 +398,7 @@ export function CircularTestimonials({
               <motion.div
                 animate={{ opacity: 0.72 }}
                 aria-hidden="true"
-                className="absolute right-0 top-1/2 z-0 hidden h-[15rem] w-[12rem] -translate-y-1/2 sm:block"
+                className="absolute -right-12 top-1/2 z-0 hidden h-[15rem] w-[12rem] -translate-y-1/2 sm:block"
                 initial={false}
                 style={{ transform: 'translateY(-50%) perspective(900px) rotateY(-26deg) scale(0.82)' }}
               >
@@ -474,7 +474,7 @@ export function CircularTestimonials({
           <div className="flex items-center gap-3">
             <button
               aria-label={validatedPreviousLabel}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full shadow-sm transition-colors hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00a6fb]"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d7b46a]/30 shadow-sm transition-colors hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d7b46a]"
               onClick={() => {
                 setSelectedIndex((currentIndex) =>
                   circularTestimonialsWrappedIndex(currentIndex - 1, validatedTestimonials.length),
@@ -487,7 +487,7 @@ export function CircularTestimonials({
             </button>
             <button
               aria-label={validatedNextLabel}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full shadow-sm transition-colors hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00a6fb]"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d7b46a]/30 shadow-sm transition-colors hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d7b46a]"
               onClick={() => {
                 setSelectedIndex((currentIndex) => (currentIndex + 1) % validatedTestimonials.length);
               }}
