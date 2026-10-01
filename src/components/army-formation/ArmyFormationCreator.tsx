@@ -59,6 +59,7 @@ const ARMY_FORMATION_INPUT_CLASS =
   'rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] px-2 py-1 text-sm text-[var(--site-ink)]';
 const ARMY_FORMATION_NATO_ICONS_PER_PAGE = 60;
 const ARMY_FORMATION_ICON_SHELF_MAX_HEIGHT_CLASS = 'max-h-[calc(2.25rem*3+0.25rem*2)]';
+const ARMY_FORMATION_ICON_THUMBNAIL_FILTER = 'brightness(0) invert(1)';
 
 type PieceDragSession = {
   pieceId: string;
@@ -678,6 +679,7 @@ function ArmyFormationIconButton({
     >
       <span
         className="pointer-events-none block h-full w-full [&_svg]:h-full [&_svg]:w-full"
+        style={{ filter: ARMY_FORMATION_ICON_THUMBNAIL_FILTER }}
         dangerouslySetInnerHTML={{ __html: icon.svgMarkup }}
       />
     </button>

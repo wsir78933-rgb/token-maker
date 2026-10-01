@@ -12,10 +12,10 @@ const topbarModel = {
   freeToolsMenuIsActive: true,
   freeToolsMenuAccessibleName: 'Free tools',
   freeTools: [
-    { href: '/', title: 'Editor' },
-    { href: '/coat-of-arms-maker', title: 'Coat Maker' },
-    { href: '/armor-creator', title: 'Armor' },
-    { href: '/army-formation-creator', title: 'Army formation creator' },
+    { href: '/', title: 'Token Maker' },
+    { href: '/coat-of-arms-maker', title: 'Coat of Arms Maker' },
+    { href: '/armor-creator', title: 'Armor Creator' },
+    { href: '/army-formation-creator', title: 'Army Formation Creator' },
   ],
   featureMenuLabel: 'Blog',
   featureMenuHref: '/blog',
@@ -178,12 +178,12 @@ describe('ContentSiteTopbar', () => {
   it('renders all four free tools with their existing paths', () => {
     renderContentSiteTopbar();
 
-    expect(screen.getByRole('menuitem', { name: 'Editor' }).getAttribute('href')).toBe('/');
-    expect(screen.getByRole('menuitem', { name: 'Coat Maker' }).getAttribute('href')).toBe(
+    expect(screen.getByRole('menuitem', { name: 'Token Maker' }).getAttribute('href')).toBe('/');
+    expect(screen.getByRole('menuitem', { name: 'Coat of Arms Maker' }).getAttribute('href')).toBe(
       '/coat-of-arms-maker',
     );
-    expect(screen.getByRole('menuitem', { name: 'Armor' }).getAttribute('href')).toBe('/armor-creator');
-    expect(screen.getByRole('menuitem', { name: 'Army formation creator' }).getAttribute('href')).toBe(
+    expect(screen.getByRole('menuitem', { name: 'Armor Creator' }).getAttribute('href')).toBe('/armor-creator');
+    expect(screen.getByRole('menuitem', { name: 'Army Formation Creator' }).getAttribute('href')).toBe(
       '/army-formation-creator',
     );
   });
@@ -264,12 +264,19 @@ describe('ContentSiteTopbar', () => {
     const freeToolsAccordion = within(dialog).getByRole('button', { name: 'Free tools' });
     expect(freeToolsAccordion).toBeDefined();
     fireEvent.click(freeToolsAccordion);
-    expect(within(dialog).getByRole('link', { name: 'Editor' }).getAttribute('href')).toBe('/');
-    expect(within(dialog).getByRole('link', { name: 'Coat Maker' }).getAttribute('href')).toBe(
+    const freeToolsItem = freeToolsAccordion.closest('[data-slot="accordion-item"]');
+    if (!(freeToolsItem instanceof HTMLElement)) {
+      throw new Error('Free tools accordion trigger is not inside an accordion item');
+    }
+
+    expect(within(freeToolsItem).getByRole('link', { name: 'Token Maker' }).getAttribute('href')).toBe('/');
+    expect(within(freeToolsItem).getByRole('link', { name: 'Coat of Arms Maker' }).getAttribute('href')).toBe(
       '/coat-of-arms-maker',
     );
-    expect(within(dialog).getByRole('link', { name: 'Armor' }).getAttribute('href')).toBe('/armor-creator');
-    expect(within(dialog).getByRole('link', { name: 'Army formation creator' }).getAttribute('href')).toBe(
+    expect(within(freeToolsItem).getByRole('link', { name: 'Armor Creator' }).getAttribute('href')).toBe(
+      '/armor-creator',
+    );
+    expect(within(freeToolsItem).getByRole('link', { name: 'Army Formation Creator' }).getAttribute('href')).toBe(
       '/army-formation-creator',
     );
   });

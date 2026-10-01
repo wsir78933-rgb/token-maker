@@ -536,10 +536,10 @@ export const templatePagesZh: TemplatePageData[] = [
 
 export const navLabelsByLocale: Record<SiteLocale, NavLabels> = {
   en: {
-    editor: 'Editor',
+    editor: 'Token Maker',
     diceRoller: 'Dice Roller',
-    coatMaker: 'Coat Maker',
-    armor: 'Armor',
+    coatMaker: 'Coat of Arms Maker',
+    armor: 'Armor Creator',
     coatMakerBackToEditor: 'Back to the editor',
     templates: 'Templates',
     blog: 'Blog',

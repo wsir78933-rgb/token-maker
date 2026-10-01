@@ -47,7 +47,7 @@ export type ArmyFormationCreatorCopy = {
 
 const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   productName: 'Army formation creator',
-  navigationName: 'Army formation creator',
+  navigationName: 'Army Formation Creator',
   pageTitle: 'Army formation creator',
   pageDescription: 'Place battlefield pieces in the browser and download an image.',
   heroTitleLead: 'Place battlefield pieces in your browser',
