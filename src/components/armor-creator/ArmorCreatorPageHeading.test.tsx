@@ -57,11 +57,16 @@ describe('ArmorCreatorPageView', () => {
 
     const heading = screen.getByRole('heading', { level: 1 });
     const preview = screen.getByRole('heading', { level: 2, name: '预览' });
+    const whatIsHeading = screen.getByRole('heading', {
+      level: 2,
+      name: '什么是护甲搭配工具？',
+    });
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(heading.textContent).toBe('免费护甲搭配工具：为 RPG 角色、NPC 与奇幻世界提供灵感');
     const editor = document.getElementById('armor-creator-editor');
     const action = screen.getByRole('link', { name: 'Try for Free' });
+    const footerLink = screen.getByRole('link', { name: 'Token Maker 首页' });
 
     expect(editor).toBeTruthy();
     expect(heading.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
@@ -70,6 +75,17 @@ describe('ArmorCreatorPageView', () => {
     expect(action.compareDocumentPosition(editor as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
+    expect(
+      screen.getByText(
+        '护甲搭配工具是一款面向 RPG/TTRPG 玩家与 GM，以及奇幻角色和世界观创作者的在线视觉工具。你可以组合板甲、皮甲与布甲等部件，预览不同护甲造型，为角色设定、NPC 塑造和战役世界观创作获取灵感。',
+      ),
+    ).toBeTruthy();
+    expect(
+      (editor as Node).compareDocumentPosition(whatIsHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      whatIsHeading.compareDocumentPosition(footerLink) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
   it('英文页面标题在编辑器前面', () => {
@@ -82,6 +98,9 @@ describe('ArmorCreatorPageView', () => {
     expect(screen.getByRole('link', { name: 'Try for Free' }).getAttribute('href')).toBe(
       '#armor-creator-editor',
     );
+    expect(
+      screen.queryByRole('heading', { level: 2, name: 'What is the Armor Creator?' }),
+    ).toBeNull();
     expect(heading.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );

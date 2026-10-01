@@ -35,6 +35,8 @@ export type ArmorCreatorCopy = {
   heroTitleEmphasis: string;
   heroTitleTail: string;
   heroAction: string;
+  whatIsTitle: string;
+  whatIsDescription: string;
 };
 
 export type ArmorCreatorHeroTitle = {
@@ -89,6 +91,9 @@ const englishArmorCreatorCopy: ArmorCreatorCopy = {
   heroTitleEmphasis: 'Armor Creator',
   heroTitleTail: 'for RPG Characters, NPCs & Fantasy Worlds',
   heroAction: 'Try for Free',
+  whatIsTitle: 'What is the Armor Creator?',
+  whatIsDescription:
+    'The Armor Creator is an online visual tool for RPG/TTRPG players and GMs, as well as creators developing fantasy characters and worlds. Mix plate, leather, and cloth armor pieces to preview character looks and find visual inspiration for characters, NPCs, and campaign settings.',
 };
 
 const chineseArmorCreatorCopy: ArmorCreatorCopy = {
@@ -133,6 +138,9 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   heroTitleEmphasis: '护甲搭配工具',
   heroTitleTail: '：为 RPG 角色、NPC 与奇幻世界提供灵感',
   heroAction: 'Try for Free',
+  whatIsTitle: '什么是护甲搭配工具？',
+  whatIsDescription:
+    '护甲搭配工具是一款面向 RPG/TTRPG 玩家与 GM，以及奇幻角色和世界观创作者的在线视觉工具。你可以组合板甲、皮甲与布甲等部件，预览不同护甲造型，为角色设定、NPC 塑造和战役世界观创作获取灵感。',
 };
 
 function isArmorCreatorLocale(locale: string): locale is ArmorCreatorLocale {
