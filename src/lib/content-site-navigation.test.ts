@@ -54,10 +54,10 @@ describe('content site topbar model', () => {
     expect(model.freeToolsMenuAccessibleName).toBe('Free tools');
     expect(model.freeToolsMenuIsActive).toBe(false);
     expect(model.freeTools).toEqual([
-      { href: '/', title: 'Editor' },
-      { href: '/coat-of-arms-maker', title: 'Coat Maker' },
-      { href: '/armor-creator', title: 'Armor' },
-      { href: '/army-formation-creator', title: 'Army formation creator' },
+      { href: '/', title: 'Token Maker' },
+      { href: '/coat-of-arms-maker', title: 'Coat of Arms Maker' },
+      { href: '/armor-creator', title: 'Armor Creator' },
+      { href: '/army-formation-creator', title: 'Army Formation Creator' },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },

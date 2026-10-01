@@ -104,6 +104,27 @@ describe('ArmyFormationCreator', () => {
     expect(screen.queryByRole('navigation', { name: 'Editor' })).toBeNull();
   });
 
+  it('所有图标选择器缩略图都使用白色滤镜', () => {
+    render(<ArmyFormationCreator locale="en" />);
+
+    const categoryIcons = [
+      ['Helmets', 'helmet-01'],
+      ['Weapons', 'weapon-01'],
+      ['Animals', 'animal-01'],
+      ['Vehicles and siege', 'vehicle-01'],
+      ['NATO', 'nato-001'],
+    ] as const;
+
+    for (const [categoryLabel, iconId] of categoryIcons) {
+      fireEvent.click(screen.getByRole('button', { name: categoryLabel }));
+      const iconButton = screen.getByRole('button', { name: iconId });
+      const thumbnail = iconButton.querySelector('span');
+
+      expect(thumbnail).not.toBeNull();
+      expect((thumbnail as HTMLElement).style.filter).toBe('brightness(0) invert(1)');
+    }
+  });
+
   it('页面上没有保存战场，也没有保存在这个浏览器', () => {
     render(<ArmyFormationCreator locale="zh" />);
 

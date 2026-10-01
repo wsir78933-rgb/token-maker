@@ -51,7 +51,7 @@ const STRING_FIELD_NAMES = [
 
 const englishStringFields = {
   productName: 'Army formation creator',
-  navigationName: 'Army formation creator',
+  navigationName: 'Army Formation Creator',
   pageTitle: 'Army formation creator',
   pageDescription: 'Place battlefield pieces in the browser and download an image.',
   heroTitleLead: 'Place battlefield pieces in your browser',
@@ -149,11 +149,11 @@ function expectStringFields(
 }
 
 describe('getArmyFormationCreatorCopy', () => {
-  it('英文产品名、导航名和页面标题正好是 Army formation creator', () => {
+  it('英文导航名是 Army Formation Creator，产品名和页面标题保持原样', () => {
     const copy = getArmyFormationCreatorCopy('en');
 
     expect(copy.productName).toBe('Army formation creator');
-    expect(copy.navigationName).toBe('Army formation creator');
+    expect(copy.navigationName).toBe('Army Formation Creator');
     expect(copy.pageTitle).toBe('Army formation creator');
     expectStringFields(copy, englishStringFields);
     expect(copy.previousRecordPrompt).toBe('A previous record was found. Restore it?');
