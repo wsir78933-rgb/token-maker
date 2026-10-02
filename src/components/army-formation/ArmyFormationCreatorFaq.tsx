@@ -165,7 +165,7 @@ export function ArmyFormationCreatorFaq({
     <section
       aria-labelledby={headingId}
       className={cn(
-        'mt-12 border-t border-white/10 pt-10',
+        'border-t border-white/10 py-20 sm:py-24 lg:py-28',
         ARMY_FORMATION_FAQ_ROOT_CLASS_NAME,
         className,
       )}

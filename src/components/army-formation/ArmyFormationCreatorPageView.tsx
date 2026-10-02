@@ -142,7 +142,7 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
   en: {
     overviewTitle: 'What is the Army Formation Creator?',
     overviewDescription:
-      'The Army Formation Creator is an online tool for sketching battlefield formations. Place pieces from different categories on the battlefield, arrange troops and equipment, and adjust their angle, color, battlefield height, and background. When you are done, export an image or a formation file to save your ideas, discuss tactics, or share your plan.',
+      "The Army Formation Creator is a battlefield planning tool for tabletop role-playing games. Game masters can map out encounters, ambushes, and sieges to show players where each side is positioned; players can use the diagram to discuss their party's positioning and tactics. Whether you're preparing a D&D adventure or a war-themed session, place troop and equipment icons, set the battlefield background, and export an image to share or a formation file to edit later.",
     stepsEyebrow: 'How it works',
     stepsTitle: 'How to use the Army Formation Creator',
     stepsLabel: 'How to use the Army Formation Creator',
@@ -247,7 +247,7 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
   zh: {
     overviewTitle: '什么是军阵制作器？',
     overviewDescription:
-      '军阵制作器是一款用于绘制战场阵型示意图的在线工具。你可以在战场上放置不同类别的棋子，安排队伍与装备的位置，并调整角度、颜色、战场高度和背景。完成后可导出图片或方案文件，用于保存阵型构想、战术讨论与展示。',
+      '军阵制作器是一款面向桌面角色扮演游戏的战场示意图工具。GM 可以用它布置遭遇战、伏击或攻城场景，向玩家展示敌我双方的位置；玩家也能借助阵型图讨论队伍站位和战术。无论是 D&D 等奇幻冒险，还是战争题材的团务，都可以摆放部队与装备图标、设置战场背景，并导出图片或方案文件，方便展示、分享或留待下次继续编辑。',
     stepsEyebrow: '操作流程',
     stepsTitle: '如何使用军阵制作器？',
     stepsLabel: '军阵制作器使用步骤',
@@ -348,7 +348,10 @@ function ArmyFormationCreatorToolComparison({
   copy: ArmyFormationCreatorToolComparisonCopy;
 }) {
   return (
-    <section aria-labelledby="army-formation-tool-comparison-title" className="mt-14 border-t border-white/10 pt-12">
+    <section
+      aria-labelledby="army-formation-tool-comparison-title"
+      className="border-t border-white/10 py-20 sm:py-24 lg:py-28"
+    >
       <div className="flex flex-col items-center gap-3 text-center">
         <h2
           id="army-formation-tool-comparison-title"
@@ -432,7 +435,7 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
 
       <ArmyFormationCreatorCaseCarousels locale={locale} />
 
-      <section className="mt-40 sm:mt-48 lg:mt-56">
+      <section className="mt-40 pb-20 sm:mt-48 sm:pb-24 lg:mt-56 lg:pb-28">
         <div className="mb-14 flex flex-col items-center gap-3 text-center">
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
             {copy.stepsEyebrow}
@@ -479,7 +482,7 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
         </div>
       </section>
 
-      <section className="mt-14 flex flex-col items-center gap-3 text-center">
+      <section className="flex flex-col items-center gap-3 py-20 text-center sm:py-24 lg:py-28">
         <h2 className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl">
           {copy.callToActionTitle}
         </h2>
