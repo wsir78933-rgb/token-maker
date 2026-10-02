@@ -3,9 +3,11 @@
 import { createContext, useContext } from 'react';
 import zh, { type I18nKey } from './zh';
 import en from './en';
+import { getI18nDictionary } from './dictionary';
 import type { SiteLocale } from '@/lib/site-locale';
 
 const dictionaries: Record<SiteLocale, Record<string, string>> = { zh, en };
+const englishDictionary = getI18nDictionary('en', dictionaries, 'application');
 
 interface I18nContextValue {
   locale: SiteLocale;
@@ -14,7 +16,7 @@ interface I18nContextValue {
 
 const I18nContext = createContext<I18nContextValue>({
   locale: 'en',
-  t: (key) => dictionaries.en[key] || key,
+  t: (key) => englishDictionary[key] || key,
 });
 
 export function I18nProvider({
@@ -24,7 +26,7 @@ export function I18nProvider({
   children: React.ReactNode;
   locale: SiteLocale;
 }>) {
-  const dict = dictionaries[locale];
+  const dict = getI18nDictionary(locale, dictionaries, 'application');
 
   return (
     <I18nContext.Provider

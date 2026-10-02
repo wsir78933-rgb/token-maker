@@ -1,3 +1,5 @@
+import { getI18nDictionary } from '@/lib/i18n/dictionary';
+
 const ARMY_FORMATION_CREATOR_LOCALES = ['en', 'zh'] as const;
 
 type ArmyFormationCreatorLocale = (typeof ARMY_FORMATION_CREATOR_LOCALES)[number];
@@ -31,6 +33,14 @@ export type ArmyFormationCreatorCopy = {
   changeBackgroundColor: string;
   backgroundImage: string;
   setBackgroundImage: string;
+  uploadBackgroundImage: string;
+  removeBackgroundImage: string;
+  backgroundImageFormats: string;
+  backgroundImageFormatError: string;
+  backgroundImageSizeError: string;
+  backgroundImageEmptyError: string;
+  backgroundImageDecodeError: string;
+  backgroundImageCompressError: string;
   previousRecordPrompt: string;
   restorePreviousRecord: string;
   startBlank: string;
@@ -76,6 +86,14 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   changeBackgroundColor: 'Change background color',
   backgroundImage: 'Background image',
   setBackgroundImage: 'Set background image',
+  uploadBackgroundImage: 'Upload image',
+  removeBackgroundImage: 'Remove image',
+  backgroundImageFormats: 'PNG, JPG, JPEG or WebP · up to 20 MB',
+  backgroundImageFormatError: 'Unsupported image type: {received}. Choose PNG, JPG, JPEG or WebP.',
+  backgroundImageSizeError: 'Image exceeds the 20 MB limit: {received}.',
+  backgroundImageEmptyError: 'The selected image is empty: {received}.',
+  backgroundImageDecodeError: 'Could not read image file: {received}.',
+  backgroundImageCompressError: 'Could not compress the image: {received}.',
   previousRecordPrompt: 'A previous record was found. Restore it?',
   restorePreviousRecord: 'Restore',
   startBlank: 'Start blank',
@@ -120,6 +138,14 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   changeBackgroundColor: '改变底色',
   backgroundImage: '背景图',
   setBackgroundImage: '设置背景图',
+  uploadBackgroundImage: '上传图片',
+  removeBackgroundImage: '移除图片',
+  backgroundImageFormats: '支持 PNG、JPG、JPEG、WebP，单张不超过 20 MB',
+  backgroundImageFormatError: '不支持图片类型：{received}。请选择 PNG、JPG、JPEG 或 WebP。',
+  backgroundImageSizeError: '图片超过 20 MB 限制：{received}。',
+  backgroundImageEmptyError: '所选图片为空：{received}。',
+  backgroundImageDecodeError: '无法读取图片文件：{received}。',
+  backgroundImageCompressError: '无法压缩图片：{received}。',
   previousRecordPrompt: '发现上次的记录。要回到上次的记录吗？',
   restorePreviousRecord: '回到上次',
   startBlank: '从空白开始',
@@ -132,6 +158,11 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   switchToNextBattle: '切换到下一场',
   previousNatoIconPage: '上一页',
   nextNatoIconPage: '下一页',
+};
+
+const ARMY_FORMATION_CREATOR_COPY: Record<ArmyFormationCreatorLocale, ArmyFormationCreatorCopy> = {
+  en: englishArmyFormationCreatorCopy,
+  zh: chineseArmyFormationCreatorCopy,
 };
 
 function isArmyFormationCreatorLocale(locale: string): locale is ArmyFormationCreatorLocale {
@@ -147,15 +178,7 @@ function requireArmyFormationCreatorLocale(locale: string): ArmyFormationCreator
 }
 
 function readArmyFormationCreatorCopy(locale: ArmyFormationCreatorLocale): ArmyFormationCreatorCopy {
-  if (locale === 'en') {
-    return englishArmyFormationCreatorCopy;
-  }
-
-  if (locale === 'zh') {
-    return chineseArmyFormationCreatorCopy;
-  }
-
-  throw new Error(`Unknown army formation creator locale: ${JSON.stringify(locale)}`);
+  return getI18nDictionary(locale, ARMY_FORMATION_CREATOR_COPY, 'army formation creator');
 }
 
 function requireArmyFormationHeroTitlePart(

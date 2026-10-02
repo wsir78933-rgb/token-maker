@@ -893,6 +893,29 @@ export function setArmyBackgroundImageUrl(
   );
 }
 
+export function setArmyBackgroundImageUrlForBattlefield(
+  document: ArmyFormationDocument,
+  battlefieldIndex: number,
+  backgroundImageUrl: string,
+): ArmyFormationDocument {
+  const current = readArmyFormationDocument(document);
+  const validatedBattlefieldIndex = readActiveBattlefieldIndex(battlefieldIndex);
+  const validatedBackgroundImageUrl = readBackgroundImageUrl(backgroundImageUrl);
+  const battlefields = current.battlefields.map((battlefield, index) => {
+    if (index !== validatedBattlefieldIndex) {
+      return battlefield;
+    }
+
+    return replaceBackgroundImageUrl(battlefield, validatedBackgroundImageUrl);
+  });
+
+  return {
+    version: current.version,
+    activeBattlefieldIndex: current.activeBattlefieldIndex,
+    battlefields: requireBattlefieldTuple(battlefields),
+  };
+}
+
 export function stepArmyBattlefield(
   document: ArmyFormationDocument,
   direction: -1 | 1,

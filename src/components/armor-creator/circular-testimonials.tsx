@@ -294,14 +294,14 @@ function getCircularTestimonialImageGap(stageWidth: number): number {
   }
 
   if (stageWidth <= 320) {
-    return 48;
+    return Math.max(48, stageWidth * 0.25);
   }
 
   if (stageWidth >= 560) {
-    return 84;
+    return 140;
   }
 
-  return 48 + ((stageWidth - 320) / (560 - 320)) * (84 - 48);
+  return 80 + ((stageWidth - 320) / (560 - 320)) * (140 - 80);
 }
 
 function CircularTestimonialImage({ src, alt, frameClassName }: CircularTestimonialImageProps) {

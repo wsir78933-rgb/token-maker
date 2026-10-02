@@ -10,6 +10,10 @@ import {
 } from '@/lib/army-formation/browser-saves';
 import { getArmyFormationCreatorCopy, type ArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
 import {
+  compressArmyFormationBackgroundImage,
+  type ArmyBackgroundImageUploadResult,
+} from '@/lib/army-formation/background-image-upload';
+import {
   ARMY_PIECE_HEIGHT,
   ARMY_PIECE_WIDTH,
   ARMY_PLACEMENT_STEP_PX,
@@ -25,6 +29,7 @@ import {
   selectArmyPaletteSwatch,
   serializeArmyFormationDocument,
   setArmyBackgroundImageUrl,
+  setArmyBackgroundImageUrlForBattlefield,
   setArmyBattlefieldHeight,
   setArmyFieldBackgroundColor,
   stepArmyBattlefield,
@@ -599,6 +604,32 @@ function ArmyFormationFailure({ message }: { message: string }) {
   );
 }
 
+function describeArmyBackgroundImageUploadFailure(
+  result: Extract<ArmyBackgroundImageUploadResult, { status: 'rejected' }>,
+  copy: ArmyFormationCreatorCopy,
+): string {
+  let message: string;
+  switch (result.reason) {
+    case 'unsupported-format':
+      message = copy.backgroundImageFormatError;
+      break;
+    case 'file-too-large':
+      message = copy.backgroundImageSizeError;
+      break;
+    case 'empty-file':
+      message = copy.backgroundImageEmptyError;
+      break;
+    case 'decode-failed':
+      message = copy.backgroundImageDecodeError;
+      break;
+    case 'compression-failed':
+      message = copy.backgroundImageCompressError;
+      break;
+  }
+
+  return message.replace('{received}', result.received);
+}
+
 function ArmyFormationControlGroup({ title, children }: { title: string; children: ReactNode }) {
   const titleId = useId();
   return (
@@ -946,25 +977,27 @@ function ArmyFormationFieldControls({
   copy,
   heightText,
   fieldBackgroundColorText,
-  backgroundImageText,
+  backgroundImageUrl,
+  backgroundImageInputRef,
   onHeightText,
   onApplyHeight,
   onFieldBackgroundColorText,
   onApplyFieldBackground,
-  onBackgroundImageText,
-  onApplyBackgroundImage,
+  onChooseBackgroundImage,
+  onRemoveBackgroundImage,
   onClear,
 }: {
   copy: ArmyFormationCreatorCopy;
   heightText: string;
   fieldBackgroundColorText: string;
-  backgroundImageText: string;
+  backgroundImageUrl: string;
+  backgroundImageInputRef: RefObject<HTMLInputElement | null>;
   onHeightText: (value: string) => void;
   onApplyHeight: () => void;
   onFieldBackgroundColorText: (value: string) => void;
   onApplyFieldBackground: () => void;
-  onBackgroundImageText: (value: string) => void;
-  onApplyBackgroundImage: () => void;
+  onChooseBackgroundImage: (file: File) => void;
+  onRemoveBackgroundImage: () => void;
   onClear: () => void;
 }) {
   return (
@@ -998,19 +1031,43 @@ function ArmyFormationFieldControls({
           {copy.changeBackgroundColor}
         </button>
       </div>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <label className="flex w-full min-w-0 flex-1 flex-col gap-1 text-sm text-[var(--site-ink)]">
-          <span>{copy.backgroundImage}</span>
-          <input
-            className={`${ARMY_FORMATION_INPUT_CLASS} w-full min-w-0`}
-            type="text"
-            value={backgroundImageText}
-            onChange={(event) => onBackgroundImageText(event.target.value)}
-          />
-        </label>
-        <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-fit shrink-0`} onClick={onApplyBackgroundImage}>
-          {copy.setBackgroundImage}
-        </button>
+      <div className="flex flex-col gap-2">
+        <span className="text-sm text-[var(--site-ink)]">{copy.backgroundImage}</span>
+        <input
+          ref={backgroundImageInputRef}
+          type="file"
+          accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+          className="sr-only"
+          aria-label={copy.backgroundImage}
+          tabIndex={-1}
+          onChange={(event) => {
+            const input = event.currentTarget;
+            const file = readFirstChosenFile(input);
+            input.value = '';
+            if (file !== null) {
+              onChooseBackgroundImage(file);
+            }
+          }}
+        />
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            className={`${ARMY_FORMATION_BUTTON_CLASS} w-fit shrink-0`}
+            onClick={() => openFilePicker(backgroundImageInputRef.current)}
+          >
+            {copy.uploadBackgroundImage}
+          </button>
+          {backgroundImageUrl !== '' ? (
+            <button
+              type="button"
+              className={`${ARMY_FORMATION_BUTTON_CLASS} w-fit shrink-0`}
+              onClick={onRemoveBackgroundImage}
+            >
+              {copy.removeBackgroundImage}
+            </button>
+          ) : null}
+        </div>
+        <p className="text-xs text-[var(--site-ink-soft)]">{copy.backgroundImageFormats}</p>
       </div>
     </ArmyFormationControlGroup>
   );
@@ -1490,6 +1547,7 @@ function ArmyFormationRestoreDialog({
 export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   const copy = getArmyFormationCreatorCopy(locale);
   const [armyDocument, setArmyDocument] = useState(() => createEmptyArmyFormationDocument());
+  const armyDocumentRef = useRef(armyDocument);
   const [failureMessage, setFailureMessage] = useState<string | null>(null);
   const [startupStore] = useState<ArmyFormationStartupStore>(createArmyFormationStartupStore);
   const startupSnapshot = useSyncExternalStore(
@@ -1506,10 +1564,8 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   const [fieldBackgroundColorText, setFieldBackgroundColorText] = useState(() =>
     readColorInputValue(readActiveBattlefield(createEmptyArmyFormationDocument()).fieldBackgroundColor),
   );
-  const [backgroundImageText, setBackgroundImageText] = useState(
-    () => readActiveBattlefield(createEmptyArmyFormationDocument()).backgroundImageUrl,
-  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const backgroundImageInputRef = useRef<HTMLInputElement | null>(null);
   const pieceDragRef = useRef<PieceDragSession | null>(null);
   const suppressClickRef = useRef(false);
   const armyFormationAutosaveOpenRef = useRef(false);
@@ -1535,6 +1591,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   }
 
   function commitArmyFormationDocument(next: ArmyFormationDocument) {
+    armyDocumentRef.current = next;
     setArmyDocument(next);
     if (!armyFormationAutosaveOpenRef.current) {
       return;
@@ -1556,7 +1613,6 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   function syncBattlefieldDrafts(battlefield: ArmyBattlefield) {
     setHeightText(String(battlefield.heightPx));
     setFieldBackgroundColorText(readColorInputValue(battlefield.fieldBackgroundColor));
-    setBackgroundImageText(battlefield.backgroundImageUrl);
   }
 
   function reportArmyFormationAction(action: () => void) {
@@ -1627,9 +1683,36 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     });
   }
 
-  function onApplyBackgroundImage() {
+  async function onChooseBackgroundImage(file: File) {
+    const battlefieldIndex = armyDocumentRef.current.activeBattlefieldIndex;
+    const maxHeightPx = armyDocumentRef.current.battlefields[battlefieldIndex].heightPx;
+
+    try {
+      const result = await compressArmyFormationBackgroundImage(
+        file,
+        ARMY_FIELD_WIDTH_PX,
+        maxHeightPx,
+      );
+      if (result.status === 'rejected') {
+        setFailureMessage(describeArmyBackgroundImageUploadFailure(result, copy));
+        return;
+      }
+
+      const next = setArmyBackgroundImageUrlForBattlefield(
+        armyDocumentRef.current,
+        battlefieldIndex,
+        result.dataUrl,
+      );
+      commitArmyFormationDocument(next);
+      setFailureMessage(null);
+    } catch (failure: unknown) {
+      setFailureMessage(describeArmyFormationFailure(failure));
+    }
+  }
+
+  function onRemoveBackgroundImage() {
     reportArmyFormationAction(() => {
-      commitArmyFormationDocument(setArmyBackgroundImageUrl(armyDocument, backgroundImageText));
+      commitArmyFormationDocument(setArmyBackgroundImageUrl(armyDocument, ''));
     });
   }
 
@@ -1812,13 +1895,14 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
             copy={copy}
             heightText={heightText}
             fieldBackgroundColorText={fieldBackgroundColorText}
-            backgroundImageText={backgroundImageText}
+            backgroundImageUrl={battlefield.backgroundImageUrl}
+            backgroundImageInputRef={backgroundImageInputRef}
             onHeightText={setHeightText}
             onApplyHeight={onApplyHeight}
             onFieldBackgroundColorText={setFieldBackgroundColorText}
             onApplyFieldBackground={onApplyFieldBackground}
-            onBackgroundImageText={setBackgroundImageText}
-            onApplyBackgroundImage={onApplyBackgroundImage}
+            onChooseBackgroundImage={(file) => void onChooseBackgroundImage(file)}
+            onRemoveBackgroundImage={onRemoveBackgroundImage}
             onClear={onClear}
           />
         </div>

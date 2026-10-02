@@ -337,16 +337,16 @@ describe('CircularTestimonials', () => {
       );
 
       await act(async () => resizeObserver.reportWidth(320));
-      expect(testimonialImageLayer(carousel, 1).style.transform).toContain('translateX(48px)');
-      expect(testimonialImageLayer(carousel, 3).style.transform).toContain('translateX(-48px)');
+      expect(testimonialImageLayer(carousel, 1).style.transform).toContain('translateX(80px)');
+      expect(testimonialImageLayer(carousel, 3).style.transform).toContain('translateX(-80px)');
 
       await act(async () => resizeObserver.reportWidth(440));
-      expect(testimonialImageLayer(carousel, 1).style.transform).toContain('translateX(66px)');
-      expect(testimonialImageLayer(carousel, 3).style.transform).toContain('translateX(-66px)');
+      expect(testimonialImageLayer(carousel, 1).style.transform).toContain('translateX(110px)');
+      expect(testimonialImageLayer(carousel, 3).style.transform).toContain('translateX(-110px)');
 
       await act(async () => resizeObserver.reportWidth(560));
-      expect(testimonialImageLayer(carousel, 1).style.transform).toContain('translateX(84px)');
-      expect(testimonialImageLayer(carousel, 3).style.transform).toContain('translateX(-84px)');
+      expect(testimonialImageLayer(carousel, 1).style.transform).toContain('translateX(140px)');
+      expect(testimonialImageLayer(carousel, 3).style.transform).toContain('translateX(-140px)');
     } finally {
       unmountCarousel?.();
       vi.unstubAllGlobals();

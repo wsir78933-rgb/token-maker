@@ -1,3 +1,6 @@
+import { getI18nDictionary } from '@/lib/i18n/dictionary';
+import type { SiteLocale } from '@/lib/site-locale';
+
 const ARMOR_CREATOR_LOCALES = ['en', 'zh'] as const;
 
 type ArmorCreatorLocale = (typeof ARMOR_CREATOR_LOCALES)[number];
@@ -76,6 +79,70 @@ export type ArmorCreatorHeroTitle = {
   description: string;
   action: string;
 };
+
+export type ArmorCreatorComparisonRowCopy = {
+  criterion: string;
+  armorCreator: string;
+  photoshop: string;
+  firefly: string;
+};
+
+export type ArmorCreatorComparisonCopy = {
+  title: string;
+  tableLabel: string;
+  dimensionHeading: string;
+  armorCreatorHeading: string;
+  photoshopHeading: string;
+  fireflyHeading: string;
+  rows: readonly ArmorCreatorComparisonRowCopy[];
+};
+
+const ARMOR_CREATOR_COMPARISON_COPY: Readonly<Partial<Record<SiteLocale, ArmorCreatorComparisonCopy>>> = {
+  zh: {
+    title: 'Armor Creator vs. Photoshop vs. Adobe Firefly',
+    tableLabel: '护甲造型工具对比表格',
+    dimensionHeading: '对比项目',
+    armorCreatorHeading: 'Armor Creator',
+    photoshopHeading: 'Adobe Photoshop',
+    fireflyHeading: 'Adobe Firefly',
+    rows: [
+      {
+        criterion: '制作方式',
+        armorCreator: '选择护甲部件，直接组合造型',
+        photoshop: '需要复杂工具',
+        firefly: '输入提示词生成图像，也可对图片进行 AI 编辑',
+      },
+      {
+        criterion: '护甲素材',
+        armorCreator: '内置 1,400+ 张护甲 PNG 素材',
+        photoshop: '自行准备',
+        firefly: '用提示词生成',
+      },
+      {
+        criterion: '细节调整',
+        armorCreator: '支持左右肩对称和胸甲曲线调整，可按部位组合',
+        photoshop: '可用图层和蒙版精细修改，需手动操作',
+        firefly: '可通过提示词、画笔标注或区域选择修改局部',
+      },
+      {
+        criterion: '搭配管理',
+        armorCreator: '内置 4 个套装槽',
+        photoshop: '通过 PSD、图层或文件副本管理不同版本',
+        firefly: '基于生成图像继续编辑，搭配需通过提示词和局部编辑调整',
+      },
+      {
+        criterion: '成品导出',
+        armorCreator: '下载 PNG',
+        photoshop: '自行设置图像导出格式和参数',
+        firefly: '下载生成图像',
+      },
+    ],
+  },
+};
+
+export function getArmorCreatorComparisonCopy(locale: SiteLocale): ArmorCreatorComparisonCopy {
+  return getI18nDictionary(locale, ARMOR_CREATOR_COMPARISON_COPY, 'armor creator comparison');
+}
 
 const englishArmorCreatorCopy: ArmorCreatorCopy = {
   genderMale: 'Male',
@@ -262,6 +329,11 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   ],
 };
 
+const ARMOR_CREATOR_COPY: Record<ArmorCreatorLocale, ArmorCreatorCopy> = {
+  en: englishArmorCreatorCopy,
+  zh: chineseArmorCreatorCopy,
+};
+
 function isArmorCreatorLocale(locale: string): locale is ArmorCreatorLocale {
   return ARMOR_CREATOR_LOCALES.some((supportedLocale) => supportedLocale === locale);
 }
@@ -275,15 +347,7 @@ function requireArmorCreatorLocale(locale: string): ArmorCreatorLocale {
 }
 
 function readArmorCreatorCopy(locale: ArmorCreatorLocale): ArmorCreatorCopy {
-  if (locale === 'en') {
-    return englishArmorCreatorCopy;
-  }
-
-  if (locale === 'zh') {
-    return chineseArmorCreatorCopy;
-  }
-
-  throw new Error(`Unknown armor creator locale: ${JSON.stringify(locale)}.`);
+  return getI18nDictionary(locale, ARMOR_CREATOR_COPY, 'armor creator');
 }
 
 function assertArmorSaveSlotNumber(slotNumber: number): void {
