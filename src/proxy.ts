@@ -14,6 +14,10 @@ function isCoatMakerDocument(pathname: string) {
   return pathname === '/coat-of-arms-maker' || pathname === '/zh/coat-of-arms-maker';
 }
 
+function isEmblemCreatorDocument(pathname: string) {
+  return pathname === '/emblem-creator' || pathname === '/zh/emblem-creator';
+}
+
 function createNonceProtectedScriptSources(nonce: string) {
   return process.env.NODE_ENV === 'development'
     ? `'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval'`
@@ -37,13 +41,24 @@ function createShareDocumentContentSecurityPolicy(nonce: string) {
 }
 
 function createCoatMakerDocumentContentSecurityPolicy(nonce: string) {
+  return createMakerDocumentContentSecurityPolicy(nonce, false);
+}
+
+function createEmblemCreatorDocumentContentSecurityPolicy(nonce: string) {
+  return createMakerDocumentContentSecurityPolicy(nonce, true);
+}
+
+function createMakerDocumentContentSecurityPolicy(nonce: string, allowRemoteHttpsConnections: boolean) {
+  const connectSources = allowRemoteHttpsConnections
+    ? "connect-src 'self' https: https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://c.bing.com"
+    : "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://c.bing.com";
   return [
     "default-src 'self'",
     `script-src ${createNonceProtectedScriptSources(nonce)}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://c.bing.com",
     "font-src 'self'",
-    "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://c.bing.com",
+    connectSources,
     "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",
@@ -59,6 +74,10 @@ function createProtectedContentSecurityPolicy(nonce: string, pathname: string) {
 
   if (isCoatMakerDocument(pathname)) {
     return createCoatMakerDocumentContentSecurityPolicy(nonce);
+  }
+
+  if (isEmblemCreatorDocument(pathname)) {
+    return createEmblemCreatorDocumentContentSecurityPolicy(nonce);
   }
 
   throw new Error(`Unexpected protected document pathname: ${pathname}`);
@@ -88,5 +107,7 @@ export const config = {
     '/zh/share/:path*',
     '/coat-of-arms-maker',
     '/zh/coat-of-arms-maker',
+    '/emblem-creator',
+    '/zh/emblem-creator',
   ],
 } satisfies ProxyConfig;

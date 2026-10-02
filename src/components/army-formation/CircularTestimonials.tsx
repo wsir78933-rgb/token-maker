@@ -448,7 +448,7 @@ export function CircularTestimonials({
           <div className="flex items-center gap-6">
             <button
               aria-label={previousButtonLabel}
-              className="inline-flex h-[2.7rem] w-[2.7rem] items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-300"
+              className="inline-flex h-[2.7rem] w-[2.7rem] cursor-pointer items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-300"
               onClick={() => showDirection('previous')}
               style={arrowStyle}
               type="button"
@@ -457,7 +457,7 @@ export function CircularTestimonials({
             </button>
             <button
               aria-label={nextButtonLabel}
-              className="inline-flex h-[2.7rem] w-[2.7rem] items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-300"
+              className="inline-flex h-[2.7rem] w-[2.7rem] cursor-pointer items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--circular-testimonial-arrow-hover-background)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-300"
               onClick={() => showDirection('next')}
               style={arrowStyle}
               type="button"

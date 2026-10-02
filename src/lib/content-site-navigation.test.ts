@@ -56,6 +56,7 @@ describe('content site topbar model', () => {
     expect(model.freeTools).toEqual([
       { href: '/', title: 'Token Maker' },
       { href: '/coat-of-arms-maker', title: 'Coat of Arms Maker' },
+      { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/armor-creator', title: 'Armor Creator' },
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
     ]);
@@ -93,6 +94,7 @@ describe('content site topbar model', () => {
     expect(model.freeTools).toEqual([
       { href: '/zh', title: '令牌制作器' },
       { href: '/zh/coat-of-arms-maker', title: '纹章制作器' },
+      { href: '/zh/emblem-creator', title: '徽章编辑器' },
       { href: '/zh/armor-creator', title: '护甲制作器' },
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
     ]);

@@ -14,6 +14,7 @@ const topbarModel = {
   freeTools: [
     { href: '/', title: 'Token Maker' },
     { href: '/coat-of-arms-maker', title: 'Coat of Arms Maker' },
+    { href: '/emblem-creator', title: 'Emblem Creator' },
     { href: '/armor-creator', title: 'Armor Creator' },
     { href: '/army-formation-creator', title: 'Army Formation Creator' },
   ],
@@ -175,13 +176,14 @@ describe('ContentSiteTopbar', () => {
     expect(siteNavItem.getAttribute('data-open')).toBe('true');
   });
 
-  it('renders all four free tools with their existing paths', () => {
+  it('renders all five free tools with their existing paths', () => {
     renderContentSiteTopbar();
 
     expect(screen.getByRole('menuitem', { name: 'Token Maker' }).getAttribute('href')).toBe('/');
     expect(screen.getByRole('menuitem', { name: 'Coat of Arms Maker' }).getAttribute('href')).toBe(
       '/coat-of-arms-maker',
     );
+    expect(screen.getByRole('menuitem', { name: 'Emblem Creator' }).getAttribute('href')).toBe('/emblem-creator');
     expect(screen.getByRole('menuitem', { name: 'Armor Creator' }).getAttribute('href')).toBe('/armor-creator');
     expect(screen.getByRole('menuitem', { name: 'Army Formation Creator' }).getAttribute('href')).toBe(
       '/army-formation-creator',
@@ -272,6 +274,9 @@ describe('ContentSiteTopbar', () => {
     expect(within(freeToolsItem).getByRole('link', { name: 'Token Maker' }).getAttribute('href')).toBe('/');
     expect(within(freeToolsItem).getByRole('link', { name: 'Coat of Arms Maker' }).getAttribute('href')).toBe(
       '/coat-of-arms-maker',
+    );
+    expect(within(freeToolsItem).getByRole('link', { name: 'Emblem Creator' }).getAttribute('href')).toBe(
+      '/emblem-creator',
     );
     expect(within(freeToolsItem).getByRole('link', { name: 'Armor Creator' }).getAttribute('href')).toBe(
       '/armor-creator',

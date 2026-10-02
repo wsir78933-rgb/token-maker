@@ -1,5 +1,41 @@
 # WORKLOG
 
+## 交接单 · 2026-10-02 16:46 CST · Codex CLI
+
+### 本次目标
+
+调整 Armor Creator 案例轮播的后层图片位置，让插画露出更多；用户限定只改图片堆叠。
+
+### 已完成
+
+- `src/components/armor-creator/circular-testimonials.tsx` 扩大响应式后层图片偏移；图片舞台宽 320、440、560 px 时偏移分别为 80、110、140 px。`src/components/armor-creator/circular-testimonials.test.tsx` 同步更新断言。这两项目前在 HEAD `13d7c43` 中，`main` 比 `origin/main` 超前 1 个提交。
+- 聚焦测试 21/21 通过，ESLint 退出码 0，`git diff --check` 通过。
+- 按用户选择不存档。当前工作区有 3 个未提交改动：`ArmyFormationCreator.tsx` 给表单输入控件增加 `cursor-pointer`；`ArmyFormationCreatorPageHeading.tsx` 给主按钮增加 `cursor-pointer`；Army Formation 的 `CircularTestimonials.tsx` 给前后按钮增加 `cursor-pointer`。当前无暂存或未跟踪文件；不要提交或 push。
+
+### 做到一半
+
+- Ego Browser 打开 `http://localhost:40001/zh/armor-creator`，确认两个轮播和 600×500 图片资源已加载；1440 px 浏览器视口下，图片舞台宽 412 px，DOM 偏移为 103 px。`Page.captureScreenshot` 多次超时，因此叠放后的实际视觉效果尚未截图确认。
+- 上一轮 `pnpm typecheck` 在当时的工作区失败，报 `setBackgroundImage` 不在 `ArmyFormationCreatorCopy` 类型中。当前 HEAD 的 `src/lib/army-formation/copy.ts` 已包含该字段，但新状态尚未重跑 typecheck。
+
+### 下一步
+
+- 先保留上述 3 个未提交文件，不要提交或 push。
+- 重跑 `pnpm typecheck`，确认当前 HEAD 和工作区是否还有类型错误。
+- 用本地 Ego Browser 打开 `/zh/armor-creator` 检查后层插画是否清楚露出；截图接口仍失败时，明确报告视觉截图未验证，不要把 DOM 检查当作截图验收。
+
+### 踩过的坑
+
+- 仓库已有 Next dev server 使用 40001；再开一个 `next dev` 会因 `.next` 开发锁退出。不要杀掉现有服务或重启它。
+- Ego Browser 的 `Page.captureScreenshot` 和裁剪截图调用均超时；页面导航和 DOM 检查可用。
+- 上一轮 typecheck 错误对应的 `setBackgroundImage` 字段已在当前 HEAD 的 copy 类型中，旧错误不能直接当作当前结果。
+
+### 怎么验证
+
+- `pnpm exec vitest run src/components/armor-creator/circular-testimonials.test.tsx`：上一轮 21/21 通过。
+- `pnpm exec eslint src/components/armor-creator/circular-testimonials.tsx src/components/armor-creator/circular-testimonials.test.tsx`：上一轮退出码 0。
+- `pnpm typecheck`：对当前状态重跑；上一轮结果已过时。
+- Ego Browser 打开 `http://localhost:40001/zh/armor-creator`，检查桌面和窄屏下主图两侧的后层图案是否可辨、页面是否横向溢出。截图捕获恢复前，视觉确认记为未验证。
+
 ## 交接单 · 2026-09-30 21:18 CST · Cursor
 
 ### 本次目标

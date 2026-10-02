@@ -63,7 +63,7 @@ const ARMY_FORMATION_PNG_NAME = 'army-formation-creator.png';
 const ARMY_FORMATION_BUTTON_CLASS =
   'cursor-pointer rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-4 py-3 text-base text-[var(--site-ink)] transition-colors enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)]';
 const ARMY_FORMATION_INPUT_CLASS =
-  'rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] px-2 py-1 text-sm text-[var(--site-ink)]';
+  'cursor-pointer rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] px-2 py-1 text-sm text-[var(--site-ink)]';
 const ARMY_FORMATION_NATO_ICONS_PER_PAGE = 60;
 const ARMY_FORMATION_ICON_SHELF_MAX_HEIGHT_CLASS = 'max-h-[calc(2.25rem*3+0.25rem*2)]';
 const ARMY_FORMATION_ICON_THUMBNAIL_FILTER = 'brightness(0) invert(1)';

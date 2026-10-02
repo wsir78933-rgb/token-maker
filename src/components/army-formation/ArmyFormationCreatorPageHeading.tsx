@@ -113,7 +113,7 @@ function ArmyFormationHeroButton({ label }: { label: string }) {
     <button
       ref={buttonRef}
       type="button"
-      className={`${ARMY_FORMATION_HERO_BUTTON_CLASS} ${ARMY_FORMATION_HERO_FADE_CLASS} is-delayed-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-foreground px-8 py-6 text-base font-medium text-background`}
+      className={`${ARMY_FORMATION_HERO_BUTTON_CLASS} ${ARMY_FORMATION_HERO_FADE_CLASS} is-delayed-2 inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-foreground px-8 py-6 text-base font-medium text-background`}
       onClick={handleClick}
     >
       {label}
