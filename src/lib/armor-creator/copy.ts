@@ -98,6 +98,46 @@ export type ArmorCreatorComparisonCopy = {
 };
 
 const ARMOR_CREATOR_COMPARISON_COPY: Readonly<Partial<Record<SiteLocale, ArmorCreatorComparisonCopy>>> = {
+  en: {
+    title: 'Armor Creator vs. Photoshop vs. Adobe Firefly',
+    tableLabel: 'Armor creation tools comparison',
+    dimensionHeading: 'Comparison',
+    armorCreatorHeading: 'Armor Creator',
+    photoshopHeading: 'Adobe Photoshop',
+    fireflyHeading: 'Adobe Firefly',
+    rows: [
+      {
+        criterion: 'Creation process',
+        armorCreator: 'Choose armor pieces and combine them directly',
+        photoshop: 'Requires complex tools',
+        firefly: 'Generate images with prompts or edit images with AI',
+      },
+      {
+        criterion: 'Armor assets',
+        armorCreator: '1,400+ built-in armor PNG assets',
+        photoshop: 'Provide your own assets',
+        firefly: 'Generate assets with prompts',
+      },
+      {
+        criterion: 'Detail adjustments',
+        armorCreator: 'Adjust shoulder symmetry and chest curves, and combine pieces by slot',
+        photoshop: 'Fine-tune with layers and masks through manual editing',
+        firefly: 'Edit details with prompts, brush selections, or region selections',
+      },
+      {
+        criterion: 'Outfit management',
+        armorCreator: 'Four built-in outfit slots',
+        photoshop: 'Manage versions with PSDs, layers, or file copies',
+        firefly: 'Continue editing generated images; adjust looks with prompts and local edits',
+      },
+      {
+        criterion: 'Export',
+        armorCreator: 'Download as PNG',
+        photoshop: 'Choose export formats and settings yourself',
+        firefly: 'Download generated images',
+      },
+    ],
+  },
   zh: {
     title: 'Armor Creator vs. Photoshop vs. Adobe Firefly',
     tableLabel: '护甲造型工具对比表格',

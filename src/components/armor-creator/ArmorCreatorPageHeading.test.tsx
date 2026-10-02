@@ -142,7 +142,7 @@ describe('ArmorCreatorPageView', () => {
     ]);
   });
 
-  it('英文页面标题在编辑器前面', () => {
+  it('英文页面显示完整本地化内容并保持区块顺序', () => {
     render(<ArmorCreatorPageView locale="en" />);
 
     const heading = screen.getByRole('heading', { level: 1 });
@@ -155,8 +155,30 @@ describe('ArmorCreatorPageView', () => {
       level: 3,
       name: 'Woodland Ranger',
     });
+    const whatIsHeading = screen.getByRole('heading', {
+      level: 2,
+      name: 'What is the Armor Creator?',
+    });
+    const howToUseHeading = screen.getByRole('heading', {
+      level: 2,
+      name: 'How to use the Armor Creator',
+    });
+    const comparisonHeading = screen.getByRole('heading', {
+      level: 2,
+      name: 'Armor Creator vs. Photoshop vs. Adobe Firefly',
+    });
+    const faqHeading = screen.getByRole('heading', {
+      level: 2,
+      name: 'Armor Creator FAQ',
+    });
+    const faqQuestion = screen.getByRole('button', {
+      name: 'Is the Armor Creator free to use?',
+    });
     const editor = document.getElementById('armor-creator-editor');
     const footerLink = screen.getByRole('link', { name: 'Token Maker home' });
+    const comparisonTable = screen.getByRole('region', {
+      name: 'Armor creation tools comparison',
+    });
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(screen.getAllByRole('button', { name: 'Next style' })).toHaveLength(2);
@@ -164,16 +186,17 @@ describe('ArmorCreatorPageView', () => {
     expect(screen.getByRole('link', { name: 'Try for Free' }).getAttribute('href')).toBe(
       '#armor-creator-editor',
     );
+    expect(screen.getByText(/The Armor Creator is an online visual tool/)).toBeTruthy();
     expect(
-      screen.queryByRole('heading', { level: 2, name: 'What is the Armor Creator?' }),
-    ).toBeNull();
+      screen.getByRole('heading', { level: 3, name: 'Choose a character and armor type' }),
+    ).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 3, name: 'Mix and match armor pieces' })).toBeTruthy();
     expect(
-      screen.queryByRole('heading', { level: 2, name: 'How to use the Armor Creator' }),
-    ).toBeNull();
-    expect(screen.queryByRole('heading', { level: 2, name: 'Armor Creator FAQ' })).toBeNull();
-    expect(
-      screen.queryByRole('button', { name: 'Is the Armor Creator free to use?' }),
-    ).toBeNull();
+      screen.getByRole('heading', { level: 3, name: 'Refine and download your look' }),
+    ).toBeTruthy();
+    expect(comparisonTable).toBeTruthy();
+    expect(screen.getByText('1,400+ built-in armor PNG assets')).toBeTruthy();
+    expect(faqQuestion).toBeTruthy();
     expect(heading.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
@@ -188,5 +211,26 @@ describe('ArmorCreatorPageView', () => {
     expect(
       lightArmorExample.compareDocumentPosition(footerLink) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect((editor as Node).compareDocumentPosition(whatIsHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(
+      whatIsHeading.compareDocumentPosition(heavyArmorExample) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      heavyArmorExample.compareDocumentPosition(howToUseHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      whatIsHeading.compareDocumentPosition(howToUseHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      howToUseHeading.compareDocumentPosition(comparisonHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      comparisonHeading.compareDocumentPosition(faqHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(faqHeading.compareDocumentPosition(footerLink) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
   });
 });

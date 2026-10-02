@@ -148,34 +148,29 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
       >
         <ArmorCreatorWorkbench locale={locale} />
       </div>
-      {locale !== 'zh' && <ArmorCreatorFeatures locale={locale} />}
-      {locale === 'zh' && (
-        <>
-          <section
-            aria-labelledby="armor-creator-what-is-heading"
-            className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
-          >
-            <h2
-              id="armor-creator-what-is-heading"
-              className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl"
-            >
-              {copy.whatIsTitle}
-            </h2>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-300 text-pretty sm:text-base">
-              {copy.whatIsDescription}
-            </p>
-          </section>
-          <ArmorCreatorFeatures locale={locale} />
-          <ArmorCreatorHowToUse copy={copy} />
-          <ArmorCreatorComparison copy={getArmorCreatorComparisonCopy(locale)} />
-          <Faq1
-            eyebrow={copy.faqEyebrow}
-            title={copy.faqTitle}
-            description={copy.faqDescription}
-            items={copy.faqItems}
-          />
-        </>
-      )}
+      <section
+        aria-labelledby="armor-creator-what-is-heading"
+        className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
+      >
+        <h2
+          id="armor-creator-what-is-heading"
+          className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl"
+        >
+          {copy.whatIsTitle}
+        </h2>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-300 text-pretty sm:text-base">
+          {copy.whatIsDescription}
+        </p>
+      </section>
+      <ArmorCreatorFeatures locale={locale} />
+      <ArmorCreatorHowToUse copy={copy} />
+      <ArmorCreatorComparison copy={getArmorCreatorComparisonCopy(locale)} />
+      <Faq1
+        eyebrow={copy.faqEyebrow}
+        title={copy.faqTitle}
+        description={copy.faqDescription}
+        items={copy.faqItems}
+      />
     </>
   );
 }
