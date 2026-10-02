@@ -10,10 +10,93 @@ import {
   ArmyFormationCreatorPageHeading,
 } from '@/components/army-formation/ArmyFormationCreatorPageHeading';
 import { ArmyFormationCreator } from '@/components/army-formation/ArmyFormationCreator';
+import { CircularTestimonials } from '@/components/army-formation/CircularTestimonials';
+import {
+  listChineseArmyFormationCaseTestimonials,
+  listEnglishArmyFormationCaseTestimonials,
+  type ArmyFormationCaseTestimonialCarousels,
+} from '@/components/army-formation/army-formation-case-testimonials';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import type { SiteLocale } from '@/lib/site-locale';
 
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
+
+type ArmyFormationCaseCarouselCopy = {
+  cases01To06Label: string;
+  cases07To12Label: string;
+  previousExampleLabel: string;
+  nextExampleLabel: string;
+};
+
+const ARMY_FORMATION_CASE_CAROUSEL_COPY: Record<SiteLocale, ArmyFormationCaseCarouselCopy> = {
+  en: {
+    cases01To06Label: 'Army formation examples 1 to 6',
+    cases07To12Label: 'Army formation examples 7 to 12',
+    previousExampleLabel: 'Previous example',
+    nextExampleLabel: 'Next example',
+  },
+  zh: {
+    cases01To06Label: '军阵案例 01 至 06',
+    cases07To12Label: '军阵案例 07 至 12',
+    previousExampleLabel: '上一个案例',
+    nextExampleLabel: '下一个案例',
+  },
+};
+
+function listArmyFormationCaseTestimonialsForLocale(
+  locale: SiteLocale,
+): ArmyFormationCaseTestimonialCarousels {
+  switch (locale) {
+    case 'zh':
+      return listChineseArmyFormationCaseTestimonials();
+    case 'en':
+      return listEnglishArmyFormationCaseTestimonials();
+    default: {
+      const unexpectedLocale: never = locale;
+      throw new Error(
+        `Army formation case testimonials have no list for locale ${JSON.stringify(unexpectedLocale)}.`,
+      );
+    }
+  }
+}
+
+function readArmyFormationCaseCarouselCopy(locale: SiteLocale): ArmyFormationCaseCarouselCopy {
+  switch (locale) {
+    case 'zh':
+    case 'en':
+      return ARMY_FORMATION_CASE_CAROUSEL_COPY[locale];
+    default: {
+      const unexpectedLocale: never = locale;
+      throw new Error(
+        `Army formation case carousel copy is missing for locale ${JSON.stringify(unexpectedLocale)}.`,
+      );
+    }
+  }
+}
+
+function ArmyFormationCreatorCaseCarousels({ locale }: { locale: SiteLocale }) {
+  const caseTestimonials = listArmyFormationCaseTestimonialsForLocale(locale);
+  const carouselCopy = readArmyFormationCaseCarouselCopy(locale);
+
+  return (
+    <div className="mt-14 flex w-full min-w-0 flex-col gap-16">
+      <CircularTestimonials
+        testimonials={caseTestimonials.cases01To06}
+        ariaLabel={carouselCopy.cases01To06Label}
+        previousLabel={carouselCopy.previousExampleLabel}
+        nextLabel={carouselCopy.nextExampleLabel}
+        imageOnLeft={false}
+      />
+      <CircularTestimonials
+        testimonials={caseTestimonials.cases07To12}
+        ariaLabel={carouselCopy.cases07To12Label}
+        previousLabel={carouselCopy.previousExampleLabel}
+        nextLabel={carouselCopy.nextExampleLabel}
+        imageOnLeft={true}
+      />
+    </div>
+  );
+}
 
 type ArmyFormationCreatorPageStepCopy = {
   title: string;
@@ -170,6 +253,8 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
           {copy.overviewDescription}
         </p>
       </section>
+
+      <ArmyFormationCreatorCaseCarousels locale={locale} />
 
       <section className="mt-10">
         <div className="mb-14 flex flex-col items-center gap-3 text-center">
