@@ -17,7 +17,7 @@ function ArmorCreatorHowToUse({ copy }: { copy: ArmorCreatorCopy }) {
   return (
     <section
       aria-labelledby="armor-creator-how-to-use-heading"
-      className="mx-auto max-w-5xl border-t border-white/10 px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
+      className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
     >
       <div className="mb-14 flex flex-col items-center gap-3 text-center">
         <span className="text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
@@ -82,7 +82,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
           <ArmorCreatorFeatures />
           <section
             aria-labelledby="armor-creator-what-is-heading"
-            className="mx-auto max-w-5xl border-t border-white/10 px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
+            className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
           >
             <h2
               id="armor-creator-what-is-heading"

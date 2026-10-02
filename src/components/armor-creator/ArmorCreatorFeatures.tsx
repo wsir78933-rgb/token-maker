@@ -99,7 +99,7 @@ function ArmorCreatorFeatureSection({
   return (
     <section
       aria-label={title}
-      className="mx-auto max-w-5xl border-t border-white/10 px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
+      className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
     >
       <CircularTestimonials
         testimonials={examples}

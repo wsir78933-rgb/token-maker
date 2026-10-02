@@ -4,7 +4,7 @@ import { ChevronDown } from 'lucide-react';
 import { useId, useState } from 'react';
 
 const FAQ1_SECTION_CLASS =
-  'mx-auto max-w-5xl border-t border-white/10 px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28';
+  'mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28';
 
 export type Faq1Item = {
   question: string;
