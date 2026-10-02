@@ -1,101 +1,205 @@
-import { CircularTestimonials } from '@/components/armor-creator/circular-testimonials';
+import {
+  CircularTestimonials,
+  type CircularTestimonial,
+} from '@/components/armor-creator/circular-testimonials';
+import type { SiteLocale } from '@/lib/site-locale';
+
+type LocalizedArmorCreatorFeatureText = Record<SiteLocale, string>;
 
 type ArmorCreatorFeatureExample = {
   src: string;
-  name: string;
-  designation: string;
-  quote: string;
+  name: LocalizedArmorCreatorFeatureText;
+  designation: LocalizedArmorCreatorFeatureText;
+  quote: LocalizedArmorCreatorFeatureText;
 };
 
-type ArmorCreatorFeatureSectionProps = {
+type ArmorCreatorFeatureSection = {
+  title: LocalizedArmorCreatorFeatureText;
+  carouselLabel: LocalizedArmorCreatorFeatureText;
   imagePosition: 'left' | 'right';
-  title: string;
-  examples: ArmorCreatorFeatureExample[];
+  examples: readonly ArmorCreatorFeatureExample[];
 };
 
-const HEAVY_ARMOR_CASES: ArmorCreatorFeatureExample[] = [
+type ArmorCreatorFeatureNavigationLabels = {
+  previous: string;
+  next: string;
+};
+
+const ARMOR_CREATOR_FEATURE_NAVIGATION_LABELS: Record<SiteLocale, ArmorCreatorFeatureNavigationLabels> = {
+  en: {
+    previous: 'Previous style',
+    next: 'Next style',
+  },
+  zh: {
+    previous: '上一个造型',
+    next: '下一个造型',
+  },
+};
+
+const ARMOR_CREATOR_FEATURE_SECTIONS: readonly ArmorCreatorFeatureSection[] = [
   {
-    src: '/armor-creator/examples/gate-guard.png',
-    name: '城门重甲卫士',
-    designation: '重甲守卫造型',
-    quote: '厚重胸甲、封闭式头盔与层叠护肩，构成稳固的城防轮廓。',
+    title: {
+      en: 'Heavy Armor and Ceremonial Looks',
+      zh: '重甲与仪式造型',
+    },
+    carouselLabel: {
+      en: 'Heavy armor and ceremonial look examples',
+      zh: '重甲与仪式造型案例轮播',
+    },
+    imagePosition: 'left',
+    examples: [
+      {
+        src: '/armor-creator/examples/gate-guard.png',
+        name: { en: 'Gate Guard', zh: '城门重甲卫士' },
+        designation: { en: 'Heavy Guard Armor', zh: '重甲守卫造型' },
+        quote: {
+          en: 'A heavy breastplate, closed helm, and layered pauldrons create a sturdy silhouette for a city gate guard.',
+          zh: '厚重胸甲、封闭式头盔与层叠护肩，构成稳固的城防轮廓。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/royal-knight.png',
+        name: { en: 'Royal Knight', zh: '王室仪仗骑士' },
+        designation: { en: 'Ceremonial Plate Armor', zh: '礼仪重甲造型' },
+        quote: {
+          en: 'Silver plate with gold trim, a shoulder crest, and a long cape give this knight a formal ceremonial look.',
+          zh: '银色板甲配以金色饰边，肩部徽饰与长披风突出典礼感。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/temple-guardian.png',
+        name: { en: 'Temple Guardian', zh: '神殿守护者' },
+        designation: { en: 'Ritual Heavy Armor', zh: '仪式重甲造型' },
+        quote: {
+          en: 'A high gorget balances the symmetrical pauldrons, while the chest ornament gives the armor a solemn presence.',
+          zh: '高领护颈与对称肩甲相互呼应，胸前纹饰强化庄严轮廓。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/oathbreaker-knight.png',
+        name: { en: 'Oathbreaker Knight', zh: '破誓骑士' },
+        designation: { en: 'Dark, Battle-Worn Armor', zh: '暗色战损重甲' },
+        quote: {
+          en: 'Dark metal, a horned helm, and a weathered cape create a stark, battle-worn silhouette.',
+          zh: '暗色金属、尖角头盔与磨损披风组合出冷峻的战损轮廓。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/mercenary-captain.png',
+        name: { en: 'Mercenary Captain', zh: '佣兵队长' },
+        designation: { en: 'Field Commander', zh: '实战指挥造型' },
+        quote: {
+          en: 'Mixed armor, leather straps, and a single pauldron keep the commander protected without limiting movement.',
+          zh: '混合护甲搭配皮革束带与单侧肩甲，保留便于行动的装备细节。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/winged-lord.png',
+        name: { en: 'Winged Lord', zh: '翼饰领主' },
+        designation: { en: 'Winged Ceremonial Armor', zh: '翼冠仪式造型' },
+        quote: {
+          en: 'A winged helm and elongated plate armor pair with metallic details for a striking ceremonial silhouette.',
+          zh: '翼形头盔与修长板甲结合，金属饰面形成鲜明的仪典轮廓。',
+        },
+      },
+    ],
   },
   {
-    src: '/armor-creator/examples/royal-knight.png',
-    name: '王室仪仗骑士',
-    designation: '礼仪重甲造型',
-    quote: '银色板甲配以金色饰边，肩部徽饰与长披风突出典礼感。',
-  },
-  {
-    src: '/armor-creator/examples/temple-guardian.png',
-    name: '神殿守护者',
-    designation: '仪式重甲造型',
-    quote: '高领护颈与对称肩甲相互呼应，胸前纹饰强化庄严轮廓。',
-  },
-  {
-    src: '/armor-creator/examples/oathbreaker-knight.png',
-    name: '破誓骑士',
-    designation: '暗色战损重甲',
-    quote: '暗色金属、尖角头盔与磨损披风组合出冷峻的战损轮廓。',
-  },
-  {
-    src: '/armor-creator/examples/mercenary-captain.png',
-    name: '佣兵队长',
-    designation: '实战指挥造型',
-    quote: '混合护甲搭配皮革束带与单侧肩甲，保留便于行动的装备细节。',
-  },
-  {
-    src: '/armor-creator/examples/winged-lord.png',
-    name: '翼饰领主',
-    designation: '翼冠仪式造型',
-    quote: '翼形头盔与修长板甲结合，金属饰面形成鲜明的仪典轮廓。',
+    title: {
+      en: 'Light Armor and Fantasy Roles',
+      zh: '轻装与奇幻职业',
+    },
+    carouselLabel: {
+      en: 'Light armor and fantasy role examples',
+      zh: '轻装与奇幻职业案例轮播',
+    },
+    imagePosition: 'right',
+    examples: [
+      {
+        src: '/armor-creator/examples/woodland-ranger.png',
+        name: { en: 'Woodland Ranger', zh: '林地游侠' },
+        designation: { en: 'Light Archer Armor', zh: '轻装弓手造型' },
+        quote: {
+          en: 'A short cloak, leather guards, and natural tones make this a practical look for moving through the woods.',
+          zh: '短披风、皮革护具与自然色调组成适合林间行动的轻便轮廓。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/travel-scout.png',
+        name: { en: 'Traveling Scout', zh: '旅途斥候' },
+        designation: { en: 'Road-Ready Scout', zh: '旅行斥候造型' },
+        quote: {
+          en: 'Layered cloth armor, a travel pouch, and light shoulder guards form a practical kit for the road.',
+          zh: '分层布甲、腰包与轻型肩护组合，呈现便于携行的旅行装备。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/border-hunter.png',
+        name: { en: 'Border Hunter', zh: '边境猎手' },
+        designation: { en: 'Wilderness Hunter', zh: '野外猎人造型' },
+        quote: {
+          en: 'Dark leather armor and practical bracers pair with a broad hood for a look suited to staying hidden outdoors.',
+          zh: '深色皮甲配实用护臂，宽沿兜帽呼应便于隐蔽的野外装束。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/academy-mage.png',
+        name: { en: 'Academy Mage', zh: '学院法师' },
+        designation: { en: 'Academy Spellcaster', zh: '学院施法造型' },
+        quote: {
+          en: 'A narrow-shouldered guard sits over the robe, with geometric patterns and belts marking an academy style.',
+          zh: '长袍外层搭配窄肩护具，几何纹样与束带呈现学院风格。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/court-mage.png',
+        name: { en: 'Court Mage', zh: '宫廷法师' },
+        designation: { en: 'Courtly Spellcaster', zh: '宫廷法术造型' },
+        quote: {
+          en: 'A high-collared robe, mantle, and fine trim create a polished formal look for court magic.',
+          zh: '高领长衣、披肩与精致饰边组成正式的施法服饰层次。',
+        },
+      },
+      {
+        src: '/armor-creator/examples/temple-priest.png',
+        name: { en: 'Temple Priest', zh: '神殿祭司' },
+        designation: { en: 'Ceremonial Robes', zh: '祭仪轻袍造型' },
+        quote: {
+          en: 'A light robe with a mantle and restrained trim keeps the silhouette relaxed while preserving a sense of ceremony.',
+          zh: '浅色长袍配披肩和简洁饰边，宽松剪裁保留庄重的仪式感。',
+        },
+      },
+    ],
   },
 ];
 
-const LIGHT_ARMOR_CASES: ArmorCreatorFeatureExample[] = [
-  {
-    src: '/armor-creator/examples/woodland-ranger.png',
-    name: '林地游侠',
-    designation: '轻装弓手造型',
-    quote: '短披风、皮革护具与自然色调组成适合林间行动的轻便轮廓。',
-  },
-  {
-    src: '/armor-creator/examples/travel-scout.png',
-    name: '旅途斥候',
-    designation: '旅行斥候造型',
-    quote: '分层布甲、腰包与轻型肩护组合，呈现便于携行的旅行装备。',
-  },
-  {
-    src: '/armor-creator/examples/border-hunter.png',
-    name: '边境猎手',
-    designation: '野外猎人造型',
-    quote: '深色皮甲配实用护臂，宽沿兜帽呼应便于隐蔽的野外装束。',
-  },
-  {
-    src: '/armor-creator/examples/academy-mage.png',
-    name: '学院法师',
-    designation: '学院施法造型',
-    quote: '长袍外层搭配窄肩护具，几何纹样与束带呈现学院风格。',
-  },
-  {
-    src: '/armor-creator/examples/court-mage.png',
-    name: '宫廷法师',
-    designation: '宫廷法术造型',
-    quote: '高领长衣、披肩与精致饰边组成正式的施法服饰层次。',
-  },
-  {
-    src: '/armor-creator/examples/temple-priest.png',
-    name: '神殿祭司',
-    designation: '祭仪轻袍造型',
-    quote: '浅色长袍配披肩和简洁饰边，宽松剪裁保留庄重的仪式感。',
-  },
-];
+function listLocalizedArmorCreatorFeatureExamples(
+  examples: readonly ArmorCreatorFeatureExample[],
+  locale: SiteLocale,
+): CircularTestimonial[] {
+  return examples.map((example) => ({
+    src: example.src,
+    name: example.name[locale],
+    designation: example.designation[locale],
+    quote: example.quote[locale],
+  }));
+}
 
 function ArmorCreatorFeatureSection({
-  imagePosition,
   title,
+  carouselLabel,
+  imagePosition,
   examples,
-}: ArmorCreatorFeatureSectionProps) {
+  previousLabel,
+  nextLabel,
+}: {
+  title: string;
+  carouselLabel: string;
+  imagePosition: 'left' | 'right';
+  examples: readonly CircularTestimonial[];
+  previousLabel: string;
+  nextLabel: string;
+}) {
   return (
     <section
       aria-label={title}
@@ -103,28 +207,27 @@ function ArmorCreatorFeatureSection({
     >
       <CircularTestimonials
         testimonials={examples}
-        ariaLabel={`${title}案例轮播`}
-        previousLabel="上一个造型"
-        nextLabel="下一个造型"
+        ariaLabel={carouselLabel}
+        previousLabel={previousLabel}
+        nextLabel={nextLabel}
         imagePosition={imagePosition}
       />
     </section>
   );
 }
 
-export function ArmorCreatorFeatures() {
-  return (
-    <>
-      <ArmorCreatorFeatureSection
-        title="重甲与仪式造型"
-        examples={HEAVY_ARMOR_CASES}
-        imagePosition="left"
-      />
-      <ArmorCreatorFeatureSection
-        title="轻装与奇幻职业"
-        examples={LIGHT_ARMOR_CASES}
-        imagePosition="right"
-      />
-    </>
-  );
+export function ArmorCreatorFeatures({ locale }: { locale: SiteLocale }) {
+  const navigationLabels = ARMOR_CREATOR_FEATURE_NAVIGATION_LABELS[locale];
+
+  return ARMOR_CREATOR_FEATURE_SECTIONS.map((section) => (
+    <ArmorCreatorFeatureSection
+      key={section.carouselLabel[locale]}
+      title={section.title[locale]}
+      carouselLabel={section.carouselLabel[locale]}
+      imagePosition={section.imagePosition}
+      examples={listLocalizedArmorCreatorFeatureExamples(section.examples, locale)}
+      previousLabel={navigationLabels.previous}
+      nextLabel={navigationLabels.next}
+    />
+  ));
 }

@@ -77,9 +77,9 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
       >
         <ArmorCreatorWorkbench locale={locale} />
       </div>
+      <ArmorCreatorFeatures locale={locale} />
       {locale === 'zh' && (
         <>
-          <ArmorCreatorFeatures />
           <section
             aria-labelledby="armor-creator-what-is-heading"
             className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"

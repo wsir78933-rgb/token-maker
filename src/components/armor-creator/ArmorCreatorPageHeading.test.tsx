@@ -79,8 +79,17 @@ describe('ArmorCreatorPageView', () => {
       name: '护甲搭配工具可以免费使用吗？',
     });
     const footerLink = screen.getByRole('link', { name: 'Token Maker 首页' });
+    const heavyArmorExample = screen.getByRole('heading', {
+      level: 3,
+      name: '城门重甲卫士',
+    });
+    const lightArmorExample = screen.getByRole('heading', {
+      level: 3,
+      name: '林地游侠',
+    });
 
     expect(editor).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: '下一个造型' })).toHaveLength(2);
     expect(heading.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
@@ -94,6 +103,13 @@ describe('ArmorCreatorPageView', () => {
     ).toBeTruthy();
     expect(
       (editor as Node).compareDocumentPosition(whatIsHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      (editor as Node).compareDocumentPosition(heavyArmorExample) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      heavyArmorExample.compareDocumentPosition(lightArmorExample) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(
       whatIsHeading.compareDocumentPosition(footerLink) & Node.DOCUMENT_POSITION_FOLLOWING,
@@ -131,8 +147,19 @@ describe('ArmorCreatorPageView', () => {
 
     const heading = screen.getByRole('heading', { level: 1 });
     const preview = screen.getByRole('heading', { level: 2, name: 'Preview' });
+    const heavyArmorExample = screen.getByRole('heading', {
+      level: 3,
+      name: 'Gate Guard',
+    });
+    const lightArmorExample = screen.getByRole('heading', {
+      level: 3,
+      name: 'Woodland Ranger',
+    });
+    const editor = document.getElementById('armor-creator-editor');
+    const footerLink = screen.getByRole('link', { name: 'Token Maker home' });
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getAllByRole('button', { name: 'Next style' })).toHaveLength(2);
     expect(heading.textContent).toBe('Free Armor Creator for RPG Characters, NPCs & Fantasy Worlds');
     expect(screen.getByRole('link', { name: 'Try for Free' }).getAttribute('href')).toBe(
       '#armor-creator-editor',
@@ -150,5 +177,16 @@ describe('ArmorCreatorPageView', () => {
     expect(heading.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
+    expect(
+      (editor as Node).compareDocumentPosition(heavyArmorExample) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      heavyArmorExample.compareDocumentPosition(lightArmorExample) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      lightArmorExample.compareDocumentPosition(footerLink) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 });
