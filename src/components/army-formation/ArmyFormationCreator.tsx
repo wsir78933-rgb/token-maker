@@ -1790,7 +1790,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
       />
       <ArmyFormationIconShelf copy={copy} categoryId={activeCategoryId} onPlace={onPlaceIcon} />
       <div className="flex flex-col gap-3 min-[1440px]:flex-row min-[1440px]:items-start">
-        <div className="flex w-full min-w-0 flex-col gap-3 rounded-2xl border border-[var(--site-border-strong)] p-3 min-[1440px]:w-[400px] min-[1440px]:shrink-0">
+        <div className="flex w-full min-w-0 flex-col gap-6 rounded-2xl border border-[var(--site-border-strong)] p-3 min-[1440px]:w-[400px] min-[1440px]:shrink-0">
           <ArmyFormationColorControls
             copy={copy}
             colorText={colorText}
