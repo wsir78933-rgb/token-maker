@@ -79,7 +79,7 @@ function ArmyFormationCreatorCaseCarousels({ locale }: { locale: SiteLocale }) {
   const carouselCopy = readArmyFormationCaseCarouselCopy(locale);
 
   return (
-    <div className="mt-14 flex w-full min-w-0 flex-col gap-16">
+    <div className="mt-40 flex w-full min-w-0 flex-col gap-8 sm:mt-48 lg:mt-56">
       <CircularTestimonials
         testimonials={caseTestimonials.cases01To06}
         ariaLabel={carouselCopy.cases01To06Label}
@@ -111,7 +111,6 @@ type ArmyFormationCreatorToolComparisonRowCopy = {
 };
 
 type ArmyFormationCreatorToolComparisonCopy = {
-  eyebrow: string;
   title: string;
   description: string;
   dimensionHeading: string;
@@ -120,7 +119,6 @@ type ArmyFormationCreatorToolComparisonCopy = {
   illustratorHeading: string;
   tableLabel: string;
   rows: readonly ArmyFormationCreatorToolComparisonRowCopy[];
-  callToActionLabel: string;
 };
 
 type ArmyFormationCreatorPageCopy = {
@@ -174,8 +172,7 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
       'Choose pieces, arrange your troops, and create a battlefield formation diagram.',
     callToActionLabel: 'Start creating',
     toolComparison: {
-      eyebrow: 'Tool comparison',
-      title: 'Army Formation Creator vs. traditional design tools',
+      title: 'Army Formation Creator vs. Photoshop vs. Illustrator',
       description:
         'Compare symbol libraries, formation editing, battlefield management, saving, and export.',
       dimensionHeading: 'Feature',
@@ -215,7 +212,6 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
           illustrator: 'SVG, PDF, and other formats',
         },
       ],
-      callToActionLabel: 'Start creating a formation',
     },
     faqEyebrow: 'Army Formation Creator',
     faqTitle: 'Frequently asked questions',
@@ -278,8 +274,7 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     callToActionDescription: '挑选棋子，安排队伍位置，制作你的战场阵型示意图。',
     callToActionLabel: '开始制作',
     toolComparison: {
-      eyebrow: '工具对比',
-      title: '军阵图制作工具对比',
+      title: '军阵制作器 vs Photoshop vs Illustrator',
       description: '比较军阵素材、阵型编辑、多战场管理和文件处理能力。',
       dimensionHeading: '对比维度',
       armyFormationCreatorHeading: 'Army Formation Creator',
@@ -318,7 +313,6 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
           illustrator: '支持 SVG、PDF 等格式',
         },
       ],
-      callToActionLabel: '开始制作军阵',
     },
     faqEyebrow: '军阵制作器',
     faqTitle: '常见问题',
@@ -356,9 +350,6 @@ function ArmyFormationCreatorToolComparison({
   return (
     <section aria-labelledby="army-formation-tool-comparison-title" className="mt-14 border-t border-white/10 pt-12">
       <div className="flex flex-col items-center gap-3 text-center">
-        <span className="text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
-          {copy.eyebrow}
-        </span>
         <h2
           id="army-formation-tool-comparison-title"
           className="font-display font-semibold tracking-tight text-stone-50 text-balance"
@@ -421,17 +412,6 @@ function ArmyFormationCreatorToolComparison({
         </table>
       </div>
 
-      <div className="mt-8 flex justify-center">
-        <Button
-          size="lg"
-          className="rounded-full px-8"
-          nativeButton={false}
-          render={<a href="#army-formation-creator-editor" />}
-        >
-          {copy.callToActionLabel}
-          <ArrowRight aria-hidden="true" className="size-4" />
-        </Button>
-      </div>
     </section>
   );
 }
@@ -440,7 +420,7 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
   const copy = ARMY_FORMATION_CREATOR_PAGE_COPY[locale];
 
   return (
-    <div className="mx-auto max-w-5xl border-t border-white/10 py-12 text-stone-100 sm:py-16">
+    <div className="mx-auto max-w-5xl border-t border-white/10 pt-20 pb-12 text-stone-100 sm:pt-24 sm:pb-16 lg:pt-28">
       <section>
         <h2 className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl">
           {copy.overviewTitle}
@@ -452,7 +432,7 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
 
       <ArmyFormationCreatorCaseCarousels locale={locale} />
 
-      <section className="mt-10">
+      <section className="mt-40 sm:mt-48 lg:mt-56">
         <div className="mb-14 flex flex-col items-center gap-3 text-center">
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
             {copy.stepsEyebrow}
@@ -533,7 +513,7 @@ function ArmyFormationCreatorPageFrame({ locale }: { locale: SiteLocale }) {
   return (
     <div className="px-5 lg:px-8">
       <ArmyFormationCreatorPageHeading locale={locale} />
-      <div id={ARMY_FORMATION_CREATOR_EDITOR_ID} className="pb-8 lg:pb-10">
+      <div id={ARMY_FORMATION_CREATOR_EDITOR_ID} className="pb-12 lg:pb-10">
         <ArmyFormationCreator locale={locale} />
       </div>
       <ArmyFormationCreatorPageContent locale={locale} />

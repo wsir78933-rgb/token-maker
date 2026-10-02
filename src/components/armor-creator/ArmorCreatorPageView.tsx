@@ -176,7 +176,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
       >
         <ArmorCreatorWorkbench locale={locale} />
       </div>
-      <ArmorCreatorFeatures locale={locale} />
+      {locale !== 'zh' && <ArmorCreatorFeatures locale={locale} />}
       {locale === 'zh' && (
         <>
           <section
@@ -193,6 +193,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
               {copy.whatIsDescription}
             </p>
           </section>
+          <ArmorCreatorFeatures locale={locale} />
           <ArmorCreatorHowToUse copy={copy} />
           <ArmorCreatorComparison />
           <Faq1

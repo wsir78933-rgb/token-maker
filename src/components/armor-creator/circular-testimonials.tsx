@@ -476,7 +476,7 @@ export function CircularTestimonials({
     <section
       aria-label={validatedAriaLabel}
       aria-roledescription="carousel"
-      className="relative isolate w-full px-5 py-8 text-stone-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d7b46a] sm:px-8 sm:py-10 lg:px-12"
+      className="relative isolate w-full px-5 py-0 text-stone-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d7b46a] sm:px-8 lg:px-12"
       data-circular-testimonials="true"
       onKeyDown={handleCarouselKeyDown}
       tabIndex={0}

@@ -36,6 +36,11 @@ const ARMOR_CREATOR_FEATURE_NAVIGATION_LABELS: Record<SiteLocale, ArmorCreatorFe
   },
 };
 
+const ARMOR_CREATOR_FEATURE_GROUP_LABELS: LocalizedArmorCreatorFeatureText = {
+  en: 'Armor Creator style examples',
+  zh: '护甲造型案例',
+};
+
 const ARMOR_CREATOR_FEATURE_SECTIONS: readonly ArmorCreatorFeatureSection[] = [
   {
     title: {
@@ -201,10 +206,7 @@ function ArmorCreatorFeatureSection({
   nextLabel: string;
 }) {
   return (
-    <section
-      aria-label={title}
-      className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
-    >
+    <div aria-label={title} className="text-stone-100" role="group">
       <CircularTestimonials
         testimonials={examples}
         ariaLabel={carouselLabel}
@@ -212,22 +214,31 @@ function ArmorCreatorFeatureSection({
         nextLabel={nextLabel}
         imagePosition={imagePosition}
       />
-    </section>
+    </div>
   );
 }
 
 export function ArmorCreatorFeatures({ locale }: { locale: SiteLocale }) {
   const navigationLabels = ARMOR_CREATOR_FEATURE_NAVIGATION_LABELS[locale];
 
-  return ARMOR_CREATOR_FEATURE_SECTIONS.map((section) => (
-    <ArmorCreatorFeatureSection
-      key={section.carouselLabel[locale]}
-      title={section.title[locale]}
-      carouselLabel={section.carouselLabel[locale]}
-      imagePosition={section.imagePosition}
-      examples={listLocalizedArmorCreatorFeatureExamples(section.examples, locale)}
-      previousLabel={navigationLabels.previous}
-      nextLabel={navigationLabels.next}
-    />
-  ));
+  return (
+    <section
+      aria-label={ARMOR_CREATOR_FEATURE_GROUP_LABELS[locale]}
+      className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
+    >
+      <div className="flex flex-col gap-8">
+        {ARMOR_CREATOR_FEATURE_SECTIONS.map((section) => (
+          <ArmorCreatorFeatureSection
+            key={section.carouselLabel[locale]}
+            title={section.title[locale]}
+            carouselLabel={section.carouselLabel[locale]}
+            imagePosition={section.imagePosition}
+            examples={listLocalizedArmorCreatorFeatureExamples(section.examples, locale)}
+            previousLabel={navigationLabels.previous}
+            nextLabel={navigationLabels.next}
+          />
+        ))}
+      </div>
+    </section>
+  );
 }
