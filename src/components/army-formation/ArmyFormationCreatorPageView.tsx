@@ -103,6 +103,26 @@ type ArmyFormationCreatorPageStepCopy = {
   description: string;
 };
 
+type ArmyFormationCreatorToolComparisonRowCopy = {
+  dimension: string;
+  armyFormationCreator: string;
+  photoshop: string;
+  illustrator: string;
+};
+
+type ArmyFormationCreatorToolComparisonCopy = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  dimensionHeading: string;
+  armyFormationCreatorHeading: string;
+  photoshopHeading: string;
+  illustratorHeading: string;
+  tableLabel: string;
+  rows: readonly ArmyFormationCreatorToolComparisonRowCopy[];
+  callToActionLabel: string;
+};
+
 type ArmyFormationCreatorPageCopy = {
   overviewTitle: string;
   overviewDescription: string;
@@ -113,6 +133,7 @@ type ArmyFormationCreatorPageCopy = {
   callToActionTitle: string;
   callToActionDescription: string;
   callToActionLabel: string;
+  toolComparison: ArmyFormationCreatorToolComparisonCopy;
   faqEyebrow: string;
   faqTitle: string;
   faqDescription: string;
@@ -152,6 +173,50 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     callToActionDescription:
       'Choose pieces, arrange your troops, and create a battlefield formation diagram.',
     callToActionLabel: 'Start creating',
+    toolComparison: {
+      eyebrow: 'Tool comparison',
+      title: 'Army Formation Creator vs. traditional design tools',
+      description:
+        'Compare symbol libraries, formation editing, battlefield management, saving, and export.',
+      dimensionHeading: 'Feature',
+      armyFormationCreatorHeading: 'Army Formation Creator',
+      photoshopHeading: 'Photoshop',
+      illustratorHeading: 'Illustrator',
+      tableLabel: 'Army Formation Creator tool comparison',
+      rows: [
+        {
+          dimension: 'Formation symbols',
+          armyFormationCreator: '292 categorized icons, ready to use',
+          photoshop: 'No dedicated formation symbol library',
+          illustrator: 'No dedicated formation symbol library',
+        },
+        {
+          dimension: 'Formation editing',
+          armyFormationCreator: 'Drag and drop to arrange icons with ease',
+          photoshop: 'Flexible editing; formations take more manual adjustment',
+          illustrator: 'Precise vector control; formations take more manual adjustment',
+        },
+        {
+          dimension: 'Battlefield management',
+          armyFormationCreator: 'Manage four switchable battlefields in one plan',
+          photoshop: 'No dedicated battlefield management',
+          illustrator: 'No dedicated battlefield management',
+        },
+        {
+          dimension: 'Plan saving',
+          armyFormationCreator: 'Saved in the browser; import a plan file to continue editing',
+          photoshop: 'PSD retains layers and editable content',
+          illustrator: 'AI retains editable vector objects',
+        },
+        {
+          dimension: 'File export',
+          armyFormationCreator: 'Export formation diagrams as PNG',
+          photoshop: 'PNG, JPG, and other image formats',
+          illustrator: 'SVG, PDF, and other formats',
+        },
+      ],
+      callToActionLabel: 'Start creating a formation',
+    },
     faqEyebrow: 'Army Formation Creator',
     faqTitle: 'Frequently asked questions',
     faqDescription:
@@ -212,6 +277,49 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     callToActionTitle: '现在开始布置军阵',
     callToActionDescription: '挑选棋子，安排队伍位置，制作你的战场阵型示意图。',
     callToActionLabel: '开始制作',
+    toolComparison: {
+      eyebrow: '工具对比',
+      title: '军阵图制作工具对比',
+      description: '比较军阵素材、阵型编辑、多战场管理和文件处理能力。',
+      dimensionHeading: '对比维度',
+      armyFormationCreatorHeading: 'Army Formation Creator',
+      photoshopHeading: 'Photoshop',
+      illustratorHeading: 'Illustrator',
+      tableLabel: '军阵图制作工具对比',
+      rows: [
+        {
+          dimension: '军阵素材',
+          armyFormationCreator: '内置 292 个分类图标，直接调用',
+          photoshop: '无军阵专属素材库',
+          illustrator: '无军阵专属素材库',
+        },
+        {
+          dimension: '阵型编辑',
+          armyFormationCreator: '直接拖放排布，操作简单方便',
+          photoshop: '编辑自由度高，阵型排布需要更多手动调整',
+          illustrator: '矢量控制精准，阵型排布需要更多手动调整',
+        },
+        {
+          dimension: '多战场管理',
+          armyFormationCreator: '单个方案管理 4 个可切换战场',
+          photoshop: '无专用战场管理',
+          illustrator: '无专用战场管理',
+        },
+        {
+          dimension: '方案保存',
+          armyFormationCreator: '浏览器自动保存；方案文件可导入续编',
+          photoshop: 'PSD 保留图层和编辑内容',
+          illustrator: 'AI 保留可编辑矢量对象',
+        },
+        {
+          dimension: '文件导出',
+          armyFormationCreator: '导出 PNG 军阵图',
+          photoshop: '支持 PNG、JPG 等图片格式',
+          illustrator: '支持 SVG、PDF 等格式',
+        },
+      ],
+      callToActionLabel: '开始制作军阵',
+    },
     faqEyebrow: '军阵制作器',
     faqTitle: '常见问题',
     faqDescription: '了解棋子添加与调整、战场设置、内容保存和方案导出。',
@@ -239,6 +347,94 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     ],
   },
 };
+
+function ArmyFormationCreatorToolComparison({
+  copy,
+}: {
+  copy: ArmyFormationCreatorToolComparisonCopy;
+}) {
+  return (
+    <section aria-labelledby="army-formation-tool-comparison-title" className="mt-14 border-t border-white/10 pt-12">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <span className="text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
+          {copy.eyebrow}
+        </span>
+        <h2
+          id="army-formation-tool-comparison-title"
+          className="font-display font-semibold tracking-tight text-stone-50 text-balance"
+          style={{ fontSize: 'clamp(1.85rem, 4vw, 2.75rem)', letterSpacing: '-0.03em' }}
+        >
+          {copy.title}
+        </h2>
+        <p className="max-w-3xl text-sm leading-7 text-stone-300 text-pretty sm:text-base">
+          {copy.description}
+        </p>
+      </div>
+
+      <div
+        aria-label={copy.tableLabel}
+        className="mt-8 w-full overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-300"
+        role="region"
+        tabIndex={0}
+      >
+        <table className="w-full min-w-[48rem] table-fixed border-collapse text-left text-sm sm:text-base">
+          <caption className="sr-only">{copy.title}</caption>
+          <colgroup>
+            <col className="w-[18%]" />
+            <col className="w-[32%]" />
+            <col className="w-[25%]" />
+            <col className="w-[25%]" />
+          </colgroup>
+          <thead>
+            <tr className="border-b border-white/15">
+              <th scope="col" className="px-4 py-4 font-medium text-stone-400">
+                {copy.dimensionHeading}
+              </th>
+              <th
+                scope="col"
+                className="border-x border-white/10 bg-white/[0.04] px-4 py-4 font-semibold text-[var(--site-accent-strong)]"
+              >
+                {copy.armyFormationCreatorHeading}
+              </th>
+              <th scope="col" className="px-4 py-4 font-medium text-stone-200">
+                {copy.photoshopHeading}
+              </th>
+              <th scope="col" className="px-4 py-4 font-medium text-stone-200">
+                {copy.illustratorHeading}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {copy.rows.map((row) => (
+              <tr key={row.dimension} className="border-b border-white/10 last:border-b-0">
+                <th scope="row" className="px-4 py-4 align-top font-medium text-stone-100">
+                  {row.dimension}
+                </th>
+                <td className="border-x border-white/10 bg-white/[0.04] px-4 py-4 align-top text-stone-100">
+                  {row.armyFormationCreator}
+                </td>
+                <td className="px-4 py-4 align-top text-stone-300">{row.photoshop}</td>
+                <td className="px-4 py-4 align-top text-stone-300">{row.illustrator}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-8 flex justify-center">
+        <Button
+          size="lg"
+          className="rounded-full px-8"
+          nativeButton={false}
+          render={<a href="#army-formation-creator-editor" />}
+        >
+          {copy.callToActionLabel}
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </Button>
+      </div>
+    </section>
+  );
+}
 
 function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
   const copy = ARMY_FORMATION_CREATOR_PAGE_COPY[locale];
@@ -320,6 +516,8 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
           <ArrowRight aria-hidden="true" className="size-4" />
         </Button>
       </section>
+
+      <ArmyFormationCreatorToolComparison copy={copy.toolComparison} />
 
       <ArmyFormationCreatorFaq
         eyebrow={copy.faqEyebrow}

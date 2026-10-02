@@ -13,6 +13,105 @@ import type { SiteLocale } from '@/lib/site-locale';
 
 const ARMOR_CREATOR_PATH = '/armor-creator';
 
+const ARMOR_CREATOR_COMPARISON_ROWS = [
+  {
+    criterion: '制作方式',
+    armorCreator: '选择护甲部件，直接组合造型',
+    photoshop: '需要复杂工具',
+    firefly: '输入提示词生成图像，也可对图片进行 AI 编辑',
+  },
+  {
+    criterion: '护甲素材',
+    armorCreator: '内置 1,400+ 张护甲 PNG 素材',
+    photoshop: '自行准备',
+    firefly: '用提示词生成',
+  },
+  {
+    criterion: '细节调整',
+    armorCreator: '支持左右肩对称和胸甲曲线调整，可按部位组合',
+    photoshop: '可用图层和蒙版精细修改，需手动操作',
+    firefly: '可通过提示词、画笔标注或区域选择修改局部',
+  },
+  {
+    criterion: '搭配管理',
+    armorCreator: '内置 4 个套装槽',
+    photoshop: '通过 PSD、图层或文件副本管理不同版本',
+    firefly: '基于生成图像继续编辑，搭配需通过提示词和局部编辑调整',
+  },
+  {
+    criterion: '成品导出',
+    armorCreator: '下载 PNG',
+    photoshop: '自行设置图像导出格式和参数',
+    firefly: '下载生成图像',
+  },
+] as const;
+
+function ArmorCreatorComparison() {
+  return (
+    <section
+      aria-labelledby="armor-creator-comparison-heading"
+      className="mx-auto max-w-7xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
+    >
+      <header className="mb-12 flex justify-center text-center sm:mb-14">
+        <h2
+          id="armor-creator-comparison-heading"
+          className="font-display font-bold leading-tight tracking-tight text-stone-50 text-balance"
+          style={{ fontSize: 'clamp(2rem, 5vw, 3.35rem)' }}
+        >
+          Armor Creator vs. Photoshop vs. Adobe Firefly
+        </h2>
+      </header>
+
+      <div
+        aria-label="护甲造型工具对比表格"
+        className="overflow-x-auto border-y border-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-300"
+        role="region"
+        tabIndex={0}
+      >
+        <table className="w-full min-w-[860px] table-fixed border-collapse text-left">
+          <thead>
+            <tr className="border-b border-white/15">
+              <th className="w-[18%] px-5 py-5 text-sm font-medium text-stone-400" scope="col">
+                对比项目
+              </th>
+              <th
+                className="w-[27%] bg-amber-300/[0.06] px-5 py-5 text-sm font-semibold text-amber-300"
+                scope="col"
+              >
+                Armor Creator
+              </th>
+              <th className="w-[25%] px-5 py-5 text-sm font-medium text-stone-200" scope="col">
+                Adobe Photoshop
+              </th>
+              <th className="w-[30%] px-5 py-5 text-sm font-medium text-stone-200" scope="col">
+                Adobe Firefly
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/10">
+            {ARMOR_CREATOR_COMPARISON_ROWS.map((row) => (
+              <tr key={row.criterion}>
+                <th className="px-5 py-5 align-top text-sm font-semibold text-stone-100" scope="row">
+                  {row.criterion}
+                </th>
+                <td className="bg-amber-300/[0.06] px-5 py-5 align-top text-sm font-medium leading-6 text-stone-50">
+                  {row.armorCreator}
+                </td>
+                <td className="px-5 py-5 align-top text-sm leading-6 text-stone-300">
+                  {row.photoshop}
+                </td>
+                <td className="px-5 py-5 align-top text-sm leading-6 text-stone-300">
+                  {row.firefly}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 function ArmorCreatorHowToUse({ copy }: { copy: ArmorCreatorCopy }) {
   return (
     <section
@@ -95,6 +194,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
             </p>
           </section>
           <ArmorCreatorHowToUse copy={copy} />
+          <ArmorCreatorComparison />
           <Faq1
             eyebrow={copy.faqEyebrow}
             title={copy.faqTitle}
