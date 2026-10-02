@@ -36,8 +36,6 @@ describe('security headers', () => {
       'https://www.tokenmaker.one/zh/share/token-id',
       'https://www.tokenmaker.one/coat-of-arms-maker',
       'https://www.tokenmaker.one/zh/coat-of-arms-maker',
-      'https://www.tokenmaker.one/emblem-creator',
-      'https://www.tokenmaker.one/zh/emblem-creator',
     ];
 
     for (const url of cacheableUrls) {

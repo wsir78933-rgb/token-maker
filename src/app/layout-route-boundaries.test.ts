@@ -154,8 +154,6 @@ describe('root layout route boundaries', () => {
     expect(existsSync(resolve(process.cwd(), 'src/app/(zh)/zh/share/[id]/page.tsx'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/app/(maker-en)/coat-of-arms-maker/page.tsx'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/app/(maker-zh)/zh/coat-of-arms-maker/page.tsx'))).toBe(true);
-    expect(existsSync(resolve(process.cwd(), 'src/app/(maker-en)/emblem-creator/page.tsx'))).toBe(true);
-    expect(existsSync(resolve(process.cwd(), 'src/app/(maker-zh)/zh/emblem-creator/page.tsx'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/app/(en)/coat-of-arms-maker/page.tsx'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/app/(zh)/zh/coat-of-arms-maker/page.tsx'))).toBe(false);
   });

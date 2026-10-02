@@ -56,12 +56,6 @@ const COAT_MAKER_IMAGE_SOURCES = [
   'https://c.bing.com',
 ];
 
-const EMBLEM_CREATOR_CONNECT_SOURCES = [
-  "'self'",
-  'https:',
-  ...COAT_MAKER_CONNECT_SOURCES.slice(1),
-];
-
 describe('proxy', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
@@ -174,7 +168,7 @@ describe('proxy', () => {
     }
   });
 
-  it('allows maker document beacons and Emblem Creator HTTPS image imports', async () => {
+  it('allows Google Analytics and Microsoft Clarity beacons on coat maker documents', async () => {
     const productionProxy = (await loadProxy('production')).proxy;
     const developmentProxy = (await loadProxy('development')).proxy;
     const coatMakerResponses = [
@@ -182,12 +176,6 @@ describe('proxy', () => {
       productionProxy(new NextRequest('https://www.tokenmaker.one/zh/coat-of-arms-maker')),
       developmentProxy(new NextRequest('https://www.tokenmaker.one/coat-of-arms-maker')),
       developmentProxy(new NextRequest('https://www.tokenmaker.one/zh/coat-of-arms-maker')),
-    ];
-    const emblemCreatorResponses = [
-      productionProxy(new NextRequest('https://www.tokenmaker.one/emblem-creator')),
-      productionProxy(new NextRequest('https://www.tokenmaker.one/zh/emblem-creator')),
-      developmentProxy(new NextRequest('https://www.tokenmaker.one/emblem-creator')),
-      developmentProxy(new NextRequest('https://www.tokenmaker.one/zh/emblem-creator')),
     ];
 
     for (const response of coatMakerResponses) {
@@ -209,20 +197,6 @@ describe('proxy', () => {
       expect(contentSecurityPolicy).not.toMatch(/adsense|doubleclick|cloudflareinsights|youtube|ytimg/i);
     }
 
-    for (const response of emblemCreatorResponses) {
-      const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
-      const nonce = response.headers.get('x-middleware-request-x-nonce');
-
-      expect(contentSecurityPolicy).toContain(`'nonce-${nonce}'`);
-      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'img-src')).toEqual(
-        COAT_MAKER_IMAGE_SOURCES
-      );
-      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'connect-src')).toEqual(
-        EMBLEM_CREATOR_CONNECT_SOURCES
-      );
-      expect(contentSecurityPolicy).not.toContain('http:');
-      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'frame-src')).toEqual(["'none'"]);
-    }
   });
 
   it('matches only nonce-protected documents and skips cacheable content routes', async () => {
@@ -238,8 +212,6 @@ describe('proxy', () => {
     expect(shouldMatch('https://www.tokenmaker.one/zh/share/token-id')).toBe(true);
     expect(shouldMatch('https://www.tokenmaker.one/coat-of-arms-maker')).toBe(true);
     expect(shouldMatch('https://www.tokenmaker.one/zh/coat-of-arms-maker')).toBe(true);
-    expect(shouldMatch('https://www.tokenmaker.one/emblem-creator')).toBe(true);
-    expect(shouldMatch('https://www.tokenmaker.one/zh/emblem-creator')).toBe(true);
     expect(shouldMatch('https://www.tokenmaker.one/api/share')).toBe(false);
     expect(shouldMatch('https://www.tokenmaker.one/_next/static/chunk.js')).toBe(false);
     expect(shouldMatch('https://www.tokenmaker.one/_next/image?url=%2Ftoken.png')).toBe(false);

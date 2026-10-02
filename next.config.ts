@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
       { source: '/(.*)', headers: securityHeaders },
       {
         source:
-          '/((?!api(?:/|$)|_next(?:/|$)|share(?:/|$)|zh/share(?:/|$)|coat-of-arms-maker(?:/|$)|zh/coat-of-arms-maker(?:/|$)|emblem-creator(?:/|$)|zh/emblem-creator(?:/|$)|(?:.*\\/)?opengraph-image(?:/|$)|.*\\.(?:avif|bmp|css|gif|ico|jpe?g|js|map|mjs|otf|png|svg|ttf|txt|webmanifest|webp|woff2?|xml)$).*)',
+          '/((?!api(?:/|$)|_next(?:/|$)|share(?:/|$)|zh/share(?:/|$)|coat-of-arms-maker(?:/|$)|zh/coat-of-arms-maker(?:/|$)|(?:.*\\/)?opengraph-image(?:/|$)|.*\\.(?:avif|bmp|css|gif|ico|jpe?g|js|map|mjs|otf|png|svg|ttf|txt|webmanifest|webp|woff2?|xml)$).*)',
         headers: [staticPublicContentSecurityPolicyHeader],
       },
     ];

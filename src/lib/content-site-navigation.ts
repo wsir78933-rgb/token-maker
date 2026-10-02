@@ -5,11 +5,9 @@ import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } fr
 
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
-const EMBLEM_CREATOR_PATH = '/emblem-creator';
 const FREE_TOOLS_PATHS = [
   '/',
   '/coat-of-arms-maker',
-  EMBLEM_CREATOR_PATH,
   '/armor-creator',
   ARMY_FORMATION_CREATOR_PATH,
 ] as const;
@@ -171,7 +169,6 @@ function buildContentSiteFreeToolFeatures(
   return [
     buildContentSiteFreeToolFeature(locale, '/', navLabels.editor),
     buildContentSiteFreeToolFeature(locale, '/coat-of-arms-maker', navLabels.coatMaker),
-    buildContentSiteFreeToolFeature(locale, EMBLEM_CREATOR_PATH, navLabels.emblemCreator),
     buildContentSiteFreeToolFeature(locale, '/armor-creator', navLabels.armor),
     buildContentSiteFreeToolFeature(
       locale,
