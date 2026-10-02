@@ -39,6 +39,54 @@ const TESTIMONIALS: readonly CircularTestimonial[] = [
   },
 ];
 
+const IMAGE_POSITION_TESTIMONIALS: readonly CircularTestimonial[] = [
+  ...TESTIMONIALS,
+  {
+    quote: 'Fourth armor case quote.',
+    name: 'Fourth character',
+    designation: 'Scale armor',
+    src: '/armor-creator/cases/fourth.png',
+  },
+];
+
+const TESTIMONIAL_IMAGE_TRANSITION_CURVE = String.raw`cubic-bezier\(\s*0?\.4\s*,\s*2\s*,\s*0?\.3\s*,\s*1\s*\)`;
+const TESTIMONIAL_IMAGE_TRANSITION_STYLE = new RegExp(
+  String.raw`^transform 800ms ${TESTIMONIAL_IMAGE_TRANSITION_CURVE}\s*,\s*opacity 800ms ${TESTIMONIAL_IMAGE_TRANSITION_CURVE}$`,
+);
+
+const IMAGE_LAYER_ROLE_STYLES = {
+  active: {
+    transform: /translateX\(0px\).*translateY\(0px\).*scale\(1\).*rotateY\(0deg\)/,
+    opacity: '1',
+    pointerEvents: 'auto',
+    zIndex: '3',
+    position: 'center',
+  },
+  previous: {
+    transform: /translateX\(-[1-9][\d.]*px\).*translateY\(-[1-9][\d.]*px\).*scale\(0\.85\).*rotateY\(15deg\)/,
+    opacity: '1',
+    pointerEvents: 'auto',
+    zIndex: '2',
+    position: 'left',
+  },
+  next: {
+    transform: /translateX\([1-9][\d.]*px\).*translateY\(-[1-9][\d.]*px\).*scale\(0\.85\).*rotateY\(-15deg\)/,
+    opacity: '1',
+    pointerEvents: 'auto',
+    zIndex: '2',
+    position: 'right',
+  },
+  hidden: {
+    transform: /^$/,
+    opacity: '0',
+    pointerEvents: 'none',
+    zIndex: '1',
+    position: 'hidden',
+  },
+} as const;
+
+type ImageLayerRole = keyof typeof IMAGE_LAYER_ROLE_STYLES;
+
 const PREVIOUS_LABEL = 'Previous armor case';
 const NEXT_LABEL = 'Next armor case';
 
@@ -84,6 +132,29 @@ function carouselRegions(container: HTMLElement): HTMLElement[] {
   return Array.from(container.querySelectorAll<HTMLElement>('[data-circular-testimonials="true"]'));
 }
 
+function testimonialImageLayer(carousel: HTMLElement, index: number): HTMLElement {
+  const layer = carousel.querySelector<HTMLElement>(`[data-index="${index}"]`);
+  if (!layer) {
+    throw new Error(`CircularTestimonials test expected an image layer with data-index="${index}".`);
+  }
+
+  return layer;
+}
+
+function expectImageLayerRole(carousel: HTMLElement, index: number, role: ImageLayerRole): void {
+  const layer = testimonialImageLayer(carousel, index);
+  const { style } = layer;
+  const expected = IMAGE_LAYER_ROLE_STYLES[role];
+
+  expect(style.transform).toMatch(expected.transform);
+  expect(style.translate).toBe('-50% -50%');
+  expect(style.transition).toMatch(TESTIMONIAL_IMAGE_TRANSITION_STYLE);
+  expect(style.opacity).toBe(expected.opacity);
+  expect(style.pointerEvents).toBe(expected.pointerEvents);
+  expect(style.zIndex).toBe(expected.zIndex);
+  expect(layer.getAttribute('data-position')).toBe(expected.position);
+}
+
 function activeQuoteText(carousel: HTMLElement): string | null {
   return carousel.querySelector<HTMLElement>('[data-part="testimonial-quote"]')?.textContent?.trim() ?? null;
 }
@@ -121,6 +192,180 @@ describe('CircularTestimonials', () => {
 
     fireEvent.click(previousButton);
     await waitFor(() => expect(activeQuoteText(carousel)).toBe('Third armor case quote.'));
+  });
+
+  it.each([
+    ['active center', 0, 'active'],
+    ['previous left neighbor', 3, 'previous'],
+    ['next right neighbor', 1, 'next'],
+    ['hidden image', 2, 'hidden'],
+  ] as const)('initially positions the %s image layer', (_description, index, role) => {
+    const { container } = renderedCarousel(IMAGE_POSITION_TESTIMONIALS);
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    expectImageLayerRole(carousel, index, role);
+  });
+
+  it('moves image layers with next, previous, and wrapped arrow navigation', async () => {
+    const { container } = renderedCarousel(IMAGE_POSITION_TESTIMONIALS);
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    const controls = within(carousel);
+    const previousButton = controls.getByRole('button', { name: PREVIOUS_LABEL });
+    const nextButton = controls.getByRole('button', { name: NEXT_LABEL });
+
+    fireEvent.click(nextButton);
+    await waitFor(() => expect(activeQuoteText(carousel)).toBe('Second armor case quote.'));
+    expectImageLayerRole(carousel, 0, 'previous');
+    expectImageLayerRole(carousel, 1, 'active');
+    expectImageLayerRole(carousel, 2, 'next');
+    expectImageLayerRole(carousel, 3, 'hidden');
+
+    fireEvent.click(previousButton);
+    await waitFor(() => expect(activeQuoteText(carousel)).toBe('First armor case quote.'));
+    expectImageLayerRole(carousel, 0, 'active');
+    expectImageLayerRole(carousel, 1, 'next');
+    expectImageLayerRole(carousel, 2, 'hidden');
+    expectImageLayerRole(carousel, 3, 'previous');
+
+    fireEvent.click(previousButton);
+    await waitFor(() => expect(activeQuoteText(carousel)).toBe('Fourth armor case quote.'));
+    expectImageLayerRole(carousel, 0, 'next');
+    expectImageLayerRole(carousel, 1, 'hidden');
+    expectImageLayerRole(carousel, 2, 'previous');
+    expectImageLayerRole(carousel, 3, 'active');
+
+    fireEvent.click(nextButton);
+    await waitFor(() => expect(activeQuoteText(carousel)).toBe('First armor case quote.'));
+    expectImageLayerRole(carousel, 0, 'active');
+    expectImageLayerRole(carousel, 1, 'next');
+    expectImageLayerRole(carousel, 2, 'hidden');
+    expectImageLayerRole(carousel, 3, 'previous');
+  });
+
+  it('uses the navigation direction to position the neighbor with two testimonials', async () => {
+    const { container } = renderedCarousel(TESTIMONIALS.slice(0, 2));
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    expectImageLayerRole(carousel, 1, 'previous');
+
+    const controls = within(carousel);
+    fireEvent.click(controls.getByRole('button', { name: NEXT_LABEL }));
+    await waitFor(() => expect(activeQuoteText(carousel)).toBe('Second armor case quote.'));
+    expectImageLayerRole(carousel, 0, 'previous');
+
+    fireEvent.click(controls.getByRole('button', { name: PREVIOUS_LABEL }));
+    await waitFor(() => expect(activeQuoteText(carousel)).toBe('First armor case quote.'));
+    expectImageLayerRole(carousel, 1, 'next');
+
+    carousel.focus();
+    fireEvent.keyDown(carousel, { key: 'ArrowRight' });
+    await waitFor(() => expect(activeQuoteText(carousel)).toBe('Second armor case quote.'));
+    expectImageLayerRole(carousel, 0, 'previous');
+
+    fireEvent.keyDown(carousel, { key: 'ArrowLeft' });
+    await waitFor(() => expect(activeQuoteText(carousel)).toBe('First armor case quote.'));
+    expectImageLayerRole(carousel, 1, 'next');
+  });
+
+  it('adjusts side image gaps from the measured image-stage width', async () => {
+    const resizeObservers: ControlledImageStageResizeObserver[] = [];
+
+    class ControlledImageStageResizeObserver implements ResizeObserver {
+      private readonly callback: ResizeObserverCallback;
+      observedElement: Element | null = null;
+
+      constructor(callback: ResizeObserverCallback) {
+        this.callback = callback;
+        resizeObservers.push(this);
+      }
+
+      observe(target: Element): void {
+        this.observedElement = target;
+      }
+
+      unobserve(target: Element): void {
+        if (this.observedElement === target) {
+          this.observedElement = null;
+        }
+      }
+
+      disconnect(): void {
+        this.observedElement = null;
+      }
+
+      reportWidth(width: number): void {
+        if (!this.observedElement) {
+          throw new Error('CircularTestimonials test expected an observed image stage.');
+        }
+
+        this.callback(
+          [
+            {
+              target: this.observedElement,
+              contentRect: { width } as DOMRectReadOnly,
+            } as ResizeObserverEntry,
+          ],
+          this,
+        );
+      }
+    }
+
+    vi.stubGlobal('ResizeObserver', ControlledImageStageResizeObserver);
+    let unmountCarousel: (() => void) | undefined;
+
+    try {
+      const { container, unmount } = renderedCarousel(IMAGE_POSITION_TESTIMONIALS);
+      unmountCarousel = unmount;
+      const [carousel] = carouselRegions(container);
+      const [resizeObserver] = resizeObservers;
+      if (!carousel || !resizeObserver) {
+        throw new Error('CircularTestimonials test expected one carousel and its resize observer.');
+      }
+
+      expect(resizeObserver.observedElement).toBe(
+        carousel.querySelector('[data-part="image-stage"]'),
+      );
+
+      await act(async () => resizeObserver.reportWidth(320));
+      expect(testimonialImageLayer(carousel, 1).style.transform).toContain('translateX(48px)');
+      expect(testimonialImageLayer(carousel, 3).style.transform).toContain('translateX(-48px)');
+
+      await act(async () => resizeObserver.reportWidth(440));
+      expect(testimonialImageLayer(carousel, 1).style.transform).toContain('translateX(66px)');
+      expect(testimonialImageLayer(carousel, 3).style.transform).toContain('translateX(-66px)');
+
+      await act(async () => resizeObserver.reportWidth(560));
+      expect(testimonialImageLayer(carousel, 1).style.transform).toContain('translateX(84px)');
+      expect(testimonialImageLayer(carousel, 3).style.transform).toContain('translateX(-84px)');
+    } finally {
+      unmountCarousel?.();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('renders a single testimonial without crashing', () => {
+    const { container } = renderedCarousel(TESTIMONIALS.slice(0, 1));
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    expect(activeQuoteText(carousel)).toBe('First armor case quote.');
+    expect(within(carousel).getByRole('img', { name: 'First character' }).className).toContain(
+      'object-contain',
+    );
+    expect(within(carousel).getByRole('button', { name: PREVIOUS_LABEL })).toBeTruthy();
+    expect(within(carousel).getByRole('button', { name: NEXT_LABEL })).toBeTruthy();
   });
 
   it('支持左右交替图文位置，且两个实例的切换状态互不影响', async () => {
@@ -223,7 +468,7 @@ describe('CircularTestimonials', () => {
       const { container, unmount } = render(
         <>
           <CircularTestimonials
-            testimonials={TESTIMONIALS}
+            testimonials={TESTIMONIALS.slice(0, 2)}
             ariaLabel="Autoplay carousel"
             previousLabel={PREVIOUS_LABEL}
             nextLabel={NEXT_LABEL}
@@ -258,6 +503,7 @@ describe('CircularTestimonials', () => {
         await vi.advanceTimersByTimeAsync(1);
       });
       expect(activeQuoteText(autoplayCarousel)).toBe('Second armor case quote.');
+      expectImageLayerRole(autoplayCarousel, 0, 'previous');
       expect(activeQuoteText(stoppedCarousel)).toBe('First armor case quote.');
 
       unmount();

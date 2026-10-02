@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useState, type CSSProperties, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
 
 const CIRCULAR_TESTIMONIAL_AUTOPLAY_INTERVAL_MS = 5000;
 const CIRCULAR_TESTIMONIAL_ARROW_HOVER_VARIABLE = '--circular-testimonial-arrow-hover-background';
@@ -49,6 +49,9 @@ type CircularTestimonialImageProps = {
   alt: string;
   frameClassName: string;
 };
+
+type CircularTestimonialImagePosition = 'center' | 'left' | 'right' | 'hidden';
+type CircularTestimonialsNavigationDirection = 'previous' | 'next';
 
 type CircularTestimonialsStyle = CSSProperties & {
   [CIRCULAR_TESTIMONIAL_ARROW_HOVER_VARIABLE]: string;
@@ -239,6 +242,68 @@ function circularTestimonialsWrappedIndex(index: number, count: number): number 
   return (index + count) % count;
 }
 
+function getCircularTestimonialImagePosition(
+  testimonialIndex: number,
+  activeIndex: number,
+  testimonialCount: number,
+  navigationDirection: CircularTestimonialsNavigationDirection,
+): CircularTestimonialImagePosition {
+  if (testimonialIndex === activeIndex) {
+    return 'center';
+  }
+
+  if (testimonialCount === 2) {
+    return navigationDirection === 'next' ? 'left' : 'right';
+  }
+
+  const nextIndex = circularTestimonialsWrappedIndex(activeIndex + 1, testimonialCount);
+  if (testimonialIndex === nextIndex) {
+    return 'right';
+  }
+
+  const previousIndex = circularTestimonialsWrappedIndex(activeIndex - 1, testimonialCount);
+  if (testimonialIndex === previousIndex) {
+    return 'left';
+  }
+
+  return 'hidden';
+}
+
+function getCircularTestimonialImageTransform(
+  position: CircularTestimonialImagePosition,
+  gap: number,
+): string | undefined {
+  if (position === 'center') {
+    return 'translateX(0px) translateY(0px) scale(1) rotateY(0deg)';
+  }
+
+  if (position === 'left') {
+    return `translateX(-${gap}px) translateY(-${(gap * 0.8).toFixed(2)}px) scale(0.85) rotateY(15deg)`;
+  }
+
+  if (position === 'right') {
+    return `translateX(${gap}px) translateY(-${(gap * 0.8).toFixed(2)}px) scale(0.85) rotateY(-15deg)`;
+  }
+
+  return undefined;
+}
+
+function getCircularTestimonialImageGap(stageWidth: number): number {
+  if (!Number.isFinite(stageWidth) || stageWidth < 0) {
+    throw new Error(`CircularTestimonials image stage width must be a non-negative number. Received ${stageWidth}.`);
+  }
+
+  if (stageWidth <= 320) {
+    return 48;
+  }
+
+  if (stageWidth >= 560) {
+    return 84;
+  }
+
+  return 48 + ((stageWidth - 320) / (560 - 320)) * (84 - 48);
+}
+
 function CircularTestimonialImage({ src, alt, frameClassName }: CircularTestimonialImageProps) {
   return (
     <div
@@ -314,17 +379,14 @@ export function CircularTestimonials({
   const resolvedColors = { ...DEFAULT_CIRCULAR_TESTIMONIAL_COLORS, ...validatedColors };
   const resolvedFontSizes = { ...DEFAULT_CIRCULAR_TESTIMONIAL_FONT_SIZES, ...validatedFontSizes };
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [navigationDirection, setNavigationDirection] =
+    useState<CircularTestimonialsNavigationDirection>('next');
   const [autoplayPausedByInteraction, setAutoplayPausedByInteraction] = useState(false);
+  const [imageStageWidth, setImageStageWidth] = useState(0);
+  const imageStageRef = useRef<HTMLDivElement>(null);
   const activeIndex = selectedIndex % validatedTestimonials.length;
   const activeTestimonial = validatedTestimonials[activeIndex];
-  const previousTestimonial =
-    validatedTestimonials[
-      circularTestimonialsWrappedIndex(activeIndex - 1, validatedTestimonials.length)
-    ];
-  const nextTestimonial =
-    validatedTestimonials[
-      circularTestimonialsWrappedIndex(activeIndex + 1, validatedTestimonials.length)
-    ];
+  const imageGap = getCircularTestimonialImageGap(imageStageWidth);
   const layoutClassName =
     validatedImagePosition === 'left'
       ? 'flex-col md:flex-row'
@@ -341,14 +403,48 @@ export function CircularTestimonials({
     }
 
     const autoplayInterval = window.setInterval(() => {
+      setNavigationDirection('next');
       setSelectedIndex((currentIndex) => (currentIndex + 1) % validatedTestimonials.length);
     }, CIRCULAR_TESTIMONIAL_AUTOPLAY_INTERVAL_MS);
 
     return () => window.clearInterval(autoplayInterval);
   }, [autoplayPausedByInteraction, validatedAutoplay, validatedTestimonials.length]);
 
+  useEffect(() => {
+    const imageStage = imageStageRef.current;
+    if (!imageStage) {
+      throw new Error('CircularTestimonials image stage was not mounted.');
+    }
+
+    if (typeof ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver((entries) => {
+        const imageStageEntry = entries[0];
+        if (!imageStageEntry) {
+          throw new Error('CircularTestimonials image stage resize did not include an observation entry.');
+        }
+
+        setImageStageWidth(imageStageEntry.contentRect.width);
+      });
+
+      resizeObserver.observe(imageStage);
+      return () => resizeObserver.disconnect();
+    }
+
+    const updateImageStageWidth = () => {
+      setImageStageWidth(imageStage.getBoundingClientRect().width);
+    };
+
+    window.addEventListener('resize', updateImageStageWidth);
+    const initialMeasurementFrame = requestAnimationFrame(updateImageStageWidth);
+    return () => {
+      window.removeEventListener('resize', updateImageStageWidth);
+      cancelAnimationFrame(initialMeasurementFrame);
+    };
+  }, []);
+
   function showPreviousTestimonial(): void {
     setAutoplayPausedByInteraction(true);
+    setNavigationDirection('previous');
     setSelectedIndex((currentIndex) =>
       circularTestimonialsWrappedIndex(currentIndex - 1, validatedTestimonials.length),
     );
@@ -356,6 +452,7 @@ export function CircularTestimonials({
 
   function showNextTestimonial(): void {
     setAutoplayPausedByInteraction(true);
+    setNavigationDirection('next');
     setSelectedIndex((currentIndex) => (currentIndex + 1) % validatedTestimonials.length);
   }
 
@@ -389,58 +486,47 @@ export function CircularTestimonials({
         data-part="layout"
       >
         <div
-          className="relative flex min-h-[20rem] w-full max-w-[35rem] flex-1 items-center justify-center"
+          className="relative flex min-h-[20rem] w-full max-w-[35rem] flex-1 items-center justify-center overflow-hidden [container-type:inline-size]"
           data-part="image-stage"
+          ref={imageStageRef}
+          style={{ perspective: '900px' }}
         >
-          {validatedTestimonials.length > 1 ? (
-            <>
-              <motion.div
-                animate={{ opacity: 0.72 }}
-                aria-hidden="true"
-                className="absolute -left-12 top-1/2 z-0 hidden h-[15rem] w-[12rem] -translate-y-1/2 sm:block"
-                initial={false}
-                style={{ transform: 'translateY(-50%) perspective(900px) rotateY(26deg) scale(0.82)' }}
-              >
-                <CircularTestimonialImage
-                  src={previousTestimonial.src}
-                  alt=""
-                  frameClassName="h-full w-full"
-                />
-              </motion.div>
-              <motion.div
-                animate={{ opacity: 0.72 }}
-                aria-hidden="true"
-                className="absolute -right-12 top-1/2 z-0 hidden h-[15rem] w-[12rem] -translate-y-1/2 sm:block"
-                initial={false}
-                style={{ transform: 'translateY(-50%) perspective(900px) rotateY(-26deg) scale(0.82)' }}
-              >
-                <CircularTestimonialImage
-                  src={nextTestimonial.src}
-                  alt=""
-                  frameClassName="h-full w-full"
-                />
-              </motion.div>
-            </>
-          ) : null}
+          {validatedTestimonials.map((testimonial, testimonialIndex) => {
+            const position = getCircularTestimonialImagePosition(
+              testimonialIndex,
+              activeIndex,
+              validatedTestimonials.length,
+              navigationDirection,
+            );
+            const isActive = position === 'center';
+            const isPreview = position === 'left' || position === 'right';
 
-          <AnimatePresence initial={false} mode="wait">
-            <motion.div
-              key={`${activeIndex}-${activeTestimonial.src}`}
-              animate={{ opacity: 1, rotateY: 0, scale: 1, x: 0 }}
-              className="relative z-10 h-[18rem] w-[15rem] sm:h-[20rem] sm:w-[17rem]"
-              data-part="active-testimonial-image"
-              exit={{ opacity: 0, rotateY: 4, scale: 0.94, x: -8 }}
-              initial={{ opacity: 0, rotateY: -4, scale: 0.94, x: 8 }}
-              transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
-              style={{ transformStyle: 'preserve-3d' }}
-            >
-              <CircularTestimonialImage
-                src={activeTestimonial.src}
-                alt={activeTestimonial.name}
-                frameClassName="h-full w-full"
-              />
-            </motion.div>
-          </AnimatePresence>
+            return (
+              <div
+                key={`${testimonialIndex}-${testimonial.src}`}
+                aria-hidden={!isActive}
+                className="absolute left-1/2 top-1/2 h-[min(18rem,72cqw)] w-[min(15rem,58cqw)] [transform-style:preserve-3d]"
+                data-index={testimonialIndex}
+                data-part={isActive ? 'active-testimonial-image' : 'testimonial-image-layer'}
+                data-position={position}
+                style={{
+                  opacity: isActive || isPreview ? 1 : 0,
+                  pointerEvents: isActive || isPreview ? 'auto' : 'none',
+                  translate: '-50% -50%',
+                  transform: getCircularTestimonialImageTransform(position, imageGap),
+                  transition:
+                    'transform 800ms cubic-bezier(.4,2,.3,1), opacity 800ms cubic-bezier(.4,2,.3,1)',
+                  zIndex: isActive ? 3 : isPreview ? 2 : 1,
+                }}
+              >
+                <CircularTestimonialImage
+                  src={testimonial.src}
+                  alt={isActive ? testimonial.name : ''}
+                  frameClassName="h-full w-full"
+                />
+              </div>
+            );
+          })}
         </div>
 
         <div
