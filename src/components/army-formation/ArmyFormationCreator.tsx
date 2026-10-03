@@ -60,6 +60,8 @@ const ARMY_DRAG_START_PX = 3;
 const ARMY_FORMATION_FILE_NAME = 'army-formation-creator.txt';
 const ARMY_FORMATION_PNG_NAME = 'army-formation-creator.png';
 const DEFAULT_FIELD_BACKGROUND_COLOR = '#ffffff';
+const ARMY_FIELD_MIN_HEIGHT_PX = 200;
+const ARMY_FIELD_MAX_HEIGHT_PX = 2000;
 
 const ARMY_FORMATION_BUTTON_CLASS =
   'cursor-pointer rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-4 py-3 text-base text-[var(--site-ink)] transition-colors enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)]';
@@ -89,6 +91,13 @@ type ArmyFormationBattlefieldSlide = {
   direction: -1 | 1;
   outgoingBattlefield: ArmyBattlefield;
   outgoingEmptySlot: EmptySlot | null;
+};
+
+type ArmyFormationFileOperation = 'import' | 'export-file' | 'export-png';
+
+type ArmyFormationFileOperationFailure = {
+  operation: ArmyFormationFileOperation;
+  message: string;
 };
 
 type ArmyFormationStartupRecord =
@@ -390,14 +399,26 @@ function createArmySwatchId(palette: readonly { id: string }[]): string {
   return swatchId;
 }
 
-function readFiniteNumberInput(inputText: string, label: string): number {
+function parseFiniteNumberDraft(inputText: string): number | null {
   const trimmed = inputText.trim();
   const parsed = Number(trimmed);
   if (trimmed.length === 0 || !Number.isFinite(parsed)) {
-    throw new Error(`${label} must be a finite number, received ${JSON.stringify(inputText)}.`);
+    return null;
   }
 
   return parsed;
+}
+
+function describeAngleInputError(copy: ArmyFormationCreatorCopy, inputText: string): string {
+  return copy.angleInputError.replace('{received}', JSON.stringify(inputText));
+}
+
+function describeHeightInputError(copy: ArmyFormationCreatorCopy, inputText: string): string {
+  return copy.heightInputError.replace('{received}', JSON.stringify(inputText));
+}
+
+function describeHeightRangeError(copy: ArmyFormationCreatorCopy, inputText: string): string {
+  return copy.heightRangeError.replace('{received}', JSON.stringify(inputText));
 }
 
 function readColorInputValue(color: string): string {
@@ -624,14 +645,31 @@ function openFilePicker(input: HTMLInputElement | null): void {
   input.click();
 }
 
-function ArmyFormationFailure({ message }: { message: string }) {
+function ArmyFormationFailure({
+  message,
+  dismissLabel,
+  onDismiss,
+}: {
+  message: string;
+  dismissLabel: string;
+  onDismiss: () => void;
+}) {
   return (
-    <p
-      role="alert"
-      className="rounded-md border border-[var(--site-accent-strong)] bg-[var(--site-accent-bg)] px-3 py-2 text-sm text-[var(--site-ink-strong)]"
-    >
-      {message}
-    </p>
+    <div className="fixed bottom-4 right-4 z-[70] flex max-h-[calc(100dvh-2rem)] max-w-[min(24rem,calc(100vw-2rem))] items-start gap-3 rounded-md border border-[var(--site-accent-strong)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--site-ink-strong)] shadow-lg">
+      <p
+        role="alert"
+        className="min-w-0 max-h-[calc(100dvh-4rem)] flex-1 overflow-y-auto overscroll-contain break-words"
+      >
+        {message}
+      </p>
+      <button
+        type="button"
+        className="shrink-0 rounded px-1 py-0.5 text-xs underline underline-offset-2"
+        onClick={onDismiss}
+      >
+        {dismissLabel}
+      </button>
+    </div>
   );
 }
 
@@ -971,31 +1009,51 @@ function ArmyFormationColorControls({
 function ArmyFormationPieceControls({
   copy,
   angleText,
+  angleInputErrorMessage,
   onAngleText,
+  onAngleBlur,
   onDeletePieces,
   onResetRotation,
 }: {
   copy: ArmyFormationCreatorCopy;
   angleText: string;
+  angleInputErrorMessage: string | null;
   onAngleText: (value: string) => void;
+  onAngleBlur: (value: string) => void;
   onDeletePieces: () => void;
   onResetRotation: () => void;
 }) {
+  const angleInputErrorId = useId();
+
   return (
     <ArmyFormationControlGroup title={copy.changeSelectedPieces}>
       <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onDeletePieces}>
         {copy.deleteSelected}
       </button>
-      <div className="flex flex-wrap items-center gap-2">
-        <label className="flex items-center gap-2 text-sm text-[var(--site-ink)]">
-          <span>{copy.angle}</span>
-          <input
-            className={`${ARMY_FORMATION_INPUT_CLASS} w-20`}
-            type="number"
-            value={angleText}
-            onChange={(event) => onAngleText(event.target.value)}
-          />
-        </label>
+      <div className="flex flex-wrap items-start gap-2">
+        <div className="flex min-w-0 flex-col gap-1">
+          <label className="flex items-center gap-2 text-sm text-[var(--site-ink)]">
+            <span>{copy.angle}</span>
+            <input
+              className={`${ARMY_FORMATION_INPUT_CLASS} w-20`}
+              type="number"
+              value={angleText}
+              aria-invalid={angleInputErrorMessage !== null}
+              aria-describedby={angleInputErrorMessage !== null ? angleInputErrorId : undefined}
+              onChange={(event) => onAngleText(event.target.value)}
+              onBlur={(event) => onAngleBlur(event.currentTarget.value)}
+            />
+          </label>
+          {angleInputErrorMessage !== null ? (
+            <p
+              id={angleInputErrorId}
+              role="alert"
+              className="break-words text-xs text-[var(--site-accent-strong)]"
+            >
+              {angleInputErrorMessage}
+            </p>
+          ) : null}
+        </div>
         <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onResetRotation}>
           {copy.resetSelectedRotation}
         </button>
@@ -1007,45 +1065,71 @@ function ArmyFormationPieceControls({
 function ArmyFormationFieldControls({
   copy,
   heightText,
+  heightInputErrorMessage,
   fieldBackgroundColorText,
   backgroundImageUrl,
+  backgroundImageFailureMessage,
   backgroundImageInputRef,
+  onHeightBlur,
   onHeightText,
   onResetHeight,
   onFieldBackgroundColorChange,
   onResetFieldBackgroundColor,
+  onOpenBackgroundImagePicker,
+  onBackgroundImageReadFailure,
   onChooseBackgroundImage,
   onRemoveBackgroundImage,
   onClear,
 }: {
   copy: ArmyFormationCreatorCopy;
   heightText: string;
+  heightInputErrorMessage: string | null;
   fieldBackgroundColorText: string;
   backgroundImageUrl: string;
+  backgroundImageFailureMessage: string | null;
   backgroundImageInputRef: RefObject<HTMLInputElement | null>;
+  onHeightBlur: (value: string) => void;
   onHeightText: (value: string) => void;
   onResetHeight: () => void;
   onFieldBackgroundColorChange: (value: string) => void;
   onResetFieldBackgroundColor: () => void;
+  onOpenBackgroundImagePicker: () => void;
+  onBackgroundImageReadFailure: (failure: unknown) => void;
   onChooseBackgroundImage: (file: File) => void;
   onRemoveBackgroundImage: () => void;
   onClear: () => void;
 }) {
+  const heightInputErrorId = useId();
+
   return (
     <ArmyFormationControlGroup title={copy.changeBattlefield}>
       <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onClear}>
         {copy.clearBattlefield}
       </button>
-      <div className="flex flex-wrap items-center gap-2">
-        <label className="flex items-center gap-2 text-sm text-[var(--site-ink)]">
-          <span>{copy.height}</span>
-          <input
-            className={`${ARMY_FORMATION_INPUT_CLASS} w-20`}
-            type="number"
-            value={heightText}
-            onChange={(event) => onHeightText(event.target.value)}
-          />
-        </label>
+      <div className="flex flex-wrap items-start gap-2">
+        <div className="flex min-w-0 flex-col gap-1">
+          <label className="flex items-center gap-2 text-sm text-[var(--site-ink)]">
+            <span>{copy.height}</span>
+            <input
+              className={`${ARMY_FORMATION_INPUT_CLASS} w-20`}
+              type="number"
+              value={heightText}
+              aria-invalid={heightInputErrorMessage !== null}
+              aria-describedby={heightInputErrorMessage !== null ? heightInputErrorId : undefined}
+              onChange={(event) => onHeightText(event.target.value)}
+              onBlur={(event) => onHeightBlur(event.currentTarget.value)}
+            />
+          </label>
+          {heightInputErrorMessage !== null ? (
+            <p
+              id={heightInputErrorId}
+              role="alert"
+              className="break-words text-xs text-[var(--site-accent-strong)]"
+            >
+              {heightInputErrorMessage}
+            </p>
+          ) : null}
+        </div>
         <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onResetHeight}>
           {copy.resetHeight}
         </button>
@@ -1077,7 +1161,15 @@ function ArmyFormationFieldControls({
           tabIndex={-1}
           onChange={(event) => {
             const input = event.currentTarget;
-            const file = readFirstChosenFile(input);
+            let file: File | null;
+            try {
+              file = readFirstChosenFile(input);
+            } catch (failure: unknown) {
+              input.value = '';
+              onBackgroundImageReadFailure(failure);
+              return;
+            }
+
             input.value = '';
             if (file !== null) {
               onChooseBackgroundImage(file);
@@ -1088,7 +1180,7 @@ function ArmyFormationFieldControls({
           <button
             type="button"
             className={`${ARMY_FORMATION_BUTTON_CLASS} w-fit shrink-0`}
-            onClick={() => openFilePicker(backgroundImageInputRef.current)}
+            onClick={onOpenBackgroundImagePicker}
           >
             {copy.uploadBackgroundImage}
           </button>
@@ -1102,6 +1194,11 @@ function ArmyFormationFieldControls({
             </button>
           ) : null}
         </div>
+        {backgroundImageFailureMessage !== null ? (
+          <p role="alert" className="text-xs text-[var(--site-accent-strong)]">
+            {backgroundImageFailureMessage}
+          </p>
+        ) : null}
         <p className="text-xs text-[var(--site-ink-soft)]">{copy.backgroundImageFormats}</p>
       </div>
     </ArmyFormationControlGroup>
@@ -1111,15 +1208,19 @@ function ArmyFormationFieldControls({
 function ArmyFormationFileChooser({
   label,
   inputRef,
+  onOpenFilePicker,
+  onReadFailure,
   onChooseFile,
 }: {
   label: string;
   inputRef: RefObject<HTMLInputElement | null>;
+  onOpenFilePicker: () => void;
+  onReadFailure: (failure: unknown) => void;
   onChooseFile: (file: File) => void;
 }) {
   return (
     <>
-      <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={() => openFilePicker(inputRef.current)}>
+      <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onOpenFilePicker}>
         {label}
       </button>
       <input
@@ -1131,7 +1232,15 @@ function ArmyFormationFileChooser({
         tabIndex={-1}
         onChange={(event) => {
           const input = event.currentTarget;
-          const file = readFirstChosenFile(input);
+          let file: File | null;
+          try {
+            file = readFirstChosenFile(input);
+          } catch (failure: unknown) {
+            input.value = '';
+            onReadFailure(failure);
+            return;
+          }
+
           input.value = '';
           if (file === null) {
             return;
@@ -1147,25 +1256,44 @@ function ArmyFormationFileChooser({
 function ArmyFormationTransferControls({
   copy,
   inputRef,
+  fileOperationFailureMessage,
+  onOpenFilePicker,
+  onFileReadFailure,
   onExportFile,
   onExportPng,
   onChooseFile,
 }: {
   copy: ArmyFormationCreatorCopy;
   inputRef: RefObject<HTMLInputElement | null>;
+  fileOperationFailureMessage: string | null;
+  onOpenFilePicker: () => void;
+  onFileReadFailure: (failure: unknown) => void;
   onExportFile: () => void;
   onExportPng: () => void;
   onChooseFile: (file: File) => void;
 }) {
   return (
-    <div className="grid grid-cols-3 gap-2">
-      <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onExportFile}>
-        {copy.exportFile}
-      </button>
-      <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onExportPng}>
-        {copy.exportPng}
-      </button>
-      <ArmyFormationFileChooser label={copy.chooseFile} inputRef={inputRef} onChooseFile={onChooseFile} />
+    <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-3 gap-2">
+        <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onExportFile}>
+          {copy.exportFile}
+        </button>
+        <button type="button" className={`${ARMY_FORMATION_BUTTON_CLASS} w-full min-w-0`} onClick={onExportPng}>
+          {copy.exportPng}
+        </button>
+        <ArmyFormationFileChooser
+          label={copy.chooseFile}
+          inputRef={inputRef}
+          onOpenFilePicker={onOpenFilePicker}
+          onReadFailure={onFileReadFailure}
+          onChooseFile={onChooseFile}
+        />
+      </div>
+      {fileOperationFailureMessage !== null ? (
+        <p role="alert" className="break-words text-xs text-[var(--site-accent-strong)]">
+          {fileOperationFailureMessage}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -1265,12 +1393,18 @@ function ArmyFormationStepButton({
 function ArmyFormationBattlefieldTransferRow({
   copy,
   fileInputRef,
+  fileOperationFailureMessage,
+  onOpenFilePicker,
+  onFileReadFailure,
   onExportFile,
   onExportPng,
   onChooseFile,
 }: {
   copy: ArmyFormationCreatorCopy;
   fileInputRef: RefObject<HTMLInputElement | null>;
+  fileOperationFailureMessage: string | null;
+  onOpenFilePicker: () => void;
+  onFileReadFailure: (failure: unknown) => void;
   onExportFile: () => void;
   onExportPng: () => void;
   onChooseFile: (file: File) => void;
@@ -1280,6 +1414,9 @@ function ArmyFormationBattlefieldTransferRow({
       <ArmyFormationTransferControls
         copy={copy}
         inputRef={fileInputRef}
+        fileOperationFailureMessage={fileOperationFailureMessage}
+        onOpenFilePicker={onOpenFilePicker}
+        onFileReadFailure={onFileReadFailure}
         onExportFile={onExportFile}
         onExportPng={onExportPng}
         onChooseFile={onChooseFile}
@@ -1356,6 +1493,9 @@ function ArmyFormationBattlefieldPane({
   battlefieldCount,
   slide,
   fileInputRef,
+  fileOperationFailureMessage,
+  onOpenFilePicker,
+  onFileReadFailure,
   onExportFile,
   onExportPng,
   onChooseFile,
@@ -1375,6 +1515,9 @@ function ArmyFormationBattlefieldPane({
   battlefieldCount: number;
   slide: ArmyFormationBattlefieldSlide | null;
   fileInputRef: RefObject<HTMLInputElement | null>;
+  fileOperationFailureMessage: string | null;
+  onOpenFilePicker: () => void;
+  onFileReadFailure: (failure: unknown) => void;
   onExportFile: () => void;
   onExportPng: () => void;
   onChooseFile: (file: File) => void;
@@ -1537,6 +1680,9 @@ function ArmyFormationBattlefieldPane({
       <ArmyFormationBattlefieldTransferRow
         copy={copy}
         fileInputRef={fileInputRef}
+        fileOperationFailureMessage={fileOperationFailureMessage}
+        onOpenFilePicker={onOpenFilePicker}
+        onFileReadFailure={onFileReadFailure}
         onExportFile={onExportFile}
         onExportPng={onExportPng}
         onChooseFile={onChooseFile}
@@ -1584,6 +1730,10 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   const [armyDocument, setArmyDocument] = useState(() => createEmptyArmyFormationDocument());
   const armyDocumentRef = useRef(armyDocument);
   const [failureMessage, setFailureMessage] = useState<string | null>(null);
+  const [backgroundImageFailureMessage, setBackgroundImageFailureMessage] = useState<string | null>(null);
+  const [fileOperationFailure, setFileOperationFailure] =
+    useState<ArmyFormationFileOperationFailure | null>(null);
+  const [startupFailureDismissed, setStartupFailureDismissed] = useState(false);
   const [startupStore] = useState<ArmyFormationStartupStore>(createArmyFormationStartupStore);
   const startupSnapshot = useSyncExternalStore(
     startupStore.subscribe,
@@ -1593,9 +1743,11 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   const [activeCategoryId, setActiveCategoryId] = useState<ArmyFormationIconCategoryId>('helmet');
   const [colorText, setColorText] = useState('#000000');
   const [angleText, setAngleText] = useState('90');
+  const [angleInputErrorMessage, setAngleInputErrorMessage] = useState<string | null>(null);
   const [heightText, setHeightText] = useState(() =>
     String(readActiveBattlefield(createEmptyArmyFormationDocument()).heightPx),
   );
+  const [heightInputErrorMessage, setHeightInputErrorMessage] = useState<string | null>(null);
   const [fieldBackgroundColorText, setFieldBackgroundColorText] = useState(() =>
     readColorInputValue(readActiveBattlefield(createEmptyArmyFormationDocument()).fieldBackgroundColor),
   );
@@ -1639,7 +1791,12 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
   useEffect(() => {
     // Read after mount. The client snapshot stays unread on the first paint, so saved pieces are not drawn.
-    const startupRecord = readArmyFormationStartupRecord(requireWindowArmyFormationStorage());
+    let startupRecord: ArmyFormationStartupRecord;
+    try {
+      startupRecord = readArmyFormationStartupRecord(requireWindowArmyFormationStorage());
+    } catch (failure: unknown) {
+      startupRecord = { status: 'invalid', message: describeArmyFormationFailure(failure) };
+    }
     startupStore.publishRecord(startupRecord);
     if (startupRecord.status !== 'restore') {
       openArmyFormationAutosave();
@@ -1648,16 +1805,26 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
   function syncBattlefieldDrafts(battlefield: ArmyBattlefield) {
     setHeightText(String(battlefield.heightPx));
+    setHeightInputErrorMessage(null);
     setFieldBackgroundColorText(readColorInputValue(battlefield.fieldBackgroundColor));
   }
 
   function reportArmyFormationAction(action: () => void) {
     try {
       action();
-      setFailureMessage(null);
     } catch (failure: unknown) {
       setFailureMessage(describeArmyFormationFailure(failure));
     }
+  }
+
+  function reportFileOperationFailure(operation: ArmyFormationFileOperation, failure: unknown) {
+    setFileOperationFailure({ operation, message: describeArmyFormationFailure(failure) });
+  }
+
+  function clearFileOperationFailure(operation: ArmyFormationFileOperation) {
+    setFileOperationFailure((currentFailure) =>
+      currentFailure?.operation === operation ? null : currentFailure,
+    );
   }
 
   function onPlaceIcon(iconId: string) {
@@ -1708,8 +1875,13 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
   function onAngleText(value: string) {
     setAngleText(value);
+    setAngleInputErrorMessage(null);
+    const rotationDegrees = parseFiniteNumberDraft(value);
+    if (rotationDegrees === null) {
+      return;
+    }
+
     reportArmyFormationAction(() => {
-      const rotationDegrees = readFiniteNumberInput(value, 'Rotation degrees');
       const currentDocument = armyDocumentRef.current;
       const battlefieldIndex = currentDocument.activeBattlefieldIndex;
       const selectedPieceIds = readActiveBattlefield(currentDocument).selectedPieceIds;
@@ -1760,6 +1932,16 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     });
   }
 
+  function onAngleBlur(value: string) {
+    const rotationDegrees = parseFiniteNumberDraft(value);
+    if (rotationDegrees === null) {
+      setAngleInputErrorMessage(describeAngleInputError(copy, value));
+      return;
+    }
+
+    setAngleInputErrorMessage(null);
+  }
+
   function onResetRotation() {
     reportArmyFormationAction(() => {
       const currentDocument = armyDocumentRef.current;
@@ -1777,6 +1959,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
       autoAppliedRotationByBattlefieldRef.current.delete(battlefieldIndex);
       setAngleText('90');
+      setAngleInputErrorMessage(null);
     });
   }
 
@@ -1790,10 +1973,34 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
   function onHeightText(value: string) {
     setHeightText(value);
+    setHeightInputErrorMessage(null);
+    const heightPx = parseFiniteNumberDraft(value);
+    if (
+      heightPx === null ||
+      heightPx < ARMY_FIELD_MIN_HEIGHT_PX ||
+      heightPx > ARMY_FIELD_MAX_HEIGHT_PX
+    ) {
+      return;
+    }
+
     reportArmyFormationAction(() => {
-      const heightPx = readFiniteNumberInput(value, 'Battlefield height');
       commitArmyFormationDocument(setArmyBattlefieldHeight(armyDocumentRef.current, heightPx));
     });
+  }
+
+  function onHeightBlur(value: string) {
+    const heightPx = parseFiniteNumberDraft(value);
+    if (heightPx === null) {
+      setHeightInputErrorMessage(describeHeightInputError(copy, value));
+      return;
+    }
+
+    if (heightPx < ARMY_FIELD_MIN_HEIGHT_PX || heightPx > ARMY_FIELD_MAX_HEIGHT_PX) {
+      setHeightInputErrorMessage(describeHeightRangeError(copy, value));
+      return;
+    }
+
+    setHeightInputErrorMessage(null);
   }
 
   function onResetHeight() {
@@ -1801,6 +2008,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
       const defaultHeightPx = readActiveBattlefield(createEmptyArmyFormationDocument()).heightPx;
       commitArmyFormationDocument(setArmyBattlefieldHeight(armyDocumentRef.current, defaultHeightPx));
       setHeightText(String(defaultHeightPx));
+      setHeightInputErrorMessage(null);
     });
   }
 
@@ -1820,9 +2028,22 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     });
   }
 
+  function onOpenBackgroundImagePicker() {
+    try {
+      openFilePicker(backgroundImageInputRef.current);
+    } catch (failure: unknown) {
+      setBackgroundImageFailureMessage(describeArmyFormationFailure(failure));
+    }
+  }
+
+  function onBackgroundImageReadFailure(failure: unknown) {
+    setBackgroundImageFailureMessage(describeArmyFormationFailure(failure));
+  }
+
   async function onChooseBackgroundImage(file: File) {
     const battlefieldIndex = armyDocumentRef.current.activeBattlefieldIndex;
     const maxHeightPx = armyDocumentRef.current.battlefields[battlefieldIndex].heightPx;
+    let nextDocument: ArmyFormationDocument;
 
     try {
       const result = await compressArmyFormationBackgroundImage(
@@ -1831,37 +2052,52 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
         maxHeightPx,
       );
       if (result.status === 'rejected') {
-        setFailureMessage(describeArmyBackgroundImageUploadFailure(result, copy));
+        setBackgroundImageFailureMessage(describeArmyBackgroundImageUploadFailure(result, copy));
         return;
       }
 
-      const next = setArmyBackgroundImageUrlForBattlefield(
+      nextDocument = setArmyBackgroundImageUrlForBattlefield(
         armyDocumentRef.current,
         battlefieldIndex,
         result.dataUrl,
       );
-      commitArmyFormationDocument(next);
-      setFailureMessage(null);
     } catch (failure: unknown) {
-      setFailureMessage(describeArmyFormationFailure(failure));
+      setBackgroundImageFailureMessage(describeArmyFormationFailure(failure));
+      return;
     }
+
+    reportArmyFormationAction(() => {
+      commitArmyFormationDocument(nextDocument);
+      setBackgroundImageFailureMessage(null);
+    });
   }
 
   function onRemoveBackgroundImage() {
+    let nextDocument: ArmyFormationDocument;
+    try {
+      nextDocument = setArmyBackgroundImageUrl(armyDocument, '');
+    } catch (failure: unknown) {
+      setBackgroundImageFailureMessage(describeArmyFormationFailure(failure));
+      return;
+    }
+
     reportArmyFormationAction(() => {
-      commitArmyFormationDocument(setArmyBackgroundImageUrl(armyDocument, ''));
+      commitArmyFormationDocument(nextDocument);
     });
   }
 
   function onExportFile() {
-    reportArmyFormationAction(() => {
+    try {
       downloadArmyFormationFile(
         ARMY_FORMATION_FILE_NAME,
         new Blob([serializeArmyFormationDocument(armyDocument)], {
           type: 'text/plain;charset=utf-8',
         }),
       );
-    });
+      clearFileOperationFailure('export-file');
+    } catch (failure: unknown) {
+      reportFileOperationFailure('export-file', failure);
+    }
   }
 
   async function onExportPng() {
@@ -1870,10 +2106,22 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
         buildActiveBattlefieldImageScene(armyDocument, ARMY_FIELD_WIDTH_PX),
       );
       downloadArmyFormationFile(ARMY_FORMATION_PNG_NAME, png);
-      setFailureMessage(null);
+      clearFileOperationFailure('export-png');
     } catch (failure: unknown) {
-      setFailureMessage(describeArmyFormationFailure(failure));
+      reportFileOperationFailure('export-png', failure);
     }
+  }
+
+  function onOpenFilePicker() {
+    try {
+      openFilePicker(fileInputRef.current);
+    } catch (failure: unknown) {
+      reportFileOperationFailure('import', failure);
+    }
+  }
+
+  function onFileReadFailure(failure: unknown) {
+    reportFileOperationFailure('import', failure);
   }
 
   function onStep(direction: -1 | 1) {
@@ -1897,16 +2145,24 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   }
 
   function onChooseFile(file: File) {
-    void readArmyFormationFile(file)
-      .then((loaded) => {
-        autoAppliedRotationByBattlefieldRef.current.clear();
-        commitArmyFormationDocument(loaded);
-        syncBattlefieldDrafts(readActiveBattlefield(loaded));
-        setFailureMessage(null);
-      })
-      .catch((failure: unknown) => {
-        setFailureMessage(describeArmyFormationFailure(failure));
-      });
+    void readArmyFormationFile(file).then(
+      (loaded) => {
+        reportArmyFormationAction(() => {
+          autoAppliedRotationByBattlefieldRef.current.clear();
+          commitArmyFormationDocument(loaded);
+          syncBattlefieldDrafts(readActiveBattlefield(loaded));
+          clearFileOperationFailure('import');
+        });
+      },
+      (failure: unknown) => {
+        reportFileOperationFailure('import', failure);
+      },
+    );
+  }
+
+  function onDismissFailure() {
+    setFailureMessage(null);
+    setStartupFailureDismissed(true);
   }
 
   function onRestorePreviousRecord() {
@@ -1996,7 +2252,8 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
   const restorePromptOpen = startupSnapshot.status === 'restore';
   const startupFailureMessage = startupSnapshot.status === 'invalid' ? startupSnapshot.message : null;
-  const visibleFailureMessage = failureMessage ?? startupFailureMessage;
+  const visibleFailureMessage =
+    failureMessage ?? (startupFailureDismissed ? null : startupFailureMessage);
 
   return (
     <section
@@ -2004,7 +2261,6 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
       className="relative w-full min-w-0 rounded-2xl border border-[var(--site-border-strong)] bg-[var(--site-panel)] p-3 text-[var(--site-ink)] shadow-[var(--site-card-shadow)] sm:p-4"
     >
       <div className="space-y-3" inert={restorePromptOpen ? true : undefined}>
-      {visibleFailureMessage !== null ? <ArmyFormationFailure message={visibleFailureMessage} /> : null}
       <ArmyFormationCategoryTabs
         copy={copy}
         activeCategoryId={activeCategoryId}
@@ -2026,20 +2282,27 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
           <ArmyFormationPieceControls
             copy={copy}
             angleText={angleText}
+            angleInputErrorMessage={angleInputErrorMessage}
             onAngleText={onAngleText}
+            onAngleBlur={onAngleBlur}
             onDeletePieces={onDeletePieces}
             onResetRotation={onResetRotation}
           />
           <ArmyFormationFieldControls
             copy={copy}
             heightText={heightText}
+            heightInputErrorMessage={heightInputErrorMessage}
             fieldBackgroundColorText={fieldBackgroundColorText}
             backgroundImageUrl={battlefield.backgroundImageUrl}
+            backgroundImageFailureMessage={backgroundImageFailureMessage}
             backgroundImageInputRef={backgroundImageInputRef}
+            onHeightBlur={onHeightBlur}
             onHeightText={onHeightText}
             onResetHeight={onResetHeight}
             onFieldBackgroundColorChange={onFieldBackgroundColorChange}
             onResetFieldBackgroundColor={onResetFieldBackgroundColor}
+            onOpenBackgroundImagePicker={onOpenBackgroundImagePicker}
+            onBackgroundImageReadFailure={onBackgroundImageReadFailure}
             onChooseBackgroundImage={(file) => void onChooseBackgroundImage(file)}
             onRemoveBackgroundImage={onRemoveBackgroundImage}
             onClear={onClear}
@@ -2053,6 +2316,9 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
           battlefieldCount={armyDocument.battlefields.length}
           slide={battlefieldSlide}
           fileInputRef={fileInputRef}
+          fileOperationFailureMessage={fileOperationFailure?.message ?? null}
+          onOpenFilePicker={onOpenFilePicker}
+          onFileReadFailure={onFileReadFailure}
           onExportFile={onExportFile}
           onExportPng={onExportPng}
           onChooseFile={onChooseFile}
@@ -2072,6 +2338,13 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
           copy={copy}
           onRestorePreviousRecord={onRestorePreviousRecord}
           onStartBlank={onStartBlank}
+        />
+      ) : null}
+      {visibleFailureMessage !== null ? (
+        <ArmyFormationFailure
+          message={visibleFailureMessage}
+          dismissLabel={copy.dismissError}
+          onDismiss={onDismissFailure}
         />
       ) : null}
     </section>
