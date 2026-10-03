@@ -10,6 +10,33 @@ type ArmorCreatorHowToUseStepCopy = {
   description: string;
 };
 
+export type ArmorCreatorFeatureIcon =
+  | 'character'
+  | 'materials'
+  | 'slots'
+  | 'preview'
+  | 'adjustments'
+  | 'export';
+
+type ArmorCreatorFeatureCopy = {
+  icon: ArmorCreatorFeatureIcon;
+  title: string;
+  description: string;
+};
+
+export type ArmorCreatorFeatureOverviewCopy = {
+  title: string;
+  subtitle: string;
+  features: readonly [
+    ArmorCreatorFeatureCopy,
+    ArmorCreatorFeatureCopy,
+    ArmorCreatorFeatureCopy,
+    ArmorCreatorFeatureCopy,
+    ArmorCreatorFeatureCopy,
+    ArmorCreatorFeatureCopy,
+  ];
+};
+
 type ArmorCreatorFaqItemCopy = {
   question: string;
   answer: string;
@@ -50,6 +77,7 @@ export type ArmorCreatorCopy = {
   heroAction: string;
   whatIsTitle: string;
   whatIsDescription: string;
+  featureOverview: ArmorCreatorFeatureOverviewCopy;
   howToUseEyebrow: string;
   howToUseTitle: string;
   howToUseSteps: readonly [
@@ -228,53 +256,97 @@ const englishArmorCreatorCopy: ArmorCreatorCopy = {
   heroAction: 'Try for Free',
   whatIsTitle: 'What is the Armor Creator?',
   whatIsDescription:
-    'The Armor Creator is an online visual tool for RPG/TTRPG players and GMs, as well as creators developing fantasy characters and worlds. Mix plate, leather, and cloth armor pieces to preview character looks and find visual inspiration for characters, NPCs, and campaign settings.',
+    'The Armor Creator is an online visual tool for RPG/TTRPG players and GMs, as well as creators developing fantasy characters and worlds. Mix plate, leather, and cloth armor pieces to preview character looks and find visual inspiration for characters, NPCs, and campaign settings. With the Armor Creator, you can review those combinations on the selected figure before adjusting the finished look.',
+  featureOverview: {
+    title: 'Armor Creator Features for Building a Look',
+    subtitle:
+      'Use the Armor Creator to start with a character and material, then combine individual pieces into a look. Compare the preview, keep alternate looks in outfit slots, and download a PNG when ready.',
+    features: [
+      {
+        icon: 'character',
+        title: 'Choose Your Character',
+        description:
+          'Select a male or female figure first. The Armor Creator keeps the selected character visible in the preview while you choose equipment.',
+      },
+      {
+        icon: 'materials',
+        title: 'Browse Three Materials',
+        description:
+          'Compare plate, leather, and cloth on the selected figure; each material offers its own pieces for a different look.',
+      },
+      {
+        icon: 'slots',
+        title: 'Combine Equipment Slots',
+        description:
+          'Select a helm, chest piece, foot armor, legs, gloves, shoulders, cloak, crown, or wings, then add them by slot. The Armor Creator also gives you four outfit slots for separate looks.',
+      },
+      {
+        icon: 'preview',
+        title: 'Preview the Full Outfit',
+        description:
+          'The preview in the Armor Creator helps you compare coverage, layers, and silhouette as you build.',
+      },
+      {
+        icon: 'adjustments',
+        title: 'Adjust the Details',
+        description:
+          'Enable symmetry to match left and right shoulders. The chest curve is available with a female character and plate armor. In the Armor Creator, the curve refines the displayed combination.',
+      },
+      {
+        icon: 'export',
+        title: 'Download as PNG',
+        description:
+          'When ready, download the current preview as a PNG. The Armor Creator turns the assembled look into an image for a campaign or character reference.',
+      },
+    ],
+  },
   howToUseEyebrow: 'How it works',
   howToUseTitle: 'How to use the Armor Creator',
   howToUseSteps: [
     {
       title: 'Choose a character and armor type',
-      description: 'Pick a character and choose plate, leather, or cloth armor to browse matching pieces.',
+      description:
+        'Pick a character in the Armor Creator, then browse plate, leather, or cloth pieces matched to the selection.',
     },
     {
       title: 'Mix and match armor pieces',
       description:
-        'Select a helm, chest piece, legs, gloves, shoulders, cloak, crown, or wings, and preview the look as you build.',
+        'In the Armor Creator, select a helm, chest piece, foot armor, legs, gloves, shoulders, cloak, crown, or wings, and preview the combination as you build.',
     },
     {
       title: 'Refine and download your look',
       description:
-        'Adjust shoulder symmetry or chest curves, switch between four outfit slots, and download your finished image.',
+        'Use the Armor Creator to adjust shoulder symmetry. The chest curve is available with a female character and plate armor. Save alternate looks in four outfit slots and download the finished PNG.',
     },
   ],
   howToUseAction: 'Start creating',
   faqEyebrow: 'FAQ',
   faqTitle: 'Armor Creator FAQ',
   faqDescription:
-    'Learn which armor types and pieces are available, and how to save or export your look.',
+    'Learn which armor types and pieces the Armor Creator offers, and how to save or export your look.',
   faqItems: [
     {
       question: 'Who is the Armor Creator for?',
       answer:
-        'It is for RPG/TTRPG players and GMs, as well as creators developing fantasy characters and worlds.',
+        'It is designed for RPG/TTRPG players and GMs, plus creators shaping fantasy characters and worlds.',
     },
     {
       question: 'Is the Armor Creator free to use?',
-      answer: 'Yes. The Armor Creator is free to use.',
+      answer: 'Yes, it is free to use.',
     },
     {
-      question: 'Which armor types can I choose?',
+      question: 'Which armor types can I choose in the Armor Creator?',
       answer: 'Choose plate, leather, or cloth armor.',
     },
     {
-      question: 'Which armor pieces are available?',
+      question: 'Which pieces can I equip in the Armor Creator?',
       answer:
-        'Available parts include a helm, chest armor, feet, left and right shoulders, legs, gloves, a cloak, a crown, and wings.',
+        'Available pieces include a helm, chest armor, foot armor, left and right shoulders, legs, gloves, a cloak, a crown, and wings.',
     },
     {
-      question: 'Can I save and export an outfit?',
+      question: 'Can I save and export a look in the Armor Creator?',
       answer:
-        'You can save and reload outfits using four outfit slots, then download the current look as a PNG.',
+        'Save and reload outfits with four outfit slots, then download the current look as a PNG.',
     },
   ],
 };
@@ -323,7 +395,45 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   heroAction: 'Try for Free',
   whatIsTitle: '什么是护甲搭配工具？',
   whatIsDescription:
-    '护甲搭配工具是一款面向 RPG/TTRPG 玩家与 GM，以及奇幻角色和世界观创作者的在线视觉工具。你可以组合板甲、皮甲与布甲等部件，预览不同护甲造型，为角色设定、NPC 塑造和战役世界观创作获取灵感。',
+    '护甲搭配工具是一款面向 RPG/TTRPG 玩家与 GM，以及奇幻角色和世界观创作者的在线视觉工具。你可以组合板甲、皮甲与布甲等部件，预览不同护甲造型，为角色设定、NPC 塑造和战役世界观创作获取灵感。在护甲搭配工具中，你还可以先在所选角色上查看这些组合，再调整最终造型。',
+  featureOverview: {
+    title: '从角色选择到造型微调',
+    subtitle:
+      '先选择角色和护甲材质，再按装备部位组合配件。你可以在预览中检查整体效果，使用四个套装槽位保留不同搭配，并在完成后下载 PNG 图片。',
+    features: [
+      {
+        icon: 'character',
+        title: '选择角色',
+        description: '先选男性或女性角色；浏览装备时，所选角色会持续显示在预览中。',
+      },
+      {
+        icon: 'materials',
+        title: '浏览三种材质',
+        description: '在当前角色上尝试板甲、皮甲与布甲。每种类型都有对应部件，可组合出不同的视觉风格。',
+      },
+      {
+        icon: 'slots',
+        title: '按部位组合装备',
+        description:
+          '按部位挑选头盔、胸甲、脚部、腿部、手套、肩甲、斗篷、王冠或翅膀，还可用四个套装槽位保留不同组合。',
+      },
+      {
+        icon: 'preview',
+        title: '预览整体造型',
+        description: '组合过程中可通过角色预览比较护甲的覆盖范围、层次与整体轮廓，了解不同选择带来的变化。',
+      },
+      {
+        icon: 'adjustments',
+        title: '微调造型细节',
+        description: '可启用左右肩对称；选择女性角色并使用板甲时，也可调整胸甲曲线，进一步微调当前显示的护甲造型。',
+      },
+      {
+        icon: 'export',
+        title: '下载 PNG 图片',
+        description: '搭配完成后，可将当前预览下载为 PNG 图片，用作角色或战役设定的视觉参考。',
+      },
+    ],
+  },
   howToUseEyebrow: '操作步骤',
   howToUseTitle: '如何使用护甲搭配工具？',
   howToUseSteps: [
@@ -333,12 +443,12 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
     },
     {
       title: '组合护甲部件',
-      description: '挑选头盔、胸甲、腿部、手套、肩甲、斗篷、王冠或翅膀，并在预览中查看造型。',
+      description: '挑选头盔、胸甲、脚部护甲、腿部、手套、肩甲、斗篷、王冠或翅膀，并在预览中查看造型。',
     },
     {
       title: '微调并下载造型',
       description:
-        '按需启用左右肩对称或胸甲曲线，切换套装 1–4 保存不同搭配，完成后下载图片。',
+        '按需启用左右肩对称；选择女性角色和板甲后，可调整胸甲曲线。也可将不同造型保存在四个套装槽位中，完成后下载图片。',
     },
   ],
   howToUseAction: '开始搭配',
