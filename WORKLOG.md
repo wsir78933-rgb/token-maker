@@ -1,5 +1,77 @@
 # WORKLOG
 
+## 交接单 · 2026-10-03 17:42 CST · Codex CLI
+
+### 本次目标
+
+记录 Army Background Gallery 卡片和预览弹窗的中英文下载功能、提交及验证证据，并交接 `army-bg-download` 工作树未清理的状态与阻塞。本次用户选择不存档，只写入本交接单，不提交。
+
+### 已完成
+
+- 提交 `b038b5ed87d23c8867f4b75ddda72bba58bd9e2a`（`b038b5e`）加入卡片和预览弹窗的下载链接及中英文文案；卡片下载文件名为 `<map.id>.webp`。`git merge-base --is-ancestor b038b5e main` 退出码 0；当前 main HEAD 为 `705844817903edefca0a92e09e1dcdfe1e24a56b`，包含该提交。
+- 既有验证报告记录：定向 ESLint 退出码 0；`ArmyBackgroundGalleryExplorer.test.tsx` 为 1 个文件、8 个测试通过；`pnpm typecheck` 退出码 0。测试覆盖中英文卡片和弹窗的下载链接、来源链接及关闭行为。
+- 既有 Ego Browser 报告在 `http://localhost:40002/army-formation-creator/backgrounds` 与 `http://localhost:40002/zh/army-formation-creator/backgrounds` 检查中英文桌面和移动四种组合，各检查 12 张卡片；下载标签、href、文件名正确，无卡片/操作区重叠和横向溢出。真实浏览器下载和来源页点击未验证。
+- main 当前相对 `origin/main` 超前 4 个提交。写入前 `git status --short` 只显示既有 `WORKLOG.md` 改动；本次不提交该文件。
+
+### 做到一半
+
+- `/Users/wusir/orca/workspaces/token-maker-app/army-bg-download` 仍存在，分支 `army-bg-download`，HEAD `333c7cd56d8f9a7d553055d81d4a85bd5bf68996`；相对 main 落后 8 个提交，未领先提交。Git 和 Orca 工作树清单都仍包含该路径。
+- 该工作树未存档文件仍为 `src/components/army-formation/ArmyBackgroundGalleryExplorer.tsx`（已修改）和 `src/components/army-formation/ArmyBackgroundGalleryExplorer.test.tsx`（未跟踪）。既有报告记录测试文件与 main 内容字节一致。
+- 组件相对 main 的唯一差异在卡片操作区：下载链接移到来源链接之前，并移除 `ml-auto` 右对齐；弹窗没有差异。继续处理时应保留这项卡片顺序和对齐变化。
+- 工作树删除尚未完成。Orca 显示 `army-bg-download` 有两个已连接、可写终端；main 也有多个已连接、可写终端，包括仍显示 `Working` 的协调者终端 `term_a427ab9a-f05b-4a8e-8d9c-83c3f74ad808`。因此本次未删除工作树，也未关闭或接管任何终端。
+
+### 下一步
+
+先等待 main 上活动终端自然空闲，再重新核对 main 与 `army-bg-download` 的状态、终端和两项未存档文件。保留文件的方式未确定前，不删除工作树；如需提交或丢弃改动，另行取得明确授权。
+
+### 踩过的坑
+
+- 历史 WORKLOG 记录 `pnpm build` 曾在收集 `/api/share` 路由时因缺少 `cloudflare:workers` 失败；本次按范围没有运行 build，因此当前是否仍复现未验证。
+- `army-bg-download` 的未跟踪测试文件虽被既有报告核对为与 main 内容一致，当前仍是该工作树中的未跟踪文件，不能据此把工作树视为干净。
+
+### 怎么验证
+
+- 既有功能验证命令：`pnpm exec eslint src/components/army-formation/ArmyBackgroundGalleryExplorer.tsx src/components/army-formation/ArmyBackgroundGalleryExplorer.test.tsx`（退出码 0）；`pnpm exec vitest run src/components/army-formation/ArmyBackgroundGalleryExplorer.test.tsx`（1 个文件、8 个测试通过）；`pnpm typecheck`（退出码 0）。
+- 既有浏览器路径：英文 `http://localhost:40002/army-formation-creator/backgrounds`；中文 `http://localhost:40002/zh/army-formation-creator/backgrounds`。桌面视口为 1425×900，移动视口为 390×844；浏览器报告未触发原生下载。
+- 复核未存档文件：`git -C '/Users/wusir/orca/workspaces/token-maker-app/army-bg-download' status --short`；对比卡片布局：在该工作树运行 `git diff main -- src/components/army-formation/ArmyBackgroundGalleryExplorer.tsx`；复核工作树与活动终端：`orca worktree list --repo id:842aae27-292d-4b29-b767-e486603a93f2 --json`、`orca terminal list --worktree path:/Users/wusir/orca/workspaces/token-maker-app/army-bg-download --json`。
+- 本次未运行测试、构建或浏览器验收。文档验收运行 `git diff --check -- WORKLOG.md`，结果应为退出码 0。
+
+## 交接单 · 2026-10-03 17:36 CST · Codex CLI
+
+### 本次目标
+
+将 Army Formation Creator 的角度和高度自动应用/重置改动合入 main，删除已合并的“军阵组件”工作树，同时保留其他工作树的本地改动。
+
+### 已完成
+
+- 功能提交 `c80072d4262d704df2e6efe3b752fc77dddd6814` 已由合并提交 `1f81259fd0d1bdcdd4cbe9e97b116c684f49ecd8` 合入 main；当前 main 为 `705844817903edefca0a92e09e1dcdfe1e24a56b`。
+- 用户选择 A 后，Orca 工作树 `/Users/wusir/orca/workspaces/token-maker-app/军阵组件` 和本地 `refs/heads/军阵组件` 已删除。独立核对确认路径不存在、Git 工作树清单不含该路径、Orca 精确查询返回 `selector_not_found`、`git show-ref --verify` 返回 128（ref 不存在）。清理协调者报告目标下两个空闲终端已关闭。
+- main 当前干净；写入本交接单前，暂存区、未暂存区和未跟踪文件均为空。本交接单不提交。
+- `army-bg-download` 保留在 `333c7cd56d8f9a7d553055d81d4a85bd5bf68996`，仍有 `ArmyBackgroundGalleryExplorer.tsx` 修改和对应测试文件未跟踪；两文件 SHA-256 与保护基线一致。`coat-shields-refresh` 仍存在。
+- 本次清理只做了状态核对，没有运行测试、构建或浏览器验收。
+
+### 做到一半
+
+- `army-bg-download` 的独立只读核查仍在进行：Run `run_3c88f7f2966e`，Dispatch `ctx_453851870675`。它被 Orca 标为 `user_owned/retained`，不要关闭或向其工作树写入；等待核查结果并确认本地改动未变化。
+- 本 Run 的只读审计 Dispatch `ctx_5b4a3b1a88fa` 已完成，但终端为 `user_owned/retained` 且状态陈旧，不能由当前协调者关闭。清理 worker `ctx_87d29a64024a` 已 `already_released`，执行记录已归档。
+
+### 下一步
+
+等待 `army-bg-download` 只读核查完成；只记录核查结论，不提交或修改该工作树的本地文件。军阵组件合并和清理已完成，无需再次操作。
+
+### 踩过的坑
+
+- Orca `worktree rm` 可能连带删除工作树检出的本地分支；本次用户明确授权删除已合并的同名分支。下次清理必须重新核对具体路径、分支、干净状态和用户授权。
+- `army-bg-download` 有未提交的源码和测试改动，必须保留。Orca 标为 `user_owned/retained` 的终端不能由当前协调者关闭。
+- 本次 `git show-ref --verify` 的 128 和 Orca `selector_not_found` 是目标分支/工作树已删除时的预期结果。
+
+### 怎么验证
+
+- 核对 main：`git -C '/Users/wusir/Desktop/开发项目集合/token-maker-app' status --short` 应为空；`git -C '/Users/wusir/Desktop/开发项目集合/token-maker-app' rev-parse HEAD` 应为 `705844817903edefca0a92e09e1dcdfe1e24a56b`。
+- 核对清理：`git -C '/Users/wusir/Desktop/开发项目集合/token-maker-app' worktree list --porcelain` 不应含 `军阵组件`；`git -C '/Users/wusir/Desktop/开发项目集合/token-maker-app' show-ref --verify refs/heads/军阵组件` 应报告 ref 不存在；`orca worktree show --worktree 'id:842aae27-292d-4b29-b767-e486603a93f2::/Users/wusir/orca/workspaces/token-maker-app/军阵组件' --json` 应返回 `selector_not_found`。
+- 核对受保护改动：检查 `army-bg-download` 的 `git status --short`，并对两个 `ArmyBackgroundGalleryExplorer` 文件运行 `shasum -a 256`；核对值应分别为 `78ce59ad8e58e481b93d2e2e573da803dafe0a684464e1fc9bdf593e611fce75` 和 `54156e54995e566c639e58b0b7ae7909ed4d04ecbc84e8122c487bff0e3c632a`。
+- 若需重验功能：运行 `pnpm exec vitest run src/components/army-formation/ArmyFormationCreator.test.tsx src/lib/army-formation/copy.test.ts`；在 `/army-formation-creator` 和 `/zh/army-formation-creator` 中分别修改角度/高度，再使用重置按钮确认恢复默认值。
+
 ## 交接单 · 2026-10-03 10:05 CST · Codex CLI
 
 ### 本次目标
