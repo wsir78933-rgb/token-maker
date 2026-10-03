@@ -16,6 +16,7 @@ const DEFAULT_LAST_MODIFIED = '2026-03-12';
 const HOME_LAST_MODIFIED = '2026-05-06';
 const DICE_ROLLER_LAST_MODIFIED = '2026-03-30';
 const COAT_MAKER_LAST_MODIFIED = '2026-07-28';
+const EMBLEM_CREATOR_LAST_MODIFIED = '2026-10-03';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
 const TEMPLATE_LAST_MODIFIED = '2026-05-06';
 
@@ -91,7 +92,7 @@ function getBlogCategorySitemapRoutes(siteUrl: string): MetadataRoute.Sitemap {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const staticPaths = ['/', '/faq', '/privacy', '/about', '/changelog', '/dice-roller-dnd', '/armor-creator', '/army-formation-creator', '/army-formation-creator/backgrounds', '/coat-of-arms-maker', '/contact'] as const;
+  const staticPaths = ['/', '/faq', '/privacy', '/about', '/changelog', '/dice-roller-dnd', '/armor-creator', '/army-formation-creator', '/army-formation-creator/backgrounds', '/emblem-creator', '/coat-of-arms-maker', '/contact'] as const;
 
   const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     staticPaths.map((path) => {
@@ -104,6 +105,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(DICE_ROLLER_LAST_MODIFIED)
             : path === '/coat-of-arms-maker'
             ? new Date(COAT_MAKER_LAST_MODIFIED)
+            : path === '/emblem-creator'
+            ? new Date(EMBLEM_CREATOR_LAST_MODIFIED)
             : path === '/contact'
             ? new Date(CONTACT_LAST_MODIFIED)
             : supportPage

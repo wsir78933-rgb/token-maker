@@ -58,6 +58,7 @@ describe('content site topbar model', () => {
       { href: '/coat-of-arms-maker', title: 'Coat of Arms Maker' },
       { href: '/armor-creator', title: 'Armor Creator' },
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
+      { href: '/emblem-creator', title: 'Emblem Creator' },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -95,6 +96,7 @@ describe('content site topbar model', () => {
       { href: '/zh/coat-of-arms-maker', title: '纹章制作器' },
       { href: '/zh/armor-creator', title: '护甲制作器' },
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
+      { href: '/zh/emblem-creator', title: '徽标制作工具' },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -141,6 +143,27 @@ describe('content site topbar model', () => {
     expect(sibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
+  });
+
+  it.each([
+    { locale: 'en' as const, prefix: '', otherPrefix: '/zh' },
+    { locale: 'zh' as const, prefix: '/zh', otherPrefix: '' },
+  ])('activates the emblem tool boundary and preserves the $locale language switch', ({
+    locale,
+    prefix,
+    otherPrefix,
+  }) => {
+    const switchedPath = `${otherPrefix}/emblem-creator`;
+    const current = readTopbar(locale, `${prefix}/emblem-creator?tab=layers#canvas`, switchedPath);
+    const nested = readTopbar(locale, `${prefix}/emblem-creator/saved`, switchedPath);
+    const sibling = readTopbar(locale, `${prefix}/emblem-creator-extra`, switchedPath);
+
+    expect(current.freeToolsMenuIsActive).toBe(true);
+    expect(current.featureMenuIsActive).toBe(false);
+    expect(current.links.every((link) => !link.isActive)).toBe(true);
+    expect(current.localeSwitch.href).toBe(switchedPath);
+    expect(nested.freeToolsMenuIsActive).toBe(true);
+    expect(sibling.freeToolsMenuIsActive).toBe(false);
   });
 
   it('activates only Dice Roller or Contact among the remaining plain links', () => {

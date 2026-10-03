@@ -1,15 +1,18 @@
 import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
+import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { getBlogCategories, getBlogCategoryPath, type BlogCategoryCopy } from '@/lib/blog-content';
 import { getHomeCopy, getNavLabels, type NavLabels } from '@/lib/site-content';
 import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } from '@/lib/site-locale';
 
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
+const EMBLEM_CREATOR_PATH = '/emblem-creator';
 const FREE_TOOLS_PATHS = [
   '/',
   '/coat-of-arms-maker',
   '/armor-creator',
   ARMY_FORMATION_CREATOR_PATH,
+  EMBLEM_CREATOR_PATH,
 ] as const;
 
 const FREE_TOOLS_MENU_COPY = {
@@ -175,6 +178,7 @@ function buildContentSiteFreeToolFeatures(
       ARMY_FORMATION_CREATOR_PATH,
       readArmyFormationNavigationName(locale),
     ),
+    buildContentSiteFreeToolFeature(locale, EMBLEM_CREATOR_PATH, getEmblemCreatorCopy(locale).heading),
   ];
 }
 
