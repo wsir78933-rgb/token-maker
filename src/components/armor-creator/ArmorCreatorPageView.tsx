@@ -5,6 +5,7 @@ import {
   ArmorCreatorPageHeading,
 } from '@/components/armor-creator/ArmorCreatorPageHeading';
 import { ArmorCreatorFeatures } from '@/components/armor-creator/ArmorCreatorFeatures';
+import { ArmorCreatorFeatureGrid } from '@/components/armor-creator/ArmorCreatorFeatureGrid';
 import { Faq1 } from '@/components/armor-creator/Faq1';
 import { ArmorCreatorWorkbench } from '@/components/armor-creator/ArmorCreatorWorkbench';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
@@ -163,6 +164,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
         </p>
       </section>
       <ArmorCreatorFeatures locale={locale} />
+      <ArmorCreatorFeatureGrid featureOverview={copy.featureOverview} />
       <ArmorCreatorHowToUse copy={copy} />
       <ArmorCreatorComparison copy={getArmorCreatorComparisonCopy(locale)} />
       <Faq1

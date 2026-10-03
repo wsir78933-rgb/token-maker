@@ -1,10 +1,11 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { ArmorCreatorPageHeading } from '@/components/armor-creator/ArmorCreatorPageHeading';
 import { ArmorCreatorPageView } from '@/components/armor-creator/ArmorCreatorPageView';
+import { getArmorCreatorCopy } from '@/lib/armor-creator/copy';
 
 afterEach(() => {
   cleanup();
@@ -13,6 +14,62 @@ afterEach(() => {
 function renderedHeading(locale: 'en' | 'zh'): HTMLElement {
   render(<ArmorCreatorPageHeading locale={locale} />);
   return screen.getByRole('heading', { level: 1 });
+}
+
+function expectArmorCreatorFeatureGrid(
+  locale: 'en' | 'zh',
+  lastExampleHeading: HTMLElement,
+  howToUseHeading: HTMLElement,
+) {
+  const featureOverview = getArmorCreatorCopy(locale).featureOverview;
+  const featureOverviewHeading = screen.getByRole('heading', {
+    level: 2,
+    name: featureOverview.title,
+  });
+  const featureOverviewSection = featureOverviewHeading.closest('section');
+
+  if (!featureOverviewSection) {
+    throw new Error(`Feature overview heading "${featureOverview.title}" is not inside a section.`);
+  }
+
+  const howToUseSection = howToUseHeading.closest('section');
+
+  if (!howToUseSection) {
+    throw new Error(`How to Use heading "${howToUseHeading.textContent}" is not inside a section.`);
+  }
+
+  const exampleSection = lastExampleHeading.closest('section');
+
+  if (!exampleSection) {
+    throw new Error(`Example heading "${lastExampleHeading.textContent}" is not inside a section.`);
+  }
+
+  const featureCards = within(featureOverviewSection).getAllByRole('listitem');
+
+  expect(featureOverview.features).toHaveLength(6);
+  expect(featureCards).toHaveLength(6);
+  expect(within(featureOverviewSection).getAllByRole('heading', { level: 3 })).toHaveLength(6);
+
+  featureOverview.features.forEach((feature, index) => {
+    const featureCard = featureCards[index];
+
+    if (!featureCard) {
+      throw new Error(`Missing feature card ${index + 1} for "${feature.title}".`);
+    }
+
+    expect(within(featureCard).getByRole('heading', { level: 3 }).textContent).toBe(feature.title);
+    expect(within(featureCard).getByText(feature.description)).toBeTruthy();
+  });
+
+  expect(
+    featureOverviewHeading.compareDocumentPosition(howToUseHeading) &
+      Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  expect(howToUseSection.previousElementSibling).toBe(featureOverviewSection);
+  expect(
+    exampleSection.compareDocumentPosition(featureOverviewSection) &
+      Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 }
 
 describe('ArmorCreatorPageHeading', () => {
@@ -88,6 +145,8 @@ describe('ArmorCreatorPageView', () => {
       name: '林地游侠',
     });
 
+    expectArmorCreatorFeatureGrid('zh', lightArmorExample, howToUseHeading);
+
     expect(editor).toBeTruthy();
     expect(screen.getAllByRole('button', { name: '下一个造型' })).toHaveLength(2);
     expect(heading.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
@@ -98,7 +157,7 @@ describe('ArmorCreatorPageView', () => {
     );
     expect(
       screen.getByText(
-        '护甲搭配工具是一款面向 RPG/TTRPG 玩家与 GM，以及奇幻角色和世界观创作者的在线视觉工具。你可以组合板甲、皮甲与布甲等部件，预览不同护甲造型，为角色设定、NPC 塑造和战役世界观创作获取灵感。',
+        getArmorCreatorCopy('zh').whatIsDescription,
       ),
     ).toBeTruthy();
     expect(
@@ -179,6 +238,8 @@ describe('ArmorCreatorPageView', () => {
     const comparisonTable = screen.getByRole('region', {
       name: 'Armor creation tools comparison',
     });
+
+    expectArmorCreatorFeatureGrid('en', lightArmorExample, howToUseHeading);
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(screen.getAllByRole('button', { name: 'Next style' })).toHaveLength(2);
