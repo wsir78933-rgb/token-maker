@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { ArmyBackgroundLibrarySection } from '@/components/army-formation/ArmyBackgroundLibrarySection';
 import { ArmyFormationCreatorFaq } from '@/components/army-formation/ArmyFormationCreatorFaq';
 import { ArmyFormationCreatorFeaturesGrid } from '@/components/army-formation/ArmyFormationCreatorFeaturesGrid';
 import {
@@ -157,6 +158,8 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
       </section>
 
       <ArmyFormationCreatorCaseCarousels locale={locale} />
+
+      <ArmyBackgroundLibrarySection locale={locale} />
 
       <ArmyFormationCreatorFeaturesGrid copy={copy} />
 
