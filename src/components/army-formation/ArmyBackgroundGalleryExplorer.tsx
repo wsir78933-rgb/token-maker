@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowLeft, ArrowRight, ExternalLink, Search, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Download, ExternalLink, Search, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -58,6 +58,7 @@ const galleryCopy = {
     sortDescending: '标题：Z 到 A',
     results: '张地图',
     preview: '预览地图',
+    downloadPreview: '下载预览图',
     viewSource: '查看来源',
     previous: '上一页',
     next: '下一页',
@@ -97,6 +98,7 @@ const galleryCopy = {
     sortDescending: 'Title: Z to A',
     results: 'maps',
     preview: 'Preview map',
+    downloadPreview: 'Download preview',
     viewSource: 'View source',
     previous: 'Previous page',
     next: 'Next page',
@@ -348,15 +350,26 @@ export function ArmyBackgroundGalleryExplorer({
                   {map.title}
                 </h2>
                 <p className="mt-1 text-xs text-stone-500">{map.sourceName}</p>
-                <a
-                  href={map.sourcePage}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-auto inline-flex w-fit cursor-pointer items-center gap-1.5 pt-3 text-xs text-[#e6c879] transition hover:text-[#f5dda0]"
-                >
-                  {copy.viewSource}
-                  <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
-                </a>
+                <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-3">
+                  <a
+                    href={map.previewSrc}
+                    download={`${map.id}.webp`}
+                    aria-label={`${copy.downloadPreview}: ${map.title}`}
+                    className="inline-flex w-fit cursor-pointer items-center gap-1.5 text-xs text-[#e6c879] transition hover:text-[#f5dda0]"
+                  >
+                    <Download aria-hidden="true" className="h-3.5 w-3.5" />
+                    {copy.downloadPreview}
+                  </a>
+                  <a
+                    href={map.sourcePage}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex w-fit cursor-pointer items-center gap-1.5 text-xs text-[#e6c879] transition hover:text-[#f5dda0]"
+                  >
+                    {copy.viewSource}
+                    <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
+                  </a>
+                </div>
               </div>
             </article>
           ))}
@@ -472,15 +485,26 @@ export function ArmyBackgroundGalleryExplorer({
                     : ''}
                 </p>
               </div>
-              <a
-                href={previewMap.sourcePage}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex w-fit shrink-0 cursor-pointer items-center gap-2 rounded-full border border-[#d7b46a]/35 bg-[#d7b46a]/10 px-4 py-2.5 text-sm text-[#f1d492] transition hover:bg-[#d7b46a]/20"
-              >
-                {copy.viewSource}
-                <ExternalLink aria-hidden="true" className="h-4 w-4" />
-              </a>
+              <div className="flex shrink-0 flex-wrap gap-3">
+                <a
+                  href={previewMap.previewSrc}
+                  download={`${previewMap.id}.webp`}
+                  aria-label={`${copy.downloadPreview}: ${previewMap.title}`}
+                  className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-full border border-[#d7b46a]/35 bg-[#d7b46a]/10 px-4 py-2.5 text-sm text-[#f1d492] transition hover:bg-[#d7b46a]/20"
+                >
+                  <Download aria-hidden="true" className="h-4 w-4" />
+                  {copy.downloadPreview}
+                </a>
+                <a
+                  href={previewMap.sourcePage}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-full border border-[#d7b46a]/35 bg-[#d7b46a]/10 px-4 py-2.5 text-sm text-[#f1d492] transition hover:bg-[#d7b46a]/20"
+                >
+                  {copy.viewSource}
+                  <ExternalLink aria-hidden="true" className="h-4 w-4" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
