@@ -8,7 +8,9 @@ import { ARMY_FORMATION_DOCUMENT_STORAGE_KEY } from '@/lib/army-formation/browse
 import {
   addArmyFormationPiece,
   createEmptyArmyFormationDocument,
+  rotateSelectedArmyFormationPieces,
   serializeArmyFormationDocument,
+  toggleArmyFormationPieceSelection,
 } from '@/lib/army-formation/document';
 import * as armyFormationImageExport from '@/lib/army-formation/export-image';
 
@@ -68,6 +70,23 @@ function storeArmyFormationHelmet(pieceId: string) {
     pieceId,
     780,
   );
+  localStorage.setItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY, serializeArmyFormationDocument(armyDocument));
+}
+
+function storeArmyFormationPiecesWithSelectedRotation(
+  selectedPieceId: string,
+  unselectedPieceId: string,
+  selectedRotationDegrees: number,
+) {
+  let armyDocument = addArmyFormationPiece(
+    createEmptyArmyFormationDocument(),
+    'helmet-01',
+    selectedPieceId,
+    780,
+  );
+  armyDocument = addArmyFormationPiece(armyDocument, 'helmet-02', unselectedPieceId, 780);
+  armyDocument = toggleArmyFormationPieceSelection(armyDocument, selectedPieceId);
+  armyDocument = rotateSelectedArmyFormationPieces(armyDocument, selectedRotationDegrees);
   localStorage.setItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY, serializeArmyFormationDocument(armyDocument));
 }
 
@@ -260,7 +279,7 @@ describe('ArmyFormationCreator', () => {
     expect(screen.queryByRole('button', { name: secondPieceName })).toBeNull();
   });
 
-  it('点棋子选中再点取消，删除和旋转只动选中的，清空只清棋子', () => {
+  it('角度输入即时旋转所选棋子，重置后删除和清空只影响棋子', () => {
     render(<ArmyFormationCreator locale="zh" />);
 
     fireEvent.click(screen.getByRole('button', { name: /^helmet-01$/ }));
@@ -274,23 +293,85 @@ describe('ArmyFormationCreator', () => {
     expect(firstPiece().getAttribute('aria-pressed')).toBe('false');
 
     fireEvent.click(firstPiece());
-    fireEvent.change(screen.getByLabelText('角度'), { target: { value: '90' } });
-    fireEvent.click(screen.getByRole('button', { name: '旋转所选' }));
-    expect(firstPiece().getAttribute('data-rotation-degrees')).toBe('90');
+    fireEvent.change(screen.getByLabelText('角度'), { target: { value: '45' } });
+    expect(firstPiece().getAttribute('data-rotation-degrees')).toBe('45');
     expect(secondPiece().getAttribute('data-rotation-degrees')).toBe('0');
+    fireEvent.click(screen.getByRole('button', { name: '重置旋转' }));
+    expect(firstPiece().getAttribute('data-rotation-degrees')).toBe('0');
+    expect((screen.getByLabelText('角度') as HTMLInputElement).value).toBe('90');
 
     fireEvent.click(screen.getByRole('button', { name: '删除所选' }));
     expect(pieceButtons()).toHaveLength(1);
     expect(pieceButtons()[0]?.getAttribute('data-rotation-degrees')).toBe('0');
 
     fireEvent.change(screen.getByLabelText('高度'), { target: { value: '600' } });
-    fireEvent.click(screen.getByRole('button', { name: '改变高度' }));
+    expect(document.querySelector('[data-army-field]')?.getAttribute('data-field-height')).toBe('600');
     fireEvent.click(screen.getByRole('button', { name: /^helmet-02$/ }));
     fireEvent.click(screen.getByRole('button', { name: '清空战场' }));
 
     expect(pieceButtons()).toHaveLength(0);
     expect(document.querySelector('[data-army-field]')?.getAttribute('data-field-height')).toBe('600');
   });
+
+  it('角度连续输入不重复累加，重置会恢复自动调角前的朝向', () => {
+    storeArmyFormationPiecesWithSelectedRotation('selected-piece', 'unselected-piece', 35);
+    render(<ArmyFormationCreator locale="zh" />);
+    fireEvent.click(screen.getByRole('button', { name: '回到上次' }));
+
+    const [selectedPiece, unselectedPiece] = pieceButtons();
+    if (selectedPiece === undefined || unselectedPiece === undefined) {
+      throw new Error('Army formation angle reset test requires two restored pieces.');
+    }
+    const angleInput = screen.getByLabelText('角度');
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('35');
+    expect(unselectedPiece.getAttribute('data-rotation-degrees')).toBe('0');
+
+    fireEvent.change(angleInput, { target: { value: '30' } });
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('65');
+    expect(unselectedPiece.getAttribute('data-rotation-degrees')).toBe('0');
+
+    fireEvent.change(angleInput, { target: { value: '45' } });
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('80');
+    fireEvent.change(angleInput, { target: { value: '5' } });
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('40');
+
+    fireEvent.click(screen.getByRole('button', { name: '重置旋转' }));
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('35');
+    expect(unselectedPiece.getAttribute('data-rotation-degrees')).toBe('0');
+    expect((angleInput as HTMLInputElement).value).toBe('90');
+  });
+
+  it('没有选中棋子时角度输入和重置保持安全', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const angleInput = screen.getByLabelText('角度');
+
+    fireEvent.change(angleInput, { target: { value: '30' } });
+    expect(screen.getByRole('button', { name: pieceName }).getAttribute('data-rotation-degrees')).toBe('0');
+
+    fireEvent.click(screen.getByRole('button', { name: '重置旋转' }));
+    expect(screen.getByRole('button', { name: pieceName }).getAttribute('data-rotation-degrees')).toBe('0');
+    expect((angleInput as HTMLInputElement).value).toBe('90');
+  });
+
+  it.each([
+    { locale: 'zh', angleResetLabel: '重置旋转', heightLabel: '高度', heightResetLabel: '重置高度' },
+    { locale: 'en', angleResetLabel: 'Reset rotation', heightLabel: 'Height', heightResetLabel: 'Reset height' },
+  ] as const)(
+    '$locale angle and height reset controls apply the height immediately and restore 480',
+    ({ locale, angleResetLabel, heightLabel, heightResetLabel }) => {
+      render(<ArmyFormationCreator locale={locale} />);
+
+      expect(screen.getByRole('button', { name: angleResetLabel })).toBeTruthy();
+      const heightInput = screen.getByLabelText(heightLabel);
+      fireEvent.change(heightInput, { target: { value: '600' } });
+      expect(document.querySelector('[data-army-field]')?.getAttribute('data-field-height')).toBe('600');
+
+      fireEvent.click(screen.getByRole('button', { name: heightResetLabel }));
+      expect(document.querySelector('[data-army-field]')?.getAttribute('data-field-height')).toBe('480');
+      expect((heightInput as HTMLInputElement).value).toBe('480');
+    },
+  );
 
   it('拖动棋子后位置按格子移动', () => {
     render(<ArmyFormationCreator locale="zh" />);

@@ -302,6 +302,36 @@ function readActiveBattlefield(armyDocument: ArmyFormationDocument): ArmyBattlef
   return battlefield;
 }
 
+function rotateArmyFormationPiecesByIds(
+  armyDocument: ArmyFormationDocument,
+  pieceIds: readonly string[],
+  rotationDegrees: number,
+): ArmyFormationDocument {
+  const activeBattlefield = readActiveBattlefield(armyDocument);
+  const existingPieceIds = new Set(activeBattlefield.pieces.map((piece) => piece.id));
+  const rotationTargetPieceIds = pieceIds.filter((pieceId) => existingPieceIds.has(pieceId));
+  if (rotationTargetPieceIds.length === 0 || rotationDegrees === 0) {
+    return armyDocument;
+  }
+
+  let rotatedDocument = armyDocument;
+  for (const selectedPieceId of activeBattlefield.selectedPieceIds) {
+    rotatedDocument = toggleArmyFormationPieceSelection(rotatedDocument, selectedPieceId);
+  }
+  for (const rotationTargetPieceId of rotationTargetPieceIds) {
+    rotatedDocument = toggleArmyFormationPieceSelection(rotatedDocument, rotationTargetPieceId);
+  }
+  rotatedDocument = rotateSelectedArmyFormationPieces(rotatedDocument, rotationDegrees);
+  for (const rotationTargetPieceId of rotationTargetPieceIds) {
+    rotatedDocument = toggleArmyFormationPieceSelection(rotatedDocument, rotationTargetPieceId);
+  }
+  for (const selectedPieceId of activeBattlefield.selectedPieceIds) {
+    rotatedDocument = toggleArmyFormationPieceSelection(rotatedDocument, selectedPieceId);
+  }
+
+  return rotatedDocument;
+}
+
 function prefersArmyFormationReducedMotion(): boolean {
   return typeof window !== 'undefined'
     && typeof window.matchMedia === 'function'
@@ -942,13 +972,13 @@ function ArmyFormationPieceControls({
   angleText,
   onAngleText,
   onDeletePieces,
-  onRotate,
+  onResetRotation,
 }: {
   copy: ArmyFormationCreatorCopy;
   angleText: string;
   onAngleText: (value: string) => void;
   onDeletePieces: () => void;
-  onRotate: () => void;
+  onResetRotation: () => void;
 }) {
   return (
     <ArmyFormationControlGroup title={copy.changeSelectedPieces}>
@@ -965,8 +995,8 @@ function ArmyFormationPieceControls({
             onChange={(event) => onAngleText(event.target.value)}
           />
         </label>
-        <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onRotate}>
-          {copy.rotateSelected}
+        <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onResetRotation}>
+          {copy.resetSelectedRotation}
         </button>
       </div>
     </ArmyFormationControlGroup>
@@ -980,7 +1010,7 @@ function ArmyFormationFieldControls({
   backgroundImageUrl,
   backgroundImageInputRef,
   onHeightText,
-  onApplyHeight,
+  onResetHeight,
   onFieldBackgroundColorText,
   onApplyFieldBackground,
   onChooseBackgroundImage,
@@ -993,7 +1023,7 @@ function ArmyFormationFieldControls({
   backgroundImageUrl: string;
   backgroundImageInputRef: RefObject<HTMLInputElement | null>;
   onHeightText: (value: string) => void;
-  onApplyHeight: () => void;
+  onResetHeight: () => void;
   onFieldBackgroundColorText: (value: string) => void;
   onApplyFieldBackground: () => void;
   onChooseBackgroundImage: (file: File) => void;
@@ -1015,8 +1045,8 @@ function ArmyFormationFieldControls({
             onChange={(event) => onHeightText(event.target.value)}
           />
         </label>
-        <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onApplyHeight}>
-          {copy.changeHeight}
+        <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onResetHeight}>
+          {copy.resetHeight}
         </button>
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -1566,6 +1596,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const backgroundImageInputRef = useRef<HTMLInputElement | null>(null);
+  const autoAppliedRotationByBattlefieldRef = useRef(new Map<number, Map<string, number>>());
   const pieceDragRef = useRef<PieceDragSession | null>(null);
   const suppressClickRef = useRef(false);
   const armyFormationAutosaveOpenRef = useRef(false);
@@ -1653,27 +1684,118 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
 
   function onDeletePieces() {
     reportArmyFormationAction(() => {
-      commitArmyFormationDocument(deleteSelectedArmyFormationPieces(armyDocument));
+      const currentDocument = armyDocumentRef.current;
+      const battlefieldIndex = currentDocument.activeBattlefieldIndex;
+      const selectedPieceIds = readActiveBattlefield(currentDocument).selectedPieceIds;
+      commitArmyFormationDocument(deleteSelectedArmyFormationPieces(currentDocument));
+
+      const appliedRotationByPieceId = autoAppliedRotationByBattlefieldRef.current.get(battlefieldIndex);
+      if (appliedRotationByPieceId !== undefined) {
+        for (const selectedPieceId of selectedPieceIds) {
+          appliedRotationByPieceId.delete(selectedPieceId);
+        }
+        if (appliedRotationByPieceId.size === 0) {
+          autoAppliedRotationByBattlefieldRef.current.delete(battlefieldIndex);
+        }
+      }
     });
   }
 
-  function onRotate() {
+  function onAngleText(value: string) {
+    setAngleText(value);
     reportArmyFormationAction(() => {
-      const rotationDegrees = readFiniteNumberInput(angleText, 'Rotation degrees');
-      commitArmyFormationDocument(rotateSelectedArmyFormationPieces(armyDocument, rotationDegrees));
+      const rotationDegrees = readFiniteNumberInput(value, 'Rotation degrees');
+      const currentDocument = armyDocumentRef.current;
+      const battlefieldIndex = currentDocument.activeBattlefieldIndex;
+      const selectedPieceIds = readActiveBattlefield(currentDocument).selectedPieceIds;
+      if (selectedPieceIds.length === 0) {
+        return;
+      }
+
+      const previousAppliedRotationByPieceId =
+        autoAppliedRotationByBattlefieldRef.current.get(battlefieldIndex) ?? new Map<string, number>();
+      const nextAppliedRotationByPieceId = new Map(previousAppliedRotationByPieceId);
+      const pieceIdsByRotationDelta = new Map<number, string[]>();
+      for (const selectedPieceId of selectedPieceIds) {
+        const previousRotationDegrees = previousAppliedRotationByPieceId.get(selectedPieceId) ?? 0;
+        const rotationDelta = rotationDegrees - previousRotationDegrees;
+        if (rotationDelta !== 0) {
+          const rotationTargetPieceIds = pieceIdsByRotationDelta.get(rotationDelta) ?? [];
+          rotationTargetPieceIds.push(selectedPieceId);
+          pieceIdsByRotationDelta.set(rotationDelta, rotationTargetPieceIds);
+        }
+
+        if (rotationDegrees === 0) {
+          nextAppliedRotationByPieceId.delete(selectedPieceId);
+        } else {
+          nextAppliedRotationByPieceId.set(selectedPieceId, rotationDegrees);
+        }
+      }
+
+      let nextDocument = currentDocument;
+      for (const [rotationDelta, rotationTargetPieceIds] of pieceIdsByRotationDelta) {
+        nextDocument = rotateArmyFormationPiecesByIds(
+          nextDocument,
+          rotationTargetPieceIds,
+          rotationDelta,
+        );
+      }
+      if (nextDocument !== currentDocument) {
+        commitArmyFormationDocument(nextDocument);
+      }
+
+      if (nextAppliedRotationByPieceId.size === 0) {
+        autoAppliedRotationByBattlefieldRef.current.delete(battlefieldIndex);
+      } else {
+        autoAppliedRotationByBattlefieldRef.current.set(
+          battlefieldIndex,
+          nextAppliedRotationByPieceId,
+        );
+      }
+    });
+  }
+
+  function onResetRotation() {
+    reportArmyFormationAction(() => {
+      const currentDocument = armyDocumentRef.current;
+      const battlefieldIndex = currentDocument.activeBattlefieldIndex;
+      const appliedRotationByPieceId = autoAppliedRotationByBattlefieldRef.current.get(battlefieldIndex);
+      let nextDocument = currentDocument;
+      if (appliedRotationByPieceId !== undefined) {
+        for (const [pieceId, rotationDegrees] of appliedRotationByPieceId) {
+          nextDocument = rotateArmyFormationPiecesByIds(nextDocument, [pieceId], -rotationDegrees);
+        }
+      }
+      if (nextDocument !== currentDocument) {
+        commitArmyFormationDocument(nextDocument);
+      }
+
+      autoAppliedRotationByBattlefieldRef.current.delete(battlefieldIndex);
+      setAngleText('90');
     });
   }
 
   function onClear() {
     reportArmyFormationAction(() => {
-      commitArmyFormationDocument(clearArmyFormationPieces(armyDocument));
+      const currentDocument = armyDocumentRef.current;
+      commitArmyFormationDocument(clearArmyFormationPieces(currentDocument));
+      autoAppliedRotationByBattlefieldRef.current.delete(currentDocument.activeBattlefieldIndex);
     });
   }
 
-  function onApplyHeight() {
+  function onHeightText(value: string) {
+    setHeightText(value);
     reportArmyFormationAction(() => {
-      const heightPx = readFiniteNumberInput(heightText, 'Battlefield height');
-      commitArmyFormationDocument(setArmyBattlefieldHeight(armyDocument, heightPx));
+      const heightPx = readFiniteNumberInput(value, 'Battlefield height');
+      commitArmyFormationDocument(setArmyBattlefieldHeight(armyDocumentRef.current, heightPx));
+    });
+  }
+
+  function onResetHeight() {
+    reportArmyFormationAction(() => {
+      const defaultHeightPx = readActiveBattlefield(createEmptyArmyFormationDocument()).heightPx;
+      commitArmyFormationDocument(setArmyBattlefieldHeight(armyDocumentRef.current, defaultHeightPx));
+      setHeightText(String(defaultHeightPx));
     });
   }
 
@@ -1762,6 +1884,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   function onChooseFile(file: File) {
     void readArmyFormationFile(file)
       .then((loaded) => {
+        autoAppliedRotationByBattlefieldRef.current.clear();
         commitArmyFormationDocument(loaded);
         syncBattlefieldDrafts(readActiveBattlefield(loaded));
         setFailureMessage(null);
@@ -1776,6 +1899,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
       const restoredDocument = requireArmyFormationRestoreDocument(startupStore.readRestoreDocument());
       openArmyFormationAutosave();
       startupStore.publishRecord({ status: 'absent' });
+      autoAppliedRotationByBattlefieldRef.current.clear();
       commitArmyFormationDocument(restoredDocument);
       syncBattlefieldDrafts(readActiveBattlefield(restoredDocument));
     });
@@ -1887,9 +2011,9 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
           <ArmyFormationPieceControls
             copy={copy}
             angleText={angleText}
-            onAngleText={setAngleText}
+            onAngleText={onAngleText}
             onDeletePieces={onDeletePieces}
-            onRotate={onRotate}
+            onResetRotation={onResetRotation}
           />
           <ArmyFormationFieldControls
             copy={copy}
@@ -1897,8 +2021,8 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
             fieldBackgroundColorText={fieldBackgroundColorText}
             backgroundImageUrl={battlefield.backgroundImageUrl}
             backgroundImageInputRef={backgroundImageInputRef}
-            onHeightText={setHeightText}
-            onApplyHeight={onApplyHeight}
+            onHeightText={onHeightText}
+            onResetHeight={onResetHeight}
             onFieldBackgroundColorText={setFieldBackgroundColorText}
             onApplyFieldBackground={onApplyFieldBackground}
             onChooseBackgroundImage={(file) => void onChooseBackgroundImage(file)}

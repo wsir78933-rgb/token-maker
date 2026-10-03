@@ -25,11 +25,11 @@ export type ArmyFormationCreatorCopy = {
   changeSelectedPieces: string;
   deleteSelected: string;
   angle: string;
-  rotateSelected: string;
+  resetSelectedRotation: string;
   changeBattlefield: string;
   clearBattlefield: string;
   height: string;
-  changeHeight: string;
+  resetHeight: string;
   changeBackgroundColor: string;
   backgroundImage: string;
   setBackgroundImage: string;
@@ -78,11 +78,11 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   changeSelectedPieces: 'Change selected pieces',
   deleteSelected: 'Delete selected',
   angle: 'Angle',
-  rotateSelected: 'Rotate selected',
+  resetSelectedRotation: 'Reset rotation',
   changeBattlefield: 'Change battlefield',
   clearBattlefield: 'Clear battlefield',
   height: 'Height',
-  changeHeight: 'Change height',
+  resetHeight: 'Reset height',
   changeBackgroundColor: 'Change background color',
   backgroundImage: 'Background image',
   setBackgroundImage: 'Set background image',
@@ -130,11 +130,11 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   changeSelectedPieces: '改选中的棋子',
   deleteSelected: '删除所选',
   angle: '角度',
-  rotateSelected: '旋转所选',
+  resetSelectedRotation: '重置旋转',
   changeBattlefield: '改战场',
   clearBattlefield: '清空战场',
   height: '高度',
-  changeHeight: '改变高度',
+  resetHeight: '重置高度',
   changeBackgroundColor: '改变底色',
   backgroundImage: '背景图',
   setBackgroundImage: '设置背景图',
