@@ -384,12 +384,12 @@ describe('coat project commands', () => {
     const updated = applyProjectCommand(project, {
       type: 'update-layer',
       layerId: shield.id,
-      patch: { assetId: 'heater-002', colorReplacements: { '#B4282E': '#004E89' } },
+      patch: { assetId: 'heater-002', colorReplacements: { '#B8202A': '#004E89' } },
     });
 
     expect(requireShieldLayer(updated, shield.id)).toMatchObject({
       assetId: 'heater-002',
-      colorReplacements: { '#B4282E': '#004E89' },
+      colorReplacements: { '#B8202A': '#004E89' },
     });
   });
 
@@ -412,7 +412,7 @@ describe('coat project commands', () => {
     const withReplacements = applyProjectCommand(project, {
       type: 'update-layer',
       layerId: shield.id,
-      patch: { assetId: 'heater-002', colorReplacements: { '#B4282E': '#004E89' } },
+      patch: { assetId: 'heater-002', colorReplacements: { '#B8202A': '#004E89' } },
     });
 
     const duplicated = applyProjectCommand(withReplacements, {
@@ -422,12 +422,12 @@ describe('coat project commands', () => {
     });
     const sourceShield = requireShieldLayer(withReplacements, shield.id);
     if (!sourceShield.colorReplacements) throw new Error('Expected source colour replacements');
-    sourceShield.colorReplacements['#B4282E'] = '#FFFFFF';
+    sourceShield.colorReplacements['#B8202A'] = '#FFFFFF';
 
     expect(requireShieldLayer(duplicated, 'copied-heater-002')).toMatchObject({
       type: 'shield',
       assetId: 'heater-002',
-      colorReplacements: { '#B4282E': '#004E89' },
+      colorReplacements: { '#B8202A': '#004E89' },
     });
   });
 
@@ -438,7 +438,7 @@ describe('coat project commands', () => {
     const withReplacements = applyProjectCommand(project, {
       type: 'update-layer',
       layerId: shield.id,
-      patch: { assetId: 'heater-002', colorReplacements: { '#B4282E': '#004E89' } },
+      patch: { assetId: 'heater-002', colorReplacements: { '#B8202A': '#004E89' } },
     });
 
     const switched = applyProjectCommand(withReplacements, {
@@ -458,18 +458,18 @@ describe('coat project commands', () => {
     const withReplacements = applyProjectCommand(project, {
       type: 'update-layer',
       layerId: shield.id,
-      patch: { assetId: 'heater-002', colorReplacements: { '#B4282E': '#004E89' } },
+      patch: { assetId: 'heater-002', colorReplacements: { '#B8202A': '#004E89' } },
     });
 
     const switched = applyProjectCommand(withReplacements, {
       type: 'update-layer',
       layerId: shield.id,
-      patch: { assetId: 'heater-003', colorReplacements: { '#2452A3': '#123456' } },
+      patch: { assetId: 'heater-003', colorReplacements: { '#B8202A': '#123456' } },
     });
 
     expect(requireShieldLayer(switched, shield.id)).toMatchObject({
       assetId: 'heater-003',
-      colorReplacements: { '#2452A3': '#123456' },
+      colorReplacements: { '#B8202A': '#123456' },
     });
   });
 
@@ -1484,7 +1484,7 @@ describe('coat project commands', () => {
       layerId: shield.id,
       patch: {
         assetId: 'heater-002',
-        colorReplacements: { '#B4282E': '#B11F24' },
+        colorReplacements: { '#B8202A': '#B11F24' },
         field: { ...shield.field, colors: ['#B11F24'] },
       },
     });
@@ -1494,7 +1494,7 @@ describe('coat project commands', () => {
     });
 
     expect(requireShieldLayer(replaced, shield.id)).toMatchObject({
-      colorReplacements: { '#B4282E': '#123456' },
+      colorReplacements: { '#B8202A': '#123456' },
       field: { colors: ['#123456'] },
     });
   });
@@ -1510,11 +1510,11 @@ describe('coat project commands', () => {
     });
 
     const replaced = applyProjectCommand(withMaterial, {
-      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#B4282E', toColor: '#004E89',
+      type: 'replace-layer-colour', layerId: shield.id, fromColor: '#B8202A', toColor: '#004E89',
     });
 
     expect(requireShieldLayer(replaced, shield.id)).toMatchObject({
-      colorReplacements: { '#B4282E': '#004E89' },
+      colorReplacements: { '#B8202A': '#004E89' },
     });
   });
 

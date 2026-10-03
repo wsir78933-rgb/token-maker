@@ -187,35 +187,35 @@ describe('editable rendered layer colours', () => {
   });
 
   it('exposes catalogued heater-002 material paints as editable colours', () => {
-    expect(getEditableLayerColours(createMaterialShieldLayer())).toEqual(['#B4282E', '#E1B432', '#111111']);
+    expect(getEditableLayerColours(createMaterialShieldLayer())).toEqual(['#B8202A', '#F3C52E', '#202125']);
   });
 
   it('replaces a heater-002 paint via colorReplacements and returns the new effective colour', () => {
     const layer = createMaterialShieldLayer();
-    const replaced = replaceEditableLayerColour(layer, '#B4282E', '#004E89');
+    const replaced = replaceEditableLayerColour(layer, '#B8202A', '#004E89');
     if (replaced.type !== 'shield') throw new Error('Expected heater-002 shield replacement');
 
-    expect(replaced.colorReplacements).toEqual({ '#B4282E': '#004E89' });
+    expect(replaced.colorReplacements).toEqual({ '#B8202A': '#004E89' });
     expect(replaced.field).toEqual(layer.field);
-    expect(getEditableLayerColours(replaced)).toEqual(['#004E89', '#E1B432', '#111111']);
+    expect(getEditableLayerColours(replaced)).toEqual(['#004E89', '#F3C52E', '#202125']);
   });
 
   it('replaces a heater-002 effective colour after a previous paint replacement', () => {
-    const firstReplacement = replaceEditableLayerColour(createMaterialShieldLayer(), '#B4282E', '#004E89');
+    const firstReplacement = replaceEditableLayerColour(createMaterialShieldLayer(), '#B8202A', '#004E89');
     const secondReplacement = replaceEditableLayerColour(firstReplacement, '#004E89', '#1855A5');
     if (secondReplacement.type !== 'shield') throw new Error('Expected heater-002 second replacement');
 
-    expect(secondReplacement.colorReplacements).toEqual({ '#B4282E': '#1855A5' });
-    expect(getEditableLayerColours(secondReplacement)).toEqual(['#1855A5', '#E1B432', '#111111']);
+    expect(secondReplacement.colorReplacements).toEqual({ '#B8202A': '#1855A5' });
+    expect(getEditableLayerColours(secondReplacement)).toEqual(['#1855A5', '#F3C52E', '#202125']);
   });
 
   it('omits heater-002 colorReplacements when every override returns to its catalog paint', () => {
-    const replaced = replaceEditableLayerColour(createMaterialShieldLayer(), '#B4282E', '#004E89');
-    const restored = replaceEditableLayerColour(replaced, '#004E89', '#B4282E');
+    const replaced = replaceEditableLayerColour(createMaterialShieldLayer(), '#B8202A', '#004E89');
+    const restored = replaceEditableLayerColour(replaced, '#004E89', '#B8202A');
     if (restored.type !== 'shield') throw new Error('Expected heater-002 identity restoration');
 
     expect(restored).not.toHaveProperty('colorReplacements');
-    expect(getEditableLayerColours(restored)).toEqual(['#B4282E', '#E1B432', '#111111']);
+    expect(getEditableLayerColours(restored)).toEqual(['#B8202A', '#F3C52E', '#202125']);
   });
 
   it('rejects an unknown heater-002 colour with the colour and layer id', () => {
@@ -225,7 +225,7 @@ describe('editable rendered layer colours', () => {
   });
 
   it('rejects colour replacement on a locked static shield', () => {
-    expect(() => replaceEditableLayerColour({ ...createMaterialShieldLayer(), locked: true }, '#B4282E', '#004E89')).toThrow(
+    expect(() => replaceEditableLayerColour({ ...createMaterialShieldLayer(), locked: true }, '#B8202A', '#004E89')).toThrow(
       'Coat layer is locked: shield-layer',
     );
   });

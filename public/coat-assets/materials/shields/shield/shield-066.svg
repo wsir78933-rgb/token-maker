@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><defs><clipPath id="clip-shield-066"><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z"/></clipPath></defs><g clip-path="url(#clip-shield-066)"><rect x="0" y="0" width="100" height="120" fill="#F4EEDF"/><polygon points="-18,18 -5,5 58,67 45,80" fill="#B4282E" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="42,40 55,27 118,89 105,102" fill="#B4282E" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="34,0 66,0 50,96" fill="#E1B432" stroke="#111111" stroke-width="3" stroke-linejoin="round"/></g><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 240 280">
+  <title>Shield 066 — Reversed checky four by three</title>
+  <defs>
+    <clipPath id="clip-shield-066" clipPathUnits="userSpaceOnUse">
+      <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip-shield-066)">
+    <rect x="0" y="0" width="60" height="93.3333" fill="#B8202A"/><rect x="60" y="0" width="60" height="93.3333" fill="#F3C52E"/><rect x="120" y="0" width="60" height="93.3333" fill="#B8202A"/><rect x="180" y="0" width="60" height="93.3333" fill="#F3C52E"/><rect x="0" y="93.3333" width="60" height="93.3333" fill="#F3C52E"/><rect x="60" y="93.3333" width="60" height="93.3333" fill="#B8202A"/><rect x="120" y="93.3333" width="60" height="93.3333" fill="#F3C52E"/><rect x="180" y="93.3333" width="60" height="93.3333" fill="#B8202A"/><rect x="0" y="186.667" width="60" height="93.3333" fill="#B8202A"/><rect x="60" y="186.667" width="60" height="93.3333" fill="#F3C52E"/><rect x="120" y="186.667" width="60" height="93.3333" fill="#B8202A"/><rect x="180" y="186.667" width="60" height="93.3333" fill="#F3C52E"/><path d="M60 0 V280 M120 0 V280 M180 0 V280 M0 93.3333 H240 M0 186.667 H240" fill="none" stroke="#202125" stroke-width="1.6"/>
+  </g>
+  <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z" fill="none" stroke="#202125" stroke-width="3" stroke-linejoin="round"/>
+</svg>

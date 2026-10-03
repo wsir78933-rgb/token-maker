@@ -36,8 +36,30 @@ describe('coat scene SVG renderer', () => {
     expect(svg).toContain('data-bundled-shield-material="true"');
     expect(svg).toContain('id="clip-shield-001-1"');
     expect(svg).toContain('url(#clip-shield-001-1)');
-    expect(svg).toContain('fill="#E1B432"');
+    expect(svg).toContain('fill="#F3C52E"');
     expect(svg).not.toContain('href="/coat-assets/materials/shields/shield/shield-001.svg"');
+  });
+
+  it('renders a bundled shield material with valid nested SVG dimensions', () => {
+    const baseProject = createDefaultProject('en');
+    const shield = baseProject.layers.find((layer) => layer.type === 'shield');
+    if (!shield || shield.type !== 'shield') throw new Error('Expected default shield layer');
+    const project = applyProjectCommand(baseProject, {
+      type: 'update-layer',
+      layerId: shield.id,
+      patch: { assetId: 'shield-001' },
+    });
+
+    const svg = renderCoatSceneSvg(project, { width: 512, height: 512 });
+    const parsedSvg = new DOMParser().parseFromString(svg, 'image/svg+xml');
+
+    expect(parsedSvg.querySelector('parsererror')).toBeNull();
+    const nestedShield = parsedSvg.querySelector('svg[data-bundled-shield-material="true"]');
+    expect(nestedShield?.getAttribute('x')).toBe('0');
+    expect(nestedShield?.getAttribute('y')).toBe('0');
+    expect(nestedShield?.getAttribute('width')).toBe('100');
+    expect(nestedShield?.getAttribute('height')).toBe('110');
+    expect(nestedShield?.getAttribute('viewBox')).toBe('0 0 240 280');
   });
 
   it('inlines recoloured heater-002 paints inside a nested shield material svg', () => {
@@ -49,7 +71,7 @@ describe('coat scene SVG renderer', () => {
       layerId: shield.id,
       patch: {
         assetId: 'heater-002',
-        colorReplacements: { '#B4282E': '#004E89', '#E1B432': '#F5E6A1' },
+        colorReplacements: { '#B8202A': '#004E89', '#F3C52E': '#F5E6A1' },
       },
     });
 
@@ -58,8 +80,8 @@ describe('coat scene SVG renderer', () => {
     expect(svg).toContain('data-bundled-shield-material="true"');
     expect(svg).toContain('fill="#004E89"');
     expect(svg).toContain('fill="#F5E6A1"');
-    expect(svg).not.toContain('fill="#B4282E"');
-    expect(svg).not.toContain('fill="#E1B432"');
+    expect(svg).not.toContain('fill="#B8202A"');
+    expect(svg).not.toContain('fill="#F3C52E"');
     expect(svg).toContain('id="clip-heater-002-1"');
     expect(svg).toContain('url(#clip-heater-002-1)');
     expect(svg).not.toContain('id="clip-heater-002"');

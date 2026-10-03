@@ -12,7 +12,7 @@ describe('shield material paints', () => {
     const svgFromDisk = readFileSync('public/coat-assets/materials/shields/heater/heater-002.svg', 'utf8');
 
     expect(isShieldMaterialAssetId('heater-002')).toBe(true);
-    expect(getShieldMaterialPaintColours('heater-002')).toEqual(['#B4282E', '#E1B432', '#111111']);
+    expect(getShieldMaterialPaintColours('heater-002')).toEqual(['#B8202A', '#F3C52E', '#202125']);
     expect(getShieldMaterialSvgMarkup('heater-002')).toBe(svgFromDisk);
     expect(extractSvgPaintColours(getShieldMaterialSvgMarkup('heater-002'))).toEqual(
       getShieldMaterialPaintColours('heater-002'),

@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><defs><clipPath id="clip-banner-023.svg"><path d="M16 10 L84 10 L84 66 Q83 88 66 100 Q57 106 50 112 Q43 106 34 100 Q17 88 16 66 Z"/></clipPath></defs><g clip-path="url(#clip-banner-023.svg)"><polygon points="0,0 100,0 50,60" fill="#B4282E"/><polygon points="100,0 100,120 50,60" fill="#E1B432"/><polygon points="100,120 0,120 50,60" fill="#2452A3"/><polygon points="0,120 0,0 50,60" fill="#E1B432"/><path d="M0 0 L100 120" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M100 0 L0 120" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M16 10 L84 10 L84 66 Q83 88 66 100 Q57 106 50 112 Q43 106 34 100 Q17 88 16 66 Z" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 240 280">
+<title>Banner - Bendy Sinister</title>
+<defs><clipPath id="clip-banner-023"><path d="M34 24 H206 V258 L120 206 L34 258 Z"/></clipPath></defs>
+<g clip-path="url(#clip-banner-023)"><rect width="240" height="280" fill="#F3C52E"/><path d="M-120 300 H-76 L244 -20 H200 Z M-20 300 H24 L344 -20 H300 Z M80 300 H124 L444 -20 H400 Z M180 300 H224 L544 -20 H500 Z" fill="#B8202A" stroke="#202125" stroke-width="1.6"/></g>
+<path d="M34 24 H206 V258 L120 206 L34 258 Z" fill="none" stroke="#202125" stroke-width="3" stroke-linejoin="round"/>
+</svg>

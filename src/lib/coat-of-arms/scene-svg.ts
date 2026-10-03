@@ -273,7 +273,12 @@ function namespaceSvgFragmentIds(svgMarkup: string, layerIndex: number): string 
 }
 
 function placeNestedShieldMaterialSvg(svgMarkup: string): string {
-  return svgMarkup.replace(/^<svg\b/i, '<svg data-bundled-shield-material="true" x="0" y="0" width="100" height="110"');
+  return svgMarkup.replace(/^<svg\b[^>]*>/i, (rootTag) => {
+    const rootTagWithoutDimensions = rootTag
+      .slice(0, -1)
+      .replace(/\s+(?:width|height)=(["'])[^"']*\1/gi, '');
+    return `${rootTagWithoutDimensions} data-bundled-shield-material="true" x="0" y="0" width="100" height="110">`;
+  });
 }
 
 function escapeRegExp(value: string): string {

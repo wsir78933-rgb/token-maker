@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><defs><clipPath id="clip-lozenge-002.svg"><path d="M50 8 L92 60 L50 112 L8 60 Z"/></clipPath></defs><g clip-path="url(#clip-lozenge-002.svg)"><rect x="0" y="0" width="100" height="120" fill="#B4282E"/><rect x="38" y="0" width="24" height="120" fill="#E1B432" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M50 8 L92 60 L50 112 L8 60 Z" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 240 280">
+  <title>Lozenge — Pale</title>
+  <defs>
+    <clipPath id="clip-lozenge-002">
+      <path d="M120 18 L216 140 L120 262 L24 140 Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip-lozenge-002)">
+    <rect width="240" height="280" fill="#B8202A"/>
+    <rect x="90" y="0" width="60" height="280" fill="#F3C52E" stroke="#202125" stroke-width="1.6"/>
+  </g>
+  <path d="M120 18 L216 140 L120 262 L24 140 Z" fill="none" stroke="#202125" stroke-width="3" stroke-linejoin="round"/>
+</svg>
