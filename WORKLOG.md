@@ -1,5 +1,110 @@
 # WORKLOG
 
+## 交接单 · 2026-10-03 10:05 CST · Codex CLI
+
+### 本次目标
+
+在 Armor Creator 页面 How to Use 上方增加中英文功能介绍，将正文扩充到约 900 词并使 “armor creator” 密度接近 3%；提交并合并到本地 main，完成验证后删除对应隔离工作树。
+
+### 已完成
+
+- 新增六卡功能介绍组件 ArmorCreatorFeatureGrid.tsx，补充中英文文案；页面顺序为案例展示、功能介绍、How to Use。
+- 文案审计为 904 词，精确词组 “armor creator” 出现 25 次，密度约 2.77%。
+- 功能提交 acb41cb2 已合入，合并提交为 896d2076；独立审核确认合并仅涉及四个目标文件。
+- 合并后 Vitest 1 个文件、4 个测试通过；相关 ESLint 退出码为 0。合并前的 typecheck 退出码为 0。此前 Ego Browser 检查过中英文页面顺序、六张卡片和横向溢出；浏览器检查发生在最后文案调整之前。
+- 指定工作树 /Users/wusir/orca/workspaces/token-maker-app/armor-feature-grid-current 已删除；Orca 清单回查目标匹配数为 0。合并提交和功能提交仍是 main 的祖先。
+- 当前 main HEAD 为 333c7cd，和 origin/main 状态一致。当前未提交改动仅在 WORKLOG.md，包含其他已存在的交接单；按用户要求保留。此次合并和清理没有执行 push 或部署。
+
+### 做到一半
+
+Armor Creator 功能、合并和工作树删除均已完成。一个已完成的审查 agent 终端 term_e8cdb275-2925-454f-a061-c44d322ee610 被 Orca 标为 user_takeover、归用户所有，因此保留；当前没有 active 或 reclaimable 的 agent 终端。
+
+### 下一步
+
+无待完成的 Armor Creator 工作。若要继续，由下一班先核对当前 main 和工作区状态，再使用 $pickup 接手；不要关闭归用户所有的审查终端。
+
+### 踩过的坑
+
+- Vitest 输出两条 HTMLCanvasElement.getContext() 未实现提示，但测试仍以退出码 0 通过。
+- 既有 pnpm build 曾在 /api/share 处因缺少 cloudflare:workers 失败；本次合并后没有重跑 build。
+- 合并时 main 上存在其他连接终端；用户知情并明确要求继续。后续操作应保留与本次 Armor Creator 无关的工作区内容。
+
+### 怎么验证
+
+- pnpm exec vitest run src/components/armor-creator/ArmorCreatorPageHeading.test.tsx：退出码 0，1 个文件、4 个测试通过。
+- pnpm exec eslint src/components/armor-creator/ArmorCreatorFeatureGrid.tsx src/components/armor-creator/ArmorCreatorPageView.tsx src/components/armor-creator/ArmorCreatorPageHeading.test.tsx src/lib/armor-creator/copy.ts：退出码 0。
+- pnpm typecheck：合并前退出码 0。
+- git merge-base --is-ancestor 896d2076b2ff3753e67765fc2fe79bc4852935b4 main 与 git merge-base --is-ancestor acb41cb232df8b27bee1489dcef32a1992ad54b4 main：均退出码 0。
+- orca worktree list --repo id:842aae27-292d-4b29-b767-e486603a93f2：指定 identity/path 匹配数为 0。
+- Ego Browser 曾检查 /armor-creator 和 /zh/armor-creator 的区块顺序、六张卡片和横向溢出；最后文案调整后未重新检查。
+
+## 交接单 · 2026-10-03 10:03 CST · Codex
+
+### 本次目标
+
+核对 Army Formation Creator 中文关键词翻译和路由测试，并确认 Armor Creator 中文页是否也残留英文关键词。
+
+### 已完成
+
+- `src/lib/army-formation/page-copy.ts` 的中文功能介绍和对比表产品名均使用“军队阵型制作器”；提交 `54949fd` 包含这两处文案修改。
+- `src/app/army-formation-creator-routes.test.tsx` 的菜单名称断言已与当前导航文案一致，修改包含在 `333c7cd`。运行 `pnpm exec vitest run src/app/army-formation-creator-routes.test.tsx`，退出码 0，1 个测试文件、2/2 项测试通过。
+- Ego Browser 检查 `/zh/armor-creator`：比较模块标题和表格产品列各显示一次 `Armor Creator`。对应中文文案位于 `src/lib/armor-creator/copy.ts` 的 `zh.title` 和 `zh.armorCreatorHeading`。
+- 用户选择不存档。本交接单不提交。写入前复查时，`main` 与 `origin/main` 均为 `333c7cd`；除 `WORKLOG.md` 外没有其他工作区改动、暂存文件或未跟踪文件。
+
+### 做到一半
+
+护甲中文页比较模块中的两处 `Armor Creator` 尚未翻译；本次没有修改护甲页面文案。
+
+### 下一步
+
+如用户希望统一中文关键词，先确认“Armor Creator”在该比较模块中的目标译法，再只修改 `src/lib/armor-creator/copy.ts` 的中文比较标题和产品列，并核对中文页面显示；英文文案保持原样。
+
+### 踩过的坑
+
+- 路由测试之前的失败与菜单可访问名称不一致有关；当前断言已更新，定向测试通过，不代表页面功能故障。
+- 检查过程中工作区状态发生变化：稍早看到的 6 个测试文件修改之后已包含在 `333c7cd`，当前只剩未提交的 `WORKLOG.md`。不要据早先状态推断当前仍有 6 个未提交文件。
+- 不要提交 `WORKLOG.md`；本次选择是不存档。
+
+### 怎么验证
+
+- `pnpm exec vitest run src/app/army-formation-creator-routes.test.tsx`：退出码 0，1 个文件、2/2 项测试通过。
+- Ego Browser 打开 `http://localhost:40001/zh/armor-creator`：比较模块标题及表格产品列各有一处 `Armor Creator`，页面其他主要关键词使用“护甲搭配工具”。
+
+## 交接单 · 2026-10-03 10:02 CST · Codex CLI
+
+### 本次目标
+
+查明 Token Maker 线上未同步的原因，处理 Cloudflare 构建流水线中阻断发布的测试失败。
+
+### 已完成
+
+- 用户提供的 Cloudflare 构建日志显示 `pnpm test` 有 12 项失败。`build:vinext` 通过 `&&` 串联，因此后续 Workers 类型检查、vinext 构建及 Wrangler dry-run 没有执行。
+- 更新 6 个测试文件中的过期导航文案和按钮样式断言；Playwright Chromium 或外部英文文章源文件缺失时，相关用例明确跳过，资源存在时仍执行。
+- 聚焦验证：6 个文件、179/179 测试通过。完整 `pnpm run build:vinext` 退出码 0：199 个测试文件、2029/2029 测试通过；lint 0 error、6 warnings；typecheck、Workers 类型检查、vinext 构建及 Wrangler dry-run 均通过。
+- 当前 `main`/`origin/main` 为 `333c7cd`；`git ls-remote origin refs/heads/main` 读回同一哈希，且该提交包含上述 6 个测试文件改动。
+
+### 做到一半
+
+尚未核实 Cloudflare 上 `333c7cd` 对应的正式部署是否成功，也没有检查线上页面是否已更新。本地 Wrangler 命令是 dry-run，不代表生产部署完成。
+
+### 下一步
+
+- 下一班输入 `$pickup` 接手。
+- 在 Cloudflare Workers Builds 中核对 `333c7cd` 的构建与部署记录，再检查生产域名的目标页面内容是否更新。
+- 若没有对应构建或部署失败，读取该次 Cloudflare 日志并核实连接的仓库、分支和 Worker；不要把本地 dry-run 当成线上证据。
+
+### 踩过的坑
+
+- 原 Cloudflare 日志中的测试失败会短路整个 `&&` 构建命令；安装阶段完成不代表应用构建或发布完成。
+- CI 没有 Playwright Chromium，也没有本机外部文章源文件；条件缺失的测试已改为显式跳过，其他测试继续执行。
+- 先前的 Wrangler deployments API 查询返回错误码 10007（Worker does not exist on your account），当时未能据此确认线上部署状态。
+
+### 怎么验证
+
+- `pnpm exec vitest run --reporter=dot src/app/army-formation-creator-routes.test.tsx src/app/site-routes.test.tsx src/components/army-formation/ArmyFormationCreatorPageHeading.test.tsx src/components/coat-of-arms/CoatOfArmsMaker.test.tsx src/components/coat-of-arms/CanvasSelectionHandles.test.tsx src/lib/blog/dnd-schools-of-magic.test.ts`：6 个文件、179/179 通过。
+- `pnpm run build:vinext`：退出码 0；199 个文件、2029/2029 测试通过，Workers 类型检查、vinext 构建及 Wrangler dry-run 成功。
+- 线上验收：Cloudflare 对 `333c7cd` 的部署状态成功；生产域名返回预期更新内容。此项尚未验证。
+
 ## 交接单 · 2026-10-02 20:47 CST · Codex CLI
 
 ### 本次目标
