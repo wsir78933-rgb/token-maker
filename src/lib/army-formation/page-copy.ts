@@ -223,7 +223,7 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
       '军阵制作器是一款面向桌面角色扮演游戏的战场示意图工具。GM 可以用它布置遭遇战、伏击或攻城场景，向玩家展示敌我双方的位置；玩家也能借助阵型图讨论队伍站位和战术。无论是 D&D 等奇幻冒险，还是战争题材的团务，都可以摆放部队与装备图标、设置战场背景，并导出图片或方案文件，方便展示、分享或留待下次继续编辑。',
     featuresTitle: '用于战场规划的功能',
     featuresDescription:
-      'Army Formation Creator 将图标选择、阵型摆放、战场设置与方案文件操作放在同一工作区。你可以从遭遇战构想开始，在画布上安排部队和装备，再保存到当前浏览器，或导出方案文件以便之后继续编辑。',
+      '军队阵型制作器将图标选择、阵型摆放、战场设置与方案文件操作放在同一工作区。你可以从遭遇战构想开始，在画布上安排部队和装备，再保存到当前浏览器，或导出方案文件以便之后继续编辑。',
     features: [
       {
         title: '292 个分类图标',
@@ -285,7 +285,7 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
       title: '军阵制作器 vs Photoshop vs Illustrator',
       description: '比较军阵素材、阵型编辑、多战场管理和文件处理能力。',
       dimensionHeading: '对比维度',
-      armyFormationCreatorHeading: 'Army Formation Creator',
+      armyFormationCreatorHeading: '军队阵型制作器',
       photoshopHeading: 'Photoshop',
       illustratorHeading: 'Illustrator',
       tableLabel: '军阵图制作工具对比',
