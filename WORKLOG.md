@@ -1,40 +1,73 @@
 # WORKLOG
 
-## 交接单 · 2026-10-03 17:42 CST · Codex CLI
+## 交接单 · 2026-10-03 19:26 CST · Codex CLI
 
 ### 本次目标
 
-记录 Army Background Gallery 卡片和预览弹窗的中英文下载功能、提交及验证证据，并交接 `army-bg-download` 工作树未清理的状态与阻塞。本次用户选择不存档，只写入本交接单，不提交。
+按用户确认将 army-bg-download 的卡片下载按钮顺序改动提交合入本地 main，并清理已合并的 army-bg-download/军阵组件工作树、分支和目标终端；本次 offhand 仅写交接记录。
 
 ### 已完成
 
-- 提交 `b038b5ed87d23c8867f4b75ddda72bba58bd9e2a`（`b038b5e`）加入卡片和预览弹窗的下载链接及中英文文案；卡片下载文件名为 `<map.id>.webp`。`git merge-base --is-ancestor b038b5e main` 退出码 0；当前 main HEAD 为 `705844817903edefca0a92e09e1dcdfe1e24a56b`，包含该提交。
-- 既有验证报告记录：定向 ESLint 退出码 0；`ArmyBackgroundGalleryExplorer.test.tsx` 为 1 个文件、8 个测试通过；`pnpm typecheck` 退出码 0。测试覆盖中英文卡片和弹窗的下载链接、来源链接及关闭行为。
-- 既有 Ego Browser 报告在 `http://localhost:40002/army-formation-creator/backgrounds` 与 `http://localhost:40002/zh/army-formation-creator/backgrounds` 检查中英文桌面和移动四种组合，各检查 12 张卡片；下载标签、href、文件名正确，无卡片/操作区重叠和横向溢出。真实浏览器下载和来源页点击未验证。
-- main 当前相对 `origin/main` 超前 4 个提交。写入前 `git status --short` 只显示既有 `WORKLOG.md` 改动；本次不提交该文件。
+- 功能提交 `317b4851f13753646fc1704a35ceb784ed93a5d5` 已由合并提交 `a1f9e346634a6dc07778ce4d72b6a334ef568542` 合入 main；父提交依次为 `8f29d81f6ac08c17ebf6a76ce3738359b06c3b75` 和 `317b4851f13753646fc1704a35ceb784ed93a5d5`。相对首父只改 `ArmyBackgroundGalleryExplorer.tsx`，9+/9-；下载按钮移到查看来源前并移除 `ml-auto`，测试文件与父提交相同。
+- `army-bg-download` 与 `军阵组件` 两个目标的 Git/Orca 工作树绑定、本地分支和目录均已移除；对应两批目标终端回执分别为 `closed=2/stopped=2`。`coat-shields-refresh` 与 `新工具-1` 保留。
+- 本次按用户确认不存档：原有 `WORKLOG.md` 未提交内容保留，新交接记录不提交。
 
 ### 做到一半
 
-- `/Users/wusir/orca/workspaces/token-maker-app/army-bg-download` 仍存在，分支 `army-bg-download`，HEAD `333c7cd56d8f9a7d553055d81d4a85bd5bf68996`；相对 main 落后 8 个提交，未领先提交。Git 和 Orca 工作树清单都仍包含该路径。
-- 该工作树未存档文件仍为 `src/components/army-formation/ArmyBackgroundGalleryExplorer.tsx`（已修改）和 `src/components/army-formation/ArmyBackgroundGalleryExplorer.test.tsx`（未跟踪）。既有报告记录测试文件与 main 内容字节一致。
-- 组件相对 main 的唯一差异在卡片操作区：下载链接移到来源链接之前，并移除 `ml-auto` 右对齐；弹窗没有差异。继续处理时应保留这项卡片顺序和对齐变化。
-- 工作树删除尚未完成。Orca 显示 `army-bg-download` 有两个已连接、可写终端；main 也有多个已连接、可写终端，包括仍显示 `Working` 的协调者终端 `term_a427ab9a-f05b-4a8e-8d9c-83c3f74ad808`。因此本次未删除工作树，也未关闭或接管任何终端。
+无本目标未完成的实现、合并或清理；现有 WORKLOG 改动保持未存档。
 
 ### 下一步
 
-先等待 main 上活动终端自然空闲，再重新核对 main 与 `army-bg-download` 的状态、终端和两项未存档文件。保留文件的方式未确定前，不删除工作树；如需提交或丢弃改动，另行取得明确授权。
+本目标无待办。下一班先用 `$pickup` 核对实际 HEAD、WORKLOG 和工作树清单；远端同步或部署需新的明确授权。
 
 ### 踩过的坑
 
-- 历史 WORKLOG 记录 `pnpm build` 曾在收集 `/api/share` 路由时因缺少 `cloudflare:workers` 失败；本次按范围没有运行 build，因此当前是否仍复现未验证。
-- `army-bg-download` 的未跟踪测试文件虽被既有报告核对为与 main 内容一致，当前仍是该工作树中的未跟踪文件，不能据此把工作树视为干净。
+- main 在期间从 `705844817903edefca0a92e09e1dcdfe1e24a56b` 变为 `8f29d81f6ac08c17ebf6a76ce3738359b06c3b75`；Git 回读确认后者以此前者为父且只改 `WORKLOG.md`，本次予以保留。
+- 普通 merge 曾因仅 `ArmyBackgroundGalleryExplorer.tsx` 冲突而 exit 1；之后只按授权使用 `317b485` 的该文件内容解决。不要按 Git author/committer 字段推断提交执行者，也不要复用旧 Dispatch ID。
+- Orca 标记为 retained/user-owned 的资源不能默认关闭；仅在目标工作树移除已获授权后精确关闭对应终端。
 
 ### 怎么验证
 
-- 既有功能验证命令：`pnpm exec eslint src/components/army-formation/ArmyBackgroundGalleryExplorer.tsx src/components/army-formation/ArmyBackgroundGalleryExplorer.test.tsx`（退出码 0）；`pnpm exec vitest run src/components/army-formation/ArmyBackgroundGalleryExplorer.test.tsx`（1 个文件、8 个测试通过）；`pnpm typecheck`（退出码 0）。
-- 既有浏览器路径：英文 `http://localhost:40002/army-formation-creator/backgrounds`；中文 `http://localhost:40002/zh/army-formation-creator/backgrounds`。桌面视口为 1425×900，移动视口为 390×844；浏览器报告未触发原生下载。
-- 复核未存档文件：`git -C '/Users/wusir/orca/workspaces/token-maker-app/army-bg-download' status --short`；对比卡片布局：在该工作树运行 `git diff main -- src/components/army-formation/ArmyBackgroundGalleryExplorer.tsx`；复核工作树与活动终端：`orca worktree list --repo id:842aae27-292d-4b29-b767-e486603a93f2 --json`、`orca terminal list --worktree path:/Users/wusir/orca/workspaces/token-maker-app/army-bg-download --json`。
-- 本次未运行测试、构建或浏览器验收。文档验收运行 `git diff --check -- WORKLOG.md`，结果应为退出码 0。
+- 合并回读：`git show -s --format='%P' a1f9e346` 返回上述两个父；`git diff --name-status 8f29d81 a1f9e346` 仅列 `ArmyBackgroundGalleryExplorer.tsx`，numstat 为 `9 9`。
+- 清理回读：`git worktree list --porcelain`、`orca worktree list --repo id:842aae27-292d-4b29-b767-e486603a93f2 --json`、两个目标的 `git branch --list` 和目录存在性检查均确认目标不在；本 Run 报告记录精确终端关闭回执。
+- 合并前验证（不是合并后重跑）：定向 ESLint exit 0；Vitest 1 文件、8 测试通过；`pnpm typecheck` exit 0。
+- 独立合并后 Git 复核为 8 passed、0 failed、0 required UNVERIFIED。Ego Browser 在 main 的 40001 服务上检查中/英文桌面与移动 4/4；每场景首 12 张卡片，共 48 次卡片观察（同一批素材，不是 48 张不同素材）及首预览 4/4 通过，核对下载/来源顺序、本地图片链接与文件名、语言文案、无重叠和横向溢出。
+- 合并后未重跑测试、lint、typecheck 或 build；原生文件下载传输及外部来源响应未触发，仍未验证；未 push/部署。当前 40001 由 PID 99153 的 `next-server (v16.3.3)` 提供，cwd 为本仓库，予以保留。
+- 真实报告：`/tmp/army-background-shuffle-release/{download-conflict-completion,download-integration-review,download-integration-ui,download-merge-preparation,military-cleanup,military-cleanup-review}.{md,json}`。
+
+## 交接单 · 2026-10-03 18:27 CST · Codex CLI
+
+### 本次目标
+
+更新 Army Background Gallery 下载功能的交接状态，记录合并、`army-bg-download` 清理结果及验证证据。用户对 offhand 选择不存档；本次只替换本交接单，不提交。
+
+### 已完成
+
+- 原 offhand Task `task_3b20f1138a1f` / Dispatch `ctx_d5f0a83d4c1d` 映射正确；当前可读的原 Dispatch 命令记录未见 `git add` 或 `git commit`，但归档有 8 个工具输入被截断、`contentComplete=false`，无法证明完整记录中不存在这些命令，因此此项标记 **UNVERIFIED**。当前 HEAD 历史中有 `8f29d81f6ac08c17ebf6a76ce3738359b06c3b75`，该提交仅修改 `WORKLOG.md`；Git author/committer 字段均为“吴sir”，这些字段不能证明由谁执行提交。
+- 已授权的功能提交 `317b4851f13753646fc1704a35ceb784ed93a5d5` 已由合并提交 `a1f9e346634a6dc07778ce4d72b6a334ef568542` 合入；父提交依次为 `8f29d81`、`317b485`。相对首父的差异仅为 `src/components/army-formation/ArmyBackgroundGalleryExplorer.tsx` 新增 9 行、删除 9 行。
+- 合并及清理完成后、更新本交接单前，`main` HEAD 为 `a1f9e346`，工作区干净，相对 `origin/main` ahead 7。`army-bg-download` Git 工作树和本地分支已删除；Git/Orca 工作树清单均无该目标，Orca terminal list 按 worktreePath 和 worktreeId 精确筛选该目标均为 0 条绑定终端。独立复核报告 `/tmp/army-background-shuffle-release/download-integration-review.md` 记录 8 passed、0 failed、0 required UNVERIFIED；bulk close exit 0，回执为 `closed=2/stopped=2/retiredSurfaces=true`，Orca `worktree rm` exit 0、`removed=true`。`coat-shields-refresh` 和 `新工具-1` 工作树仍保留。
+- 合并前功能证据见 `/tmp/army-background-shuffle-release/download-merge-preparation.md`：定向 ESLint exit 0；Vitest 1 个文件、8 个测试通过；`pnpm typecheck` exit 0；Ego Browser 中文/英文桌面与移动共 4 个场景通过，每个场景检查 12 张卡片。
+
+### 做到一半
+
+- 合并和工作树清理均已完成。合并后没有重跑测试、构建或浏览器验收，因此没有合并后功能验证证据。
+
+### 下一步
+
+- 无待完成的合并或清理工作。如需合并后验证，应另行运行定向测试、构建或浏览器检查，并将结果与上述合并前证据区分记录。
+
+### 踩过的坑
+
+- `8f29d81` 的 author/committer 字段只记录 Git 元数据，不能据此推断提交执行者，也不能把提交归因于 offhand Dispatch。
+- 修正标签的 Dispatch `ctx_073b93f55d5a` 预检曾运行 `git write-tree`（exit 0）来获取基线；其 worker_done 报告和本次实际回读均确认暂存 diff 为空、HEAD 仍为 `a1f9e346`，未提交。
+- 合并前测试、类型检查和浏览器结果不代表合并后重验；本次范围内没有运行测试、构建或浏览器。
+
+### 怎么验证
+
+- 合并关系：`git show -s --format='%P' a1f9e346` 返回 `8f29d81` 与 `317b485`；`git diff --numstat a1f9e346^1 a1f9e346` 仅列出 `ArmyBackgroundGalleryExplorer.tsx` 的 `9 9`。当前 HEAD 为 `a1f9e346`，相对 `origin/main` ahead 7。
+- 清理状态：`git worktree list --porcelain` 和 `orca worktree list --repo id:842aae27-292d-4b29-b767-e486603a93f2 --json` 不含 `army-bg-download`；`git branch --list army-bg-download` 无匹配；使用 `orca terminal list --json`，并按目标 worktreePath 或 worktreeId 精确过滤，结果为 0。清理回执和 8 项独立复核见 `/tmp/army-background-shuffle-release/download-integration-review.md`。
+- 合并前验证命令：`pnpm exec eslint src/components/army-formation/ArmyBackgroundGalleryExplorer.tsx src/components/army-formation/ArmyBackgroundGalleryExplorer.test.tsx`（exit 0）；`pnpm exec vitest run src/components/army-formation/ArmyBackgroundGalleryExplorer.test.tsx`（1 个文件、8 个测试通过）；`pnpm typecheck`（exit 0）。Ego Browser 检查 `/army-formation-creator/backgrounds` 与 `/zh/army-formation-creator/backgrounds` 的桌面和移动场景；这些均为合并前报告记录，本次未重跑。
+- 本次文档验收：`git diff --check -- WORKLOG.md` exit 0；`git diff --name-only` 仅为 `WORKLOG.md`，`git status --short --branch` 仅显示本文件修改（main ahead 7）；不提交。
 
 ## 交接单 · 2026-10-03 17:36 CST · Codex CLI
 
