@@ -494,6 +494,7 @@ describe('coat maker routes', () => {
         { label: 'Coat of Arms Maker', href: '/coat-of-arms-maker' },
         { label: 'Armor Creator', href: '/armor-creator' },
         { label: 'Army Formation Creator', href: '/army-formation-creator' },
+        { label: 'Emblem Creator', href: '/emblem-creator' },
       ],
       sharedNavigationLinks: [
         { label: 'Dice Roller', href: '/dice-roller-dnd' },
@@ -514,6 +515,7 @@ describe('coat maker routes', () => {
         { label: '纹章制作器', href: '/zh/coat-of-arms-maker' },
         { label: '护甲制作器', href: '/zh/armor-creator' },
         { label: '军队阵型制作器', href: '/zh/army-formation-creator' },
+        { label: '徽标制作工具', href: '/zh/emblem-creator' },
       ],
       sharedNavigationLinks: [
         { label: '骰子', href: '/zh/dice-roller-dnd' },
