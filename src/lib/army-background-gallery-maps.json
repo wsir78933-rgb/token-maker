@@ -11,17 +11,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-001.webp"
   },
   {
-    "id": "dyson-002",
-    "title": "Barrow of the Great Mothers",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/06/16/barrow-of-the-great-mothers/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-002.webp"
-  },
-  {
     "id": "dyson-003",
     "title": "the Mound on the Silent Road",
     "description": "",
@@ -44,17 +33,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-004.webp"
   },
   {
-    "id": "dyson-005",
-    "title": "A Cut Above (The Cut, Map 2)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/05/13/a-cut-above-the-cut-map-2/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 16200",
-    "previewSrc": "/army-background-gallery/previews/dyson-005.webp"
-  },
-  {
     "id": "dyson-006",
     "title": "The Cut - Ground Level",
     "description": "",
@@ -75,17 +53,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "10800 × 16200",
     "previewSrc": "/army-background-gallery/previews/dyson-007.webp"
-  },
-  {
-    "id": "dyson-008",
-    "title": "Return to Metivier Manor",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/05/08/return-to-metivier-manor/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "15000 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-008.webp"
   },
   {
     "id": "dyson-009",
@@ -121,39 +88,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-011.webp"
   },
   {
-    "id": "dyson-012",
-    "title": "The Pilgrim's Mug",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/04/08/the-pilgrims-mug/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 16800",
-    "previewSrc": "/army-background-gallery/previews/dyson-012.webp"
-  },
-  {
-    "id": "dyson-013",
-    "title": "The Ziggurat of Shadows - Main Level & Isometric maps",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/03/11/the-ziggurat-of-shadows-main-level-isometric/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-013.webp"
-  },
-  {
-    "id": "dyson-014",
-    "title": "Ziggurat of Shadows - top view and upper levels",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/03/13/the-ziggurat-of-shadows-top-view-and-upper-levels/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-014.webp"
-  },
-  {
     "id": "dyson-015",
     "title": "Sewer Connector (2026 B)",
     "description": "",
@@ -174,17 +108,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "14400 × 19200",
     "previewSrc": "/army-background-gallery/previews/dyson-016.webp"
-  },
-  {
-    "id": "dyson-017",
-    "title": "Sparrow's Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/02/11/sparrows-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8100 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-017.webp"
   },
   {
     "id": "dyson-018",
@@ -209,17 +132,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-019.webp"
   },
   {
-    "id": "dyson-020",
-    "title": "Sewer Connectors (2026 A)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/02/04/sewer-connectors-2026-a/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-020.webp"
-  },
-  {
     "id": "dyson-021",
     "title": "Brethen's Sky Island Archipelago",
     "description": "",
@@ -229,28 +141,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "10200 × 11100",
     "previewSrc": "/army-background-gallery/previews/dyson-021.webp"
-  },
-  {
-    "id": "dyson-022",
-    "title": "Brethen's Hall",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/01/14/brethens-hall/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-022.webp"
-  },
-  {
-    "id": "dyson-023",
-    "title": "Valgrena's Vault",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2026/01/09/valgrenas-vault/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-023.webp"
   },
   {
     "id": "dyson-024",
@@ -319,28 +209,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-029.webp"
   },
   {
-    "id": "dyson-030",
-    "title": "The Spiral Sink - Map Set 1",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/11/11/the-spiral-sink-map-set-1/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-030.webp"
-  },
-  {
-    "id": "dyson-031",
-    "title": "The Spiral Sink – Map Set 2",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/11/12/the-spiral-sink-map-set-2/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-031.webp"
-  },
-  {
     "id": "dyson-032",
     "title": "Serpent Lands - Map 2",
     "description": "",
@@ -383,17 +251,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "7200 × 7200",
     "previewSrc": "/army-background-gallery/previews/dyson-035.webp"
-  },
-  {
-    "id": "dyson-036",
-    "title": "The Hollow Spire",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/10/08/the-hollow-spire/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-036.webp"
   },
   {
     "id": "dyson-037",
@@ -616,72 +473,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-056.webp"
   },
   {
-    "id": "dyson-057",
-    "title": "Building 13 - Netmaker",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/04/11/building-13-knotty-nets-net-making-repairs-and-sales/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 5100",
-    "previewSrc": "/army-background-gallery/previews/dyson-057.webp"
-  },
-  {
-    "id": "dyson-058",
-    "title": "Building 12 - General Goods Store",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/03/17/building-12-everythings-good-general-goods-store/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 5100",
-    "previewSrc": "/army-background-gallery/previews/dyson-058.webp"
-  },
-  {
-    "id": "dyson-059",
-    "title": "The Finger",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/03/10/the-finger/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-059.webp"
-  },
-  {
-    "id": "dyson-060",
-    "title": "Beneath the Finger",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/03/13/beneath-the-finger/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-060.webp"
-  },
-  {
-    "id": "dyson-061",
-    "title": "Deeper Beneath the Finger",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/03/14/deeper-beneath-the-finger/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-061.webp"
-  },
-  {
-    "id": "dyson-062",
-    "title": "The deeps far below \"The Finger\"",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/04/07/the-deeps-far-below-the-finger/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-062.webp"
-  },
-  {
     "id": "dyson-063",
     "title": "A Dungeon In Two Parts",
     "description": "",
@@ -693,28 +484,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-063.webp"
   },
   {
-    "id": "dyson-064",
-    "title": "Eastmeadow Manor",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/02/12/eastmeadow-manor/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7800 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-064.webp"
-  },
-  {
-    "id": "dyson-065",
-    "title": "Under Eastmeadow Manor",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/04/10/under-eastmeadow-manor/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7800 × 11100",
-    "previewSrc": "/army-background-gallery/previews/dyson-065.webp"
-  },
-  {
     "id": "dyson-066",
     "title": "Allerton Hold",
     "description": "",
@@ -724,17 +493,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "10200 × 10800",
     "previewSrc": "/army-background-gallery/previews/dyson-066.webp"
-  },
-  {
-    "id": "dyson-067",
-    "title": "Crumbling Gate",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2025/01/17/crumbling-gate/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-067.webp"
   },
   {
     "id": "dyson-068",
@@ -770,28 +528,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-070.webp"
   },
   {
-    "id": "dyson-071",
-    "title": "The Sinkhole Crypt",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/12/09/the-sinkhole-crypt/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-071.webp"
-  },
-  {
-    "id": "dyson-072",
-    "title": "Building 11 - Carpenter",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/12/06/building-11-lumering-hanks-carpentry/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 6300",
-    "previewSrc": "/army-background-gallery/previews/dyson-072.webp"
-  },
-  {
     "id": "dyson-073",
     "title": "The Greywater Temple",
     "description": "",
@@ -801,28 +537,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "6600 × 5100",
     "previewSrc": "/army-background-gallery/previews/dyson-073.webp"
-  },
-  {
-    "id": "dyson-074",
-    "title": "Griffon Tower Dungeons",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/11/13/griffon-tower-dungeons/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-074.webp"
-  },
-  {
-    "id": "dyson-075",
-    "title": "Griffon Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/11/11/griffon-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-075.webp"
   },
   {
     "id": "dyson-076",
@@ -836,17 +550,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-076.webp"
   },
   {
-    "id": "dyson-077",
-    "title": "Building 10 - Wit & Wisdom Apothecary",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/10/15/building-10-wit-wisdom-apothecary/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6300 × 4800",
-    "previewSrc": "/army-background-gallery/previews/dyson-077.webp"
-  },
-  {
     "id": "dyson-078",
     "title": "Crypts and Worms",
     "description": "",
@@ -856,28 +559,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "10200 × 13200",
     "previewSrc": "/army-background-gallery/previews/dyson-078.webp"
-  },
-  {
-    "id": "dyson-079",
-    "title": "The Cinereous Basilica",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/09/13/the-cinereous-basilica/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12000 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-079.webp"
-  },
-  {
-    "id": "dyson-080",
-    "title": "Building 9 - The Riddle of Steel",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/09/11/the-riddle-of-steel/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-080.webp"
   },
   {
     "id": "dyson-081",
@@ -979,17 +660,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-089.webp"
   },
   {
-    "id": "dyson-090",
-    "title": "Temple Of The Worm - Upper Levels",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/08/15/temple-of-the-worm-upper-levels/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-090.webp"
-  },
-  {
     "id": "dyson-091",
     "title": "Temple of the Worm",
     "description": "",
@@ -999,28 +669,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9600 × 7200",
     "previewSrc": "/army-background-gallery/previews/dyson-091.webp"
-  },
-  {
-    "id": "dyson-092",
-    "title": "Building 8 - Leather Worker",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/08/08/reds-leather-works/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 3900",
-    "previewSrc": "/army-background-gallery/previews/dyson-092.webp"
-  },
-  {
-    "id": "dyson-093",
-    "title": "Iseldec's Drop - Levels 20-23",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/08/06/iseldecs-drop-levels-20-23/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-093.webp"
   },
   {
     "id": "dyson-094",
@@ -1034,127 +682,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-094.webp"
   },
   {
-    "id": "dyson-095",
-    "title": "Building 7 - Random Market Tavern",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/07/10/random-market-tavern/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 9300",
-    "previewSrc": "/army-background-gallery/previews/dyson-095.webp"
-  },
-  {
-    "id": "dyson-096",
-    "title": "Building 6 - Wine Garden",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/07/08/saint-sephatons-wine-garden/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6600 × 9300",
-    "previewSrc": "/army-background-gallery/previews/dyson-096.webp"
-  },
-  {
-    "id": "dyson-097",
-    "title": "Iseldec's Drop - Levels 17-19",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/07/05/iseldecs-drop-levels-17-19/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-097.webp"
-  },
-  {
-    "id": "dyson-098",
-    "title": "Iseldec's Drop - Levels 13-16",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/06/12/iseldecs-drop-levels-13-16/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-098.webp"
-  },
-  {
-    "id": "dyson-099",
-    "title": "Building 5 - Loans / Bank",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/06/10/hammerhead-loans-banking/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6600 × 7800",
-    "previewSrc": "/army-background-gallery/previews/dyson-099.webp"
-  },
-  {
-    "id": "dyson-100",
-    "title": "Shop 4 - The Fruit Shop",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/06/07/sugar-dates-figs-sugar-dates-pistachios/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 3600",
-    "previewSrc": "/army-background-gallery/previews/dyson-100.webp"
-  },
-  {
-    "id": "dyson-101",
-    "title": "Shop #3 - Carpets",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/06/05/magic-carpets/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6300 × 6900",
-    "previewSrc": "/army-background-gallery/previews/dyson-101.webp"
-  },
-  {
-    "id": "dyson-102",
-    "title": "Iseldec’s Drop (Levels 9-12)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/05/10/iseldecs-drop-levels-9-12/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-102.webp"
-  },
-  {
-    "id": "dyson-103",
-    "title": "Stonewill Estate",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/05/08/stonewill-estate/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-103.webp"
-  },
-  {
-    "id": "dyson-104",
-    "title": "The Golden Fishmarket",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/05/06/the-golden-fishmarket/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9300 × 4800",
-    "previewSrc": "/army-background-gallery/previews/dyson-104.webp"
-  },
-  {
-    "id": "dyson-105",
-    "title": "Rok's Pottery Workshop",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/05/03/roks-pottery-workshop/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6300 × 7500",
-    "previewSrc": "/army-background-gallery/previews/dyson-105.webp"
-  },
-  {
     "id": "dyson-106",
     "title": "Grudge Match at the Underground Market",
     "description": "",
@@ -1166,17 +693,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-106.webp"
   },
   {
-    "id": "dyson-107",
-    "title": "Menrina's Library & The Salty Tavern",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/04/09/menrinas-library-the-salty-tavern/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-107.webp"
-  },
-  {
     "id": "dyson-108",
     "title": "Dungeon of the Bad Egg",
     "description": "",
@@ -1186,17 +702,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9000 × 9000",
     "previewSrc": "/army-background-gallery/previews/dyson-108.webp"
-  },
-  {
-    "id": "dyson-109",
-    "title": "Iseldec's Drop (Levels 5-8)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/04/03/iseldecs-drop-levels-5-8/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-109.webp"
   },
   {
     "id": "dyson-110",
@@ -1232,50 +737,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-112.webp"
   },
   {
-    "id": "dyson-113",
-    "title": "Iseldec's Drop (Levels 1-4)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/03/06/iseldecs-drop-levels-1-4/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-113.webp"
-  },
-  {
-    "id": "dyson-114",
-    "title": "The Tower of Mourning",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/02/12/the-tower-of-mourning/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-114.webp"
-  },
-  {
-    "id": "dyson-115",
-    "title": "The Temple of Love (2024 Remix)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/02/09/the-temple-of-love-2024-remix/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "16800 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-115.webp"
-  },
-  {
-    "id": "dyson-116",
-    "title": "The Sleeping Goat Inn",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/02/07/the-sleeping-goat-inn/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-116.webp"
-  },
-  {
     "id": "dyson-117",
     "title": "Temple of Lost Ormus",
     "description": "",
@@ -1285,61 +746,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "10200 × 13200",
     "previewSrc": "/army-background-gallery/previews/dyson-117.webp"
-  },
-  {
-    "id": "dyson-118",
-    "title": "The Lame Barghest Tavern",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/01/16/the-lame-barghest-tavern/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9000 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-118.webp"
-  },
-  {
-    "id": "dyson-119",
-    "title": "The Lost Watch",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/01/11/the-lost-watch/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 5100",
-    "previewSrc": "/army-background-gallery/previews/dyson-119.webp"
-  },
-  {
-    "id": "dyson-120",
-    "title": "Gath-Am's Beacon",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/01/09/gath-ams-beacon/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 16800",
-    "previewSrc": "/army-background-gallery/previews/dyson-120.webp"
-  },
-  {
-    "id": "dyson-121",
-    "title": "The Strangled Imp",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2024/01/07/the-strangled-imp-tavern/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "5400 × 7200",
-    "previewSrc": "/army-background-gallery/previews/dyson-121.webp"
-  },
-  {
-    "id": "dyson-122",
-    "title": "The Sordid Rhinoceros",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/12/14/the-sordid-rhinoceros/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 16200",
-    "previewSrc": "/army-background-gallery/previews/dyson-122.webp"
   },
   {
     "id": "dyson-123",
@@ -1353,39 +759,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-123.webp"
   },
   {
-    "id": "dyson-124",
-    "title": "The House of Kalaxar (Linear Dungeon Experiment 2)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/12/08/the-house-of-kalaxar-linear-dungeon-experiment-2/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12600 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-124.webp"
-  },
-  {
-    "id": "dyson-125",
-    "title": "Pit of the Sand Wraiths (Linear Dungeon Experiment 1)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/12/05/pit-of-the-sand-wraiths-linear-dungeon-experiment-1/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-125.webp"
-  },
-  {
-    "id": "dyson-126",
-    "title": "Edge Strip Dungeon",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/11/15/edge-strip-dungeon/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6000 × 8476",
-    "previewSrc": "/army-background-gallery/previews/dyson-126.webp"
-  },
-  {
     "id": "dyson-127",
     "title": "Miserth Keep - Main Level",
     "description": "",
@@ -1397,28 +770,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-127.webp"
   },
   {
-    "id": "dyson-128",
-    "title": "Miserth Keep – Upper Levels",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/11/12/miserth-keep-upper-levels/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6600 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-128.webp"
-  },
-  {
-    "id": "dyson-129",
-    "title": "Miserth Keep – Dungeons",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/11/13/miserth-keep-dungeons/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6600 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-129.webp"
-  },
-  {
     "id": "dyson-130",
     "title": "The Black Skulls Tomb",
     "description": "",
@@ -1428,28 +779,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9000 × 5400",
     "previewSrc": "/army-background-gallery/previews/dyson-130.webp"
-  },
-  {
-    "id": "dyson-131",
-    "title": "Archon's Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/10/10/archons-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 7200",
-    "previewSrc": "/army-background-gallery/previews/dyson-131.webp"
-  },
-  {
-    "id": "dyson-132",
-    "title": "Beneath the Archon's Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/10/13/beneath-the-archons-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 7200",
-    "previewSrc": "/army-background-gallery/previews/dyson-132.webp"
   },
   {
     "id": "dyson-133",
@@ -1472,28 +801,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "7200 × 10800",
     "previewSrc": "/army-background-gallery/previews/dyson-134.webp"
-  },
-  {
-    "id": "dyson-135",
-    "title": "Temple of the Divinity in Copper",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/09/14/temple-of-the-divinity-in-copper/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 16800",
-    "previewSrc": "/army-background-gallery/previews/dyson-135.webp"
-  },
-  {
-    "id": "dyson-136",
-    "title": "Pitmann Manse",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/09/12/pitmann-manse/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9000 × 14400",
-    "previewSrc": "/army-background-gallery/previews/dyson-136.webp"
   },
   {
     "id": "dyson-137",
@@ -1527,17 +834,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9900 × 12300",
     "previewSrc": "/army-background-gallery/previews/dyson-139.webp"
-  },
-  {
-    "id": "dyson-140",
-    "title": "Greyrock Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/08/10/greyrock-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-140.webp"
   },
   {
     "id": "dyson-141",
@@ -1595,61 +891,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-145.webp"
   },
   {
-    "id": "dyson-146",
-    "title": "The Garden Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/07/10/the-garden-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "16800 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-146.webp"
-  },
-  {
-    "id": "dyson-147",
-    "title": "Gladhold Estate",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/07/07/gladhold-estate/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2400 × 5250",
-    "previewSrc": "/army-background-gallery/previews/dyson-147.webp"
-  },
-  {
-    "id": "dyson-148",
-    "title": "The Rumbledown Ruins",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/07/05/release-the-kraken-on-the-rumbledown-ruins/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 14400",
-    "previewSrc": "/army-background-gallery/previews/dyson-148.webp"
-  },
-  {
-    "id": "dyson-149",
-    "title": "Ency Glowlands - Map 2",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/07/04/release-the-kraken-on-the-ency-glowlands-map-2/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-149.webp"
-  },
-  {
-    "id": "dyson-150",
-    "title": "Gascon's Pit",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/06/14/gascons-pit/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 16200",
-    "previewSrc": "/army-background-gallery/previews/dyson-150.webp"
-  },
-  {
     "id": "dyson-151",
     "title": "The Stony Shore - Map 1",
     "description": "",
@@ -1705,17 +946,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-155.webp"
   },
   {
-    "id": "dyson-156",
-    "title": "Bore Facility P44",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/05/16/bore-facility-p44/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-156.webp"
-  },
-  {
     "id": "dyson-157",
     "title": "Zinik's Stones",
     "description": "",
@@ -1725,28 +955,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "10800 × 7200",
     "previewSrc": "/army-background-gallery/previews/dyson-157.webp"
-  },
-  {
-    "id": "dyson-158",
-    "title": "Beneath the Claw of Sunsets - Map 3",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/05/11/beneath-the-claw-of-sunsets-map-3/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11400 × 8700",
-    "previewSrc": "/army-background-gallery/previews/dyson-158.webp"
-  },
-  {
-    "id": "dyson-159",
-    "title": "Ruins of the Claw of Sunsets - Map 3",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/05/08/ruins-of-the-claw-of-sunsets-map-3/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11400 × 15300",
-    "previewSrc": "/army-background-gallery/previews/dyson-159.webp"
   },
   {
     "id": "dyson-160",
@@ -1769,39 +977,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "8100 × 14400",
     "previewSrc": "/army-background-gallery/previews/dyson-161.webp"
-  },
-  {
-    "id": "dyson-162",
-    "title": "Under the Lighthouse",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/04/17/under-the-lighthouse/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-162.webp"
-  },
-  {
-    "id": "dyson-163",
-    "title": "The Dry Lighthouse",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/04/15/the-dry-lighthouse/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-163.webp"
-  },
-  {
-    "id": "dyson-164",
-    "title": "Beneath the Claw of Sunsets – Map 2",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/04/11/beneath-the-claw-of-sunsets-map-2/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11400 × 8700",
-    "previewSrc": "/army-background-gallery/previews/dyson-164.webp"
   },
   {
     "id": "dyson-165",
@@ -1837,39 +1012,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-167.webp"
   },
   {
-    "id": "dyson-168",
-    "title": "Science Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/03/17/science-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 15000",
-    "previewSrc": "/army-background-gallery/previews/dyson-168.webp"
-  },
-  {
-    "id": "dyson-169",
-    "title": "Opal's Steps - Stepped Pyramid",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/03/15/opals-steps-stepped-pyramid/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12000 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-169.webp"
-  },
-  {
-    "id": "dyson-170",
-    "title": "Beneath the Claw of Sunsets – Map 1",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/03/12/beneath-the-claw-of-sunsets-map-1/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11400 × 8700",
-    "previewSrc": "/army-background-gallery/previews/dyson-170.webp"
-  },
-  {
     "id": "dyson-171",
     "title": "Ruins of the Claw of Sunsets - Map 1",
     "description": "",
@@ -1903,17 +1045,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-173.webp"
   },
   {
-    "id": "dyson-174",
-    "title": "Dungeons of the Twin Demons",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/02/17/dungeons-of-the-twin-demons/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-174.webp"
-  },
-  {
     "id": "dyson-175",
     "title": "Gateway of the Twin Demons",
     "description": "",
@@ -1936,17 +1067,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-176.webp"
   },
   {
-    "id": "dyson-177",
-    "title": "The Maw",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/02/10/the-maw-a-five-room-dungeon/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-177.webp"
-  },
-  {
     "id": "dyson-178",
     "title": "Pits of the Black Moon (B&W)",
     "description": "",
@@ -1956,39 +1076,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "8700 × 6300",
     "previewSrc": "/army-background-gallery/previews/dyson-178.webp"
-  },
-  {
-    "id": "dyson-179",
-    "title": "Lost Tomb Complex",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/02/02/release-the-kraken-on-the-lost-tomb-complex-of-old-jaikalor/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 8400",
-    "previewSrc": "/army-background-gallery/previews/dyson-179.webp"
-  },
-  {
-    "id": "dyson-180",
-    "title": "The Ioun Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/01/12/the-ioun-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 14400",
-    "previewSrc": "/army-background-gallery/previews/dyson-180.webp"
-  },
-  {
-    "id": "dyson-181",
-    "title": "Hnálla's Tower of Pillars",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/01/09/hnallas-tower-of-pillars/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-181.webp"
   },
   {
     "id": "dyson-182",
@@ -2013,28 +1100,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-183.webp"
   },
   {
-    "id": "dyson-184",
-    "title": "Ephara's Alithinero (1200 dpi)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/01/02/release-the-kraken-on-epharas-alithinero-temple-of-the-high-spring/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9900 × 14400",
-    "previewSrc": "/army-background-gallery/previews/dyson-184.webp"
-  },
-  {
-    "id": "dyson-185",
-    "title": "Violet Chambers atop Kákri Midállu (1200 dpi)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2023/01/01/release-the-kraken-on-the-violet-chambers-atop-kakri-midallu/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "14400 × 14400",
-    "previewSrc": "/army-background-gallery/previews/dyson-185.webp"
-  },
-  {
     "id": "dyson-186",
     "title": "The Eleint Passages – Ruined Fane",
     "description": "",
@@ -2044,17 +1109,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9600 × 9600",
     "previewSrc": "/army-background-gallery/previews/dyson-186.webp"
-  },
-  {
-    "id": "dyson-187",
-    "title": "The Eleint Passages - The Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/12/11/the-eleint-passages-the-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-187.webp"
   },
   {
     "id": "dyson-188",
@@ -2090,28 +1144,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-190.webp"
   },
   {
-    "id": "dyson-191",
-    "title": "Cult Basement",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/11/29/release-the-kraken-on-the-cult-basement/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12000 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-191.webp"
-  },
-  {
-    "id": "dyson-192",
-    "title": "Chambers of the Copper Skulls",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/11/11/chambers-of-the-copper-skulls/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "1650 × 3000",
-    "previewSrc": "/army-background-gallery/previews/dyson-192.webp"
-  },
-  {
     "id": "dyson-193",
     "title": "Ruins of the Hill Fort",
     "description": "",
@@ -2134,28 +1166,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-194.webp"
   },
   {
-    "id": "dyson-195",
-    "title": "Vund Home",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/11/04/vund-home/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9000 × 5400",
-    "previewSrc": "/army-background-gallery/previews/dyson-195.webp"
-  },
-  {
-    "id": "dyson-196",
-    "title": "The Ency Glowlands Map 1",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/11/02/release-the-kraken-on-the-ency-glowlands/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-196.webp"
-  },
-  {
     "id": "dyson-197",
     "title": "Dungeon of Holding",
     "description": "",
@@ -2176,17 +1186,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "12600 × 9600",
     "previewSrc": "/army-background-gallery/previews/dyson-198.webp"
-  },
-  {
-    "id": "dyson-199",
-    "title": "Dead Goblin Hole",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/10/12/dead-goblin-hole/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12000 × 8400",
-    "previewSrc": "/army-background-gallery/previews/dyson-199.webp"
   },
   {
     "id": "dyson-200",
@@ -2222,17 +1221,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-202.webp"
   },
   {
-    "id": "dyson-203",
-    "title": "Hunter's Descent",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/10/03/5rd-hunters-descent/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-203.webp"
-  },
-  {
     "id": "dyson-204",
     "title": "The Idol Pit",
     "description": "",
@@ -2266,17 +1254,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-206.webp"
   },
   {
-    "id": "dyson-207",
-    "title": "Tombs of the Silver Army",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/09/09/release-the-kraken-on-the-tombs/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 8400",
-    "previewSrc": "/army-background-gallery/previews/dyson-207.webp"
-  },
-  {
     "id": "dyson-208",
     "title": "Garnet's Spring",
     "description": "",
@@ -2297,39 +1274,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "12000 × 12000",
     "previewSrc": "/army-background-gallery/previews/dyson-209.webp"
-  },
-  {
-    "id": "dyson-210",
-    "title": "Gavreth's Stones",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/08/15/5rd-gavreths-stones/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 8400",
-    "previewSrc": "/army-background-gallery/previews/dyson-210.webp"
-  },
-  {
-    "id": "dyson-211",
-    "title": "Veghul's Drop",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/08/13/veghuls-drop/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2000 × 3238",
-    "previewSrc": "/army-background-gallery/previews/dyson-211.webp"
-  },
-  {
-    "id": "dyson-212",
-    "title": "Hardbrand Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/08/11/hardbrand-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7800 × 14400",
-    "previewSrc": "/army-background-gallery/previews/dyson-212.webp"
   },
   {
     "id": "dyson-213",
@@ -2374,28 +1318,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9600 × 9600",
     "previewSrc": "/army-background-gallery/previews/dyson-216.webp"
-  },
-  {
-    "id": "dyson-217",
-    "title": "The Andesite Pyramid",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/07/09/the-andesite-pyramid/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "5400 × 15000",
-    "previewSrc": "/army-background-gallery/previews/dyson-217.webp"
-  },
-  {
-    "id": "dyson-218",
-    "title": "The Red Temple under Béy Sǘ",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/07/07/the-red-temple-under-bey-su/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12000 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-218.webp"
   },
   {
     "id": "dyson-219",
@@ -2497,39 +1419,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-227.webp"
   },
   {
-    "id": "dyson-228",
-    "title": "Raining Cave",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/05/11/the-raining-cave/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-228.webp"
-  },
-  {
-    "id": "dyson-229",
-    "title": "Blackstone Bastion",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/05/07/blackstone-bastion/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "18000 × 9900",
-    "previewSrc": "/army-background-gallery/previews/dyson-229.webp"
-  },
-  {
-    "id": "dyson-230",
-    "title": "Oreney's Watch",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/05/05/oreneys-watch/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12000 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-230.webp"
-  },
-  {
     "id": "dyson-231",
     "title": "Crypt of the Queen of Bones",
     "description": "",
@@ -2539,50 +1428,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "3271 × 5086",
     "previewSrc": "/army-background-gallery/previews/dyson-231.webp"
-  },
-  {
-    "id": "dyson-232",
-    "title": "Sumerian Three Story Home",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/05/01/release-the-kraken-on-the-three-story-sumerian-style-home/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9000 × 14100",
-    "previewSrc": "/army-background-gallery/previews/dyson-232.webp"
-  },
-  {
-    "id": "dyson-233",
-    "title": "Frogsmead Inn & Tavern",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/04/14/frogsmead-inn-tavern/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "16800 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-233.webp"
-  },
-  {
-    "id": "dyson-234",
-    "title": "Page o' Little Ruins",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/04/12/page-o-little-ruins/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-234.webp"
-  },
-  {
-    "id": "dyson-235",
-    "title": "Under the Observatory",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/04/09/under-the-observatory/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "5550 × 2550",
-    "previewSrc": "/army-background-gallery/previews/dyson-235.webp"
   },
   {
     "id": "dyson-236",
@@ -2596,50 +1441,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-236.webp"
   },
   {
-    "id": "dyson-237",
-    "title": "Temple Ruins / Froghemoth Nest",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/04/04/release-the-kraken-on-the-froghemoth-ruins/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 8806",
-    "previewSrc": "/army-background-gallery/previews/dyson-237.webp"
-  },
-  {
-    "id": "dyson-238",
-    "title": "The Sunken Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/04/02/release-the-kraken-on-the-sunken-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "15600 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-238.webp"
-  },
-  {
-    "id": "dyson-239",
-    "title": "The Goblin Warrens at Fort Redshield",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/03/14/the-goblin-warrens-at-fort-redshield/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "14400 × 15600",
-    "previewSrc": "/army-background-gallery/previews/dyson-239.webp"
-  },
-  {
-    "id": "dyson-240",
-    "title": "Ruins of Brollmoreth",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/03/12/ruins-of-brollmoreth/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-240.webp"
-  },
-  {
     "id": "dyson-241",
     "title": "Ruins of the East Gate of Steldin Dorg",
     "description": "",
@@ -2649,17 +1450,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "10200 × 13200",
     "previewSrc": "/army-background-gallery/previews/dyson-241.webp"
-  },
-  {
-    "id": "dyson-242",
-    "title": "The Ruins of Shagunat Keep",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/03/07/the-ruins-of-shagunat-keep/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 14100",
-    "previewSrc": "/army-background-gallery/previews/dyson-242.webp"
   },
   {
     "id": "dyson-243",
@@ -2682,17 +1472,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9900 × 10200",
     "previewSrc": "/army-background-gallery/previews/dyson-244.webp"
-  },
-  {
-    "id": "dyson-245",
-    "title": "Redford Citadel",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/02/14/redford-citadel/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13800 × 16800",
-    "previewSrc": "/army-background-gallery/previews/dyson-245.webp"
   },
   {
     "id": "dyson-246",
@@ -2739,17 +1518,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-249.webp"
   },
   {
-    "id": "dyson-250",
-    "title": "Ruldroc Castle",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/02/02/release-the-kraken-on-the-dwarven-folly-that-is-ruldroc-castle/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9840 × 13440",
-    "previewSrc": "/army-background-gallery/previews/dyson-250.webp"
-  },
-  {
     "id": "dyson-251",
     "title": "Oceanwatch",
     "description": "",
@@ -2772,17 +1540,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-252.webp"
   },
   {
-    "id": "dyson-253",
-    "title": "Darklingtown - Frog Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/01/08/heart-of-darkling-frog-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "19200 × 14400",
-    "previewSrc": "/army-background-gallery/previews/dyson-253.webp"
-  },
-  {
     "id": "dyson-254",
     "title": "Darklingtown - The Mushroom Caves",
     "description": "",
@@ -2803,17 +1560,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "19200 × 19200",
     "previewSrc": "/army-background-gallery/previews/dyson-255.webp"
-  },
-  {
-    "id": "dyson-256",
-    "title": "Krelava Manor",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2022/01/01/release-the-kraken-on-krelava-manor/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12900 × 4800",
-    "previewSrc": "/army-background-gallery/previews/dyson-256.webp"
   },
   {
     "id": "dyson-257",
@@ -2860,17 +1606,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-260.webp"
   },
   {
-    "id": "dyson-261",
-    "title": "Bastion of the Prince of Clubs",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/12/03/release-the-kraken-on-the-bastion-of-the-prince-of-clubs/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "15600 × 15360",
-    "previewSrc": "/army-background-gallery/previews/dyson-261.webp"
-  },
-  {
     "id": "dyson-262",
     "title": "Kamrorth's Cairn",
     "description": "",
@@ -2915,17 +1650,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-265.webp"
   },
   {
-    "id": "dyson-266",
-    "title": "Imp Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/11/04/release-the-kraken-on-imp-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 8967",
-    "previewSrc": "/army-background-gallery/previews/dyson-266.webp"
-  },
-  {
     "id": "dyson-267",
     "title": "Creeping Sands",
     "description": "",
@@ -2935,28 +1659,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "16800 × 9000",
     "previewSrc": "/army-background-gallery/previews/dyson-267.webp"
-  },
-  {
-    "id": "dyson-268",
-    "title": "Business Cards 2021 - Set 1",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/10/09/2021-business-card-dungeons/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2574 × 2409",
-    "previewSrc": "/army-background-gallery/previews/dyson-268.webp"
-  },
-  {
-    "id": "dyson-269",
-    "title": "2021 Business Card Geomorphs - Set 2 Promotional",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/10/11/2021-business-card-dungeons-set-2/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2574 × 2409",
-    "previewSrc": "/army-background-gallery/previews/dyson-269.webp"
   },
   {
     "id": "dyson-270",
@@ -3012,28 +1714,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9600 × 9600",
     "previewSrc": "/army-background-gallery/previews/dyson-274.webp"
-  },
-  {
-    "id": "dyson-275",
-    "title": "Skaldon's Dome",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/09/11/skaldons-dome/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7500 × 14400",
-    "previewSrc": "/army-background-gallery/previews/dyson-275.webp"
-  },
-  {
-    "id": "dyson-276",
-    "title": "Pentagonal Monuments in the Ghost Dunes",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/09/09/pentagonal-monuments-in-the-ghost-dunes/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 19200",
-    "previewSrc": "/army-background-gallery/previews/dyson-276.webp"
   },
   {
     "id": "dyson-277",
@@ -3124,17 +1804,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-284.webp"
   },
   {
-    "id": "dyson-285",
-    "title": "Lords of the Aldeiron Peaks (1200 dpi)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/07/31/release-the-kraken-on-the-lords-of-the-aldeiron-peaks/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11400 × 9000",
-    "previewSrc": "/army-background-gallery/previews/dyson-285.webp"
-  },
-  {
     "id": "dyson-286",
     "title": "Undercrofts (1200 dpi)",
     "description": "",
@@ -3212,17 +1881,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-292.webp"
   },
   {
-    "id": "dyson-293",
-    "title": "The Four-Toothed Drunk (1200 dpi)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/06/12/the-four-toothed-drunk/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "17100 × 7500",
-    "previewSrc": "/army-background-gallery/previews/dyson-293.webp"
-  },
-  {
     "id": "dyson-294",
     "title": "Heart of Darkling - Gibberling Lake (1200 dpi)",
     "description": "",
@@ -3278,17 +1936,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-298.webp"
   },
   {
-    "id": "dyson-299",
-    "title": "Lost Reliquary (1200 dpi)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/05/07/lost-reliquary/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "17100 × 11700",
-    "previewSrc": "/army-background-gallery/previews/dyson-299.webp"
-  },
-  {
     "id": "dyson-300",
     "title": "Landing Facility (with grids)",
     "description": "",
@@ -3309,17 +1956,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "2550 × 3053",
     "previewSrc": "/army-background-gallery/previews/dyson-301.webp"
-  },
-  {
-    "id": "dyson-302",
-    "title": "Tarsakh Manor - Upper Floors (1200 dpi)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/05/13/tarsakh-manor-upstairs/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 4200",
-    "previewSrc": "/army-background-gallery/previews/dyson-302.webp"
   },
   {
     "id": "dyson-303",
@@ -3377,17 +2013,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-307.webp"
   },
   {
-    "id": "dyson-308",
-    "title": "Workshop and Store",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/04/01/release-the-kraken-on-a-general-purpose-workshop-and-store/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8232 × 8808",
-    "previewSrc": "/army-background-gallery/previews/dyson-308.webp"
-  },
-  {
     "id": "dyson-309",
     "title": "Tunnels of the Shrouded Emperor (1200 dpi)",
     "description": "",
@@ -3397,17 +2022,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "14400 × 14400",
     "previewSrc": "/army-background-gallery/previews/dyson-309.webp"
-  },
-  {
-    "id": "dyson-310",
-    "title": "Well Gurath (1200 dpi)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/03/08/well-gurath/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9000 × 16800",
-    "previewSrc": "/army-background-gallery/previews/dyson-310.webp"
   },
   {
     "id": "dyson-311",
@@ -3531,17 +2145,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-321.webp"
   },
   {
-    "id": "dyson-322",
-    "title": "Ruined-Keep-of-Madrual",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2021/01/05/the-ruined-keep-of-madrual/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-322.webp"
-  },
-  {
     "id": "dyson-323",
     "title": "Walled Temple",
     "description": "",
@@ -3573,17 +2176,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "8100 × 9000",
     "previewSrc": "/army-background-gallery/previews/dyson-325.webp"
-  },
-  {
-    "id": "dyson-326",
-    "title": "The ruins of Boar Isle Tower (1200 dpi)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/12/07/the-ruins-of-boar-isle-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9000 × 5400",
-    "previewSrc": "/army-background-gallery/previews/dyson-326.webp"
   },
   {
     "id": "dyson-327",
@@ -3729,28 +2321,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-339.webp"
   },
   {
-    "id": "dyson-340",
-    "title": "Bitterchains Tombs",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/10/06/bitterchains-tombs/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-340.webp"
-  },
-  {
-    "id": "dyson-341",
-    "title": "Barrow Mounds of the Lich and Famous",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/10/02/release-the-kraken-on-the-barrow-mounds-of-the-lich-famous/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8736 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-341.webp"
-  },
-  {
     "id": "dyson-342",
     "title": "Lair of the Golden Wolf",
     "description": "",
@@ -3839,17 +2409,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-349.webp"
   },
   {
-    "id": "dyson-350",
-    "title": "The Raven's Rum & Roosts",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/08/10/the-ravens-rum-roosts-tavern-inn/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6300 × 9300",
-    "previewSrc": "/army-background-gallery/previews/dyson-350.webp"
-  },
-  {
     "id": "dyson-351",
     "title": "Isometric Tomb of Illhan the Binder",
     "description": "",
@@ -3859,17 +2418,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "14400 × 12322",
     "previewSrc": "/army-background-gallery/previews/dyson-351.webp"
-  },
-  {
-    "id": "dyson-352",
-    "title": "Crowned Hill",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/08/04/crowned-hill/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 12900",
-    "previewSrc": "/army-background-gallery/previews/dyson-352.webp"
   },
   {
     "id": "dyson-353",
@@ -3903,28 +2451,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "12000 × 9600",
     "previewSrc": "/army-background-gallery/previews/dyson-355.webp"
-  },
-  {
-    "id": "dyson-356",
-    "title": "Moonset Street Shops",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/07/12/five-shops-along-moonset-street/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 5400",
-    "previewSrc": "/army-background-gallery/previews/dyson-356.webp"
-  },
-  {
-    "id": "dyson-357",
-    "title": "The Warlock's Arms",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/07/09/the-warlocks-arms-dd-inn-floor-plan/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11400 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-357.webp"
   },
   {
     "id": "dyson-358",
@@ -3982,17 +2508,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-362.webp"
   },
   {
-    "id": "dyson-363",
-    "title": "Guddur's Wicked Teahouse",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/06/06/guddurs-wicked-teahouse/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "15600 × 6900",
-    "previewSrc": "/army-background-gallery/previews/dyson-363.webp"
-  },
-  {
     "id": "dyson-364",
     "title": "Spell-Eater's Spring",
     "description": "",
@@ -4035,28 +2550,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "13200 × 10800",
     "previewSrc": "/army-background-gallery/previews/dyson-367.webp"
-  },
-  {
-    "id": "dyson-368",
-    "title": "The Old Fort Ruins & Dungeon",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/05/09/the-old-fort-ruins-dungeon/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "15024 × 9984",
-    "previewSrc": "/army-background-gallery/previews/dyson-368.webp"
-  },
-  {
-    "id": "dyson-369",
-    "title": "The Twin Norkers (tagged)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/05/07/welcome-to-the-twin-norkers/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "16800 × 7797",
-    "previewSrc": "/army-background-gallery/previews/dyson-369.webp"
   },
   {
     "id": "dyson-370",
@@ -4103,17 +2596,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-373.webp"
   },
   {
-    "id": "dyson-374",
-    "title": "Beneath the Marching Tankard",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/04/11/beneath-the-marching-tankard/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11445 × 8400",
-    "previewSrc": "/army-background-gallery/previews/dyson-374.webp"
-  },
-  {
     "id": "dyson-375",
     "title": "The Marching Tankard - Upstairs - Tagged",
     "description": "",
@@ -4147,17 +2629,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-377.webp"
   },
   {
-    "id": "dyson-378",
-    "title": "Barrow Mounds of the Lich & Famous III",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/04/02/barrow-mounds-kraken/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2336 × 3129",
-    "previewSrc": "/army-background-gallery/previews/dyson-378.webp"
-  },
-  {
     "id": "dyson-379",
     "title": "The Cinder Throne",
     "description": "",
@@ -4167,17 +2638,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "10816 × 7104",
     "previewSrc": "/army-background-gallery/previews/dyson-379.webp"
-  },
-  {
-    "id": "dyson-380",
-    "title": "The Hydra's Alehouse",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/03/12/hydras-alehouse/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8400 × 4152",
-    "previewSrc": "/army-background-gallery/previews/dyson-380.webp"
   },
   {
     "id": "dyson-381",
@@ -4235,28 +2695,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-385.webp"
   },
   {
-    "id": "dyson-386",
-    "title": "The Dungeon in 12 Parts",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/02/22/kraken-12/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9008 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-386.webp"
-  },
-  {
-    "id": "dyson-387",
-    "title": "The Bast Inn",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/02/13/bastinn/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10166 × 11554",
-    "previewSrc": "/army-background-gallery/previews/dyson-387.webp"
-  },
-  {
     "id": "dyson-388",
     "title": "Royal Catacombs of Adrih",
     "description": "",
@@ -4266,28 +2704,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "8400 × 6960",
     "previewSrc": "/army-background-gallery/previews/dyson-388.webp"
-  },
-  {
-    "id": "dyson-389",
-    "title": "Pillar of the Igesej Loremaster",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/02/06/isopillar/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11144 × 6020",
-    "previewSrc": "/army-background-gallery/previews/dyson-389.webp"
-  },
-  {
-    "id": "dyson-390",
-    "title": "Kabrel's Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/02/03/kabrels/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-390.webp"
   },
   {
     "id": "dyson-391",
@@ -4334,17 +2750,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-394.webp"
   },
   {
-    "id": "dyson-395",
-    "title": "The Iyesgarten Inn",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2020/01/09/2020-inn/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10850 × 16750",
-    "previewSrc": "/army-background-gallery/previews/dyson-395.webp"
-  },
-  {
     "id": "dyson-396",
     "title": "The Village of Iyesgarten",
     "description": "",
@@ -4365,17 +2770,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "12966 × 10334",
     "previewSrc": "/army-background-gallery/previews/dyson-397.webp"
-  },
-  {
-    "id": "dyson-398",
-    "title": "Spectre's Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/12/26/spectre-kraken/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6432 × 11696",
-    "previewSrc": "/army-background-gallery/previews/dyson-398.webp"
   },
   {
     "id": "dyson-399",
@@ -4411,28 +2805,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-401.webp"
   },
   {
-    "id": "dyson-402",
-    "title": "The Behkon Inn",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/12/10/the-behkon-inn/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12266 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-402.webp"
-  },
-  {
-    "id": "dyson-403",
-    "title": "Sewer Connectors",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/12/08/sewer-connectors/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8505 × 13200",
-    "previewSrc": "/army-background-gallery/previews/dyson-403.webp"
-  },
-  {
     "id": "dyson-404",
     "title": "Lady White's Ruins",
     "description": "",
@@ -4464,17 +2836,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9600 × 9600",
     "previewSrc": "/army-background-gallery/previews/dyson-406.webp"
-  },
-  {
-    "id": "dyson-407",
-    "title": "Labhruinn's Tavern",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/11/11/labhruinn/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 5520",
-    "previewSrc": "/army-background-gallery/previews/dyson-407.webp"
   },
   {
     "id": "dyson-408",
@@ -4521,17 +2882,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-411.webp"
   },
   {
-    "id": "dyson-412",
-    "title": "Sewer Elements",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/10/14/sewer-elements/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-412.webp"
-  },
-  {
     "id": "dyson-413",
     "title": "Temple Crypts of the Wraith Priests",
     "description": "",
@@ -4541,17 +2891,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "11328 × 9072",
     "previewSrc": "/army-background-gallery/previews/dyson-413.webp"
-  },
-  {
-    "id": "dyson-414",
-    "title": "the Stone Troll's Lantern",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/10/10/lantern/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9600 × 12000",
-    "previewSrc": "/army-background-gallery/previews/dyson-414.webp"
   },
   {
     "id": "dyson-415",
@@ -4587,17 +2926,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-417.webp"
   },
   {
-    "id": "dyson-418",
-    "title": "Smugglers-Lodge",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/09/12/smugglers/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10800 × 10800",
-    "previewSrc": "/army-background-gallery/previews/dyson-418.webp"
-  },
-  {
     "id": "dyson-419",
     "title": "Gauntlet of the Flintcrowned Ghouls",
     "description": "",
@@ -4607,17 +2935,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9600 × 9600",
     "previewSrc": "/army-background-gallery/previews/dyson-419.webp"
-  },
-  {
-    "id": "dyson-420",
-    "title": "Shieldrick's Tower Inn",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/09/04/tower-inn/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7200 × 7200",
-    "previewSrc": "/army-background-gallery/previews/dyson-420.webp"
   },
   {
     "id": "dyson-421",
@@ -4631,28 +2948,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-421.webp"
   },
   {
-    "id": "dyson-422",
-    "title": "The Red Descent",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/08/08/red/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12000 × 9600",
-    "previewSrc": "/army-background-gallery/previews/dyson-422.webp"
-  },
-  {
-    "id": "dyson-423",
-    "title": "The Old Turnip Inn",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/08/05/turnip/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "7296 × 11168",
-    "previewSrc": "/army-background-gallery/previews/dyson-423.webp"
-  },
-  {
     "id": "dyson-424",
     "title": "The Phoenix Diadem",
     "description": "",
@@ -4662,17 +2957,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9600 × 11040",
     "previewSrc": "/army-background-gallery/previews/dyson-424.webp"
-  },
-  {
-    "id": "dyson-425",
-    "title": "Guild Temple",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/08/01/guildhall-kraken/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6432 × 4248",
-    "previewSrc": "/army-background-gallery/previews/dyson-425.webp"
   },
   {
     "id": "dyson-426",
@@ -4763,28 +3047,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-433.webp"
   },
   {
-    "id": "dyson-434",
-    "title": "Ashryn Spire",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/06/10/ashryn-spire/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 8700",
-    "previewSrc": "/army-background-gallery/previews/dyson-434.webp"
-  },
-  {
-    "id": "dyson-435",
-    "title": "The Fire Beetle Ale House",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/06/06/firebeetle/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10200 × 5976",
-    "previewSrc": "/army-background-gallery/previews/dyson-435.webp"
-  },
-  {
     "id": "dyson-436",
     "title": "Robrus Beach Cave",
     "description": "",
@@ -4840,17 +3102,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-440.webp"
   },
   {
-    "id": "dyson-441",
-    "title": "Twelve Goats Tavern",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/05/06/12goats/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6000 × 6000",
-    "previewSrc": "/army-background-gallery/previews/dyson-441.webp"
-  },
-  {
     "id": "dyson-442",
     "title": "Black Armoury of the Mad King",
     "description": "",
@@ -4871,28 +3122,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "8234 × 10160",
     "previewSrc": "/army-background-gallery/previews/dyson-443.webp"
-  },
-  {
-    "id": "dyson-444",
-    "title": "Sanhelter Keep",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/04/27/release-the-kraken-on-sanhelter-keep/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "4440 × 6048",
-    "previewSrc": "/army-background-gallery/previews/dyson-444.webp"
-  },
-  {
-    "id": "dyson-445",
-    "title": "The Wooden Duck Inn",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/04/15/duck-inn/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6960 × 8352",
-    "previewSrc": "/army-background-gallery/previews/dyson-445.webp"
   },
   {
     "id": "dyson-446",
@@ -4928,72 +3157,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-448.webp"
   },
   {
-    "id": "dyson-449",
-    "title": "The Banshee's Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/04/03/release-the-kraken-upon-the-banshees-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9739 × 13048",
-    "previewSrc": "/army-background-gallery/previews/dyson-449.webp"
-  },
-  {
-    "id": "dyson-450",
-    "title": "The Tower-Faced Demon",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/03/30/release-the-kraken-on-the-tower-faced-demon/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "16200 × 8832",
-    "previewSrc": "/army-background-gallery/previews/dyson-450.webp"
-  },
-  {
-    "id": "dyson-451",
-    "title": "Lesser Temple of the Heretics",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/03/14/temple2/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "12192 × 9408",
-    "previewSrc": "/army-background-gallery/previews/dyson-451.webp"
-  },
-  {
-    "id": "dyson-452",
-    "title": "Temple of the Seven Heretics",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/03/11/temple-of-the-seven-heretics/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 16208",
-    "previewSrc": "/army-background-gallery/previews/dyson-452.webp"
-  },
-  {
-    "id": "dyson-453",
-    "title": "Brenovale Castle",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/03/08/brenovale-castle/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11688 × 9096",
-    "previewSrc": "/army-background-gallery/previews/dyson-453.webp"
-  },
-  {
-    "id": "dyson-454",
-    "title": "Lorean's Manor",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/03/05/loreans-manor/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8184 × 7368",
-    "previewSrc": "/army-background-gallery/previews/dyson-454.webp"
-  },
-  {
     "id": "dyson-455",
     "title": "Paradise Control",
     "description": "",
@@ -5003,28 +3166,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "2685 × 2391",
     "previewSrc": "/army-background-gallery/previews/dyson-455.webp"
-  },
-  {
-    "id": "dyson-456",
-    "title": "The Portal Nexus (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/02/23/release-the-kraken-on-the-portal-nexus/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "5600 × 15354",
-    "previewSrc": "/army-background-gallery/previews/dyson-456.webp"
-  },
-  {
-    "id": "dyson-457",
-    "title": "Rose Point Manor",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/02/11/rose-point-manor/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "4776 × 6072",
-    "previewSrc": "/army-background-gallery/previews/dyson-457.webp"
   },
   {
     "id": "dyson-458",
@@ -5104,17 +3245,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-464.webp"
   },
   {
-    "id": "dyson-465",
-    "title": "Brentil Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2019/01/07/brentil-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "14173 × 6408",
-    "previewSrc": "/army-background-gallery/previews/dyson-465.webp"
-  },
-  {
     "id": "dyson-466",
     "title": "Palace of the Sands",
     "description": "",
@@ -5170,17 +3300,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-470.webp"
   },
   {
-    "id": "dyson-471",
-    "title": "White Crag Fortress",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2018/11/27/release-the-kraken-on-white-crag-fortress/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2389 × 5671",
-    "previewSrc": "/army-background-gallery/previews/dyson-471.webp"
-  },
-  {
     "id": "dyson-472",
     "title": "Prince's Harbour - Map 2",
     "description": "",
@@ -5190,17 +3309,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "2838 × 1942",
     "previewSrc": "/army-background-gallery/previews/dyson-472.webp"
-  },
-  {
-    "id": "dyson-473",
-    "title": "Greth's Island Keep",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2018/11/11/greths-island-keep/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "6852 × 8109",
-    "previewSrc": "/army-background-gallery/previews/dyson-473.webp"
   },
   {
     "id": "dyson-474",
@@ -5291,72 +3399,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-481.webp"
   },
   {
-    "id": "dyson-482",
-    "title": "Briar Keep 2018 Edition",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2018/10/01/release-the-kraken-on-briar-keep/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 10200",
-    "previewSrc": "/army-background-gallery/previews/dyson-482.webp"
-  },
-  {
-    "id": "dyson-483",
-    "title": "The Bronze Vault",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/09/13/the-bronze-vault/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3463 × 2575",
-    "previewSrc": "/army-background-gallery/previews/dyson-483.webp"
-  },
-  {
-    "id": "dyson-484",
-    "title": "The Bottomless Tombs",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/09/10/the-bottomless-tombs/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2550 × 2626",
-    "previewSrc": "/army-background-gallery/previews/dyson-484.webp"
-  },
-  {
-    "id": "dyson-485",
-    "title": "Astral-Sanatorium-Patreon",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/09/07/astral-sanatorium-of-the-mad-mi-go-brain-cluster/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11542 × 9993",
-    "previewSrc": "/army-background-gallery/previews/dyson-485.webp"
-  },
-  {
-    "id": "dyson-486",
-    "title": "Prince Delan's Shaft Tomb",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/09/03/prince-delans-shaft-tomb/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13200 × 9967",
-    "previewSrc": "/army-background-gallery/previews/dyson-486.webp"
-  },
-  {
-    "id": "dyson-487",
-    "title": "Mad-Fenrick-Combined-Promo",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/08/31/release-the-kraken-on-mad-fenricks-manor/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "5906 × 2442",
-    "previewSrc": "/army-background-gallery/previews/dyson-487.webp"
-  },
-  {
     "id": "dyson-488",
     "title": "Herlihy Farm",
     "description": "",
@@ -5399,17 +3441,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "11106 × 8610",
     "previewSrc": "/army-background-gallery/previews/dyson-491.webp"
-  },
-  {
-    "id": "dyson-492",
-    "title": "Leeb's Fortress",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/08/01/release-the-kraken-on-leebs-fortress/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "5616 × 5808",
-    "previewSrc": "/army-background-gallery/previews/dyson-492.webp"
   },
   {
     "id": "dyson-493",
@@ -5456,17 +3487,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-496.webp"
   },
   {
-    "id": "dyson-497",
-    "title": "Guimond's Tower and Lair of the Druid Lich",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/07/03/guimonds-tower-and-lair-of-the-druid-lich/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "13370 × 12925",
-    "previewSrc": "/army-background-gallery/previews/dyson-497.webp"
-  },
-  {
     "id": "dyson-498",
     "title": "Warcton Hold",
     "description": "",
@@ -5498,17 +3518,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9374 × 6127",
     "previewSrc": "/army-background-gallery/previews/dyson-500.webp"
-  },
-  {
-    "id": "dyson-501",
-    "title": "Drow Spire Fortress",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://dysonlogos.blog/2018/06/11/drow-stalagmite-spire/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3335 × 5100",
-    "previewSrc": "/army-background-gallery/previews/dyson-501.webp"
   },
   {
     "id": "dyson-502",
@@ -5555,28 +3564,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-505.webp"
   },
   {
-    "id": "dyson-506",
-    "title": "Keegan's Temple Compound",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/05/26/release-the-kraken-on-keegans-temple-compound/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2229 × 1594",
-    "previewSrc": "/army-background-gallery/previews/dyson-506.webp"
-  },
-  {
-    "id": "dyson-507",
-    "title": "Great Pyramid Side View",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/05/08/great-pyramid-of-tauneskalis-iii-grand-emperor-of-the-viridian-beacon-part-1/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8614 × 5114",
-    "previewSrc": "/army-background-gallery/previews/dyson-507.webp"
-  },
-  {
     "id": "dyson-508",
     "title": "Great Pyramid - Ground Level",
     "description": "",
@@ -5597,17 +3584,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "9607 × 8133",
     "previewSrc": "/army-background-gallery/previews/dyson-509.webp"
-  },
-  {
-    "id": "dyson-510",
-    "title": "Great Pyramid - Upper Levels",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/05/11/great-pyramid-of-tauneskalis-iii-grand-emperor-of-the-viridian-beacon-part-2/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "15319 × 7914",
-    "previewSrc": "/army-background-gallery/previews/dyson-510.webp"
   },
   {
     "id": "dyson-511",
@@ -5665,17 +3641,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-515.webp"
   },
   {
-    "id": "dyson-516",
-    "title": "Tower of the Marmoset Savant",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/04/10/tower-of-the-marmoset-savant/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "16655 × 7376",
-    "previewSrc": "/army-background-gallery/previews/dyson-516.webp"
-  },
-  {
     "id": "dyson-517",
     "title": "The Oracle's Grotto",
     "description": "",
@@ -5720,17 +3685,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-520.webp"
   },
   {
-    "id": "dyson-521",
-    "title": "The Strike",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/03/13/the-strike/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "10613 × 8847",
-    "previewSrc": "/army-background-gallery/previews/dyson-521.webp"
-  },
-  {
     "id": "dyson-522",
     "title": "Toronin Ruins - Surface",
     "description": "",
@@ -5773,17 +3727,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "11667 × 10261",
     "previewSrc": "/army-background-gallery/previews/dyson-525.webp"
-  },
-  {
-    "id": "dyson-526",
-    "title": "The Catacombs of Olik Gullar",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/03/06/the-catacombs-of-olik-gullar/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "16160 × 12560",
-    "previewSrc": "/army-background-gallery/previews/dyson-526.webp"
   },
   {
     "id": "dyson-527",
@@ -5885,17 +3828,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-535.webp"
   },
   {
-    "id": "dyson-536",
-    "title": "Third Story Run",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2018/01/05/third-story-run/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9643 × 8935",
-    "previewSrc": "/army-background-gallery/previews/dyson-536.webp"
-  },
-  {
     "id": "dyson-537",
     "title": "The Cove of Coals",
     "description": "",
@@ -5929,17 +3861,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-539.webp"
   },
   {
-    "id": "dyson-540",
-    "title": "Epherin's Keep",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/12/27/christmas-kraken-2-epherins-keep/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "1166 × 1688",
-    "previewSrc": "/army-background-gallery/previews/dyson-540.webp"
-  },
-  {
     "id": "dyson-541",
     "title": "Perrol on the Mount",
     "description": "",
@@ -5962,17 +3883,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-542.webp"
   },
   {
-    "id": "dyson-543",
-    "title": "Griffinwatch-Patreon",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/12/08/griffinwatch/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11630 × 11960",
-    "previewSrc": "/army-background-gallery/previews/dyson-543.webp"
-  },
-  {
     "id": "dyson-544",
     "title": "Pillars of the Temple of Rains",
     "description": "",
@@ -5982,17 +3892,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "10685 × 8484",
     "previewSrc": "/army-background-gallery/previews/dyson-544.webp"
-  },
-  {
-    "id": "dyson-545",
-    "title": "Heart of Darkling - the Bandit Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/12/01/heart-of-darkling-the-bandit-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "14649 × 9469",
-    "previewSrc": "/army-background-gallery/previews/dyson-545.webp"
   },
   {
     "id": "dyson-546",
@@ -6017,39 +3916,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-547.webp"
   },
   {
-    "id": "dyson-548",
-    "title": "Wreck of the Wight's Shadow (no grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/11/14/the-wreck-of-the-wights-shadow/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "9372 × 10091",
-    "previewSrc": "/army-background-gallery/previews/dyson-548.webp"
-  },
-  {
-    "id": "dyson-549",
-    "title": "Fury of the Emerald Hawk",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/11/10/fury-of-the-emerald-hawk/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "11647 × 9330",
-    "previewSrc": "/army-background-gallery/previews/dyson-549.webp"
-  },
-  {
-    "id": "dyson-550",
-    "title": "Tower of the Blind Seer",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/11/07/tower-of-the-blind-seer/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "8477 × 9056",
-    "previewSrc": "/army-background-gallery/previews/dyson-550.webp"
-  },
-  {
     "id": "dyson-551",
     "title": "The Weeping Outpost",
     "description": "",
@@ -6059,17 +3925,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "12600 × 9226",
     "previewSrc": "/army-background-gallery/previews/dyson-551.webp"
-  },
-  {
-    "id": "dyson-552",
-    "title": "The Poisoner's Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/10/13/the-poisoners-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3722 × 2425",
-    "previewSrc": "/army-background-gallery/previews/dyson-552.webp"
   },
   {
     "id": "dyson-553",
@@ -6103,17 +3958,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "3653 × 2649",
     "previewSrc": "/army-background-gallery/previews/dyson-555.webp"
-  },
-  {
-    "id": "dyson-556",
-    "title": "Aurelon's Keep (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/09/30/release-the-kraken-on-aurelons-keep/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2893 × 2835",
-    "previewSrc": "/army-background-gallery/previews/dyson-556.webp"
   },
   {
     "id": "dyson-557",
@@ -6237,28 +4081,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-567.webp"
   },
   {
-    "id": "dyson-568",
-    "title": "Lair of the Harpy Sorceresses",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/07/30/release-the-kraken-2/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3188 × 2570",
-    "previewSrc": "/army-background-gallery/previews/dyson-568.webp"
-  },
-  {
-    "id": "dyson-569",
-    "title": "The Lost Ossuary",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/07/27/release-the-kraken-on-the-lost-ossuary/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2446 × 3266",
-    "previewSrc": "/army-background-gallery/previews/dyson-569.webp"
-  },
-  {
     "id": "dyson-570",
     "title": "Hall of the Ancient Ones",
     "description": "",
@@ -6303,17 +4125,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-573.webp"
   },
   {
-    "id": "dyson-574",
-    "title": "The Oubliette Crypts",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/07/04/the-oubliette-crypts/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "1967 × 1912",
-    "previewSrc": "/army-background-gallery/previews/dyson-574.webp"
-  },
-  {
     "id": "dyson-575",
     "title": "Joseph's Inlet",
     "description": "",
@@ -6325,28 +4136,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-575.webp"
   },
   {
-    "id": "dyson-576",
-    "title": "Angarth Citadel",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/06/13/angarth-citadel/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2696 × 4550",
-    "previewSrc": "/army-background-gallery/previews/dyson-576.webp"
-  },
-  {
-    "id": "dyson-577",
-    "title": "Crystalline Tavern",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/06/09/the-crystalline-tavern-of-the-plains-of-endless-salt/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2444 × 1034",
-    "previewSrc": "/army-background-gallery/previews/dyson-577.webp"
-  },
-  {
     "id": "dyson-578",
     "title": "Monastery of the Sixfold Path",
     "description": "",
@@ -6356,17 +4145,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "2023 × 1753",
     "previewSrc": "/army-background-gallery/previews/dyson-578.webp"
-  },
-  {
-    "id": "dyson-579",
-    "title": "Grizzly Eye Cave",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/06/03/what-terrors-lurk-in-grizzly-eye-cave/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3140 × 2318",
-    "previewSrc": "/army-background-gallery/previews/dyson-579.webp"
   },
   {
     "id": "dyson-580",
@@ -6523,28 +4301,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-593.webp"
   },
   {
-    "id": "dyson-594",
-    "title": "Secret Codices of the Emerald Hawk Society",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/03/14/secret-codices-of-the-emerald-hawk-society/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2852 × 2482",
-    "previewSrc": "/army-background-gallery/previews/dyson-594.webp"
-  },
-  {
-    "id": "dyson-595",
-    "title": "Gateway to the Valley of Revelations",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/03/10/gateway-to-the-valley-of-revelations/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2474 × 3298",
-    "previewSrc": "/army-background-gallery/previews/dyson-595.webp"
-  },
-  {
     "id": "dyson-596",
     "title": "Fortress of Diane the Thrice-Damned",
     "description": "",
@@ -6655,28 +4411,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-605.webp"
   },
   {
-    "id": "dyson-606",
-    "title": "Jando's Rock",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/01/13/jandos-rock-the-ruins-of-hejmarko/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3194 × 2230",
-    "previewSrc": "/army-background-gallery/previews/dyson-606.webp"
-  },
-  {
-    "id": "dyson-607",
-    "title": "Goblin Cut Gold Mine",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2017/01/10/the-goblin-cut-gold-mine/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2328 × 2795",
-    "previewSrc": "/army-background-gallery/previews/dyson-607.webp"
-  },
-  {
     "id": "dyson-608",
     "title": "Vault of the Ghost King",
     "description": "",
@@ -6699,17 +4433,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-609.webp"
   },
   {
-    "id": "dyson-610",
-    "title": "The Mad Warlock's Dome & Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/12/31/release-the-kraken-the-mad-warlocks-dome-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2877 × 2363",
-    "previewSrc": "/army-background-gallery/previews/dyson-610.webp"
-  },
-  {
     "id": "dyson-611",
     "title": "The Ruins of Lawrence Hall",
     "description": "",
@@ -6719,17 +4442,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "1503 × 4851",
     "previewSrc": "/army-background-gallery/previews/dyson-611.webp"
-  },
-  {
-    "id": "dyson-612",
-    "title": "Mirelyn's Skyrealm Complete - B&W",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/12/24/mirelyns-skyrealm-assembled/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "4154 × 3375",
-    "previewSrc": "/army-background-gallery/previews/dyson-612.webp"
   },
   {
     "id": "dyson-613",
@@ -6754,17 +4466,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-614.webp"
   },
   {
-    "id": "dyson-615",
-    "title": "The Violet Beacon",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/12/06/the-violet-beacon-the-lodestar-of-amaranthine-regrets/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3512 × 2165",
-    "previewSrc": "/army-background-gallery/previews/dyson-615.webp"
-  },
-  {
     "id": "dyson-616",
     "title": "Carmine Archives of the Granite Marsh",
     "description": "",
@@ -6787,17 +4488,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-617.webp"
   },
   {
-    "id": "dyson-618",
-    "title": "Ruins of the Gorgon",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/11/21/release-the-kraken-ruins-of-the-gorgon/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3116 × 2290",
-    "previewSrc": "/army-background-gallery/previews/dyson-618.webp"
-  },
-  {
     "id": "dyson-619",
     "title": "Clayfield Village",
     "description": "",
@@ -6807,17 +4497,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "3097 × 2498",
     "previewSrc": "/army-background-gallery/previews/dyson-619.webp"
-  },
-  {
-    "id": "dyson-620",
-    "title": "The Demon-Faced Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/11/08/the-demon-faced-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "4212 × 3571",
-    "previewSrc": "/army-background-gallery/previews/dyson-620.webp"
   },
   {
     "id": "dyson-621",
@@ -6840,17 +4519,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "1807 × 1336",
     "previewSrc": "/army-background-gallery/previews/dyson-622.webp"
-  },
-  {
-    "id": "dyson-623",
-    "title": "Wolf Tower (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/10/27/release-the-kraken-wolf-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2682 × 1678",
-    "previewSrc": "/army-background-gallery/previews/dyson-623.webp"
   },
   {
     "id": "dyson-624",
@@ -6985,17 +4653,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-635.webp"
   },
   {
-    "id": "dyson-636",
-    "title": "The Grand Library of Coruvon",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/08/05/the-grand-library-of-coruvon/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "1892 × 3428",
-    "previewSrc": "/army-background-gallery/previews/dyson-636.webp"
-  },
-  {
     "id": "dyson-637",
     "title": "Beneath the Temple of Three Dragons",
     "description": "",
@@ -7051,17 +4708,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-641.webp"
   },
   {
-    "id": "dyson-642",
-    "title": "The Vansho Reliquary",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/07/03/the-vansho-reliquary/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2924 × 1664",
-    "previewSrc": "/army-background-gallery/previews/dyson-642.webp"
-  },
-  {
     "id": "dyson-643",
     "title": "The Temple of Red Waters",
     "description": "",
@@ -7093,39 +4739,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "2100 × 2578",
     "previewSrc": "/army-background-gallery/previews/dyson-645.webp"
-  },
-  {
-    "id": "dyson-646",
-    "title": "Five More Dungeon Business Cards!",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/06/07/more-business-card-ography/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "1138 × 3205",
-    "previewSrc": "/army-background-gallery/previews/dyson-646.webp"
-  },
-  {
-    "id": "dyson-647",
-    "title": "Dungeon Business Cards",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/06/03/geomorphic-business-cards/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "1187 × 3308",
-    "previewSrc": "/army-background-gallery/previews/dyson-647.webp"
-  },
-  {
-    "id": "dyson-648",
-    "title": "Tavern and Understructures",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/05/13/the-quizling-duck-tavern-and-understructures/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2888 × 1951",
-    "previewSrc": "/army-background-gallery/previews/dyson-648.webp"
   },
   {
     "id": "dyson-649",
@@ -7161,17 +4774,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-651.webp"
   },
   {
-    "id": "dyson-652",
-    "title": "The Turning Tower (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/03/29/the-turning-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "4647 × 2226",
-    "previewSrc": "/army-background-gallery/previews/dyson-652.webp"
-  },
-  {
     "id": "dyson-653",
     "title": "Crypts & Sewers",
     "description": "",
@@ -7183,28 +4785,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-653.webp"
   },
   {
-    "id": "dyson-654",
-    "title": "Caravanserai (no grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/04/08/the-caravanserai/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2201 × 2890",
-    "previewSrc": "/army-background-gallery/previews/dyson-654.webp"
-  },
-  {
-    "id": "dyson-655",
-    "title": "Svirfneblin Bridge Fortress",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/04/05/the-velvet-hood-a-svirfneblin-bridge-fortress/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3600 × 2872",
-    "previewSrc": "/army-background-gallery/previews/dyson-655.webp"
-  },
-  {
     "id": "dyson-656",
     "title": "Griffinwatch Ruins",
     "description": "",
@@ -7214,28 +4794,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "2484 × 1759",
     "previewSrc": "/army-background-gallery/previews/dyson-656.webp"
-  },
-  {
-    "id": "dyson-657",
-    "title": "The Shattered Tower - Lower (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/10/27/tuesday-map-the-shattered-tower-lower-levels/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2362 × 3136",
-    "previewSrc": "/army-background-gallery/previews/dyson-657.webp"
-  },
-  {
-    "id": "dyson-658",
-    "title": "The Shattered Tower - Upper Levels (grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/10/30/friday-map-the-shattered-tower-upper-levels/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "1772 × 7078",
-    "previewSrc": "/army-background-gallery/previews/dyson-658.webp"
   },
   {
     "id": "dyson-659",
@@ -7271,17 +4829,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-661.webp"
   },
   {
-    "id": "dyson-662",
-    "title": "The Tower Bridge (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/02/09/the-bridge-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3376 × 4173",
-    "previewSrc": "/army-background-gallery/previews/dyson-662.webp"
-  },
-  {
     "id": "dyson-663",
     "title": "Roadside Fortress (simple grid)",
     "description": "",
@@ -7302,17 +4849,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "2631 × 2382",
     "previewSrc": "/army-background-gallery/previews/dyson-664.webp"
-  },
-  {
-    "id": "dyson-665",
-    "title": "Metivier Manor (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2016/01/08/metivier-manor/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3543 × 2442",
-    "previewSrc": "/army-background-gallery/previews/dyson-665.webp"
   },
   {
     "id": "dyson-666",
@@ -7337,28 +4873,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-667.webp"
   },
   {
-    "id": "dyson-668",
-    "title": "Temple of the Snake (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/12/11/friday-map-temple-of-the-snake/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2022 × 2812",
-    "previewSrc": "/army-background-gallery/previews/dyson-668.webp"
-  },
-  {
-    "id": "dyson-669",
-    "title": "Small Fort & Dungeon from the Oak King",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/12/08/tuesday-map-small-fort-dungeon-from-the-oak-king/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "1775 × 2691",
-    "previewSrc": "/army-background-gallery/previews/dyson-669.webp"
-  },
-  {
     "id": "dyson-670",
     "title": "Lino's Islands",
     "description": "",
@@ -7368,28 +4882,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "2356 × 1928",
     "previewSrc": "/army-background-gallery/previews/dyson-670.webp"
-  },
-  {
-    "id": "dyson-671",
-    "title": "Hejmarko - Jando's Arch",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/12/01/tuesday-map-hejmarko-jandos-arch/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3172 × 2394",
-    "previewSrc": "/army-background-gallery/previews/dyson-671.webp"
-  },
-  {
-    "id": "dyson-672",
-    "title": "Brenton's Watch (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/11/10/tuesday-map-brentons-watch/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3052 × 1987",
-    "previewSrc": "/army-background-gallery/previews/dyson-672.webp"
   },
   {
     "id": "dyson-673",
@@ -7447,39 +4939,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-677.webp"
   },
   {
-    "id": "dyson-678",
-    "title": "Ha'Tak Temple",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/09/11/friday-map-the-ruined-hatak-temple/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2417 × 4724",
-    "previewSrc": "/army-background-gallery/previews/dyson-678.webp"
-  },
-  {
-    "id": "dyson-679",
-    "title": "Dreaming Feather's Tomb (2 Maps)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/09/08/tuesday-map-dreaming-feathers-tomb/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3184 × 2486",
-    "previewSrc": "/army-background-gallery/previews/dyson-679.webp"
-  },
-  {
-    "id": "dyson-680",
-    "title": "The Temple of Marid Scurn",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/09/04/friday-map-the-temple-of-marid-scurn/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2125 × 1885",
-    "previewSrc": "/army-background-gallery/previews/dyson-680.webp"
-  },
-  {
     "id": "dyson-681",
     "title": "ReQuasqueton",
     "description": "",
@@ -7500,28 +4959,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "1695 × 1126",
     "previewSrc": "/army-background-gallery/previews/dyson-682.webp"
-  },
-  {
-    "id": "dyson-683",
-    "title": "Ledge Tower",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/08/11/tuesday-map-the-ledge-tower/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2867 × 2709",
-    "previewSrc": "/army-background-gallery/previews/dyson-683.webp"
-  },
-  {
-    "id": "dyson-684",
-    "title": "Nesbitt-Hill",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/08/07/friday-map-nesbitt-hill/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2880 × 2538",
-    "previewSrc": "/army-background-gallery/previews/dyson-684.webp"
   },
   {
     "id": "dyson-685",
@@ -7579,39 +5016,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-689.webp"
   },
   {
-    "id": "dyson-690",
-    "title": "Sparrow's Fort (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/06/16/tuesday-map-sparrows-fort/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3014 × 2364",
-    "previewSrc": "/army-background-gallery/previews/dyson-690.webp"
-  },
-  {
-    "id": "dyson-691",
-    "title": "Asymmetric Temple - Underground (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/06/12/tuesday-map-the-asymmetric-temple-underground/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2856 × 2122",
-    "previewSrc": "/army-background-gallery/previews/dyson-691.webp"
-  },
-  {
-    "id": "dyson-692",
-    "title": "Asymmetric Temple - Topside (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/06/09/friday-map-the-asymmetric-temple-surface-levels/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2646 × 2091",
-    "previewSrc": "/army-background-gallery/previews/dyson-692.webp"
-  },
-  {
     "id": "dyson-693",
     "title": "Ettin Manor Dungeons (with grid)",
     "description": "",
@@ -7643,17 +5047,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "1883 × 1752",
     "previewSrc": "/army-background-gallery/previews/dyson-695.webp"
-  },
-  {
-    "id": "dyson-696",
-    "title": "Combined View",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/05/12/tuesday-map-kabus-retreat-the-monastery-in-the-mists/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "4906 × 3838",
-    "previewSrc": "/army-background-gallery/previews/dyson-696.webp"
   },
   {
     "id": "dyson-697",
@@ -7711,17 +5104,6 @@
     "previewSrc": "/army-background-gallery/previews/dyson-701.webp"
   },
   {
-    "id": "dyson-702",
-    "title": "Titan's Teeth",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/03/03/tuesday-map-titans-teeth/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "3172 × 3724",
-    "previewSrc": "/army-background-gallery/previews/dyson-702.webp"
-  },
-  {
     "id": "dyson-703",
     "title": "Alderbridge",
     "description": "",
@@ -7742,28 +5124,6 @@
     "attribution": "Maps by Dyson Logos",
     "originalDimensions": "2393 × 3048",
     "previewSrc": "/army-background-gallery/previews/dyson-704.webp"
-  },
-  {
-    "id": "dyson-705",
-    "title": "The Stone Sinister",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/04/10/friday-map-the-stone-sinister/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2851 × 2300",
-    "previewSrc": "/army-background-gallery/previews/dyson-705.webp"
-  },
-  {
-    "id": "dyson-706",
-    "title": "Black Spire through Salted Lands (with grid)",
-    "description": "",
-    "source": "dyson",
-    "sourceName": "Dyson Logos",
-    "sourcePage": "https://rpgcharacters.wordpress.com/2015/04/14/tuesday-map-dark-spire-through-salted-lands/",
-    "attribution": "Maps by Dyson Logos",
-    "originalDimensions": "2271 × 1959",
-    "previewSrc": "/army-background-gallery/previews/dyson-706.webp"
   },
   {
     "id": "dyson-707",

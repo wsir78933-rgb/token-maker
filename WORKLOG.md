@@ -1,5 +1,38 @@
 # WORKLOG
 
+## 交接单 · 2026-10-02 20:47 CST · Codex CLI
+
+### 本次目标
+
+修复 Armor Creator 英文页缺少 What Is、How To Use、Comparison 和 FAQ 内容的问题，并将改动合并到本地 main。
+
+### 已完成
+
+- `src/components/armor-creator/ArmorCreatorPageView.tsx` 现在为中英文渲染 What Is、Features、How To Use、Comparison 和 FAQ 区块。
+- `src/lib/armor-creator/copy.ts` 补充英文 Comparison 文案；`src/components/armor-creator/ArmorCreatorPageHeading.test.tsx` 覆盖英文区块、步骤、表格、FAQ 和区块顺序。
+- 提交 `0a3223f`（`fix: localize Armor Creator sections`）已快进合并到本地 main，只包含上述 3 个文件。
+- 验证通过：定向 Vitest 1 个文件、4 项测试；ESLint 退出码 0；`pnpm run typecheck` 退出码 0。Ego Browser 检查了 `http://localhost:40002/armor-creator` 和 `http://localhost:40002/zh/armor-creator`，两种语言的内容均可见。
+- Orca 的 `18n` 工作树和本地分支已删除。没有 push 或部署。
+
+### 做到一半
+
+代码修改与本地合并均已完成。根目录 `AGENTS.md` 有一项未提交的多语言规则修改；用户选择不存档，因此保留原样。本交接单写入后也不提交。
+
+### 下一步
+
+无。main 比 origin/main 超前 4 个提交；远端同步和部署均未执行。
+
+### 踩过的坑
+
+英文页的下方内容原先被 `locale === 'zh'` 条件包住；英文 Comparison 文案也缺失。合并时保留了 `AGENTS.md` 的未提交修改。
+
+### 怎么验证
+
+- `pnpm exec vitest run src/components/armor-creator/ArmorCreatorPageHeading.test.tsx`：1 个文件、4 项测试通过。
+- 对 `ArmorCreatorPageView.tsx`、`ArmorCreatorPageHeading.test.tsx` 和 `copy.ts` 运行 ESLint：退出码 0。
+- `pnpm run typecheck`：退出码 0。
+- 在 Ego Browser 打开英文 `/armor-creator` 和中文 `/zh/armor-creator`，确认 What Is、How To Use、Comparison、FAQ 内容可见。
+
 ## 交接单 · 2026-10-02 16:46 CST · Codex CLI
 
 ### 本次目标

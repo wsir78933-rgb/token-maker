@@ -174,9 +174,9 @@ function validateArmyBackgroundMap(
 }
 
 function validateArmyBackgroundMaps(value: unknown): ArmyBackgroundGalleryMap[] {
-  if (!Array.isArray(value) || value.length !== 717) {
+  if (!Array.isArray(value) || value.length !== 477) {
     throw new Error(
-      `Army background gallery maps must contain 717 records, received: ${Array.isArray(value) ? value.length : JSON.stringify(value)}`,
+      `Army background gallery maps must contain 477 records, received: ${Array.isArray(value) ? value.length : JSON.stringify(value)}`,
     );
   }
 

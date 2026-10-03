@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: 'Battle Map Background Library | Army Formation Creator',
   description:
-    'Browse and preview 717 battle maps for the Army Formation Creator. Filter maps by terrain category and source.',
+    'Browse and preview 477 battle maps for the Army Formation Creator. Filter maps by terrain category and source.',
   alternates: {
     canonical: path,
     languages: getLanguageAlternates(path),
