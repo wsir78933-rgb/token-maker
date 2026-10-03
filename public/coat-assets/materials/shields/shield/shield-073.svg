@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><defs><clipPath id="clip-shield-073"><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z"/></clipPath></defs><g clip-path="url(#clip-shield-073)"><rect x="0" y="0" width="100" height="120" fill="#F4EEDF"/><rect x="24" y="17" width="8" height="14" fill="#B4282E" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><rect x="44" y="13" width="8" height="14" fill="#E1B432" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><rect x="64" y="19" width="8" height="14" fill="#B4282E" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><rect x="32" y="40" width="8" height="14" fill="#E1B432" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><rect x="55" y="38" width="8" height="14" fill="#B4282E" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><rect x="25" y="63" width="8" height="14" fill="#E1B432" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><rect x="46" y="59" width="8" height="14" fill="#B4282E" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><rect x="66" y="65" width="8" height="14" fill="#E1B432" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><rect x="39" y="84" width="8" height="14" fill="#B4282E" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><rect x="57" y="84" width="8" height="14" fill="#E1B432" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/></g><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 240 280">
+  <title>Shield 073 — Chevronny three bands</title>
+  <defs>
+    <clipPath id="clip-shield-073" clipPathUnits="userSpaceOnUse">
+      <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip-shield-073)">
+    <rect x="0" y="0" width="240" height="280" fill="#B8202A"/><polygon points="-20,24 120,92 260,24 260,38 120,106 -20,38" fill="#F3C52E" stroke="#202125" stroke-width="1.6" stroke-linejoin="round"/><polygon points="-20,105 120,173 260,105 260,119 120,187 -20,119" fill="#F3C52E" stroke="#202125" stroke-width="1.6" stroke-linejoin="round"/><polygon points="-20,186 120,254 260,186 260,200 120,268 -20,200" fill="#F3C52E" stroke="#202125" stroke-width="1.6" stroke-linejoin="round"/>
+  </g>
+  <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z" fill="none" stroke="#202125" stroke-width="3" stroke-linejoin="round"/>
+</svg>

@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><defs><clipPath id="clip-shield-044"><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z"/></clipPath></defs><g clip-path="url(#clip-shield-044)"><polygon points="0,0 100,0 50,60" fill="#B4282E"/><polygon points="100,0 100,120 50,60" fill="#E1B432"/><polygon points="100,120 0,120 50,60" fill="#2452A3"/><polygon points="0,120 0,0 50,60" fill="#E1B432"/><line x1="0" y1="0" x2="100" y2="120" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/><line x1="100" y1="0" x2="0" y2="120" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/></g><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 240 280">
+  <title>Shield 044 — Tierced palewise</title>
+  <defs>
+    <clipPath id="clip-shield-044" clipPathUnits="userSpaceOnUse">
+      <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip-shield-044)">
+    <rect x="0" y="0" width="80" height="280" fill="#F3C52E"/><rect x="80" y="0" width="80" height="280" fill="#B8202A"/><rect x="160" y="0" width="80" height="280" fill="#F3C52E"/><path d="M80 0 V280 M160 0 V280" fill="none" stroke="#202125" stroke-width="1.6"/>
+  </g>
+  <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z" fill="none" stroke="#202125" stroke-width="3" stroke-linejoin="round"/>
+</svg>

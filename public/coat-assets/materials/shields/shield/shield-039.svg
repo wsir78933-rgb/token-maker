@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><defs><clipPath id="clip-shield-039"><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z"/></clipPath></defs><g clip-path="url(#clip-shield-039)"><rect x="0" y="0" width="100" height="120" fill="#2452A3"/><polygon points="-16,10 -7,1 104,108 95,117" fill="#E1B432" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="-2,24 12,10 116,110 102,124" fill="#B4282E" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="12,38 21,29 102,107 93,116" fill="#E1B432" stroke="#111111" stroke-width="3" stroke-linejoin="round"/></g><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 240 280">
+  <title>Shield 039 — Twin vertical bars</title>
+  <defs>
+    <clipPath id="clip-shield-039" clipPathUnits="userSpaceOnUse">
+      <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip-shield-039)">
+    <rect x="0" y="0" width="240" height="280" fill="#B8202A"/><rect x="54" y="0" width="32" height="280" fill="#F3C52E" stroke="#202125" stroke-width="1.6"/><rect x="154" y="0" width="32" height="280" fill="#F3C52E" stroke="#202125" stroke-width="1.6"/>
+  </g>
+  <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z" fill="none" stroke="#202125" stroke-width="3" stroke-linejoin="round"/>
+</svg>

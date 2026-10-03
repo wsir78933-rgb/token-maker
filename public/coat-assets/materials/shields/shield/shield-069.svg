@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><defs><clipPath id="clip-shield-069"><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z"/></clipPath></defs><g clip-path="url(#clip-shield-069)"><rect x="0" y="0" width="100" height="120" fill="#2452A3"/><polygon points="-30,8 -20,-2 62,78 52,88" fill="#E1B432" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="-10,8 0,-2 82,78 72,88" fill="#E1B432" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="10,8 20,-2 102,78 92,88" fill="#E1B432" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="30,8 40,-2 122,78 112,88" fill="#E1B432" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="50,8 60,-2 142,78 132,88" fill="#E1B432" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="92,16 100,24 12,106 4,98" fill="#F4EEDF" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><polygon points="112,46 120,54 32,136 24,128" fill="#F4EEDF" stroke="#111111" stroke-width="3" stroke-linejoin="round"/></g><path d="M16 12 L84 12 L82 38 Q80 63 73 82 Q66 99 50 111 Q34 99 27 82 Q20 63 18 38 Z" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 240 280">
+  <title>Shield 069 — Chief and Chevron</title>
+  <defs>
+    <clipPath id="clip-shield-069" clipPathUnits="userSpaceOnUse">
+      <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip-shield-069)">
+    <rect x="0" y="0" width="240" height="280" fill="#B8202A"/>
+    <rect x="0" y="0" width="240" height="78" fill="#F3C52E" stroke="#202125" stroke-width="1.6"/>
+    <path d="M-20 194 L120 108 L260 194 V231 L120 145 L-20 231 Z" fill="#F3C52E" stroke="#202125" stroke-width="1.6" stroke-linejoin="round"/>
+  </g>
+  <path d="M120 22 Q164 37 212 48 L210 135 C208 192 174 231 120 256 C66 231 32 192 30 135 L28 48 Q76 37 120 22 Z" fill="none" stroke="#202125" stroke-width="3" stroke-linejoin="round"/>
+</svg>

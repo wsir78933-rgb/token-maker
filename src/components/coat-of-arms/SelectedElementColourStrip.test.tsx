@@ -131,10 +131,7 @@ describe('SelectedElementColourStrip', () => {
     const colourGroup = screen.getByRole('group', { name: 'Selected element colours' });
     const colourValues = [...colourGroup.querySelectorAll<HTMLInputElement>('input[type="color"]')]
       .map((input) => input.getAttribute('value'));
-    expect(colourValues).toEqual(expect.arrayContaining(['#B4282E', '#E1B432']));
-    if (colourValues.includes('#111111')) {
-      expect(colourValues).toContain('#111111');
-    }
+    expect(colourValues).toEqual(expect.arrayContaining(['#B8202A', '#F3C52E', '#202125']));
   });
 
   it.each([

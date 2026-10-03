@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><defs><clipPath id="clip-banner-020.svg"><path d="M16 10 L84 10 L84 66 Q83 88 66 100 Q57 106 50 112 Q43 106 34 100 Q17 88 16 66 Z"/></clipPath></defs><g clip-path="url(#clip-banner-020.svg)"><rect x="0" y="0" width="100" height="120" fill="#E1B432"/><path d="M27 20 L73 20 L72 34 L76 44 L71 54 L74 65 Q70 77 62 84 L64 92 Q56 98 50 103 Q44 98 36 92 L38 84 Q30 77 26 65 L29 54 L24 44 L28 34 Z" fill="#B4282E" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M16 10 L84 10 L84 66 Q83 88 66 100 Q57 106 50 112 Q43 106 34 100 Q17 88 16 66 Z" fill="none" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 240 280">
+<title>Banner - Paly</title>
+<defs><clipPath id="clip-banner-020"><path d="M34 24 H206 V258 L120 206 L34 258 Z"/></clipPath></defs>
+<g clip-path="url(#clip-banner-020)"><rect width="240" height="280" fill="#F3C52E"/><rect width="48" height="280" fill="#B8202A"/><rect x="96" width="48" height="280" fill="#B8202A"/><rect x="192" width="48" height="280" fill="#B8202A"/><path d="M48 0 V280 M96 0 V280 M144 0 V280 M192 0 V280" fill="none" stroke="#202125" stroke-width="1.6"/></g>
+<path d="M34 24 H206 V258 L120 206 L34 258 Z" fill="none" stroke="#202125" stroke-width="3" stroke-linejoin="round"/>
+</svg>
