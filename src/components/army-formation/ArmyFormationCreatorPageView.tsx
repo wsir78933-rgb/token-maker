@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ArmyFormationCreatorFaq } from '@/components/army-formation/ArmyFormationCreatorFaq';
+import { ArmyFormationCreatorFeaturesGrid } from '@/components/army-formation/ArmyFormationCreatorFeaturesGrid';
 import {
   ARMY_FORMATION_CREATOR_EDITOR_ID,
   ArmyFormationCreatorPageHeading,
@@ -157,7 +158,9 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
 
       <ArmyFormationCreatorCaseCarousels locale={locale} />
 
-      <section className="mt-40 pb-20 sm:mt-48 sm:pb-24 lg:mt-56 lg:pb-28">
+      <ArmyFormationCreatorFeaturesGrid copy={copy} />
+
+      <section className="mt-24 pb-20 sm:mt-28 sm:pb-24 lg:mt-32 lg:pb-28">
         <div className="mb-14 flex flex-col items-center gap-3 text-center">
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-stone-400">
             {copy.stepsEyebrow}

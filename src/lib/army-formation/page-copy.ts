@@ -13,6 +13,11 @@ export type ArmyFormationCreatorPageStepCopy = {
   description: string;
 };
 
+export type ArmyFormationCreatorPageFeatureCopy = {
+  title: string;
+  description: string;
+};
+
 export type ArmyFormationCreatorToolComparisonRowCopy = {
   dimension: string;
   armyFormationCreator: string;
@@ -39,6 +44,9 @@ export type ArmyFormationCreatorPageFaqItemCopy = {
 export type ArmyFormationCreatorPageCopy = {
   overviewTitle: string;
   overviewDescription: string;
+  featuresTitle: string;
+  featuresDescription: string;
+  features: readonly ArmyFormationCreatorPageFeatureCopy[];
   stepsEyebrow: string;
   stepsTitle: string;
   stepsLabel: string;
@@ -73,6 +81,41 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     overviewTitle: 'What is the Army Formation Creator?',
     overviewDescription:
       "The Army Formation Creator is a battlefield planning tool for tabletop role-playing games. Game masters can map out encounters, ambushes, and sieges to show players where each side is positioned; players can use the diagram to discuss their party's positioning and tactics. Whether you're preparing a D&D adventure or a war-themed session, place troop and equipment icons, set the battlefield background, and export an image to share or a formation file to edit later.",
+    featuresTitle: 'Tools for Shaping a Battle Plan',
+    featuresDescription:
+      'Army Formation Creator brings icon browsing, formation placement, battlefield setup, and file tools into one workspace. Start with an encounter idea, arrange units and equipment on the canvas, then save a browser record or export a formation file for later editing.',
+    features: [
+      {
+        title: 'Browse 292 Categorized Icons',
+        description:
+          'Choose from 292 categorized icons covering helmets, weapons, animals, vehicles and siege equipment, plus NATO symbols. Pick markers that fit your encounter, then place them directly on the battlefield. The grouped library keeps common tabletop planning pieces together as you build a scene.',
+      },
+      {
+        title: 'Place, Rotate, and Remove Pieces',
+        description:
+          'Place selected icons on the battlefield, then drag them to positions that make the scene readable. Select a piece to rotate it when its direction matters, or remove it when the plan changes. Refine a line, flank, or route as you work.',
+      },
+      {
+        title: 'Choose Color Before Placement',
+        description:
+          'Choose a palette color before adding pieces to set the appearance of your next additions. This helps a new group of markers share a chosen color from the start. You can still reposition, rotate, or remove pieces individually as the scene develops.',
+      },
+      {
+        title: 'Customize the Battlefield',
+        description:
+          'Set battlefield height and base color to fit the working canvas, then add a background image when the scene benefits from more context. These controls let you shape the field around a map or reference image while keeping the formation pieces available to place.',
+      },
+      {
+        title: 'Switch Across Four Battlefields',
+        description:
+          'Switch among four battlefields within one plan when an encounter needs separate views. Keep each composition on its own battlefield, then move between them as you compare positions or prepare another part of a session. The single plan keeps those areas together.',
+      },
+      {
+        title: 'Save, Export, and Resume',
+        description:
+          'The editor saves work in the current browser, where you can restore the latest record the next time you open the page. Export the current battlefield as a PNG for a visual reference, or export an editable formation file to keep. Import that file later to continue editing.',
+      },
+    ],
     stepsEyebrow: 'How it works',
     stepsTitle: 'How to use the Army Formation Creator',
     stepsLabel: 'How to use the Army Formation Creator',
@@ -178,6 +221,41 @@ const ARMY_FORMATION_CREATOR_PAGE_COPY: Record<SiteLocale, ArmyFormationCreatorP
     overviewTitle: '什么是军阵制作器？',
     overviewDescription:
       '军阵制作器是一款面向桌面角色扮演游戏的战场示意图工具。GM 可以用它布置遭遇战、伏击或攻城场景，向玩家展示敌我双方的位置；玩家也能借助阵型图讨论队伍站位和战术。无论是 D&D 等奇幻冒险，还是战争题材的团务，都可以摆放部队与装备图标、设置战场背景，并导出图片或方案文件，方便展示、分享或留待下次继续编辑。',
+    featuresTitle: '用于战场规划的功能',
+    featuresDescription:
+      'Army Formation Creator 将图标选择、阵型摆放、战场设置与方案文件操作放在同一工作区。你可以从遭遇战构想开始，在画布上安排部队和装备，再保存到当前浏览器，或导出方案文件以便之后继续编辑。',
+    features: [
+      {
+        title: '292 个分类图标',
+        description:
+          '可从 292 个分类图标中选择头盔、武器、动物、载具与攻城器械，以及北约符号。根据遭遇场景挑选棋子并直接放入战场。分类素材将常用的桌面战斗标记集中在一起，便于逐步构建场景。',
+      },
+      {
+        title: '摆放、旋转与移除棋子',
+        description:
+          '将选中的图标放入战场后，可以拖动棋子来调整位置。选中棋子即可旋转它的朝向；方案有变化时，也可以将它移除。在布置阵线、侧翼或行进路线时，你可以随时继续调整整体示意图。',
+      },
+      {
+        title: '添加棋子前选择颜色',
+        description:
+          '在添加棋子前先从调色盘选择颜色，让接下来加入的棋子采用预先选定的颜色。这样可以从摆放开始就为新的一组标记统一颜色。随着场景逐渐成形，你仍可分别移动、旋转或移除棋子。',
+      },
+      {
+        title: '自定义战场画布',
+        description:
+          '调整战场高度和底色，并在需要更多场景信息时添加背景图。这些设置让你可以根据地图或参考图片调整战场画布，同时仍能随时放置军阵棋子，逐步安排部队和装备的位置。',
+      },
+      {
+        title: '切换四个战场',
+        description:
+          '你可以在同一方案中的四个战场之间切换，为一次遭遇战准备不同视图。每个战场都可单独安排阵型，也可以在查看位置或准备团务的其他环节时切换回来。四个战场仍归在同一个方案中。',
+      },
+      {
+        title: '保存、导出并继续编辑',
+        description:
+          '作品保存在当前浏览器中，下次打开页面时可以恢复最近的记录。需要查看或分享时，可将当前战场导出为 PNG 图片；也可以导出可编辑的方案文件留存。之后导入该文件，即可继续编辑方案。',
+      },
+    ],
     stepsEyebrow: '操作流程',
     stepsTitle: '如何使用军阵制作器？',
     stepsLabel: '军阵制作器使用步骤',
