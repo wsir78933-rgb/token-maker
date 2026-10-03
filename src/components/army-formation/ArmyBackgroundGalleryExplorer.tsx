@@ -352,6 +352,15 @@ export function ArmyBackgroundGalleryExplorer({
                 <p className="mt-1 text-xs text-stone-500">{map.sourceName}</p>
                 <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-3">
                   <a
+                    href={map.previewSrc}
+                    download={`${map.id}.webp`}
+                    aria-label={`${copy.downloadPreview}: ${map.title}`}
+                    className="inline-flex w-fit cursor-pointer items-center gap-1.5 text-xs text-[#e6c879] transition hover:text-[#f5dda0]"
+                  >
+                    <Download aria-hidden="true" className="h-3.5 w-3.5" />
+                    {copy.downloadPreview}
+                  </a>
+                  <a
                     href={map.sourcePage}
                     target="_blank"
                     rel="noreferrer"
@@ -359,15 +368,6 @@ export function ArmyBackgroundGalleryExplorer({
                   >
                     {copy.viewSource}
                     <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
-                  </a>
-                  <a
-                    href={map.previewSrc}
-                    download={`${map.id}.webp`}
-                    aria-label={`${copy.downloadPreview}: ${map.title}`}
-                    className="ml-auto inline-flex w-fit cursor-pointer items-center gap-1.5 text-xs text-[#e6c879] transition hover:text-[#f5dda0]"
-                  >
-                    <Download aria-hidden="true" className="h-3.5 w-3.5" />
-                    {copy.downloadPreview}
                   </a>
                 </div>
               </div>
