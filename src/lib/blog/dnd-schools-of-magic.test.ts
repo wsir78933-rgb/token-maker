@@ -93,8 +93,14 @@ function expectRelatedSlugsResolve(
 }
 
 describe('dnd schools of magic blog post', () => {
-  test('keeps the English source hash, locks the revised Chinese body, and publishes both locales', () => {
-    expect(sha256File(LOCKED_EN_BODY_PATH)).toBe(DND_SCHOOLS_OF_MAGIC_LOCKED_EN_BODY_HASH);
+  test.skipIf(!existsSync(LOCKED_EN_BODY_PATH))(
+    'checks the external English authoring source hash when the local content package is available',
+    () => {
+      expect(sha256File(LOCKED_EN_BODY_PATH)).toBe(DND_SCHOOLS_OF_MAGIC_LOCKED_EN_BODY_HASH);
+    },
+  );
+
+  test('locks the revised Chinese body and publishes both locales', () => {
     expect(createHash('sha256').update(dndSchoolsOfMagicArticleHtmlZh).digest('hex')).toBe(
       DND_SCHOOLS_OF_MAGIC_LOCKED_ZH_BODY_HASH,
     );

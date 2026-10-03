@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { existsSync } from 'node:fs';
 import { cleanup, render, screen } from '@testing-library/react';
 import { chromium } from '@playwright/test';
 import { renderToString } from 'react-dom/server';
@@ -436,19 +437,23 @@ describe('CanvasTextPathOverlay', () => {
     expect(Math.abs(handleCenter.x - guidePoint.x)).toBeLessThan(1);
   });
 
-  it('keeps the start handle on the dashed guide in a real 800×400 layout', async () => {
-    const start = curveOverlay.curve.start;
-    const measured = await measureHandleAgainstGuideInBrowser({
-      overlay: curveOverlay,
-      handleName: 'Adjust curved text start point',
-      scenePoint: start,
-      artboard: WIDE_SHORT_ARTBOARD,
-    });
-    expect(Math.abs(measured.handleCenter.x - measured.guidePoint.x)).toBeLessThan(1);
-    expect(Math.abs(measured.handleCenter.y - measured.guidePoint.y)).toBeLessThan(1);
-    const naiveArtboardX = (start.x / SELECTION_SCENE_WIDTH) * WIDE_SHORT_ARTBOARD.width;
-    expect(Math.abs(naiveArtboardX - measured.guidePoint.x)).toBeGreaterThan(150);
-  }, 30_000);
+  it.skipIf(!existsSync(chromium.executablePath()))(
+    'requires Playwright Chromium to measure the start handle against the dashed guide',
+    async () => {
+      const start = curveOverlay.curve.start;
+      const measured = await measureHandleAgainstGuideInBrowser({
+        overlay: curveOverlay,
+        handleName: 'Adjust curved text start point',
+        scenePoint: start,
+        artboard: WIDE_SHORT_ARTBOARD,
+      });
+      expect(Math.abs(measured.handleCenter.x - measured.guidePoint.x)).toBeLessThan(1);
+      expect(Math.abs(measured.handleCenter.y - measured.guidePoint.y)).toBeLessThan(1);
+      const naiveArtboardX = (start.x / SELECTION_SCENE_WIDTH) * WIDE_SHORT_ARTBOARD.width;
+      expect(Math.abs(naiveArtboardX - measured.guidePoint.x)).toBeGreaterThan(150);
+    },
+    30_000,
+  );
 
   it('draws one radius handle on a dashed ring', () => {
     const onPointerDown = vi.fn();

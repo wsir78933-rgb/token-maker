@@ -36,8 +36,8 @@ describe('ArmyFormationCreatorPageHeading', () => {
         'Arrange forces, creatures, and siege pieces, then export an image for your players or worldbuilding notes.',
       ),
     ).toBeTruthy();
-    expect(action.className).toContain('bg-black');
-    expect(action.className).toContain('text-white');
+    expect(action.className).toContain('bg-foreground');
+    expect(action.className).toContain('text-background');
   });
 
   it('中文 hero 点明 D&D 与 RPG 场景，按钮是黑底白字', () => {
@@ -50,8 +50,8 @@ describe('ArmyFormationCreatorPageHeading', () => {
     expect(
       screen.getByText('免费摆放军队、生物和攻城器械，导出阵型图片，分享给玩家或留作奇幻设定资料。'),
     ).toBeTruthy();
-    expect(action.className).toContain('bg-black');
-    expect(action.className).toContain('text-white');
+    expect(action.className).toContain('bg-foreground');
+    expect(action.className).toContain('text-background');
   });
 });
 
@@ -79,7 +79,7 @@ describe('ArmyFormationCreatorPageView', () => {
     const tool = screen.getByRole('region', { name: 'Army formation creator' });
 
     expect(heading.textContent).toBe('Plan D&D and tabletop RPG battles online Army formation creator');
-    expect(screen.getByRole('button', { name: 'Try for Free' }).className).toContain('bg-black');
+    expect(screen.getByRole('button', { name: 'Try for Free' }).className).toContain('bg-foreground');
     expect(heading.compareDocumentPosition(tool) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );

@@ -490,8 +490,10 @@ describe('coat maker routes', () => {
       freeToolsMenuLabel: 'Free tools',
       freeToolsMenuHref: '/',
       freeToolMenuItems: [
-        { label: 'Editor', href: '/' },
-        { label: 'Coat Maker', href: '/coat-of-arms-maker' },
+        { label: 'Token Maker', href: '/' },
+        { label: 'Coat of Arms Maker', href: '/coat-of-arms-maker' },
+        { label: 'Armor Creator', href: '/armor-creator' },
+        { label: 'Army Formation Creator', href: '/army-formation-creator' },
       ],
       sharedNavigationLinks: [
         { label: 'Dice Roller', href: '/dice-roller-dnd' },
@@ -508,8 +510,10 @@ describe('coat maker routes', () => {
       freeToolsMenuLabel: '免费工具',
       freeToolsMenuHref: '/zh',
       freeToolMenuItems: [
-        { label: '编辑器', href: '/zh' },
+        { label: '令牌制作器', href: '/zh' },
         { label: '纹章制作器', href: '/zh/coat-of-arms-maker' },
+        { label: '护甲制作器', href: '/zh/armor-creator' },
+        { label: '军队阵型制作器', href: '/zh/army-formation-creator' },
       ],
       sharedNavigationLinks: [
         { label: '骰子', href: '/zh/dice-roller-dnd' },

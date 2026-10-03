@@ -67,11 +67,11 @@ describe('army formation creator routes', () => {
     fireEvent.mouseEnter(freeToolsNavItem);
 
     const freeToolsMenu = within(freeToolsNavItem).getByRole('menu', { name: 'Free tools' });
-    expect(within(freeToolsMenu).getByRole('menuitem', { name: 'Armor' }).getAttribute('href')).toBe(
-      '/armor-creator',
-    );
     expect(
-      within(freeToolsMenu).getByRole('menuitem', { name: 'Army formation creator' }).getAttribute('href'),
+      within(freeToolsMenu).getByRole('menuitem', { name: 'Armor Creator' }).getAttribute('href'),
+    ).toBe('/armor-creator');
+    expect(
+      within(freeToolsMenu).getByRole('menuitem', { name: 'Army Formation Creator' }).getAttribute('href'),
     ).toBe('/army-formation-creator');
     const activeFreeToolsTrigger = freeToolsLink.closest('[data-active]');
     if (!(activeFreeToolsTrigger instanceof HTMLElement)) {
@@ -117,12 +117,12 @@ describe('army formation creator routes', () => {
     fireEvent.mouseEnter(freeToolsNavItem);
 
     const freeToolsMenu = within(freeToolsNavItem).getByRole('menu', { name: '免费工具' });
-    expect(within(freeToolsMenu).getByRole('menuitem', { name: '护甲' }).getAttribute('href')).toBe(
-      '/zh/armor-creator',
-    );
-    expect(within(freeToolsMenu).getByRole('menuitem', { name: '军阵' }).getAttribute('href')).toBe(
-      '/zh/army-formation-creator',
-    );
+    expect(
+      within(freeToolsMenu).getByRole('menuitem', { name: '护甲制作器' }).getAttribute('href'),
+    ).toBe('/zh/armor-creator');
+    expect(
+      within(freeToolsMenu).getByRole('menuitem', { name: '军队阵型制作器' }).getAttribute('href'),
+    ).toBe('/zh/army-formation-creator');
     const activeFreeToolsTrigger = freeToolsLink.closest('[data-active]');
     if (!(activeFreeToolsTrigger instanceof HTMLElement)) {
       throw new Error('免费工具触发器缺少活动状态。');

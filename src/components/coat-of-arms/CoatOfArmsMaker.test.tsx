@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { chromium, type Page } from '@playwright/test';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
@@ -659,11 +659,11 @@ describe('CoatOfArmsMaker', () => {
   it('uses the English shared site navigation with Coat Maker active', () => {
     renderWorkbench('en');
 
-    expect(screen.getByRole('link', { name: 'Editor' }).getAttribute('href')).toBe('/');
+    expect(screen.getByRole('menuitem', { name: 'Token Maker' }).getAttribute('href')).toBe('/');
     expect(screen.getByRole('link', { name: 'Dice Roller' }).getAttribute('href')).toBe('/dice-roller-dnd');
-    const coatMakerLink = screen.getByRole('link', { name: 'Coat Maker' });
+    const coatMakerLink = screen.getByRole('menuitem', { name: 'Coat of Arms Maker' });
     expect(coatMakerLink.getAttribute('href')).toBe('/coat-of-arms-maker');
-    expect(coatMakerLink.getAttribute('data-active')).toBe('true');
+    expect(coatMakerLink.closest('.site-nav-item')?.querySelector('[data-active]')?.getAttribute('data-active')).toBe('true');
     expect(screen.getByRole('link', { name: 'Contact' }).getAttribute('href')).toBe('/contact');
     expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('href')).toBe('/blog');
     expect(screen.getByRole('link', { name: '中文' }).getAttribute('href')).toBe('/zh/coat-of-arms-maker');
@@ -1487,11 +1487,11 @@ describe('CoatOfArmsMaker', () => {
   it('keeps the Chinese shared navigation and locale switch on Coat Maker', () => {
     renderWorkbench('zh');
 
-    expect(screen.getByRole('link', { name: '编辑器' }).getAttribute('href')).toBe('/zh');
+    expect(screen.getByRole('menuitem', { name: '令牌制作器' }).getAttribute('href')).toBe('/zh');
     expect(screen.getByRole('link', { name: '骰子' }).getAttribute('href')).toBe('/zh/dice-roller-dnd');
-    const coatMakerLink = screen.getByRole('link', { name: '纹章制作器' });
+    const coatMakerLink = screen.getByRole('menuitem', { name: '纹章制作器' });
     expect(coatMakerLink.getAttribute('href')).toBe('/zh/coat-of-arms-maker');
-    expect(coatMakerLink.getAttribute('data-active')).toBe('true');
+    expect(coatMakerLink.closest('.site-nav-item')?.querySelector('[data-active]')?.getAttribute('data-active')).toBe('true');
     expect(screen.getByRole('link', { name: '联系' }).getAttribute('href')).toBe('/zh/contact');
     expect(screen.getByRole('link', { name: '博客' }).getAttribute('href')).toBe('/zh/blog');
     expect(screen.getByRole('link', { name: 'English' }).getAttribute('href')).toBe('/coat-of-arms-maker');
@@ -2431,29 +2431,33 @@ describe('CoatOfArmsMaker', () => {
     expect(artboardWidth).not.toContain('100svh');
   });
 
-  it('fills the wrap at 1512x738 and leaves no 108px blank at 1512x500 or 1512x600', async () => {
-    const measurements = await measureDesktopArtboardFillAcrossViewports();
-    const measurementByViewportHeight = new Map(
-      measurements.map((measurement) => [measurement.viewportHeight, measurement]),
-    );
-    const measurementAt738 = measurementByViewportHeight.get(738);
-    const measurementAt600 = measurementByViewportHeight.get(600);
-    const measurementAt500 = measurementByViewportHeight.get(500);
-    if (!measurementAt738) {
-      throw new Error(`Missing 1512x738 artboard fill measurement, got viewport heights: ${measurements.map((measurement) => measurement.viewportHeight).join(', ') || '(none)'}`);
-    }
-    if (!measurementAt600) {
-      throw new Error(`Missing 1512x600 artboard fill measurement, got viewport heights: ${measurements.map((measurement) => measurement.viewportHeight).join(', ') || '(none)'}`);
-    }
-    if (!measurementAt500) {
-      throw new Error(`Missing 1512x500 artboard fill measurement, got viewport heights: ${measurements.map((measurement) => measurement.viewportHeight).join(', ') || '(none)'}`);
-    }
+  it.skipIf(!existsSync(chromium.executablePath()))(
+    'requires Playwright Chromium to measure the wrap at 1512x738, 1512x600, and 1512x500',
+    async () => {
+      const measurements = await measureDesktopArtboardFillAcrossViewports();
+      const measurementByViewportHeight = new Map(
+        measurements.map((measurement) => [measurement.viewportHeight, measurement]),
+      );
+      const measurementAt738 = measurementByViewportHeight.get(738);
+      const measurementAt600 = measurementByViewportHeight.get(600);
+      const measurementAt500 = measurementByViewportHeight.get(500);
+      if (!measurementAt738) {
+        throw new Error(`Missing 1512x738 artboard fill measurement, got viewport heights: ${measurements.map((measurement) => measurement.viewportHeight).join(', ') || '(none)'}`);
+      }
+      if (!measurementAt600) {
+        throw new Error(`Missing 1512x600 artboard fill measurement, got viewport heights: ${measurements.map((measurement) => measurement.viewportHeight).join(', ') || '(none)'}`);
+      }
+      if (!measurementAt500) {
+        throw new Error(`Missing 1512x500 artboard fill measurement, got viewport heights: ${measurements.map((measurement) => measurement.viewportHeight).join(', ') || '(none)'}`);
+      }
 
-    expect(measurementAt738.artboardHeight).toBeGreaterThan(540);
-    expect(measurementAt738.heightGap).toBeLessThan(2);
-    expect(measurementAt600.heightGap).toBeLessThan(2);
-    expect(measurementAt500.heightGap).toBeLessThan(2);
-  }, 30_000);
+      expect(measurementAt738.artboardHeight).toBeGreaterThan(540);
+      expect(measurementAt738.heightGap).toBeLessThan(2);
+      expect(measurementAt600.heightGap).toBeLessThan(2);
+      expect(measurementAt500.heightGap).toBeLessThan(2);
+    },
+    30_000,
+  );
 
   it('keeps zoomed artboard edges reachable and exposes a fullscreen control', () => {
     renderWorkbench();
