@@ -31,6 +31,7 @@ export type ArmyFormationCreatorCopy = {
   height: string;
   changeHeight: string;
   changeBackgroundColor: string;
+  resetBackgroundColor: string;
   backgroundImage: string;
   setBackgroundImage: string;
   uploadBackgroundImage: string;
@@ -84,6 +85,7 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   height: 'Height',
   changeHeight: 'Change height',
   changeBackgroundColor: 'Change background color',
+  resetBackgroundColor: 'Reset background color',
   backgroundImage: 'Background image',
   setBackgroundImage: 'Set background image',
   uploadBackgroundImage: 'Upload image',
@@ -136,6 +138,7 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   height: '高度',
   changeHeight: '改变高度',
   changeBackgroundColor: '改变底色',
+  resetBackgroundColor: '重置底色',
   backgroundImage: '背景图',
   setBackgroundImage: '设置背景图',
   uploadBackgroundImage: '上传图片',

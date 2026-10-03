@@ -124,6 +124,42 @@ describe('ArmyFormationCreator', () => {
     expect(screen.queryByRole('navigation', { name: 'Editor' })).toBeNull();
   });
 
+  it.each([
+    {
+      locale: 'zh',
+      colorInputLabel: '改变底色',
+      resetButtonLabel: '重置底色',
+    },
+    {
+      locale: 'en',
+      colorInputLabel: 'Change background color',
+      resetButtonLabel: 'Reset background color',
+    },
+  ] as const)('$locale applies the field color immediately and resets it', ({
+    locale,
+    colorInputLabel,
+    resetButtonLabel,
+  }) => {
+    render(<ArmyFormationCreator locale={locale} />);
+
+    const colorInput = screen.getByLabelText(colorInputLabel);
+    const battlefieldField = document.querySelector('[data-army-field]');
+    if (!(colorInput instanceof HTMLInputElement)) {
+      throw new Error(`Battlefield color input is missing. Received ${colorInput.constructor.name}.`);
+    }
+    if (!(battlefieldField instanceof HTMLElement)) {
+      throw new Error('Battlefield field is missing.');
+    }
+
+    fireEvent.change(colorInput, { target: { value: '#ff0000' } });
+    expect(colorInput.value).toBe('#ff0000');
+    expect(battlefieldField.style.backgroundColor).toBe('rgb(255, 0, 0)');
+
+    fireEvent.click(screen.getByRole('button', { name: resetButtonLabel }));
+    expect(colorInput.value).toBe('#ffffff');
+    expect(battlefieldField.style.backgroundColor).toBe('rgb(255, 255, 255)');
+  });
+
   it('所有图标选择器缩略图都使用白色滤镜', () => {
     render(<ArmyFormationCreator locale="en" />);
 

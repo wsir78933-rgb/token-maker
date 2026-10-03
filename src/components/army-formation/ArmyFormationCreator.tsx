@@ -59,6 +59,7 @@ const ARMY_BATTLEFIELD_SLIDE_CLEANUP_DELAY_MS = ARMY_BATTLEFIELD_SLIDE_DURATION_
 const ARMY_DRAG_START_PX = 3;
 const ARMY_FORMATION_FILE_NAME = 'army-formation-creator.txt';
 const ARMY_FORMATION_PNG_NAME = 'army-formation-creator.png';
+const DEFAULT_FIELD_BACKGROUND_COLOR = '#ffffff';
 
 const ARMY_FORMATION_BUTTON_CLASS =
   'cursor-pointer rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-4 py-3 text-base text-[var(--site-ink)] transition-colors enabled:hover:border-[var(--site-accent-strong)] enabled:hover:bg-[var(--site-accent-bg)] enabled:hover:text-[var(--site-accent-strong)]';
@@ -981,8 +982,8 @@ function ArmyFormationFieldControls({
   backgroundImageInputRef,
   onHeightText,
   onApplyHeight,
-  onFieldBackgroundColorText,
-  onApplyFieldBackground,
+  onFieldBackgroundColorChange,
+  onResetFieldBackgroundColor,
   onChooseBackgroundImage,
   onRemoveBackgroundImage,
   onClear,
@@ -994,8 +995,8 @@ function ArmyFormationFieldControls({
   backgroundImageInputRef: RefObject<HTMLInputElement | null>;
   onHeightText: (value: string) => void;
   onApplyHeight: () => void;
-  onFieldBackgroundColorText: (value: string) => void;
-  onApplyFieldBackground: () => void;
+  onFieldBackgroundColorChange: (value: string) => void;
+  onResetFieldBackgroundColor: () => void;
   onChooseBackgroundImage: (file: File) => void;
   onRemoveBackgroundImage: () => void;
   onClear: () => void;
@@ -1025,10 +1026,14 @@ function ArmyFormationFieldControls({
           aria-label={copy.changeBackgroundColor}
           className="h-9 w-9 cursor-pointer rounded-md border border-[var(--site-border-strong)] bg-[var(--site-panel-strong)] transition-colors hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)]"
           value={fieldBackgroundColorText}
-          onChange={(event) => onFieldBackgroundColorText(event.target.value)}
+          onChange={(event) => onFieldBackgroundColorChange(event.target.value)}
         />
-        <button type="button" className={ARMY_FORMATION_BUTTON_CLASS} onClick={onApplyFieldBackground}>
-          {copy.changeBackgroundColor}
+        <button
+          type="button"
+          className={ARMY_FORMATION_BUTTON_CLASS}
+          onClick={onResetFieldBackgroundColor}
+        >
+          {copy.resetBackgroundColor}
         </button>
       </div>
       <div className="flex flex-col gap-2">
@@ -1677,9 +1682,19 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     });
   }
 
-  function onApplyFieldBackground() {
+  function onFieldBackgroundColorChange(color: string) {
     reportArmyFormationAction(() => {
-      commitArmyFormationDocument(setArmyFieldBackgroundColor(armyDocument, fieldBackgroundColorText));
+      commitArmyFormationDocument(setArmyFieldBackgroundColor(armyDocumentRef.current, color));
+      setFieldBackgroundColorText(color);
+    });
+  }
+
+  function onResetFieldBackgroundColor() {
+    reportArmyFormationAction(() => {
+      commitArmyFormationDocument(
+        setArmyFieldBackgroundColor(armyDocumentRef.current, DEFAULT_FIELD_BACKGROUND_COLOR),
+      );
+      setFieldBackgroundColorText(DEFAULT_FIELD_BACKGROUND_COLOR);
     });
   }
 
@@ -1899,8 +1914,8 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
             backgroundImageInputRef={backgroundImageInputRef}
             onHeightText={setHeightText}
             onApplyHeight={onApplyHeight}
-            onFieldBackgroundColorText={setFieldBackgroundColorText}
-            onApplyFieldBackground={onApplyFieldBackground}
+            onFieldBackgroundColorChange={onFieldBackgroundColorChange}
+            onResetFieldBackgroundColor={onResetFieldBackgroundColor}
             onChooseBackgroundImage={(file) => void onChooseBackgroundImage(file)}
             onRemoveBackgroundImage={onRemoveBackgroundImage}
             onClear={onClear}
