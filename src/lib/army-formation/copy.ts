@@ -25,10 +25,13 @@ export type ArmyFormationCreatorCopy = {
   changeSelectedPieces: string;
   deleteSelected: string;
   angle: string;
+  angleInputError: string;
   resetSelectedRotation: string;
   changeBattlefield: string;
   clearBattlefield: string;
   height: string;
+  heightInputError: string;
+  heightRangeError: string;
   resetHeight: string;
   changeBackgroundColor: string;
   resetBackgroundColor: string;
@@ -42,6 +45,7 @@ export type ArmyFormationCreatorCopy = {
   backgroundImageEmptyError: string;
   backgroundImageDecodeError: string;
   backgroundImageCompressError: string;
+  dismissError: string;
   previousRecordPrompt: string;
   restorePreviousRecord: string;
   startBlank: string;
@@ -79,10 +83,13 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   changeSelectedPieces: 'Change selected pieces',
   deleteSelected: 'Delete selected',
   angle: 'Angle',
+  angleInputError: 'Enter a valid number for the angle: {received}.',
   resetSelectedRotation: 'Reset rotation',
   changeBattlefield: 'Change battlefield',
   clearBattlefield: 'Clear battlefield',
   height: 'Height',
+  heightInputError: 'Enter a valid number for the height: {received}.',
+  heightRangeError: 'Height must be between 200 and 2000: {received}.',
   resetHeight: 'Reset height',
   changeBackgroundColor: 'Change background color',
   resetBackgroundColor: 'Reset background color',
@@ -96,6 +103,7 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   backgroundImageEmptyError: 'The selected image is empty: {received}.',
   backgroundImageDecodeError: 'Could not read image file: {received}.',
   backgroundImageCompressError: 'Could not compress the image: {received}.',
+  dismissError: 'Dismiss error',
   previousRecordPrompt: 'A previous record was found. Restore it?',
   restorePreviousRecord: 'Restore',
   startBlank: 'Start blank',
@@ -132,10 +140,13 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   changeSelectedPieces: '改选中的棋子',
   deleteSelected: '删除所选',
   angle: '角度',
+  angleInputError: '角度必须是有效数字：{received}。',
   resetSelectedRotation: '重置旋转',
   changeBattlefield: '改战场',
   clearBattlefield: '清空战场',
   height: '高度',
+  heightInputError: '高度必须是有效数字：{received}。',
+  heightRangeError: '高度必须在 200–2000 之间：{received}。',
   resetHeight: '重置高度',
   changeBackgroundColor: '改变底色',
   resetBackgroundColor: '重置底色',
@@ -149,6 +160,7 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   backgroundImageEmptyError: '所选图片为空：{received}。',
   backgroundImageDecodeError: '无法读取图片文件：{received}。',
   backgroundImageCompressError: '无法压缩图片：{received}。',
+  dismissError: '关闭提示',
   previousRecordPrompt: '发现上次的记录。要回到上次的记录吗？',
   restorePreviousRecord: '回到上次',
   startBlank: '从空白开始',

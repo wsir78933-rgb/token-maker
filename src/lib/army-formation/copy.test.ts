@@ -27,10 +27,13 @@ const STRING_FIELD_NAMES = [
   'changeSelectedPieces',
   'deleteSelected',
   'angle',
+  'angleInputError',
   'resetSelectedRotation',
   'changeBattlefield',
   'clearBattlefield',
   'height',
+  'heightInputError',
+  'heightRangeError',
   'resetHeight',
   'changeBackgroundColor',
   'resetBackgroundColor',
@@ -48,6 +51,7 @@ const STRING_FIELD_NAMES = [
   'switchToNextBattle',
   'previousNatoIconPage',
   'nextNatoIconPage',
+  'dismissError',
 ] as const satisfies readonly (keyof ArmyFormationCreatorCopy)[];
 
 const englishStringFields = {
@@ -73,10 +77,13 @@ const englishStringFields = {
   changeSelectedPieces: 'Change selected pieces',
   deleteSelected: 'Delete selected',
   angle: 'Angle',
+  angleInputError: 'Enter a valid number for the angle: {received}.',
   resetSelectedRotation: 'Reset rotation',
   changeBattlefield: 'Change battlefield',
   clearBattlefield: 'Clear battlefield',
   height: 'Height',
+  heightInputError: 'Enter a valid number for the height: {received}.',
+  heightRangeError: 'Height must be between 200 and 2000: {received}.',
   resetHeight: 'Reset height',
   changeBackgroundColor: 'Change background color',
   resetBackgroundColor: 'Reset background color',
@@ -94,6 +101,7 @@ const englishStringFields = {
   switchToNextBattle: 'Switch to next battle',
   previousNatoIconPage: 'Previous page',
   nextNatoIconPage: 'Next page',
+  dismissError: 'Dismiss error',
 } as const satisfies Record<(typeof STRING_FIELD_NAMES)[number], string>;
 
 const chineseStringFields = {
@@ -118,10 +126,13 @@ const chineseStringFields = {
   changeSelectedPieces: '改选中的棋子',
   deleteSelected: '删除所选',
   angle: '角度',
+  angleInputError: '角度必须是有效数字：{received}。',
   resetSelectedRotation: '重置旋转',
   changeBattlefield: '改战场',
   clearBattlefield: '清空战场',
   height: '高度',
+  heightInputError: '高度必须是有效数字：{received}。',
+  heightRangeError: '高度必须在 200–2000 之间：{received}。',
   resetHeight: '重置高度',
   changeBackgroundColor: '改变底色',
   resetBackgroundColor: '重置底色',
@@ -139,6 +150,7 @@ const chineseStringFields = {
   switchToNextBattle: '切换到下一场',
   previousNatoIconPage: '上一页',
   nextNatoIconPage: '下一页',
+  dismissError: '关闭提示',
 } as const satisfies Record<(typeof STRING_FIELD_NAMES)[number], string>;
 
 function expectStringFields(
