@@ -51,6 +51,27 @@ function getElement(container: HTMLElement, id: string): SVGGElement {
   return element;
 }
 
+function getRotationHandle(container: HTMLElement, id: string): SVGGElement {
+  const handle = container.querySelector<SVGGElement>(`[data-rotation-handle="${id}"]`);
+  if (!handle) throw new Error(`Rotation handle is missing: ${id}.`);
+  return handle;
+}
+
+function canvasClientPoint(x: number, y: number): { clientX: number; clientY: number } {
+  return { clientX: 10 + x / 2, clientY: 20 + y / 2 };
+}
+
+function rotationHandleCenter(handle: SVGGElement): { clientX: number; clientY: number } {
+  const hitArea = handle.querySelector('rect');
+  if (!hitArea) throw new Error('Rotation handle hit area is missing.');
+  const x = Number(hitArea.getAttribute('x')) + Number(hitArea.getAttribute('width')) / 2;
+  const y = Number(hitArea.getAttribute('y')) + Number(hitArea.getAttribute('height')) / 2;
+  if (!Number.isFinite(x) || !Number.isFinite(y)) {
+    throw new Error(`Rotation handle center is invalid: x=${x}, y=${y}.`);
+  }
+  return canvasClientPoint(x, y);
+}
+
 function pointer(target: Element, type: string, clientX: number, clientY: number, pointerId = 1, additions: Partial<PointerEvent> = {}) {
   const event = new MouseEvent(type, { bubbles: true, cancelable: true, clientX, clientY, button: 0 });
   Object.defineProperties(event, {
@@ -144,6 +165,112 @@ describe('EmblemCanvas', () => {
     expect(container.querySelector('[data-edit-bounds]')?.getAttribute('data-edit-bounds')).toBe('second');
   });
 
+  it.each<EmblemLocale>(['en', 'zh'])('shows a localized rotation handle for a visible selection without edit bounds in %s', (locale) => {
+    const copy = getEmblemCreatorCopy(locale);
+    const { container } = renderCanvas({ locale, copy, selectedElementId: 'first', showEditBounds: false });
+    const handle = getRotationHandle(container, 'first');
+    const hitArea = handle.querySelector('rect');
+
+    expect(handle.getAttribute('aria-label')).toBe(`${copy.properties.rotation}: first`);
+    expect(handle.getAttribute('class')).toContain('cursor-pointer');
+    expect(container.querySelector('[data-edit-bounds]')).toBeNull();
+    expect(container.querySelector('[data-scale-handle]')).toBeNull();
+    expect(hitArea?.getAttribute('width')).toBe('144');
+    expect(hitArea?.getAttribute('height')).toBe('144');
+  });
+
+  it('keeps the rotation hit area inside the canvas at its edges', () => {
+    const edgeElement = createElement('edge', { x: 0, y: 0, rotation: 45, scale: 2, mirrorX: true });
+    const { container } = renderCanvas({ project: createProject([edgeElement]), selectedElementId: edgeElement.id });
+    const hitArea = getRotationHandle(container, edgeElement.id).querySelector('rect');
+    if (!hitArea) throw new Error('Rotation handle hit area is missing for the edge element.');
+
+    const x = Number(hitArea.getAttribute('x'));
+    const y = Number(hitArea.getAttribute('y'));
+    const width = Number(hitArea.getAttribute('width'));
+    const height = Number(hitArea.getAttribute('height'));
+    expect(x).toBeGreaterThanOrEqual(0);
+    expect(y).toBeGreaterThanOrEqual(0);
+    expect(x + width).toBeLessThanOrEqual(1024);
+    expect(y + height).toBeLessThanOrEqual(1024);
+    expect(width).toBeGreaterThanOrEqual(144);
+    expect(height).toBeGreaterThanOrEqual(144);
+  });
+
+  it.each([
+    { name: 'centered', x: 400, y: 400, scale: 1 },
+    { name: 'near the top edge', x: 400, y: 240, scale: 1 },
+    { name: 'enlarged', x: 512, y: 512, scale: 2 },
+  ])('keeps the $name rotation handle in place as the image rotates', ({ x, y, scale }) => {
+    const element = createElement('first', { x, y, scale });
+    const { container, props, rerender } = renderCanvas({ project: createProject([element]), selectedElementId: element.id });
+    const originalPosition = rotationHandleCenter(getRotationHandle(container, element.id));
+    expect(originalPosition.clientY).toBeLessThan(canvasClientPoint(x, y).clientY);
+
+    for (const rotation of [45, 90, 135, 180, 270, 360]) {
+      const rotatedElement = { ...element, transform: { ...element.transform, rotation } };
+      rerender(<EmblemCanvas {...props} project={createProject([rotatedElement])} />);
+      expect(getElement(container, element.id).getAttribute('transform')).toContain(`rotate(${rotation})`);
+      expect(rotationHandleCenter(getRotationHandle(container, element.id))).toEqual(originalPosition);
+    }
+  });
+
+  it.each([72, 73])('keeps an extreme-size rotation handle away from the element center at y=%s and rotates from it', (centerY) => {
+    const extremeElement = createElement('extreme', { x: 72, y: centerY, scale: 10, rotation: 45, mirrorX: true });
+    const { container, svg, props } = renderCanvas({
+      project: createProject([extremeElement]), selectedElementId: extremeElement.id, showEditBounds: false,
+    });
+    const handle = getRotationHandle(container, extremeElement.id);
+    const start = rotationHandleCenter(handle);
+    const hitArea = handle.querySelector('rect');
+    if (!hitArea) throw new Error('Extreme rotation handle hit area is missing.');
+    const hitCenterX = Number(hitArea.getAttribute('x')) + Number(hitArea.getAttribute('width')) / 2;
+    const hitCenterY = Number(hitArea.getAttribute('y')) + Number(hitArea.getAttribute('height')) / 2;
+    expect(hitCenterX === extremeElement.transform.x && hitCenterY === extremeElement.transform.y).toBe(false);
+    expect(Number(hitArea.getAttribute('x'))).toBeGreaterThan(extremeElement.transform.x);
+
+    pointer(handle, 'pointerdown', start.clientX, start.clientY, 14);
+    const quarterTurnPoint = canvasClientPoint(
+      extremeElement.transform.x - (hitCenterY - extremeElement.transform.y),
+      extremeElement.transform.y + (hitCenterX - extremeElement.transform.x),
+    );
+    pointer(svg, 'pointermove', quarterTurnPoint.clientX, quarterTurnPoint.clientY, 14);
+    expect(props.onElementTransform).toHaveBeenCalledExactlyOnceWith(extremeElement.id, {
+      x: 72, y: centerY, scale: 10, rotation: 135, mirrorX: true,
+    });
+  });
+
+  it('rotates a mirrored element from its center while preserving position and scale', () => {
+    const first = createElement('first', { scale: 2, rotation: 170, mirrorX: true });
+    const { container, svg, props } = renderCanvas({ project: createProject([first, createElement('second')]), selectedElementId: first.id });
+    const handle = getRotationHandle(container, first.id);
+    const start = rotationHandleCenter(handle);
+    pointer(handle, 'pointerdown', start.clientX, start.clientY, 3);
+    pointer(svg, 'pointermove', 310, 220, 3);
+
+    expect(props.onElementTransform).toHaveBeenLastCalledWith(first.id, {
+      x: 400, y: 400, scale: 2, rotation: 260, mirrorX: true,
+    });
+    expect(props.onSelectElement).toHaveBeenLastCalledWith(first.id);
+  });
+
+  it('keeps pointer rotation continuous when the pointer crosses the angle boundary', () => {
+    const first = createElement('first');
+    const { container, svg, props } = renderCanvas({ project: createProject([first]), selectedElementId: first.id });
+    const handle = getRotationHandle(container, first.id);
+    const start = rotationHandleCenter(handle);
+    pointer(handle, 'pointerdown', start.clientX, start.clientY, 4);
+    const nearPositiveBoundary = canvasClientPoint(200, 400 + 200 * Math.sin((179 * Math.PI) / 180));
+    const nearNegativeBoundary = canvasClientPoint(200, 400 + 200 * Math.sin((-179 * Math.PI) / 180));
+    pointer(svg, 'pointermove', nearPositiveBoundary.clientX, nearPositiveBoundary.clientY, 4);
+    pointer(svg, 'pointermove', nearNegativeBoundary.clientX, nearNegativeBoundary.clientY, 4);
+
+    const calls = vi.mocked(props.onElementTransform).mock.calls;
+    expect(calls).toHaveLength(2);
+    expect(calls[1]?.[1].rotation).toBeCloseTo(-89, 3);
+    expect((calls[1]?.[1].rotation ?? 0) - (calls[0]?.[1].rotation ?? 0)).toBeCloseTo(2, 3);
+  });
+
   it('selects and drags only the touched object with bounds hidden, using DOM coordinates and pointer capture', () => {
     const { container, svg, props } = renderCanvas({ showEditBounds: false });
     const first = getElement(container, 'first');
@@ -220,6 +347,25 @@ describe('EmblemCanvas', () => {
     const hidden = { ...props.project, layers: { ...props.project.layers, details: { ...props.project.layers.details, visible: false } } };
     rerender(<EmblemCanvas {...props} project={hidden} />);
     pointer(svg, 'pointermove', 260, 260, 2);
+    expect(props.onElementTransform).not.toHaveBeenCalled();
+    expect(svg.releasePointerCapture).toHaveBeenCalledTimes(2);
+  });
+
+  it('cancels rotation on pointer cancellation and when the selected layer becomes hidden', () => {
+    const { container, svg, props, rerender } = renderCanvas({ selectedElementId: 'first', showEditBounds: false });
+    const handle = getRotationHandle(container, 'first');
+    const start = rotationHandleCenter(handle);
+    pointer(handle, 'pointerdown', start.clientX, start.clientY, 12);
+    pointer(svg, 'pointercancel', start.clientX, start.clientY, 12);
+    pointer(svg, 'pointermove', 310, 220, 12);
+    expect(props.onElementTransform).not.toHaveBeenCalled();
+
+    const secondHandle = getRotationHandle(container, 'first');
+    const secondStart = rotationHandleCenter(secondHandle);
+    pointer(secondHandle, 'pointerdown', secondStart.clientX, secondStart.clientY, 13);
+    const hidden = { ...props.project, layers: { ...props.project.layers, details: { ...props.project.layers.details, visible: false } } };
+    rerender(<EmblemCanvas {...props} project={hidden} />);
+    pointer(svg, 'pointermove', 310, 220, 13);
     expect(props.onElementTransform).not.toHaveBeenCalled();
     expect(svg.releasePointerCapture).toHaveBeenCalledTimes(2);
   });
@@ -337,6 +483,18 @@ describe('EmblemCanvas', () => {
     expect(props.onSelectElement).toHaveBeenLastCalledWith(null);
     rerender(<EmblemCanvas {...props} selectedElementId={null} />);
     expect(screen.getByText(props.copy.noSelection)).not.toBeNull();
+  });
+
+  it.each<EmblemLocale>(['en', 'zh'])('adjusts rotation with direction keys and keeps the existing transform fields in %s', (locale) => {
+    const copy = getEmblemCreatorCopy(locale);
+    const first = createElement('first', { x: 123, y: 234, scale: 2, rotation: 350, mirrorX: true });
+    const { container, props } = renderCanvas({ locale, copy, project: createProject([first]), selectedElementId: first.id, showEditBounds: false });
+    const handle = getRotationHandle(container, first.id);
+    fireEvent.keyDown(handle, { key: 'ArrowRight' });
+
+    expect(props.onElementTransform).toHaveBeenCalledExactlyOnceWith(first.id, {
+      x: 123, y: 234, scale: 2, rotation: 355, mirrorX: true,
+    });
   });
 
   it.each<EmblemLocale>(['en', 'zh'])('labels the selection with its localized layer and position within that layer instead of its UUID in %s', (locale) => {

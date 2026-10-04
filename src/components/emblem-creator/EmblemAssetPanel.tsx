@@ -84,7 +84,7 @@ export function EmblemAssetPanel({
   }
 
   return (
-    <section lang={locale} aria-labelledby={headingId} className="flex min-w-0 flex-col gap-3 rounded-lg border border-border bg-card p-3">
+    <section lang={locale} aria-labelledby={headingId} className="flex min-w-0 flex-col gap-3 rounded-lg border border-border bg-card p-3 lg:h-full lg:min-h-0">
       <h2 id={headingId} className="text-sm font-semibold">{copy.panels.assets}</h2>
       <div className="grid grid-cols-3 gap-1">
         {categories.map((category) => (
@@ -95,12 +95,15 @@ export function EmblemAssetPanel({
           </button>
         ))}
       </div>
-      <ul aria-label={copy.assets.chooseAsset} className="grid max-h-64 grid-cols-4 gap-2 overflow-y-auto lg:max-h-[26rem] lg:grid-cols-3">
+      <ul aria-label={copy.assets.chooseAsset} className="grid max-h-64 grid-cols-4 gap-2 overflow-y-auto lg:flex-1 lg:min-h-0 lg:max-h-none lg:content-start lg:grid-cols-3 xl:grid-cols-4">
         {assets.map((asset) => (
           <li key={asset.id} className="min-w-0">
             <button type="button" aria-label={`${copy.assets.chooseAsset}: ${asset.name[locale]}`}
               title={asset.name[locale]} onClick={() => addCatalogAsset(asset)}
-              className="flex aspect-square w-full items-center justify-center rounded-md border border-border bg-background p-2 hover:border-primary focus-visible:outline-2 focus-visible:outline-primary">
+              className="flex aspect-square w-full items-center justify-center rounded-md border border-border bg-background p-2 hover:border-primary focus-visible:outline-2 focus-visible:outline-primary"
+              style={{
+                backgroundColor: '#fffaf0',
+              }}>
               <Image src={asset.publicPath} alt="" width={asset.width} height={asset.height} unoptimized
                 className="h-full w-full object-contain" />
             </button>

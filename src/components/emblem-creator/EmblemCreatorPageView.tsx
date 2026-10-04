@@ -11,7 +11,7 @@ export function EmblemCreatorPageView({ locale }: { locale: EmblemLocale }) {
   const copy = getEmblemCreatorCopy(locale);
 
   return (
-    <InnerPageChrome locale={locale} currentPath="/emblem-creator" tone="hub">
+    <InnerPageChrome locale={locale} currentPath="/emblem-creator" tone="hub" className="emblem-creator-page">
       <div className="mx-auto w-full max-w-[92rem] px-3 pt-6 pb-10 sm:px-6 lg:px-8">
         <EmblemCreatorPageHeading
           locale={locale}
