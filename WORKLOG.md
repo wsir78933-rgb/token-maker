@@ -1,5 +1,120 @@
 # WORKLOG
 
+## 交接单 · 2026-10-04 16:03 CST · Codex CLI
+
+### 本次目标
+
+修复 Army Formation 选中棋子上方的旋转控件：拖动棋子、平移战场、放大缩小后仍跟随棋子，支持负数及超出原地图范围的坐标；完成提交和合并到 main。用户取消了本会话的棋子大小重置，最终仅处理旋转控件。本次 offhand 用户选择 A（不存档、开始写入），仅将交接单插入项目根目录 WORKLOG.md，保持未存档、未提交。
+
+### 已完成
+
+- 原修复提交 `c0dd4fa9dc23a34b96bed0f730536c3415f1584d`；保留最新 main `eaf091932dc0bd3ee57535438a08830e5b4e1fa0` 的动态顶部预留及滚轮锚点补偿，产生集成提交 `45cb80e68345f7d4111f210859643d7fc1e91f4b`，随后通过 fast-forward 合入 main。本轮再次核对 main HEAD 为该集成提交，原修复是 HEAD 的祖先。
+- 相对集成前 main 仅修改 `src/components/army-formation/ArmyFormationCreator.tsx` 和同目录 `ArmyFormationCreator.test.tsx`。控件横向位置按棋子中心计算，移除原地图边界限制；纵向间距结合有效缩放和棋子最大旋转外伸计算，保留约 44 CSS px 的点击区域。EN/ZH 共用组件。
+- 本轮回读实际 raw：7 个相关测试文件、244/244 测试通过，Vitest、两个修改文件的 ESLint、`pnpm typecheck` 退出码均为 0。这些检查在集成修复时运行，本次文档交接未重跑。当前 main 两个文件 SHA-256 与验收报告一致：组件 `a09d97c1d9c7db8e062639410cc035959fd59fd76eaf4fc4203346de7184aac7`；测试 `13cf0ec26d4a6be15582fd27e9259f770e92852bca21d54637b0ce42488aea33`。
+- 合并后已用本地 ego-browser 的原生鼠标和键盘验收 EN/ZH：地图平移、负坐标棋子、棋子拖动、旋转、缩放、Delete/Backspace 删除均通过。中文测试覆盖 8 倍及 0.25 倍，控件与旋转棋子的实际间距约 16.07px / 8.25px；真实 wheel 锚点偏差约 x=0.000194px、y=-0.002758px。英文旋转约 90.159° 后位置保持。TaskSpace 107 的 finish 回执为 `closedSpace: true`。
+- 验收与 Git 报告：`/tmp/army-rotation-control-merge-20261004/verification.md`，同目录保留测试 raw、退出码、浏览器中间失败和最终通过记录、截图。两名内置子代理任务在修复完成时已结束，本任务的临时预览当时已停止；未 push、部署或新增依赖。
+- 本轮实际核对 `/Users/wusir/orca/workspaces/token-maker-app/背景图` 目录不存在，Git worktree 清单亦无该路径；没有执行删除，不归因是谁删除。此前已告知用户可自行删除该工作树。
+
+### 做到一半
+
+无。旋转控件修复、范围内验证及 main 合并已完成。本次交接前 main 只有既有 WORKLOG.md 未提交，暂存区和未跟踪文件清单为空；本条和全部旧记录继续保持未存档。未运行完整测试集或生产构建，没有部署验收证据。
+
+### 下一步
+
+下一班输入 `$pickup`，先核对实际 branch、HEAD 和工作区。当前修复无需继续编码；如有新需求，另行对齐范围和验收。保留 WORKLOG 未提交状态及其他会话的旧记录。临时证据在 /tmp，系统清理后可能不可用。
+
+### 踩过的坑
+
+- 将控件横坐标限制在原地图宽度内，会让负坐标或超出范围的棋子与控件分离。棋子与控件应使用相同的地图位置变换。
+- main 的动态顶部预留会改变 field top / pane height；固定这两个值的断言已移除，保留控件跟随、点击区域、旋转间距及滚轮锚点验证。
+- 浏览器棋子中心位移不能代替真实 wheel 鼠标锚点验证；应读取实际 wheel 坐标。滚动或平移会使缓存坐标过时，真实指针输入前需重新读取位置并确认命中。初始错误断言和误拖动记录保留在 browser 日志中，后续按实际事件重新验收通过。
+- 旧交接单中的未完成浏览器验收属于当时状态；本条描述本次合并后 main 的实际验收。不同层级证据不能互相替代，相关测试通过不等于完整构建或部署通过。
+
+### 怎么验证
+
+- 本次只验证文档：旧内容逐字节保留、新条目位于标题下和旧条目前、六段模板完整、只有 WORKLOG.md 修改、HEAD 不变、暂存区为空；执行 `git diff --check -- WORKLOG.md`。原文、新条目、恢复的原文及验证结果保存在 `/tmp/army-rotation-offhand-20261004-e4e7osrl`。
+- 既有功能命令（本次 offhand 未重跑）：
+  `pnpm exec vitest run src/components/army-formation/ArmyFormationCreator.test.tsx src/lib/army-formation/background-image-geometry.test.ts src/lib/army-formation/background-image-upload.test.ts src/lib/army-formation/browser-saves.test.ts src/lib/army-formation/copy.test.ts src/lib/army-formation/document.test.ts src/lib/army-formation/export-image.test.ts`
+  `pnpm exec eslint src/components/army-formation/ArmyFormationCreator.tsx src/components/army-formation/ArmyFormationCreator.test.tsx`
+  `pnpm typecheck`
+- 若需复验 UI，在可用本地预览打开 `/army-formation-creator` 和 `/zh/army-formation-creator`，选中并拖动棋子，再平移、滚轮缩放、拖动上方 ↻；检查控件始终位于棋子上方并居中，缩放后仍可点击；检查 Delete/Backspace 删除。实际验收原始输出见 `browser/04-main-zh-native.log`、`browser/05-main-zh-anchor-observation.log`、`browser/08-main-en-final.log`、`browser/09-finish.log`。本次未启动、停止或重启任何服务，也未操作其他工作树或用户终端。
+
+## 交接单 · 2026-10-04 15:57 CST · Codex CLI
+
+### 本次目标
+
+将“新工具 1 / Emblem Creator”（独立编辑器容器，EN/ZH）本次会话交接插入 canonical main 的 WORKLOG 标题下。用户已确认 A（不存档、开始写入），本条未存档、未提交，旧记录全部保留；素材使用按本会话用户明确声明的 Roll for Fantasy 作者本地使用许可。实际时区为 Asia/Shanghai（UTC+08:00）。
+
+### 已完成
+
+- 源提交 `12760b71dc01a2f045a2e10d9e7f31dace10e8cd` 经普通 merge `d43aab927f2d3c24ebb300ba9e7c7cc8649bc773` 合入 main；本轮两条 `git merge-base --is-ancestor <上述 SHA> HEAD` 均 exit 0。当前 main 后续合法提交保留。
+- 当前素材库实际计数为 215 PNG，旧 20 SVG 保留；源提交实际 229 路径，历史报告细分为 215 PNG + 14 TS/TSX。源码点读确认 EN/ZH 共用 `EmblemCreatorPageView` / `EmblemCreatorWorkbench`；`EmblemLayerPanel.tsx` 在列表隐藏空层，`project.ts:getEmblemTargetLayer` 自动分配至首个空主体层（最多 4 个，满层抛错）及对应 `details` / `crests` 层。
+- 已回读 `/tmp/emblem-new-tool-1/main-merge-git/` 的 `report.md`、`result.json`、`merge-verification.json`，及 `/tmp/emblem-new-tool-1/main-merge-final-review/` 的 `report.md`、`result.json`、`commands.json` 和测试 raw。历史 focused 验证：12/12 files、193/193 passed、0 failed、0 skipped；Vitest、14 路径 ESLint、`tsc --noEmit` exit 均为 0。本轮没有重跑。
+- 写前 canonical main `/Users/wusir/Desktop/开发项目集合/token-maker-app`：branch `main`、HEAD `45cb80e68345f7d4111f210859643d7fc1e91f4b`，index/untracked 空，只有 `WORKLOG.md` unstaged。原文 191751 bytes，SHA-256 `cedf953456e61f3082c24eea9dd22e7fdd479ba3ba6761c71a79ad445907631a`，旧顶部为 Army `2026-10-04 15:38 CST` 交接。
+- 实际 Orca Run `run_48638ac9d26a` 的六个 merge/preflight/fix/review Worker 均 succeeded/completed/released；按该 Run 查询，active 仅本次文档 Dispatch `ctx_f0e6d0e947be`，reclaimable 为 0。历史 retained 继续保留，本 Worker 的结算后 release 由协调者处理。
+
+### 做到一半
+
+- 真实浏览器交互、真实下载/导出、生产部署为 UNVERIFIED，用户已改为自己验收；历史 mock/jsdom、命令和源码证据不能证明这些项目。
+- Army Formation 新需求仅整理：三处“重置旋转 / 重置高度 / 重置底色”均简写为“重置”，截图指定位置增加“棋子大小”重置。用户明确“先不要改代码”，本 Run 没有该需求的实现授权，也没有实现；当前 `src/lib/army-formation/copy.ts` 与主组件仍使用上述 ZH 原文和 EN `Reset rotation / Reset height / Reset background color`。大小重置作用于选中棋子还是全部、目标尺寸均未确认；截图位置本轮未重新回读。
+
+### 下一步
+
+- 用户在其当前可用预览自行验收 `/emblem-creator` 和 `/zh/emblem-creator`：四主体层分配、第五主体拒绝且项目不变、清空复用、detail/crest 分配、空层隐藏及真实下载/导出。Army 新需求先确认上述两项决定，再另行对齐 EN/ZH 实现范围。
+- 原 feature 历史路径 `/Users/wusir/orca/workspaces/token-maker-app/新工具-1`、branch `新工具-1`：本轮实际目录不存在，Git worktree/local branch/Orca workspace 清单无目标；exact workspace terminal list 返回 `selector_not_found`，当前终端数量 UNVERIFIED，不当作 0。40005 的 lsof exit 1、无监听输出，无当前 PID/cwd 可核对。此前用户仅问能否删，不构成主脑实际删除授权；本轮未删除、恢复或停止资源，删除归因 UNVERIFIED。
+
+### 踩过的坑
+
+- 历史删除评估 `/tmp/emblem-new-tool-1/worktree-deletion-assessment/report.md` 中 source clean/main..source=0、40005 PID60235/cwd、3 retained agent + 1 user preview 只代表当时，不能写为当前事实。Orca 1.4.219 的实际 rm help 说明会尝试同时删 branch，无 keep-branch 参数；后续清理需单独授权及即时核查，不强制 force，不 raw rm/git worktree remove，不擅停服务，保留其他 worktree 与 40001/40006 用户资源。
+- 历史 main 40001 EN/ZH GET HTTP 200/curl exit 0 仅当时本地 HTTP 证据；本轮未查询其当前状态，不能宣称 UI/真实下载/部署通过。wireframe `/Users/wusir/Desktop/emblem-creator-wireframe-v2.excalidraw` 本轮 `ls -ld` exit 1/ENOENT，历史 SHA 保护 UNVERIFIED；未寻找、恢复、创建或归因删除。
+
+### 怎么验证
+
+- 本轮仅文档验证：`python3 /tmp/emblem-new-tool-1/offhand-20261004/verify.py` 检查 after = 原 `# WORKLOG` 头 + 新 entry + 原剩余 bytes，去掉本条后与原文逐字节相同；`git diff --check -- WORKLOG.md`，并回读 `git diff --name-only`、`git ls-files --others --exclude-standard`、`git diff --cached --name-only`、HEAD/status。原文、entry、after、恢复字节和实际退出码见该目录 `before.bin`、`entry.md`、`after.bin`、`recovered-before.bin`、`report.md`、`result.json` 及 raw 命令输出。
+- 历史功能命令（本轮未运行）：`pnpm exec vitest run src/lib/emblem-creator src/components/emblem-creator`；`pnpm exec eslint` 后接 final-review `commands.json` 中 14 个确切路径；`pnpm exec tsc --noEmit --tsBuildInfoFile /tmp/emblem-new-tool-1/main-merge-final-review/main-review.tsbuildinfo`。原始结果为 `focused-vitest.*`、`scoped-eslint.*`、`typecheck.*`。
+- 本轮未跑 typecheck/lint/Vitest/build/浏览器，未 stage/commit/push/merge，未新增业务文件/依赖/工作树，未关闭用户或其他 Run 终端，未停/重启 preview。下一班输入 `$pickup` 可接手；未确认需求和 UNVERIFIED 项继续保留。
+
+## 交接单 · 2026-10-04 15:38 CST · Codex CLI
+
+### 本次目标
+
+Army Formation 棋子可在画布直接旋转：16 CSS px 纯黑、无圆底的 ↻，44 CSS px 透明点击目标；拖动达到 3 CSS px 后选中棋子，并提交合入 main。本次按用户已确认的 offhand 范围，仅将交接单插入 canonical main 的 WORKLOG；用户明确不存档，本交接单保持未存档、未提交。
+
+### 已完成
+
+- 原 source 提交 `46a9836e006712bd2dd3d72eaf3ae79b800d7ce5` 已通过 merge `bed600ecad24f2cf3b6082861818d5f139653391` 合入 main；后续合法的无关工具 merge `d43aab927f2d3c24ebb300ba9e7c7cc8649bc773` 保留。
+- main 的缩放手柄间距及 zoom-in / zoom-out / 上下限 no-op 锚点补修已作普通 commit `eaf091932dc0bd3ee57535438a08830e5b4e1fa0`，唯一 parent 为 `d43aab927f2d3c24ebb300ba9e7c7cc8649bc773`。仅改 `src/components/army-formation/ArmyFormationCreator.tsx` 与 `src/components/army-formation/ArmyFormationCreator.test.tsx`；其他路径的 mode/blob 与 parent 相同，Git 范围已完成。
+- 写交接前实际读取 canonical main `/Users/wusir/Desktop/开发项目集合/token-maker-app`：branch `main`、HEAD `eaf091932dc0bd3ee57535438a08830e5b4e1fa0`，工作区 clean、index 空。WORKLOG 原全文 SHA-256 为 `4b188ff8f29298a29aec2c3e6da4d10b0ed2e158366ec57ce1d48ec17a28a23c`。
+- 最终独立命令验证报告 `/tmp/army-drag-merge-task_4650440584ca.md`：7/7 focused 文件、241/241 测试通过，0 失败、0 跳过；两个指定文件的 ESLint、`pnpm typecheck`、`git diff --check` 实际 inner exit 均为 0。这是提交前冻结补修内容的验证，Git 报告已核对 committed blob 与冻结内容相同；本 offhand 不重跑这些命令。
+- 最终代码复核报告 `/tmp/army-drag-merge-task_b66b5413c63b/review-final.md`：0 blocking；36 polygon、216 anchor、4 boundary 纯计算通过，0 失败。属于静态/纯几何证据，不是浏览器验收；Git 证据在 `/tmp/army-drag-merge-task_eae373f78733/commit-final.md`。
+- 实现、独立验证、复核及 Git Workers 均已 release；Run `run_3a89f62aa87d` 本写入检查时只有当前文档 Dispatch 活跃，结算后由协调者处理本 Worker 的 release。原 `/Users/wusir/orca/workspaces/token-maker-app/报错` 路径、Git worktree 记录与 local branch `报错` 均实际回读确认不存在；未核对 Orca 软注册，也不归因谁删除。
+
+### 做到一半
+
+最终 main 的真实 EN/ZH 浏览器验收尚未完成，涉及 `/army-formation-creator` 和 `/zh/army-formation-creator` 的 drag selection、rotation、wheel / pan / zoom。此前 `http://127.0.0.1:40001` 的 chunks 请求出现 403，`http://localhost:40001` 已有存档 modal 阻塞真实鼠标操作；这些仅为历史观察，本次未复测，不声称当前仍是相同错误。最终补修未运行 build 或 full suite；新端口 40007 的临时 preview 尚未批准，未启动。被同名后续输出覆盖的历史失败 raw / snapshot 仍为 UNVERIFIED，现有通过证据不能重建它们。
+
+### 下一步
+
+下一班输入 `$pickup` 读取本条，先只读核对实时 HEAD、branch、status 与当前写入窗口，再按已授权验收范围在本地 ego-browser 用真实鼠标验证两种语言的 drag selection、rotation、wheel / pan / zoom。需要新 preview、启动 40007 或变更已有存档时，先取得确认；功能和 Git 范围已经完成，不延伸为新的实现或 commit 授权。WORKLOG 保持未存档，本次只在既有 canonical main 写入，不新建 worktree。
+
+### 踩过的坑
+
+- 动态 gutter 必须结合 `fieldScale × mapZoom`；wheel 锚点补偿要分别计算 current / next 的缩放值，覆盖 zoom-in、zoom-out 与上下限 no-op。
+- Slide 必须沿用 outgoing zoom floor，并独立用于 current / next；不能把 current zoom 当作普通 zoom-out 的 next floor。
+- 历史同名 raw / snapshot 被覆盖后不能靠后续 green 结果重建；缺失证据保持 UNVERIFIED。
+- 静态代码、组件测试、mock DOMRect 与纯几何计算不能表述为真实浏览器通过。真实鼠标操作前刷新几何并确认命中；modal 阻塞时保留未验证结论，不能代替用户决定存档处理。
+
+### 怎么验证
+
+- 已执行的独立验证见上述三个最终报告；需要复验时，先确认工作区与授权范围，在 canonical main 执行具体命令：
+  `pnpm exec vitest run src/components/army-formation/ArmyFormationCreator.test.tsx src/lib/army-formation/copy.test.ts src/lib/army-formation/document.test.ts src/lib/army-formation/browser-saves.test.ts src/lib/army-formation/export-image.test.ts src/lib/army-formation/background-image-geometry.test.ts src/lib/army-formation/background-image-upload.test.ts`
+  `pnpm exec eslint src/components/army-formation/ArmyFormationCreator.tsx src/components/army-formation/ArmyFormationCreator.test.tsx`
+  `pnpm typecheck`
+  `git diff --check -- WORKLOG.md`
+- 浏览器使用获准且可访问的本地 preview，逐一打开 `/army-formation-creator`、`/zh/army-formation-creator`。真实鼠标拖动未选棋子，检查 3 CSS px 阈值后的选中；拖 ↻ 验证旋转及 pointer capture，读取实际 CSS 确认 16 CSS px 纯黑无圆底图标和 44 CSS px 透明 target。
+- 在不同 field scale / map zoom 下检查上边缘旋转手柄间距与命中；用 wheel 分别 zoom-in、zoom-out、到上下限后的 no-op，再 pan，并检查固定鼠标锚点及 slide outgoing floor。每次真实指针输入前刷新位置、确认 `elementFromPoint` 命中；已有存档 modal 的处理需先确认，不以脚本绕过鼠标验收。
+- 本 offhand 仅验证六段模板、顶部插入、旧内容逐 byte 保留、仅 WORKLOG dirty、index 空、HEAD 不变及 `git diff --check -- WORKLOG.md`；未运行功能测试、lint、typecheck、build、full suite 或浏览器。文档证据保存在 `/tmp/army-offhand-task_ebd80cc7dd1e/`，临时报告可能被系统清理。
+
 ## 交接单 · 2026-10-03 21:58 CST · Codex CLI
 
 ### 本次目标
