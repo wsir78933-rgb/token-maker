@@ -980,6 +980,27 @@ describe('emblem creator sitemap entries', () => {
   });
 });
 
+describe('outfit creator sitemap entries', () => {
+  test('includes exactly one entry per language with reciprocal alternates', () => {
+    const englishUrl = 'https://www.tokenmaker.one/outfit-creator';
+    const chineseUrl = 'https://www.tokenmaker.one/zh/outfit-creator';
+    const expectedAlternates = {
+      'x-default': englishUrl,
+      'en-US': englishUrl,
+      'zh-CN': chineseUrl,
+    };
+
+    for (const url of [englishUrl, chineseUrl]) {
+      expect(sitemap().filter((entry) => entry.url === url)).toHaveLength(1);
+      const entry = findSitemapEntry(url);
+      expect(entry.lastModified).toEqual(new Date('2026-10-04'));
+      expect(entry.changeFrequency).toBe('weekly');
+      expect(entry.priority).toBe(0.8);
+      expect(entry.alternates?.languages).toEqual(expectedAlternates);
+    }
+  });
+});
+
 describe('coat maker sitemap entries', () => {
   test('includes bilingual coat maker routes with language alternates', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/coat-of-arms-maker');
