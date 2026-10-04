@@ -1,4 +1,43 @@
 # WORKLOG
+## 交接单 · 2026-10-04 21:42 CST +0800 · Codex CLI
+
+### 本次目标
+
+核对并交接徽标编辑器紧凑桌面/中等/移动布局、EN/ZH 页面、资产面板滚动与编辑器原生交互，记录已归档提交、main 合并、历史验证证据和当前目标 worktree 状态。
+
+### 已完成
+
+布局与交互改动已在 feature commit `0f27c1e09f0b03ad893276799af89a941c4de3ec` 完成并合并到 main；交接单写入前 main clean。当前 main HEAD 是 `d85d55b3178df9181bf924d3c062a0f7e2713d63`，`d6ba3b92fc476c8fb197333d5983de342545f954` 与 `0f27c1e09f0b03ad893276799af89a941c4de3ec` 均为其祖先。相对历史验证基线 `d6ba3b92fc476c8fb197333d5983de342545f954`，当前 HEAD 的新增归档并行内容来自 `d14bdd4bf52fc2fb474efe5ad3cbeff7f9fd7ea8` 与合并提交 `d85d55b3178df9181bf924d3c062a0f7e2713d63`，涉及 `src/app/emblem-creator-routes.test.tsx`、`src/components/emblem-creator/EmblemCreatorPageView.tsx`、新增 `src/components/emblem-creator/EmblemCreatorWhatIs.tsx`、`src/lib/emblem-creator/copy.ts`；这些新增内容没有在本次 offhand 中重跑验证，也不归功于本次布局/交互任务。原 8 个布局/交互源文件中 7 个在 `d6ba3b9` 与当前 HEAD 保持相同，`EmblemCreatorPageView.tsx` 是已被并行内容改变的 1 个文件。
+
+历史紧凑布局验证使用 3 个相关 Vitest 文件，最终顺序复验为 94/94 tests；历史合并 main 验证使用 5 个相关 Vitest 文件，为 102/102 tests。相关 `pnpm typecheck` 与 scoped ESLint 有 exit 0 receipt；main 的 scoped ESLint 是 7 个 TSX 文件。上述 QA、typecheck、lint 和浏览器证据均对应历史 `d6ba3b9`，不是当前 `d85d55b` 的重新验证。
+
+### 做到一半
+
+无。
+
+### 下一步
+
+当前 `refs/heads/emblem-preview-toolbar` 与 `/Users/wusir/orca/workspaces/token-maker-app/emblem-preview-toolbar` 均不存在；这是当前状态观测，不归因删除者，也无需再删除。下一班用 `$pickup` 接手；后续仅在新的明确授权范围内继续，不推送、不部署。
+
+### 踩过的坑
+
+紧凑布局第一次机器报告为 94 tests 中 93 pass、1 fail，原因是英文 215-asset listing 触发 5000ms timeout；冻结源码后按相同执行顺序复验为 94/94，初次失败仍保留为历史证据。
+
+scratch browser 在 mobile page scroll 后使用旧坐标命中 canvas 失败；修复为每次 pointer input 前重新读取 rect/elementFromPoint，并等待图片 `complete && naturalWidth > 0`。早期 scratch 失败日志存在缺口，部分输出已被覆盖且未重建，不能据此补充当前通过结论。
+
+历史 main 浏览器在 `http://localhost:40001` 的 EN/ZH desktop/mobile 四个 case 有 PASS receipt；严格 `http://127.0.0.1:40001` 因 Next dev blockCrossSiteDEV 返回 403，只能标为 `UNVERIFIED`。Monica 扩展注入属性造成的 hydration warning 属现有扩展且在本功能 scope 外。闭合 TaskSpace 6 的 scratch browser 脚本不作为可直接重跑命令。
+
+### 怎么验证
+
+主 repo 的复验命令（本次 offhand 未运行）：
+
+`pnpm exec vitest run src/components/emblem-creator/EmblemCanvas.test.tsx src/components/emblem-creator/EmblemCreatorWorkbench.test.tsx src/components/emblem-creator/EmblemAssetPanel.test.tsx src/components/emblem-creator/EmblemCreatorPageHeading.test.tsx src/app/emblem-creator-routes.test.tsx`
+
+`pnpm typecheck`
+
+`pnpm exec eslint src/components/emblem-creator/EmblemAssetPanel.tsx src/components/emblem-creator/EmblemCanvas.test.tsx src/components/emblem-creator/EmblemCanvas.tsx src/components/emblem-creator/EmblemCreatorPageView.tsx src/components/emblem-creator/EmblemCreatorWorkbench.test.tsx src/components/emblem-creator/EmblemCreatorWorkbench.tsx src/components/emblem-creator/EmblemDocumentToolbar.tsx`
+
+浏览器可打开 `http://localhost:40001/emblem-creator` 与 `http://localhost:40001/zh/emblem-creator`，选择主体 6，检查白底 canvas、bounds/hand 交互，使用 arrow 与 Delete；移动端检查 tabs 且无 horizontal overflow。历史证据路径可回看 `/tmp/emblem-git-release-20261004/merged-checks.json`、`/tmp/emblem-git-release-20261004/merged-browser.json` 和 `/tmp/emblem-compact-layout-20261004/checks-verification.json`。这些是选定文件与历史 localhost browser 证据，未证明完整 repository tests、standard Next build、Workers packaging、部署或生产状态。
 
 ## 交接单 · 2026-10-04 16:03 CST · Codex CLI
 
