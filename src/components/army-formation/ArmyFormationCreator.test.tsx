@@ -1990,7 +1990,6 @@ describe('ArmyFormationCreator', () => {
     render(<ArmyFormationCreator locale={locale} />);
     const pieceName = placeArmyFormationPiece('helmet-01');
     const piece = screen.getByRole('button', { name: pieceName });
-    fireEvent.click(piece);
     const saveFailure = new Error('Army formation autosave failed while applying a valid number.');
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw saveFailure;
