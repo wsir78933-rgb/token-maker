@@ -1,5 +1,45 @@
 # WORKLOG
 
+## 交接单 · 2026-10-03 21:58 CST · Codex CLI
+
+### 本次目标
+
+为 Coat of Arms / Family Crest 工具替换经用户审核的六类盾牌素材，完成独立验收并合并到本地 main；本次按 offhand 记录交接。
+
+### 已完成
+
+- 234 个 SVG：Shield 111、Heater 24、French 36、Banner 32、Round 19、Lozenge 12；同步目录、渲染和相关测试，共 242 个路径。Shield 的 111 个几何形状经检查均不同，36 个审核样稿与对应最终 SVG 像素一致。
+- 主要集成文件是 `src/lib/coat-of-arms/reference-catalog.ts`、`src/lib/coat-of-arms/shield-material-catalog.json`、`src/lib/coat-of-arms/scene-svg.ts`，另外 5 个变更路径为相关测试。
+- 素材提交 `e650989fe136adc6cddec6ac96a474c96d72a5e4`；合并提交 `a3d1ad2cfa000d281cf2250437d0a410f18d0a80`。未 push、未部署。交接时本地 main 为 `66b464c1f0969411ba382625a3ebe63b4ca57c79`；后续其他任务的提交不属于本次盾牌验收范围。
+- 在 main 的 `a3d1ad2` 上独立验收：9 个相关测试文件、271 项通过；TypeScript 检查通过；Lint 0 错误、6 个原有警告。静态检查 234/234 SVG、透明角与素材 HTTP 内容通过。
+- ego-browser 实际验证英中页面、六类盾牌及 shield-108、Azure 换色、撤销/重做、透明 PNG 导出。两个下载均为 1024×614 RGBA，SHA256 为 `4d7470fb870b2061a5429f02d94927b3076bc48358595289b186ec70fbc3b453`。
+- 本次合并 Run `run_470528f06a29` 的 5 个 Codex Worker 已结算并关闭，浏览器 TaskSpace 43 已关闭；40001 服务在验收时保留。
+
+### 做到一半
+
+无。盾牌实现与合并已经完成。用户表示自行删除 `coat-shields-refresh` 工作树，是否实际删除未核对；本交接不执行删除。
+
+### 下一步
+
+下一班用 `$pickup` 读取本条，先核对实际 main、工作区和并行任务状态。若需确认工作树清理，先只读查看 Orca 状态；后续修改、推送或部署须另按用户授权范围执行。本交接单保留为未提交的 `WORKLOG.md` 修改。
+
+### 踩过的坑
+
+- 原素材根 SVG 的 width/height 与场景嵌入属性重复会破坏 XML/PNG，已修复；不可重新引入重复属性。
+- 旧自定义 paint-key 草稿的兼容迁移未纳入本次范围，用户草稿未修改。
+- 完整构建此前在 `/api/share` 因 `cloudflare:workers` 解析失败；在素材改动前的基线也复现。最终合并阶段未重跑完整构建，不可将局部检查称为全构建通过。
+- PNG 与直接栅格化的 DOM SVG 存在抗锯齿差异：7009 个像素不同、最大 alpha 差 106；轮廓与色块边界误差在 1px 内，差异未超出 2px 边缘带，内部色块一致。这不等于 PNG 与参考逐像素相同。
+- main 有其他协调者的串行写入窗口；本交接仅在明确移交的文档窗口写入，保留旧 WORKLOG，不重写其他任务的记录。
+
+### 怎么验证
+
+- 已有真实证据：`/tmp/coat-shields-merge-review.md`、`/tmp/coat-shields-merge-review.json`、`/tmp/coat-shields-merge-browser.md`、`/tmp/coat-shields-merge-browser.json`、`/tmp/coat-shields-merge-feature-commit.md`、`/tmp/coat-shields-merge-main.md`。这些临时文件可能在系统清理后消失。
+- 需要重新检查代码时，在确认正确工作区后运行：
+  `pnpm exec vitest run src/lib/coat-of-arms/shield-material-paints.test.ts src/lib/coat-of-arms/reference-catalog.test.ts src/lib/coat-of-arms/assets.test.ts src/lib/coat-of-arms/scene-svg.test.ts src/lib/coat-of-arms/export.test.ts src/lib/coat-of-arms/layer-colours.test.ts src/lib/coat-of-arms/commands.test.ts src/components/coat-of-arms/SelectedElementColourStrip.test.tsx src/components/coat-of-arms/TargetShieldPalette.test.tsx`
+  `pnpm exec tsc --noEmit --incremental false`；`pnpm lint`。
+- 浏览器检查 `http://localhost:40001/coat-of-arms-maker` 与 `http://localhost:40001/zh/coat-of-arms-maker`：选六类盾牌及 shield-108，先选中画布盾牌层再换 Azure，检查撤销/重做及透明 PNG 导出。原验收使用独立 origin `http://shield-merge-470528.localhost:40001`，避免读取或覆盖默认 localhost 的用户草稿。
+- 本次 offhand 只校验交接单的插入位置、旧条目保留、WORKLOG 单文件差异及 Git HEAD/暂存区不变；不重跑代码或浏览器验收。
+
 ## 交接单 · 2026-10-03 19:26 CST · Codex CLI
 
 ### 本次目标
