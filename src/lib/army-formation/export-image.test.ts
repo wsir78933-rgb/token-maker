@@ -3,6 +3,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  DEFAULT_ARMY_FORMATION_BACKGROUND_TRANSFORM,
+  zoomArmyFormationBackgroundTransformAtPoint,
+} from '@/lib/army-formation/background-image-geometry';
+import {
+  ARMY_FORMATION_PNG_EXPORT_SCALE,
   buildArmyFormationPng,
   buildArmyFormationSvg,
   inlineArmyFormationSvgAssets,
@@ -84,11 +89,133 @@ describe('buildArmyFormationSvg', () => {
     expect(svg).toContain(
       'href="https://example.com/field.png?x=1&amp;y=2"',
     );
+    expect(svg).toContain('transform="translate(0 0) scale(1)"');
+    expect(svg).toContain('preserveAspectRatio="xMidYMid meet"');
+    expect(svg).toContain(
+      '<g transform="translate(0 0) scale(1)"><image href="https://example.com/field.png?x=1&amp;y=2" x="0" y="0" width="800" height="600" preserveAspectRatio="xMidYMid meet"/><g transform="translate(125 80) rotate(37 25 15)"><rect width="50" height="30" fill="#e74c3c"/>',
+    );
     expect(svg).toContain(
       '<g transform="translate(125 80) rotate(37 25 15)"><rect width="50" height="30" fill="#e74c3c"/>',
     );
     expect(svg).toContain('<path d="M0 0h50v30z"/>');
     expect(svg.indexOf('fill="#102030"')).toBeLessThan(svg.indexOf('fill="#e74c3c"'));
+  });
+
+  it('一次变换背景和棋子，并保留场景边界和棋子地图坐标', () => {
+    const svg = buildArmyFormationSvg(
+      battlefieldScene([spearPiece()], {
+        backgroundImageUrl: '/field.png',
+        backgroundImageTransform: { scale: 1.5, offsetXPx: -24, offsetYPx: 18 },
+      }),
+    );
+
+    const sharedViewGroup = '<g transform="translate(-24 18) scale(1.5)">';
+    const fieldBackground = '<rect width="800" height="600" fill="#102030"/>';
+    const pieceMarkup =
+      '<g transform="translate(125 80) rotate(37 25 15)"><rect width="50" height="30" fill="#e74c3c"/>';
+
+    expect(svg).toContain('width="800" height="600" viewBox="0 0 800 600" overflow="hidden"');
+    expect(svg.indexOf(fieldBackground)).toBeLessThan(svg.indexOf(sharedViewGroup));
+    expect(svg).toContain(
+      `${sharedViewGroup}<image href="/field.png" x="0" y="0" width="800" height="600" preserveAspectRatio="xMidYMid meet"/>${pieceMarkup}`,
+    );
+    expect(svg.match(/transform="translate\(-24 18\) scale\(1\.5\)"/g)).toHaveLength(1);
+  });
+
+  it('视角缩放后新增的棋子仍使用相同的 50×30 地图内尺寸', () => {
+    const firstPiece = spearPiece({ x: 20, y: 30, rotationDegrees: 0 });
+    const laterPiece = spearPiece({
+      x: 200,
+      y: 150,
+      rotationDegrees: -90,
+      backgroundColor: '#abcdef',
+    });
+    const firstPieceMarkup =
+      '<g transform="translate(20 30) rotate(0 25 15)"><rect width="50" height="30" fill="#e74c3c"/><svg width="50" height="30" viewBox="0 0 50 30"><path d="M0 0h50v30z"/></svg></g>';
+    const laterPieceMarkup =
+      '<g transform="translate(200 150) rotate(-90 25 15)"><rect width="50" height="30" fill="#abcdef"/><svg width="50" height="30" viewBox="0 0 50 30"><path d="M0 0h50v30z"/></svg></g>';
+    const beforeZoomSvg = buildArmyFormationSvg(battlefieldScene([firstPiece]));
+    const afterZoomSvg = buildArmyFormationSvg(
+      battlefieldScene([firstPiece, laterPiece], {
+        backgroundImageTransform: { scale: 2, offsetXPx: -20, offsetYPx: -10 },
+      }),
+    );
+
+    expect(beforeZoomSvg).toContain(firstPieceMarkup);
+    expect(afterZoomSvg).toContain(
+      `<g transform="translate(-20 -10) scale(2)">${firstPieceMarkup}${laterPieceMarkup}</g>`,
+    );
+    expect(afterZoomSvg.match(/<rect width="50" height="30" fill="(?:#e74c3c|#abcdef)"\/>/g)).toHaveLength(2);
+    expect(firstPiece).toMatchObject({ x: 20, y: 30, rotationDegrees: 0 });
+    expect(laterPiece).toMatchObject({ x: 200, y: 150, rotationDegrees: -90 });
+  });
+
+  it('没有背景图片时仍将视角变换应用到棋子', () => {
+    const svg = buildArmyFormationSvg(
+      battlefieldScene([spearPiece()], {
+        backgroundImageTransform: { scale: 2, offsetXPx: -20, offsetYPx: 10 },
+      }),
+    );
+
+    expect(svg).toContain(
+      '<g transform="translate(-20 10) scale(2)"><g transform="translate(125 80) rotate(37 25 15)"><rect width="50" height="30" fill="#e74c3c"/>',
+    );
+    expect(svg).not.toContain('<image');
+  });
+
+  it('使用以指针锚点缩放得到的负平移保持锚点地图位置', () => {
+    const anchor = { xPx: 100, yPx: 50 };
+    const transform = zoomArmyFormationBackgroundTransformAtPoint(
+      DEFAULT_ARMY_FORMATION_BACKGROUND_TRANSFORM,
+      anchor,
+      1.5,
+    );
+    const svg = buildArmyFormationSvg(
+      battlefieldScene([spearPiece({ x: anchor.xPx, y: anchor.yPx })], {
+        backgroundImageTransform: transform,
+      }),
+    );
+
+    expect(transform).toEqual({ scale: 1.5, offsetXPx: -50, offsetYPx: -25 });
+    expect(transform.offsetXPx + anchor.xPx * transform.scale).toBe(anchor.xPx);
+    expect(transform.offsetYPx + anchor.yPx * transform.scale).toBe(anchor.yPx);
+    expect(svg).toContain(
+      '<g transform="translate(-50 -25) scale(1.5)"><g transform="translate(100 50) rotate(37 25 15)">',
+    );
+  });
+
+  it('背景变换无效时，错误中指出具体字段和值', () => {
+    expect(() =>
+      buildArmyFormationSvg(
+        battlefieldScene([], {
+          backgroundImageTransform: {
+            scale: 8.1,
+            offsetXPx: 0,
+            offsetYPx: 0,
+          },
+        }),
+      ),
+    ).toThrow('transform.scale must be between 0.25 and 8; received 8.1.');
+    expect(() =>
+      buildArmyFormationSvg(
+        battlefieldScene([], {
+          backgroundImageTransform: {
+            scale: 1,
+            offsetXPx: Number.NaN,
+            offsetYPx: 0,
+          },
+        }),
+      ),
+    ).toThrow('transform.offsetXPx must be a finite number; received NaN.');
+    expect(() =>
+      buildArmyFormationSvg(
+        battlefieldScene([], {
+          backgroundImageTransform: null as unknown as NonNullable<
+            ArmyFormationImageScene['backgroundImageTransform']
+          >,
+        }),
+      ),
+    ).toThrow('transform must be an object; received null (type object).');
   });
 
   it('按数组顺序画出每个棋子，空背景图不生成 image', () => {
@@ -267,6 +394,91 @@ describe('buildArmyFormationPng', () => {
     expect(toBlob).toHaveBeenCalledTimes(1);
     expect(png).toBe(pngBlob);
     expect(png.type).toBe('image/png');
+    expect(revokeObjectURL).toHaveBeenCalledWith(svgObjectUrl);
+  });
+
+  it('保留 1x 默认尺寸并以 2x 输出 1560×960', async () => {
+    const scene = battlefieldScene([], { widthPx: 780, heightPx: 480 });
+    const canvasSizes: Array<{ width: number; height: number }> = [];
+    const canvasContext = { drawImage: vi.fn() } as unknown as CanvasRenderingContext2D;
+    const pngBlob = new Blob([Uint8Array.from([137, 80, 78, 71])], { type: 'image/png' });
+
+    class ImmediateImage {
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      set src(_imageSource: string) {
+        queueMicrotask(() => this.onload?.());
+      }
+    }
+
+    vi.stubGlobal('Image', ImmediateImage);
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:army-formation-svg');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(function (this: HTMLCanvasElement) {
+      canvasSizes.push({ width: this.width, height: this.height });
+      return canvasContext;
+    });
+    vi.spyOn(HTMLCanvasElement.prototype, 'toBlob').mockImplementation((callback) => {
+      callback(pngBlob);
+    });
+
+    await buildArmyFormationPng(scene);
+    await buildArmyFormationPng(scene, ARMY_FORMATION_PNG_EXPORT_SCALE);
+
+    expect(canvasSizes).toEqual([
+      { width: 780, height: 480 },
+      { width: 1560, height: 960 },
+    ]);
+  });
+
+  it('拒绝无效 outputScale 并报告收到的值', async () => {
+    const scene = battlefieldScene([]);
+
+    await expect(buildArmyFormationPng(scene, Number.NaN)).rejects.toThrow(
+      'outputScale=NaN',
+    );
+    await expect(buildArmyFormationPng(scene, 4.01)).rejects.toThrow(
+      'outputScale=4.01',
+    );
+    await expect(buildArmyFormationPng(scene, 0)).rejects.toThrow(
+      'outputScale=0',
+    );
+  });
+
+  it('内联资源失败时保留错误路径和值', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(null, { status: 503, statusText: 'Unavailable' }),
+      ),
+    );
+
+    await expect(
+      inlineArmyFormationSvgAssets('<svg/>', '/field.png'),
+    ).rejects.toThrow(
+      'Army formation image asset request failed. assetUrl=/field.png status=503',
+    );
+  });
+
+  it('SVG 加载失败时释放对象 URL 并保留原始错误', async () => {
+    const svgObjectUrl = 'blob:army-formation-svg';
+    const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue(svgObjectUrl);
+    const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    class FailedImage {
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      set src(_imageSource: string) {
+        queueMicrotask(() => this.onerror?.());
+      }
+    }
+
+    vi.stubGlobal('Image', FailedImage);
+
+    await expect(buildArmyFormationPng(battlefieldScene([]))).rejects.toThrow(
+      'Army formation SVG could not be rendered as PNG.',
+    );
+    expect(createObjectURL).toHaveBeenCalledTimes(1);
     expect(revokeObjectURL).toHaveBeenCalledWith(svgObjectUrl);
   });
 });

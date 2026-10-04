@@ -39,6 +39,8 @@ export type ArmyFormationCreatorCopy = {
   setBackgroundImage: string;
   uploadBackgroundImage: string;
   removeBackgroundImage: string;
+  resetBackgroundImageView: string;
+  backgroundImageInteractionHint: string;
   backgroundImageFormats: string;
   backgroundImageFormatError: string;
   backgroundImageSizeError: string;
@@ -81,7 +83,7 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   deleteSelectedColor: 'Delete selected color',
   palette: 'Palette',
   changeSelectedPieces: 'Change selected pieces',
-  deleteSelected: 'Delete selected',
+  deleteSelected: 'Delete selected (Delete / Backspace)',
   angle: 'Angle',
   angleInputError: 'Enter a valid number for the angle: {received}.',
   resetSelectedRotation: 'Reset rotation',
@@ -97,6 +99,9 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   setBackgroundImage: 'Set background image',
   uploadBackgroundImage: 'Upload image',
   removeBackgroundImage: 'Remove image',
+  resetBackgroundImageView: 'Fit the entire battlefield',
+  backgroundImageInteractionHint:
+    'Drag an empty area to pan the entire battlefield. Use the scroll wheel to zoom the entire battlefield. Drag a game piece to move only that piece. The view is kept for this page session only; it is not saved and resets on refresh or import.',
   backgroundImageFormats: 'PNG, JPG, JPEG or WebP · up to 20 MB',
   backgroundImageFormatError: 'Unsupported image type: {received}. Choose PNG, JPG, JPEG or WebP.',
   backgroundImageSizeError: 'Image exceeds the 20 MB limit: {received}.',
@@ -138,7 +143,7 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   deleteSelectedColor: '删除所选颜色',
   palette: '调色盘',
   changeSelectedPieces: '改选中的棋子',
-  deleteSelected: '删除所选',
+  deleteSelected: '删除所选（Delete / Backspace）',
   angle: '角度',
   angleInputError: '角度必须是有效数字：{received}。',
   resetSelectedRotation: '重置旋转',
@@ -154,6 +159,9 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   setBackgroundImage: '设置背景图',
   uploadBackgroundImage: '上传图片',
   removeBackgroundImage: '移除图片',
+  resetBackgroundImageView: '适配整个战场',
+  backgroundImageInteractionHint:
+    '拖动空白处可平移整个战场，滚动滚轮可缩放整个战场；拖动兵棋只会移动该兵棋。视角仅在本次页面会话内保留，不会保存，刷新页面或导入后会重置。',
   backgroundImageFormats: '支持 PNG、JPG、JPEG、WebP，单张不超过 20 MB',
   backgroundImageFormatError: '不支持图片类型：{received}。请选择 PNG、JPG、JPEG 或 WebP。',
   backgroundImageSizeError: '图片超过 20 MB 限制：{received}。',

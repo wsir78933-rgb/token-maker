@@ -7,12 +7,14 @@ import {
   ARMY_PIECE_WIDTH,
   ARMY_PLACEMENT_STEP_PX,
   addArmyFormationPiece,
+  addArmyFormationPieceAtPoint,
   addArmyPaletteSwatch,
   clearArmyFormationPieces,
   createEmptyArmyFormationDocument,
   deleteSelectedArmyFormationPieces,
   deleteSelectedArmyPaletteSwatch,
   moveArmyFormationPiece,
+  moveArmyFormationPieceAtPoint,
   parseArmyFormationDocument,
   rotateSelectedArmyFormationPieces,
   selectArmyPaletteSwatch,
@@ -49,6 +51,30 @@ function documentWithPiece(pieceId: string, fieldWidthPx = FIELD_WIDTH_PX): Army
     fieldWidthPx,
   );
 }
+
+const invalidArmyFormationPiecePointCases: ReadonlyArray<{
+  point: unknown;
+  expectedMessage: string;
+}> = [
+  { point: null, expectedMessage: 'Piece point must be an object, received null.' },
+  { point: 'not-a-point', expectedMessage: 'Piece point must be an object, received "not-a-point".' },
+  { point: [], expectedMessage: 'Piece point must be an object, received [].' },
+  { point: { x: null, y: 0 }, expectedMessage: 'Piece x must be a finite number, received null.' },
+  { point: { x: '12', y: 0 }, expectedMessage: 'Piece x must be a finite number, received "12".' },
+  { point: { x: Number.NaN, y: 0 }, expectedMessage: 'Piece x must be a finite number, received NaN.' },
+  { point: { x: 0, y: Number.POSITIVE_INFINITY }, expectedMessage: 'Piece y must be a finite number, received Infinity.' },
+];
+
+const invalidArmyFormationDocumentCases: ReadonlyArray<{
+  document: unknown;
+  expectedMessage: string;
+}> = [
+  { document: null, expectedMessage: 'Army formation document must be an object, received null.' },
+  {
+    document: 'not-a-document',
+    expectedMessage: 'Army formation document must be an object, received "not-a-document".',
+  },
+];
 
 function pieceBoxesOverlap(
   firstX: number,
@@ -201,6 +227,107 @@ describe('addArmyFormationPiece', () => {
   });
 });
 
+describe('addArmyFormationPieceAtPoint', () => {
+  it('adds at the exact point, keeps old piece state, and selects only the new piece', () => {
+    const withSwatch = addArmyPaletteSwatch(
+      createEmptyArmyFormationDocument(),
+      'red-swatch',
+      '#ff0000',
+    );
+    const selectedSwatch = selectArmyPaletteSwatch(withSwatch, 'red-swatch');
+    const firstPlacement = addArmyFormationPieceAtPoint(
+      selectedSwatch,
+      'soldier',
+      'piece-1',
+      { x: -12.25, y: 9000.5 },
+    );
+    const rotated = rotateSelectedArmyFormationPieces(firstPlacement, 15);
+    const added = addArmyFormationPieceAtPoint(
+      rotated,
+      'archer',
+      'piece-2',
+      { x: -12.25, y: 9000.5 },
+    );
+
+    expect(added.battlefields[0].pieces).toEqual([
+      {
+        id: 'piece-1',
+        iconId: 'soldier',
+        x: -12.25,
+        y: 9000.5,
+        rotationDegrees: 15,
+        backgroundColor: '#ff0000',
+      },
+      {
+        id: 'piece-2',
+        iconId: 'archer',
+        x: -12.25,
+        y: 9000.5,
+        rotationDegrees: 0,
+        backgroundColor: '#ff0000',
+      },
+    ]);
+    expect(added.battlefields[0].selectedPieceIds).toEqual(['piece-2']);
+    expect(rotated.battlefields[0].selectedPieceIds).toEqual(['piece-1']);
+    expect(added.battlefields[0].selectedSwatchId).toBe('red-swatch');
+    expect(added.version).toBe(ARMY_FORMATION_VERSION);
+  });
+
+  it('adds even when every non-overlapping position is occupied', () => {
+    let document = setArmyBattlefieldHeight(createEmptyArmyFormationDocument(), 200);
+    const fieldWidthPx = ARMY_PIECE_WIDTH;
+
+    for (let pieceIndex = 0; pieceIndex < 6; pieceIndex += 1) {
+      document = addArmyFormationPiece(document, 'soldier', `piece-${pieceIndex}`, fieldWidthPx);
+    }
+
+    const before = serializeArmyFormationDocument(document);
+    const added = addArmyFormationPieceAtPoint(document, 'archer', 'piece-6', { x: 0, y: 0 });
+
+    expect(added.battlefields[0].pieces).toHaveLength(7);
+    expect(added.battlefields[0].pieces[0]).toMatchObject({ x: 0, y: 0 });
+    expect(added.battlefields[0].pieces[6]).toMatchObject({ id: 'piece-6', x: 0, y: 0 });
+    expect(added.battlefields[0].selectedPieceIds).toEqual(['piece-6']);
+    expect(serializeArmyFormationDocument(document)).toBe(before);
+  });
+
+  it.each(invalidArmyFormationPiecePointCases)(
+    'rejects an invalid point with its received value: $expectedMessage',
+    ({ point, expectedMessage }) => {
+      expect(() =>
+        addArmyFormationPieceAtPoint(
+          createEmptyArmyFormationDocument(),
+          'soldier',
+          'piece-1',
+          point as never,
+        ),
+      ).toThrow(expectedMessage);
+    },
+  );
+
+  it.each(invalidArmyFormationDocumentCases)(
+    'rejects an invalid document with its received value: $expectedMessage',
+    ({ document, expectedMessage }) => {
+      expect(() =>
+        addArmyFormationPieceAtPoint(
+          document as never,
+          'soldier',
+          'piece-1',
+          { x: 0, y: 0 },
+        ),
+      ).toThrow(expectedMessage);
+    },
+  );
+
+  it('rejects a duplicate id with the received id', () => {
+    const document = documentWithPiece('piece-1');
+
+    expect(() =>
+      addArmyFormationPieceAtPoint(document, 'archer', 'piece-1', { x: -10, y: 9000 }),
+    ).toThrow('Army formation piece id "piece-1" already exists.');
+  });
+});
+
 describe('moveArmyFormationPiece', () => {
   it('把坐标吸到 5 像素格子上', () => {
     const moved = moveArmyFormationPiece(documentWithPiece('piece-1'), 'piece-1', 7, 12, FIELD_WIDTH_PX);
@@ -238,6 +365,63 @@ describe('moveArmyFormationPiece', () => {
       '"piece-1"',
     );
     expect(onSecond.battlefields[0].pieces[0]).toMatchObject({ x: 0, y: 0 });
+  });
+});
+
+describe('moveArmyFormationPieceAtPoint', () => {
+  it('snaps finite coordinates to 5 px and allows positions outside the field', () => {
+    const firstPlacement = addArmyFormationPieceAtPoint(
+      createEmptyArmyFormationDocument(),
+      'soldier',
+      'piece-1',
+      { x: 10, y: 10 },
+    );
+    const withSecond = addArmyFormationPieceAtPoint(
+      firstPlacement,
+      'archer',
+      'piece-2',
+      { x: 25, y: 25 },
+    );
+    const moved = moveArmyFormationPieceAtPoint(withSecond, 'piece-1', { x: -13, y: 9008 });
+
+    expect(moved.battlefields[0].pieces[0]).toMatchObject({ x: -15, y: 9010 });
+    expect(moved.battlefields[0].pieces[1]).toEqual(withSecond.battlefields[0].pieces[1]);
+    expect(moved.battlefields[0].selectedPieceIds).toEqual(['piece-2']);
+  });
+
+  it.each(invalidArmyFormationPiecePointCases)(
+    'rejects an invalid point with its received value: $expectedMessage',
+    ({ point, expectedMessage }) => {
+      expect(() =>
+        moveArmyFormationPieceAtPoint(
+          documentWithPiece('piece-1'),
+          'piece-1',
+          point as never,
+        ),
+      ).toThrow(expectedMessage);
+    },
+  );
+
+  it.each(invalidArmyFormationDocumentCases)(
+    'rejects an invalid document with its received value: $expectedMessage',
+    ({ document, expectedMessage }) => {
+      expect(() =>
+        moveArmyFormationPieceAtPoint(
+          document as never,
+          'piece-1',
+          { x: 0, y: 0 },
+        ),
+      ).toThrow(expectedMessage);
+    },
+  );
+
+  it('rejects a missing id with the received id', () => {
+    expect(() =>
+      moveArmyFormationPieceAtPoint(createEmptyArmyFormationDocument(), 'missing-piece', {
+        x: 0,
+        y: 0,
+      }),
+    ).toThrow('Army formation piece id "missing-piece" was not found.');
   });
 });
 
@@ -475,6 +659,33 @@ describe('serializeArmyFormationDocument and parseArmyFormationDocument', () => 
     const restored = parseArmyFormationDocument(serializeArmyFormationDocument(document));
 
     expect(restored).toEqual(document);
+  });
+
+  it('roundtrips pieces placed and moved outside without adding fields or changing version', () => {
+    const added = addArmyFormationPieceAtPoint(
+      createEmptyArmyFormationDocument(),
+      'soldier',
+      'piece-1',
+      { x: -12.25, y: 9000.5 },
+    );
+    const moved = moveArmyFormationPieceAtPoint(added, 'piece-1', { x: -13, y: 9008 });
+    const serialized = serializeArmyFormationDocument(moved);
+    const serializedDocument = JSON.parse(serialized) as {
+      version: number;
+      battlefields: Array<{ pieces: Array<Record<string, unknown>> }>;
+    };
+    const restored = parseArmyFormationDocument(serialized);
+
+    expect(serializedDocument.version).toBe(ARMY_FORMATION_VERSION);
+    expect(Object.keys(serializedDocument.battlefields[0].pieces[0]).sort()).toEqual([
+      'backgroundColor',
+      'iconId',
+      'id',
+      'rotationDegrees',
+      'x',
+      'y',
+    ]);
+    expect(restored).toEqual(moved);
   });
 
   it('版本不对时抛错，错误里能看到收到的版本', () => {
