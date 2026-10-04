@@ -57,6 +57,7 @@ describe('content site topbar model', () => {
       { href: '/', title: 'Token Maker' },
       { href: '/coat-of-arms-maker', title: 'Coat of Arms Maker' },
       { href: '/armor-creator', title: 'Armor Creator' },
+      { href: '/outfit-creator', title: 'Outfit Creator' },
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
     ]);
@@ -95,6 +96,7 @@ describe('content site topbar model', () => {
       { href: '/zh', title: '令牌制作器' },
       { href: '/zh/coat-of-arms-maker', title: '纹章制作器' },
       { href: '/zh/armor-creator', title: '护甲制作器' },
+      { href: '/zh/outfit-creator', title: '服装搭配工具' },
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
     ]);
@@ -128,9 +130,13 @@ describe('content site topbar model', () => {
     const coatNested = readTopbar('en', '/coat-of-arms-maker/gallery', '/zh/coat-of-arms-maker/gallery');
     const armor = readTopbar('en', '/armor-creator', '/zh/armor-creator');
     const armorNested = readTopbar('en', '/armor-creator/saved', '/zh/armor-creator/saved');
+    const outfit = readTopbar('en', '/outfit-creator', '/zh/outfit-creator');
+    const chineseOutfit = readTopbar('zh', '/zh/outfit-creator', '/outfit-creator');
+    const outfitNested = readTopbar('en', '/outfit-creator/saved', '/zh/outfit-creator/saved');
     const army = readTopbar('en', '/army-formation-creator', '/zh/army-formation-creator');
     const nested = readTopbar('en', '/army-formation-creator/saved', '/zh/army-formation-creator/saved');
     const sibling = readTopbar('en', '/army-formation-creator-extra', '/zh');
+    const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
     expect(chineseEditor.freeToolsMenuIsActive).toBe(true);
@@ -138,9 +144,13 @@ describe('content site topbar model', () => {
     expect(coatNested.freeToolsMenuIsActive).toBe(true);
     expect(armor.freeToolsMenuIsActive).toBe(true);
     expect(armorNested.freeToolsMenuIsActive).toBe(true);
+    expect(outfit.freeToolsMenuIsActive).toBe(true);
+    expect(chineseOutfit.freeToolsMenuIsActive).toBe(true);
+    expect(outfitNested.freeToolsMenuIsActive).toBe(true);
     expect(army.freeToolsMenuIsActive).toBe(true);
     expect(nested.freeToolsMenuIsActive).toBe(true);
     expect(sibling.freeToolsMenuIsActive).toBe(false);
+    expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
   });

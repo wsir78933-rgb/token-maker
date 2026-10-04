@@ -14,6 +14,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [DnD dice roller Chinese](https://www.tokenmaker.one/zh/dice-roller-dnd): Simplified Chinese version of the DnD dice roller.
 - [Armor creator](https://www.tokenmaker.one/armor-creator): Assemble armor in the browser and download an image.
 - [Armor creator Chinese](https://www.tokenmaker.one/zh/armor-creator): 在浏览器里搭配护甲并下载图片。
+- [Outfit creator](https://www.tokenmaker.one/outfit-creator): Mix clothing layers in the browser, save four looks, and download a PNG.
+- [Outfit creator Chinese](https://www.tokenmaker.one/zh/outfit-creator): 在浏览器里组合服装图层、保存四套造型并下载 PNG。
 - [Army formation creator](https://www.tokenmaker.one/army-formation-creator): Place battlefield pieces in the browser and download an image.
 - [Army formation creator Chinese](https://www.tokenmaker.one/zh/army-formation-creator): 在浏览器里摆放战场棋子并下载图片。
 - [Square token maker](https://www.tokenmaker.one/templates/square-token-maker): Square VTT token workflow for grid maps, 1:1 crops, borders, and transparent PNG export.

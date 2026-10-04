@@ -1,5 +1,6 @@
 import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
+import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
 import { getBlogCategories, getBlogCategoryPath, type BlogCategoryCopy } from '@/lib/blog-content';
 import { getHomeCopy, getNavLabels, type NavLabels } from '@/lib/site-content';
 import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } from '@/lib/site-locale';
@@ -7,10 +8,12 @@ import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } fr
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
 const EMBLEM_CREATOR_PATH = '/emblem-creator';
+const OUTFIT_CREATOR_PATH = '/outfit-creator';
 const FREE_TOOLS_PATHS = [
   '/',
   '/coat-of-arms-maker',
   '/armor-creator',
+  OUTFIT_CREATOR_PATH,
   ARMY_FORMATION_CREATOR_PATH,
   EMBLEM_CREATOR_PATH,
 ] as const;
@@ -175,6 +178,11 @@ function buildContentSiteFreeToolFeatures(
     buildContentSiteFreeToolFeature(locale, '/armor-creator', navLabels.armor),
     buildContentSiteFreeToolFeature(
       locale,
+      OUTFIT_CREATOR_PATH,
+      readOutfitCreatorNavigationName(locale),
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
       ARMY_FORMATION_CREATOR_PATH,
       readArmyFormationNavigationName(locale),
     ),
@@ -250,6 +258,17 @@ function readArmyFormationNavigationName(locale: SiteLocale): string {
   if (navigationName.trim() === '') {
     throw new Error(
       `Army formation creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
+    );
+  }
+
+  return navigationName;
+}
+
+function readOutfitCreatorNavigationName(locale: SiteLocale): string {
+  const navigationName = getOutfitCreatorCopy(locale).navigationName;
+  if (navigationName.trim() === '') {
+    throw new Error(
+      `Outfit creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
     );
   }
 
