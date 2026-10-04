@@ -116,4 +116,26 @@ describe('emblem creator routes', () => {
     expect(within(menu).getByRole('menuitem', { name: navigationHeading }).getAttribute('href')).toBe(path);
     expect(within(topbar).getByRole('link', { name: switchLabel }).getAttribute('href')).toBe(switchedPath);
   });
+
+  it.each(localizedRoutes)('renders the localized What Is section after the editor for $locale', ({
+    locale,
+    Page,
+  }) => {
+    const copy = getEmblemCreatorCopy(locale);
+    const { container } = render(<Page />);
+    const editor = screen.getByRole('region', { name: copy.editorTitle });
+    const whatIsHeading = screen.getByRole('heading', { level: 2, name: copy.whatIs.title });
+    const whatIsSection = whatIsHeading.closest('section');
+    const footer = container.querySelector('footer');
+
+    if (!(whatIsSection instanceof HTMLElement) || !(footer instanceof HTMLElement)) {
+      throw new Error(`Missing What Is section or footer for locale ${JSON.stringify(locale)}.`);
+    }
+
+    for (const paragraph of copy.whatIs.paragraphs) {
+      expect(within(whatIsSection).getByText(paragraph)).toBeTruthy();
+    }
+    expect(editor.compareDocumentPosition(whatIsSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(whatIsSection.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
 });

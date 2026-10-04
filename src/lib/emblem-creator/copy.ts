@@ -6,6 +6,10 @@ export interface EmblemCreatorCopy {
   readonly heading: string;
   readonly description: string;
   readonly heroAction: string;
+  readonly whatIs: {
+    readonly title: string;
+    readonly paragraphs: readonly string[];
+  };
   readonly editorTitle: string;
   readonly canvasLabel: string;
   readonly noSelection: string;
@@ -65,6 +69,13 @@ const englishCopy: EmblemCreatorCopy = {
   heading: 'Emblem Creator',
   description: 'Build and edit your emblem.',
   heroAction: 'Start Creating',
+  whatIs: {
+    title: 'What is the Emblem Creator?',
+    paragraphs: [
+      'Emblem Creator is an online tool that helps you quickly make black-and-white emblems, logos, icons, and rank insignia. Use it to design a badge for your adventuring party, create a symbol for a faction, guild, or legion, or give characters and organizations in your fantasy world a mark of their own.',
+      'Whether you are a tabletop RPG or D&D player or GM, a fantasy worldbuilder, a fiction writer, or an indie game developer, Emblem Creator helps bring distinctive visual marks to your world and makes each faction and organization easier to recognize and remember.',
+    ],
+  },
   editorTitle: 'Emblem editor',
   canvasLabel: 'Emblem canvas',
   noSelection: 'No element selected',
@@ -104,6 +115,13 @@ const chineseCopy: EmblemCreatorCopy = {
   heading: '徽标制作工具',
   description: '制作并编辑你的徽标。',
   heroAction: '开始制作',
+  whatIs: {
+    title: '什么是徽章制作器？',
+    paragraphs: [
+      '徽章制作器是一款在线工具，帮助你快速制作黑白徽章、标志、图标和等级徽记。你可以用它为冒险团设计徽章，为阵营、公会或军团创建标识，也可以为奇幻世界中的角色与组织打造专属符号。',
+      '无论你是 RPG / D&D 桌游玩家或 GM，还是奇幻世界观创作者、小说作者或独立游戏开发者，都可以用徽章制作器为自己的世界增添鲜明的视觉标记，让每个阵营和组织都更容易辨认与记住。',
+    ],
+  },
   editorTitle: '徽标编辑器',
   canvasLabel: '徽标画布',
   noSelection: '未选中元素',
