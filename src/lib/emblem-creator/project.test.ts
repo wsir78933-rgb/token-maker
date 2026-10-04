@@ -96,13 +96,27 @@ describe('Emblem project model', () => {
     expect(() => createEmblemElement(catalogSource, '')).toThrow('element id');
   });
 
-  it('chooses the fixed target layer for each asset category', () => {
-    expect(getEmblemTargetLayer('body', 'body2')).toBe('body2');
-    expect(getEmblemTargetLayer('body', 'details')).toBe('body4');
-    expect(getEmblemTargetLayer('detail', 'body1')).toBe('details');
-    expect(getEmblemTargetLayer('crest', 'body1')).toBe('crests');
-    expect(() => getEmblemTargetLayer('other' as never, 'body1')).toThrow('"other"');
-    expect(() => getEmblemTargetLayer('body', 'unknown' as never)).toThrow('"unknown"');
+  it('automatically chooses the next empty body layer and rejects a full project with its actual occupancy', () => {
+    let project = createDefaultEmblemProject();
+    expect(getEmblemTargetLayer('body', project)).toBe('body4');
+
+    const bodyLayerIds = ['body4', 'body3', 'body2', 'body1'] as const;
+    const nextLayerIds = ['body3', 'body2', 'body1', undefined] as const;
+    for (const [index, layerId] of bodyLayerIds.entries()) {
+      project = applyEmblemProjectCommand(project, {
+        type: 'add-element', layerId, element: projectElement('body-target-' + index),
+      });
+      const nextLayerId = nextLayerIds[index];
+      if (nextLayerId) expect(getEmblemTargetLayer('body', project)).toBe(nextLayerId);
+    }
+
+    expect(() => getEmblemTargetLayer('body', project)).toThrow(
+      'No empty body layer is available; 4/4 occupied (body4, body3, body2, body1).',
+    );
+    expect(getEmblemTargetLayer('detail', project)).toBe('details');
+    expect(getEmblemTargetLayer('crest', project)).toBe('crests');
+    expect(() => getEmblemTargetLayer('other' as never, project)).toThrow('"other"');
+    expect(() => getEmblemTargetLayer('body', {} as never)).toThrow('project');
   });
 
   it('replaces the old element in a body layer without mutating either input project', () => {

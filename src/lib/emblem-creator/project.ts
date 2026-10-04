@@ -17,10 +17,10 @@ import {
 type EmblemRecord = Record<string, unknown>;
 
 const EMBLEM_BODY_LAYER_IDS: readonly EmblemBodyLayerId[] = Object.freeze([
-  'body1',
-  'body2',
-  'body3',
   'body4',
+  'body3',
+  'body2',
+  'body1',
 ]);
 
 const EMBLEM_TRANSFORM_KEYS = ['x', 'y', 'scale', 'rotation', 'mirrorX'] as const;
@@ -150,14 +150,22 @@ export function parseEmblemProjectJson(contents: string): EmblemProject {
 
 export function getEmblemTargetLayer(
   category: EmblemAssetCategory,
-  activeLayerId: EmblemLayerId,
+  project: EmblemProject,
 ): EmblemLayerId {
   assertEmblemAssetCategory(category);
-  assertEmblemLayerId(activeLayerId, 'active layer id');
+  assertEmblemProject(project);
 
   switch (category) {
-    case 'body':
-      return isEmblemBodyLayer(activeLayerId) ? activeLayerId : 'body4';
+    case 'body': {
+      const targetLayerId = EMBLEM_BODY_LAYER_IDS.find((layerId) => project.layers[layerId].elements.length === 0);
+      if (targetLayerId) return targetLayerId;
+
+      const occupiedLayerIds = EMBLEM_BODY_LAYER_IDS.filter((layerId) => project.layers[layerId].elements.length > 0);
+      throw new RangeError(
+        'No empty body layer is available; ' + occupiedLayerIds.length + '/4 occupied (' +
+          occupiedLayerIds.join(', ') + ').',
+      );
+    }
     case 'detail':
       return 'details';
     case 'crest':

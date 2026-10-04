@@ -152,9 +152,10 @@ async function readProjectFile(file: File): Promise<EmblemProject> {
 
 export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchProps) {
   const workbenchId = useId();
-  const [state, dispatch] = useReducer(reduceWorkbench, undefined, () => ({
+  const [state, reducerDispatch] = useReducer(reduceWorkbench, undefined, () => ({
     project: createDefaultEmblemProject(), selectedElementId: null, activeLayerId: 'body4' as const, error: null,
   }));
+  const latestState = useRef(state);
   const [activeCategory, setActiveCategory] = useState<EmblemAssetCategory>('body');
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>('assets');
   const [showEditBounds, setShowEditBounds] = useState(false);
@@ -163,6 +164,11 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
   const operationInProgress = useRef(false);
   const tabButtons = useRef<Partial<Record<MobilePanel, HTMLButtonElement | null>>>({});
   const busy = isLoading || isExporting;
+
+  function dispatch(action: WorkbenchAction) {
+    latestState.current = reduceWorkbench(latestState.current, action);
+    reducerDispatch(action);
+  }
 
   function applyCommand(command: EmblemProjectCommand) {
     dispatch({ type: 'command', command, errorPrefix: copy.errors.operationFailed });
@@ -175,9 +181,9 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
   function addCatalogAsset(candidate: EmblemCatalogAsset, targetLayerId: EmblemLayerId) {
     try {
       const asset = getEmblemCatalogAsset(candidate.id);
-      const expectedLayerId = getEmblemTargetLayer(asset.category, state.activeLayerId);
+      const expectedLayerId = getEmblemTargetLayer(asset.category, latestState.current.project);
       if (targetLayerId !== expectedLayerId) {
-        throw new Error(`Asset ${JSON.stringify(asset.id)} target layer is ${JSON.stringify(targetLayerId)}; expected ${JSON.stringify(expectedLayerId)}.`);
+        throw new Error(`Asset ${JSON.stringify(asset.id)} target layer is ${JSON.stringify(targetLayerId)}; current project target is ${JSON.stringify(expectedLayerId)}.`);
       }
       const element = createEmblemElement({
         kind: 'catalog', assetId: asset.id, url: asset.publicPath,
@@ -185,11 +191,15 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
       }, crypto.randomUUID());
       dispatch({ type: 'add', element, layerId: targetLayerId, errorPrefix: copy.errors.operationFailed });
     } catch (reason) {
-      dispatch({ type: 'error', message: `${copy.errors.operationFailed}: ${JSON.stringify(candidate.id)} — ${describeError(reason)}` });
+      const prefix = candidate.category === 'body' && reason instanceof RangeError &&
+        reason.message.startsWith('No empty body layer is available;')
+        ? copy.errors.bodyLayersFull
+        : copy.errors.operationFailed;
+      dispatch({ type: 'error', message: `${prefix}: ${JSON.stringify(candidate.id)} — ${describeError(reason)}` });
     }
   }
 
-  async function addImageUrl(value: string, targetLayerId: EmblemLayerId) {
+  async function addImageUrl(value: string, category: EmblemAssetCategory, targetLayerId: EmblemLayerId) {
     if (operationInProgress.current) throw new Error(`${copy.errors.operationFailed}: ${copy.loadingLabel}`);
     operationInProgress.current = true;
     setIsLoading(true);
@@ -197,15 +207,24 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
     let errorPrefix = copy.errors.invalidImageUrl;
     try {
       const url = requireEmblemImageUrl(value);
+      const initialTargetLayerId = getEmblemTargetLayer(category, latestState.current.project);
+      if (targetLayerId !== initialTargetLayerId) {
+        throw new Error(`URL target layer is ${JSON.stringify(targetLayerId)}; current project target is ${JSON.stringify(initialTargetLayerId)} before image loading.`);
+      }
       errorPrefix = copy.errors.loadImageFailed;
       const image = await loadEmblemImage(url);
       errorPrefix = copy.errors.operationFailed;
+      const commitLayerId = getEmblemTargetLayer(category, latestState.current.project);
       const element = createEmblemElement({
         kind: 'url', url, naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight,
       }, crypto.randomUUID());
-      dispatch({ type: 'add', element, layerId: targetLayerId, errorPrefix });
+      dispatch({ type: 'add', element, layerId: commitLayerId, errorPrefix });
     } catch (reason) {
-      const message = `${errorPrefix}: ${JSON.stringify(value)} — ${describeError(reason)}`;
+      const prefix = category === 'body' && reason instanceof RangeError &&
+        reason.message.startsWith('No empty body layer is available;')
+        ? copy.errors.bodyLayersFull
+        : errorPrefix;
+      const message = `${prefix}: ${JSON.stringify(value)} — ${describeError(reason)}`;
       dispatch({ type: 'error', message });
       // The asset panel also needs rejection to preserve its URL input on failure.
       throw new Error(message);
@@ -311,7 +330,7 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
         </div>
         <div id={`${workbenchId}-panel-assets`} role="tabpanel" aria-labelledby={`${workbenchId}-tab-assets`}
           className={`${panelClass('assets')} lg:col-start-1 lg:row-start-1`}>
-          <EmblemAssetPanel locale={locale} copy={copy} activeCategory={activeCategory} activeLayerId={state.activeLayerId}
+          <EmblemAssetPanel locale={locale} copy={copy} project={state.project} activeCategory={activeCategory}
             onCategoryChange={setActiveCategory} onAddCatalogAsset={addCatalogAsset} onAddImageUrl={addImageUrl} />
         </div>
         <div className="flex min-w-0 flex-col gap-4 lg:col-start-3 lg:row-start-1">
