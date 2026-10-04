@@ -42,6 +42,22 @@ export type OutfitCreatorFaqItemCopy = {
   answer: string;
 };
 
+export type OutfitCreatorToolComparisonCopy = {
+  title: string;
+  description: string;
+  tableLabel: string;
+  dimensionHeading: string;
+  outfitCreatorHeading: string;
+  photoshopHeading: string;
+  illustratorHeading: string;
+  rows: readonly {
+    dimension: string;
+    outfitCreator: string;
+    photoshop: string;
+    illustrator: string;
+  }[];
+};
+
 export type OutfitCreatorCopy = {
   navigationName: string;
   pageTitle: string;
@@ -75,6 +91,7 @@ export type OutfitCreatorCopy = {
     OutfitCreatorHowToUseStepCopy,
   ];
   howToUseAction: string;
+  toolComparison: OutfitCreatorToolComparisonCopy;
   faqEyebrow: string;
   faqTitle: string;
   faqDescription: string;
@@ -87,14 +104,11 @@ export type OutfitCreatorCopy = {
   ];
 };
 
-const englishOutfitCreatorCopy: OutfitCreatorCopy = {
+const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description'> = {
   navigationName: 'Outfit Creator',
-  pageTitle: 'Free Outfit Creator for RPG Characters, NPCs & Fantasy Worlds',
+  pageTitle: 'Outfit Creator – Free Online Tool for RPG, Fantasy & Sci-Fi Characters',
   pageDescription:
-    'Build a complete character look with jackets, shirts, pants, skirts, shoes, and accessories. Mix outfit pieces, preview the result, save four looks, and download a PNG.',
-  heading: 'Free RPG Outfit Creator',
-  description:
-    'Mix clothing layers and accessories on a character figure to find a clear, ready-to-use look for your next RPG character or fantasy setting.',
+    'Outfit Creator lets you quickly mix and match clothing and accessories online for free to create character looks for RPG and D&D campaigns, fantasy and sci-fi stories, worldbuilding, and indie games.',
   heroAction: 'Try for Free',
   genderMale: 'Male',
   genderFemale: 'Female',
@@ -197,6 +211,48 @@ const englishOutfitCreatorCopy: OutfitCreatorCopy = {
     },
   ],
   howToUseAction: 'Start creating',
+  toolComparison: {
+    title: 'Outfit Creator vs Photoshop vs Illustrator',
+    description:
+      'Skip drawing clothing from scratch or arranging layers by hand. Choose pieces to build a look, switch outfits, and download your image.',
+    tableLabel: 'Outfit creation tools comparison',
+    dimensionHeading: 'Comparison',
+    outfitCreatorHeading: 'Outfit Creator',
+    photoshopHeading: 'Photoshop',
+    illustratorHeading: 'Illustrator',
+    rows: [
+      {
+        dimension: 'Clothing assets',
+        outfitCreator: 'Built-in clothing and accessories save you the work of finding or drawing assets',
+        photoshop: 'Prepare or draw clothing assets yourself, then combine them',
+        illustrator: 'Draw vector clothing or import assets yourself',
+      },
+      {
+        dimension: 'Outfit editing',
+        outfitCreator: 'Click to change pieces, with automatic layering and a live preview',
+        photoshop: 'Flexible editing, with layers, positioning, and sizing to manage yourself',
+        illustrator: 'Precise vector editing, with objects, shapes, and layouts to manage yourself',
+      },
+      {
+        dimension: 'Multiple outfits',
+        outfitCreator: 'Four outfit slots let you switch with one click and quickly compare looks',
+        photoshop: 'Create and switch between versions using layer comps',
+        illustrator: 'Organize different looks across multiple artboards',
+      },
+      {
+        dimension: 'Save and resume',
+        outfitCreator: 'Looks stay saved in your current browser, ready for you to return and adjust',
+        photoshop: 'Save a PSD file to keep layers for further editing',
+        illustrator: 'Save an AI file to keep objects for further editing',
+      },
+      {
+        dimension: 'Image export',
+        outfitCreator: 'Download a PNG directly for character sheets, campaign notes, or reference material',
+        photoshop: 'PNG, JPG, and other formats with configurable export settings',
+        illustrator: 'SVG, PDF, and other formats with configurable export settings',
+      },
+    ],
+  },
   faqEyebrow: 'FAQ',
   faqTitle: 'Outfit Creator FAQ',
   faqDescription:
@@ -229,14 +285,11 @@ const englishOutfitCreatorCopy: OutfitCreatorCopy = {
   ],
 };
 
-const chineseOutfitCreatorCopy: OutfitCreatorCopy = {
+const chineseOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description'> = {
   navigationName: '服装搭配工具',
-  pageTitle: '免费服装搭配工具：为 RPG 角色、NPC 与奇幻世界搭配造型',
+  pageTitle: '角色服装搭配工具｜免费在线搭配 RPG、奇幻与科幻角色造型',
   pageDescription:
-    '组合夹克、衬衫、裤子、裙子、鞋子和配饰，预览完整角色造型，保存四套搭配并下载 PNG 图片。',
-  heading: '免费 RPG 服装搭配工具',
-  description:
-    '在角色预览中组合服装层和配饰，为 RPG 角色或奇幻世界设定找到清晰、可直接使用的造型。',
+    '服装搭配工具可以帮助你免费在线组合服装与配饰，快速搭配角色造型，适用于 RPG/D&D 跑团、奇幻与科幻小说、世界观设定、角色设计和独立游戏创作。',
   heroAction: '免费试用',
   genderMale: '男',
   genderFemale: '女',
@@ -330,6 +383,48 @@ const chineseOutfitCreatorCopy: OutfitCreatorCopy = {
     },
   ],
   howToUseAction: '开始搭配',
+  toolComparison: {
+    title: '服装搭配工具 vs Photoshop vs Illustrator',
+    description:
+      '无需从零绘制服装或手动排布图层，选择部件即可组合造型、切换搭配并下载图片。',
+    tableLabel: '服装搭配工具对比',
+    dimensionHeading: '对比维度',
+    outfitCreatorHeading: '服装搭配工具',
+    photoshopHeading: 'Photoshop',
+    illustratorHeading: 'Illustrator',
+    rows: [
+      {
+        dimension: '服装素材',
+        outfitCreator: '内置服装与配饰，省去寻找和绘制素材的步骤',
+        photoshop: '自行准备或绘制服装素材，再进行组合',
+        illustrator: '自行绘制矢量服装或导入素材',
+      },
+      {
+        dimension: '搭配操作',
+        outfitCreator: '点击即可换装，部件自动组合，实时查看效果',
+        photoshop: '编辑自由度高，需自行处理图层、位置与尺寸',
+        illustrator: '矢量控制精细，需自行处理对象、形状与布局',
+      },
+      {
+        dimension: '多套造型',
+        outfitCreator: '4 个套装槽位，一键切换，快速比较不同搭配',
+        photoshop: '通过图层复合建立和切换不同版本',
+        illustrator: '通过多个画板整理不同造型',
+      },
+      {
+        dimension: '保存续编',
+        outfitCreator: '搭配保存在当前浏览器，方便回来继续调整',
+        photoshop: '保存 PSD 文件，保留图层后继续编辑',
+        illustrator: '保存 AI 文件，保留对象后继续编辑',
+      },
+      {
+        dimension: '图片导出',
+        outfitCreator: '直接下载 PNG，方便放入角色卡、战役笔记或设定资料',
+        photoshop: '支持 PNG、JPG 等格式，按需设置导出',
+        illustrator: '支持 SVG、PDF 等格式，按需设置导出',
+      },
+    ],
+  },
   faqEyebrow: '常见问题',
   faqTitle: '服装搭配工具常见问题',
   faqDescription: '了解服装分类、套装槽位、预览和 PNG 下载的使用方式。',
@@ -358,8 +453,16 @@ const chineseOutfitCreatorCopy: OutfitCreatorCopy = {
 };
 
 const OUTFIT_CREATOR_COPY: Record<OutfitCreatorLocale, OutfitCreatorCopy> = {
-  en: englishOutfitCreatorCopy,
-  zh: chineseOutfitCreatorCopy,
+  en: {
+    ...englishOutfitCreatorCopy,
+    heading: englishOutfitCreatorCopy.pageTitle,
+    description: englishOutfitCreatorCopy.pageDescription,
+  },
+  zh: {
+    ...chineseOutfitCreatorCopy,
+    heading: chineseOutfitCreatorCopy.pageTitle,
+    description: chineseOutfitCreatorCopy.pageDescription,
+  },
 };
 
 function isOutfitCreatorLocale(locale: string): locale is OutfitCreatorLocale {

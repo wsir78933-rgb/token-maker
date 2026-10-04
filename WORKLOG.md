@@ -1,4 +1,76 @@
 # WORKLOG
+
+## 交接单 · 2026-10-04 22:51 CST +0800 · Codex（Orca 会话）
+
+### 本次目标
+
+修复徽标编辑器素材列表的滚动穿透：鼠标位于列表内，滚到顶部或底部后继续滚轮时不再带动外层页面；鼠标移出列表后页面仍可正常滚动。使用一个名为「新工具 1」的工作树及内置子代理实现和审核，随后提交并合并到 main。本次 offhand 用户选择 A（不存档），仅插入本交接单，不提交或处理其他未存档改动。
+
+### 已完成
+
+- 仅修改 `src/components/emblem-creator/EmblemAssetPanel.tsx:98`，在真实素材 `<ul>` 的 `overflow-y-auto` 后添加 `overscroll-y-contain`。主体、细节、图标三类及 EN/ZH 共用该组件；未新增依赖、事件监听器或功能。
+- 修复提交为 `de6dcc76d15eb4a4616490a52f8cb21d8fa1b93f`，合并提交为 `dc1a285aca3f1080544bc74a9aa03b1a670c4194`。本次 offhand 核对 main HEAD 为该合并提交，修复是 main 的祖先。当前组件 SHA-256 为 `1593276b3cb7094df458671a76342b2de61084fa4429ea2eb215a91fcbcefe2b`，与本会话浏览器验收源码一致。
+- 5 个内置子代理参与：实现、只读根因核查、验证规划、两路独立审核；主代理执行最终命令及真实 ego-browser 验收，没有使用 Orca 编排。
+- 本会话历史验证在原「新工具 1」工作树执行：3 个相关 Vitest 文件、61/61 tests 通过；`pnpm typecheck`、`pnpm lint`、`pnpm exec vinext build` 均 exit 0。Lint 为 0 错误、6 条未修改博客测试文件 warning。这些不是本次 offhand 或合并后完整 main 的重新运行结果。
+- 本会话历史 ego-browser 验收覆盖 EN/ZH × 1440×1000 桌面 / 390×844 窄屏 × 三个分类，共 12/12 场景通过；记录 96 次真实 `page.mouse.wheel` 输入及 24 张非空截图，截图字节数和 SHA-256 已核对。列表上下边界、反向恢复滚动、鼠标移出列表后的页面滚动均通过；TaskSpace 10 的 finish 回执为 closedSpace=true，临时 41001 服务已停止。
+- 提交合并时只带入上述组件，既有 WORKLOG 字节与暂存状态保持不变。本任务没有推送、部署或删除工作树；本次只读核对原「新工具 1」目录不存在，Git worktree 清单仅含主仓库，不归因删除者。
+
+### 做到一半
+
+无待实现的徽标滚动修复。未存档：当前 main 已有 `WORKLOG.md`、`src/components/outfit-creator/OutfitCreatorPageHeading.tsx`、`src/lib/outfit-creator/copy.ts` 改动；本交接单也保持未提交，暂存区为空。本 offhand 不处理 Outfit Creator 改动。未运行完整 Vitest、完整 `build:vinext` 发布门禁或生产验收。
+
+### 下一步
+
+下一班输入 `$pickup`，先核对 branch、HEAD 和工作区；保留现有未存档改动。徽标修复已进入 main，无需继续实现或重复删除已不存在的工作树。如需新的当前 main 验证，按下节命令与真实浏览器步骤生成新证据。原验收文件位于已不存在的 `新工具-1/.wrangler/scroll-boundary-qa/`，当前无法从该路径回读；本条历史结果依据本会话实际命令和浏览器输出，不应将失效路径当作现存证据。
+
+### 踩过的坑
+
+- 原列表没有纵向滚动链限制，浏览器实测底部继续滚动使 windowY 从 1386.5 到 1412.5，顶部从 1008.5 到 982.5；单加 `overscroll-y-contain` 即可保持列表内部滚动并阻止边界穿透。
+- `pnpm build --webpack` 在未修改的 `src/app/api/share/route.ts` 导入 `cloudflare:workers` 时以 UnhandledSchemeError 失败、exit 1。README 指明生产编译使用 Vinext；`pnpm exec vinext build` 已通过，但不能将其等同完整 `pnpm build:vinext` 链或部署通过。
+- 早期验收脚本因环境参数未传入、滚动稳定性等待以及分类按钮移出视口而失败；调整脚本定位及读取稳定滚动状态后，最终四组均重新执行并通过。先前失败未计为 PASS；每次 pointer 输入前重新读取几何和 elementFromPoint，禁止用合成 WheelEvent 或直接修改 scrollTop 代替真实滚轮。
+- 当前存在另一会话范围的未存档 Outfit Creator 改动；不得把这些文件或旧 WORKLOG 顺手加入本交接的 Git 提交。
+
+### 怎么验证
+
+以下是可重跑步骤，本次 offhand 未执行测试、Lint、构建或浏览器：
+
+- 相关测试：`pnpm exec vitest run src/components/emblem-creator/EmblemAssetPanel.test.tsx src/components/emblem-creator/EmblemCreatorWorkbench.test.tsx src/app/emblem-creator-routes.test.tsx`。
+- 类型与 Lint：`pnpm typecheck`；`pnpm lint`。生产编译：`pnpm exec vinext build`；本条不授权推送或部署。
+- 当前代码：`git merge-base --is-ancestor de6dcc76d15eb4a4616490a52f8cb21d8fa1b93f main`；`shasum -a 256 src/components/emblem-creator/EmblemAssetPanel.tsx` 应与上文记录对应，若源码已改变须重新绑定证据。
+- UI：在已核实运行且对应当前源码的本地服务打开 `/emblem-creator`、`/zh/emblem-creator`；分别以桌面和 390px 窄屏检查三个素材分类。鼠标在列表内滚到顶、到底继续滚轮，读取列表 scrollTop、window.scrollY 和祖先 scrollTop，确认外层不动；在边界反向滚轮应能恢复列表滚动；鼠标移出列表后页面应正常滚动。使用本地 ego-browser 真实鼠标滚轮并保留数值、截图和非空输出，不能用页面截图或 HTTP 200 单独证明交互通过。
+
+## 交接单 · 2026-10-04 22:00 CST +0800 · Codex CLI
+
+### 本次目标
+
+新增中英文 Outfit Creator 页面，参考 Armor Creator 的编辑器布局与尺寸，支持服装套装切换动画，并修复鼠标停留在素材列表上滚轮不能继续滚动页面的问题。
+
+### 已完成
+
+- 新增 `/outfit-creator` 和 `/zh/outfit-creator` 页面、编辑器、素材目录与来源说明；预览画布和控件尺寸按 Armor Creator 调整。
+- 套装切换时预览内容滑入/滑出；普通素材分类和选择不触发套装切换动画。
+- 素材列表保留内部滚动和高度限制，移除了阻断滚轮继续传递的 `overscroll-contain`。
+- Outfit Creator 功能提交为 `6dff523`，并入 `main` 的合并提交为 `97a4672`。本地功能分支已删除。
+- `工具 2` 工作树当前不在 `git worktree list` 中。当前 `main` HEAD 为 `d3f871c`，其父提交是包含 Outfit Creator 的 `97a4672`。
+
+### 做到一半
+
+无待实现代码。真实浏览器中的滚轮和套装切换交互尚未验收：当时没有可用且匹配本任务的 Ego TaskSpace。
+
+### 下一步
+
+如需补齐 UI 验收，使用可用的 Ego TaskSpace 启动本地页面，分别检查中文和英文路由：在素材列表上滚轮时页面能继续滚动，列表自身能滚动，切换套装 1–4 时只有预览内容执行一致的滑入/滑出效果。
+
+### 踩过的坑
+
+滚动素材列表原先带有 `overscroll-contain`，鼠标位于列表时滚到边界会阻止页面接管滚轮；已移除该类名。浏览器交互没有真实输入回执，不能用构建或 HTTP 200 代替交互验收。
+
+### 怎么验证
+
+- 合并前的 Outfit Creator 工作区在最后一次滚动修复后运行 `pnpm build:vinext`，退出码为 0：225 个测试文件、2454 个测试通过，随后完成 Workers 类型检查、Vinext 构建和 Wrangler dry-run。另有 8 条既有 ESLint warning，位于无关的 StructuredData 测试和博客文件。
+- 当时 `/zh/outfit-creator` 与 `/outfit-creator` 的本地路由返回 HTTP 200；这只证明路由响应，不证明鼠标交互。
+- 浏览器交互状态为未验证；后续通过真实滚轮和套装按钮完成验收。
+
 ## 交接单 · 2026-10-04 21:42 CST +0800 · Codex CLI
 
 ### 本次目标
