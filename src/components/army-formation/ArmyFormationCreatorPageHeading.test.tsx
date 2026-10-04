@@ -27,8 +27,10 @@ describe('ArmyFormationCreatorPageHeading', () => {
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(heading.textContent).toBe('Plan D&D and tabletop RPG battles online Army formation creator');
     expect(heading.querySelector('span span')?.textContent).toBe('Army formation creator');
+    expect(heading.querySelector('span span')?.className).toContain('font-display');
     expect(heading.querySelector('span span')?.className).toContain('font-normal');
-    expect(heading.querySelector('span span')?.className).not.toContain('italic');
+    expect(heading.querySelector('span span')?.className).toContain('italic');
+    expect(heading.querySelector('span span')?.className).toContain('tracking-normal');
     expect(heading.querySelector('span span')?.className).toContain('md:text-7xl');
     expect(heading.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
     expect(
@@ -46,6 +48,9 @@ describe('ArmyFormationCreatorPageHeading', () => {
 
     expect(heading.textContent).toBe('在线规划 D&D 与桌面 RPG 战场 军队阵型制作器');
     expect(heading.querySelector('span span')?.textContent).toBe('军队阵型制作器');
+    expect(heading.querySelector('span span')?.className).toContain('font-display');
+    expect(heading.querySelector('span span')?.className).toContain('italic');
+    expect(heading.querySelector('span span')?.className).toContain('tracking-normal');
     expect(heading.textContent).not.toContain('Army');
     expect(
       screen.getByText('免费摆放军队、生物和攻城器械，导出阵型图片，分享给玩家或留作奇幻设定资料。'),

@@ -5,6 +5,7 @@ export interface EmblemCreatorCopy {
   readonly pageDescription: string;
   readonly heading: string;
   readonly description: string;
+  readonly heroAction: string;
   readonly editorTitle: string;
   readonly canvasLabel: string;
   readonly noSelection: string;
@@ -58,10 +59,12 @@ export interface EmblemCreatorCopy {
 }
 
 const englishCopy: EmblemCreatorCopy = {
-  pageTitle: 'Free Emblem Creator',
-  pageDescription: 'Create an emblem with layered subjects, details and icons, then save your project or download a transparent PNG.',
+  pageTitle: 'Free Online Emblem Maker for D&D and RPG Fantasy Worlds',
+  pageDescription:
+    'For D&D and RPG players, GMs, and fantasy creators who want characters, factions, and ranks to have symbols that fit their worlds.',
   heading: 'Emblem Creator',
   description: 'Build and edit your emblem.',
+  heroAction: 'Start Creating',
   editorTitle: 'Emblem editor',
   canvasLabel: 'Emblem canvas',
   noSelection: 'No element selected',
@@ -96,10 +99,11 @@ const englishCopy: EmblemCreatorCopy = {
 };
 
 const chineseCopy: EmblemCreatorCopy = {
-  pageTitle: '免费徽标制作工具',
-  pageDescription: '组合主体、细节和图标来制作徽标，保存工程或下载透明 PNG 图片。',
+  pageTitle: '免费在线奇幻世界徽章制作器 | D&D 与 RPG 徽记',
+  pageDescription: '面向 D&D / RPG 桌游玩家、GM 与奇幻创作者，让角色、阵营与等级身份拥有符合世界观的视觉标识。',
   heading: '徽标制作工具',
   description: '制作并编辑你的徽标。',
+  heroAction: '开始制作',
   editorTitle: '徽标编辑器',
   canvasLabel: '徽标画布',
   noSelection: '未选中元素',

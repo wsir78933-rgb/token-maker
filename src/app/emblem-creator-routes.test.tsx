@@ -16,7 +16,8 @@ const localizedRoutes = [
     metadata: englishMetadata,
     path: '/emblem-creator',
     switchedPath: '/zh/emblem-creator',
-    heading: 'Emblem Creator',
+    heading: 'Free Online Emblem Maker for D&D and RPG Fantasy Worlds',
+    navigationHeading: 'Emblem Creator',
     menuLabel: 'Free tools',
     switchLabel: '中文',
     openGraphLocale: 'en_US',
@@ -27,7 +28,8 @@ const localizedRoutes = [
     metadata: chineseMetadata,
     path: '/zh/emblem-creator',
     switchedPath: '/emblem-creator',
-    heading: '徽标制作工具',
+    heading: '免费在线奇幻世界徽章制作器 D&D 与 RPG 徽记',
+    navigationHeading: '徽标制作工具',
     menuLabel: '免费工具',
     switchLabel: 'English',
     openGraphLocale: 'zh_CN',
@@ -76,6 +78,7 @@ describe('emblem creator routes', () => {
     locale,
     Page,
     heading,
+    navigationHeading,
     path,
     switchedPath,
     menuLabel,
@@ -97,9 +100,9 @@ describe('emblem creator routes', () => {
     expect(topbar.compareDocumentPosition(editor) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(pageHeading.compareDocumentPosition(editor) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(editor.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(pageHeading.parentElement?.children).toHaveLength(2);
+    expect(pageHeading.parentElement?.children).toHaveLength(3);
     expect(screen.queryByText(copy.description)).toBeNull();
-    expect(screen.queryByText(copy.pageDescription)).toBeNull();
+    expect(screen.getByText(copy.pageDescription)).toBeTruthy();
     expect(within(editor).queryByRole('heading', { level: 1 })).toBeNull();
 
     const freeToolsLink = within(topbar).getByRole('link', { name: menuLabel });
@@ -110,7 +113,7 @@ describe('emblem creator routes', () => {
     }
     fireEvent.mouseEnter(menuItem);
     const menu = within(menuItem).getByRole('menu', { name: menuLabel });
-    expect(within(menu).getByRole('menuitem', { name: heading }).getAttribute('href')).toBe(path);
+    expect(within(menu).getByRole('menuitem', { name: navigationHeading }).getAttribute('href')).toBe(path);
     expect(within(topbar).getByRole('link', { name: switchLabel }).getAttribute('href')).toBe(switchedPath);
   });
 });

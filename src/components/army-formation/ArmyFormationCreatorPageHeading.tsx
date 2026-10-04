@@ -135,7 +135,9 @@ export function ArmyFormationCreatorPageHeading({ locale }: { locale: SiteLocale
           {hero.lead}{' '}
           <br />
           <span className="relative inline-block">
-            <span className="text-5xl font-normal sm:text-6xl md:text-7xl">{hero.emphasis}</span>
+            <span className="font-display text-5xl font-normal italic tracking-normal sm:text-6xl md:text-7xl">
+              {hero.emphasis}
+            </span>
             <ArmyFormationHeroUnderline />
           </span>
         </h1>
