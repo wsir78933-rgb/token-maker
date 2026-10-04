@@ -21,7 +21,7 @@ function OutfitCreatorToolComparison({ copy }: { copy: OutfitCreatorToolComparis
   return (
     <section
       aria-labelledby="outfit-creator-tool-comparison-title"
-      className="mt-20 border-t border-white/10 pt-20 sm:mt-24 sm:pt-24 lg:mt-28 lg:pt-28"
+      className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
     >
       <div className="flex flex-col items-center gap-3 text-center">
         <h2
@@ -128,8 +128,6 @@ function OutfitCreatorHowToUse({ copy }: { copy: OutfitCreatorCopy }) {
         ))}
       </div>
 
-      <OutfitCreatorToolComparison copy={copy.toolComparison} />
-
       <div className="mt-14 flex justify-center">
         <a
           className="group/button inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-full border border-transparent bg-clip-padding bg-primary px-8 text-sm font-medium text-primary-foreground whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover:bg-primary/80"
@@ -170,6 +168,7 @@ function OutfitCreatorContent({ locale }: { locale: SiteLocale }) {
         </p>
       </section>
       <OutfitCreatorFeatureGrid featureOverview={copy.featureOverview} />
+      <OutfitCreatorToolComparison copy={copy.toolComparison} />
       <OutfitCreatorHowToUse copy={copy} />
       <OutfitCreatorFaq
         eyebrow={copy.faqEyebrow}
