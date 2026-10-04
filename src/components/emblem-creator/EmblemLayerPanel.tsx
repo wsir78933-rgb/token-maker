@@ -42,7 +42,7 @@ export function EmblemLayerPanel({
       })}
         className="rounded-md border border-border px-2 py-2 text-xs text-destructive">{copy.layers.clearActiveLayer}</button>
       <ol className="flex flex-col gap-1">
-        {EMBLEM_LAYER_ORDER.map((layerId) => {
+        {EMBLEM_LAYER_ORDER.filter((layerId) => project.layers[layerId].elements.length > 0).map((layerId) => {
           const layer = project.layers[layerId];
           const name = copy.layers.names[layerId];
           const visibilityLabel = layer.visible ? copy.layers.hideLayer : copy.layers.showLayer;

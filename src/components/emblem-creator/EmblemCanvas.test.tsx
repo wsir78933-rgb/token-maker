@@ -3,6 +3,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { getEmblemCatalogAsset } from '@/lib/emblem-creator/catalog';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { createDefaultEmblemProject } from '@/lib/emblem-creator/project';
 import type { EmblemElement, EmblemElementTransform, EmblemLocale, EmblemProject } from '@/lib/emblem-creator/types';
@@ -60,6 +61,43 @@ function pointer(target: Element, type: string, clientX: number, clientY: number
 }
 
 describe('EmblemCanvas', () => {
+  it('renders a non-square local PNG using its catalog dimensions and aspect ratio', () => {
+    const asset = getEmblemCatalogAsset('rff-detail-1');
+    const scale = 256 / Math.max(asset.width, asset.height);
+    const element: EmblemElement = {
+      id: 'rollforfantasy-nonsquare',
+      source: {
+        kind: 'catalog',
+        assetId: asset.id,
+        url: asset.publicPath,
+        naturalWidth: asset.width,
+        naturalHeight: asset.height,
+      },
+      transform: { x: 400, y: 400, scale, rotation: 0, mirrorX: false },
+    };
+    const { container } = renderCanvas({
+      project: createProject([element]),
+      selectedElementId: element.id,
+    });
+    const image = getElement(container, element.id).querySelector('image')!;
+    const bounds = container.querySelector('[data-edit-bounds]')?.querySelector('rect');
+
+    expect(asset.id.startsWith('rff-')).toBe(true);
+    expect(asset.publicPath).toMatch(/^\/emblem-creator\/rollforfantasy\/[A-Za-z]+[0-9]+\.png$/);
+    expect(asset.width).toBe(263);
+    expect(asset.height).toBe(38);
+    expect(image.getAttribute('href')).toBe(asset.publicPath);
+    expect(image.getAttribute('x')).toBe(String(-asset.width / 2));
+    expect(image.getAttribute('y')).toBe(String(-asset.height / 2));
+    expect(image.getAttribute('width')).toBe(String(asset.width));
+    expect(image.getAttribute('height')).toBe(String(asset.height));
+    expect(image.getAttribute('preserveAspectRatio')).toBe('xMidYMid meet');
+    expect(Number(bounds?.getAttribute('width')) / Number(bounds?.getAttribute('height')))
+      .toBeCloseTo(asset.width / asset.height);
+    expect(Math.max(Number(bounds?.getAttribute('width')), Number(bounds?.getAttribute('height'))))
+      .toBeCloseTo(256);
+  });
+
   it('renders a transparent 1024 scene in the reverse six-layer drawing order without deleting hidden objects', () => {
     const original = createDefaultEmblemProject();
     const project: EmblemProject = {
