@@ -27,6 +27,8 @@ export type ArmyFormationCreatorCopy = {
   angle: string;
   angleInputError: string;
   resetSelectedRotation: string;
+  rotatePiece: string;
+  rotationHint: string;
   changeBattlefield: string;
   clearBattlefield: string;
   height: string;
@@ -87,6 +89,8 @@ const englishArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   angle: 'Angle',
   angleInputError: 'Enter a valid number for the angle: {received}.',
   resetSelectedRotation: 'Reset rotation',
+  rotatePiece: 'Rotate piece',
+  rotationHint: 'Drag the ↻ handle above a selected piece to rotate it.',
   changeBattlefield: 'Change battlefield',
   clearBattlefield: 'Clear battlefield',
   height: 'Height',
@@ -147,6 +151,8 @@ const chineseArmyFormationCreatorCopy: ArmyFormationCreatorCopy = {
   angle: '角度',
   angleInputError: '角度必须是有效数字：{received}。',
   resetSelectedRotation: '重置旋转',
+  rotatePiece: '旋转棋子',
+  rotationHint: '拖动选中棋子上方的 ↻ 手柄即可旋转。',
   changeBattlefield: '改战场',
   clearBattlefield: '清空战场',
   height: '高度',
