@@ -7,9 +7,13 @@
 
 ### 已完成
 
-布局与交互改动已在 feature commit `0f27c1e09f0b03ad893276799af89a941c4de3ec` 完成并合并到 main；交接单写入前 main clean。当前 main HEAD 是 `d85d55b3178df9181bf924d3c062a0f7e2713d63`，`d6ba3b92fc476c8fb197333d5983de342545f954` 与 `0f27c1e09f0b03ad893276799af89a941c4de3ec` 均为其祖先。相对历史验证基线 `d6ba3b92fc476c8fb197333d5983de342545f954`，当前 HEAD 的新增归档并行内容来自 `d14bdd4bf52fc2fb474efe5ad3cbeff7f9fd7ea8` 与合并提交 `d85d55b3178df9181bf924d3c062a0f7e2713d63`，涉及 `src/app/emblem-creator-routes.test.tsx`、`src/components/emblem-creator/EmblemCreatorPageView.tsx`、新增 `src/components/emblem-creator/EmblemCreatorWhatIs.tsx`、`src/lib/emblem-creator/copy.ts`；这些新增内容没有在本次 offhand 中重跑验证，也不归功于本次布局/交互任务。原 8 个布局/交互源文件中 7 个在 `d6ba3b9` 与当前 HEAD 保持相同，`EmblemCreatorPageView.tsx` 是已被并行内容改变的 1 个文件。
+布局与交互改动已在 feature commit `0f27c1e09f0b03ad893276799af89a941c4de3ec` 完成并合并到 main；交接单写入前 main clean。本交接单首次写入前 main HEAD 是 `d85d55b3178df9181bf924d3c062a0f7e2713d63`，`d6ba3b92fc476c8fb197333d5983de342545f954` 与 `0f27c1e09f0b03ad893276799af89a941c4de3ec` 均为其祖先。相对历史验证基线 `d6ba3b92fc476c8fb197333d5983de342545f954`，首次写入时 d85d55b3178df9181bf924d3c062a0f7e2713d63 的新增归档并行内容来自 `d14bdd4bf52fc2fb474efe5ad3cbeff7f9fd7ea8` 与合并提交 `d85d55b3178df9181bf924d3c062a0f7e2713d63`，涉及 `src/app/emblem-creator-routes.test.tsx`、`src/components/emblem-creator/EmblemCreatorPageView.tsx`、新增 `src/components/emblem-creator/EmblemCreatorWhatIs.tsx`、`src/lib/emblem-creator/copy.ts`；这些新增内容没有在本次 offhand 中重跑验证，也不归功于本次布局/交互任务。原 8 个布局/交互源文件中 7 个在 `d6ba3b9` 与 `d85d55b` 保持相同，`EmblemCreatorPageView.tsx` 是已被并行内容改变的 1 个文件。
 
-历史紧凑布局验证使用 3 个相关 Vitest 文件，最终顺序复验为 94/94 tests；历史合并 main 验证使用 5 个相关 Vitest 文件，为 102/102 tests。相关 `pnpm typecheck` 与 scoped ESLint 有 exit 0 receipt；main 的 scoped ESLint 是 7 个 TSX 文件。上述 QA、typecheck、lint 和浏览器证据均对应历史 `d6ba3b9`，不是当前 `d85d55b` 的重新验证。
+校正文字时观察到 main HEAD 为 `97a467234033cd04776e024782b45ed6ba4c81c3`，已并行合并 outfit 分支，未在本 offhand 重跑该版本 QA。
+
+历史紧凑布局验证来自冻结的 feature worktree：验证时 worktree HEAD 是 `45cb80e68345f7d4111f210859643d7fc1e91f4b`，实际使用的是其未提交的冻结源码，随后归档为 feature commit `0f27c1e09f0b03ad893276799af89a941c4de3ec`；3 个相关 Vitest 文件最终顺序复验为 94/94 tests，`pnpm typecheck`、2 文件 scoped ESLint、本地 `vinext build` 和 EN/ZH × wide/medium/mobile 六个 compact browser case 均有 exit 0 receipt。这里不能把这些结果表述为运行在原始 `45cb80e68345f7d4111f210859643d7fc1e91f4b` 提交源码上。合并后的 main 验证绑定 `d6ba3b92fc476c8fb197333d5983de342545f954`：5 个相关 Vitest 文件为 102/102 tests，`pnpm typecheck`、7 个 TSX 文件 scoped ESLint 和 `http://localhost:40001` EN/ZH desktop/mobile 四个 case 有 exit 0/PASS receipt；严格 `http://127.0.0.1:40001` 仍因 403 为 `UNVERIFIED`。`d85d55b3178df9181bf924d3c062a0f7e2713d63` 的 What Is 并行变更以及`21a15269b3f78f9f8b2a501db0eb5a68ff99aae0` 的 WORKLOG 提交均未在本次 offhand 中重跑 QA。
+
+已确认的核心约定：素材缩略图为浅白、画布为白；打开、保存、导出位于右侧图层下；边界默认勾选；旋转箭头随图缩放且位置稳定、靠近图像；Delete/Backspace 不影响输入框；wide 素材 320px、4 列、右侧 280px、间距 16px，medium 素材 256px、3 列，mobile 4 列且列表内部 256px 滚动。
 
 ### 做到一半
 
