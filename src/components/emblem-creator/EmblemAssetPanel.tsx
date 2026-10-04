@@ -95,7 +95,7 @@ export function EmblemAssetPanel({
           </button>
         ))}
       </div>
-      <ul aria-label={copy.assets.chooseAsset} className="grid max-h-64 grid-cols-4 gap-2 overflow-y-auto lg:flex-1 lg:min-h-0 lg:max-h-none lg:content-start lg:grid-cols-3 xl:grid-cols-4">
+      <ul aria-label={copy.assets.chooseAsset} className="grid max-h-64 grid-cols-4 gap-2 overflow-y-auto overscroll-y-contain lg:flex-1 lg:min-h-0 lg:max-h-none lg:content-start lg:grid-cols-3 xl:grid-cols-4">
         {assets.map((asset) => (
           <li key={asset.id} className="min-w-0">
             <button type="button" aria-label={`${copy.assets.chooseAsset}: ${asset.name[locale]}`}
