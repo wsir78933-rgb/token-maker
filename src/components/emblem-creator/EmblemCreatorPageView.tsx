@@ -1,4 +1,5 @@
 import { EmblemCreatorWorkbench } from '@/components/emblem-creator/EmblemCreatorWorkbench';
+import { EmblemCreatorWhatIs } from '@/components/emblem-creator/EmblemCreatorWhatIs';
 import {
   EMBLEM_CREATOR_EDITOR_ID,
   EmblemCreatorPageHeading,
@@ -21,9 +22,10 @@ export function EmblemCreatorPageView({ locale }: { locale: EmblemLocale }) {
             heroAction: copy.heroAction,
           }}
         />
-        <div id={EMBLEM_CREATOR_EDITOR_ID} className="pb-10">
+        <div id={EMBLEM_CREATOR_EDITOR_ID} className="pb-12 lg:pb-10">
           <EmblemCreatorWorkbench locale={locale} copy={copy} />
         </div>
+        <EmblemCreatorWhatIs copy={copy} />
       </div>
     </InnerPageChrome>
   );
