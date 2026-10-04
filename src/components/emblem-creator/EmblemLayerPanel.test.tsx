@@ -40,6 +40,13 @@ function currentProject(): EmblemProject {
 }
 
 describe('EmblemLayerPanel', () => {
+  it('renders no layer rows when all six fixed layers are empty', () => {
+    const copy = getEmblemCreatorCopy('en');
+    render(<EmblemLayerPanel locale="en" copy={copy} project={createDefaultEmblemProject()} activeLayerId="body4"
+      onActiveLayerChange={vi.fn()} onVisibilityChange={vi.fn()} onClearActiveLayer={vi.fn()} />);
+    expect(screen.queryAllByRole('listitem')).toHaveLength(0);
+  });
+
   it.each(['en', 'zh'] as const)('keeps six fixed rows and independently toggles every real layer in %s', (locale) => {
     const copy = getEmblemCreatorCopy(locale);
     render(<LayerHarness locale={locale} />);
@@ -55,6 +62,7 @@ describe('EmblemLayerPanel', () => {
       const projectAfter = currentProject();
       expect(projectAfter.layers[layerId].visible).toBe(!layerBefore.visible);
       expect(projectAfter.layers[layerId].elements).toEqual(layerBefore.elements);
+      expect(screen.getAllByRole('listitem').some((row) => within(row).getAllByRole('button')[0].textContent === name)).toBe(true);
       const reverseAction = layerBefore.visible ? copy.layers.showLayer : copy.layers.hideLayer;
       fireEvent.click(screen.getByRole('button', { name: `${reverseAction}: ${name}` }));
     }
@@ -74,6 +82,8 @@ describe('EmblemLayerPanel', () => {
     const projectAfter = currentProject();
     expect(projectAfter.layers[layerId].elements).toEqual([]);
     expect(projectAfter.layers[layerId].visible).toBe(projectBefore.layers[layerId].visible);
+    expect(screen.getAllByRole('listitem').map((row) => within(row).getAllByRole('button')[0].textContent))
+      .toEqual(EMBLEM_LAYER_ORDER.filter((id) => id !== layerId).map((id) => copy.layers.names[id]));
     expect(screen.getByRole('status').textContent).toBe(`${copy.layers.names[layerId]}: ${copy.layers.emptyLayer}`);
     for (const otherLayerId of EMBLEM_LAYER_ORDER) {
       if (otherLayerId !== layerId) expect(projectAfter.layers[otherLayerId]).toEqual(projectBefore.layers[otherLayerId]);

@@ -3,78 +3,141 @@ import { resolve, sep } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { ROLLFORFANTASY_ASSETS } from './rollforfantasy-assets';
 import { getEmblemCatalogAsset, listEmblemCatalogAssets } from './catalog';
+import { LEGACY_EMBLEM_CATALOG_ASSETS } from './legacy-catalog';
 import type { EmblemAssetCategory } from './types';
 
+const EXPECTED_ASSET_GROUPS = [
+  { sourceType: 'emblems', count: 40, category: 'body', englishLabel: 'Main body', chineseLabel: '主体' },
+  { sourceType: 'detail', count: 40, category: 'detail', englishLabel: 'Detail', chineseLabel: '细节' },
+  { sourceType: 'animal', count: 30, category: 'crest', englishLabel: 'Animal', chineseLabel: '动物' },
+  { sourceType: 'weapon', count: 27, category: 'crest', englishLabel: 'Weapon', chineseLabel: '武器' },
+  { sourceType: 'icon', count: 40, category: 'crest', englishLabel: 'Icon', chineseLabel: '图标' },
+  { sourceType: 'misc', count: 38, category: 'crest', englishLabel: 'Misc', chineseLabel: '其他' },
+] as const satisfies readonly {
+  sourceType: string;
+  count: number;
+  category: EmblemAssetCategory;
+  englishLabel: string;
+  chineseLabel: string;
+}[];
+
 const CATALOG_CATEGORIES = ['body', 'detail', 'crest'] as const;
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
 describe('emblem catalog', () => {
-  it.each([
-    ['body', 6],
-    ['detail', 6],
-    ['crest', 8],
-  ] as const)('lists the original %s assets with at least %i entries', (category, minimum) => {
-    const assets = listEmblemCatalogAssets(category);
+  it('lists the 215 RollForFantasy assets in natural source order', () => {
+    expect(ROLLFORFANTASY_ASSETS).toHaveLength(215);
 
-    expect(assets.length).toBeGreaterThanOrEqual(minimum);
-    for (const asset of assets) {
-      expect(asset.category, asset.id).toBe(category);
-      expect(asset.id, asset.id).toMatch(new RegExp(`^${category}-[a-z0-9-]+$`));
-      expect(asset.publicPath, asset.id).toBe(`/emblem-creator/original/${asset.id}.svg`);
+    const expectedPaths = EXPECTED_ASSET_GROUPS.flatMap(({ sourceType, count }) =>
+      Array.from(
+        { length: count },
+        (_, index) => `/emblem-creator/rollforfantasy/${sourceType}${index + 1}.png`,
+      ),
+    );
+    expect(ROLLFORFANTASY_ASSETS.map((asset) => asset.publicPath)).toEqual(expectedPaths);
+
+    expect(listEmblemCatalogAssets('body')).toEqual(
+      ROLLFORFANTASY_ASSETS.filter((asset) => asset.category === 'body'),
+    );
+    expect(listEmblemCatalogAssets('detail')).toEqual(
+      ROLLFORFANTASY_ASSETS.filter((asset) => asset.category === 'detail'),
+    );
+    expect(listEmblemCatalogAssets('crest')).toEqual(
+      ROLLFORFANTASY_ASSETS.filter((asset) => asset.category === 'crest'),
+    );
+    expect(listEmblemCatalogAssets('body')).toHaveLength(40);
+    expect(listEmblemCatalogAssets('detail')).toHaveLength(40);
+    expect(listEmblemCatalogAssets('crest')).toHaveLength(135);
+  });
+
+  it('keeps ids and paths unique and assigns the source names and categories', () => {
+    expect(new Set(ROLLFORFANTASY_ASSETS.map((asset) => asset.id)).size).toBe(215);
+    expect(new Set(ROLLFORFANTASY_ASSETS.map((asset) => asset.publicPath)).size).toBe(215);
+
+    for (const asset of ROLLFORFANTASY_ASSETS) {
+      const filename = asset.publicPath.slice(asset.publicPath.lastIndexOf('/') + 1);
+      const match = filename.match(/^(emblems|detail|animal|weapon|icon|misc)(\d+)\.png$/);
+      expect(match, asset.id).not.toBeNull();
+      if (!match) {
+        throw new Error(`Unexpected RollForFantasy asset filename: ${filename}`);
+      }
+
+      const [, sourceType, number] = match;
+      const group = EXPECTED_ASSET_GROUPS.find((candidate) => candidate.sourceType === sourceType);
+      expect(group, filename).toBeDefined();
+      if (!group) {
+        throw new Error(`Unknown RollForFantasy asset type in filename: ${filename}`);
+      }
+
+      expect(asset.id, filename).toBe(`rff-${sourceType}-${number}`);
+      expect(asset.publicPath, asset.id).toBe(`/emblem-creator/rollforfantasy/${filename}`);
+      expect(asset.category, asset.id).toBe(group.category);
+      expect(asset.name.en, asset.id).toBe(`${group.englishLabel} ${number}`);
+      expect(asset.name.zh, asset.id).toBe(`${group.chineseLabel} ${number}`);
+      expect(asset.name.en.trim(), asset.id).not.toBe('');
+      expect(asset.name.zh.trim(), asset.id).not.toBe('');
     }
   });
 
-  it('keeps ids and paths unique, dimensions positive, and both locale names nonempty', () => {
-    const assets = CATALOG_CATEGORIES.flatMap(listEmblemCatalogAssets);
+  it('references all local original PNGs with matching signature and IHDR dimensions', () => {
+    const assetDirectory = realpathSync(
+      resolve(process.cwd(), 'public/emblem-creator/rollforfantasy'),
+    );
+    const expectedFiles = ROLLFORFANTASY_ASSETS.map((asset) =>
+      asset.publicPath.slice(asset.publicPath.lastIndexOf('/') + 1),
+    ).sort();
+    const actualFiles = readdirSync(assetDirectory)
+      .filter((filename) => filename.endsWith('.png'))
+      .sort();
+    expect(actualFiles).toEqual(expectedFiles);
 
-    expect(new Set(assets.map((asset) => asset.id)).size).toBe(assets.length);
-    expect(new Set(assets.map((asset) => asset.publicPath)).size).toBe(assets.length);
-    for (const asset of assets) {
-      expect(Number.isFinite(asset.width), asset.id).toBe(true);
-      expect(Number.isFinite(asset.height), asset.id).toBe(true);
+    for (const asset of ROLLFORFANTASY_ASSETS) {
+      expect(asset.publicPath, asset.id).toMatch(
+        /^\/emblem-creator\/rollforfantasy\/(emblems|detail|animal|weapon|icon|misc)\d+\.png$/,
+      );
+      const filePath = resolve(process.cwd(), 'public', asset.publicPath.slice(1));
+      const realFilePath = realpathSync(filePath);
+      expect(realFilePath.startsWith(`${assetDirectory}${sep}`), asset.id).toBe(true);
+      expect(statSync(realFilePath).isFile(), asset.id).toBe(true);
+
+      const pngBytes = readFileSync(realFilePath);
+      expect(pngBytes.subarray(0, PNG_SIGNATURE.length), asset.id).toEqual(PNG_SIGNATURE);
+      expect(pngBytes.toString('ascii', 12, 16), asset.id).toBe('IHDR');
+      expect(pngBytes.readUInt32BE(16), asset.id).toBe(asset.width);
+      expect(pngBytes.readUInt32BE(20), asset.id).toBe(asset.height);
       expect(asset.width, asset.id).toBeGreaterThan(0);
       expect(asset.height, asset.id).toBeGreaterThan(0);
-      expect(asset.name.en.trim().length, asset.id).toBeGreaterThan(0);
-      expect(asset.name.zh.trim().length, asset.id).toBeGreaterThan(0);
-      expect(asset.name.en, asset.id).toMatch(/[A-Za-z]/);
-      expect(asset.name.zh, asset.id).toMatch(/\p{Script=Han}/u);
     }
   });
 
-  it('references real files only in the original directory with matching SVG dimensions', () => {
-    const originalDirectory = realpathSync(resolve(process.cwd(), 'public/emblem-creator/original'));
-    const assets = CATALOG_CATEGORIES.flatMap(listEmblemCatalogAssets);
-    const originalFiles = readdirSync(originalDirectory).filter((filename) => filename.endsWith('.svg'));
+  it('keeps all 20 legacy assets readable without listing them as new options', () => {
+    expect(LEGACY_EMBLEM_CATALOG_ASSETS).toHaveLength(20);
+    const listedAssets = CATALOG_CATEGORIES.flatMap(listEmblemCatalogAssets);
+    const listedIds = listedAssets.map((asset) => asset.id);
 
-    expect(assets.map((asset) => `${asset.id}.svg`).sort()).toEqual(originalFiles.sort());
-    for (const asset of assets) {
+    for (const asset of LEGACY_EMBLEM_CATALOG_ASSETS) {
+      expect(getEmblemCatalogAsset(asset.id)).toEqual(asset);
+      expect(listedIds).not.toContain(asset.id);
       expect(asset.publicPath, asset.id).toMatch(/^\/emblem-creator\/original\/[a-z0-9-]+\.svg$/);
-      const filePath = resolve(process.cwd(), 'public', asset.publicPath.slice(1));
-      expect(realpathSync(filePath).startsWith(`${originalDirectory}${sep}`), asset.id).toBe(true);
-      expect(statSync(filePath).isFile(), asset.id).toBe(true);
-
-      const svg = readFileSync(filePath, 'utf8');
-      const width = svg.match(/<svg\b[^>]*\bwidth="([^"]+)"/);
-      const height = svg.match(/<svg\b[^>]*\bheight="([^"]+)"/);
-      expect(width, asset.id).not.toBeNull();
-      expect(height, asset.id).not.toBeNull();
-      expect(Number(width?.[1]), asset.id).toBe(asset.width);
-      expect(Number(height?.[1]), asset.id).toBe(asset.height);
+      expect(asset.width, asset.id).toBe(100);
+      expect(asset.height, asset.id).toBe(100);
     }
   });
 
-  it('retrieves each listed asset by its exact id', () => {
-    for (const category of CATALOG_CATEGORIES) {
-      for (const asset of listEmblemCatalogAssets(category)) {
-        expect(getEmblemCatalogAsset(asset.id)).toEqual(asset);
-      }
+  it('retrieves each listed RollForFantasy asset by its exact id', () => {
+    for (const asset of ROLLFORFANTASY_ASSETS) {
+      expect(getEmblemCatalogAsset(asset.id)).toEqual(asset);
     }
   });
 
   it.each(['missing-emblem', '', '__proto__', 'toString', 'constructor'])(
     'rejects the unknown id "%s" and includes it in the error',
     (assetId) => {
-      expect(() => getEmblemCatalogAsset(assetId)).toThrow(`Unknown emblem catalog asset id: ${assetId}`);
+      expect(() => getEmblemCatalogAsset(assetId)).toThrow(
+        `Unknown emblem catalog asset id: ${assetId}`,
+      );
     },
   );
 

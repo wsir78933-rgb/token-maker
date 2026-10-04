@@ -53,6 +53,7 @@ export interface EmblemCreatorCopy {
     readonly invalidProject: string;
     readonly exportFailed: string;
     readonly operationFailed: string;
+    readonly bodyLayersFull: string;
   };
 }
 
@@ -90,6 +91,7 @@ const englishCopy: EmblemCreatorCopy = {
   errors: {
     invalidImageUrl: 'Invalid image URL', loadImageFailed: 'Failed to load image', invalidProject: 'Invalid project',
     exportFailed: 'Failed to export PNG', operationFailed: 'Operation failed',
+    bodyLayersFull: 'All 4/4 subject layers are occupied. Clear a subject layer before adding another.',
   },
 };
 
@@ -127,6 +129,7 @@ const chineseCopy: EmblemCreatorCopy = {
   errors: {
     invalidImageUrl: '图片 URL 无效', loadImageFailed: '图片加载失败', invalidProject: '工程无效',
     exportFailed: 'PNG 导出失败', operationFailed: '操作失败',
+    bodyLayersFull: '主体图层已满（4/4）。请先清空一个主体层后再添加。',
   },
 };
 

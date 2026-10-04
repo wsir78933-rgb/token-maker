@@ -646,13 +646,13 @@ function requireArmyRotationPieceButton(
   return adjacentPieceButton;
 }
 
-function readArmyRotationHandleTopGutterPx(fieldScale: number): number {
-  if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
-    throw new Error(`Army rotation handle field scale must be positive and finite. Received ${fieldScale}.`);
+function readArmyRotationHandleTopGutterPx(renderedScale: number): number {
+  if (!Number.isFinite(renderedScale) || renderedScale <= 0) {
+    throw new Error(`Army rotation handle rendered scale must be positive and finite. Received ${renderedScale}.`);
   }
 
   const topGutterPx =
-    ARMY_ROTATION_HANDLE_GUTTER_PX + ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX * fieldScale;
+    ARMY_ROTATION_HANDLE_GUTTER_PX + ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX * renderedScale;
   if (!Number.isFinite(topGutterPx)) {
     throw new Error(`Army rotation handle top gutter must be finite. Received ${topGutterPx}.`);
   }
@@ -1660,6 +1660,7 @@ function ArmyFormationBattlefieldCanvas({
     battlefieldIndex: number,
     point: { xPx: number; yPx: number },
     scaleFactor: number,
+    fieldScale: number,
   ) => void;
   rotationHandleTopGutterPx: number;
   onPiecePointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
@@ -1691,12 +1692,13 @@ function ArmyFormationBattlefieldCanvas({
           yPx: (event.clientY - fieldRect.top) / renderedFieldScale,
         },
         Math.exp(-event.deltaY * 0.002),
+        fieldScale,
       );
     };
 
     field.addEventListener('wheel', handleBattlefieldWheel, { passive: false });
     return () => field.removeEventListener('wheel', handleBattlefieldWheel);
-  }, [battlefieldIndex, onBattlefieldWheel]);
+  }, [battlefieldIndex, fieldScale, onBattlefieldWheel]);
 
   return (
     <div
@@ -1839,6 +1841,7 @@ function ArmyFormationBattlefieldPane({
     battlefieldIndex: number,
     point: { xPx: number; yPx: number },
     scaleFactor: number,
+    fieldScale: number,
   ) => void;
   onRotationPointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onRotationPointerMove: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
@@ -1906,7 +1909,13 @@ function ArmyFormationBattlefieldPane({
   }, [movingSlideId, onSlideFinished, slideId]);
 
   const fieldScale = fieldViewportWidth > 0 ? fieldViewportWidth / ARMY_FIELD_WIDTH_PX : 1;
-  const rotationHandleTopGutterPx = readArmyRotationHandleTopGutterPx(fieldScale);
+  const maximumRenderedMapScale = Math.max(
+    battlefieldViewTransform.scale,
+    slide?.outgoingBattlefieldViewTransform.scale ?? battlefieldViewTransform.scale,
+  );
+  const rotationHandleTopGutterPx = readArmyRotationHandleTopGutterPx(
+    fieldScale * maximumRenderedMapScale,
+  );
   const renderedFieldHeight = battlefield.heightPx * fieldScale + rotationHandleTopGutterPx;
   const slideIsMoving = slide !== null && movingSlideId === slide.id;
   const outgoingOffset = slide === null || !slideIsMoving ? 0 : -slide.direction * 100;
@@ -2316,16 +2325,42 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     battlefieldIndex: number,
     point: { xPx: number; yPx: number },
     scaleFactor: number,
+    fieldScale: number,
   ): void {
     reportArmyFormationAction(() => {
-      writeBattlefieldViewTransform(
-        battlefieldIndex,
-        zoomArmyFormationBackgroundTransformAtPoint(
-          readBattlefieldViewTransform(battlefieldIndex),
-          point,
-          scaleFactor,
-        ),
+      if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
+        throw new Error(`Army battlefield field scale must be positive and finite. Received ${fieldScale}.`);
+      }
+
+      const currentViewTransform = readBattlefieldViewTransform(battlefieldIndex);
+      const nextViewTransform = zoomArmyFormationBackgroundTransformAtPoint(
+        currentViewTransform,
+        point,
+        scaleFactor,
       );
+      const outgoingViewScale = battlefieldSlide?.outgoingBattlefieldViewTransform.scale;
+      const currentViewportScale =
+        outgoingViewScale === undefined
+          ? currentViewTransform.scale
+          : Math.max(currentViewTransform.scale, outgoingViewScale);
+      const nextViewportScale =
+        outgoingViewScale === undefined
+          ? nextViewTransform.scale
+          : Math.max(nextViewTransform.scale, outgoingViewScale);
+      const currentViewportGutterPx = readArmyRotationHandleTopGutterPx(
+        fieldScale * currentViewportScale,
+      );
+      const nextViewportGutterPx = readArmyRotationHandleTopGutterPx(
+        fieldScale * nextViewportScale,
+      );
+      const viewportGutterChangePx = nextViewportGutterPx - currentViewportGutterPx;
+      const nextViewTransformWithGutterCompensation = translateArmyFormationBackgroundTransform(
+        nextViewTransform,
+        0,
+        -viewportGutterChangePx / fieldScale,
+      );
+
+      writeBattlefieldViewTransform(battlefieldIndex, nextViewTransformWithGutterCompensation);
     });
   }
 

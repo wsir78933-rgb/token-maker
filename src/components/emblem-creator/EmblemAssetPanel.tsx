@@ -7,16 +7,16 @@ import { listEmblemCatalogAssets } from '@/lib/emblem-creator/catalog';
 import type { EmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { requireEmblemImageUrl } from '@/lib/emblem-creator/image-url';
 import { getEmblemTargetLayer } from '@/lib/emblem-creator/project';
-import type { EmblemAssetCategory, EmblemCatalogAsset, EmblemLayerId, EmblemLocale } from '@/lib/emblem-creator/types';
+import type { EmblemAssetCategory, EmblemCatalogAsset, EmblemLayerId, EmblemLocale, EmblemProject } from '@/lib/emblem-creator/types';
 
 export interface EmblemAssetPanelProps {
   locale: EmblemLocale;
   copy: EmblemCreatorCopy;
+  project: EmblemProject;
   activeCategory: EmblemAssetCategory;
-  activeLayerId: EmblemLayerId;
   onCategoryChange(category: EmblemAssetCategory): void;
   onAddCatalogAsset(asset: EmblemCatalogAsset, targetLayerId: EmblemLayerId): void;
-  onAddImageUrl(url: string, targetLayerId: EmblemLayerId): Promise<void>;
+  onAddImageUrl(url: string, category: EmblemAssetCategory, targetLayerId: EmblemLayerId): Promise<void>;
 }
 
 const categories: readonly EmblemAssetCategory[] = ['body', 'detail', 'crest'];
@@ -26,8 +26,12 @@ function describeFailure(reason: unknown): string {
   return String(reason);
 }
 
+function isBodyLayerCapacityError(reason: unknown): boolean {
+  return reason instanceof RangeError && reason.message.startsWith('No empty body layer is available;');
+}
+
 export function EmblemAssetPanel({
-  locale, copy, activeCategory, activeLayerId, onCategoryChange, onAddCatalogAsset, onAddImageUrl,
+  locale, copy, project, activeCategory, onCategoryChange, onAddCatalogAsset, onAddImageUrl,
 }: EmblemAssetPanelProps) {
   const headingId = useId();
   const urlInputId = useId();
@@ -39,9 +43,10 @@ export function EmblemAssetPanel({
   function addCatalogAsset(asset: EmblemCatalogAsset) {
     setError(null);
     try {
-      onAddCatalogAsset(asset, getEmblemTargetLayer(asset.category, activeLayerId));
+      onAddCatalogAsset(asset, getEmblemTargetLayer(asset.category, project));
     } catch (reason) {
-      setError(`${copy.errors.operationFailed}: ${asset.id} — ${describeFailure(reason)}`);
+      const prefix = isBodyLayerCapacityError(reason) ? copy.errors.bodyLayersFull : copy.errors.operationFailed;
+      setError(`${prefix}: ${asset.id} — ${describeFailure(reason)}`);
     }
   }
 
@@ -58,17 +63,21 @@ export function EmblemAssetPanel({
       return;
     }
     try {
-      targetLayerId = getEmblemTargetLayer(activeCategory, activeLayerId);
+      targetLayerId = getEmblemTargetLayer(activeCategory, project);
     } catch (reason) {
-      setError(`${copy.errors.operationFailed}: ${activeCategory}/${activeLayerId} — ${describeFailure(reason)}`);
+      const prefix = isBodyLayerCapacityError(reason) ? copy.errors.bodyLayersFull : copy.errors.operationFailed;
+      setError(`${prefix}: ${activeCategory} — ${describeFailure(reason)}`);
       return;
     }
     setIsAddingImage(true);
     try {
-      await onAddImageUrl(validatedUrl, targetLayerId);
+      await onAddImageUrl(validatedUrl, activeCategory, targetLayerId);
       setImageUrl('');
     } catch (reason) {
-      setError(`${copy.errors.loadImageFailed}: ${validatedUrl} — ${describeFailure(reason)}`);
+      const failure = describeFailure(reason);
+      setError(failure.startsWith(copy.errors.bodyLayersFull)
+        ? failure
+        : `${copy.errors.loadImageFailed}: ${validatedUrl} — ${failure}`);
     } finally {
       setIsAddingImage(false);
     }

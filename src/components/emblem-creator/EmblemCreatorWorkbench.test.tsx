@@ -9,7 +9,7 @@ import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { loadEmblemImage } from '@/lib/emblem-creator/image-loading';
 import { exportEmblemProjectPng } from '@/lib/emblem-creator/png-export';
 import { applyEmblemProjectCommand, createDefaultEmblemProject, createEmblemElement, parseEmblemProjectJson, serializeEmblemProject } from '@/lib/emblem-creator/project';
-import { MAX_EMBLEM_PROJECT_FILE_BYTES, type EmblemAssetCategory, type EmblemLayerId, type EmblemLocale, type EmblemProject } from '@/lib/emblem-creator/types';
+import { EMBLEM_LAYER_ORDER, MAX_EMBLEM_PROJECT_FILE_BYTES, type EmblemAssetCategory, type EmblemLayerId, type EmblemLocale, type EmblemProject } from '@/lib/emblem-creator/types';
 
 vi.mock('@/lib/emblem-creator/image-loading', () => ({ loadEmblemImage: vi.fn() }));
 vi.mock('@/lib/emblem-creator/png-export', () => ({ exportEmblemProjectPng: vi.fn() }));
@@ -17,6 +17,12 @@ vi.mock('@/lib/emblem-creator/png-export', () => ({ exportEmblemProjectPng: vi.f
 const createObjectUrl = vi.fn();
 const revokeObjectUrl = vi.fn();
 let downloadedNames: string[];
+
+const targetLayerByCatalogCategory: Readonly<Record<EmblemAssetCategory, EmblemLayerId>> = {
+  body: 'body4',
+  detail: 'details',
+  crest: 'crests',
+};
 
 function loadedImage(width = 640, height = 320): HTMLImageElement {
   const image = new Image();
@@ -40,8 +46,8 @@ function clickAsset(assetId: string, locale: EmblemLocale = 'en') {
   fireEvent.click(screen.getByRole('button', { name: `${copy.assets.chooseAsset}: ${getEmblemCatalogAsset(assetId).name[locale]}` }));
 }
 
-function chooseCategory(category: EmblemAssetCategory) {
-  const copy = getEmblemCreatorCopy('en');
+function chooseCategory(category: EmblemAssetCategory, locale: EmblemLocale = 'en') {
+  const copy = getEmblemCreatorCopy(locale);
   const assets = screen.getByRole('region', { name: copy.panels.assets });
   fireEvent.click(within(assets).getByRole('button', { name: copy.assets.categories[category] }));
 }
@@ -100,6 +106,7 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     expect(screen.getByText(copy.noSelection)).toBeTruthy();
     expect(screen.getByText(copy.properties.emptySelection)).toBeTruthy();
     expect((screen.getByLabelText(copy.properties.showEditBounds) as HTMLInputElement).checked).toBe(false);
+    expect(within(screen.getByRole('region', { name: copy.panels.layers })).queryAllByRole('listitem')).toHaveLength(0);
     const tabs = screen.getAllByRole('tab');
     expect(tabs.map((tab) => tab.textContent)).toEqual(Object.values(copy.panels));
     expect(tabs[0].getAttribute('aria-selected')).toBe('true');
@@ -113,44 +120,140 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     fireEvent.keyDown(tabs[1], { key: 'ArrowRight' });
     expect(tabs[2].getAttribute('aria-selected')).toBe('true');
     expect(document.activeElement).toBe(tabs[2]);
-    expect(screen.getByRole('button', { name: copy.layers.names.body4 }).getAttribute('aria-pressed')).toBe('true');
+    expect(within(screen.getByRole('region', { name: copy.panels.layers })).queryAllByRole('listitem')).toHaveLength(0);
     expect(canvasElementIds(locale)).toEqual([]);
   });
 
-  it('replaces one body, appends details/icons, reveals the target and preserves other layer states', async () => {
-    const copy = getEmblemCreatorCopy('en');
-    render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
-    fireEvent.click(screen.getByRole('button', { name: copy.layers.names.body1 }));
-    clickAsset('body-circle');
-    const originalId = canvasElementIds()[0];
-    clickAsset('body-square');
-    expect(canvasElementIds()).toHaveLength(1);
-    expect(canvasElementIds()).not.toContain(originalId);
-    chooseCategory('detail');
-    clickAsset('detail-ring'); clickAsset('detail-ring');
-    chooseCategory('crest');
-    clickAsset('crest-star'); clickAsset('crest-star');
-    chooseCategory('body');
-    clickAsset('body-circle');
-    const project = await savedProject();
-    expect(project.layers.body1.elements.map((element) => element.source.kind === 'catalog' && element.source.assetId)).toEqual(['body-square']);
-    expect(project.layers.body4.elements).toHaveLength(1);
+  it.each(['en', 'zh'] as const)('hides cleared empty layers and restores their row when a real asset is added in %s', async (locale) => {
+    const copy = getEmblemCreatorCopy(locale);
+    render(<EmblemCreatorWorkbench locale={locale} copy={copy} />);
+    const layerPanel = screen.getByRole('region', { name: copy.panels.layers });
+    const layerNames = () => within(layerPanel).getAllByRole('listitem')
+      .map((row) => within(row).getAllByRole('button')[0].textContent);
+
+    expect(within(layerPanel).queryAllByRole('listitem')).toHaveLength(0);
+    clickAsset('rff-emblems-1', locale);
+    chooseCategory('detail', locale);
+    clickAsset('rff-detail-1', locale);
+    expect(layerNames()).toEqual([copy.layers.names.details, copy.layers.names.body4]);
+
+    const body4Name = copy.layers.names.body4;
+    fireEvent.click(within(layerPanel).getByRole('button', { name: `${copy.layers.hideLayer}: ${body4Name}` }));
+    expect(within(layerPanel).getByRole('button', { name: `${copy.layers.showLayer}: ${body4Name}` })).toBeTruthy();
+    expect(layerNames()).toContain(body4Name);
+    fireEvent.click(within(layerPanel).getByRole('button', { name: `${copy.layers.showLayer}: ${body4Name}` }));
+    expect(within(layerPanel).getByRole('button', { name: `${copy.layers.hideLayer}: ${body4Name}` })).toBeTruthy();
+    fireEvent.click(within(layerPanel).getByRole('button', { name: `${copy.layers.hideLayer}: ${body4Name}` }));
+
+    const beforeClear = await savedProject(locale);
+    expect(beforeClear.schemaVersion).toBe(1);
+    expect(Object.keys(beforeClear.layers)).toEqual(EMBLEM_LAYER_ORDER);
+    fireEvent.click(within(layerPanel).getByRole('button', { name: copy.layers.names.details }));
+    fireEvent.click(within(layerPanel).getByRole('button', { name: copy.layers.clearActiveLayer }));
+
+    const afterClear = await savedProject(locale);
+    expect(afterClear.schemaVersion).toBe(1);
+    expect(Object.keys(afterClear.layers)).toEqual(EMBLEM_LAYER_ORDER);
+    expect(afterClear.layers.details.elements).toEqual([]);
+    expect(afterClear.layers.details.visible).toBe(beforeClear.layers.details.visible);
+    expect(layerNames()).toEqual([body4Name]);
+    expect(within(layerPanel).getByRole('button', { name: `${copy.layers.showLayer}: ${body4Name}` })).toBeTruthy();
+    for (const layerId of EMBLEM_LAYER_ORDER) {
+      if (layerId !== 'details') expect(afterClear.layers[layerId]).toEqual(beforeClear.layers[layerId]);
+    }
+
+    chooseCategory('detail', locale);
+    clickAsset('rff-detail-1', locale);
+    expect(layerNames()).toEqual([copy.layers.names.details, body4Name]);
+    const afterReAdd = await savedProject(locale);
+    expect(Object.keys(afterReAdd.layers)).toEqual(EMBLEM_LAYER_ORDER);
+    expect(afterReAdd.layers.details.elements).toHaveLength(1);
+    expect(afterReAdd.layers.body4).toEqual(afterClear.layers.body4);
+  });
+
+  it.each(['en', 'zh'] as const)('auto-assigns all four body slots, rejects a fifth, and reuses a cleared slot in %s', async (locale) => {
+    const copy = getEmblemCreatorCopy(locale);
+    render(<EmblemCreatorWorkbench locale={locale} copy={copy} />);
+    const layerPanel = screen.getByRole('region', { name: copy.panels.layers });
+    const layerNames = () => within(layerPanel).getAllByRole('listitem')
+      .map((row) => within(row).getAllByRole('button')[0].textContent);
+
+    expect(within(layerPanel).queryAllByRole('listitem')).toHaveLength(0);
+    clickAsset('rff-emblems-1', locale);
+    const body4Name = copy.layers.names.body4;
+    fireEvent.click(within(layerPanel).getByRole('button', { name: body4Name }));
+    fireEvent.click(within(layerPanel).getByRole('button', { name: `${copy.layers.hideLayer}: ${body4Name}` }));
+    clickAsset('rff-emblems-2', locale);
+    expect(layerNames()).toContain(body4Name);
+    expect(within(layerPanel).getByRole('button', { name: `${copy.layers.showLayer}: ${body4Name}` })).toBeTruthy();
+    fireEvent.click(within(layerPanel).getByRole('button', { name: `${copy.layers.showLayer}: ${body4Name}` }));
+
+    chooseCategory('body', locale);
+    const sameSourceUrl = getEmblemCatalogAsset('rff-emblems-1').publicPath;
+    fireEvent.change(screen.getByLabelText(copy.assets.imageUrl), { target: { value: sameSourceUrl } });
+    fireEvent.click(screen.getByRole('button', { name: copy.assets.addImage }));
+    await waitFor(() => expect((screen.getByLabelText(copy.assets.imageUrl) as HTMLInputElement).value).toBe(''));
+    fireEvent.click(within(layerPanel).getByRole('button', { name: body4Name }));
+    clickAsset('rff-emblems-3', locale);
+    const fourBodies = await savedProject(locale);
+    expect(fourBodies.schemaVersion).toBe(1);
+    expect(Object.keys(fourBodies.layers)).toEqual(EMBLEM_LAYER_ORDER);
+    expect(fourBodies.layers.body4.elements[0]?.source).toMatchObject({ kind: 'catalog', assetId: 'rff-emblems-1' });
+    expect(fourBodies.layers.body3.elements[0]?.source).toMatchObject({ kind: 'catalog', assetId: 'rff-emblems-2' });
+    expect(fourBodies.layers.body2.elements[0]?.source).toMatchObject({ kind: 'url', url: sameSourceUrl });
+    expect(fourBodies.layers.body1.elements[0]?.source).toMatchObject({ kind: 'catalog', assetId: 'rff-emblems-3' });
+    expect(layerNames()).toEqual((['body1', 'body2', 'body3', 'body4'] as const)
+      .map((layerId) => copy.layers.names[layerId]));
+
+    const originalCanvasIds = canvasElementIds(locale);
+    clickAsset('rff-emblems-4', locale);
+    expect(screen.getAllByRole('alert').map((alert) => alert.textContent).join('\n')).toContain(copy.errors.bodyLayersFull);
+    expect(screen.getAllByRole('alert').map((alert) => alert.textContent).join('\n')).toContain('4/4');
+    expect(canvasElementIds(locale)).toEqual(originalCanvasIds);
+    expect(await savedProject(locale)).toEqual(fourBodies);
+
+    const body3Name = copy.layers.names.body3;
+    fireEvent.click(within(layerPanel).getByRole('button', { name: body3Name }));
+    fireEvent.click(within(layerPanel).getByRole('button', { name: copy.layers.clearActiveLayer }));
+    expect(layerNames()).not.toContain(body3Name);
+    const afterClear = await savedProject(locale);
+    expect(afterClear.layers.body3.elements).toEqual([]);
+    expect(afterClear.layers.body3.visible).toBe(fourBodies.layers.body3.visible);
+    for (const layerId of EMBLEM_LAYER_ORDER) {
+      if (layerId !== 'body3') expect(afterClear.layers[layerId]).toEqual(fourBodies.layers[layerId]);
+    }
+
+    clickAsset('rff-emblems-4', locale);
+    expect(layerNames()).toContain(body3Name);
+    chooseCategory('detail', locale);
+    clickAsset('rff-detail-1', locale);
+    clickAsset('rff-detail-1', locale);
+    chooseCategory('crest', locale);
+    clickAsset('rff-animal-1', locale);
+    clickAsset('rff-animal-1', locale);
+    const project = await savedProject(locale);
+    expect(project.layers.body4).toEqual(afterClear.layers.body4);
+    expect(project.layers.body3.elements[0]?.source).toMatchObject({ kind: 'catalog', assetId: 'rff-emblems-4' });
+    expect(project.layers.body2).toEqual(afterClear.layers.body2);
+    expect(project.layers.body1).toEqual(afterClear.layers.body1);
     expect(project.layers.details.elements).toHaveLength(2);
     expect(project.layers.crests.elements).toHaveLength(2);
-    expect(project.layers.body1.visible).toBe(true);
-    expect(project.layers.body2.visible).toBe(false);
-    expect(project.layers.body3.visible).toBe(false);
-    expect(screen.getByRole('button', { name: copy.layers.names.body4 }).getAttribute('aria-pressed')).toBe('true');
     expect(Object.keys(project)).toEqual(['schemaVersion', 'canvas', 'layers']);
-    expect(downloadedNames).toEqual(['emblem-project.json']);
+    expect(downloadedNames).toEqual([
+      'emblem-project.json',
+      'emblem-project.json',
+      'emblem-project.json',
+      'emblem-project.json',
+    ]);
     expect(revokeObjectUrl).toHaveBeenCalledWith('blob:emblem-test');
     expect(document.querySelector('a[download]')).toBeNull();
   });
 
   it('connects canvas movement, properties, bounds, deletion and current-layer clearing', async () => {
     const copy = getEmblemCreatorCopy('en');
+    const bodyAsset = getEmblemCatalogAsset('rff-emblems-1');
     render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
-    clickAsset('body-circle');
+    clickAsset('rff-emblems-1');
     const bodyId = canvasElementIds()[0];
     fireEvent.keyDown(canvas().querySelector('[data-element-id]')!, { key: 'ArrowRight' });
     expect((screen.getByLabelText(copy.properties.x) as HTMLInputElement).value).toBe('513');
@@ -158,20 +261,25 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     fireEvent.change(x, { target: { value: '300' } }); fireEvent.blur(x);
     const width = screen.getByLabelText(copy.properties.width);
     fireEvent.change(width, { target: { value: '128' } }); fireEvent.blur(width);
-    expect((screen.getByLabelText(copy.properties.height) as HTMLInputElement).value).toBe('128');
+    expect((screen.getByLabelText(copy.properties.height) as HTMLInputElement).value)
+      .toBe(String(128 * bodyAsset.height / bodyAsset.width));
     fireEvent.change(screen.getByLabelText(copy.properties.rotation), { target: { value: '30' } });
     fireEvent.click(screen.getByRole('button', { name: copy.properties.applyRotation }));
     fireEvent.click(screen.getByRole('button', { name: copy.properties.mirror }));
     fireEvent.click(screen.getByLabelText(copy.properties.showEditBounds));
     expect(canvas().querySelector('[data-edit-bounds]')).toBeTruthy();
     const project = await savedProject();
-    expect(project.layers.body4.elements[0].transform).toEqual({ x: 300, y: 512, scale: 1.28, rotation: 30, mirrorX: true });
+    expect(project.layers.body4.elements[0].transform)
+      .toEqual({ x: 300, y: 512, scale: 128 / bodyAsset.width, rotation: 30, mirrorX: true });
     chooseCategory('detail');
-    clickAsset('detail-ring');
+    clickAsset('rff-detail-1');
+    const layerPanel = screen.getByRole('region', { name: copy.panels.layers });
+    expect(within(layerPanel).getByRole('button', { name: copy.layers.names.details })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: copy.properties.deleteSelected }));
     expect(canvasElementIds()).toEqual([bodyId]);
+    expect(within(layerPanel).queryByRole('button', { name: copy.layers.names.details })).toBeNull();
     expect(screen.getByText(copy.noSelection)).toBeTruthy();
-    clickAsset('detail-ring');
+    clickAsset('rff-detail-1');
     fireEvent.click(screen.getByRole('button', { name: copy.layers.clearActiveLayer }));
     expect(canvasElementIds()).toEqual([bodyId]);
     expect((await savedProject()).layers.details.visible).toBe(true);
@@ -188,7 +296,7 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     let finishLoad!: (image: HTMLImageElement) => void;
     vi.mocked(loadEmblemImage).mockReturnValueOnce(new Promise((resolve) => { finishLoad = resolve; }));
     render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
-    clickAsset('body-circle');
+    clickAsset('rff-emblems-1');
     const originalIds = canvasElementIds();
     fireEvent.change(screen.getByLabelText(copy.assets.imageUrl), { target: { value: 'https://example.com/wide.png' } });
     fireEvent.click(screen.getByRole('button', { name: copy.assets.addImage }));
@@ -197,17 +305,78 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     expect((screen.getByRole('button', { name: copy.toolbar.saveProject }) as HTMLButtonElement).disabled).toBe(true);
     await act(async () => { finishLoad(loadedImage(900, 450)); });
     const project = await savedProject();
-    const element = project.layers.body4.elements[0];
+    const element = project.layers.body3.elements[0];
     expect(element.source).toEqual({ kind: 'url', url: 'https://example.com/wide.png', naturalWidth: 900, naturalHeight: 450 });
     expect(element.transform.scale).toBe(256 / 900);
-    expect(canvasElementIds()).toEqual([element.id]);
+    expect(canvasElementIds()).toEqual([...originalIds, element.id]);
     expect((screen.getByLabelText(copy.assets.imageUrl) as HTMLInputElement).value).toBe('');
+  });
+
+  it.each(['another body asset is added', 'the original target is cleared'] as const)(
+    're-resolves a pending URL target after %s without overwriting a body element', async (changeDuringLoad) => {
+      const copy = getEmblemCreatorCopy('en');
+      let finishLoad!: (image: HTMLImageElement) => void;
+      vi.mocked(loadEmblemImage).mockReturnValueOnce(new Promise((resolve) => { finishLoad = resolve; }));
+      render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
+
+      const layerPanel = screen.getByRole('region', { name: copy.panels.layers });
+      if (changeDuringLoad === 'the original target is cleared') clickAsset('rff-emblems-1');
+      const url = 'https://example.com/pending-subject.png';
+      fireEvent.change(screen.getByLabelText(copy.assets.imageUrl), { target: { value: url } });
+      fireEvent.click(screen.getByRole('button', { name: copy.assets.addImage }));
+
+      if (changeDuringLoad === 'another body asset is added') {
+        clickAsset('rff-emblems-1');
+      } else {
+        fireEvent.click(within(layerPanel).getByRole('button', { name: copy.layers.names.body4 }));
+        fireEvent.click(within(layerPanel).getByRole('button', { name: copy.layers.clearActiveLayer }));
+        expect(within(layerPanel).queryByRole('button', { name: copy.layers.names.body4 })).toBeNull();
+      }
+
+      await act(async () => { finishLoad(loadedImage(900, 450)); });
+      const project = await savedProject();
+      if (changeDuringLoad === 'another body asset is added') {
+        expect(project.layers.body4.elements[0]?.source).toMatchObject({ kind: 'catalog', assetId: 'rff-emblems-1' });
+        expect(project.layers.body3.elements[0]?.source).toMatchObject({ kind: 'url', url });
+        expect(canvasElementIds()).toHaveLength(2);
+      } else {
+        expect(project.layers.body4.elements[0]?.source).toMatchObject({ kind: 'url', url });
+        expect(project.layers.body3.elements).toEqual([]);
+        expect(canvasElementIds()).toHaveLength(1);
+      }
+    },
+  );
+
+  it('rejects a pending URL when all four body slots fill before commit and preserves their contents', async () => {
+    const copy = getEmblemCreatorCopy('zh');
+    let finishLoad!: (image: HTMLImageElement) => void;
+    vi.mocked(loadEmblemImage).mockReturnValueOnce(new Promise((resolve) => { finishLoad = resolve; }));
+    render(<EmblemCreatorWorkbench locale="zh" copy={copy} />);
+    clickAsset('rff-emblems-1', 'zh');
+    clickAsset('rff-emblems-2', 'zh');
+    clickAsset('rff-emblems-3', 'zh');
+    const url = 'https://example.com/fifth-subject.png';
+    fireEvent.change(screen.getByLabelText(copy.assets.imageUrl), { target: { value: url } });
+    fireEvent.click(screen.getByRole('button', { name: copy.assets.addImage }));
+    clickAsset('rff-emblems-4', 'zh');
+    const canvasIdsBeforeCompletion = canvasElementIds('zh');
+
+    await act(async () => { finishLoad(loadedImage()); });
+    expect(screen.getAllByRole('alert').map((alert) => alert.textContent).join('\n')).toContain(copy.errors.bodyLayersFull);
+    expect(screen.getAllByRole('alert').map((alert) => alert.textContent).join('\n')).toContain('4/4');
+    expect((screen.getByLabelText(copy.assets.imageUrl) as HTMLInputElement).value).toBe(url);
+    expect(canvasElementIds('zh')).toEqual(canvasIdsBeforeCompletion);
+    const fullProject = await savedProject('zh');
+    expect(fullProject.layers.body4.elements[0]?.source).toMatchObject({ kind: 'catalog', assetId: 'rff-emblems-1' });
+    expect(fullProject.layers.body3.elements[0]?.source).toMatchObject({ kind: 'catalog', assetId: 'rff-emblems-2' });
+    expect(fullProject.layers.body2.elements[0]?.source).toMatchObject({ kind: 'catalog', assetId: 'rff-emblems-3' });
+    expect(fullProject.layers.body1.elements[0]?.source).toMatchObject({ kind: 'catalog', assetId: 'rff-emblems-4' });
   });
 
   it('rejects invalid URLs before loading and preserves the scene and URL input after image failure', async () => {
     const copy = getEmblemCreatorCopy('en');
     render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
-    clickAsset('body-circle');
+    clickAsset('rff-emblems-1');
     const originalIds = canvasElementIds();
     const input = screen.getByLabelText(copy.assets.imageUrl);
     fireEvent.change(input, { target: { value: 'javascript:bad' } });
@@ -223,10 +392,67 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     expect(screen.getAllByRole('alert').map((alert) => alert.textContent).join()).toContain('https://example.com/missing.png');
   });
 
+  it.each(['en', 'zh'] as const)('selects, saves, and restores a non-square local PNG in %s', async (locale) => {
+    const copy = getEmblemCreatorCopy(locale);
+    const asset = getEmblemCatalogAsset('rff-detail-1');
+    const targetLayerId = targetLayerByCatalogCategory[asset.category];
+    render(<EmblemCreatorWorkbench locale={locale} copy={copy} />);
+    chooseCategory(asset.category, locale);
+    clickAsset(asset.id, locale);
+
+    const saved = await savedProject(locale);
+    const element = saved.layers[targetLayerId].elements[0];
+    if (!element) throw new Error('The selected RollForFantasy asset was not saved to ' + targetLayerId + '.');
+    expect(asset.id.startsWith('rff-')).toBe(true);
+    expect(asset.width).toBe(263);
+    expect(asset.height).toBe(38);
+    expect(asset.publicPath).toMatch(/^\/emblem-creator\/rollforfantasy\/[A-Za-z]+[0-9]+\.png$/);
+    expect(asset.width).not.toBe(asset.height);
+    expect(element.source).toEqual({
+      kind: 'catalog',
+      assetId: asset.id,
+      url: asset.publicPath,
+      naturalWidth: asset.width,
+      naturalHeight: asset.height,
+    });
+    expect(element.transform.scale).toBe(256 / Math.max(asset.width, asset.height));
+
+    const layerPanel = screen.getByRole('region', { name: copy.panels.layers });
+    fireEvent.click(within(layerPanel).getByRole('button', { name: copy.layers.names[targetLayerId] }));
+    fireEvent.click(within(layerPanel).getByRole('button', { name: copy.layers.clearActiveLayer }));
+    expect(canvasElementIds(locale)).toEqual([]);
+    vi.mocked(loadEmblemImage).mockClear();
+    openFile(projectFile(JSON.stringify(saved), 'rollforfantasy-project.json'), locale);
+    await waitFor(() => expect(loadEmblemImage).toHaveBeenCalledExactlyOnceWith(asset.publicPath));
+    expect(canvasElementIds(locale)).toEqual([element.id]);
+    expect(await savedProject(locale)).toEqual(saved);
+  });
+
+  it('opens an existing schema 1 Circle project with its original SVG path and 100 by 100 dimensions', async () => {
+    const copy = getEmblemCreatorCopy('en');
+    const legacyProject = applyEmblemProjectCommand(createDefaultEmblemProject(), {
+      type: 'add-element',
+      layerId: 'body4',
+      element: createEmblemElement({
+        kind: 'catalog',
+        assetId: 'body-circle',
+        url: '/emblem-creator/original/body-circle.svg',
+        naturalWidth: 100,
+        naturalHeight: 100,
+      }, 'legacy-circle'),
+    });
+    vi.mocked(loadEmblemImage).mockResolvedValueOnce(loadedImage(100, 100));
+    render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
+    openFile(projectFile(JSON.stringify(legacyProject), 'legacy-emblem-project.json'));
+    await waitFor(() => expect(canvasElementIds()).toEqual(['legacy-circle']));
+    expect(loadEmblemImage).toHaveBeenCalledExactlyOnceWith('/emblem-creator/original/body-circle.svg');
+    expect(await savedProject()).toEqual(legacyProject);
+  });
+
   it('round-trips actual saved JSON and commits an import only after all visible and hidden images preload', async () => {
     const copy = getEmblemCreatorCopy('en');
     render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
-    clickAsset('body-circle');
+    clickAsset('rff-emblems-1');
     const saved = await savedProject();
     fireEvent.click(screen.getByRole('button', { name: copy.layers.clearActiveLayer }));
     openFile(projectFile(serializeEmblemProject(saved)));
@@ -254,13 +480,13 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     'retains the current scene and rejects %s before loading images', async (failure) => {
       const copy = getEmblemCreatorCopy('en');
       render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
-      clickAsset('body-circle');
+      clickAsset('rff-emblems-1');
       const originalIds = canvasElementIds();
       const before = await savedProject();
-      const asset = getEmblemCatalogAsset('body-square');
+      const asset = getEmblemCatalogAsset('rff-emblems-2');
       const source = { kind: 'catalog' as const, assetId: failure === 'unknown asset' ? 'missing-body' : asset.id,
-        url: failure === 'mismatched catalog URL' ? '/wrong.svg' : asset.publicPath,
-        naturalWidth: failure === 'mismatched catalog dimensions' ? 200 : asset.width, naturalHeight: asset.height };
+        url: failure === 'mismatched catalog URL' ? '/wrong.png' : asset.publicPath,
+        naturalWidth: failure === 'mismatched catalog dimensions' ? asset.width + 1 : asset.width, naturalHeight: asset.height };
       const incoming = applyEmblemProjectCommand(createDefaultEmblemProject(), {
         type: 'add-element', layerId: 'body4', element: createEmblemElement(source, 'incoming'),
       });
@@ -272,8 +498,8 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
       expect(loadEmblemImage).not.toHaveBeenCalled();
       if (failure === 'oversized') expect(file.text).not.toHaveBeenCalled();
       if (failure === 'unknown asset') expect(screen.getByRole('alert').textContent).toContain('missing-body');
-      if (failure === 'mismatched catalog URL') expect(screen.getByRole('alert').textContent).toContain('/wrong.svg');
-      if (failure === 'mismatched catalog dimensions') expect(screen.getByRole('alert').textContent).toContain('200');
+      if (failure === 'mismatched catalog URL') expect(screen.getByRole('alert').textContent).toContain('/wrong.png');
+      if (failure === 'mismatched catalog dimensions') expect(screen.getByRole('alert').textContent).toContain(String(asset.width + 1));
       expect(canvasElementIds()).toEqual(originalIds);
       expect(await savedProject()).toEqual(before);
     },
@@ -282,7 +508,7 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
   it('preserves scene/selection after a hidden image import failure and after cancelling the picker', async () => {
     const copy = getEmblemCreatorCopy('en');
     render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
-    clickAsset('body-circle');
+    clickAsset('rff-emblems-1');
     const before = await savedProject();
     const incoming = addProjectUrl(createDefaultEmblemProject(), 'missing-hidden', 'https://example.com/offline.png', 'body1');
     vi.mocked(loadEmblemImage).mockRejectedValueOnce(new Error('offline decode failure'));
@@ -301,7 +527,7 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     let finishExport!: (blob: Blob) => void;
     vi.mocked(exportEmblemProjectPng).mockReturnValueOnce(new Promise((resolve) => { finishExport = resolve; }));
     render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
-    clickAsset('body-circle');
+    clickAsset('rff-emblems-1');
     fireEvent.click(screen.getByLabelText(copy.properties.showEditBounds));
     fireEvent.click(screen.getByRole('button', { name: copy.toolbar.exportPng }));
     expect(downloadedNames).toEqual([]);
@@ -319,7 +545,7 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     const copy = getEmblemCreatorCopy(locale);
     vi.mocked(exportEmblemProjectPng).mockRejectedValueOnce('unexpected canvas failure: 73');
     render(<EmblemCreatorWorkbench locale={locale} copy={copy} />);
-    clickAsset('body-circle', locale);
+    clickAsset('rff-emblems-1', locale);
     const before = canvasElementIds(locale);
     fireEvent.click(screen.getByRole('button', { name: copy.toolbar.exportPng }));
     await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('unexpected canvas failure: 73'));
@@ -337,7 +563,7 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     const rejection = { reason: 'unexpected encoder failure', code: 73 };
     const imageUrl = 'https://example.com/unknown-failure.png';
     render(<EmblemCreatorWorkbench locale={locale} copy={copy} />);
-    clickAsset('body-circle', locale);
+    clickAsset('rff-emblems-1', locale);
     const before = await savedProject(locale);
     const originalIds = canvasElementIds(locale);
     createObjectUrl.mockClear();
