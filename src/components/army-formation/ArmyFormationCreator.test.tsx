@@ -13,6 +13,7 @@ import {
 import { ARMY_FORMATION_DOCUMENT_STORAGE_KEY } from '@/lib/army-formation/browser-saves';
 import {
   addArmyFormationPiece,
+  addArmyFormationPieceAtPoint,
   createEmptyArmyFormationDocument,
   rotateSelectedArmyFormationPieces,
   setArmyBackgroundImageUrlForBattlefield,
@@ -238,6 +239,19 @@ function storeArmyFormationHelmet(pieceId: string) {
     'helmet-01',
     pieceId,
     780,
+  );
+  localStorage.setItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY, serializeArmyFormationDocument(armyDocument));
+}
+
+function storeSelectedArmyFormationPieceAtPoint(
+  pieceId: string,
+  pieceMapPoint: Readonly<{ x: number; y: number }>,
+): void {
+  const armyDocument = addArmyFormationPieceAtPoint(
+    createEmptyArmyFormationDocument(),
+    'helmet-01',
+    pieceId,
+    pieceMapPoint,
   );
   localStorage.setItem(ARMY_FORMATION_DOCUMENT_STORAGE_KEY, serializeArmyFormationDocument(armyDocument));
 }
@@ -1040,7 +1054,6 @@ describe('ArmyFormationCreator', () => {
     const handleLeft = readArmyInlinePixelStyle(rotationHandle, 'left');
     const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
     const fieldTop = readArmyInlinePixelStyle(battlefieldField, 'top');
-    const fieldWidth = readArmyInlinePixelStyle(battlefieldField, 'width');
     const pieceXText = piece.getAttribute('data-piece-x');
     if (pieceXText === null || !Number.isFinite(Number(pieceXText))) {
       throw new Error(`Army piece x must be finite in the scale test. Received ${JSON.stringify(pieceXText)}.`);
@@ -1048,10 +1061,7 @@ describe('ArmyFormationCreator', () => {
     const pieceTop = readArmyInlinePixelStyle(piece, 'top');
     const pieceWidth = readArmyInlinePixelStyle(piece, 'width');
     const requestedHandleLeft = Number(pieceXText) + pieceWidth / 2 - handleWidth / 2;
-    const expectedHandleLeft = Math.min(
-      Math.max(requestedHandleLeft, 0),
-      fieldWidth - handleWidth,
-    );
+    const expectedHandleLeft = requestedHandleLeft;
     const rotationHandleClassNames = [...rotationHandle.classList];
 
     expect(renderedFieldScale).toBeCloseTo(fieldScale, 5);
@@ -1160,6 +1170,77 @@ describe('ArmyFormationCreator', () => {
     expect(handleScreenRight).toBeLessThanOrEqual(fieldWidth * fieldScale);
     expect(handleScreenTop).toBeGreaterThanOrEqual(0);
     expect(handleScreenBottom).toBeLessThanOrEqual(fieldTop + fieldHeight * fieldScale);
+    expect(rotatedPieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(8);
+  });
+
+  it.each([
+    { x: -120, y: 120 },
+    { x: 820, y: 120 },
+  ])('keeps the rotation handle centered over a piece outside the original field at x=$x', ({ x, y }) => {
+    const pieceName = `piece-outside-${x}`;
+    storeSelectedArmyFormationPieceAtPoint(pieceName, { x, y });
+    render(<ArmyFormationCreator locale="zh" />);
+    restoreArmyFormationRecord();
+
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const handleWidth = readArmyInlinePixelStyle(rotationHandle, 'width');
+    const expectedHandleLeft = x + 25 - handleWidth / 2;
+
+    expect(readArmyInlinePixelStyle(piece, 'left')).toBeCloseTo(x, 4);
+    expect(readArmyInlinePixelStyle(rotationHandle, 'left')).toBeCloseTo(expectedHandleLeft, 4);
+    if (x < 0) {
+      expect(readArmyInlinePixelStyle(rotationHandle, 'left')).toBeLessThan(0);
+    } else {
+      expect(readArmyInlinePixelStyle(rotationHandle, 'left')).toBeGreaterThan(780 - handleWidth);
+    }
+  });
+
+  it('keeps the rotation handle at least 8px above a rotated piece after view zoom changes', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    fireEvent.change(screen.getByLabelText('角度'), { target: { value: '45' } });
+
+    const field = requireArmyFormationField();
+    setArmyFormationFieldRect(field);
+    const battlefieldPaneLayout = field.parentElement;
+    if (!(battlefieldPaneLayout instanceof HTMLElement)) {
+      throw new Error('Rotation handle zoom geometry requires the battlefield pane layout element.');
+    }
+    const fieldTopBeforeZoom = field.style.top;
+    const paneHeightBeforeZoom = battlefieldPaneLayout.style.height;
+    dispatchArmyBattlefieldWheel(field, { deltaY: 100 });
+
+    const viewTransform = readArmyBattlefieldViewTransform();
+    const battlefieldField = requireArmyFormationField();
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const fieldScaleMatch = /^scale\(([^)]+)\)$/.exec(battlefieldField.style.transform);
+    const fieldScale = Number(fieldScaleMatch?.[1]);
+    if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
+      throw new Error(
+        `Rotation handle zoom geometry requires a positive field scale. Received ${JSON.stringify(battlefieldField.style.transform)}.`,
+      );
+    }
+
+    const fieldTop = readArmyInlinePixelStyle(battlefieldField, 'top');
+    const pieceTop = readArmyInlinePixelStyle(piece, 'top');
+    const pieceWidth = readArmyInlinePixelStyle(piece, 'width');
+    const pieceHeight = readArmyInlinePixelStyle(piece, 'height');
+    const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
+    const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const totalFieldScale = fieldScale * viewTransform.scale;
+    const rotationRadians = Math.PI / 4;
+    const rotatedPieceHeight =
+      Math.abs(pieceWidth * Math.sin(rotationRadians))
+      + Math.abs(pieceHeight * Math.cos(rotationRadians));
+    const handleScreenBottom = fieldTop + (handleTop + handleHeight) * totalFieldScale;
+    const rotatedPieceScreenTop =
+      fieldTop + (pieceTop + (pieceHeight - rotatedPieceHeight) / 2) * totalFieldScale;
+
+    expect(viewTransform.scale).toBeLessThan(1);
+    expect(battlefieldField.style.top).toBe(fieldTopBeforeZoom);
+    expect(battlefieldPaneLayout.style.height).toBe(paneHeightBeforeZoom);
     expect(rotatedPieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(8);
   });
 

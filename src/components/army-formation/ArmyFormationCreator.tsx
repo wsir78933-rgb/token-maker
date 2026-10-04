@@ -670,19 +670,12 @@ function readArmyRotationHandleLeftPx(pieceX: number, handleSizeInFieldPx: numbe
     );
   }
 
-  const maximumLeftPx = ARMY_FIELD_WIDTH_PX - handleSizeInFieldPx;
-  if (maximumLeftPx < 0) {
-    throw new Error(
-      `Army rotation handle does not fit within the field. fieldWidthPx=${ARMY_FIELD_WIDTH_PX} handleWidthPx=${handleSizeInFieldPx}.`,
-    );
-  }
-
   const requestedLeftPx = pieceX + ARMY_PIECE_WIDTH / 2 - handleSizeInFieldPx / 2;
   if (!Number.isFinite(requestedLeftPx)) {
     throw new Error(`Army rotation handle centered left must be finite. Received ${requestedLeftPx}.`);
   }
 
-  return Math.min(Math.max(requestedLeftPx, 0), maximumLeftPx);
+  return requestedLeftPx;
 }
 
 function readArmyRotationPointerAngleDegrees(
@@ -1510,7 +1503,6 @@ function ArmyFormationRotationHandleButton({
   copy,
   piece,
   fieldScale,
-  rotationHandleTopGutterPx,
   onPointerDown,
   onPointerMove,
   onPointerUp,
@@ -1520,7 +1512,6 @@ function ArmyFormationRotationHandleButton({
   copy: ArmyFormationCreatorCopy;
   piece: ArmyFormationPiece;
   fieldScale: number;
-  rotationHandleTopGutterPx: number;
   onPointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onPointerMove: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onPointerUp: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
@@ -1543,7 +1534,10 @@ function ArmyFormationRotationHandleButton({
       className="absolute z-30 box-border flex cursor-grab touch-none select-none items-end justify-center bg-transparent text-black hover:bg-transparent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)] active:cursor-grabbing"
       style={{
         left: readArmyRotationHandleLeftPx(piece.x, handleSizeInField),
-        top: piece.y - rotationHandleTopGutterPx / fieldScale,
+        top:
+          piece.y
+          - ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX
+          - ARMY_ROTATION_HANDLE_GUTTER_PX / fieldScale,
         width: handleSizeInField,
         height: handleSizeInField,
         fontSize: rotationHandleSymbolFontSizePx,
@@ -1764,7 +1758,6 @@ function ArmyFormationBattlefieldCanvas({
                   copy={copy}
                   piece={piece}
                   fieldScale={fieldScale * battlefieldViewTransform.scale}
-                  rotationHandleTopGutterPx={rotationHandleTopGutterPx}
                   onPointerDown={onRotationPointerDown}
                   onPointerMove={onRotationPointerMove}
                   onPointerUp={onRotationPointerUp}
