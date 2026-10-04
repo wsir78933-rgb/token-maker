@@ -115,6 +115,17 @@ function readFiniteNumber(value: unknown, label: string): number {
   return value;
 }
 
+function readArmyFormationPiecePoint(
+  value: unknown,
+): Readonly<{ x: number; y: number }> {
+  const point = readPlainObject(value, 'Piece point');
+
+  return {
+    x: readFiniteNumber(point.x, 'Piece x'),
+    y: readFiniteNumber(point.y, 'Piece y'),
+  };
+}
+
 function readHexColor(value: unknown, label: string): string {
   if (typeof value !== 'string' || !HEX_COLOR_PATTERN.test(value)) {
     throw new Error(
@@ -548,8 +559,35 @@ function appendPiece(
   return replaceBattlefieldPieces(battlefield, [...battlefield.pieces, piece]);
 }
 
+function appendPieceAtPoint(
+  battlefield: ArmyBattlefield,
+  iconId: string,
+  pieceId: string,
+  point: Readonly<{ x: number; y: number }>,
+): ArmyBattlefield {
+  assertPieceIdAvailable(battlefield.pieces, pieceId);
+  const piece = createArmyFormationPiece(
+    pieceId,
+    iconId,
+    point.x,
+    point.y,
+    readPieceBackgroundColor(battlefield),
+  );
+  const battlefieldWithPiece = replaceBattlefieldPieces(battlefield, [...battlefield.pieces, piece]);
+
+  return {
+    ...battlefieldWithPiece,
+    selectedPieceIds: [pieceId],
+  };
+}
+
 function snapToPlacementGrid(coordinatePx: number): number {
   const snapped = Math.round(coordinatePx / ARMY_PLACEMENT_STEP_PX) * ARMY_PLACEMENT_STEP_PX;
+  if (!Number.isFinite(snapped)) {
+    throw new Error(
+      `Piece coordinate snap produced a non-finite value. coordinate=${formatReceivedValue(coordinatePx)} snapped=${formatReceivedValue(snapped)}.`,
+    );
+  }
 
   if (Object.is(snapped, -0)) {
     return 0;
@@ -608,6 +646,21 @@ function movePiece(
     fieldWidthPx,
     battlefield.heightPx,
   );
+
+  return replaceBattlefieldPieces(
+    battlefield,
+    replacePieceOrigin(battlefield.pieces, piece.id, snappedX, snappedY),
+  );
+}
+
+function movePieceAtPoint(
+  battlefield: ArmyBattlefield,
+  pieceId: string,
+  point: Readonly<{ x: number; y: number }>,
+): ArmyBattlefield {
+  const piece = requirePiece(battlefield.pieces, pieceId);
+  const snappedX = snapToPlacementGrid(point.x);
+  const snappedY = snapToPlacementGrid(point.y);
 
   return replaceBattlefieldPieces(
     battlefield,
@@ -781,6 +834,21 @@ export function addArmyFormationPiece(
   );
 }
 
+export function addArmyFormationPieceAtPoint(
+  document: ArmyFormationDocument,
+  iconId: string,
+  pieceId: string,
+  point: Readonly<{ x: number; y: number }>,
+): ArmyFormationDocument {
+  const validatedIconId = readNonEmptyString(iconId, 'Icon id');
+  const validatedPieceId = readNonEmptyString(pieceId, 'Piece id');
+  const validatedPoint = readArmyFormationPiecePoint(point);
+
+  return withActiveBattlefield(readArmyFormationDocument(document), (battlefield) =>
+    appendPieceAtPoint(battlefield, validatedIconId, validatedPieceId, validatedPoint),
+  );
+}
+
 export function moveArmyFormationPiece(
   document: ArmyFormationDocument,
   pieceId: string,
@@ -795,6 +863,19 @@ export function moveArmyFormationPiece(
 
   return withActiveBattlefield(readArmyFormationDocument(document), (battlefield) =>
     movePiece(battlefield, validatedPieceId, validatedX, validatedY, validatedFieldWidthPx),
+  );
+}
+
+export function moveArmyFormationPieceAtPoint(
+  document: ArmyFormationDocument,
+  pieceId: string,
+  point: Readonly<{ x: number; y: number }>,
+): ArmyFormationDocument {
+  const validatedPieceId = readNonEmptyString(pieceId, 'Piece id');
+  const validatedPoint = readArmyFormationPiecePoint(point);
+
+  return withActiveBattlefield(readArmyFormationDocument(document), (battlefield) =>
+    movePieceAtPoint(battlefield, validatedPieceId, validatedPoint),
   );
 }
 

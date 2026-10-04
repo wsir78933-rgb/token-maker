@@ -1,3 +1,9 @@
+import {
+  DEFAULT_ARMY_FORMATION_BACKGROUND_TRANSFORM,
+  translateArmyFormationBackgroundTransform,
+  type ArmyFormationBackgroundTransform,
+} from './background-image-geometry';
+
 export type ArmyFormationImagePiece = {
   iconSvgMarkup: string;
   x: number;
@@ -11,8 +17,11 @@ export type ArmyFormationImageScene = {
   heightPx: number;
   fieldBackgroundColor: string;
   backgroundImageUrl: string;
+  backgroundImageTransform?: ArmyFormationBackgroundTransform;
   pieces: ArmyFormationImagePiece[];
 };
+
+export const ARMY_FORMATION_PNG_EXPORT_SCALE = 2;
 
 const ARMY_FORMATION_ICON_ASSET_PATTERN =
   /(<image\b[^>]*\bhref=")((?:\/army-formation-icons\/roll-for-fantasy\/)[^"]+\.png)(")/g;
@@ -30,12 +39,16 @@ export function buildArmyFormationSvg(scene: ArmyFormationImageScene): string {
   return renderBattlefieldSvg(scene);
 }
 
-export async function buildArmyFormationPng(scene: ArmyFormationImageScene): Promise<Blob> {
+export async function buildArmyFormationPng(
+  scene: ArmyFormationImageScene,
+  outputScale = 1,
+): Promise<Blob> {
+  assertOutputScale(outputScale);
   const svg = await inlineArmyFormationSvgAssets(
     buildArmyFormationSvg(scene),
     scene.backgroundImageUrl,
   );
-  return renderArmyFormationPng(svg, scene.widthPx, scene.heightPx);
+  return renderArmyFormationPng(svg, scene.widthPx, scene.heightPx, outputScale);
 }
 
 export async function inlineArmyFormationSvgAssets(
@@ -80,6 +93,7 @@ async function renderArmyFormationPng(
   svg: string,
   widthPx: number,
   heightPx: number,
+  outputScale: number,
 ): Promise<Blob> {
   if (typeof document === 'undefined') {
     throw new Error('Army formation PNG export requires document. Received undefined.');
@@ -100,8 +114,8 @@ async function renderArmyFormationPng(
   try {
     const image = await loadArmyFormationSvg(svgObjectUrl);
     const canvas = document.createElement('canvas');
-    canvas.width = Math.ceil(widthPx);
-    canvas.height = Math.ceil(heightPx);
+    canvas.width = scaledCanvasDimension(widthPx, outputScale, 'widthPx');
+    canvas.height = scaledCanvasDimension(heightPx, outputScale, 'heightPx');
 
     const context = canvas.getContext('2d');
     if (context === null || typeof context !== 'object') {
@@ -211,7 +225,48 @@ function assertScene(scene: ArmyFormationImageScene): void {
   assertFinitePositivePixelSize(scene.widthPx, scene.heightPx);
   assertFieldText('fieldBackgroundColor', scene.fieldBackgroundColor);
   assertFieldText('backgroundImageUrl', scene.backgroundImageUrl);
+  assertBackgroundImageTransform(scene.backgroundImageTransform);
   assertPieces(scene.pieces);
+}
+
+function assertBackgroundImageTransform(
+  transform: ArmyFormationBackgroundTransform | undefined,
+): void {
+  translateArmyFormationBackgroundTransform(
+    transform === undefined ? DEFAULT_ARMY_FORMATION_BACKGROUND_TRANSFORM : transform,
+    0,
+    0,
+  );
+}
+
+function assertOutputScale(outputScale: number): void {
+  if (
+    typeof outputScale === 'number' &&
+    Number.isFinite(outputScale) &&
+    outputScale > 0 &&
+    outputScale <= 4
+  ) {
+    return;
+  }
+
+  throw new Error(
+    `Army formation PNG outputScale must be finite, greater than 0, and at most 4. outputScale=${formatReceivedValue(outputScale)}`,
+  );
+}
+
+function scaledCanvasDimension(
+  sceneDimensionPx: number,
+  outputScale: number,
+  dimensionName: 'widthPx' | 'heightPx',
+): number {
+  const canvasDimensionPx = Math.ceil(sceneDimensionPx * outputScale);
+  if (Number.isSafeInteger(canvasDimensionPx) && canvasDimensionPx > 0) {
+    return canvasDimensionPx;
+  }
+
+  throw new Error(
+    `Army formation PNG ${dimensionName} output must be a finite positive safe integer. scene${dimensionName}=${formatReceivedValue(sceneDimensionPx)} outputScale=${formatReceivedValue(outputScale)} canvas${dimensionName}=${formatReceivedValue(canvasDimensionPx)}`,
+  );
 }
 
 function assertFinitePositivePixelSize(widthPx: number, heightPx: number): void {
@@ -312,6 +367,9 @@ function renderBattlefieldSvg(scene: ArmyFormationImageScene): string {
   const widthText = formatSvgNumber(scene.widthPx);
   const heightText = formatSvgNumber(scene.heightPx);
   const field = renderFieldRect(widthText, heightText, scene.fieldBackgroundColor);
+  const viewTransform =
+    scene.backgroundImageTransform ?? DEFAULT_ARMY_FORMATION_BACKGROUND_TRANSFORM;
+  const viewTransformText = `translate(${formatSvgNumber(viewTransform.offsetXPx)} ${formatSvgNumber(viewTransform.offsetYPx)}) scale(${formatSvgNumber(viewTransform.scale)})`;
   const backgroundImage = renderBackgroundImage(
     widthText,
     heightText,
@@ -319,7 +377,7 @@ function renderBattlefieldSvg(scene: ArmyFormationImageScene): string {
   );
   const pieces = renderPieces(scene.pieces);
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${widthText}" height="${heightText}" viewBox="0 0 ${widthText} ${heightText}" overflow="hidden" role="img" aria-label="Army formation creator">${field}${backgroundImage}${pieces}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${widthText}" height="${heightText}" viewBox="0 0 ${widthText} ${heightText}" overflow="hidden" role="img" aria-label="Army formation creator">${field}<g transform="${viewTransformText}">${backgroundImage}${pieces}</g></svg>`;
 }
 
 function renderFieldRect(
@@ -339,7 +397,7 @@ function renderBackgroundImage(
     return '';
   }
 
-  return `<image href="${escapeXmlAttribute(backgroundImageUrl)}" x="0" y="0" width="${widthText}" height="${heightText}" preserveAspectRatio="xMidYMid slice"/>`;
+  return `<image href="${escapeXmlAttribute(backgroundImageUrl)}" x="0" y="0" width="${widthText}" height="${heightText}" preserveAspectRatio="xMidYMid meet"/>`;
 }
 
 function renderPieces(pieces: ArmyFormationImagePiece[]): string {
