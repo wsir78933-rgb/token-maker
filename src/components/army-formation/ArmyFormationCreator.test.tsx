@@ -993,6 +993,123 @@ describe('ArmyFormationCreator', () => {
   });
 
   it.each([
+    { fieldScale: 1, angleDegrees: 45, angleLabel: '45 degrees' },
+    { fieldScale: 0.75, angleDegrees: 45, angleLabel: '45 degrees' },
+    {
+      fieldScale: 1,
+      angleDegrees: Math.atan2(50, 30) * (180 / Math.PI),
+      angleLabel: 'maximum top extension',
+    },
+    {
+      fieldScale: 0.75,
+      angleDegrees: Math.atan2(50, 30) * (180 / Math.PI),
+      angleLabel: 'maximum top extension',
+    },
+  ])('keeps the zoomed rotation hit target clear at field scale $fieldScale and $angleLabel', ({
+    fieldScale,
+    angleDegrees,
+  }) => {
+    class ArmyFormationTestResizeObserver implements ResizeObserver {
+      constructor(private readonly callback: ResizeObserverCallback) {}
+
+      observe(): void {
+        this.callback(
+          [{ contentRect: new DOMRect(0, 0, 780 * fieldScale, 0) } as ResizeObserverEntry],
+          this,
+        );
+      }
+
+      unobserve(): void {}
+
+      disconnect(): void {}
+    }
+
+    vi.stubGlobal('ResizeObserver', ArmyFormationTestResizeObserver);
+    render(<ArmyFormationCreator locale="zh" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole<HTMLButtonElement>('button', { name: pieceName });
+    const battlefieldField = requireArmyFormationField();
+
+    fireEvent.change(screen.getByLabelText('角度'), { target: { value: String(angleDegrees) } });
+    expect(Number(piece.getAttribute('data-rotation-degrees'))).toBeCloseTo(angleDegrees, 5);
+
+    const fieldTopBeforeZoom = readArmyInlinePixelStyle(battlefieldField, 'top');
+    const wheelAnchorMapY = 20;
+    const wheelAnchorClientY = fieldTopBeforeZoom + fieldScale * wheelAnchorMapY;
+    setArmyFormationFieldRect(battlefieldField, {
+      top: fieldTopBeforeZoom,
+      width: 780 * fieldScale,
+      height: 480 * fieldScale,
+    });
+    const zoomEvent = dispatchArmyBattlefieldWheel(requireArmyBattlefieldViewLayer(), {
+      clientX: 0,
+      clientY: wheelAnchorClientY,
+      deltaY: -10000,
+    });
+    const viewTransform = readArmyBattlefieldViewTransform();
+    expect(zoomEvent.defaultPrevented).toBe(true);
+    expect(viewTransform.scale).toBe(8);
+
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const renderedFieldScaleMatch = /^scale\(([^)]+)\)$/.exec(battlefieldField.style.transform);
+    const renderedFieldScale = Number(renderedFieldScaleMatch?.[1]);
+    if (!Number.isFinite(renderedFieldScale) || renderedFieldScale <= 0) {
+      throw new Error(
+        `Battlefield scale must be positive and finite for the zoomed rotation geometry test. Received ${JSON.stringify(battlefieldField.style.transform)}.`,
+      );
+    }
+
+    const renderedMapScale = renderedFieldScale * viewTransform.scale;
+    const fieldTop = readArmyInlinePixelStyle(battlefieldField, 'top');
+    const pieceTop = readArmyInlinePixelStyle(piece, 'top');
+    const pieceWidth = readArmyInlinePixelStyle(piece, 'width');
+    const pieceHeight = readArmyInlinePixelStyle(piece, 'height');
+    const rotationRadians = (angleDegrees * Math.PI) / 180;
+    const rotatedPieceHeight =
+      Math.abs(pieceWidth * Math.sin(rotationRadians))
+      + Math.abs(pieceHeight * Math.cos(rotationRadians));
+    const maximumTopExtensionPx = (Math.hypot(pieceWidth, pieceHeight) - pieceHeight) / 2;
+    const expectedViewportTopGutterPx = 44 + 8 + maximumTopExtensionPx * renderedMapScale;
+    const handleWidth = readArmyInlinePixelStyle(rotationHandle, 'width');
+    const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
+    const viewOffsetY = renderedFieldScale * viewTransform.offsetYPx;
+    const handleScreenBottom = fieldTop + viewOffsetY + (handleTop + handleHeight) * renderedMapScale;
+    const rotatedPieceScreenTop =
+      fieldTop + viewOffsetY + (pieceTop + (pieceHeight - rotatedPieceHeight) / 2) * renderedMapScale;
+    const wheelAnchorScreenYAfterZoom =
+      fieldTop + renderedFieldScale * (viewTransform.offsetYPx + wheelAnchorMapY * viewTransform.scale);
+    const rotationHandleClassNames = [...rotationHandle.classList];
+
+    expect(renderedFieldScale).toBeCloseTo(fieldScale, 5);
+    expect(fieldTop).toBeCloseTo(expectedViewportTopGutterPx, 4);
+    expect(
+      wheelAnchorScreenYAfterZoom,
+      `Zoom anchor moved. ${JSON.stringify({
+        wheelAnchorClientY,
+        wheelAnchorScreenYAfterZoom,
+        fieldTopBeforeZoom,
+        fieldTopAfterZoom: fieldTop,
+        fieldScale: renderedFieldScale,
+        mapZoom: viewTransform.scale,
+        viewOffsetY: viewTransform.offsetYPx,
+      })}`,
+    ).toBeCloseTo(wheelAnchorClientY, 4);
+    expect(handleTop).toBeCloseTo(pieceTop - fieldTop / renderedMapScale, 4);
+    expect(handleWidth * renderedMapScale).toBeCloseTo(44, 2);
+    expect(handleHeight * renderedMapScale).toBeCloseTo(44, 2);
+    expect(readArmyInlinePixelStyle(rotationHandle, 'fontSize') * renderedMapScale).toBeCloseTo(16, 2);
+    expect(rotationHandle.textContent).toBe('↻');
+    expect(rotationHandleClassNames).toContain('bg-transparent');
+    expect(rotationHandleClassNames).toContain('text-black');
+    expect(rotationHandleClassNames.some((className) => className.startsWith('rounded'))).toBe(false);
+    expect(rotationHandleClassNames.some((className) => className === 'border' || className.startsWith('border-')))
+      .toBe(false);
+    expect(rotationHandleClassNames.some((className) => className.startsWith('shadow'))).toBe(false);
+    expect(rotatedPieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(8 - 0.01);
+  });
+
+  it.each([
     { fieldScale: 0.3, display: 'mobile' },
     { fieldScale: 0.5, display: 'mobile' },
     { fieldScale: 1, display: 'desktop' },
@@ -1835,9 +1952,32 @@ describe('ArmyFormationCreator', () => {
   });
 
   it('拖动空白处平移视角，缩放后的棋子拖动只更新地图坐标，新棋子共用同一尺寸视角', () => {
+    class ArmyFormationTestResizeObserver implements ResizeObserver {
+      constructor(private readonly callback: ResizeObserverCallback) {}
+
+      observe(): void {
+        this.callback(
+          [{ contentRect: new DOMRect(0, 0, 390, 0) } as ResizeObserverEntry],
+          this,
+        );
+      }
+
+      unobserve(): void {}
+
+      disconnect(): void {}
+    }
+
+    vi.stubGlobal('ResizeObserver', ArmyFormationTestResizeObserver);
     renderArmyFormationWithStoredBackgrounds(['data:image/webp;base64,initial']);
     const field = requireArmyFormationField();
-    setArmyFormationFieldRect(field, { left: 100, top: 50, width: 390, height: 240 });
+    const fieldScale = 0.5;
+    const fieldTopBeforeZoom = readArmyInlinePixelStyle(field, 'top');
+    setArmyFormationFieldRect(field, {
+      left: 100,
+      top: fieldTopBeforeZoom,
+      width: 780 * fieldScale,
+      height: 480 * fieldScale,
+    });
     const viewLayer = requireArmyBattlefieldViewLayer();
     const setPointerCapture = vi.fn();
     Object.defineProperty(field, 'setPointerCapture', { configurable: true, value: setPointerCapture });
@@ -1855,27 +1995,37 @@ describe('ArmyFormationCreator', () => {
     fireEvent.pointerDown(viewLayer, {
       pointerId: 1,
       clientX: 100,
-      clientY: 50,
+      clientY: fieldTopBeforeZoom,
       button: 0,
       isPrimary: true,
     });
-    fireEvent.pointerMove(field, { pointerId: 1, clientX: 115, clientY: 60 });
+    fireEvent.pointerMove(field, { pointerId: 1, clientX: 115, clientY: fieldTopBeforeZoom + 10 });
     expect(viewLayer.style.transform).toBe('translate(30px, 20px) scale(1)');
     expect(piecePosition(piece)).toBe(pieceMapPositionBeforePan);
-    fireEvent.pointerUp(field, { pointerId: 1, clientX: 115, clientY: 60 });
+    fireEvent.pointerUp(field, { pointerId: 1, clientX: 115, clientY: fieldTopBeforeZoom + 10 });
     expect(setPointerCapture).toHaveBeenCalledWith(1);
 
     const pieceWheelEvent = dispatchArmyBattlefieldWheel(piece, {
       clientX: 115,
-      clientY: 60,
+      clientY: fieldTopBeforeZoom + 10,
       deltaY: -200,
     });
     const zoomedView = readArmyBattlefieldViewTransform();
+    const fieldTopAfterZoom = readArmyInlinePixelStyle(field, 'top');
     expect(pieceWheelEvent.defaultPrevented).toBe(true);
     expect(zoomedView.offsetXPx).toBeCloseTo(30);
-    expect(zoomedView.offsetYPx).toBeCloseTo(20);
     expect(zoomedView.scale).toBeCloseTo(Math.exp(0.4));
+    const wheelAnchorScreenYBeforeZoom = fieldTopBeforeZoom + fieldScale * 20;
+    const wheelAnchorScreenYAfterZoom =
+      fieldTopAfterZoom + fieldScale * zoomedView.offsetYPx;
+    expect(wheelAnchorScreenYAfterZoom).toBeCloseTo(wheelAnchorScreenYBeforeZoom, 5);
     expect(piecePosition(piece)).toBe(pieceMapPositionBeforePan);
+    setArmyFormationFieldRect(field, {
+      left: 100,
+      top: fieldTopAfterZoom,
+      width: 780 * fieldScale,
+      height: 480 * fieldScale,
+    });
 
     const addedPieceName = placeArmyFormationPiece('helmet-01');
     const addedPiece = screen.getByRole<HTMLButtonElement>('button', { name: addedPieceName });
@@ -1895,9 +2045,28 @@ describe('ArmyFormationCreator', () => {
     expect(addedPiece.style.width).toBe(piece.style.width);
     expect(addedPiece.style.height).toBe(piece.style.height);
 
-    fireEvent.pointerDown(piece, { pointerId: 2, clientX: 115, clientY: 60, button: 0 });
-    fireEvent.pointerMove(piece, { pointerId: 2, clientX: 145, clientY: 75, button: 0 });
-    fireEvent.pointerUp(piece, { pointerId: 2, clientX: 145, clientY: 75, button: 0 });
+    const pieceStartX = Number(piece.getAttribute('data-piece-x'));
+    const pieceStartY = Number(piece.getAttribute('data-piece-y'));
+    const piecePointerStartX =
+      100 + fieldScale * (zoomedView.offsetXPx + (pieceStartX + 25) * zoomedView.scale);
+    const piecePointerStartY =
+      fieldTopAfterZoom + fieldScale * (zoomedView.offsetYPx + (pieceStartY + 15) * zoomedView.scale);
+    const mapDragX = 42;
+    const mapDragY = 22;
+    const pointerDragX = mapDragX * fieldScale * zoomedView.scale;
+    const pointerDragY = mapDragY * fieldScale * zoomedView.scale;
+
+    fireEvent.pointerDown(piece, { pointerId: 2, clientX: piecePointerStartX, clientY: piecePointerStartY, button: 0 });
+    fireEvent.pointerMove(piece, {
+      pointerId: 2,
+      clientX: piecePointerStartX + pointerDragX,
+      clientY: piecePointerStartY + pointerDragY,
+    });
+    fireEvent.pointerUp(piece, {
+      pointerId: 2,
+      clientX: piecePointerStartX + pointerDragX,
+      clientY: piecePointerStartY + pointerDragY,
+    });
 
     expect(piecePosition(piece)).toBe('50,30');
     expect(viewLayer.style.transform).toBe(
@@ -1908,28 +2077,34 @@ describe('ArmyFormationCreator', () => {
   it('最大缩放且整张地图移出视口时，新棋子仍落在可见左上角并能继续场外拖动', () => {
     render(<ArmyFormationCreator locale="zh" />);
     const field = requireArmyFormationField();
-    setArmyFormationFieldRect(field);
+    const fieldTopBeforeZoom = readArmyInlinePixelStyle(field, 'top');
+    setArmyFormationFieldRect(field, { top: fieldTopBeforeZoom });
     const viewLayer = requireArmyBattlefieldViewLayer();
 
     dispatchArmyBattlefieldWheel(viewLayer, {
       clientX: 0,
-      clientY: 0,
+      clientY: fieldTopBeforeZoom,
       deltaY: -10000,
     });
-    expect(readArmyBattlefieldViewTransform().scale).toBe(8);
+    const viewAfterZoom = readArmyBattlefieldViewTransform();
+    expect(viewAfterZoom.scale).toBe(8);
+    const fieldTopAfterZoom = readArmyInlinePixelStyle(field, 'top');
+    setArmyFormationFieldRect(field, { top: fieldTopAfterZoom });
 
     fireEvent.pointerDown(viewLayer, {
       pointerId: 41,
       clientX: 0,
-      clientY: 0,
+      clientY: fieldTopAfterZoom,
       button: 0,
       isPrimary: true,
     });
-    fireEvent.pointerMove(field, { pointerId: 41, clientX: 1200, clientY: 1200 });
-    fireEvent.pointerUp(field, { pointerId: 41, clientX: 1200, clientY: 1200 });
+    fireEvent.pointerMove(field, { pointerId: 41, clientX: 1200, clientY: fieldTopAfterZoom + 1200 });
+    fireEvent.pointerUp(field, { pointerId: 41, clientX: 1200, clientY: fieldTopAfterZoom + 1200 });
 
     const transformBeforeAdd = readArmyBattlefieldViewTransform();
-    expect(transformBeforeAdd).toEqual({ offsetXPx: 1200, offsetYPx: 1200, scale: 8 });
+    expect(transformBeforeAdd.offsetXPx).toBe(1200);
+    expect(transformBeforeAdd.offsetYPx).toBeCloseTo(viewAfterZoom.offsetYPx + 1200);
+    expect(transformBeforeAdd.scale).toBe(8);
     expect(transformBeforeAdd.offsetXPx).toBeGreaterThan(780);
     expect(transformBeforeAdd.offsetYPx).toBeGreaterThan(480);
 
@@ -1944,11 +2119,26 @@ describe('ArmyFormationCreator', () => {
     expect(piece.getAttribute('aria-pressed')).toBe('true');
     expect(readArmyBattlefieldViewTransform()).toEqual(transformBeforeAdd);
 
-    fireEvent.pointerDown(piece, { pointerId: 42, clientX: 8, clientY: 8, button: 0 });
-    fireEvent.pointerMove(piece, { pointerId: 42, clientX: 48, clientY: 28, button: 0 });
-    fireEvent.pointerUp(piece, { pointerId: 42, clientX: 48, clientY: 28, button: 0 });
+    fireEvent.pointerDown(piece, {
+      pointerId: 42,
+      clientX: 8,
+      clientY: fieldTopAfterZoom + 8,
+      button: 0,
+    });
+    fireEvent.pointerMove(piece, {
+      pointerId: 42,
+      clientX: 48,
+      clientY: fieldTopAfterZoom + 28,
+      button: 0,
+    });
+    fireEvent.pointerUp(piece, {
+      pointerId: 42,
+      clientX: 48,
+      clientY: fieldTopAfterZoom + 28,
+      button: 0,
+    });
 
-    expect(piecePosition(pieceButtons()[0] as HTMLButtonElement)).toBe('-145,-145');
+    expect(piecePosition(pieceButtons()[0] as HTMLButtonElement)).toBe('-145,-135');
     expect(Number.parseFloat(piece.style.left)).toBeLessThan(0);
     expect(Number.parseFloat(piece.style.top)).toBeLessThan(0);
     expect(readArmyBattlefieldViewTransform()).toEqual(transformBeforeAdd);
@@ -2067,38 +2257,114 @@ describe('ArmyFormationCreator', () => {
   it('无背景时空白和棋子上的滚轮都以鼠标为锚点缩放整个战场', () => {
     render(<ArmyFormationCreator locale="zh" />);
     const field = requireArmyFormationField();
-    setArmyFormationFieldRect(field, { left: 100, top: 50, width: 390, height: 240 });
+    const fieldScale = 1;
+    const fieldTopBeforeZoom = readArmyInlinePixelStyle(field, 'top');
+    setArmyFormationFieldRect(field, {
+      left: 100,
+      top: fieldTopBeforeZoom,
+      width: 780 * fieldScale,
+      height: 480 * fieldScale,
+    });
     const viewLayer = requireArmyBattlefieldViewLayer();
     const pieceName = placeArmyFormationPiece('helmet-01');
     const piece = screen.getByRole<HTMLButtonElement>('button', { name: pieceName });
     const pieceMapPositionBeforeZoom = piecePosition(piece);
     const blankPointBeforeZoom = toArmyFormationMapPoint(readArmyBattlefieldViewTransform(), 120, 80);
+    const blankWheelAnchorClientX = 100 + 120 * fieldScale;
+    const blankWheelAnchorClientY = fieldTopBeforeZoom + 80 * fieldScale;
 
     const zoomEvent = dispatchArmyBattlefieldWheel(viewLayer, {
-      clientX: 160,
-      clientY: 90,
+      clientX: blankWheelAnchorClientX,
+      clientY: blankWheelAnchorClientY,
       deltaY: -10000,
     });
     const maxZoomView = readArmyBattlefieldViewTransform();
+    const fieldTopAfterMaxZoom = readArmyInlinePixelStyle(field, 'top');
     expect(zoomEvent.defaultPrevented).toBe(true);
     expect(maxZoomView.offsetXPx).toBeCloseTo(120 - (120 * 8), 6);
-    expect(maxZoomView.offsetYPx).toBeCloseTo(80 - (80 * 8), 6);
     expect(maxZoomView.scale).toBe(8);
-    const blankPointAfterZoom = toArmyFormationMapPoint(maxZoomView, 120, 80);
+    const blankPointAfterZoom = toArmyFormationMapPoint(
+      maxZoomView,
+      120,
+      (blankWheelAnchorClientY - fieldTopAfterMaxZoom) / fieldScale,
+    );
     expect(blankPointAfterZoom.x).toBeCloseTo(blankPointBeforeZoom.x);
     expect(blankPointAfterZoom.y).toBeCloseTo(blankPointBeforeZoom.y);
     expect(piecePosition(piece)).toBe(pieceMapPositionBeforeZoom);
 
+    const maxZoomAnchorX = 120;
+    const maxZoomAnchorY = 240;
+    const maxZoomAnchorClientY = fieldTopAfterMaxZoom + maxZoomAnchorY * fieldScale;
+    setArmyFormationFieldRect(field, {
+      left: 100,
+      top: fieldTopAfterMaxZoom,
+      width: 780 * fieldScale,
+      height: 480 * fieldScale,
+    });
+    const maxZoomAnchorBeforeNoOp = toArmyFormationMapPoint(maxZoomView, maxZoomAnchorX, maxZoomAnchorY);
+    const maxZoomLimitEvent = dispatchArmyBattlefieldWheel(viewLayer, {
+      clientX: 100 + maxZoomAnchorX * fieldScale,
+      clientY: maxZoomAnchorClientY,
+      deltaY: -100,
+    });
+    const maxZoomLimitView = readArmyBattlefieldViewTransform();
+    const fieldTopAfterMaxZoomNoOp = readArmyInlinePixelStyle(field, 'top');
+    const maxZoomAnchorAfterNoOp = toArmyFormationMapPoint(
+      maxZoomLimitView,
+      maxZoomAnchorX,
+      (maxZoomAnchorClientY - fieldTopAfterMaxZoomNoOp) / fieldScale,
+    );
+    expect(maxZoomLimitEvent.defaultPrevented).toBe(true);
+    expect(maxZoomLimitView.scale).toBe(8);
+    expect(maxZoomAnchorAfterNoOp.x).toBeCloseTo(maxZoomAnchorBeforeNoOp.x);
+    expect(maxZoomAnchorAfterNoOp.y).toBeCloseTo(maxZoomAnchorBeforeNoOp.y);
+
+    const zoomOutAnchorY = 240;
+    const zoomOutAnchorClientY = fieldTopAfterMaxZoomNoOp + zoomOutAnchorY * fieldScale;
+    setArmyFormationFieldRect(field, {
+      left: 100,
+      top: fieldTopAfterMaxZoomNoOp,
+      width: 780 * fieldScale,
+      height: 480 * fieldScale,
+    });
+    const zoomOutAnchorBefore = toArmyFormationMapPoint(maxZoomLimitView, maxZoomAnchorX, zoomOutAnchorY);
+    const zoomOutEvent = dispatchArmyBattlefieldWheel(viewLayer, {
+      clientX: 100 + maxZoomAnchorX * fieldScale,
+      clientY: zoomOutAnchorClientY,
+      deltaY: Math.log(2) / 0.002,
+    });
+    const zoomOutView = readArmyBattlefieldViewTransform();
+    const fieldTopAfterZoomOut = readArmyInlinePixelStyle(field, 'top');
+    const zoomOutAnchorAfter = toArmyFormationMapPoint(
+      zoomOutView,
+      maxZoomAnchorX,
+      (zoomOutAnchorClientY - fieldTopAfterZoomOut) / fieldScale,
+    );
+    expect(zoomOutEvent.defaultPrevented).toBe(true);
+    expect(zoomOutView.scale).toBeCloseTo(4);
+    expect(zoomOutAnchorAfter.x).toBeCloseTo(zoomOutAnchorBefore.x);
+    expect(zoomOutAnchorAfter.y).toBeCloseTo(zoomOutAnchorBefore.y);
+
     fireEvent.click(screen.getByRole('button', { name: '适配整个战场' }));
     expect(viewLayer.style.transform).toBe('translate(0px, 0px) scale(1)');
     expect(piecePosition(piece)).toBe(pieceMapPositionBeforeZoom);
+    const fieldTopAfterReset = readArmyInlinePixelStyle(field, 'top');
+    setArmyFormationFieldRect(field, {
+      left: 100,
+      top: fieldTopAfterReset,
+      width: 780 * fieldScale,
+      height: 480 * fieldScale,
+    });
     const piecePointBeforeZoom = toArmyFormationMapPoint(readArmyBattlefieldViewTransform(), 25, 15);
+    const pieceWheelAnchorClientX = 100 + 25 * fieldScale;
+    const pieceWheelAnchorClientY = fieldTopAfterReset + 15 * fieldScale;
     const pieceWheelEvent = dispatchArmyBattlefieldWheel(piece, {
-      clientX: 112.5,
-      clientY: 57.5,
+      clientX: pieceWheelAnchorClientX,
+      clientY: pieceWheelAnchorClientY,
       deltaY: -100,
     });
     const pieceZoomView = readArmyBattlefieldViewTransform();
+    const fieldTopAfterPieceZoom = readArmyInlinePixelStyle(field, 'top');
     const toolbarWheelEvent = dispatchArmyBattlefieldWheel(
       screen.getByRole('button', { name: '上传图片' }),
       { deltaY: -100 },
@@ -2106,7 +2372,11 @@ describe('ArmyFormationCreator', () => {
     expect(pieceWheelEvent.defaultPrevented).toBe(true);
     expect(toolbarWheelEvent.defaultPrevented).toBe(false);
     expect(pieceZoomView.scale).toBeCloseTo(Math.exp(0.2));
-    const piecePointAfterZoom = toArmyFormationMapPoint(pieceZoomView, 25, 15);
+    const piecePointAfterZoom = toArmyFormationMapPoint(
+      pieceZoomView,
+      25,
+      (pieceWheelAnchorClientY - fieldTopAfterPieceZoom) / fieldScale,
+    );
     expect(piecePointAfterZoom.x).toBeCloseTo(piecePointBeforeZoom.x);
     expect(piecePointAfterZoom.y).toBeCloseTo(piecePointBeforeZoom.y);
   });
