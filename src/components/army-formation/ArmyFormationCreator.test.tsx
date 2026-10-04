@@ -37,6 +37,86 @@ function piecePosition(piece: HTMLButtonElement): string {
   return `${x},${y}`;
 }
 
+function rotationHandleButtons(): HTMLButtonElement[] {
+  return [...document.querySelectorAll('[data-army-rotation-handle]')].map((rotationHandle) => {
+    if (!(rotationHandle instanceof HTMLButtonElement)) {
+      throw new Error(
+        `Army rotation handle is not a button. Received ${rotationHandle.constructor.name}.`,
+      );
+    }
+
+    return rotationHandle;
+  });
+}
+
+function requireRotationHandleForPiece(pieceId: string): HTMLButtonElement {
+  const rotationHandle = rotationHandleButtons().find(
+    (candidate) => candidate.getAttribute('data-piece-id') === pieceId,
+  );
+  if (rotationHandle === undefined) {
+    throw new Error(`Army rotation handle is missing for piece ${JSON.stringify(pieceId)}.`);
+  }
+
+  return rotationHandle;
+}
+
+function mockArmyPieceBounds(
+  piece: HTMLButtonElement,
+  left = 100,
+  top = 100,
+  width = 40,
+  height = 40,
+): void {
+  vi.spyOn(piece, 'getBoundingClientRect').mockReturnValue(
+    new DOMRect(left, top, width, height),
+  );
+}
+
+function mockArmyFieldBoundsForDrag(piece: HTMLElement): void {
+  const battlefieldField = piece.parentElement;
+  if (!(battlefieldField instanceof HTMLElement) || !battlefieldField.hasAttribute('data-army-field')) {
+    throw new Error('Army formation drag target is missing its battlefield field.');
+  }
+
+  const fieldWidth = Number.parseFloat(battlefieldField.style.width);
+  const fieldHeight = Number.parseFloat(battlefieldField.style.height);
+  if (
+    !Number.isFinite(fieldWidth)
+    || fieldWidth <= 0
+    || !Number.isFinite(fieldHeight)
+    || fieldHeight <= 0
+  ) {
+    throw new Error(
+      `Army formation drag field layout must be positive. width=${fieldWidth} height=${fieldHeight}.`,
+    );
+  }
+
+  vi.spyOn(battlefieldField, 'getBoundingClientRect').mockReturnValue(
+    new DOMRect(0, 0, fieldWidth, fieldHeight),
+  );
+}
+
+function readArmyInlinePixelStyle(
+  element: HTMLElement,
+  property: 'left' | 'top' | 'width' | 'height' | 'fontSize' | 'lineHeight' | 'paddingBottom',
+): number {
+  const value = element.style[property];
+  const pixelValue = Number.parseFloat(value);
+  if (!value.endsWith('px') || !Number.isFinite(pixelValue)) {
+    throw new Error(
+      `Army inline ${property} style must be a finite pixel value. Received ${JSON.stringify(value)}.`,
+    );
+  }
+
+  return pixelValue;
+}
+
+function fireLostPointerCapture(target: HTMLButtonElement, pointerId: number): void {
+  const event = new Event('lostpointercapture', { bubbles: true });
+  Object.defineProperty(event, 'pointerId', { value: pointerId });
+  fireEvent(target, event);
+}
+
 function requireHeading(name: string): HTMLElement {
   const heading = [...document.querySelectorAll('h2')].find((node) => node.textContent === name);
   if (!(heading instanceof HTMLElement)) {
@@ -209,6 +289,7 @@ describe('ArmyFormationCreator', () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('英文产品名是 Army formation creator', () => {
@@ -468,6 +549,561 @@ describe('ArmyFormationCreator', () => {
     expect((angleInput as HTMLInputElement).value).toBe('90');
   });
 
+  it('selected pieces expose sibling rotation handles while unselected pieces do not', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const firstPieceName = placeArmyFormationPiece('helmet-01');
+    const secondPieceName = placeArmyFormationPiece('helmet-02');
+    const firstPiece = screen.getByRole('button', { name: firstPieceName });
+    const secondPiece = screen.getByRole('button', { name: secondPieceName });
+
+    expect(rotationHandleButtons()).toHaveLength(0);
+    expect(firstPiece.getAttribute('aria-label')).toBe(firstPieceName);
+    expect(firstPiece.hasAttribute('data-army-piece')).toBe(true);
+    expect(firstPiece.getAttribute('data-piece-x')).not.toBeNull();
+    expect(firstPiece.getAttribute('data-piece-y')).not.toBeNull();
+    expect(firstPiece.getAttribute('data-rotation-degrees')).toBe('0');
+    piecePosition(firstPiece as HTMLButtonElement);
+
+    fireEvent.click(firstPiece);
+    expect(firstPiece.getAttribute('aria-pressed')).toBe('true');
+    expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+      .toEqual([firstPieceName]);
+    const firstHandle = requireRotationHandleForPiece(firstPieceName);
+    expect(firstHandle.getAttribute('aria-label')).toBe('旋转棋子');
+    expect(firstHandle.hasAttribute('data-army-rotation-handle')).toBe(true);
+    expect(firstHandle.parentElement).toBe(firstPiece.parentElement);
+    expect(firstPiece.contains(firstHandle)).toBe(false);
+    expect(secondPiece.getAttribute('aria-pressed')).toBe('false');
+    expect(rotationHandleButtons().some((handle) => handle.getAttribute('data-piece-id') === secondPieceName))
+      .toBe(false);
+
+    fireEvent.click(secondPiece);
+    expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+      .toEqual([firstPieceName, secondPieceName]);
+    fireEvent.click(firstPiece);
+
+    expect(firstPiece.getAttribute('aria-pressed')).toBe('false');
+    expect(secondPiece.getAttribute('aria-pressed')).toBe('true');
+    expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+      .toEqual([secondPieceName]);
+  });
+
+  it.each([
+    {
+      locale: 'en',
+      rotatePieceLabel: 'Rotate piece',
+      rotationHint: 'Drag the ↻ handle above a selected piece to rotate it.',
+    },
+    {
+      locale: 'zh',
+      rotatePieceLabel: '旋转棋子',
+      rotationHint: '拖动选中棋子上方的 ↻ 手柄即可旋转。',
+    },
+  ] as const)('$locale shows the localized rotation handle label and hint', ({
+    locale,
+    rotatePieceLabel,
+    rotationHint,
+  }) => {
+    render(<ArmyFormationCreator locale={locale} />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    fireEvent.click(screen.getByRole('button', { name: pieceName }));
+
+    const rotationHandle = screen.getByRole('button', { name: rotatePieceLabel });
+    expect(rotationHandle.getAttribute('data-army-rotation-handle')).not.toBeNull();
+    expect(rotationHandle.getAttribute('data-piece-id')).toBe(pieceName);
+    expect(screen.getByText(rotationHint)).toBeTruthy();
+  });
+
+  it.each([
+    { fieldScale: 0.3, display: 'mobile' },
+    { fieldScale: 0.5, display: 'mobile' },
+    { fieldScale: 1, display: 'desktop' },
+    { fieldScale: 1.15, display: 'desktop' },
+  ])('keeps the rotation symbol and target geometry at $fieldScale for $display', ({ fieldScale }) => {
+    class ArmyFormationTestResizeObserver implements ResizeObserver {
+      constructor(private readonly callback: ResizeObserverCallback) {}
+
+      observe(): void {
+        this.callback(
+          [{ contentRect: new DOMRect(0, 0, 780 * fieldScale, 0) } as ResizeObserverEntry],
+          this,
+        );
+      }
+
+      unobserve(): void {}
+
+      disconnect(): void {}
+    }
+
+    vi.stubGlobal('ResizeObserver', ArmyFormationTestResizeObserver);
+    render(<ArmyFormationCreator locale="en" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    fireEvent.click(piece);
+
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const battlefieldField = document.querySelector('[data-army-field]');
+    if (!(battlefieldField instanceof HTMLElement)) {
+      throw new Error('Rotation symbol scale test requires the public battlefield field element.');
+    }
+
+    const fieldScaleMatch = /^scale\(([^)]+)\)$/.exec(battlefieldField.style.transform);
+    const renderedFieldScale = Number(fieldScaleMatch?.[1]);
+    if (!Number.isFinite(renderedFieldScale) || renderedFieldScale <= 0) {
+      throw new Error(
+        `Battlefield scale must be positive and finite for the rotation symbol test. Received ${JSON.stringify(battlefieldField.style.transform)}.`,
+      );
+    }
+
+    const symbolFontSizePx = readArmyInlinePixelStyle(rotationHandle, 'fontSize');
+    const symbolLineHeightPx = readArmyInlinePixelStyle(rotationHandle, 'lineHeight');
+    const symbolPaddingBottomPx = readArmyInlinePixelStyle(rotationHandle, 'paddingBottom');
+    const handleWidth = readArmyInlinePixelStyle(rotationHandle, 'width');
+    const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const handleLeft = readArmyInlinePixelStyle(rotationHandle, 'left');
+    const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
+    const fieldTop = readArmyInlinePixelStyle(battlefieldField, 'top');
+    const fieldWidth = readArmyInlinePixelStyle(battlefieldField, 'width');
+    const pieceXText = piece.getAttribute('data-piece-x');
+    if (pieceXText === null || !Number.isFinite(Number(pieceXText))) {
+      throw new Error(`Army piece x must be finite in the scale test. Received ${JSON.stringify(pieceXText)}.`);
+    }
+    const pieceTop = readArmyInlinePixelStyle(piece, 'top');
+    const pieceWidth = readArmyInlinePixelStyle(piece, 'width');
+    const requestedHandleLeft = Number(pieceXText) + pieceWidth / 2 - handleWidth / 2;
+    const expectedHandleLeft = Math.min(
+      Math.max(requestedHandleLeft, 0),
+      fieldWidth - handleWidth,
+    );
+    const rotationHandleClassNames = [...rotationHandle.classList];
+
+    expect(renderedFieldScale).toBeCloseTo(fieldScale, 5);
+    expect(rotationHandle.textContent).toBe('↻');
+    expect(rotationHandleClassNames).toContain('box-border');
+    expect(rotationHandleClassNames).toContain('items-end');
+    expect(rotationHandleClassNames).toContain('bg-transparent');
+    expect(rotationHandleClassNames).toContain('text-black');
+    expect(rotationHandleClassNames).toContain('hover:bg-transparent');
+    expect(rotationHandleClassNames).toContain('focus-visible:outline');
+    expect(rotationHandleClassNames.some((className) => className.startsWith('rounded'))).toBe(false);
+    expect(rotationHandleClassNames.some((className) => className === 'border' || className.startsWith('border-')))
+      .toBe(false);
+    expect(rotationHandleClassNames.some((className) => className.startsWith('shadow'))).toBe(false);
+    expect(rotationHandleClassNames.filter((className) => className.startsWith('hover:')))
+      .toEqual(['hover:bg-transparent']);
+    expect(symbolFontSizePx * renderedFieldScale).toBeCloseTo(16, 2);
+    expect(symbolLineHeightPx * renderedFieldScale).toBeCloseTo(16, 2);
+    expect(symbolPaddingBottomPx * renderedFieldScale).toBeCloseTo(4, 2);
+    expect(handleWidth * renderedFieldScale).toBeGreaterThanOrEqual(44 - 0.01);
+    expect(handleWidth * renderedFieldScale).toBeLessThanOrEqual(44 + 0.01);
+    expect(handleHeight * renderedFieldScale).toBeGreaterThanOrEqual(44 - 0.01);
+    expect(handleHeight * renderedFieldScale).toBeLessThanOrEqual(44 + 0.01);
+    const symbolCenterOffsetFromHandleCenter =
+      handleHeight * renderedFieldScale
+      - symbolPaddingBottomPx * renderedFieldScale
+      - (symbolLineHeightPx * renderedFieldScale) / 2
+      - (handleHeight * renderedFieldScale) / 2;
+    expect(symbolCenterOffsetFromHandleCenter).toBeCloseTo(10, 2);
+    expect(handleLeft).toBeCloseTo(expectedHandleLeft, 4);
+    expect(handleTop).toBeCloseTo(pieceTop - fieldTop / renderedFieldScale, 4);
+
+    const handleScreenBottom = fieldTop + (handleTop + handleHeight) * renderedFieldScale;
+    const pieceScreenTop = fieldTop + pieceTop * renderedFieldScale;
+    expect(pieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(8);
+  });
+
+  it('keeps the top-edge rotation handle visible with an 8px gap at 45 degrees', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    fireEvent.click(piece);
+    expect(piece.style.top).toBe('0px');
+    mockArmyPieceBounds(piece, 100, 100, 50, 30);
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const diagonalOffset = 20 * Math.SQRT1_2;
+
+    fireEvent.pointerDown(rotationHandle, {
+      pointerId: 19,
+      button: 0,
+      clientX: 145,
+      clientY: 115,
+    });
+    fireEvent.pointerMove(rotationHandle, {
+      pointerId: 19,
+      clientX: 125 + diagonalOffset,
+      clientY: 115 + diagonalOffset,
+    });
+    fireEvent.pointerUp(rotationHandle, {
+      pointerId: 19,
+      clientX: 125 + diagonalOffset,
+      clientY: 115 + diagonalOffset,
+    });
+
+    expect(piece.getAttribute('data-rotation-degrees')).toBe('45');
+    expect(piece.style.transform).toBe('rotate(45deg)');
+    expect(piece.style.width).toBe('50px');
+    expect(piece.style.height).toBe('30px');
+
+    const battlefieldField = document.querySelector('[data-army-field]');
+    if (!(battlefieldField instanceof HTMLElement)) {
+      throw new Error('Top-edge rotation geometry test requires the public battlefield field element.');
+    }
+    const fieldScaleMatch = /^scale\(([^)]+)\)$/.exec(battlefieldField.style.transform);
+    const fieldScale = Number(fieldScaleMatch?.[1]);
+    if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
+      throw new Error(
+        `Battlefield scale must be positive and finite for the geometry test. Received ${JSON.stringify(battlefieldField.style.transform)}.`,
+      );
+    }
+
+    const fieldTop = readArmyInlinePixelStyle(battlefieldField, 'top');
+    const fieldWidth = readArmyInlinePixelStyle(battlefieldField, 'width');
+    const fieldHeight = readArmyInlinePixelStyle(battlefieldField, 'height');
+    const pieceTop = readArmyInlinePixelStyle(piece, 'top');
+    const pieceWidth = readArmyInlinePixelStyle(piece, 'width');
+    const pieceHeight = readArmyInlinePixelStyle(piece, 'height');
+    const handleLeft = readArmyInlinePixelStyle(rotationHandle, 'left');
+    const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
+    const handleWidth = readArmyInlinePixelStyle(rotationHandle, 'width');
+    const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const rotationRadians = (45 * Math.PI) / 180;
+    const rotatedPieceHeight =
+      Math.abs(pieceWidth * Math.sin(rotationRadians))
+      + Math.abs(pieceHeight * Math.cos(rotationRadians));
+    const handleScreenLeft = handleLeft * fieldScale;
+    const handleScreenRight = (handleLeft + handleWidth) * fieldScale;
+    const handleScreenTop = fieldTop + handleTop * fieldScale;
+    const handleScreenBottom = fieldTop + (handleTop + handleHeight) * fieldScale;
+    const rotatedPieceScreenTop =
+      fieldTop + (pieceTop + (pieceHeight - rotatedPieceHeight) / 2) * fieldScale;
+
+    expect(handleScreenLeft).toBeGreaterThanOrEqual(0);
+    expect(handleScreenRight).toBeLessThanOrEqual(fieldWidth * fieldScale);
+    expect(handleScreenTop).toBeGreaterThanOrEqual(0);
+    expect(handleScreenBottom).toBeLessThanOrEqual(fieldTop + fieldHeight * fieldScale);
+    expect(rotatedPieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(8);
+  });
+
+  it('dragging a selected rotation handle rotates the piece without moving or deselecting it', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    fireEvent.click(piece);
+    mockArmyPieceBounds(piece);
+    const startingPosition = piecePosition(piece);
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+
+    fireEvent.pointerDown(rotationHandle, {
+      pointerId: 11,
+      button: 0,
+      clientX: 120,
+      clientY: 100,
+    });
+    fireEvent.pointerMove(rotationHandle, { pointerId: 11, clientX: 140, clientY: 120 });
+    fireEvent.pointerUp(rotationHandle, { pointerId: 11, clientX: 140, clientY: 120 });
+
+    const rotatedPiece = screen.getByRole('button', { name: pieceName });
+    expect(rotatedPiece.getAttribute('data-rotation-degrees')).toBe('90');
+    expect(piecePosition(rotatedPiece as HTMLButtonElement)).toBe(startingPosition);
+    expect(rotatedPiece.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('allows another piece to rotate after deleting the piece during an active rotation gesture', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const firstPieceName = placeArmyFormationPiece('helmet-01');
+    const firstPiece = screen.getByRole('button', { name: firstPieceName }) as HTMLButtonElement;
+    fireEvent.click(firstPiece);
+    mockArmyPieceBounds(firstPiece);
+    const firstRotationHandle = requireRotationHandleForPiece(firstPieceName);
+
+    fireEvent.pointerDown(firstRotationHandle, {
+      pointerId: 20,
+      button: 0,
+      clientX: 120,
+      clientY: 100,
+    });
+    fireEvent.click(screen.getByRole('button', { name: '删除所选' }));
+    expect(screen.queryByRole('button', { name: firstPieceName })).toBeNull();
+
+    const secondPieceName = placeArmyFormationPiece('helmet-02');
+    const secondPiece = screen.getByRole('button', { name: secondPieceName }) as HTMLButtonElement;
+    fireEvent.click(secondPiece);
+    mockArmyPieceBounds(secondPiece);
+    const secondRotationHandle = requireRotationHandleForPiece(secondPieceName);
+
+    fireEvent.pointerDown(secondRotationHandle, {
+      pointerId: 21,
+      button: 0,
+      clientX: 120,
+      clientY: 100,
+    });
+    fireEvent.pointerMove(secondRotationHandle, { pointerId: 21, clientX: 140, clientY: 120 });
+    fireEvent.pointerUp(secondRotationHandle, { pointerId: 21, clientX: 140, clientY: 120 });
+
+    const finalRotationDegrees = Number(secondPiece.getAttribute('data-rotation-degrees'));
+    expect(finalRotationDegrees).toBeCloseTo(90, 1);
+  });
+
+  it('allows another piece to rotate after the active battlefield handle unmounts', async () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const firstPieceName = placeArmyFormationPiece('helmet-01');
+    const firstPiece = screen.getByRole('button', { name: firstPieceName }) as HTMLButtonElement;
+    fireEvent.click(firstPiece);
+    mockArmyPieceBounds(firstPiece);
+    const firstRotationHandle = requireRotationHandleForPiece(firstPieceName);
+
+    fireEvent.pointerDown(firstRotationHandle, {
+      pointerId: 22,
+      button: 0,
+      clientX: 120,
+      clientY: 100,
+    });
+    fireEvent.click(screen.getByRole('button', { name: '切换到下一场' }));
+    expect(screen.getByText('战场 2/4', { exact: true })).toBeTruthy();
+    await waitFor(() => {
+      expect(
+        rotationHandleButtons().some((handle) => handle.getAttribute('data-piece-id') === firstPieceName),
+      ).toBe(false);
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: '武器' }));
+    const secondPieceName = placeArmyFormationPiece('weapon-01');
+    const secondPiece = screen.getByRole('button', { name: secondPieceName }) as HTMLButtonElement;
+    fireEvent.click(secondPiece);
+    mockArmyPieceBounds(secondPiece);
+    const secondRotationHandle = requireRotationHandleForPiece(secondPieceName);
+
+    fireEvent.pointerDown(secondRotationHandle, {
+      pointerId: 23,
+      button: 0,
+      clientX: 120,
+      clientY: 100,
+    });
+    fireEvent.pointerMove(secondRotationHandle, { pointerId: 23, clientX: 140, clientY: 120 });
+    fireEvent.pointerUp(secondRotationHandle, { pointerId: 23, clientX: 140, clientY: 120 });
+
+    const finalRotationDegrees = Number(secondPiece.getAttribute('data-rotation-degrees'));
+    expect(finalRotationDegrees).toBeCloseTo(90, 1);
+  });
+
+  it('rotation handle affects only its piece in a multi-selection', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const firstPieceName = placeArmyFormationPiece('helmet-01');
+    const secondPieceName = placeArmyFormationPiece('helmet-02');
+    const firstPiece = screen.getByRole('button', { name: firstPieceName }) as HTMLButtonElement;
+    const secondPiece = screen.getByRole('button', { name: secondPieceName }) as HTMLButtonElement;
+    fireEvent.click(firstPiece);
+    fireEvent.click(secondPiece);
+    mockArmyPieceBounds(firstPiece);
+    const firstStartingPosition = piecePosition(firstPiece);
+    const secondStartingPosition = piecePosition(secondPiece);
+    const rotationHandle = requireRotationHandleForPiece(firstPieceName);
+
+    fireEvent.pointerDown(rotationHandle, {
+      pointerId: 12,
+      button: 0,
+      clientX: 120,
+      clientY: 100,
+    });
+    fireEvent.pointerMove(rotationHandle, { pointerId: 12, clientX: 140, clientY: 120 });
+    fireEvent.pointerUp(rotationHandle, { pointerId: 12, clientX: 140, clientY: 120 });
+
+    const rotatedFirstPiece = screen.getByRole('button', { name: firstPieceName });
+    const unchangedSecondPiece = screen.getByRole('button', { name: secondPieceName });
+    expect(rotatedFirstPiece.getAttribute('data-rotation-degrees')).toBe('90');
+    expect(unchangedSecondPiece.getAttribute('data-rotation-degrees')).toBe('0');
+    expect(piecePosition(rotatedFirstPiece as HTMLButtonElement)).toBe(firstStartingPosition);
+    expect(piecePosition(unchangedSecondPiece as HTMLButtonElement)).toBe(secondStartingPosition);
+    expect(rotatedFirstPiece.getAttribute('aria-pressed')).toBe('true');
+    expect(unchangedSecondPiece.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it.each([
+    {
+      boundary: '180 degree',
+      startX: 20,
+      startY: 119,
+      endX: 20,
+      endY: 121,
+      expectedAdjustment: -1.146,
+    },
+    {
+      boundary: '360 degree',
+      startX: 220,
+      startY: 119,
+      endX: 220,
+      endY: 121,
+      expectedAdjustment: 1.146,
+    },
+  ])('crossing the $boundary pointer boundary does not jump the angle', ({
+    startX,
+    startY,
+    endX,
+    endY,
+    expectedAdjustment,
+  }) => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    fireEvent.click(piece);
+    mockArmyPieceBounds(piece);
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const angleInput = requireArmyFormationInput('角度');
+    expect(piece.getAttribute('data-rotation-degrees')).toBe('0');
+    expect(angleInput.value).toBe('90');
+
+    fireEvent.pointerDown(rotationHandle, {
+      pointerId: 13,
+      button: 0,
+      clientX: startX,
+      clientY: startY,
+    });
+    fireEvent.pointerMove(rotationHandle, { pointerId: 13, clientX: endX, clientY: endY });
+    fireEvent.pointerUp(rotationHandle, { pointerId: 13, clientX: endX, clientY: endY });
+
+    const finalRotation = Number(screen.getByRole('button', { name: pieceName }).getAttribute('data-rotation-degrees'));
+    expect(Number.isFinite(finalRotation)).toBe(true);
+    expect(finalRotation).toBeCloseTo(expectedAdjustment, 2);
+    expect(Number(angleInput.value)).toBeCloseTo(expectedAdjustment, 2);
+  });
+
+  it('keeps accumulating a full turn while the pointer crosses 180 and 360 degrees', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    fireEvent.click(piece);
+    mockArmyPieceBounds(piece);
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const angleInput = requireArmyFormationInput('角度');
+    expect(piece.getAttribute('data-rotation-degrees')).toBe('0');
+    expect(angleInput.value).toBe('90');
+    const pointerMoves = [
+      { clientX: 140, clientY: 119 },
+      { clientX: 140, clientY: 121 },
+      { clientX: 120, clientY: 140 },
+      { clientX: 100, clientY: 121 },
+      { clientX: 100, clientY: 119 },
+      { clientX: 120, clientY: 100 },
+    ];
+
+    fireEvent.pointerDown(rotationHandle, {
+      pointerId: 18,
+      button: 0,
+      clientX: 120,
+      clientY: 100,
+    });
+    for (const pointerMove of pointerMoves) {
+      fireEvent.pointerMove(rotationHandle, { pointerId: 18, ...pointerMove });
+    }
+    fireEvent.pointerUp(rotationHandle, { pointerId: 18, clientX: 120, clientY: 100 });
+
+    const finalRotation = Number(screen.getByRole('button', { name: pieceName }).getAttribute('data-rotation-degrees'));
+    expect(Number.isFinite(finalRotation)).toBe(true);
+    expect(finalRotation).toBeCloseTo(360, 0);
+    expect(Number(angleInput.value)).toBeCloseTo(360, 0);
+  });
+
+  it.each(['pointercancel', 'lostpointercapture'] as const)(
+    '%s stops further rotation after the gesture ends',
+    (endEvent) => {
+      render(<ArmyFormationCreator locale="zh" />);
+      const pieceName = placeArmyFormationPiece('helmet-01');
+      const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+      fireEvent.click(piece);
+      mockArmyPieceBounds(piece);
+      const rotationHandle = requireRotationHandleForPiece(pieceName);
+      const angleInput = requireArmyFormationInput('角度');
+      expect(piece.getAttribute('data-rotation-degrees')).toBe('0');
+      expect(angleInput.value).toBe('90');
+
+      fireEvent.pointerDown(rotationHandle, {
+        pointerId: 14,
+        button: 0,
+        clientX: 120,
+        clientY: 100,
+      });
+      fireEvent.pointerMove(rotationHandle, { pointerId: 14, clientX: 140, clientY: 120 });
+      const rotationBeforeEnd = screen.getByRole('button', { name: pieceName })
+        .getAttribute('data-rotation-degrees');
+      const angleBeforeEnd = angleInput.value;
+      expect(rotationBeforeEnd).toBe('90');
+      expect(angleBeforeEnd).toBe('90');
+
+      if (endEvent === 'pointercancel') {
+        fireEvent.pointerCancel(rotationHandle, { pointerId: 14 });
+      } else {
+        fireLostPointerCapture(rotationHandle, 14);
+      }
+      fireEvent.pointerMove(rotationHandle, { pointerId: 14, clientX: 120, clientY: 140 });
+
+      expect(screen.getByRole('button', { name: pieceName }).getAttribute('data-rotation-degrees'))
+        .toBe(rotationBeforeEnd);
+      expect(requireArmyFormationInput('角度').value).toBe(angleBeforeEnd);
+    },
+  );
+
+  it('ignores rotation pointer events from a different pointer id', () => {
+    render(<ArmyFormationCreator locale="zh" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    fireEvent.click(piece);
+    mockArmyPieceBounds(piece);
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+
+    fireEvent.pointerDown(rotationHandle, {
+      pointerId: 15,
+      button: 0,
+      clientX: 120,
+      clientY: 100,
+    });
+    fireEvent.pointerMove(rotationHandle, { pointerId: 16, clientX: 140, clientY: 120 });
+    fireEvent.pointerUp(rotationHandle, { pointerId: 16, clientX: 140, clientY: 120 });
+    expect(screen.getByRole('button', { name: pieceName }).getAttribute('data-rotation-degrees')).toBe('0');
+    expect(requireArmyFormationInput('角度').value).toBe('90');
+
+    fireEvent.pointerMove(rotationHandle, { pointerId: 15, clientX: 140, clientY: 120 });
+    fireEvent.pointerUp(rotationHandle, { pointerId: 15, clientX: 140, clientY: 120 });
+
+    expect(screen.getByRole('button', { name: pieceName }).getAttribute('data-rotation-degrees')).toBe('90');
+  });
+
+  it('rotation handle deltas merge with the angle input and reset to the original direction', () => {
+    storeArmyFormationPiecesWithSelectedRotation('selected-piece', 'unselected-piece', 35);
+    render(<ArmyFormationCreator locale="zh" />);
+    fireEvent.click(screen.getByRole('button', { name: '回到上次' }));
+
+    const selectedPiece = screen.getByRole('button', { name: 'selected-piece' }) as HTMLButtonElement;
+    const unselectedPiece = screen.getByRole('button', { name: 'unselected-piece' });
+    const angleInput = requireArmyFormationInput('角度');
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('35');
+    expect(unselectedPiece.getAttribute('data-rotation-degrees')).toBe('0');
+
+    fireEvent.change(angleInput, { target: { value: '89' } });
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('124');
+    fireEvent.change(angleInput, { target: { value: '90' } });
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('125');
+
+    mockArmyPieceBounds(selectedPiece);
+    const rotationHandle = requireRotationHandleForPiece('selected-piece');
+    fireEvent.pointerDown(rotationHandle, {
+      pointerId: 17,
+      button: 0,
+      clientX: 120,
+      clientY: 100,
+    });
+    fireEvent.pointerMove(rotationHandle, { pointerId: 17, clientX: 140, clientY: 120 });
+    fireEvent.pointerUp(rotationHandle, { pointerId: 17, clientX: 140, clientY: 120 });
+
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('215');
+    expect(angleInput.value).toBe('180');
+    fireEvent.click(screen.getByRole('button', { name: '重置旋转' }));
+
+    expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('35');
+    expect(unselectedPiece.getAttribute('data-rotation-degrees')).toBe('0');
+    expect(selectedPiece.getAttribute('aria-pressed')).toBe('true');
+    expect(angleInput.value).toBe('90');
+  });
+
   it.each(['en', 'zh'] as const)(
     '%s angle drafts preserve rotation until valid, show errors on blur and reset to the original direction',
     (locale) => {
@@ -610,30 +1246,181 @@ describe('ArmyFormationCreator', () => {
     },
   );
 
+  it.each(['en', 'zh'] as const)(
+    '%s selects an unselected piece when dragging starts and preserves the other selection and rotation',
+    (locale) => {
+      const copy = getArmyFormationCreatorCopy(locale);
+      render(<ArmyFormationCreator locale={locale} />);
+      const selectedPieceName = placeArmyFormationPiece('helmet-01');
+      const draggedPieceName = placeArmyFormationPiece('helmet-02');
+      const selectedPiece = screen.getByRole('button', { name: selectedPieceName }) as HTMLButtonElement;
+      const draggedPiece = screen.getByRole('button', { name: draggedPieceName }) as HTMLButtonElement;
+      fireEvent.click(selectedPiece);
+
+      const angleInput = screen.getByLabelText(copy.angle) as HTMLInputElement;
+      fireEvent.change(angleInput, { target: { value: '35' } });
+      expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('35');
+      expect(draggedPiece.getAttribute('data-rotation-degrees')).toBe('0');
+      expect(selectedPiece.getAttribute('aria-pressed')).toBe('true');
+      expect(draggedPiece.getAttribute('aria-pressed')).toBe('false');
+      expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+        .toEqual([selectedPieceName]);
+
+      mockArmyFieldBoundsForDrag(draggedPiece);
+      fireEvent.pointerDown(draggedPiece, {
+        pointerId: 31,
+        clientX: 50,
+        clientY: 50,
+        button: 0,
+      });
+      fireEvent.pointerMove(draggedPiece, { pointerId: 31, clientX: 53, clientY: 50 });
+
+      expect(selectedPiece.getAttribute('aria-pressed')).toBe('true');
+      expect(draggedPiece.getAttribute('aria-pressed')).toBe('true');
+      expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+        .toEqual([selectedPieceName, draggedPieceName]);
+      expect(angleInput.value).toBe('35');
+      expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('35');
+      expect(draggedPiece.getAttribute('data-rotation-degrees')).toBe('0');
+
+      const positionAtDragStart = piecePosition(draggedPiece);
+      const pieceLeftAtDragStart = Number.parseFloat(draggedPiece.style.left);
+      const pieceTopAtDragStart = Number.parseFloat(draggedPiece.style.top);
+      const handleAtDragStart = requireRotationHandleForPiece(draggedPieceName);
+      const handleLeftAtDragStart = readArmyInlinePixelStyle(handleAtDragStart, 'left');
+      const handleTopAtDragStart = readArmyInlinePixelStyle(handleAtDragStart, 'top');
+      fireEvent.pointerMove(draggedPiece, { pointerId: 31, clientX: 83, clientY: 70 });
+
+      const positionAfterDragMove = piecePosition(draggedPiece);
+      const pieceLeftAfterDragMove = Number.parseFloat(draggedPiece.style.left);
+      const pieceTopAfterDragMove = Number.parseFloat(draggedPiece.style.top);
+      const handleAfterDragMove = requireRotationHandleForPiece(draggedPieceName);
+      expect(positionAfterDragMove).not.toBe(positionAtDragStart);
+      expect(readArmyInlinePixelStyle(handleAfterDragMove, 'left') - handleLeftAtDragStart)
+        .toBe(pieceLeftAfterDragMove - pieceLeftAtDragStart);
+      expect(readArmyInlinePixelStyle(handleAfterDragMove, 'top') - handleTopAtDragStart)
+        .toBe(pieceTopAfterDragMove - pieceTopAtDragStart);
+
+      fireEvent.pointerUp(draggedPiece, { pointerId: 31, clientX: 83, clientY: 70 });
+      expect(selectedPiece.getAttribute('aria-pressed')).toBe('true');
+      expect(draggedPiece.getAttribute('aria-pressed')).toBe('true');
+      expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+        .toEqual([selectedPieceName, draggedPieceName]);
+      fireEvent.click(draggedPiece);
+
+      expect(selectedPiece.getAttribute('aria-pressed')).toBe('true');
+      expect(draggedPiece.getAttribute('aria-pressed')).toBe('true');
+      expect(angleInput.value).toBe('35');
+      expect(selectedPiece.getAttribute('data-rotation-degrees')).toBe('35');
+      expect(draggedPiece.getAttribute('data-rotation-degrees')).toBe('0');
+    },
+  );
+
+  it.each(['en', 'zh'] as const)(
+    '%s keeps an already selected piece selected while it is dragged',
+    (locale) => {
+      render(<ArmyFormationCreator locale={locale} />);
+      const pieceName = placeArmyFormationPiece('helmet-01');
+      const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+      fireEvent.click(piece);
+      mockArmyFieldBoundsForDrag(piece);
+
+      fireEvent.pointerDown(piece, { pointerId: 32, clientX: 10, clientY: 10, button: 0 });
+      fireEvent.pointerMove(piece, { pointerId: 32, clientX: 13, clientY: 10 });
+      expect(piece.getAttribute('aria-pressed')).toBe('true');
+      expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+        .toEqual([pieceName]);
+      fireEvent.pointerMove(piece, { pointerId: 32, clientX: 43, clientY: 30 });
+      expect(piece.getAttribute('aria-pressed')).toBe('true');
+      expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+        .toEqual([pieceName]);
+      fireEvent.pointerUp(piece, { pointerId: 32, clientX: 43, clientY: 30 });
+      fireEvent.click(piece);
+
+      expect(piece.getAttribute('aria-pressed')).toBe('true');
+      expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+        .toEqual([pieceName]);
+    },
+  );
+
+  it.each(['en', 'zh'] as const)(
+    '%s does not auto-select below the drag threshold and ordinary clicks still toggle selection',
+    (locale) => {
+      render(<ArmyFormationCreator locale={locale} />);
+      const pieceName = placeArmyFormationPiece('helmet-01');
+      const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+      mockArmyFieldBoundsForDrag(piece);
+
+      fireEvent.pointerDown(piece, { pointerId: 33, clientX: 10, clientY: 10, button: 0 });
+      fireEvent.pointerMove(piece, { pointerId: 33, clientX: 12, clientY: 11 });
+      expect(piece.getAttribute('aria-pressed')).toBe('false');
+      expect(rotationHandleButtons()).toHaveLength(0);
+      fireEvent.pointerUp(piece, { pointerId: 33, clientX: 12, clientY: 11 });
+      expect(piece.getAttribute('aria-pressed')).toBe('false');
+      expect(rotationHandleButtons()).toHaveLength(0);
+
+      fireEvent.click(piece);
+      expect(piece.getAttribute('aria-pressed')).toBe('true');
+      fireEvent.click(piece);
+      expect(piece.getAttribute('aria-pressed')).toBe('false');
+    },
+  );
+
+  it('a keyboard-activated click toggles a focused piece normally', () => {
+    render(<ArmyFormationCreator locale="en" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    piece.focus();
+    expect(document.activeElement).toBe(piece);
+
+    fireEvent.click(piece, { detail: 0 });
+    expect(piece.getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(piece, { detail: 0 });
+    expect(piece.getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('pointercancel ends a started drag and leaves later keyboard clicks available', () => {
+    render(<ArmyFormationCreator locale="en" />);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
+    mockArmyFieldBoundsForDrag(piece);
+
+    fireEvent.pointerDown(piece, { pointerId: 34, clientX: 10, clientY: 10, button: 0 });
+    fireEvent.pointerMove(piece, { pointerId: 34, clientX: 13, clientY: 10 });
+    expect(piece.getAttribute('aria-pressed')).toBe('true');
+    fireEvent.pointerCancel(piece, { pointerId: 34 });
+    const positionAfterCancel = piecePosition(piece);
+    fireEvent.pointerMove(piece, { pointerId: 34, clientX: 53, clientY: 50 });
+
+    expect(piecePosition(piece)).toBe(positionAfterCancel);
+    expect(piece.getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(piece, { detail: 0 });
+    expect(piece.getAttribute('aria-pressed')).toBe('false');
+    expect(rotationHandleButtons()).toHaveLength(0);
+
+    const positionBeforeNewDrag = piecePosition(piece);
+    fireEvent.pointerDown(piece, { pointerId: 35, clientX: 10, clientY: 10, button: 0 });
+    fireEvent.pointerMove(piece, { pointerId: 35, clientX: 43, clientY: 30 });
+    expect(piecePosition(piece)).not.toBe(positionBeforeNewDrag);
+    expect(piece.getAttribute('aria-pressed')).toBe('true');
+    expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+      .toEqual([pieceName]);
+    fireEvent.pointerUp(piece, { pointerId: 35, clientX: 43, clientY: 30 });
+    expect(piece.getAttribute('aria-pressed')).toBe('true');
+    expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+      .toEqual([pieceName]);
+    fireEvent.click(piece);
+    expect(piece.getAttribute('aria-pressed')).toBe('true');
+    expect(rotationHandleButtons().map((handle) => handle.getAttribute('data-piece-id')))
+      .toEqual([pieceName]);
+  });
+
   it('拖动棋子后位置按格子移动', () => {
     render(<ArmyFormationCreator locale="zh" />);
     const placedPieceName = placeArmyFormationPiece('helmet-01');
     const piece = screen.getByRole('button', { name: placedPieceName });
 
-    const battlefieldField = piece.parentElement;
-    if (!(battlefieldField instanceof HTMLElement)) {
-      throw new Error('Placed army piece is missing its battlefield field in the drag test.');
-    }
-    const battlefieldWidth = Number.parseFloat(battlefieldField.style.width);
-    const battlefieldHeight = Number.parseFloat(battlefieldField.style.height);
-    if (
-      !Number.isFinite(battlefieldWidth)
-      || battlefieldWidth <= 0
-      || !Number.isFinite(battlefieldHeight)
-      || battlefieldHeight <= 0
-    ) {
-      throw new Error(
-        `Army formation drag field layout must be positive. width=${battlefieldWidth} height=${battlefieldHeight}.`,
-      );
-    }
-    vi.spyOn(battlefieldField, 'getBoundingClientRect').mockReturnValue(
-      new DOMRect(0, 0, battlefieldWidth, battlefieldHeight),
-    );
+    mockArmyFieldBoundsForDrag(piece);
 
     fireEvent.pointerDown(piece, { pointerId: 1, clientX: 0, clientY: 0, button: 0 });
     fireEvent.pointerMove(piece, { pointerId: 1, clientX: 40, clientY: 20, button: 0 });

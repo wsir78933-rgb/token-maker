@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode, type RefObject } from 'react';
+import { Fragment, useCallback, useEffect, useId, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode, type RefObject } from 'react';
 
 import {
   readArmyFormationBrowserSave,
@@ -57,6 +57,11 @@ const ARMY_FIELD_WIDTH_PX = 780;
 const ARMY_BATTLEFIELD_SLIDE_DURATION_MS = 280;
 const ARMY_BATTLEFIELD_SLIDE_CLEANUP_DELAY_MS = ARMY_BATTLEFIELD_SLIDE_DURATION_MS + 80;
 const ARMY_DRAG_START_PX = 3;
+const ARMY_ROTATION_HANDLE_SIZE_PX = 44;
+const ARMY_ROTATION_HANDLE_GAP_PX = 8;
+const ARMY_ROTATION_HANDLE_GUTTER_PX = ARMY_ROTATION_HANDLE_SIZE_PX + ARMY_ROTATION_HANDLE_GAP_PX;
+const ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX =
+  (Math.hypot(ARMY_PIECE_WIDTH, ARMY_PIECE_HEIGHT) - ARMY_PIECE_HEIGHT) / 2;
 const ARMY_FORMATION_FILE_NAME = 'army-formation-creator.txt';
 const ARMY_FORMATION_PNG_NAME = 'army-formation-creator.png';
 const DEFAULT_FIELD_BACKGROUND_COLOR = '#ffffff';
@@ -79,6 +84,13 @@ type PieceDragSession = {
   startPieceX: number;
   startPieceY: number;
   moved: boolean;
+};
+
+type PieceRotationSession = {
+  pieceId: string;
+  battlefieldIndex: number;
+  pointerId: number;
+  lastPointerAngleDegrees: number;
 };
 
 type EmptySlot = {
@@ -610,6 +622,131 @@ function capturePiecePointer(target: HTMLButtonElement, pointerId: number): void
   }
 }
 
+function requireArmyRotationPieceButton(
+  rotationHandle: HTMLButtonElement,
+  pieceId: string,
+): HTMLButtonElement {
+  const adjacentPieceButton = rotationHandle.previousElementSibling;
+  const adjacentPieceId = adjacentPieceButton?.getAttribute('aria-label') ?? null;
+  if (
+    !(adjacentPieceButton instanceof HTMLButtonElement) ||
+    !adjacentPieceButton.hasAttribute('data-army-piece') ||
+    adjacentPieceId !== pieceId
+  ) {
+    throw new Error(
+      `Army rotation handle for piece id ${JSON.stringify(pieceId)} requires its adjacent piece button. Received tag=${JSON.stringify(adjacentPieceButton?.tagName ?? null)} aria-label=${JSON.stringify(adjacentPieceId)}.`,
+    );
+  }
+
+  return adjacentPieceButton;
+}
+
+function readArmyRotationHandleTopGutterPx(fieldScale: number): number {
+  if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
+    throw new Error(`Army rotation handle field scale must be positive and finite. Received ${fieldScale}.`);
+  }
+
+  const topGutterPx =
+    ARMY_ROTATION_HANDLE_GUTTER_PX + ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX * fieldScale;
+  if (!Number.isFinite(topGutterPx)) {
+    throw new Error(`Army rotation handle top gutter must be finite. Received ${topGutterPx}.`);
+  }
+
+  return topGutterPx;
+}
+
+function readArmyRotationHandleLeftPx(pieceX: number, handleSizeInFieldPx: number): number {
+  if (!Number.isFinite(pieceX)) {
+    throw new Error(`Army rotation handle piece x must be finite. Received ${pieceX}.`);
+  }
+  if (!Number.isFinite(handleSizeInFieldPx) || handleSizeInFieldPx <= 0) {
+    throw new Error(
+      `Army rotation handle field width must be positive and finite. Received ${handleSizeInFieldPx}.`,
+    );
+  }
+
+  const maximumLeftPx = ARMY_FIELD_WIDTH_PX - handleSizeInFieldPx;
+  if (maximumLeftPx < 0) {
+    throw new Error(
+      `Army rotation handle does not fit within the field. fieldWidthPx=${ARMY_FIELD_WIDTH_PX} handleWidthPx=${handleSizeInFieldPx}.`,
+    );
+  }
+
+  const requestedLeftPx = pieceX + ARMY_PIECE_WIDTH / 2 - handleSizeInFieldPx / 2;
+  if (!Number.isFinite(requestedLeftPx)) {
+    throw new Error(`Army rotation handle centered left must be finite. Received ${requestedLeftPx}.`);
+  }
+
+  return Math.min(Math.max(requestedLeftPx, 0), maximumLeftPx);
+}
+
+function readArmyRotationPointerAngleDegrees(
+  pieceButton: HTMLButtonElement,
+  event: PointerEvent<HTMLButtonElement>,
+): number | null {
+  if (!Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) {
+    throw new Error(
+      `Army rotation pointer coordinates must be finite. clientX=${event.clientX} clientY=${event.clientY}.`,
+    );
+  }
+
+  const pieceBounds = pieceButton.getBoundingClientRect();
+  if (
+    !Number.isFinite(pieceBounds.left) ||
+    !Number.isFinite(pieceBounds.top) ||
+    !Number.isFinite(pieceBounds.width) ||
+    !Number.isFinite(pieceBounds.height) ||
+    pieceBounds.width <= 0 ||
+    pieceBounds.height <= 0
+  ) {
+    throw new Error(
+      `Army rotation piece bounds must be finite and positive. left=${pieceBounds.left} top=${pieceBounds.top} width=${pieceBounds.width} height=${pieceBounds.height}.`,
+    );
+  }
+
+  const pieceCenterX = pieceBounds.left + pieceBounds.width / 2;
+  const pieceCenterY = pieceBounds.top + pieceBounds.height / 2;
+  const pointerOffsetX = event.clientX - pieceCenterX;
+  const pointerOffsetY = event.clientY - pieceCenterY;
+  if (!Number.isFinite(pieceCenterX) || !Number.isFinite(pieceCenterY)) {
+    throw new Error(
+      `Army rotation piece center must be finite. centerX=${pieceCenterX} centerY=${pieceCenterY}.`,
+    );
+  }
+  if (!Number.isFinite(pointerOffsetX) || !Number.isFinite(pointerOffsetY)) {
+    throw new Error(
+      `Army rotation pointer offsets must be finite. offsetX=${pointerOffsetX} offsetY=${pointerOffsetY}.`,
+    );
+  }
+  if (pointerOffsetX === 0 && pointerOffsetY === 0) {
+    return null;
+  }
+
+  const angleDegrees = Math.atan2(pointerOffsetY, pointerOffsetX) * (180 / Math.PI);
+  if (!Number.isFinite(angleDegrees)) {
+    throw new Error(
+      `Army rotation pointer angle must be finite. angleDegrees=${angleDegrees} clientX=${event.clientX} clientY=${event.clientY}.`,
+    );
+  }
+
+  return angleDegrees;
+}
+
+function readShortestArmyRotationDeltaDegrees(previousAngleDegrees: number, nextAngleDegrees: number): number {
+  const rawDeltaDegrees = nextAngleDegrees - previousAngleDegrees;
+  if (!Number.isFinite(rawDeltaDegrees)) {
+    throw new Error(
+      `Army rotation angle change must be finite. previous=${previousAngleDegrees} next=${nextAngleDegrees}.`,
+    );
+  }
+
+  return ((rawDeltaDegrees + 540) % 360) - 180;
+}
+
+function formatArmyRotationAdjustment(degrees: number): string {
+  return String(Number(degrees.toFixed(3)));
+}
+
 async function readArmyFormationFile(file: File): Promise<ArmyFormationDocument> {
   const serialized = await file.text();
   if (typeof serialized !== 'string') {
@@ -1058,6 +1195,7 @@ function ArmyFormationPieceControls({
           {copy.resetSelectedRotation}
         </button>
       </div>
+      <p className="text-xs text-[var(--site-ink)]">{copy.rotationHint}</p>
     </ArmyFormationControlGroup>
   );
 }
@@ -1353,6 +1491,65 @@ function ArmyFormationPieceButton({
   );
 }
 
+function ArmyFormationRotationHandleButton({
+  copy,
+  piece,
+  fieldScale,
+  rotationHandleTopGutterPx,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
+  onPointerCancel,
+  onLostPointerCapture,
+}: {
+  copy: ArmyFormationCreatorCopy;
+  piece: ArmyFormationPiece;
+  fieldScale: number;
+  rotationHandleTopGutterPx: number;
+  onPointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onPointerMove: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onPointerUp: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onPointerCancel: (event: PointerEvent<HTMLButtonElement>) => void;
+  onLostPointerCapture: (event: PointerEvent<HTMLButtonElement>) => void;
+}) {
+  if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
+    throw new Error(`Army rotation handle field scale must be positive and finite. Received ${fieldScale}.`);
+  }
+
+  const handleSizeInField = ARMY_ROTATION_HANDLE_SIZE_PX / fieldScale;
+  const rotationHandleSymbolFontSizePx = 16 / fieldScale;
+  const rotationHandleSymbolPaddingBottomPx = 4 / fieldScale;
+  return (
+    <button
+      type="button"
+      data-army-rotation-handle=""
+      data-piece-id={piece.id}
+      aria-label={copy.rotatePiece}
+      className="absolute z-30 box-border flex cursor-grab touch-none select-none items-end justify-center bg-transparent text-black hover:bg-transparent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)] active:cursor-grabbing"
+      style={{
+        left: readArmyRotationHandleLeftPx(piece.x, handleSizeInField),
+        top: piece.y - rotationHandleTopGutterPx / fieldScale,
+        width: handleSizeInField,
+        height: handleSizeInField,
+        fontSize: rotationHandleSymbolFontSizePx,
+        lineHeight: `${rotationHandleSymbolFontSizePx}px`,
+        paddingBottom: rotationHandleSymbolPaddingBottomPx,
+      }}
+      onPointerDown={(event) => onPointerDown(event, piece)}
+      onPointerMove={(event) => onPointerMove(event, piece)}
+      onPointerUp={(event) => onPointerUp(event, piece)}
+      onPointerCancel={onPointerCancel}
+      onLostPointerCapture={onLostPointerCapture}
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+      }}
+    >
+      ↻
+    </button>
+  );
+}
+
 function ArmyFormationEmptySlot({ slot, label }: { slot: EmptySlot; label: string }) {
   return (
     <div
@@ -1430,21 +1627,33 @@ function ArmyFormationBattlefieldCanvas({
   battlefield,
   emptySlot,
   fieldScale,
+  rotationHandleTopGutterPx,
   onPiecePointerDown,
   onPiecePointerMove,
   onPiecePointerUp,
   onPiecePointerCancel,
   onPieceClick,
+  onRotationPointerDown,
+  onRotationPointerMove,
+  onRotationPointerUp,
+  onRotationPointerCancel,
+  onRotationLostPointerCapture,
 }: {
   copy: ArmyFormationCreatorCopy;
   battlefield: ArmyBattlefield;
   emptySlot: EmptySlot | null;
   fieldScale: number;
+  rotationHandleTopGutterPx: number;
   onPiecePointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onPiecePointerMove: (event: PointerEvent<HTMLButtonElement>) => void;
   onPiecePointerUp: (event: PointerEvent<HTMLButtonElement>) => void;
   onPiecePointerCancel: (event: PointerEvent<HTMLButtonElement>) => void;
   onPieceClick: (pieceId: string) => void;
+  onRotationPointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onRotationPointerMove: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onRotationPointerUp: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onRotationPointerCancel: (event: PointerEvent<HTMLButtonElement>) => void;
+  onRotationLostPointerCapture: (event: PointerEvent<HTMLButtonElement>) => void;
 }) {
   return (
     <div
@@ -1454,6 +1663,7 @@ function ArmyFormationBattlefieldCanvas({
       style={{
         width: ARMY_FIELD_WIDTH_PX,
         height: battlefield.heightPx,
+        top: rotationHandleTopGutterPx,
         backgroundColor: battlefield.fieldBackgroundColor,
         transform: `scale(${fieldScale})`,
         transformOrigin: 'top left',
@@ -1469,18 +1679,35 @@ function ArmyFormationBattlefieldCanvas({
         />
       ) : null}
       {emptySlot !== null ? <ArmyFormationEmptySlot slot={emptySlot} label={copy.emptySlot} /> : null}
-      {battlefield.pieces.map((piece) => (
-        <ArmyFormationPieceButton
-          key={piece.id}
-          piece={piece}
-          selected={battlefield.selectedPieceIds.includes(piece.id)}
-          onPointerDown={onPiecePointerDown}
-          onPointerMove={onPiecePointerMove}
-          onPointerUp={onPiecePointerUp}
-          onPointerCancel={onPiecePointerCancel}
-          onClick={onPieceClick}
-        />
-      ))}
+      {battlefield.pieces.map((piece) => {
+        const selected = battlefield.selectedPieceIds.includes(piece.id);
+        return (
+          <Fragment key={piece.id}>
+            <ArmyFormationPieceButton
+              piece={piece}
+              selected={selected}
+              onPointerDown={onPiecePointerDown}
+              onPointerMove={onPiecePointerMove}
+              onPointerUp={onPiecePointerUp}
+              onPointerCancel={onPiecePointerCancel}
+              onClick={onPieceClick}
+            />
+            {selected ? (
+              <ArmyFormationRotationHandleButton
+                copy={copy}
+                piece={piece}
+                fieldScale={fieldScale}
+                rotationHandleTopGutterPx={rotationHandleTopGutterPx}
+                onPointerDown={onRotationPointerDown}
+                onPointerMove={onRotationPointerMove}
+                onPointerUp={onRotationPointerUp}
+                onPointerCancel={onRotationPointerCancel}
+                onLostPointerCapture={onRotationLostPointerCapture}
+              />
+            ) : null}
+          </Fragment>
+        );
+      })}
     </div>
   );
 }
@@ -1507,6 +1734,11 @@ function ArmyFormationBattlefieldPane({
   onPiecePointerUp,
   onPiecePointerCancel,
   onPieceClick,
+  onRotationPointerDown,
+  onRotationPointerMove,
+  onRotationPointerUp,
+  onRotationPointerCancel,
+  onRotationLostPointerCapture,
 }: {
   copy: ArmyFormationCreatorCopy;
   battlefield: ArmyBattlefield;
@@ -1529,6 +1761,11 @@ function ArmyFormationBattlefieldPane({
   onPiecePointerUp: (event: PointerEvent<HTMLButtonElement>) => void;
   onPiecePointerCancel: (event: PointerEvent<HTMLButtonElement>) => void;
   onPieceClick: (pieceId: string) => void;
+  onRotationPointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onRotationPointerMove: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onRotationPointerUp: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
+  onRotationPointerCancel: (event: PointerEvent<HTMLButtonElement>) => void;
+  onRotationLostPointerCapture: (event: PointerEvent<HTMLButtonElement>) => void;
 }) {
   const fieldViewportRef = useRef<HTMLDivElement | null>(null);
   const [fieldViewportWidth, setFieldViewportWidth] = useState(ARMY_FIELD_WIDTH_PX);
@@ -1590,7 +1827,8 @@ function ArmyFormationBattlefieldPane({
   }, [movingSlideId, onSlideFinished, slideId]);
 
   const fieldScale = fieldViewportWidth > 0 ? fieldViewportWidth / ARMY_FIELD_WIDTH_PX : 1;
-  const renderedFieldHeight = battlefield.heightPx * fieldScale;
+  const rotationHandleTopGutterPx = readArmyRotationHandleTopGutterPx(fieldScale);
+  const renderedFieldHeight = battlefield.heightPx * fieldScale + rotationHandleTopGutterPx;
   const slideIsMoving = slide !== null && movingSlideId === slide.id;
   const outgoingOffset = slide === null || !slideIsMoving ? 0 : -slide.direction * 100;
   const incomingOffset = slide === null ? 0 : slideIsMoving ? 0 : slide.direction * 100;
@@ -1621,11 +1859,17 @@ function ArmyFormationBattlefieldPane({
               battlefield={battlefield}
               emptySlot={emptySlot}
               fieldScale={fieldScale}
+              rotationHandleTopGutterPx={rotationHandleTopGutterPx}
               onPiecePointerDown={onPiecePointerDown}
               onPiecePointerMove={onPiecePointerMove}
               onPiecePointerUp={onPiecePointerUp}
               onPiecePointerCancel={onPiecePointerCancel}
               onPieceClick={onPieceClick}
+              onRotationPointerDown={onRotationPointerDown}
+              onRotationPointerMove={onRotationPointerMove}
+              onRotationPointerUp={onRotationPointerUp}
+              onRotationPointerCancel={onRotationPointerCancel}
+              onRotationLostPointerCapture={onRotationLostPointerCapture}
             />
           ) : (
             <>
@@ -1641,11 +1885,17 @@ function ArmyFormationBattlefieldPane({
                   battlefield={slide.outgoingBattlefield}
                   emptySlot={slide.outgoingEmptySlot}
                   fieldScale={fieldScale}
+                  rotationHandleTopGutterPx={rotationHandleTopGutterPx}
                   onPiecePointerDown={onPiecePointerDown}
                   onPiecePointerMove={onPiecePointerMove}
                   onPiecePointerUp={onPiecePointerUp}
                   onPiecePointerCancel={onPiecePointerCancel}
                   onPieceClick={onPieceClick}
+                  onRotationPointerDown={onRotationPointerDown}
+                  onRotationPointerMove={onRotationPointerMove}
+                  onRotationPointerUp={onRotationPointerUp}
+                  onRotationPointerCancel={onRotationPointerCancel}
+                  onRotationLostPointerCapture={onRotationLostPointerCapture}
                 />
               </div>
               <div
@@ -1660,11 +1910,17 @@ function ArmyFormationBattlefieldPane({
                   battlefield={battlefield}
                   emptySlot={emptySlot}
                   fieldScale={fieldScale}
+                  rotationHandleTopGutterPx={rotationHandleTopGutterPx}
                   onPiecePointerDown={onPiecePointerDown}
                   onPiecePointerMove={onPiecePointerMove}
                   onPiecePointerUp={onPiecePointerUp}
                   onPiecePointerCancel={onPiecePointerCancel}
                   onPieceClick={onPieceClick}
+                  onRotationPointerDown={onRotationPointerDown}
+                  onRotationPointerMove={onRotationPointerMove}
+                  onRotationPointerUp={onRotationPointerUp}
+                  onRotationPointerCancel={onRotationPointerCancel}
+                  onRotationLostPointerCapture={onRotationLostPointerCapture}
                 />
               </div>
             </>
@@ -1755,6 +2011,7 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   const backgroundImageInputRef = useRef<HTMLInputElement | null>(null);
   const autoAppliedRotationByBattlefieldRef = useRef(new Map<number, Map<string, number>>());
   const pieceDragRef = useRef<PieceDragSession | null>(null);
+  const pieceRotationRef = useRef<PieceRotationSession | null>(null);
   const suppressClickRef = useRef(false);
   const armyFormationAutosaveOpenRef = useRef(false);
   const battlefieldSlideSequenceRef = useRef(0);
@@ -1778,7 +2035,26 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     startupStore.publishRecord({ status: 'absent' });
   }
 
+  function clearInvalidArmyFormationRotationSession(nextDocument: ArmyFormationDocument): void {
+    const rotationSession = pieceRotationRef.current;
+    if (rotationSession === null) {
+      return;
+    }
+    if (nextDocument.activeBattlefieldIndex !== rotationSession.battlefieldIndex) {
+      pieceRotationRef.current = null;
+      return;
+    }
+
+    const nextBattlefield = readActiveBattlefield(nextDocument);
+    const targetPieceExists = nextBattlefield.pieces.some((piece) => piece.id === rotationSession.pieceId);
+    const targetPieceIsSelected = nextBattlefield.selectedPieceIds.includes(rotationSession.pieceId);
+    if (!targetPieceExists || !targetPieceIsSelected) {
+      pieceRotationRef.current = null;
+    }
+  }
+
   function commitArmyFormationDocument(next: ArmyFormationDocument) {
+    clearInvalidArmyFormationRotationSession(next);
     armyDocumentRef.current = next;
     setArmyDocument(next);
     if (!armyFormationAutosaveOpenRef.current) {
@@ -2216,10 +2492,16 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     }
 
     reportArmyFormationAction(() => {
+      const currentDocument = armyDocumentRef.current;
+      const currentBattlefield = readActiveBattlefield(currentDocument);
+      const documentWithSelectedDraggedPiece =
+        drag.moved && !currentBattlefield.selectedPieceIds.includes(drag.pieceId)
+          ? toggleArmyFormationPieceSelection(currentDocument, drag.pieceId)
+          : currentDocument;
       const fieldScale = readArmyFieldScaleFromPieceButton(event.currentTarget);
       commitArmyFormationDocument(
         moveDraggedArmyFormationPiece(
-          armyDocument,
+          documentWithSelectedDraggedPiece,
           drag.pieceId,
           drag.startPieceX + deltaX / fieldScale,
           drag.startPieceY + deltaY / fieldScale,
@@ -2229,14 +2511,140 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     });
   }
 
-  function finishPiecePointer(event: PointerEvent<HTMLButtonElement>) {
+  function finishPiecePointer(
+    event: PointerEvent<HTMLButtonElement>,
+    suppressClickAfterFinish: boolean,
+  ) {
     const drag = pieceDragRef.current;
     if (drag === null || drag.pointerId !== event.pointerId) {
       return;
     }
 
-    suppressClickRef.current = drag.moved;
+    suppressClickRef.current = suppressClickAfterFinish && drag.moved;
     pieceDragRef.current = null;
+  }
+
+  function onRotationPointerDown(event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) {
+    event.stopPropagation();
+    if (event.button !== 0 || pieceRotationRef.current !== null) {
+      return;
+    }
+
+    reportArmyFormationAction(() => {
+      const currentDocument = armyDocumentRef.current;
+      if (!readActiveBattlefield(currentDocument).selectedPieceIds.includes(piece.id)) {
+        return;
+      }
+
+      const pieceButton = requireArmyRotationPieceButton(event.currentTarget, piece.id);
+      const pointerAngleDegrees = readArmyRotationPointerAngleDegrees(pieceButton, event);
+      if (pointerAngleDegrees === null) {
+        return;
+      }
+
+      const battlefieldIndex = currentDocument.activeBattlefieldIndex;
+      capturePiecePointer(event.currentTarget, event.pointerId);
+      pieceRotationRef.current = {
+        pieceId: piece.id,
+        battlefieldIndex,
+        pointerId: event.pointerId,
+        lastPointerAngleDegrees: pointerAngleDegrees,
+      };
+    });
+  }
+
+  function onRotationPointerMove(event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) {
+    const rotation = pieceRotationRef.current;
+    if (rotation === null || rotation.pointerId !== event.pointerId || rotation.pieceId !== piece.id) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    reportArmyFormationAction(() => {
+      const pieceButton = requireArmyRotationPieceButton(event.currentTarget, piece.id);
+      const pointerAngleDegrees = readArmyRotationPointerAngleDegrees(pieceButton, event);
+      if (pointerAngleDegrees === null) {
+        return;
+      }
+
+      const rotationDeltaDegrees = readShortestArmyRotationDeltaDegrees(
+        rotation.lastPointerAngleDegrees,
+        pointerAngleDegrees,
+      );
+      rotation.lastPointerAngleDegrees = pointerAngleDegrees;
+      if (rotationDeltaDegrees === 0) {
+        return;
+      }
+
+      const currentDocument = armyDocumentRef.current;
+      if (currentDocument.activeBattlefieldIndex !== rotation.battlefieldIndex) {
+        pieceRotationRef.current = null;
+        return;
+      }
+
+      const previousAppliedRotationByPieceId =
+        autoAppliedRotationByBattlefieldRef.current.get(rotation.battlefieldIndex) ?? new Map<string, number>();
+      const previousAdjustmentDegrees = previousAppliedRotationByPieceId.get(piece.id) ?? 0;
+      const nextAdjustmentDegrees = previousAdjustmentDegrees + rotationDeltaDegrees;
+      if (!Number.isFinite(nextAdjustmentDegrees)) {
+        throw new Error(
+          `Army piece rotation adjustment must be finite. pieceId=${JSON.stringify(piece.id)} previous=${previousAdjustmentDegrees} delta=${rotationDeltaDegrees}.`,
+        );
+      }
+
+      const nextDocument = rotateArmyFormationPiecesByIds(
+        currentDocument,
+        [piece.id],
+        rotationDeltaDegrees,
+      );
+      if (nextDocument === currentDocument) {
+        return;
+      }
+
+      const nextAppliedRotationByPieceId = new Map(previousAppliedRotationByPieceId);
+      if (nextAdjustmentDegrees === 0) {
+        nextAppliedRotationByPieceId.delete(piece.id);
+      } else {
+        nextAppliedRotationByPieceId.set(piece.id, nextAdjustmentDegrees);
+      }
+      if (nextAppliedRotationByPieceId.size === 0) {
+        autoAppliedRotationByBattlefieldRef.current.delete(rotation.battlefieldIndex);
+      } else {
+        autoAppliedRotationByBattlefieldRef.current.set(
+          rotation.battlefieldIndex,
+          nextAppliedRotationByPieceId,
+        );
+      }
+
+      setAngleText(formatArmyRotationAdjustment(nextAdjustmentDegrees));
+      setAngleInputErrorMessage(null);
+      commitArmyFormationDocument(nextDocument);
+    });
+  }
+
+  function finishRotationPointer(pointerId: number): void {
+    const rotation = pieceRotationRef.current;
+    if (rotation === null || rotation.pointerId !== pointerId) {
+      return;
+    }
+
+    pieceRotationRef.current = null;
+  }
+
+  function onRotationPointerUp(event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) {
+    onRotationPointerMove(event, piece);
+    finishRotationPointer(event.pointerId);
+  }
+
+  function onRotationPointerCancel(event: PointerEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    finishRotationPointer(event.pointerId);
+  }
+
+  function onRotationLostPointerCapture(event: PointerEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    finishRotationPointer(event.pointerId);
   }
 
   function onPieceClick(pieceId: string) {
@@ -2327,9 +2735,14 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
           onSlideFinished={finishBattlefieldSlide}
           onPiecePointerDown={onPiecePointerDown}
           onPiecePointerMove={onPiecePointerMove}
-          onPiecePointerUp={finishPiecePointer}
-          onPiecePointerCancel={finishPiecePointer}
+          onPiecePointerUp={(event) => finishPiecePointer(event, true)}
+          onPiecePointerCancel={(event) => finishPiecePointer(event, false)}
           onPieceClick={onPieceClick}
+          onRotationPointerDown={onRotationPointerDown}
+          onRotationPointerMove={onRotationPointerMove}
+          onRotationPointerUp={onRotationPointerUp}
+          onRotationPointerCancel={onRotationPointerCancel}
+          onRotationLostPointerCapture={onRotationLostPointerCapture}
         />
       </div>
       </div>
