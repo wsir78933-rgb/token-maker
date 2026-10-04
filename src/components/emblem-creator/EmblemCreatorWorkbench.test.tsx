@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, createEvent, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { EmblemCreatorWorkbench } from '@/components/emblem-creator/EmblemCreatorWorkbench';
@@ -105,7 +105,7 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     render(<EmblemCreatorWorkbench locale={locale} copy={copy} />);
     expect(screen.getByText(copy.noSelection)).toBeTruthy();
     expect(screen.getByText(copy.properties.emptySelection)).toBeTruthy();
-    expect((screen.getByLabelText(copy.properties.showEditBounds) as HTMLInputElement).checked).toBe(false);
+    expect((screen.getByLabelText(copy.properties.showEditBounds) as HTMLInputElement).checked).toBe(true);
     expect(within(screen.getByRole('region', { name: copy.panels.layers })).queryAllByRole('listitem')).toHaveLength(0);
     const tabs = screen.getAllByRole('tab');
     expect(tabs.map((tab) => tab.textContent)).toEqual(Object.values(copy.panels));
@@ -122,6 +122,72 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     expect(document.activeElement).toBe(tabs[2]);
     expect(within(screen.getByRole('region', { name: copy.panels.layers })).queryAllByRole('listitem')).toHaveLength(0);
     expect(canvasElementIds(locale)).toEqual([]);
+  });
+
+  it.each(['Delete', 'Backspace'] as const)('deletes only the selected element with %s in the editor', (key) => {
+    const copy = getEmblemCreatorCopy('en');
+    render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
+    clickAsset('rff-emblems-1');
+    chooseCategory('detail');
+    clickAsset('rff-detail-1');
+    const beforeDeletion = canvasElementIds();
+    const selectedElement = canvas().querySelector('[aria-pressed="true"]');
+    if (!selectedElement) throw new Error('Expected a selected canvas element before keyboard deletion.');
+    const selectedElementId = selectedElement.getAttribute('data-element-id');
+    if (!selectedElementId) throw new Error('Expected the selected canvas element to expose its ID.');
+
+    const keydown = createEvent.keyDown(selectedElement, { key });
+    fireEvent(selectedElement, keydown);
+
+    expect(keydown.defaultPrevented).toBe(true);
+    expect(canvasElementIds()).toEqual(beforeDeletion.filter((elementId) => elementId !== selectedElementId));
+    expect(screen.getByText(copy.noSelection)).toBeTruthy();
+  });
+
+  it('does not delete from editing targets, composing input, modified keys, or an empty selection', () => {
+    const copy = getEmblemCreatorCopy('en');
+    render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
+    const emptyCanvas = canvas();
+    const emptyDeletion = createEvent.keyDown(emptyCanvas, { key: 'Delete' });
+    fireEvent(emptyCanvas, emptyDeletion);
+    expect(emptyDeletion.defaultPrevented).toBe(false);
+
+    clickAsset('rff-emblems-1');
+    const originalIds = canvasElementIds();
+    const editor = screen.getByRole('region', { name: copy.editorTitle });
+    const textArea = document.createElement('textarea');
+    const select = document.createElement('select');
+    const contentEditable = document.createElement('div');
+    contentEditable.setAttribute('contenteditable', 'true');
+    editor.append(textArea, select, contentEditable);
+
+    const editingTargets: Element[] = [screen.getByLabelText(copy.properties.x), textArea, select, contentEditable];
+    for (const target of editingTargets) fireEvent.keyDown(target, { key: 'Delete' });
+    const selectedElement = canvas().querySelector('[aria-pressed="true"]')!;
+    fireEvent.keyDown(selectedElement, { key: 'Delete', ctrlKey: true });
+    fireEvent.keyDown(selectedElement, { key: 'Backspace', metaKey: true });
+    fireEvent.keyDown(selectedElement, { key: 'Delete', altKey: true });
+    fireEvent.keyDown(selectedElement, { key: 'Backspace', shiftKey: true });
+    fireEvent.keyDown(selectedElement, { key: 'Delete', isComposing: true });
+
+    expect(canvasElementIds()).toEqual(originalIds);
+  });
+
+  it('does not delete while the editor is busy with an export', async () => {
+    const copy = getEmblemCreatorCopy('en');
+    let finishExport!: (blob: Blob) => void;
+    vi.mocked(exportEmblemProjectPng).mockReturnValueOnce(new Promise((resolve) => { finishExport = resolve; }));
+    render(<EmblemCreatorWorkbench locale="en" copy={copy} />);
+    clickAsset('rff-emblems-1');
+    const originalIds = canvasElementIds();
+    const selectedElement = canvas().querySelector('[aria-pressed="true"]')!;
+    fireEvent.click(screen.getByRole('button', { name: copy.toolbar.exportPng }));
+    expect(screen.getByRole('button', { name: copy.toolbar.exporting })).toBeTruthy();
+
+    fireEvent.keyDown(selectedElement, { key: 'Delete' });
+    expect(canvasElementIds()).toEqual(originalIds);
+
+    await act(async () => { finishExport(new Blob(['png'], { type: 'image/png' })); });
   });
 
   it.each(['en', 'zh'] as const)('hides cleared empty layers and restores their row when a real asset is added in %s', async (locale) => {
@@ -266,7 +332,10 @@ describe('EmblemCreatorWorkbench with real project, panels and canvas', () => {
     fireEvent.change(screen.getByLabelText(copy.properties.rotation), { target: { value: '30' } });
     fireEvent.click(screen.getByRole('button', { name: copy.properties.applyRotation }));
     fireEvent.click(screen.getByRole('button', { name: copy.properties.mirror }));
-    fireEvent.click(screen.getByLabelText(copy.properties.showEditBounds));
+    const editBounds = screen.getByLabelText(copy.properties.showEditBounds);
+    fireEvent.click(editBounds);
+    expect(canvas().querySelector('[data-edit-bounds]')).toBeNull();
+    fireEvent.click(editBounds);
     expect(canvas().querySelector('[data-edit-bounds]')).toBeTruthy();
     const project = await savedProject();
     expect(project.layers.body4.elements[0].transform)

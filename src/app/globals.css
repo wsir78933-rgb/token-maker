@@ -3064,6 +3064,35 @@
   background: rgba(215, 180, 106, 0.16);
 }
 
+.emblem-creator-page button:not(:disabled),
+.emblem-creator-page a[href],
+.emblem-creator-page label[for]:not(:has(+ input:disabled)),
+.emblem-creator-page label:has(input:not(:disabled)),
+.emblem-creator-page input[type='checkbox']:not(:disabled) {
+  cursor: pointer;
+}
+
+.emblem-creator-page button:disabled,
+.emblem-creator-page input:disabled,
+.emblem-creator-page label:has(input:disabled),
+.emblem-creator-page label[for]:has(+ input:disabled) {
+  cursor: not-allowed;
+}
+
+.emblem-creator-page input[type='text']:not(:disabled) {
+  cursor: text;
+}
+
+.emblem-creator-page [aria-busy='true'],
+.emblem-creator-page [inert],
+.emblem-creator-page [inert] button:not(:disabled),
+.emblem-creator-page [inert] a[href],
+.emblem-creator-page [inert] label[for]:not(:has(+ input:disabled)),
+.emblem-creator-page [inert] label:has(input:not(:disabled)),
+.emblem-creator-page [inert] input:not(:disabled) {
+  cursor: wait;
+}
+
 @media (max-width: 767px) {
   .coat-maker-seo-content .coat-maker-seo-comparison-frame {
     overflow: visible;

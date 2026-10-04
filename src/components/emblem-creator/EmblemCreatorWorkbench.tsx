@@ -73,6 +73,11 @@ function findElement(project: EmblemProject, elementId: string | null): EmblemEl
   return undefined;
 }
 
+function isKeyboardEditingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  return target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])') !== null;
+}
+
 function reduceWorkbench(state: WorkbenchState, action: WorkbenchAction): WorkbenchState {
   if (action.type === 'error') return { ...state, error: action.message };
   if (action.type === 'select') return { ...state, selectedElementId: action.elementId };
@@ -158,7 +163,7 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
   const latestState = useRef(state);
   const [activeCategory, setActiveCategory] = useState<EmblemAssetCategory>('body');
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>('assets');
-  const [showEditBounds, setShowEditBounds] = useState(false);
+  const [showEditBounds, setShowEditBounds] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const operationInProgress = useRef(false);
@@ -176,6 +181,21 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
 
   function setElementTransform(elementId: string, transform: EmblemElementTransform) {
     applyCommand({ type: 'set-element-transform', elementId, transform });
+  }
+
+  function deleteSelectedElement() {
+    if (state.selectedElementId !== null) {
+      applyCommand({ type: 'remove-element', elementId: state.selectedElementId });
+    }
+  }
+
+  function handleEditorKeyDown(event: KeyboardEvent<HTMLElement>) {
+    if (busy || state.selectedElementId === null) return;
+    if (event.key !== 'Delete' && event.key !== 'Backspace') return;
+    if (event.nativeEvent.isComposing || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+    if (isKeyboardEditingTarget(event.target)) return;
+    event.preventDefault();
+    deleteSelectedElement();
   }
 
   function addCatalogAsset(candidate: EmblemCatalogAsset, targetLayerId: EmblemLayerId) {
@@ -300,17 +320,18 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
   const panelClass = (panel: MobilePanel) => mobilePanel === panel ? 'min-w-0' : 'hidden min-w-0 lg:block';
 
   return (
-    <section lang={locale} aria-label={copy.editorTitle} aria-busy={busy}
+    <section lang={locale} aria-label={copy.editorTitle} aria-busy={busy} onKeyDown={handleEditorKeyDown}
       className="min-w-0 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <EmblemDocumentToolbar copy={copy} disabled={busy} isExporting={isExporting}
-        onOpenProject={openProject} onSaveProject={saveProject} onExportPng={exportPng} />
+      <div className="flex min-w-0 items-center border-b border-border p-3 sm:p-4">
+        <h2 className="text-sm font-semibold sm:text-base">{copy.editorTitle}</h2>
+      </div>
       {state.error && <div role="alert" className="m-3 break-words rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
         <p className="font-semibold">{copy.errorTitle}</p><p className="whitespace-pre-wrap break-all">{state.error}</p>
       </div>}
       {isLoading && <p role="status" className="px-4 pt-3 text-sm text-muted-foreground">{copy.loadingLabel}</p>}
-      <div inert={busy} className="grid min-w-0 gap-4 p-3 sm:p-4 lg:grid-cols-[16rem_minmax(0,1fr)_17.5rem]">
+      <div inert={busy} className="grid min-w-0 gap-4 p-3 sm:p-4 lg:grid-cols-[16rem_minmax(0,1fr)_17.5rem] xl:grid-cols-[20rem_minmax(0,1fr)_17.5rem]">
         <div className="min-w-0 lg:col-start-2 lg:row-start-1">
-          <div className="mx-auto w-full max-w-[560px]">
+          <div className="w-full">
             <EmblemCanvas locale={locale} project={state.project} copy={copy}
               selectedElementId={state.selectedElementId} showEditBounds={showEditBounds}
               onSelectElement={(elementId) => dispatch({ type: 'select', elementId })}
@@ -329,7 +350,7 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
           ))}
         </div>
         <div id={`${workbenchId}-panel-assets`} role="tabpanel" aria-labelledby={`${workbenchId}-tab-assets`}
-          className={`${panelClass('assets')} lg:col-start-1 lg:row-start-1`}>
+          className={`${panelClass('assets')} lg:col-start-1 lg:row-start-1 lg:min-h-0 lg:[contain:size]`}>
           <EmblemAssetPanel locale={locale} copy={copy} project={state.project} activeCategory={activeCategory}
             onCategoryChange={setActiveCategory} onAddCatalogAsset={addCatalogAsset} onAddImageUrl={addImageUrl} />
         </div>
@@ -339,9 +360,7 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
             <EmblemPropertiesPanel locale={locale} project={state.project} copy={copy}
               selectedElementId={state.selectedElementId} showEditBounds={showEditBounds}
               onElementTransform={setElementTransform}
-              onDeleteSelected={() => {
-                if (state.selectedElementId !== null) applyCommand({ type: 'remove-element', elementId: state.selectedElementId });
-              }}
+              onDeleteSelected={deleteSelectedElement}
               onEditBoundsChange={setShowEditBounds} />
           </div>
           <div id={`${workbenchId}-panel-layers`} role="tabpanel" aria-labelledby={`${workbenchId}-tab-layers`}
@@ -351,6 +370,8 @@ export function EmblemCreatorWorkbench({ locale, copy }: EmblemCreatorWorkbenchP
               onVisibilityChange={(layerId, visible) => applyCommand({ type: 'set-layer-visibility', layerId, visible })}
               onClearActiveLayer={() => applyCommand({ type: 'clear-layer', layerId: state.activeLayerId })} />
           </div>
+          <EmblemDocumentToolbar copy={copy} disabled={busy} isExporting={isExporting}
+            onOpenProject={openProject} onSaveProject={saveProject} onExportPng={exportPng} />
         </div>
       </div>
     </section>

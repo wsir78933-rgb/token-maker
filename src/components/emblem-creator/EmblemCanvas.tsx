@@ -27,11 +27,18 @@ interface CanvasPoint {
   y: number;
 }
 
+const ROTATION_HANDLE_HIT_SIZE = 144;
+const ROTATION_HANDLE_GAP = 24;
+const ROTATION_HANDLE_ARROW_MARGIN = 32;
+const ROTATION_KEYBOARD_STEP_DEGREES = 5;
+
 interface PointerGesture {
   pointerId: number;
   element: EmblemElement;
   start: CanvasPoint;
-  mode: 'move' | 'scale';
+  mode: 'move' | 'scale' | 'rotate';
+  lastPointerAngleDegrees: number | null;
+  nextRotationDegrees: number;
 }
 
 function getCanvasPoint(svg: SVGSVGElement, clientX: number, clientY: number): CanvasPoint {
@@ -66,6 +73,89 @@ function getCanvasPoint(svg: SVGSVGElement, clientX: number, clientY: number): C
   return point;
 }
 
+function getPointerAngleDegrees(element: EmblemElement, point: CanvasPoint): number {
+  if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) {
+    throw new Error(`Invalid rotation pointer coordinates for element ${element.id}: x=${point.x}, y=${point.y}.`);
+  }
+
+  const centerX = element.transform.x;
+  const centerY = element.transform.y;
+  if (!Number.isFinite(centerX) || !Number.isFinite(centerY)) {
+    throw new Error(`Invalid rotation center for element ${element.id}: x=${centerX}, y=${centerY}.`);
+  }
+
+  const offsetX = point.x - centerX;
+  const offsetY = point.y - centerY;
+  if (!Number.isFinite(offsetX) || !Number.isFinite(offsetY)) {
+    throw new Error(`Invalid rotation pointer offset for element ${element.id}: x=${offsetX}, y=${offsetY}.`);
+  }
+  if (offsetX === 0 && offsetY === 0) {
+    throw new Error(
+      `Cannot rotate element ${element.id}: pointer is at its center (${centerX}, ${centerY}) from point (${point.x}, ${point.y}).`,
+    );
+  }
+
+  const angleDegrees = Math.atan2(offsetY, offsetX) * (180 / Math.PI);
+  if (!Number.isFinite(angleDegrees)) {
+    throw new Error(`Invalid rotation pointer angle for element ${element.id}: angle=${angleDegrees}.`);
+  }
+  return angleDegrees;
+}
+
+function getShortestRotationDeltaDegrees(previousAngleDegrees: number, nextAngleDegrees: number): number {
+  if (!Number.isFinite(previousAngleDegrees) || !Number.isFinite(nextAngleDegrees)) {
+    throw new Error(
+      `Invalid rotation angle change: previous=${previousAngleDegrees}, next=${nextAngleDegrees}.`,
+    );
+  }
+
+  const deltaDegrees = ((nextAngleDegrees - previousAngleDegrees + 540) % 360) - 180;
+  if (!Number.isFinite(deltaDegrees)) {
+    throw new Error(
+      `Invalid normalized rotation angle change: previous=${previousAngleDegrees}, next=${nextAngleDegrees}, delta=${deltaDegrees}.`,
+    );
+  }
+  return deltaDegrees;
+}
+
+function getRotationHandlePosition(element: EmblemElement): CanvasPoint {
+  const { x, y, scale, rotation } = element.transform;
+  const width = element.source.naturalWidth * scale;
+  const height = element.source.naturalHeight * scale;
+  if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(scale) || !Number.isFinite(rotation)) {
+    throw new Error(
+      `Invalid rotation handle transform for element ${element.id}: x=${x}, y=${y}, scale=${scale}, rotation=${rotation}.`,
+    );
+  }
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+    throw new Error(
+      `Invalid rotation handle dimensions for element ${element.id}: width=${width}, height=${height}.`,
+    );
+  }
+
+  // Anchor above the unrotated top edge so rotation does not change the handle position.
+  const halfHeight = height / 2;
+  const minimumCenterDistance = ROTATION_HANDLE_GAP + ROTATION_HANDLE_HIT_SIZE / 2;
+  const arrowCenterDistance = Math.max(minimumCenterDistance, ROTATION_HANDLE_ARROW_MARGIN * scale + ROTATION_HANDLE_GAP);
+  const handleMargin = Math.min(
+    Math.min(EMBLEM_CANVAS.width, EMBLEM_CANVAS.height) / 2 - minimumCenterDistance,
+    Math.max(ROTATION_HANDLE_HIT_SIZE / 2, ROTATION_HANDLE_ARROW_MARGIN * scale),
+  );
+  const separation = ROTATION_HANDLE_ARROW_MARGIN * scale + ROTATION_HANDLE_GAP;
+  let boundedX = Math.min(EMBLEM_CANVAS.width - handleMargin, Math.max(handleMargin, x));
+  const boundedY = Math.min(EMBLEM_CANVAS.height - handleMargin, Math.max(handleMargin, y - halfHeight - separation));
+  if (Math.hypot(boundedX - x, boundedY - y) < arrowCenterDistance) {
+    const shiftedX = x <= EMBLEM_CANVAS.width / 2 ? x + arrowCenterDistance : x - arrowCenterDistance;
+    boundedX = Math.min(EMBLEM_CANVAS.width - ROTATION_HANDLE_HIT_SIZE / 2, Math.max(ROTATION_HANDLE_HIT_SIZE / 2, shiftedX));
+  }
+  if (!Number.isFinite(boundedX) || !Number.isFinite(boundedY)) {
+    throw new Error(
+      `Invalid rotation handle position for element ${element.id}: x=${boundedX}, y=${boundedY}.`,
+    );
+  }
+  return { x: boundedX, y: boundedY };
+}
+
 function getGestureTransform(gesture: PointerGesture, point: CanvasPoint): EmblemElementTransform {
   const { transform, source } = gesture.element;
   if (gesture.mode === 'move') {
@@ -76,15 +166,31 @@ function getGestureTransform(gesture: PointerGesture, point: CanvasPoint): Emble
     };
   }
 
-  const startDistance = Math.hypot(gesture.start.x - transform.x, gesture.start.y - transform.y);
-  if (startDistance === 0) {
-    throw new Error(`Cannot scale element ${gesture.element.id}: pointer starts at its center (${transform.x}, ${transform.y}).`);
+  if (gesture.mode === 'scale') {
+    const startDistance = Math.hypot(gesture.start.x - transform.x, gesture.start.y - transform.y);
+    if (startDistance === 0) {
+      throw new Error(`Cannot scale element ${gesture.element.id}: pointer starts at its center (${transform.x}, ${transform.y}).`);
+    }
+    const distance = Math.hypot(point.x - transform.x, point.y - transform.y);
+    return {
+      ...transform,
+      scale: Math.max(1 / Math.max(source.naturalWidth, source.naturalHeight), transform.scale * distance / startDistance),
+    };
   }
-  const distance = Math.hypot(point.x - transform.x, point.y - transform.y);
-  return {
-    ...transform,
-    scale: Math.max(1 / Math.max(source.naturalWidth, source.naturalHeight), transform.scale * distance / startDistance),
-  };
+
+  if (gesture.lastPointerAngleDegrees === null) {
+    throw new Error(`Rotation gesture for element ${gesture.element.id} has no starting pointer angle.`);
+  }
+  const pointerAngleDegrees = getPointerAngleDegrees(gesture.element, point);
+  const deltaDegrees = getShortestRotationDeltaDegrees(gesture.lastPointerAngleDegrees, pointerAngleDegrees);
+  gesture.lastPointerAngleDegrees = pointerAngleDegrees;
+  gesture.nextRotationDegrees += deltaDegrees;
+  if (!Number.isFinite(gesture.nextRotationDegrees)) {
+    throw new Error(
+      `Rotation for element ${gesture.element.id} is not finite: base=${transform.rotation}, delta=${deltaDegrees}.`,
+    );
+  }
+  return { ...transform, rotation: gesture.nextRotationDegrees };
 }
 
 function getErrorMessage(error: unknown): string {
@@ -146,9 +252,23 @@ export function EmblemCanvas({
       if (typeof svg.setPointerCapture !== 'function') {
         throw new Error(`Pointer capture is unavailable for pointer ${event.pointerId}.`);
       }
+      const nextRotationDegrees = element.transform.rotation;
+      if (!Number.isFinite(nextRotationDegrees)) {
+        throw new Error(`Invalid starting rotation for element ${element.id}: ${nextRotationDegrees}.`);
+      }
+      const lastPointerAngleDegrees = mode === 'rotate'
+        ? getPointerAngleDegrees(element, start)
+        : null;
       svg.focus({ preventScroll: true });
       svg.setPointerCapture(event.pointerId);
-      gestureRef.current = { pointerId: event.pointerId, element, start, mode };
+      gestureRef.current = {
+        pointerId: event.pointerId,
+        element,
+        start,
+        mode,
+        lastPointerAngleDegrees,
+        nextRotationDegrees,
+      };
       onSelectElement(element.id);
       setInteractionError(null);
     } catch (error) {
@@ -215,14 +335,32 @@ export function EmblemCanvas({
     });
   }
 
+  function rotateWithKeyboard(event: KeyboardEvent<SVGGElement>, element: EmblemElement) {
+    let deltaDegrees: number;
+    if (event.key === 'ArrowUp' || event.key === 'ArrowRight') deltaDegrees = ROTATION_KEYBOARD_STEP_DEGREES;
+    else if (event.key === 'ArrowDown' || event.key === 'ArrowLeft') deltaDegrees = -ROTATION_KEYBOARD_STEP_DEGREES;
+    else return;
+    event.preventDefault();
+    event.stopPropagation();
+    const nextRotationDegrees = element.transform.rotation + deltaDegrees;
+    if (!Number.isFinite(nextRotationDegrees)) {
+      throw new Error(
+        `Rotation for element ${element.id} is not finite: current=${element.transform.rotation}, delta=${deltaDegrees}.`,
+      );
+    }
+    onElementTransform(element.id, { ...element.transform, rotation: nextRotationDegrees });
+  }
+
+  const rotationHandlePosition = visibleSelectedElement
+    ? getRotationHandlePosition(visibleSelectedElement)
+    : null;
+
   return (
     <div lang={locale} className="min-w-0 space-y-3">
       <div
         className="overflow-hidden rounded-lg border border-border"
         style={{
-          backgroundColor: '#f8fafc',
-          backgroundImage: 'conic-gradient(#e2e8f0 25%, transparent 0 50%, #e2e8f0 0 75%, transparent 0)',
-          backgroundSize: '24px 24px',
+          backgroundColor: '#fff',
         }}
       >
         <svg
@@ -312,6 +450,49 @@ export function EmblemCanvas({
               >
                 <rect x={-48} y={-48} width={96} height={96} fill="transparent" />
                 <rect x={-14} y={-14} width={28} height={28} rx={4} fill="white" stroke="#2563eb" strokeWidth={2} vectorEffect="non-scaling-stroke" pointerEvents="none" />
+              </g>
+            </g>
+          )}
+          {rotationHandlePosition && visibleSelectedElement && (
+            <g
+              data-rotation-handle={visibleSelectedElement.id}
+              role="button"
+              aria-label={`${copy.properties.rotation}: ${visibleSelectedElement.id}`}
+              aria-pressed="true"
+              tabIndex={0}
+              className="cursor-pointer touch-none select-none outline-none focus-visible:opacity-70 active:cursor-grabbing"
+              onPointerDown={(event) => startGesture(event, visibleSelectedElement, 'rotate')}
+              onKeyDown={(event) => rotateWithKeyboard(event, visibleSelectedElement)}
+            >
+              <rect
+                x={rotationHandlePosition.x - ROTATION_HANDLE_HIT_SIZE / 2}
+                y={rotationHandlePosition.y - ROTATION_HANDLE_HIT_SIZE / 2}
+                width={ROTATION_HANDLE_HIT_SIZE}
+                height={ROTATION_HANDLE_HIT_SIZE}
+                rx={ROTATION_HANDLE_HIT_SIZE / 2}
+                fill="transparent"
+                pointerEvents="all"
+              />
+              <g transform={`translate(${rotationHandlePosition.x} ${rotationHandlePosition.y}) scale(${visibleSelectedElement.transform.scale})`}>
+                <path
+                  d="M 14 -14 A 20 20 0 1 1 -14 -14"
+                  fill="none"
+                  stroke="#000"
+                  strokeWidth={2 * visibleSelectedElement.transform.scale}
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                  pointerEvents="stroke"
+                />
+                <path
+                  d="M -14 -4 v -10 h -10"
+                  fill="none"
+                  stroke="#000"
+                  strokeWidth={2 * visibleSelectedElement.transform.scale}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  vectorEffect="non-scaling-stroke"
+                  pointerEvents="stroke"
+                />
               </g>
             </g>
           )}
