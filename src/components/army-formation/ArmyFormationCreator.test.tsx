@@ -23,6 +23,12 @@ import {
   type ArmyFormationDocument,
 } from '@/lib/army-formation/document';
 import * as armyFormationImageExport from '@/lib/army-formation/export-image';
+import {
+  requireArmyFormationCatalogIcon,
+} from '@/lib/army-formation/icon-catalog';
+import {
+  getArmyFormationIconSpriteUrl,
+} from '@/lib/army-formation/icon-thumbnails';
 
 let originalWindowMatchMedia: PropertyDescriptor | undefined;
 
@@ -107,7 +113,7 @@ function mockArmyFieldBoundsForDrag(piece: HTMLElement): void {
 
 function readArmyInlinePixelStyle(
   element: HTMLElement,
-  property: 'left' | 'top' | 'width' | 'height' | 'fontSize' | 'lineHeight' | 'paddingBottom',
+  property: 'left' | 'top' | 'width' | 'height' | 'fontSize' | 'lineHeight' | 'paddingTop' | 'paddingBottom',
 ): number {
   const value = element.style[property];
   const pixelValue = Number.parseFloat(value);
@@ -491,6 +497,30 @@ describe('ArmyFormationCreator', () => {
     expect(screen.queryByRole('navigation', { name: 'Editor' })).toBeNull();
   });
 
+  it.each(['en', 'zh'] as const)('$locale preloads only the default helmet icon sprite', (locale) => {
+    render(<ArmyFormationCreator locale={locale} />);
+
+    const helmetSpriteUrl = getArmyFormationIconSpriteUrl('helmet');
+    const helmetPreloadLinks = [...document.head.querySelectorAll('link[rel="preload"]')].filter(
+      (link) => link.getAttribute('href') === helmetSpriteUrl,
+    );
+    expect(helmetPreloadLinks).toHaveLength(1);
+
+    const helmetPreloadLink = helmetPreloadLinks[0];
+    if (!(helmetPreloadLink instanceof HTMLLinkElement)) {
+      throw new Error(`Helmet sprite preload is not a link. Received ${helmetPreloadLink?.constructor.name}.`);
+    }
+
+    expect(helmetPreloadLink.getAttribute('as')).toBe('image');
+    expect(helmetPreloadLink.getAttribute('type')).toBe('image/png');
+    expect(helmetPreloadLink.getAttribute('fetchpriority')).toBe('high');
+    expect(
+      [...document.head.querySelectorAll('link[rel="preload"]')].some(
+        (link) => link.getAttribute('href') === getArmyFormationIconSpriteUrl('weapon'),
+      ),
+    ).toBe(false);
+  });
+
   it.each([
     {
       locale: 'zh',
@@ -546,6 +576,31 @@ describe('ArmyFormationCreator', () => {
       expect(thumbnail).not.toBeNull();
       expect((thumbnail as HTMLElement).style.filter).toBe('brightness(0) invert(1)');
     }
+  });
+
+  it('图标选择器使用精灵缩略图，棋子仍使用原始 SVG 素材', () => {
+    render(<ArmyFormationCreator locale="en" />);
+
+    const helmetIconButton = screen.getByRole('button', { name: 'helmet-01' });
+    const thumbnailImage = helmetIconButton.querySelector('image');
+    if (thumbnailImage === null) {
+      throw new Error(`Army icon thumbnail image is missing. Received ${String(thumbnailImage)}.`);
+    }
+    expect(thumbnailImage.getAttribute('href')).toBe(getArmyFormationIconSpriteUrl('helmet'));
+
+    fireEvent.click(helmetIconButton);
+
+    const pieceImage = pieceButtons()[0]?.querySelector('image');
+    if (pieceImage === null || pieceImage === undefined) {
+      throw new Error(`Army piece image is missing. Received ${String(pieceImage)}.`);
+    }
+    const originalIconMarkup = requireArmyFormationCatalogIcon('helmet-01').svgMarkup;
+    const originalIconAssetUrl = originalIconMarkup.match(/<image\b[^>]*\bhref="([^"]+)"/)?.[1];
+    if (originalIconAssetUrl === undefined) {
+      throw new Error('Army catalog icon helmet-01 is missing its original image asset URL.');
+    }
+    expect(pieceImage.getAttribute('href')).toBe(originalIconAssetUrl);
+    expect(pieceImage.getAttribute('href')).not.toBe(getArmyFormationIconSpriteUrl('helmet'));
   });
 
   it('页面上没有保存战场，也没有保存在这个浏览器', () => {
@@ -1083,7 +1138,10 @@ describe('ArmyFormationCreator', () => {
       Math.abs(pieceWidth * Math.sin(rotationRadians))
       + Math.abs(pieceHeight * Math.cos(rotationRadians));
     const maximumTopExtensionPx = (Math.hypot(pieceWidth, pieceHeight) - pieceHeight) / 2;
-    const expectedViewportTopGutterPx = 44 + 8 + maximumTopExtensionPx * renderedMapScale;
+    const fieldFrame = battlefieldField.parentElement;
+    if (!(fieldFrame instanceof HTMLElement)) {
+      throw new Error('Zoomed rotation geometry test requires the public battlefield viewport frame.');
+    }
     const handleWidth = readArmyInlinePixelStyle(rotationHandle, 'width');
     const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
     const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
@@ -1096,7 +1154,12 @@ describe('ArmyFormationCreator', () => {
     const rotationHandleClassNames = [...rotationHandle.classList];
 
     expect(renderedFieldScale).toBeCloseTo(fieldScale, 5);
-    expect(fieldTop).toBeCloseTo(expectedViewportTopGutterPx, 4);
+    expect(fieldTop).toBe(0);
+    expect(fieldTop).toBeCloseTo(fieldTopBeforeZoom, 4);
+    expect(readArmyInlinePixelStyle(fieldFrame, 'height')).toBeCloseTo(
+      480 * fieldScale,
+      4,
+    );
     expect(
       wheelAnchorScreenYAfterZoom,
       `Zoom anchor moved. ${JSON.stringify({
@@ -1109,7 +1172,19 @@ describe('ArmyFormationCreator', () => {
         viewOffsetY: viewTransform.offsetYPx,
       })}`,
     ).toBeCloseTo(wheelAnchorClientY, 4);
-    expect(handleTop).toBeCloseTo(pieceTop - fieldTop / renderedMapScale, 4);
+    const naturalHandleTop =
+      pieceTop - maximumTopExtensionPx - (44 + 4) / renderedMapScale;
+    const belowPieceTop =
+      pieceTop + pieceHeight + maximumTopExtensionPx + 4 / renderedMapScale;
+    const minimumVisibleTop = -viewTransform.offsetYPx / viewTransform.scale;
+    const maximumVisibleTop =
+      (480 - 44 / renderedFieldScale - viewTransform.offsetYPx) / viewTransform.scale;
+    const preferredHandleTop = naturalHandleTop < minimumVisibleTop ? belowPieceTop : naturalHandleTop;
+    const expectedHandleTop = Math.min(
+      Math.max(preferredHandleTop, minimumVisibleTop),
+      Math.max(minimumVisibleTop, maximumVisibleTop),
+    );
+    expect(handleTop).toBeCloseTo(expectedHandleTop, 4);
     expect(handleWidth * renderedMapScale).toBeCloseTo(44, 2);
     expect(handleHeight * renderedMapScale).toBeCloseTo(44, 2);
     expect(readArmyInlinePixelStyle(rotationHandle, 'fontSize') * renderedMapScale).toBeCloseTo(16, 2);
@@ -1120,7 +1195,16 @@ describe('ArmyFormationCreator', () => {
     expect(rotationHandleClassNames.some((className) => className === 'border' || className.startsWith('border-')))
       .toBe(false);
     expect(rotationHandleClassNames.some((className) => className.startsWith('shadow'))).toBe(false);
-    expect(rotatedPieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(8 - 0.01);
+    const handleScreenTop = fieldTop + viewOffsetY + handleTop * renderedMapScale;
+    const rotatedPieceScreenBottom =
+      fieldTop + viewOffsetY + (pieceTop + (pieceHeight + rotatedPieceHeight) / 2) * renderedMapScale;
+    expect(handleScreenTop).toBeGreaterThanOrEqual(-0.01);
+    expect(handleScreenTop + handleHeight * renderedMapScale).toBeLessThanOrEqual(480 * fieldScale + 0.01);
+    if (naturalHandleTop >= minimumVisibleTop && naturalHandleTop <= maximumVisibleTop) {
+      expect(rotatedPieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(4 - 0.01);
+    } else if (belowPieceTop <= maximumVisibleTop) {
+      expect(handleScreenTop - rotatedPieceScreenBottom).toBeGreaterThanOrEqual(4 - 0.01);
+    }
   });
 
   it.each([
@@ -1165,6 +1249,7 @@ describe('ArmyFormationCreator', () => {
 
     const symbolFontSizePx = readArmyInlinePixelStyle(rotationHandle, 'fontSize');
     const symbolLineHeightPx = readArmyInlinePixelStyle(rotationHandle, 'lineHeight');
+    const symbolPaddingTopPx = readArmyInlinePixelStyle(rotationHandle, 'paddingTop');
     const symbolPaddingBottomPx = readArmyInlinePixelStyle(rotationHandle, 'paddingBottom');
     const handleWidth = readArmyInlinePixelStyle(rotationHandle, 'width');
     const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
@@ -1177,6 +1262,11 @@ describe('ArmyFormationCreator', () => {
     }
     const pieceTop = readArmyInlinePixelStyle(piece, 'top');
     const pieceWidth = readArmyInlinePixelStyle(piece, 'width');
+    const pieceHeight = readArmyInlinePixelStyle(piece, 'height');
+    const maximumTopExtensionPx = (Math.hypot(pieceWidth, pieceHeight) - pieceHeight) / 2;
+    const renderedMapScale = renderedFieldScale;
+    const expectedBelowPieceTop =
+      pieceTop + pieceHeight + maximumTopExtensionPx + 4 / renderedMapScale;
     const requestedHandleLeft = Number(pieceXText) + pieceWidth / 2 - handleWidth / 2;
     const expectedHandleLeft = requestedHandleLeft;
     const rotationHandleClassNames = [...rotationHandle.classList];
@@ -1184,7 +1274,7 @@ describe('ArmyFormationCreator', () => {
     expect(renderedFieldScale).toBeCloseTo(fieldScale, 5);
     expect(rotationHandle.textContent).toBe('↻');
     expect(rotationHandleClassNames).toContain('box-border');
-    expect(rotationHandleClassNames).toContain('items-end');
+    expect(rotationHandleClassNames).toContain('items-start');
     expect(rotationHandleClassNames).toContain('bg-transparent');
     expect(rotationHandleClassNames).toContain('text-black');
     expect(rotationHandleClassNames).toContain('hover:bg-transparent');
@@ -1197,23 +1287,243 @@ describe('ArmyFormationCreator', () => {
       .toEqual(['hover:bg-transparent']);
     expect(symbolFontSizePx * renderedFieldScale).toBeCloseTo(16, 2);
     expect(symbolLineHeightPx * renderedFieldScale).toBeCloseTo(16, 2);
-    expect(symbolPaddingBottomPx * renderedFieldScale).toBeCloseTo(4, 2);
+    expect(symbolPaddingTopPx * renderedFieldScale).toBeCloseTo(4, 2);
+    expect(symbolPaddingBottomPx * renderedFieldScale).toBeCloseTo(0, 2);
     expect(handleWidth * renderedFieldScale).toBeGreaterThanOrEqual(44 - 0.01);
     expect(handleWidth * renderedFieldScale).toBeLessThanOrEqual(44 + 0.01);
     expect(handleHeight * renderedFieldScale).toBeGreaterThanOrEqual(44 - 0.01);
     expect(handleHeight * renderedFieldScale).toBeLessThanOrEqual(44 + 0.01);
     const symbolCenterOffsetFromHandleCenter =
-      handleHeight * renderedFieldScale
-      - symbolPaddingBottomPx * renderedFieldScale
-      - (symbolLineHeightPx * renderedFieldScale) / 2
+      symbolPaddingTopPx * renderedFieldScale
+      + (symbolLineHeightPx * renderedFieldScale) / 2
       - (handleHeight * renderedFieldScale) / 2;
-    expect(symbolCenterOffsetFromHandleCenter).toBeCloseTo(10, 2);
+    expect(symbolCenterOffsetFromHandleCenter).toBeCloseTo(-10, 2);
     expect(handleLeft).toBeCloseTo(expectedHandleLeft, 4);
-    expect(handleTop).toBeCloseTo(pieceTop - fieldTop / renderedFieldScale, 4);
+    expect(fieldTop).toBe(0);
+    expect(handleTop).toBeCloseTo(expectedBelowPieceTop, 4);
 
-    const handleScreenBottom = fieldTop + (handleTop + handleHeight) * renderedFieldScale;
+    const handleScreenTop = fieldTop + handleTop * renderedMapScale;
+    const handleScreenBottom = handleScreenTop + handleHeight * renderedMapScale;
     const pieceScreenTop = fieldTop + pieceTop * renderedFieldScale;
-    expect(pieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(8);
+    const pieceScreenBottom =
+      fieldTop + (pieceTop + pieceHeight + maximumTopExtensionPx) * renderedMapScale;
+    expect(handleScreenTop - pieceScreenBottom).toBeGreaterThanOrEqual(4 - 0.01);
+    expect(handleScreenTop + symbolPaddingTopPx * renderedMapScale - pieceScreenBottom)
+      .toBeGreaterThanOrEqual(8 - 0.01);
+    const pieceScreenCenter = pieceScreenTop + (pieceHeight * renderedMapScale) / 2;
+    expect(pieceScreenCenter < handleScreenTop || pieceScreenCenter > handleScreenBottom).toBe(true);
+  });
+
+  it('keeps the natural above-piece rotation handle at a middle y position', () => {
+    const pieceName = 'piece-middle';
+    storeSelectedArmyFormationPieceAtPoint(pieceName, { x: 120, y: 120 });
+    render(<ArmyFormationCreator locale="zh" />);
+    restoreArmyFormationRecord();
+
+    const piece = screen.getByRole<HTMLButtonElement>('button', { name: pieceName });
+    const field = requireArmyFormationField();
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const fieldScale = Number(/^scale\(([^)]+)\)$/.exec(field.style.transform)?.[1]);
+    if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
+      throw new Error(
+        `Middle-piece geometry test requires a positive field scale. Received ${JSON.stringify(field.style.transform)}.`,
+      );
+    }
+
+    const pieceTop = readArmyInlinePixelStyle(piece, 'top');
+    const pieceWidth = readArmyInlinePixelStyle(piece, 'width');
+    const pieceHeight = readArmyInlinePixelStyle(piece, 'height');
+    const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
+    const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const handlePaddingTop = readArmyInlinePixelStyle(rotationHandle, 'paddingTop');
+    const handlePaddingBottom = readArmyInlinePixelStyle(rotationHandle, 'paddingBottom');
+    const maximumTopExtensionPx = (Math.hypot(pieceWidth, pieceHeight) - pieceHeight) / 2;
+    const expectedNaturalHandleTop =
+      pieceTop - maximumTopExtensionPx - (44 + 4) / fieldScale;
+    const pieceScreenTop = pieceTop * fieldScale;
+    const handleScreenBottom = (handleTop + handleHeight) * fieldScale;
+
+    expect(pieceTop).toBe(120);
+    expect(handleTop).toBeCloseTo(expectedNaturalHandleTop, 4);
+    expect(handleTop).toBeGreaterThan(0);
+    expect(rotationHandle.classList).toContain('items-end');
+    expect(handlePaddingTop * fieldScale).toBeCloseTo(0, 2);
+    expect(handlePaddingBottom * fieldScale).toBeCloseTo(4, 2);
+    expect(pieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(4 - 0.01);
+    expect(
+      pieceScreenTop - (handleScreenBottom - handlePaddingBottom * fieldScale),
+    ).toBeGreaterThanOrEqual(8 - 0.01);
+    expect(pieceScreenTop + (pieceHeight * fieldScale) / 2).toBeGreaterThan(handleScreenBottom);
+  });
+
+  it.each([0.25, 1, 8])('keeps a new piece center draggable at view scale $viewScale', (viewScale) => {
+    render(<ArmyFormationCreator locale="en" />);
+    const field = requireArmyFormationField();
+    setArmyFormationFieldRect(field, { left: 0, top: 0, width: 780, height: 480 });
+    const viewLayer = requireArmyBattlefieldViewLayer();
+
+    if (viewScale !== 1) {
+      dispatchArmyBattlefieldWheel(viewLayer, {
+        clientX: 0,
+        clientY: 0,
+        deltaY: -Math.log(viewScale) / 0.002,
+      });
+    }
+
+    const viewTransform = readArmyBattlefieldViewTransform();
+    expect(viewTransform.scale).toBeCloseTo(viewScale, 8);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole<HTMLButtonElement>('button', { name: pieceName });
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const fieldScale = Number(/^scale\(([^)]+)\)$/.exec(field.style.transform)?.[1]);
+    if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
+      throw new Error(
+        `View-scale geometry test requires a positive field scale. Received ${JSON.stringify(field.style.transform)}.`,
+      );
+    }
+
+    const renderedMapScale = fieldScale * viewTransform.scale;
+    const pieceTop = readArmyInlinePixelStyle(piece, 'top');
+    const pieceWidth = readArmyInlinePixelStyle(piece, 'width');
+    const pieceHeight = readArmyInlinePixelStyle(piece, 'height');
+    const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
+    const handleWidth = readArmyInlinePixelStyle(rotationHandle, 'width');
+    const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const handlePaddingTop = readArmyInlinePixelStyle(rotationHandle, 'paddingTop');
+    const handlePaddingBottom = readArmyInlinePixelStyle(rotationHandle, 'paddingBottom');
+    const maximumTopExtensionPx = (Math.hypot(pieceWidth, pieceHeight) - pieceHeight) / 2;
+    const naturalHandleTop =
+      pieceTop - maximumTopExtensionPx - (44 + 4) / renderedMapScale;
+    const belowPieceTop =
+      pieceTop + pieceHeight + maximumTopExtensionPx + 4 / renderedMapScale;
+    const minimumVisibleTop = -viewTransform.offsetYPx / viewTransform.scale;
+    const maximumVisibleTop =
+      (480 - 44 / fieldScale - viewTransform.offsetYPx) / viewTransform.scale;
+    const preferredHandleTop = naturalHandleTop < minimumVisibleTop ? belowPieceTop : naturalHandleTop;
+    const expectedHandleTop = Math.min(
+      Math.max(preferredHandleTop, minimumVisibleTop),
+      Math.max(minimumVisibleTop, maximumVisibleTop),
+    );
+    const handleScreenTop =
+      fieldScale * (viewTransform.offsetYPx + viewTransform.scale * handleTop);
+    const handleScreenHeight = handleHeight * renderedMapScale;
+    const pieceScreenTop =
+      fieldScale * (viewTransform.offsetYPx + viewTransform.scale * pieceTop);
+    const pieceScreenHeight = pieceHeight * renderedMapScale;
+    const pieceScreenBottom = pieceScreenTop + pieceScreenHeight;
+    const pieceScreenCenter = pieceScreenTop + pieceScreenHeight / 2;
+    const handleWasClamped = Math.abs(expectedHandleTop - preferredHandleTop) > 0.0001;
+
+    expect(readArmyInlinePixelStyle(field, 'top')).toBe(0);
+    expect(handleTop).toBeCloseTo(expectedHandleTop, 4);
+    if (naturalHandleTop < minimumVisibleTop) {
+      expect(rotationHandle.classList).toContain('items-start');
+      expect(handlePaddingTop * renderedMapScale).toBeCloseTo(4, 2);
+      expect(handlePaddingBottom * renderedMapScale).toBeCloseTo(0, 2);
+      if (!handleWasClamped) {
+        expect(
+          handleScreenTop + handlePaddingTop * renderedMapScale - pieceScreenBottom,
+        ).toBeGreaterThanOrEqual(8 - 0.01);
+      }
+    } else {
+      expect(rotationHandle.classList).toContain('items-end');
+      expect(handlePaddingTop * renderedMapScale).toBeCloseTo(0, 2);
+      expect(handlePaddingBottom * renderedMapScale).toBeCloseTo(4, 2);
+      if (!handleWasClamped) {
+        expect(
+          pieceScreenTop
+            - (handleScreenTop + handleScreenHeight - handlePaddingBottom * renderedMapScale),
+        ).toBeGreaterThanOrEqual(8 - 0.01);
+      }
+    }
+    expect(handleWidth * renderedMapScale).toBeCloseTo(44, 2);
+    expect(handleScreenHeight).toBeCloseTo(44, 2);
+    expect(handleScreenTop).toBeGreaterThanOrEqual(-0.01);
+    expect(handleScreenTop + handleScreenHeight).toBeLessThanOrEqual(480 * fieldScale + 0.01);
+    expect(pieceScreenCenter < handleScreenTop || pieceScreenCenter > handleScreenTop + handleScreenHeight).toBe(true);
+
+    const startingPiecePosition = piecePosition(piece);
+    mockArmyPieceBounds(
+      piece,
+      fieldScale * (viewTransform.offsetXPx + viewTransform.scale * readArmyInlinePixelStyle(piece, 'left')),
+      pieceScreenTop,
+      pieceWidth * renderedMapScale,
+      pieceScreenHeight,
+    );
+    const pieceCenterX = piece.getBoundingClientRect().left + piece.getBoundingClientRect().width / 2;
+    const pieceCenterY = piece.getBoundingClientRect().top + piece.getBoundingClientRect().height / 2;
+    fireEvent.pointerDown(piece, {
+      pointerId: 71,
+      clientX: pieceCenterX,
+      clientY: pieceCenterY,
+      button: 0,
+    });
+    fireEvent.pointerMove(piece, {
+      pointerId: 71,
+      clientX: pieceCenterX + 16,
+      clientY: pieceCenterY + 12,
+      button: 0,
+    });
+    fireEvent.pointerUp(piece, {
+      pointerId: 71,
+      clientX: pieceCenterX + 16,
+      clientY: pieceCenterY + 12,
+      button: 0,
+    });
+    expect(piecePosition(piece)).not.toBe(startingPiecePosition);
+  });
+
+  it('allows a legal visual height below 44px to clip the rotation handle without throwing', () => {
+    const fieldScale = 0.05;
+    class ArmyFormationTestResizeObserver implements ResizeObserver {
+      constructor(private readonly callback: ResizeObserverCallback) {}
+
+      observe(): void {
+        this.callback(
+          [{ contentRect: new DOMRect(0, 0, 780 * fieldScale, 0) } as ResizeObserverEntry],
+          this,
+        );
+      }
+
+      unobserve(): void {}
+
+      disconnect(): void {}
+    }
+
+    vi.stubGlobal('ResizeObserver', ArmyFormationTestResizeObserver);
+    render(<ArmyFormationCreator locale="en" />);
+    let pieceName: string | null = null;
+    expect(() => {
+      pieceName = placeArmyFormationPiece('helmet-01');
+    }).not.toThrow();
+    if (pieceName === null) {
+      throw new Error('Visual-height clipping test did not receive the placed piece id.');
+    }
+
+    const field = requireArmyFormationField();
+    const fieldFrame = field.parentElement;
+    if (!(fieldFrame instanceof HTMLElement)) {
+      throw new Error('Visual-height clipping test requires the battlefield frame.');
+    }
+    const viewportFrame = fieldFrame.parentElement;
+    if (!(viewportFrame instanceof HTMLElement)) {
+      throw new Error('Visual-height clipping test requires the battlefield viewport frame.');
+    }
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
+    const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const visualFieldHeight = 480 * fieldScale;
+    const handleScreenTop = handleTop * fieldScale;
+    const handleScreenHeight = handleHeight * fieldScale;
+
+    expect(readArmyInlinePixelStyle(field, 'top')).toBe(0);
+    expect(readArmyInlinePixelStyle(fieldFrame, 'height')).toBeCloseTo(visualFieldHeight, 4);
+    expect(viewportFrame.classList).toContain('overflow-hidden');
+    expect(Number.isFinite(handleTop)).toBe(true);
+    expect(Number.isFinite(handleHeight)).toBe(true);
+    expect(handleScreenTop).toBeGreaterThanOrEqual(-0.01);
+    expect(handleScreenHeight).toBeCloseTo(44, 2);
+    expect(handleScreenTop + handleScreenHeight).toBeGreaterThan(visualFieldHeight);
   });
 
   it('keeps the top-edge rotation handle visible with an 8px gap at 45 degrees', () => {
@@ -1272,6 +1582,8 @@ describe('ArmyFormationCreator', () => {
     const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
     const handleWidth = readArmyInlinePixelStyle(rotationHandle, 'width');
     const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const handlePaddingTop = readArmyInlinePixelStyle(rotationHandle, 'paddingTop');
+    const handlePaddingBottom = readArmyInlinePixelStyle(rotationHandle, 'paddingBottom');
     const rotationRadians = (45 * Math.PI) / 180;
     const rotatedPieceHeight =
       Math.abs(pieceWidth * Math.sin(rotationRadians))
@@ -1279,15 +1591,20 @@ describe('ArmyFormationCreator', () => {
     const handleScreenLeft = handleLeft * fieldScale;
     const handleScreenRight = (handleLeft + handleWidth) * fieldScale;
     const handleScreenTop = fieldTop + handleTop * fieldScale;
-    const handleScreenBottom = fieldTop + (handleTop + handleHeight) * fieldScale;
-    const rotatedPieceScreenTop =
-      fieldTop + (pieceTop + (pieceHeight - rotatedPieceHeight) / 2) * fieldScale;
+    const rotatedPieceScreenBottom =
+      fieldTop + (pieceTop + (pieceHeight + rotatedPieceHeight) / 2) * fieldScale;
 
     expect(handleScreenLeft).toBeGreaterThanOrEqual(0);
     expect(handleScreenRight).toBeLessThanOrEqual(fieldWidth * fieldScale);
+    expect(fieldTop).toBe(0);
     expect(handleScreenTop).toBeGreaterThanOrEqual(0);
-    expect(handleScreenBottom).toBeLessThanOrEqual(fieldTop + fieldHeight * fieldScale);
-    expect(rotatedPieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(8);
+    expect(handleScreenTop + handleHeight * fieldScale).toBeLessThanOrEqual(fieldTop + fieldHeight * fieldScale);
+    expect(rotationHandle.classList).toContain('items-start');
+    expect(handlePaddingTop * fieldScale).toBeCloseTo(4, 2);
+    expect(handlePaddingBottom * fieldScale).toBeCloseTo(0, 2);
+    expect(handleScreenTop - rotatedPieceScreenBottom).toBeGreaterThanOrEqual(4 - 0.01);
+    expect(handleScreenTop + handlePaddingTop * fieldScale - rotatedPieceScreenBottom)
+      .toBeGreaterThanOrEqual(8 - 0.01);
   });
 
   it.each([
@@ -1313,7 +1630,7 @@ describe('ArmyFormationCreator', () => {
     }
   });
 
-  it('keeps the rotation handle at least 8px above a rotated piece after view zoom changes', () => {
+  it('keeps the rotation handle box at least 4px below a rotated piece after view zoom changes', () => {
     render(<ArmyFormationCreator locale="zh" />);
     const pieceName = placeArmyFormationPiece('helmet-01');
     const piece = screen.getByRole('button', { name: pieceName }) as HTMLButtonElement;
@@ -1340,17 +1657,25 @@ describe('ArmyFormationCreator', () => {
     const pieceHeight = readArmyInlinePixelStyle(piece, 'height');
     const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
     const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const handlePaddingTop = readArmyInlinePixelStyle(rotationHandle, 'paddingTop');
+    const handlePaddingBottom = readArmyInlinePixelStyle(rotationHandle, 'paddingBottom');
     const totalFieldScale = fieldScale * viewTransform.scale;
     const rotationRadians = Math.PI / 4;
     const rotatedPieceHeight =
       Math.abs(pieceWidth * Math.sin(rotationRadians))
       + Math.abs(pieceHeight * Math.cos(rotationRadians));
-    const handleScreenBottom = fieldTop + (handleTop + handleHeight) * totalFieldScale;
-    const rotatedPieceScreenTop =
-      fieldTop + (pieceTop + (pieceHeight - rotatedPieceHeight) / 2) * totalFieldScale;
+    const rotatedPieceScreenBottom =
+      fieldTop + (pieceTop + (pieceHeight + rotatedPieceHeight) / 2) * totalFieldScale;
+    const handleScreenTop = fieldTop + handleTop * totalFieldScale;
 
     expect(viewTransform.scale).toBeLessThan(1);
-    expect(rotatedPieceScreenTop - handleScreenBottom).toBeGreaterThanOrEqual(8);
+    expect(rotationHandle.classList).toContain('items-start');
+    expect(handlePaddingTop * totalFieldScale).toBeCloseTo(4, 2);
+    expect(handlePaddingBottom * totalFieldScale).toBeCloseTo(0, 2);
+    expect(handleHeight * totalFieldScale).toBeCloseTo(44, 2);
+    expect(handleScreenTop - rotatedPieceScreenBottom).toBeGreaterThanOrEqual(4 - 0.01);
+    expect(handleScreenTop + handlePaddingTop * totalFieldScale - rotatedPieceScreenBottom)
+      .toBeGreaterThanOrEqual(8 - 0.01);
   });
 
   it('dragging a selected rotation handle rotates the piece without moving or deselecting it', () => {
@@ -2211,10 +2536,149 @@ describe('ArmyFormationCreator', () => {
       button: 0,
     });
 
-    expect(piecePosition(pieceButtons()[0] as HTMLButtonElement)).toBe('-145,-135');
+    expect(piecePosition(pieceButtons()[0] as HTMLButtonElement)).toBe('-145,-145');
     expect(Number.parseFloat(piece.style.left)).toBeLessThan(0);
     expect(Number.parseFloat(piece.style.top)).toBeLessThan(0);
     expect(readArmyBattlefieldViewTransform()).toEqual(transformBeforeAdd);
+  });
+
+  it.each(['en', 'zh'] as const)('$locale keeps the max-zoom top rotation handle visible and draggable', (locale) => {
+    render(<ArmyFormationCreator locale={locale} />);
+    const field = requireArmyFormationField();
+    const fieldTop = readArmyInlinePixelStyle(field, 'top');
+    const fieldLeft = 100;
+    setArmyFormationFieldRect(field, {
+      left: fieldLeft,
+      top: fieldTop,
+      width: 780,
+      height: 480,
+    });
+    const viewLayer = requireArmyBattlefieldViewLayer();
+
+    dispatchArmyBattlefieldWheel(viewLayer, {
+      clientX: fieldLeft,
+      clientY: fieldTop,
+      deltaY: -10000,
+    });
+    fireEvent.pointerDown(viewLayer, {
+      pointerId: 61,
+      clientX: fieldLeft,
+      clientY: fieldTop,
+      button: 0,
+      isPrimary: true,
+    });
+    fireEvent.pointerMove(field, {
+      pointerId: 61,
+      clientX: fieldLeft + 1200,
+      clientY: fieldTop + 1200,
+    });
+    fireEvent.pointerUp(field, {
+      pointerId: 61,
+      clientX: fieldLeft + 1200,
+      clientY: fieldTop + 1200,
+    });
+
+    const viewTransform = readArmyBattlefieldViewTransform();
+    expect(viewTransform.scale).toBe(8);
+    const pieceName = placeArmyFormationPiece('helmet-01');
+    const piece = screen.getByRole<HTMLButtonElement>('button', { name: pieceName });
+    const rotationHandle = requireRotationHandleForPiece(pieceName);
+    const renderedFieldScale = Number(/^scale\(([^)]+)\)$/.exec(field.style.transform)?.[1]);
+    if (!Number.isFinite(renderedFieldScale) || renderedFieldScale <= 0) {
+      throw new Error(
+        `Max-zoom rotation test requires a positive field scale. Received ${JSON.stringify(field.style.transform)}.`,
+      );
+    }
+
+    const renderedMapScale = renderedFieldScale * viewTransform.scale;
+    const pieceLeft = readArmyInlinePixelStyle(piece, 'left');
+    const pieceTop = readArmyInlinePixelStyle(piece, 'top');
+    const pieceWidth = readArmyInlinePixelStyle(piece, 'width');
+    const pieceHeight = readArmyInlinePixelStyle(piece, 'height');
+    const pieceScreenLeft = fieldLeft + renderedFieldScale * (viewTransform.offsetXPx + viewTransform.scale * pieceLeft);
+    const pieceScreenTop = fieldTop + renderedFieldScale * (viewTransform.offsetYPx + viewTransform.scale * pieceTop);
+    const pieceScreenWidth = pieceWidth * renderedMapScale;
+    const pieceScreenHeight = pieceHeight * renderedMapScale;
+    expect(pieceScreenLeft).toBeCloseTo(fieldLeft + 8, 4);
+    expect(pieceScreenTop).toBeCloseTo(fieldTop + 8, 4);
+
+    const handleTop = readArmyInlinePixelStyle(rotationHandle, 'top');
+    const handleLeft = readArmyInlinePixelStyle(rotationHandle, 'left');
+    const handleWidth = readArmyInlinePixelStyle(rotationHandle, 'width');
+    const handleHeight = readArmyInlinePixelStyle(rotationHandle, 'height');
+    const handlePaddingTop = readArmyInlinePixelStyle(rotationHandle, 'paddingTop');
+    const handlePaddingBottom = readArmyInlinePixelStyle(rotationHandle, 'paddingBottom');
+    const handleScreenLeft =
+      fieldLeft + renderedFieldScale * (viewTransform.offsetXPx + viewTransform.scale * handleLeft);
+    const handleScreenTop =
+      fieldTop + renderedFieldScale * (viewTransform.offsetYPx + viewTransform.scale * handleTop);
+    const handleScreenWidth = handleWidth * renderedMapScale;
+    const handleScreenHeight = handleHeight * renderedMapScale;
+    const maximumTopExtensionPx = (Math.hypot(pieceWidth, pieceHeight) - pieceHeight) / 2;
+    const naturalHandleTop =
+      pieceTop - maximumTopExtensionPx - (44 + 4) / renderedMapScale;
+    const belowPieceTop =
+      pieceTop + pieceHeight + maximumTopExtensionPx + 4 / renderedMapScale;
+    const minimumVisibleTop = -viewTransform.offsetYPx / viewTransform.scale;
+    const maximumVisibleTop =
+      (480 - 44 / renderedFieldScale - viewTransform.offsetYPx) / viewTransform.scale;
+    const preferredHandleTop = naturalHandleTop < minimumVisibleTop ? belowPieceTop : naturalHandleTop;
+    const expectedHandleTop = Math.min(
+      Math.max(preferredHandleTop, minimumVisibleTop),
+      Math.max(minimumVisibleTop, maximumVisibleTop),
+    );
+    expect(handleScreenTop).toBeGreaterThanOrEqual(-0.01);
+    expect(naturalHandleTop).toBeLessThan(minimumVisibleTop);
+    expect(handleTop).toBeCloseTo(expectedHandleTop, 4);
+    expect(handleScreenWidth).toBeCloseTo(44, 2);
+    expect(handleScreenHeight).toBeCloseTo(44, 2);
+    expect(rotationHandle.classList).toContain('items-start');
+    expect(handlePaddingTop * renderedMapScale).toBeCloseTo(4, 2);
+    expect(handlePaddingBottom * renderedMapScale).toBeCloseTo(0, 2);
+    const pieceScreenCenterX = pieceScreenLeft + pieceScreenWidth / 2;
+    const pieceScreenCenterY = pieceScreenTop + pieceScreenHeight / 2;
+    expect(
+      pieceScreenCenterX < handleScreenLeft
+      || pieceScreenCenterX > handleScreenLeft + handleScreenWidth
+      || pieceScreenCenterY < handleScreenTop
+      || pieceScreenCenterY > handleScreenTop + handleScreenHeight,
+    ).toBe(true);
+    expect(handleScreenTop + handleScreenHeight).toBeLessThanOrEqual(480 * renderedFieldScale + 0.01);
+    expect(handleScreenTop - (pieceScreenTop + pieceScreenHeight)).toBeGreaterThanOrEqual(4 - 0.01);
+    expect(handleScreenTop + handlePaddingTop * renderedMapScale - (pieceScreenTop + pieceScreenHeight))
+      .toBeGreaterThanOrEqual(8 - 0.01);
+
+    mockArmyPieceBounds(
+      piece,
+      pieceScreenLeft,
+      pieceScreenTop,
+      pieceScreenWidth,
+      pieceScreenHeight,
+    );
+    const startingRotation = piece.getAttribute('data-rotation-degrees');
+    const startingPiecePosition = piecePosition(piece);
+    const viewTransformBeforeRotation = readArmyBattlefieldViewTransform();
+    const pieceCenterX = pieceScreenLeft + pieceScreenWidth / 2;
+    const pieceCenterY = pieceScreenTop + pieceScreenHeight / 2;
+    fireEvent.pointerDown(rotationHandle, {
+      pointerId: 62,
+      button: 0,
+      clientX: handleScreenLeft + handleScreenWidth / 2,
+      clientY: handleScreenTop + handleScreenHeight / 2,
+    });
+    fireEvent.pointerMove(rotationHandle, {
+      pointerId: 62,
+      clientX: pieceCenterX + pieceScreenWidth / 4,
+      clientY: pieceCenterY,
+    });
+    fireEvent.pointerUp(rotationHandle, {
+      pointerId: 62,
+      clientX: pieceCenterX + pieceScreenWidth / 4,
+      clientY: pieceCenterY,
+    });
+    expect(piece.getAttribute('data-rotation-degrees')).not.toBe(startingRotation);
+    expect(piecePosition(piece)).toBe(startingPiecePosition);
+    expect(readArmyBattlefieldViewTransform()).toEqual(viewTransformBeforeRotation);
   });
 
   it('四个战场在各自最大缩放和移出视口的视角中都把新棋子放在左上角', async () => {
@@ -2223,9 +2687,34 @@ describe('ArmyFormationCreator', () => {
     const previousButton = screen.getByRole('button', { name: '切换到上一场' });
     const addedPieceNames: string[] = [];
     const battlefieldTransforms: string[] = [];
+    let expectedBattlefieldFrameHeight: number | null = null;
+    let battlefieldFrameElement: HTMLElement | null = null;
 
     for (let battlefieldIndex = 0; battlefieldIndex < 4; battlefieldIndex += 1) {
       const field = requireArmyFormationField(battlefieldIndex);
+      const fieldFrame = field.parentElement;
+      if (!(fieldFrame instanceof HTMLElement)) {
+        throw new Error(`Battlefield ${battlefieldIndex + 1} viewport frame is missing.`);
+      }
+      const fieldTopBeforeZoom = readArmyInlinePixelStyle(field, 'top');
+      const fieldFrameHeightBeforeZoom = readArmyInlinePixelStyle(fieldFrame, 'height');
+      const fieldScaleMatch = /^scale\(([^)]+)\)$/.exec(field.style.transform);
+      const actualFieldScale = Number(fieldScaleMatch?.[1]);
+      if (!Number.isFinite(actualFieldScale) || actualFieldScale <= 0) {
+        throw new Error(
+          `Battlefield ${battlefieldIndex + 1} field scale must be positive and finite. Received ${JSON.stringify(field.style.transform)}.`,
+        );
+      }
+      const expectedFieldFrameHeight = 480 * actualFieldScale;
+      if (expectedBattlefieldFrameHeight === null) {
+        expectedBattlefieldFrameHeight = fieldFrameHeightBeforeZoom;
+      }
+      if (battlefieldFrameElement === null) {
+        battlefieldFrameElement = fieldFrame;
+      }
+      expect(fieldTopBeforeZoom).toBe(0);
+      expect(fieldFrameHeightBeforeZoom).toBeCloseTo(expectedFieldFrameHeight, 4);
+      expect(fieldFrameHeightBeforeZoom).toBeCloseTo(expectedBattlefieldFrameHeight, 4);
       setArmyFormationFieldRect(field, { left: 10, top: 20, width: 390, height: 240 });
       const viewLayer = requireArmyBattlefieldViewLayer(battlefieldIndex);
       dispatchArmyBattlefieldWheel(viewLayer, {
@@ -2254,6 +2743,8 @@ describe('ArmyFormationCreator', () => {
 
       const transformBeforeAdd = readArmyBattlefieldViewTransform(battlefieldIndex);
       battlefieldTransforms.push(viewLayer.style.transform);
+      expect(readArmyInlinePixelStyle(field, 'top')).toBe(0);
+      expect(readArmyInlinePixelStyle(fieldFrame, 'height')).toBeCloseTo(expectedFieldFrameHeight, 4);
       expect(transformBeforeAdd.scale).toBe(8);
       expect(transformBeforeAdd.offsetXPx).toBeGreaterThan(780);
       expect(transformBeforeAdd.offsetYPx).toBeGreaterThan(480);
@@ -2270,8 +2761,16 @@ describe('ArmyFormationCreator', () => {
 
       if (battlefieldIndex < 3) {
         fireEvent.click(nextButton);
+        expect(readArmyInlinePixelStyle(fieldFrame, 'height')).toBeCloseTo(
+          expectedBattlefieldFrameHeight,
+          4,
+        );
         await waitFor(() =>
           expect(screen.getByText(`战场 ${battlefieldIndex + 2}/4`, { exact: true })).toBeTruthy(),
+        );
+        expect(readArmyInlinePixelStyle(fieldFrame, 'height')).toBeCloseTo(
+          expectedBattlefieldFrameHeight,
+          4,
         );
         expect(screen.queryByRole('button', { name: pieceName })).toBeNull();
       }
@@ -2279,12 +2778,26 @@ describe('ArmyFormationCreator', () => {
 
     expect(addedPieceNames).toHaveLength(4);
     expect(new Set(battlefieldTransforms).size).toBe(4);
+    if (expectedBattlefieldFrameHeight === null) {
+      throw new Error('Expected battlefield viewport frame height is missing after the zoom loop.');
+    }
+    if (battlefieldFrameElement === null) {
+      throw new Error('Battlefield viewport frame is missing after the zoom loop.');
+    }
     for (let battlefieldIndex = 2; battlefieldIndex >= 0; battlefieldIndex -= 1) {
       fireEvent.click(previousButton);
+      expect(readArmyInlinePixelStyle(battlefieldFrameElement, 'height')).toBeCloseTo(
+        expectedBattlefieldFrameHeight,
+        4,
+      );
       await waitFor(() =>
         expect(screen.getByText(`战场 ${battlefieldIndex + 1}/4`, { exact: true })).toBeTruthy(),
       );
       expect(readArmyBattlefieldViewTransform(battlefieldIndex).scale).toBe(8);
+      expect(readArmyInlinePixelStyle(battlefieldFrameElement, 'height')).toBeCloseTo(
+        expectedBattlefieldFrameHeight,
+        4,
+      );
       expect(requireArmyBattlefieldViewLayer(battlefieldIndex).style.transform).toBe(
         battlefieldTransforms[battlefieldIndex],
       );
