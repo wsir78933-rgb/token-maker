@@ -1,5 +1,52 @@
 # WORKLOG
 
+## 交接单 · 2026-10-05 21:51 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+清点 Roll for Fantasy 的 Language Generator，在网站内实现中英文虚构语言生成器；按用户确认的布局使用一个工具容器，支持词汇生成、文本转换、拼写规则和语言参考。只创建一个「语言」工作树，使用真实内置子代理并行实现和独立审核，不使用 Orca 编排；按反馈修正主题交互、手型、局部滚动、字母映射展示和字母表展开／收起。最后按授权提交、合并本地 main，并通知可删除工作树。本次 offhand 只核对现状和写交接单。
+
+### 已完成
+
+- EN `/language-generator`、ZH `/zh/language-generator` 已实现，页面组件位于 `src/components/language-generator/`，词汇、预设、转换、参考资料、双语文案及存储模块位于 `src/lib/language-generator/`。路由为 `src/app/(en)/language-generator/page.tsx` 与 `src/app/(zh)/zh/language-generator/page.tsx`；导航、sitemap、metadata、语言 alternates 和 `public/llms.txt` 已同步接入。站点介绍、导航和页脚在工具容器外，四个功能标签位于容器内。
+- 67 个可编辑词条分为 8 类，数量为 11/7/10/11/8/7/7/6；默认显示“问候与礼貌”11 条，可切换“全部类别”。支持 25 套随机语言预设及直接选择预设；显示 23 个字母映射。已改为直接展示 `C → G` 等来源与目标，空目标显示 `H →`。字母表默认展开，标题旁提供中英文展开／收起按钮，使用本地 `useState(true)`、唯一 ARIA 控制 ID 和 `aria-expanded`；收起不改词汇结果，分类或预设变化后保持收起状态，重新展开显示当前映射。按钮具有手型，支持原生键盘操作。
+- 拼写规则包含 26 组字符规则和 26 组组合规则，字段长度上限分别为 3 和 4；组合开关默认开启，组合先于字符处理。自定义规则按字面量匹配，空来源停用、空目标删除，已转换片段受保护；未匹配中文、标点和换行保留。应用规则同时更新全部 67 个词条与自定义文本。文本转换只改拼写，不翻译含义；输入是多行文本，支持转换、清空、复制结果。
+- 8 个本地存档槽，每槽保存 104 个规则字段；不保存组合开关、词汇、自由文本及结果。空槽不能加载，覆盖前确认，加载后手动应用，存储与复制错误有反馈。参考资料为 36 个标准参考语言和 10 个社区参考语言，每种 67 个固定词条；原始参考值来自竞品，用户批准去掉页面可见来源按钮和竞品名称，不意味着参考表已经成为原创或经过词义准确性验证。未翻译任意句子，缺失参考值保留。
+- 分类点击不会再改变页面整体背景；工具交互具有手型。参考语言左侧列表和右侧表格均使用局部滚动及 `overscroll-y-contain`：鼠标在区域内滚到顶部／底部后继续滚动不会带动外层页面，移到区域外可正常滚动页面。已有真实滚轮验证覆盖边界行为。
+- 功能提交为 `8f100ea415de02a8bac9d9b830851a15d88d081f`（`Add bilingual fictional language generator`），38 个文件。合并提交为 `753832fea0f4140d27e6028227ac5d31d628a54a`（`Merge branch '语言'`），父提交为原 main 的 `f542299c88124e3e5843ac88c832e7672f435627` 与功能提交。合并期间只解决 `src/app/sitemap.ts` 和 `src/app/sitemap.test.ts` 的实际冲突，保留 Weapon Creator 与 Language Generator 的中英文路径、日期和测试。当前 main HEAD 为 `2d2e2eaeb677e621b42a794b815904d1fffea9d0`（`Update WORKLOG.md`）；合并提交及这笔 WORKLOG 提交在并行核对期间已经出现，本会话未执行这两次提交，不归因提交者。本次 offhand 重新验证两个语言提交均为 main 祖先，31 个新增语言文件与源 manifest SHA 全部一致，7 个共享文件与合并提交字节一致。未 push 或部署。
+- 合并后 main 已实际验证：语言专项 Vitest 为 13 files / 74 tests，共享接入测试为 4 files / 111 tests，共 185 项、exit 0；`pnpm typecheck`、相关文件 scoped ESLint、`pnpm exec vinext build` 均 exit 0。两路内置 agent 分别处理 sitemap 冲突和独立只读复核，Root 读取真实报告及输出。main 的 ego-browser TaskSpace 30 验证 EN/ZH 默认 23 项映射、收起、展开、手型，以及菜单同时保留武器和语言入口；已 finish，未保留该空间页面。此前源工作树已有中英文桌面／390px 窄屏、键盘和局部滚动验证；这不等于本次 main 重跑了所有完整仓库测试或全部手机交互。
+- 本次 offhand 回读：「语言」目录、Git worktree 条目、本地 `语言` 分支均不存在；本会话此前仅通知可删除，未执行删除，不归因删除者。其他「军阵素材」「微标文案」「武器」工作树仍在，不属于本任务。原语言工作树的 40003 服务已停止，随后在 main 启动本地生产预览；当前 40003 由 workerd PID 7459 监听，cwd 为主仓库，本轮 EN/ZH HTTP 均 200。预览对应 main 构建，删除原工作树不影响它，本次 offhand 未启动或停止服务。
+- 临时证据仍存在：`/tmp/language-main-merge-manifest.json`、`/tmp/language-main-merge-closure.json`、`/tmp/language-main-merge-final-review.md`、`/tmp/language-main-merge-browser.json`，以及 `/tmp/language-main-merge-tests.log`、`typecheck.log`、`lint.log`、`build.log`（后三者完整名称同样以 `language-main-merge-` 开头）。竞品数据核对为 25 × 67 = 1,675 个预设词汇结果、46 × 67 = 3,082 个参考词条，均 0 差异；该结果证明值一致，不能证明词义准确。系统清理 /tmp 后临时证据可能失效。本次 offhand 只回读文件、Git、日志、进程和 HTTP，没有重新运行测试、Lint、类型检查、构建或浏览器交互。
+
+### 做到一半
+
+无未完成的语言编码或待合并事项。未存档：本交接单按 offhand 要求仅写入 WORKLOG.md，不提交。写入前 main 工作区、暂存区和未跟踪文件均为空；写入前 WORKLOG SHA-256 为 `baacbb86ce22624b2a23f7719f4c611f4933f409e240537cd9d99ee2dc2ddf32`，旧内容原样保留。
+
+### 下一步
+
+下一班输入 `$pickup`，先核对 main HEAD、工作区和本条交接，再按用户的新需求继续。语言功能已经在 main，原工作树和分支已不存在，无需再次合并、删除或重建工作树。保留本交接单未提交状态；后续推送、部署、新增依赖或新需求需取得相应授权。后续编码 Task spec 必须显式要求高内聚低耦合、单一职责、主函数调度、公开函数／类型／命令通信、KISS、Fail Fast（具体异常值，不吞未知异常、不 silent fail）、YAGNI 和精确命名，保持 EN/ZH 同步，不使用 Orca 编排。
+
+### 踩过的坑
+
+- 竞品说明文字写 4 个存档，但真实 HTML／JS 有 8 个，以实际控件为准。默认预设链式生成语义保留；自定义规则采用已确认的字面量语义，与竞品正则／连续替换的边界不同。不要把普通字符如 `[` 当成正则表达式输入。
+- `/tmp/language-feature-audit-final.md` 是展开／收起和映射直接展示修复前的报告，关于“始终显示、缺少开关、悬浮才见映射”的结论已过期。当前源码、74 项专项测试和 main 浏览器结果才是这些功能的当前证据。原创语言创作指南和额外操作示例没有纳入已确认实现范围，不要因旧报告自行补做新页面内容。
+- 仅给容器加 `hidden` 属性但仍保留 `flex` 显示样式会影响真正隐藏；当前使用状态控制 hidden／flex 类，收起区域实测高度为 0。参考列表／表格要保持滚动边界隔离，不能让局部滚动继续带动页面。
+- main 在工作期间新增武器入口，导致两个 sitemap 文件实际冲突；解决必须同时保留两种工具。并行操作期间 main HEAD 又出现合并和 WORKLOG 提交，不能要求 HEAD 必须等于源提交，也不能 reset 共享 main。核对祖先关系、文件字节、scope 和现有 dirty 内容后收尾。
+- 项目默认 Next 构建曾在既有 Cloudflare Workers API 导入阶段失败，当前生产构建证据是 Vinext，不是默认 `pnpm build` 已通过。完整 `build:vinext` 脚本还包含全仓库测试与 Workers 类型／dry-run 检查，不能用本次 scoped lint、185 项测试和直接 Vinext 构建代替整条发布链通过。`pnpm dev` 会先处理 40001 端口，独立预览应避免影响现有服务。
+- ego-browser 不是 Playwright，不使用 `locator()` 等未支持 API；一个验证目标使用一个 TaskSpace，结束时 finish 一次。CDP 手机 viewport 覆盖在 Node 轮次间需重新设定，交还原生指针前清除覆盖。本地成功、合并、HTTP 200 与部署是不同证据。
+
+### 怎么验证
+
+以下为接班可重跑步骤；本次 offhand 仅回读既有证据及上述 HTTP：
+
+- Git：`git status --short --branch`；`git log -3 --oneline`；`git merge-base --is-ancestor 8f100ea415de02a8bac9d9b830851a15d88d081f main`；`git merge-base --is-ancestor 753832fea0f4140d27e6028227ac5d31d628a54a main`；`git worktree list --porcelain`。本条写完预期只有 WORKLOG.md 为 unstaged，暂存区为空。
+- 语言专项：`pnpm exec vitest run src/lib/language-generator src/components/language-generator src/app/language-generator-routes.test.tsx --maxWorkers=4`，上次 13 files / 74 tests；共享接入：`pnpm exec vitest run src/app/sitemap.test.ts src/app/site-routes.test.tsx src/lib/content-site-navigation.test.ts src/lib/llms.test.ts --maxWorkers=4`，上次 4 files / 111 tests。
+- 类型：`pnpm typecheck`。Scoped Lint：`pnpm exec eslint src/components/language-generator src/lib/language-generator 'src/app/(en)/language-generator/page.tsx' 'src/app/(zh)/zh/language-generator/page.tsx' src/app/language-generator-routes.test.tsx src/app/site-routes.test.tsx src/app/sitemap.test.ts src/app/sitemap.ts src/lib/content-site-navigation.test.ts src/lib/content-site-navigation.ts src/lib/llms.test.ts`。生产构建：`pnpm exec vinext build`。需要完整发布检查时独立执行 package.json 的既有检查，dry-run 不代表部署，不运行真实部署命令。
+- 预览：先确认 40003 监听及 cwd 仍是 main，再用本地 ego-browser 打开 `http://127.0.0.1:40003/zh/language-generator` 与 `http://127.0.0.1:40003/language-generator`。检查顶部四个标签；预设 1–25、全部类别 67 条；字母来源／目标直接展示及展开／收起；收起期间改分类／预设后保持收起，重新展开为当前映射；Enter／Space 操作及手型。检查桌面和 390px 窄屏无页面横向溢出。
+- 文本和规则：输入英文短句，修改来源／目标并应用；确认词汇和文本同时更新。中文、标点、换行和未匹配字符保留；组合开启时先匹配组合。确认空来源停用、空目标删除、复制与清空可用。文本转换不需要勾选词汇条目。
+- 存档：八槽保存／加载、空槽禁用、覆盖确认；只恢复规则字段，加载后手动应用；不把组合开关或自由文本误当存档内容。参考：切换标准／社区语言，检查缺项提示；鼠标在左右局部滚动区域内到顶部／底部后继续滚轮，外层页面应固定，挪到外部后页面正常滚动。
+- 集成：免费工具菜单同时含 Weapon Creator 和 Language Generator；sitemap 中两种工具 EN/ZH 条目及 reciprocal alternates 都在。临时独立审核报告与 closure JSON 记录了 38 文件范围、31 文件 SHA 和合并父提交，可与当前 Git 重新比对。
+
 ## 交接单 · 2026-10-05 20:42 CST +0800 · Codex
 
 ### 本次目标
