@@ -1,5 +1,47 @@
 # WORKLOG
 
+## 交接单 · 2026-10-05 20:42 CST +0800 · Codex
+
+### 本次目标
+
+清点 Roll for Fantasy 的 Weapon Creator，并在网站中实现与 Outfit Creator 页面风格一致的奇幻武器拼装工具，面向 D&D / TRPG 玩家、DM/GM 和世界观创作者。只创建一个「武器」工作树，使用真实内置子代理并行实现和独立审核，不使用 Orca 编排；素材使用竞品原部件，全部升级为用户选择的 A 方案，逐张核对后替换旧素材；不接入分享。最后按用户授权提交、合并本地 main，并通知可移除工作树。本次 offhand 只核对现状和写交接单。
+
+### 已完成
+
+- EN `/weapon-creator`、ZH `/zh/weapon-creator` 均已实现，并同步导航、sitemap、canonical 和语言 alternates。核心模块位于 `src/lib/weapon-creator/`，页面组件位于 `src/components/weapon-creator/`；两种语言的路由位于 `src/app/(en)/weapon-creator/page.tsx`、`src/app/(zh)/zh/weapon-creator/page.tsx`。17 类、540 个部件，支持跨类别组合、同类别替换、再次点击移除、当前组合清空及四个本地保存槽，刷新可恢复；存储键为 `tokenmaker.weapon-creator.saves`。武器工具没有分享入口或分享 API 调用，仓库其他模块的分享功能未改。
+- 用户确认的 A 方案为非 AI 四倍保形平滑：`sharp cubic + bounded transparent fringe`，保留原有外形、比例和纹样，允许抗锯齿边缘变化，不新增真实细节；不是逐像素完全相同的重绘。540 张均已技术核验和逐张视觉复核。当前统一公开路径函数 `weaponPieceImagePath()` 返回 `/weapon-creator/high-resolution/{id}-4x.png`，列表、预览、新生成的保存缩略图及下载都使用同批高清部件。预览与保存缩略图仍为 800×635，透明 PNG 下载为 3200×2540，图层位置与顺序保留。
+- 12 张案例图均为 3200×2540 PNG，保留原文件名、组合、层序和暖米色背景 `#fffaf4`；案例背景不透明。已逐张新旧视觉对比，独立审核还用当前高清部件和公开 catalog 坐标重新合成，12/12 解码后的 RGBA 像素完全一致。旧 540 张网站 PNG、重复样张目录和已完成的一次性生成脚本已移除；来源 manifest 和历史 SHA 保留作溯源，不是运行时旧图引用。
+- 武器提交 `91cd4cc49e3d359a4a9c6ff3ddb8580ee2b2eb29`（`Add fantasy weapon creator with verified 4x assets`）包含 590 个文件，已从 `61624e0` fast-forward 合入 main。合并后 main 新增 `f542299c88124e3e5843ac88c832e7672f435627`（`1`），只包含原有 214 项纹章改动；本会话未执行这笔提交，不归因提交者。当前 main HEAD 仍为 `f542299`，武器提交是 main 的祖先。本次 offhand 逐文件回读，590 个武器文件仍与武器提交字节完全一致，高清 540/540 和案例 12/12 SHA 均与 manifest 一致；高清 manifest SHA 为 `e28dcec1f3460b52a8cc33de60445968a2e35be7fb104d7bcc7537beddf54354`。
+- 合并前原武器工作树验证：全量 `pnpm test --maxWorkers=4` 为 237 files / 2544 tests、exit 0；`pnpm typecheck`、`pnpm lint`、`pnpm exec vinext build`、`pnpm check:workers-types`、`pnpm check:workers-build` 均 exit 0。Lint 有 8 条既有警告，位于 `StructuredData.test.tsx` 和 `src/lib/blog/index.test.ts`。合并后 main 相关测试为 14 files / 158 tests、exit 0；独立提交前与 release 审核 findings 均为 0。本次 offhand 没有重跑测试、Lint、类型检查或构建。
+- 原工作树 ego-browser 已实际加载 17 分类、540 张高清部件，并记录预览、保存缩略图和下载的真实高清来源；验证四槽恢复、3200×2540 下载、390px 窄屏及原有保存组合保留。本地生产构建 40014 的 EN/ZH 页面均 200，旧图地址 404，高清图和 12 案例的 HTTP 哈希匹配。合并后的 main 在 TaskSpace 14 验证双语页面：各初始分类 30 张高清图正常加载，800×635 canvas、四槽、无旧图和编辑器错误；该空间已 finish，保留中文 main 页面。这不是合并后 main 对全部 540 部件和所有交互的重新验收。
+- 本次 offhand 回读：「武器」工作树目录、Git worktree 条目及本地分支均不存在；本会话此前只通知可移除，未执行删除，不归因删除者。自建 40002 和本地生产 40014 预览已在收尾时停止；本轮确认 40002 无监听。40001 当前由 PID 26609 监听，cwd 为主仓库，本轮未操作它。其他「军阵素材」「语言」工作树仍存在，不属于本任务。
+- 已提交证据：`docs/weapon-creator/high-resolution-verification.json` 为 540 张生成与逐张审核记录，`docs/weapon-creator/replacement-verification.json` 为全部替换、12 案例独立复核和构建验证记录。两份文档的旧工作树路径及 `delivery` 是当时快照，不能拿其中合并前的 `merged: false` 当当前 Git 状态。合并与 main 浏览器证据为 `/tmp/weapon-main-merge/post-merge-readback.json`、`main-tests.log`、`main-browser.json`。本轮确认 `/tmp/weapon-hd-replacement/` 中原图备份、旧案例备份、独立审核、生产 HTTP 与实际浏览器 canvas PNG 仍存在；系统清理 /tmp 后这些临时证据可能失效。本会话未 push 或部署。
+
+### 做到一半
+
+无未完成武器编码、素材替换或待合并事项。未存档：本次交接单按 offhand 要求只写入 WORKLOG.md，不提交。写入前 main 工作区、暂存区、未跟踪文件均为空；本次没有新增依赖或修改其他仓库文件。
+
+### 下一步
+
+下一班输入 `$pickup`，先核对 main HEAD、工作区及本条交接，再按用户的新需求继续。武器功能已在 main，原工作树和分支已不存在，无需再次合并或删除；不要重建工作树、重复处理高清素材，或触碰「军阵素材」「语言」任务。后续编码 Task spec 需显式要求高内聚低耦合、单一职责、通过公开导出通信、KISS、Fail Fast（指出具体异常值、不吞未知异常、不 silent fail）、YAGNI 和精确命名。保持 WORKLOG 未提交；推送、部署及新增需求须有相应用户授权。
+
+### 踩过的坑
+
+- 四倍素材只增加像素尺寸并平滑边缘，不产生原图没有的真实细节。最初 cubic 插值在 177 张中产生 602 个边界外 alpha=1 像素；仅按已确认边界约束清理这些透明 fringe，形状与纹样未重绘，最终 540/540 技术与视觉通过。不要重新用 AI 绘图替换或声称严格零像素差异。
+- 直接 `tsc --noEmit` 曾受 `.next` 生成路由类型影响；项目 `pnpm typecheck` 先运行 `next typegen`，最终通过。默认 Next build 曾在既有 `/api/share` 收集阶段无法加载 `cloudflare:workers`，生产构建验证使用 Vinext；不要将这误记为武器新增分享或默认 Next build 已通过。
+- 本地 Next dev 请求已删除旧图时，触发现有 `src/app/not-found.tsx` 缺少 root layout 的编译错误，导致该预览需重启；只恢复了本任务自建 40002 服务，未修范围外路由。旧图 404 在本地生产构建验证，复核时不要用已删除素材地址污染正在使用的 Next dev。
+- ego-browser 的 `snapshot({scope: 'subtree'})` 要求真实 `@ref`，不能传 CSS root；截图曾出现 CDP 超时与 Unable to capture screenshot。最终提取并实际查看浏览器 800×635 canvas PNG；不要声称替换阶段取得了完整页面截图。合并后的 main 浏览器核验有真实 DOM/图片加载证据。
+- `git diff --check` 不检查未跟踪文件；暂存后发现并清理了两个末尾多余空行，`git diff --cached --check` 最终通过。main 在核对期间新增纹章提交，不能要求 main HEAD 必须等于武器提交；应查武器提交是否为 main 祖先及590个文件内容是否完整，不能 reset 共享 main。
+
+### 怎么验证
+
+以下为接班可重跑步骤，本次 offhand 仅回读 Git、文件 SHA、已有日志和进程状态，没有重新运行功能检查：
+
+- Git：`git status --short --branch`、`git log -3 --oneline`、`git merge-base --is-ancestor 91cd4cc49e3d359a4a9c6ff3ddb8580ee2b2eb29 main`、`git worktree list --porcelain`。本交接写完预期仅 WORKLOG.md 为 unstaged，暂存区为空。
+- main 相关测试：`pnpm exec vitest run src/lib/weapon-creator src/components/weapon-creator src/app/weapon-creator-routes.test.tsx src/app/site-routes.test.tsx src/app/sitemap.test.ts src/lib/content-site-navigation.test.ts --maxWorkers=4`；类型：`pnpm typecheck`；Lint：`pnpm lint`。需要完整验证时分别执行 `pnpm test --maxWorkers=4`、`pnpm exec vinext build`、`pnpm check:workers-types`、`pnpm check:workers-build`；最后一项仅 dry-run，不是部署。
+- UI：先核实 40001 指向当前 main，再用 ego-browser 打开 `http://localhost:40001/weapon-creator` 与 `http://localhost:40001/zh/weapon-creator`。检查 17 分类；同类替换、再次点击移除、跨类叠放；四槽分别保存后刷新恢复；清空只影响当前槽；下载 PNG 应为 3200×2540 且背景透明；12 案例背景仍为暖米色。以桌面与390px窄屏检查显示，无分享入口。
+- 素材：`public/weapon-creator/high-resolution/high-resolution-manifest.json` 应列出540张，其 output SHA/尺寸对应磁盘 `{id}-4x.png`；`public/weapon-creator/cases/case-manifest.json` 应有12张3200×2540案例。旧 `public/weapon-creator/rollforfantasy/` 和 `high-resolution-samples/` 不应存在；来源manifest里的旧路径是历史溯源。持久化报告当前均为 PASS；合并当前状态以 Git 和本条交接为准。
+
 ## 交接单 · 2026-10-05 14:40 CST +0800 · Codex
 
 ### 本次目标
