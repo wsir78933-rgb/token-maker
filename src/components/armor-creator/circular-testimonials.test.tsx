@@ -1,13 +1,19 @@
 // @vitest-environment jsdom
 
 import { act, cleanup, fireEvent, render, waitFor, within } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { hydrateRoot } from 'react-dom/client';
+import { renderToString } from 'react-dom/server';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
 
 import {
   CircularTestimonials,
   type CircularTestimonial,
 } from '@/components/armor-creator/circular-testimonials';
+
+const reducedMotionState = vi.hoisted(() => ({ enabled: false }));
+const REDUCED_MOTION_MEDIA_QUERY = '(prefers-reduced-motion: reduce)';
+const reducedMotionMediaQueryListeners = new Set<(event: MediaQueryListEvent) => void>();
 
 vi.mock('motion/react', async (importOriginal) => {
   const actual = await importOriginal<typeof import('motion/react')>();
@@ -102,6 +108,48 @@ function renderedCarousel(testimonials: readonly CircularTestimonial[] = TESTIMO
   );
 }
 
+function installReducedMotionMatchMedia(): void {
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn().mockImplementation((media: string) => ({
+      get matches() {
+        return media === REDUCED_MOTION_MEDIA_QUERY && reducedMotionState.enabled;
+      },
+      media,
+      onchange: null,
+      addEventListener: (
+        eventName: string,
+        listener: EventListenerOrEventListenerObject | null,
+      ) => {
+        if (eventName === 'change' && typeof listener === 'function') {
+          reducedMotionMediaQueryListeners.add(listener as (event: MediaQueryListEvent) => void);
+        }
+      },
+      removeEventListener: (
+        eventName: string,
+        listener: EventListenerOrEventListenerObject | null,
+      ) => {
+        if (eventName === 'change' && typeof listener === 'function') {
+          reducedMotionMediaQueryListeners.delete(listener as (event: MediaQueryListEvent) => void);
+        }
+      },
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  );
+}
+
+function changeReducedMotionPreference(enabled: boolean): void {
+  reducedMotionState.enabled = enabled;
+  const event = {
+    matches: enabled,
+    media: REDUCED_MOTION_MEDIA_QUERY,
+  } as MediaQueryListEvent;
+
+  reducedMotionMediaQueryListeners.forEach((listener) => listener(event));
+}
+
 function renderedCarouselWithInvalidStyleOption(field: 'colors' | 'fontSizes', invalidValue: unknown) {
   if (field === 'colors') {
     return render(
@@ -160,8 +208,17 @@ function activeQuoteText(carousel: HTMLElement): string | null {
 }
 
 describe('CircularTestimonials', () => {
+  beforeEach(() => {
+    reducedMotionState.enabled = false;
+    reducedMotionMediaQueryListeners.clear();
+    installReducedMotionMatchMedia();
+  });
+
   afterEach(() => {
     cleanup();
+    reducedMotionState.enabled = false;
+    reducedMotionMediaQueryListeners.clear();
+    vi.unstubAllGlobals();
   });
 
   it('前后按钮循环切换案例并且保留可访问按钮名称', async () => {
@@ -514,6 +571,230 @@ describe('CircularTestimonials', () => {
       setIntervalSpy.mockRestore();
       clearIntervalSpy.mockRestore();
       vi.useRealTimers();
+    }
+  });
+
+  it('手动切换后停止自动播放', async () => {
+    vi.useFakeTimers();
+    const setIntervalSpy = vi.spyOn(window, 'setInterval');
+    const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
+
+    try {
+      const { container } = render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Autoplay carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+        />,
+      );
+      const [carousel] = carouselRegions(container);
+      if (!carousel) {
+        throw new Error('CircularTestimonials test expected one carousel region.');
+      }
+
+      const autoplayIntervalId = setIntervalSpy.mock.results[0]?.value;
+      if (autoplayIntervalId === undefined) {
+        throw new Error('CircularTestimonials test expected an autoplay interval.');
+      }
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5000);
+      });
+      expect(activeQuoteText(carousel)).toBe('Second armor case quote.');
+
+      fireEvent.click(within(carousel).getByRole('button', { name: NEXT_LABEL }));
+      expect(activeQuoteText(carousel)).toBe('Third armor case quote.');
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5000);
+      });
+      expect(activeQuoteText(carousel)).toBe('Third armor case quote.');
+      expect(clearIntervalSpy).toHaveBeenCalledWith(autoplayIntervalId);
+    } finally {
+      cleanup();
+      vi.clearAllTimers();
+      setIntervalSpy.mockRestore();
+      clearIntervalSpy.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
+  it('使用可选图片 alt，并让隐藏图片保持空 alt', async () => {
+    const testimonialsWithAlt: readonly CircularTestimonial[] = [
+      { ...TESTIMONIALS[0], alt: 'First character in ceremonial armor' },
+      ...TESTIMONIALS.slice(1),
+    ];
+    const { container } = renderedCarousel(testimonialsWithAlt);
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    expect(within(carousel).getByRole('img', { name: 'First character in ceremonial armor' })).toBeTruthy();
+
+    fireEvent.click(within(carousel).getByRole('button', { name: NEXT_LABEL }));
+    await waitFor(() => expect(activeQuoteText(carousel)).toBe('Second armor case quote.'));
+
+    expect(testimonialImageLayer(carousel, 0).querySelector('img')?.getAttribute('alt')).toBe('');
+  });
+
+  it('拒绝空的可选图片 alt 并报告收到的值', () => {
+    expect(() =>
+      renderedCarousel([
+        {
+          ...TESTIMONIALS[0],
+          alt: '  ',
+        },
+      ]),
+    ).toThrow('CircularTestimonials testimonials[0].alt must be a non-empty string. Received "  ".');
+  });
+
+  it('拒绝非布尔 clipImageStack 并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid clipping carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          clipImageStack={'false' as never}
+        />,
+      ),
+    ).toThrow('CircularTestimonials clipImageStack must be a boolean. Received "false".');
+  });
+
+  it('保留英文空格、对中文分词并支持中英混合文案自然换行', () => {
+    const chineseQuote = '林地游侠适合森林旅行。';
+    const englishQuote = 'A wrap  coat, panelled trousers.';
+    const mixedChineseEnglishQuote =
+      '泡袖上衣、围裙式长裙与简洁短靴，适合旅店经营者、酒馆联系人等日常 NPC。';
+    const { container } = render(
+      <>
+        <CircularTestimonials
+          testimonials={[{ ...TESTIMONIALS[0], quote: chineseQuote }]}
+          ariaLabel="Chinese cases"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+        />
+        <CircularTestimonials
+          testimonials={[{ ...TESTIMONIALS[0], quote: englishQuote }]}
+          ariaLabel="English cases"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+        />
+        <CircularTestimonials
+          testimonials={[{ ...TESTIMONIALS[0], quote: mixedChineseEnglishQuote }]}
+          ariaLabel="Mixed Chinese and English cases"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+        />
+      </>,
+    );
+    const [chineseCarousel, englishCarousel, mixedCarousel] = carouselRegions(container);
+    if (!chineseCarousel || !englishCarousel || !mixedCarousel) {
+      throw new Error('CircularTestimonials test expected three carousel regions.');
+    }
+
+    const chineseQuoteElement = chineseCarousel.querySelector<HTMLElement>('[data-part="testimonial-quote"]');
+    const englishQuoteElement = englishCarousel.querySelector<HTMLElement>('[data-part="testimonial-quote"]');
+    const mixedQuoteElement = mixedCarousel.querySelector<HTMLElement>('[data-part="testimonial-quote"]');
+    const mixedQuoteSegments = Array.from(
+      mixedQuoteElement?.querySelectorAll('span') ?? [],
+      (segment) => segment.textContent ?? '',
+    );
+    expect(chineseQuoteElement?.textContent).toBe(chineseQuote);
+    expect(chineseQuoteElement?.querySelectorAll('span').length).toBeGreaterThan(1);
+    expect(englishQuoteElement?.textContent).toBe(englishQuote);
+    expect(mixedQuoteElement?.textContent).toBe(mixedChineseEnglishQuote);
+    expect(mixedQuoteSegments.length).toBeGreaterThan(1);
+    expect(Math.max(...mixedQuoteSegments.map((segment) => segment.length))).toBeLessThan(20);
+    expect(mixedQuoteSegments.some((segment) => segment.endsWith('、'))).toBe(true);
+    expect(mixedQuoteSegments.some((segment) => segment.endsWith('。'))).toBe(true);
+    expect(mixedQuoteSegments).not.toContain('、');
+    expect(mixedQuoteSegments).not.toContain('。');
+  });
+
+  it('reduced motion 会关闭自动播放、模糊和长位移动画', () => {
+    vi.useFakeTimers();
+    reducedMotionState.enabled = true;
+    const setIntervalSpy = vi.spyOn(window, 'setInterval');
+
+    try {
+      const { container } = renderedCarousel();
+      const [carousel] = carouselRegions(container);
+      if (!carousel) {
+        throw new Error('CircularTestimonials test expected one carousel region.');
+      }
+
+      expect(setIntervalSpy.mock.calls.some(([, intervalMilliseconds]) => intervalMilliseconds === 5000)).toBe(false);
+      expect(testimonialImageLayer(carousel, 0).style.transition).toBe('none');
+      const quoteSpan = carousel.querySelector<HTMLElement>('[data-part="testimonial-quote"] span');
+      expect(quoteSpan?.style.filter).toBe('none');
+      expect(quoteSpan?.style.transform).toBe('none');
+    } finally {
+      cleanup();
+      vi.clearAllTimers();
+      setIntervalSpy.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
+  it('SSR hydration 使用服务端快照并在客户端应用 reduced motion', async () => {
+    const setIntervalSpy = vi.spyOn(window, 'setInterval');
+    const recoverableErrors: unknown[] = [];
+    const container = document.createElement('div');
+    container.innerHTML = renderToString(
+      <CircularTestimonials
+        testimonials={TESTIMONIALS}
+        ariaLabel="Hydrated armor cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+      />,
+    );
+    document.body.append(container);
+    changeReducedMotionPreference(true);
+
+    const serverImageLayer = container.querySelector<HTMLElement>('[data-index="0"]');
+    expect(serverImageLayer?.style.transition).toMatch(TESTIMONIAL_IMAGE_TRANSITION_STYLE);
+
+    let hydratedRoot: ReturnType<typeof hydrateRoot> | null = null;
+    try {
+      hydratedRoot = await act(async () => {
+        const root = hydrateRoot(
+          container,
+          <CircularTestimonials
+            testimonials={TESTIMONIALS}
+            ariaLabel="Hydrated armor cases"
+            previousLabel={PREVIOUS_LABEL}
+            nextLabel={NEXT_LABEL}
+          />,
+          { onRecoverableError: (error) => recoverableErrors.push(error) },
+        );
+        await Promise.resolve();
+        return root;
+      });
+
+      await waitFor(() => {
+        expect(container.querySelector<HTMLElement>('[data-index="0"]')?.style.transition).toBe('none');
+        expect(container.querySelector<HTMLElement>('[data-part="testimonial-quote"] span')?.style.filter).toBe('none');
+      });
+
+      expect(setIntervalSpy.mock.calls.some(([, intervalMilliseconds]) => intervalMilliseconds === 5000)).toBe(false);
+      expect(recoverableErrors).toEqual([]);
+    } finally {
+      const rootToUnmount = hydratedRoot;
+      if (rootToUnmount !== null) {
+        await act(async () => {
+          rootToUnmount.unmount();
+        });
+      }
+      container.remove();
+      setIntervalSpy.mockRestore();
     }
   });
 

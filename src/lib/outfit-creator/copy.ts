@@ -32,6 +32,40 @@ export type OutfitCreatorFeatureOverviewCopy = {
   ];
 };
 
+export type OutfitCreatorCaseStudyCopy = {
+  name: string;
+  designation: string;
+  quote: string;
+  src: string;
+  alt: string;
+};
+
+export type OutfitCreatorCaseStudyGroupCopy = {
+  id: string;
+  title: string;
+  description: string;
+  imagePosition: 'left' | 'right';
+  carouselLabel: string;
+  previousLabel: string;
+  nextLabel: string;
+  examples: readonly [
+    OutfitCreatorCaseStudyCopy,
+    OutfitCreatorCaseStudyCopy,
+    OutfitCreatorCaseStudyCopy,
+    OutfitCreatorCaseStudyCopy,
+  ];
+};
+
+export type OutfitCreatorCaseStudiesCopy = {
+  title: string;
+  description: string;
+  groups: readonly [
+    OutfitCreatorCaseStudyGroupCopy,
+    OutfitCreatorCaseStudyGroupCopy,
+    OutfitCreatorCaseStudyGroupCopy,
+  ];
+};
+
 export type OutfitCreatorHowToUseStepCopy = {
   title: string;
   description: string;
@@ -82,6 +116,7 @@ export type OutfitCreatorCopy = {
   replaceSaveConfirm: (slotNumber: number) => string;
   whatIsTitle: string;
   whatIsDescription: string;
+  caseStudies: OutfitCreatorCaseStudiesCopy;
   featureOverview: OutfitCreatorFeatureOverviewCopy;
   howToUseEyebrow: string;
   howToUseTitle: string;
@@ -102,6 +137,285 @@ export type OutfitCreatorCopy = {
     OutfitCreatorFaqItemCopy,
     OutfitCreatorFaqItemCopy,
   ];
+};
+
+const OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS = {
+  woodlandRanger: '/outfit-creator/cases/01-woodland-ranger.png',
+  stealthRogue: '/outfit-creator/cases/02-stealth-rogue.png',
+  travellingBard: '/outfit-creator/cases/03-travelling-bard.png',
+  academyMage: '/outfit-creator/cases/04-academy-mage.png',
+  tavernKeeper: '/outfit-creator/cases/05-tavern-keeper.png',
+  caravanMerchant: '/outfit-creator/cases/06-caravan-merchant.png',
+  courtDiplomat: '/outfit-creator/cases/07-court-diplomat.png',
+  nobleHeir: '/outfit-creator/cases/08-noble-heir.png',
+  desertTraveller: '/outfit-creator/cases/09-desert-traveller.png',
+  northernExplorer: '/outfit-creator/cases/10-northern-explorer.png',
+  starshipPilot: '/outfit-creator/cases/11-starship-pilot.png',
+  spaceStationEngineer: '/outfit-creator/cases/12-space-station-engineer.png',
+} as const;
+
+const englishOutfitCreatorCaseStudies: OutfitCreatorCaseStudiesCopy = {
+  title: 'What can you do with Outfit Creator?',
+  description:
+    'One tool, many characters. From RPG / D&D adventurers and NPCs to characters from fantasy and science-fiction worlds, explore 12 outfit examples to inspire your adventures, novels, and worldbuilding.',
+  groups: [
+    {
+      id: 'rpg',
+      title: 'RPG / D&D character roles',
+      description:
+        'Four outfit references for RPG and D&D character roles, from woodland travel to academy study.',
+      imagePosition: 'right',
+      carouselLabel: 'RPG / D&D character role examples',
+      previousLabel: 'Previous RPG character example',
+      nextLabel: 'Next RPG character example',
+      examples: [
+        {
+          name: 'Woodland Ranger',
+          designation: 'RPG / D&D character example',
+          quote:
+            'A wrap coat, panelled trousers, lace-up boots and gloves for a woodland scout or travelling ranger.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.woodlandRanger,
+          alt: 'Female character model wearing a wrap coat, panelled trousers, lace-up boots, gloves and a scarf.',
+        },
+        {
+          name: 'Stealth Rogue',
+          designation: 'RPG / D&D character example',
+          quote:
+            'A fitted folded top, cross-laced trousers and a slim neck wrap create a compact silhouette for a stealthy rogue.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.stealthRogue,
+          alt: 'Male character model wearing a folded top, cross-laced trousers, boots, gloves and a neck wrap.',
+        },
+        {
+          name: 'Travelling Bard',
+          designation: 'RPG / D&D character example',
+          quote:
+            'A tailcoat, decorative neckline and striped trousers for tavern performances, touring adventures and town gatherings.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.travellingBard,
+          alt: 'Male character model wearing a tailcoat, striped trousers, a decorative cravat and lace-up shoes.',
+        },
+        {
+          name: 'Academy Mage',
+          designation: 'RPG / D&D character example',
+          quote:
+            'A long coat and long skirt form a formal, vertical silhouette for an academy-trained mage.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.academyMage,
+          alt: 'Female character model wearing a long coat, a bordered long skirt and ankle boots.',
+        },
+      ],
+    },
+    {
+      id: 'npcs',
+      title: 'NPCs and social roles',
+      description:
+        'Four outfit references for recurring NPCs and social roles, from tavern work to court events.',
+      imagePosition: 'left',
+      carouselLabel: 'NPC and social role examples',
+      previousLabel: 'Previous NPC example',
+      nextLabel: 'Next NPC example',
+      examples: [
+        {
+          name: 'Tavern Keeper',
+          designation: 'Everyday NPC example',
+          quote:
+            'A puff-sleeved blouse, apron-style skirt and simple ankle boots for an innkeeper or recurring tavern contact.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.tavernKeeper,
+          alt: 'Female character model wearing a puff-sleeved blouse, an apron-style skirt, a narrow belt and ankle boots.',
+        },
+        {
+          name: 'Caravan Merchant',
+          designation: 'Travelling NPC example',
+          quote:
+            'A long coat, straight trousers and a crossed scarf for a caravan trader travelling between towns.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.caravanMerchant,
+          alt: 'Male character model wearing a long coat, straight trousers, boots and a crossed scarf.',
+        },
+        {
+          name: 'Court Diplomat',
+          designation: 'Court role example',
+          quote:
+            'A tailored lapel coat, neat trousers and a cravat for court audiences, negotiations and noble gatherings.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.courtDiplomat,
+          alt: 'Male character model wearing a tailored lapel coat, neat trousers, a cravat and ankle boots.',
+        },
+        {
+          name: 'Noble Heir',
+          designation: 'Noble role example',
+          quote:
+            'A draped coat, geometric-panel skirt and decorative gloves for a family banquet or succession ceremony.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.nobleHeir,
+          alt: 'Female character model wearing a draped coat, a geometric-panel skirt, decorative gloves and lace-up shoes.',
+        },
+      ],
+    },
+    {
+      id: 'settings',
+      title: 'Climate and science-fiction settings',
+      description:
+        'Four outfit references for travel, climate, and science-fiction workwear.',
+      imagePosition: 'right',
+      carouselLabel: 'Climate and science-fiction outfit examples',
+      previousLabel: 'Previous setting example',
+      nextLabel: 'Next setting example',
+      examples: [
+        {
+          name: 'Desert Traveller',
+          designation: 'Environment setting example',
+          quote:
+            'Loose trousers, a short-sleeved top and a broad scarf offer a silhouette reference for desert trade routes and arid journeys.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.desertTraveller,
+          alt: 'Male character model wearing a short-sleeved top, loose trousers, a broad scarf, a belt and ankle boots.',
+        },
+        {
+          name: 'Northern Explorer',
+          designation: 'Environment setting example',
+          quote:
+            'A layered coat, broad neck wrap, tall boots and gloves give a northern traveller a covered, layered silhouette.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.northernExplorer,
+          alt: 'Female character model wearing a layered coat, a broad neck wrap, trousers, tall boots and gloves.',
+        },
+        {
+          name: 'Starship Pilot',
+          designation: 'Science-fiction character example',
+          quote:
+            'A short coat, collared top and panelled trousers as a workwear reference for a starship pilot.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.starshipPilot,
+          alt: 'Female character model wearing a short coat, panelled trousers, boots and gloves.',
+        },
+        {
+          name: 'Space Station Engineer',
+          designation: 'Science-fiction character example',
+          quote:
+            'A wrap-front work coat, pocketed trousers, strapped boots and gloves for a space station maintenance character.',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.spaceStationEngineer,
+          alt: 'Male character model wearing a wrap-front work coat, pocketed trousers, strapped boots and gloves.',
+        },
+      ],
+    },
+  ],
+};
+
+const chineseOutfitCreatorCaseStudies: OutfitCreatorCaseStudiesCopy = {
+  title: '用服装搭配工具能做什么',
+  description: '一个工具，搭出各种角色。从 RPG / D&D 冒险者、故事中的 NPC，到奇幻与科幻世界的居民——12 套穿搭案例，为你的冒险、小说和世界观提供灵感。',
+  groups: [
+    {
+      id: 'rpg',
+      title: 'RPG / D&D 角色职业',
+      description: '用四个角色职业案例参考 RPG / D&D 角色的服装轮廓。',
+      imagePosition: 'right',
+      carouselLabel: 'RPG / D&D 角色职业案例轮播',
+      previousLabel: '上一个 RPG / D&D 角色案例',
+      nextLabel: '下一个 RPG / D&D 角色案例',
+      examples: [
+        {
+          name: '林地游侠',
+          designation: 'RPG / D&D 角色案例',
+          quote: '交叠外套搭配分段长裤、系带靴和手套，为林间侦察与野外旅行提供角色穿搭参考。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.woodlandRanger,
+          alt: '女性角色模型穿着交叠外套、分段长裤、系带靴、手套与围巾。',
+        },
+        {
+          name: '潜行盗贼',
+          designation: 'RPG / D&D 角色案例',
+          quote: '贴身褶纹上衣、交叉绑带长裤和窄领围巾，突出灵活利落的潜行者轮廓。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.stealthRogue,
+          alt: '男性角色模型穿着褶纹上衣、交叉绑带长裤、靴子、手套与窄领围巾。',
+        },
+        {
+          name: '旅行吟游诗人',
+          designation: 'RPG / D&D 角色案例',
+          quote: '燕尾式外套、装饰领口与条纹长裤，适合巡演旅途、酒馆演出和城镇社交场景。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.travellingBard,
+          alt: '男性角色模型穿着燕尾式外套、条纹长裤、装饰领巾与系带鞋。',
+        },
+        {
+          name: '学院法师',
+          designation: 'RPG / D&D 角色案例',
+          quote: '长摆外套搭配长裙，以纵向线条表现学院派施法者的正式造型。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.academyMage,
+          alt: '女性角色模型穿着长摆外套、带边饰的长裙与短靴。',
+        },
+      ],
+    },
+    {
+      id: 'npcs',
+      title: 'NPC 与社会身份',
+      description: '用四个 NPC 与社会身份案例参考日常、旅行和宫廷角色。',
+      imagePosition: 'left',
+      carouselLabel: 'NPC 与社会身份案例轮播',
+      previousLabel: '上一个 NPC 案例',
+      nextLabel: '下一个 NPC 案例',
+      examples: [
+        {
+          name: '酒馆经营者',
+          designation: '日常 NPC 案例',
+          quote: '泡袖上衣、围裙式长裙与简洁短靴，适合旅店经营者、酒馆联系人等日常 NPC。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.tavernKeeper,
+          alt: '女性角色模型穿着泡袖上衣、围裙式长裙、细腰带与短靴。',
+        },
+        {
+          name: '商队旅商',
+          designation: '旅行 NPC 案例',
+          quote: '长外套、直筒长裤和交叠围巾，适合往返城镇的商队成员与旅途中遇到的交易 NPC。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.caravanMerchant,
+          alt: '男性角色模型穿着长外套、直筒长裤、靴子与交叠围巾。',
+        },
+        {
+          name: '宫廷外交官',
+          designation: '宫廷身份案例',
+          quote: '收腰翻领外套搭配整齐长裤与领巾，用于宫廷会面、谈判和贵族社交场景。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.courtDiplomat,
+          alt: '男性角色模型穿着收腰翻领外套、整齐长裤、领巾与短靴。',
+        },
+        {
+          name: '贵族继承人',
+          designation: '贵族身份案例',
+          quote: '垂褶外套、几何拼片长裙与装饰手套，适合家族宴会或继承仪式的角色服装参考。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.nobleHeir,
+          alt: '女性角色模型穿着垂褶外套、几何拼片长裙、装饰手套与系带鞋。',
+        },
+      ],
+    },
+    {
+      id: 'settings',
+      title: '环境与科幻设定',
+      description: '用四个环境与科幻案例参考旅行服装和工作服轮廓。',
+      imagePosition: 'right',
+      carouselLabel: '环境与科幻设定案例轮播',
+      previousLabel: '上一个设定案例',
+      nextLabel: '下一个设定案例',
+      examples: [
+        {
+          name: '沙漠旅人',
+          designation: '环境设定角色案例',
+          quote: '宽松长裤、短袖上衣和大幅围巾，提供沙漠商路与干旱地区旅行角色的轮廓灵感。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.desertTraveller,
+          alt: '男性角色模型穿着短袖上衣、宽松长裤、大幅围巾、腰带与短靴。',
+        },
+        {
+          name: '北境探索者',
+          designation: '环境设定角色案例',
+          quote: '分层外套、裹领围巾、长靴与手套，突出北方旅途角色的包覆感与多层穿搭。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.northernExplorer,
+          alt: '女性角色模型穿着分层外套、裹领围巾、长裤、长靴与手套。',
+        },
+        {
+          name: '星舰飞行员',
+          designation: '科幻角色案例',
+          quote: '短外套、立领上衣与分段长裤，作为星舰驾驶员的工作服造型参考。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.starshipPilot,
+          alt: '女性角色模型穿着短外套、分段长裤、靴子与手套。',
+        },
+        {
+          name: '空间站工程师',
+          designation: '科幻角色案例',
+          quote: '交叠短外套、口袋长裤、绑带靴和手套，适合空间站维护人员的服装概念。',
+          src: OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS.spaceStationEngineer,
+          alt: '男性角色模型穿着交叠短外套、口袋长裤、绑带靴与手套。',
+        },
+      ],
+    },
+  ],
 };
 
 const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description'> = {
@@ -148,7 +462,8 @@ const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
   },
   whatIsTitle: 'What is the Outfit Creator?',
   whatIsDescription:
-    'The Outfit Creator is an online visual tool for RPG and TTRPG players, GMs, and fantasy creators. Choose a character, combine clothing and accessories by category, and review the complete silhouette while you build. Save alternate looks in four outfit slots and download the finished preview as a PNG.',
+    'The Outfit Creator is an online visual tool for RPG and TTRPG players, GMs, and fantasy creators. Choose a character, combine clothing and accessories by category, and review the complete silhouette while you build. Save alternate looks in four outfit slots and download the finished preview as a PNG. These clothing combinations can serve as line-art references for character design. The final look depends largely on how you interpret the line art and how you draw, color, and depict materials after exporting. The same outfit can take on different styles and textures.',
+  caseStudies: englishOutfitCreatorCaseStudies,
   featureOverview: {
     title: 'Build a Complete Character Look',
     subtitle:
@@ -328,7 +643,8 @@ const chineseOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
   },
   whatIsTitle: '什么是服装搭配工具？',
   whatIsDescription:
-    '服装搭配工具是一款面向 RPG/TTRPG 玩家与 GM，以及奇幻角色和世界观创作者的在线视觉工具。选择角色后，你可以按分类组合服装与配饰，并在搭配过程中查看完整轮廓。你还可以用四个套装槽位保存不同造型，完成后将预览下载为 PNG 图片。',
+    '服装搭配工具是一款面向 RPG/TTRPG 玩家与 GM，以及奇幻角色和世界观创作者的在线视觉工具。选择角色后，你可以按分类组合服装与配饰，并在搭配过程中查看完整轮廓。你还可以用四个套装槽位保存不同造型，完成后将预览下载为 PNG 图片。服装组合可作为角色造型的线稿参考。最终效果很大程度上取决于你对线稿的理解，以及导出后的绘画、配色和材质表现。同一套穿搭，也能呈现不同的风格与质感。',
+  caseStudies: chineseOutfitCreatorCaseStudies,
   featureOverview: {
     title: '组合完整角色造型',
     subtitle:

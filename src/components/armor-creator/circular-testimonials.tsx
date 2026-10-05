@@ -3,9 +3,17 @@
 import Image from 'next/image';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+  type KeyboardEvent,
+} from 'react';
 
 const CIRCULAR_TESTIMONIAL_AUTOPLAY_INTERVAL_MS = 5000;
+const CIRCULAR_TESTIMONIAL_REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 const CIRCULAR_TESTIMONIAL_ARROW_HOVER_VARIABLE = '--circular-testimonial-arrow-hover-background';
 
 const CIRCULAR_TESTIMONIAL_COLOR_FIELDS = [
@@ -27,6 +35,7 @@ export type CircularTestimonial = {
   name: string;
   designation: string;
   src: string;
+  alt?: string;
 };
 
 export type CircularTestimonialsColors = Partial<Record<CircularTestimonialColorField, string>>;
@@ -42,6 +51,7 @@ export type CircularTestimonialsProps = {
   colors?: CircularTestimonialsColors;
   fontSizes?: CircularTestimonialsFontSizes;
   imagePosition?: 'left' | 'right';
+  clipImageStack?: boolean;
 };
 
 type CircularTestimonialImageProps = {
@@ -134,6 +144,9 @@ function requireCircularTestimonial(value: unknown, index: number): CircularTest
       `testimonials[${index}].designation`,
     ),
     src: requireCircularTestimonialsText(testimonial.src, `testimonials[${index}].src`),
+    ...(testimonial.alt === undefined
+      ? {}
+      : { alt: requireCircularTestimonialsText(testimonial.alt, `testimonials[${index}].alt`) }),
   };
 }
 
@@ -228,6 +241,16 @@ function requireCircularTestimonialsAutoplay(autoplay: unknown): boolean {
   );
 }
 
+function requireCircularTestimonialsClipImageStack(clipImageStack: unknown): boolean {
+  if (typeof clipImageStack === 'boolean') {
+    return clipImageStack;
+  }
+
+  throw new Error(
+    `CircularTestimonials clipImageStack must be a boolean. Received ${describeCircularTestimonialsValue(clipImageStack)}.`,
+  );
+}
+
 function requireCircularTestimonialsImagePosition(imagePosition: unknown): 'left' | 'right' {
   if (imagePosition === 'left' || imagePosition === 'right') {
     return imagePosition;
@@ -235,6 +258,36 @@ function requireCircularTestimonialsImagePosition(imagePosition: unknown): 'left
 
   throw new Error(
     `CircularTestimonials imagePosition must be "left" or "right". Received ${describeCircularTestimonialsValue(imagePosition)}.`,
+  );
+}
+
+function getCircularTestimonialsReducedMotionSnapshot(): boolean {
+  return typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia(CIRCULAR_TESTIMONIAL_REDUCED_MOTION_QUERY).matches;
+}
+
+function getServerCircularTestimonialsReducedMotionSnapshot(): boolean {
+  return false;
+}
+
+function subscribeToCircularTestimonialsReducedMotion(onStoreChange: () => void): () => void {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return () => undefined;
+  }
+
+  const mediaQueryList = window.matchMedia(CIRCULAR_TESTIMONIAL_REDUCED_MOTION_QUERY);
+  const handleMediaQueryChange = () => onStoreChange();
+  mediaQueryList.addEventListener('change', handleMediaQueryChange);
+
+  return () => mediaQueryList.removeEventListener('change', handleMediaQueryChange);
+}
+
+function useCircularTestimonialsReducedMotion(): boolean {
+  return useSyncExternalStore(
+    subscribeToCircularTestimonialsReducedMotion,
+    getCircularTestimonialsReducedMotionSnapshot,
+    getServerCircularTestimonialsReducedMotionSnapshot,
   );
 }
 
@@ -322,11 +375,84 @@ function CircularTestimonialImage({ src, alt, frameClassName }: CircularTestimon
   );
 }
 
-function CircularTestimonialQuote({ quote, fontSize, color }: { quote: string; fontSize: string; color: string }) {
-  const quoteSegments = quote.split(/(\s+)/u);
-  const firstWordIndex = quoteSegments.findIndex(
-    (segment) => segment.length > 0 && !/^\s+$/u.test(segment),
-  );
+type CircularTestimonialQuoteSegment = {
+  text: string;
+  animate: boolean;
+};
+
+function circularTestimonialIsPunctuationText(text: string): boolean {
+  return /^\p{P}+$/u.test(text);
+}
+
+function circularTestimonialAttachPunctuationToPreviousSegment(
+  segments: readonly CircularTestimonialQuoteSegment[],
+): CircularTestimonialQuoteSegment[] {
+  const joinedSegments: CircularTestimonialQuoteSegment[] = [];
+
+  for (const segment of segments) {
+    const previousSegment = joinedSegments[joinedSegments.length - 1];
+    if (previousSegment?.animate && circularTestimonialIsPunctuationText(segment.text)) {
+      joinedSegments[joinedSegments.length - 1] = {
+        text: previousSegment.text + segment.text,
+        animate: true,
+      };
+      continue;
+    }
+
+    joinedSegments.push(segment);
+  }
+
+  return joinedSegments;
+}
+
+function circularTestimonialSpacedQuoteSegments(quote: string): CircularTestimonialQuoteSegment[] {
+  return quote
+    .split(/(\s+)/u)
+    .filter((segment) => segment.length > 0)
+    .map((segment) => ({ text: segment, animate: !/^\s+$/u.test(segment) }));
+}
+
+function circularTestimonialIntlQuoteSegments(quote: string): CircularTestimonialQuoteSegment[] {
+  if (typeof Intl.Segmenter !== 'function') {
+    return circularTestimonialAttachPunctuationToPreviousSegment(
+      Array.from(quote, (character) => ({
+        text: character,
+        animate: !/\s/u.test(character) && !circularTestimonialIsPunctuationText(character),
+      })),
+    );
+  }
+
+  const segmenter = new Intl.Segmenter(undefined, { granularity: 'word' });
+  const segments = Array.from(segmenter.segment(quote), (segment) => ({
+    text: segment.segment,
+    animate: segment.isWordLike === true,
+  }));
+
+  if (segments.length === 0) {
+    throw new Error(`CircularTestimonials quote produced no segments. Received ${JSON.stringify(quote)}.`);
+  }
+
+  return circularTestimonialAttachPunctuationToPreviousSegment(segments);
+}
+
+function circularTestimonialQuoteSegments(quote: string): CircularTestimonialQuoteSegment[] {
+  return /\p{Script=Han}/u.test(quote)
+    ? circularTestimonialIntlQuoteSegments(quote)
+    : circularTestimonialSpacedQuoteSegments(quote);
+}
+
+function CircularTestimonialQuote({
+  quote,
+  fontSize,
+  color,
+  prefersReducedMotion,
+}: {
+  quote: string;
+  fontSize: string;
+  color: string;
+  prefersReducedMotion: boolean;
+}) {
+  const quoteSegments = circularTestimonialQuoteSegments(quote);
 
   return (
     <p
@@ -335,22 +461,33 @@ function CircularTestimonialQuote({ quote, fontSize, color }: { quote: string; f
       data-part="testimonial-quote"
       style={{ color, fontSize }}
     >
-      {quoteSegments.map((wordOrSpace, index) => {
-        if (wordOrSpace.length === 0 || /^\s+$/u.test(wordOrSpace)) {
-          return wordOrSpace;
+      {quoteSegments.map((segment, index) => {
+        if (!segment.animate) {
+          return segment.text;
         }
 
-        const delay = Math.floor((index - firstWordIndex) / 2) * 0.025;
+        const animatedSegmentIndex = quoteSegments
+          .slice(0, index)
+          .filter((previousSegment) => previousSegment.animate).length;
+        const delay = animatedSegmentIndex * 0.025;
+        const motionState = prefersReducedMotion
+          ? { filter: 'none', opacity: 1, y: 0 }
+          : { filter: 'blur(10px)', opacity: 0, y: 8 };
+        const visibleMotionState = { filter: 'blur(0px)', opacity: 1, y: 0 };
 
         return (
           <motion.span
-            key={`${index}-${wordOrSpace}`}
+            key={`${index}-${segment.text}-${prefersReducedMotion ? 'reduced' : 'animated'}`}
             className="inline-block"
-            initial={{ filter: 'blur(10px)', opacity: 0, y: 8 }}
-            animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
-            transition={{ delay, duration: 0.28, ease: 'easeOut' }}
+            initial={motionState}
+            animate={prefersReducedMotion ? motionState : visibleMotionState}
+            transition={
+              prefersReducedMotion
+                ? { duration: 0 }
+                : { delay, duration: 0.28, ease: 'easeOut' }
+            }
           >
-            {wordOrSpace}
+            {segment.text}
           </motion.span>
         );
       })}
@@ -367,6 +504,7 @@ export function CircularTestimonials({
   colors,
   fontSizes,
   imagePosition = 'left',
+  clipImageStack = true,
 }: CircularTestimonialsProps) {
   const validatedTestimonials = requireCircularTestimonials(testimonials);
   const validatedAriaLabel = requireCircularTestimonialsLabel(ariaLabel, 'ariaLabel');
@@ -376,8 +514,10 @@ export function CircularTestimonials({
   const validatedColors = requireCircularTestimonialsColors(colors);
   const validatedFontSizes = requireCircularTestimonialsFontSizes(fontSizes);
   const validatedImagePosition = requireCircularTestimonialsImagePosition(imagePosition);
+  const validatedClipImageStack = requireCircularTestimonialsClipImageStack(clipImageStack);
   const resolvedColors = { ...DEFAULT_CIRCULAR_TESTIMONIAL_COLORS, ...validatedColors };
   const resolvedFontSizes = { ...DEFAULT_CIRCULAR_TESTIMONIAL_FONT_SIZES, ...validatedFontSizes };
+  const prefersReducedMotion = useCircularTestimonialsReducedMotion();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [navigationDirection, setNavigationDirection] =
     useState<CircularTestimonialsNavigationDirection>('next');
@@ -387,6 +527,7 @@ export function CircularTestimonials({
   const activeIndex = selectedIndex % validatedTestimonials.length;
   const activeTestimonial = validatedTestimonials[activeIndex];
   const imageGap = getCircularTestimonialImageGap(imageStageWidth);
+  const imageStackMinHeight = `max(20rem, calc(min(18rem, ${imageStageWidth * 0.72}px) + ${imageGap * 1.6}px))`;
   const layoutClassName =
     validatedImagePosition === 'left'
       ? 'flex-col md:flex-row'
@@ -398,7 +539,13 @@ export function CircularTestimonials({
   } as CircularTestimonialsStyle;
 
   useEffect(() => {
-    if (!validatedAutoplay || autoplayPausedByInteraction || validatedTestimonials.length < 2) {
+    if (
+      prefersReducedMotion ||
+      getCircularTestimonialsReducedMotionSnapshot() ||
+      !validatedAutoplay ||
+      autoplayPausedByInteraction ||
+      validatedTestimonials.length < 2
+    ) {
       return undefined;
     }
 
@@ -408,7 +555,7 @@ export function CircularTestimonials({
     }, CIRCULAR_TESTIMONIAL_AUTOPLAY_INTERVAL_MS);
 
     return () => window.clearInterval(autoplayInterval);
-  }, [autoplayPausedByInteraction, validatedAutoplay, validatedTestimonials.length]);
+  }, [autoplayPausedByInteraction, prefersReducedMotion, validatedAutoplay, validatedTestimonials.length]);
 
   useEffect(() => {
     const imageStage = imageStageRef.current;
@@ -486,10 +633,13 @@ export function CircularTestimonials({
         data-part="layout"
       >
         <div
-          className="relative flex min-h-[20rem] w-full max-w-[35rem] flex-1 items-center justify-center overflow-hidden [container-type:inline-size]"
+          className={`relative flex min-h-[20rem] w-full max-w-[35rem] flex-1 items-center justify-center ${validatedClipImageStack ? 'overflow-hidden' : 'overflow-visible'} [container-type:inline-size]`}
           data-part="image-stage"
           ref={imageStageRef}
-          style={{ perspective: '900px' }}
+          style={{
+            perspective: '900px',
+            minHeight: validatedClipImageStack ? undefined : imageStackMinHeight,
+          }}
         >
           {validatedTestimonials.map((testimonial, testimonialIndex) => {
             const position = getCircularTestimonialImagePosition(
@@ -514,14 +664,15 @@ export function CircularTestimonials({
                   pointerEvents: isActive || isPreview ? 'auto' : 'none',
                   translate: '-50% -50%',
                   transform: getCircularTestimonialImageTransform(position, imageGap),
-                  transition:
-                    'transform 800ms cubic-bezier(.4,2,.3,1), opacity 800ms cubic-bezier(.4,2,.3,1)',
+                  transition: prefersReducedMotion
+                    ? 'none'
+                    : 'transform 800ms cubic-bezier(.4,2,.3,1), opacity 800ms cubic-bezier(.4,2,.3,1)',
                   zIndex: isActive ? 3 : isPreview ? 2 : 1,
                 }}
               >
                 <CircularTestimonialImage
                   src={testimonial.src}
-                  alt={isActive ? testimonial.name : ''}
+                  alt={isActive ? testimonial.alt ?? testimonial.name : ''}
                   frameClassName="h-full w-full"
                 />
               </div>
@@ -537,13 +688,13 @@ export function CircularTestimonials({
         >
           <AnimatePresence initial={false} mode="wait">
             <motion.div
-              key={`${activeIndex}-${activeTestimonial.name}`}
+              key={`${activeIndex}-${activeTestimonial.name}-${prefersReducedMotion ? 'reduced' : 'animated'}`}
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center gap-5 md:items-start"
               data-part="active-testimonial"
-              exit={{ opacity: 0, y: 8 }}
-              initial={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              exit={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: -8 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.25, ease: 'easeOut' }}
             >
               <div>
                 <h3
@@ -565,6 +716,7 @@ export function CircularTestimonials({
                 quote={activeTestimonial.quote}
                 color={resolvedColors.testimony}
                 fontSize={resolvedFontSizes.quote}
+                prefersReducedMotion={prefersReducedMotion}
               />
             </motion.div>
           </AnimatePresence>

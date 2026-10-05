@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 
 import { OutfitCreatorFaq } from '@/components/outfit-creator/OutfitCreatorFaq';
+import { OutfitCreatorCaseStudies } from '@/components/outfit-creator/OutfitCreatorCaseStudies';
 import {
   OUTFIT_CREATOR_EDITOR_ID,
   OutfitCreatorPageHeading,
@@ -167,6 +168,7 @@ function OutfitCreatorContent({ locale }: { locale: SiteLocale }) {
           {copy.whatIsDescription}
         </p>
       </section>
+      <OutfitCreatorCaseStudies copy={copy.caseStudies} />
       <OutfitCreatorFeatureGrid featureOverview={copy.featureOverview} />
       <OutfitCreatorToolComparison copy={copy.toolComparison} />
       <OutfitCreatorHowToUse copy={copy} />
