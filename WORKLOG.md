@@ -1,5 +1,48 @@
 # WORKLOG
 
+## 交接单 · 2026-10-05 22:47 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+比较 Roll for Fantasy 的 Weapon Creator 与本站导出的格式、尺寸和清晰度；在唯一的「武器」工作树内增加中英文导出尺寸选择，默认标准尺寸；按用户确认更新中英文标题、描述和工具名称，并把 Weapon Creator / 武器制作器的关键词密度调整到 2%–3%。使用真实内置子代理实施及独立审核，不使用 Orca；最后按授权提交、合并本地 main，通知可删除工作树。本次 offhand 仅核对现状并写交接单。
+
+### 已完成
+
+- 两者导出均为透明 PNG；竞品标准图为 800 × 635，本站原有图为 3200 × 2540。本站现在提供标准尺寸 800 × 635（1 倍）和大尺寸 3200 × 2540（4 倍），默认标准尺寸。大尺寸是原有图案的平滑放大，不增加原始细节，也不是矢量导出。
+- 导出尺寸仅影响下载：预览仍为 800 × 635，四个本地槽位和部件选择逻辑保留；尺寸不存档，刷新回到标准尺寸。点击下载时捕获当时的部件和尺寸，异步生成中改选择不会影响已开始的下载。原生选择框具有中英文标签与说明；无效倍数会报出具体值。
+- 中英文名称统一为 Weapon Creator / 武器制作器。已确认的 EN 标题：Weapon Creator | Create RPG & TTRPG Fantasy Weapons Online for Free。ZH 标题：武器制作器｜免费在线制作 RPG 与 TRPG 奇幻武器。
+- 已确认的 EN 描述：Use Weapon Creator to combine sword, axe, bow, staff, and polearm parts online for free. Save your RPG and TTRPG weapon designs and download PNG images for character references, campaign notes, and worldbuilding.
+- 已确认的 ZH 描述：使用武器制作器，在线免费组合剑、斧、弓、法杖和长柄武器部件，制作 RPG 与 TRPG 奇幻武器。保存不同组合，并下载 PNG 图片，用于角色设定、战役笔记与世界观创作。
+- 密度调整只修改已有正文文案，保留上述标题和描述。按实际页面正文（包括工具界面、初始 3 个案例及全部 FAQ 答案；排除公共导航、页脚、metadata 和屏幕阅读器重复标签）计数：EN 24 / 941 = 2.55%，ZH 24 / 1054 = 2.28%。FAQ 默认收起时为 EN 22 / 818 = 2.69%，ZH 22 / 923 = 2.38%；包含公共导航、页脚及 FAQ 答案的整页为 EN 24 / 1013 = 2.37%，ZH 24 / 1130 = 2.12%。
+- 功能提交 f1df0f6443019264c314069b1b3a8acadb9bcec3（feat: add weapon export sizes and refresh bilingual copy）；合并提交 d304686ff7d02bc74e6ff920d683a7ccb6d1145f（Merge branch '武器'）。main 当前 HEAD 为该合并提交，两个提交均已验证属于 main；实际合并树与预检树一致，无冲突，保留原 main 的语言生成器、徽章等既有改动。
+- 本次提交仅 8 个文件：src/components/weapon-creator/WeaponCreatorWorkbench.tsx、WeaponCreatorWorkbench.test.tsx、WeaponCreatorPageHeading.tsx；src/lib/weapon-creator/copy.ts、copy.test.ts；src/app/weapon-creator-routes.test.tsx、site-routes.test.tsx；src/lib/content-site-navigation.test.ts。无新增依赖或文件。
+- 已通知用户可删除「武器」工作树，并停止本次临时 40006 服务。本次 offhand 回读确认：/Users/wusir/Desktop/开发项目集合/武器 已不存在，git worktree 列表无该条目，refs/heads/武器 已不存在；这些删除不是本实例执行的。现有其他工作树不在清理范围。
+- 写交接单前 main 工作区、暂存区及未跟踪文件均干净；main 相对本地 origin/main 记录 ahead 10。本实例未 push 或部署。当前 40001 有监听进程，cwd 为主仓库；仅核对运行状态，未更改该服务。
+
+### 做到一半
+
+无。已授权的代码、文案、关键词调整、提交和本地合并均完成。本交接单保留为未提交的 WORKLOG.md 改动。
+
+### 下一步
+
+下一班输入 $pickup，先核对当前 main、WORKLOG 和服务状态，再按用户新的任务继续。不要重复创建或删除已不存在的「武器」工作树。无已授权的 push、部署或其他产品改动。
+
+### 踩过的坑
+
+- 下方旧武器交接单中的“统一导出 3200 × 2540”是历史行为；当前以本条默认标准尺寸及选择框为准，旧条目未修改。
+- 中文分母使用 Intl.Segmenter('zh', { granularity: 'word' }) 的 isWordLike 分词数量，不是汉字数；英文使用 en 分词。完整关键词每次出现计 1 次，英文忽略大小写并匹配完整短语。源文件字符串次数不能代表页面次数，隐藏轮播案例和重复可访问性标签不能叠加。
+- 密度结果对应固定初始 3 个轮播案例；未验证所有轮播组合。后续正文或案例变化需按同一口径重算。第一版重复生硬，已按独立审查意见移动到槽位说明和操作步骤，最终复核通过。
+- 临时脚本 /tmp/weapon-keyword-density-adjustment-20261005/verify-density.mjs 写死了已结束的 ego-browser TaskSpace 39 和已停止的 40006 服务，不能原样续跑；复验需新建任务空间并指向当前 main 页面。临时证据可能被系统清理。
+- 本次 offhand 未重新运行测试、构建或页面交互；以下是此前真实执行的证据及本次回读，不代表新一轮运行。未运行全仓库完整测试或部署流水线，仓库与本地浏览器证据不证明线上状态。
+
+### 怎么验证
+
+- 合并后的 main 已执行并通过：pnpm test src/lib/weapon-creator src/components/weapon-creator src/app/weapon-creator-routes.test.tsx src/lib/content-site-navigation.test.ts src/app/site-routes.test.tsx src/app/language-generator-routes.test.tsx --maxWorkers=4（14 个文件、118 项测试）；pnpm typecheck；pnpm lint（0 错误，6 个既有警告位于 src/lib/blog/index.test.ts:40–45）；pnpm exec vinext build。各命令退出码为 0，构建日志显示 Build complete。
+- 主要证据目录 /tmp/weapon-main-merge-20261005/：merge-proof.json、checks-exits.json、tests.log、typecheck.log、lint.log、build.log、browser-proof.json。本次已回读提交／树一致性、命令结果及浏览器结果。
+- 合并后 main 的本地 ego-browser 已读回 http://127.0.0.1:40001/weapon-creator 与 /zh/weapon-creator：标题和描述与确认文案一致，导出默认值 1，两个尺寸选项正确，正文密度 EN 2.55% / ZH 2.28%；390px 窗口下 document scrollWidth 375，无横向溢出。该任务空间已正常结束。
+- 原「武器」工作树阶段的实际 PNG 下载证据 /tmp/weapon-export-size-verification/png-verification.json：6 份 PNG 验证通过，覆盖中英文标准／大尺寸和空选择；尺寸正确、有透明通道，空选择完全透明。默认值、刷新、键盘操作、桌面／390px 截图和 FAQ 点击证据另在 /tmp/weapon-default-standard-verification/、/tmp/weapon-title-copy-verification/、/tmp/weapon-keyword-density-adjustment-20261005/。这些是合并前的运行记录，并非本次 offhand 或合并后重新下载。
+- 如需重新验收，先确认 40001 服务仍来自主仓库，再打开上述中英文页面；刷新检查默认标准尺寸，选择部件下载标准图与大图，读取 PNG 像素尺寸及透明通道，检查 FAQ 和 390px 布局；密度按本条分词和轮播范围重新计算。此前通过的命令可在主仓库复跑。
+
 ## 交接单 · 2026-10-05 21:51 Asia/Shanghai +0800 · Codex
 
 ### 本次目标

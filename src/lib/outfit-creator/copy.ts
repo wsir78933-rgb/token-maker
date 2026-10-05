@@ -422,7 +422,7 @@ const chineseOutfitCreatorCaseStudies: OutfitCreatorCaseStudiesCopy = {
 
 const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description'> = {
   navigationName: 'Outfit Creator',
-  pageTitle: 'Outfit Creator – Free Online Tool for RPG, Fantasy & Sci-Fi Characters',
+  pageTitle: 'Outfit Creator – Free Tool for RPG, Fantasy & Sci-Fi Characters',
   pageDescription:
     'Outfit Creator lets you quickly mix and match clothing and accessories online for free to create character looks for RPG and D&D campaigns, fantasy and sci-fi stories, worldbuilding, and indie games.',
   heroAction: 'Try for Free',
@@ -778,7 +778,7 @@ const chineseOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
 const OUTFIT_CREATOR_COPY: Record<OutfitCreatorLocale, OutfitCreatorCopy> = {
   en: {
     ...englishOutfitCreatorCopy,
-    heading: englishOutfitCreatorCopy.pageTitle,
+    heading: 'Outfit Creator – Free Online Tool for RPG, Fantasy & Sci-Fi Characters',
     description: englishOutfitCreatorCopy.pageDescription,
   },
   zh: {

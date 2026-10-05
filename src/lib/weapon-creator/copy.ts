@@ -428,7 +428,7 @@ const chineseWeaponCreatorCaseStudies: WeaponCreatorCaseStudiesCopy = {
 
 const englishWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description'> = {
   navigationName: 'Weapon Creator',
-  pageTitle: 'Weapon Creator | Create RPG & TTRPG Fantasy Weapons Online for Free',
+  pageTitle: 'Weapon Creator | Create RPG & TTRPG Fantasy Weapons for Free',
   pageDescription:
     'Use Weapon Creator to combine sword, axe, bow, staff, and polearm parts online for free. Save your RPG and TTRPG weapon designs and download PNG images for character references, campaign notes, and worldbuilding.',
   heroAction: 'Try Weapon Creator',
@@ -804,7 +804,7 @@ const chineseWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
 const WEAPON_CREATOR_COPY: Record<WeaponCreatorLocale, WeaponCreatorCopy> = {
   en: {
     ...englishWeaponCreatorCopy,
-    heading: englishWeaponCreatorCopy.pageTitle,
+    heading: 'Weapon Creator | Create RPG & TTRPG Fantasy Weapons Online for Free',
     description: englishWeaponCreatorCopy.pageDescription,
   },
   zh: {
