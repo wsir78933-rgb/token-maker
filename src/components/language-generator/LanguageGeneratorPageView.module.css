@@ -1,0 +1,42 @@
+.pageShell {
+  background-attachment: fixed;
+  background-size: auto;
+}
+
+.pageShell :global(.pointer-events-none) {
+  background-attachment: fixed;
+  background-size: auto;
+}
+
+.pageShell :global(button:not(:disabled)),
+.pageShell :global(a[href]),
+.pageShell :global(select:not(:disabled)),
+.pageShell :global(input[type='checkbox']:not(:disabled)),
+.pageShell :global(label:has(input[type='checkbox']:not(:disabled))),
+.storageDialog :global(button:not(:disabled)),
+.storageDialog :global(a[href]),
+.storageDialog :global(select:not(:disabled)),
+.storageDialog :global(input[type='checkbox']:not(:disabled)),
+.storageDialog :global(label:has(input[type='checkbox']:not(:disabled))) {
+  cursor: pointer;
+}
+
+.pageShell :global(input[type='text']),
+.pageShell :global(textarea),
+.storageDialog :global(input[type='text']),
+.storageDialog :global(textarea) {
+  cursor: text;
+}
+
+.pageShell :global(button:disabled),
+.pageShell :global(select:disabled),
+.pageShell :global(input:disabled),
+.pageShell :global(textarea:disabled),
+.pageShell :global(label:has(input[type='checkbox']:disabled)),
+.storageDialog :global(button:disabled),
+.storageDialog :global(select:disabled),
+.storageDialog :global(input:disabled),
+.storageDialog :global(textarea:disabled),
+.storageDialog :global(label:has(input[type='checkbox']:disabled)) {
+  cursor: not-allowed;
+}

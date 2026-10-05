@@ -497,6 +497,7 @@ describe('coat maker routes', () => {
         { label: 'Weapon Creator', href: '/weapon-creator' },
         { label: 'Army Formation Creator', href: '/army-formation-creator' },
         { label: 'Emblem Creator', href: '/emblem-creator' },
+        { label: 'Language Generator', href: '/language-generator' },
       ],
       sharedNavigationLinks: [
         { label: 'Dice Roller', href: '/dice-roller-dnd' },
@@ -520,6 +521,7 @@ describe('coat maker routes', () => {
         { label: '奇幻武器拼装工具', href: '/zh/weapon-creator' },
         { label: '军队阵型制作器', href: '/zh/army-formation-creator' },
         { label: '徽标制作工具', href: '/zh/emblem-creator' },
+        { label: '语言生成器', href: '/zh/language-generator' },
       ],
       sharedNavigationLinks: [
         { label: '骰子', href: '/zh/dice-roller-dnd' },

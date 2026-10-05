@@ -61,6 +61,7 @@ describe('content site topbar model', () => {
       { href: '/weapon-creator', title: 'Weapon Creator' },
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
+      { href: '/language-generator', title: 'Language Generator' },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -101,6 +102,7 @@ describe('content site topbar model', () => {
       { href: '/zh/weapon-creator', title: '奇幻武器拼装工具' },
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
+      { href: '/zh/language-generator', title: '语言生成器' },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -142,6 +144,13 @@ describe('content site topbar model', () => {
     const army = readTopbar('en', '/army-formation-creator', '/zh/army-formation-creator');
     const nested = readTopbar('en', '/army-formation-creator/saved', '/zh/army-formation-creator/saved');
     const sibling = readTopbar('en', '/army-formation-creator-extra', '/zh');
+    const languageGenerator = readTopbar('en', '/language-generator', '/zh/language-generator');
+    const languageGeneratorNested = readTopbar(
+      'en',
+      '/language-generator/saved',
+      '/zh/language-generator/saved',
+    );
+    const languageGeneratorSibling = readTopbar('en', '/language-generator-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
@@ -160,6 +169,9 @@ describe('content site topbar model', () => {
     expect(army.freeToolsMenuIsActive).toBe(true);
     expect(nested.freeToolsMenuIsActive).toBe(true);
     expect(sibling.freeToolsMenuIsActive).toBe(false);
+    expect(languageGenerator.freeToolsMenuIsActive).toBe(true);
+    expect(languageGeneratorNested.freeToolsMenuIsActive).toBe(true);
+    expect(languageGeneratorSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
