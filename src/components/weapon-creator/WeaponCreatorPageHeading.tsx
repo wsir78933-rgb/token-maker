@@ -116,7 +116,7 @@ function getWeaponCreatorHeroTitleParts(
   title: string,
   locale: SiteLocale,
 ): { readonly lead: string; readonly emphasis: string; readonly tail: string } {
-  const emphasis = locale === 'en' ? 'Weapon Creator' : '奇幻武器拼装工具';
+  const emphasis = locale === 'en' ? 'Weapon Creator' : '武器制作器';
   const emphasisStart = title.indexOf(emphasis);
 
   if (emphasisStart < 0) {

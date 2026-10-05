@@ -110,6 +110,10 @@ export type WeaponCreatorCopy = {
   weaponSlot: (slotNumber: number) => string;
   clearEquipment: string;
   downloadImage: string;
+  exportSizeLabel: string;
+  exportSizeStandardLabel: string;
+  exportSizeLargeLabel: string;
+  exportSizeDescription: string;
   imageLoadError: (imagePath: string) => string;
   previewLoadError: string;
   previewTransitionError: string;
@@ -160,7 +164,7 @@ const WEAPON_CREATOR_CASE_STUDY_IMAGE_PATHS = {
 const englishWeaponCreatorCaseStudies: WeaponCreatorCaseStudiesCopy = {
   title: 'What can you build with Weapon Creator?',
   description:
-    'One parts library, many weapon concepts. Explore 12 assembled references for RPG and D&D characters, recurring NPCs, and fantasy worlds to guide your campaign notes, fiction, or worldbuilding.',
+    'One parts library, many weapon concepts. Use Weapon Creator to explore 12 assembled references for RPG and D&D characters, recurring NPCs, and fantasy worlds to guide your campaign notes, fiction, or worldbuilding.',
   groups: [
     {
       id: 'rpg',
@@ -298,9 +302,9 @@ const englishWeaponCreatorCaseStudies: WeaponCreatorCaseStudiesCopy = {
 };
 
 const chineseWeaponCreatorCaseStudies: WeaponCreatorCaseStudiesCopy = {
-  title: '用奇幻武器拼装工具能做什么？',
+  title: '用武器制作器能做什么？',
   description:
-    '一套部件库，可以组合出多种武器概念。下面的 12 个案例覆盖 RPG / D&D 角色、常驻 NPC 和奇幻世界设定，可用于战役笔记、小说创作与世界观参考。',
+    '武器制作器提供一套部件库，可以组合出多种武器概念。下面的 12 个案例覆盖 RPG / D&D 角色、常驻 NPC 和奇幻世界设定，可用于战役笔记、小说创作与世界观参考。',
   groups: [
     {
       id: 'rpg',
@@ -424,9 +428,9 @@ const chineseWeaponCreatorCaseStudies: WeaponCreatorCaseStudiesCopy = {
 
 const englishWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description'> = {
   navigationName: 'Weapon Creator',
-  pageTitle: 'Weapon Creator – Free Fantasy Weapon Builder for RPG, TTRPG & Worldbuilding',
+  pageTitle: 'Weapon Creator | Create RPG & TTRPG Fantasy Weapons Online for Free',
   pageDescription:
-    'Weapon Creator lets RPG and TTRPG players, GMs, fantasy writers, and worldbuilders combine illustrated weapon parts into custom sword, axe, bow, staff, and polearm concepts online for free.',
+    'Use Weapon Creator to combine sword, axe, bow, staff, and polearm parts online for free. Save your RPG and TTRPG weapon designs and download PNG images for character references, campaign notes, and worldbuilding.',
   heroAction: 'Try Weapon Creator',
   categoryPickerLabel: 'Weapon part categories',
   categoryLabels: {
@@ -461,6 +465,11 @@ const englishWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
   },
   clearEquipment: 'Clear weapon',
   downloadImage: 'Download PNG',
+  exportSizeLabel: 'Export size',
+  exportSizeStandardLabel: 'Standard size',
+  exportSizeLargeLabel: 'Large size',
+  exportSizeDescription:
+    'Large size smooths and enlarges the existing artwork without adding new detail.',
   imageLoadError(imagePath: string) {
     return `Weapon part image failed to load. Received ${JSON.stringify(imagePath)}.`;
   },
@@ -477,13 +486,13 @@ const englishWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
   featureOverview: {
     title: 'Assemble a Weapon Concept',
     subtitle:
-      'Choose one part from each available category, let the preset layer positions keep the silhouette readable, and keep alternate ideas ready for your campaign or story.',
+      'Choose one part from each available category in Weapon Creator, let the preset layer positions keep the silhouette readable, and keep alternate ideas ready for your campaign or story.',
     features: [
       {
         icon: 'categories',
         title: 'Browse 17 Categories',
         description:
-          'Explore hilts, pommels, blades, handles, axe heads, mace heads, bows, staffs, scythes, polearms, spears, and more.',
+          'In Weapon Creator, explore hilts, pommels, blades, handles, axe heads, mace heads, bows, staffs, scythes, polearms, spears, and more.',
       },
       {
         icon: 'parts',
@@ -501,7 +510,7 @@ const englishWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
         icon: 'slots',
         title: 'Keep Four Weapon Slots',
         description:
-          'Use four local browser slots to save alternate weapon combinations while you compare concepts for a character or setting.',
+          "Use Weapon Creator's four local browser slots to save alternate weapon combinations while you compare concepts for a character or setting.",
       },
       {
         icon: 'preview',
@@ -522,20 +531,20 @@ const englishWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
   howToUseSteps: [
     {
       title: 'Open a weapon category',
-      description: 'Choose a category such as blades, axe heads, bow parts, staff parts, or spears to browse its line-art options.',
+      description: 'In Weapon Creator, choose a category such as blades, axe heads, bow parts, staff parts, or spears to browse its line-art options.',
     },
     {
       title: 'Combine the parts',
-      description: 'Select parts from different categories. Choose another part in the same category to replace it, or click the selected part again to remove it.',
+      description: 'Select parts from different categories in Weapon Creator. Choose another part in the same category to replace it, or click the selected part again to remove it.',
     },
     {
       title: 'Save or download the concept',
-      description: 'Keep alternate combinations in four weapon slots, then download the current assembled preview as a PNG.',
+      description: 'Use Weapon Creator to keep alternate combinations in four weapon slots, then download the current assembled preview as a PNG.',
     },
   ],
   howToUseCallToActionTitle: 'Start assembling a weapon concept',
   howToUseCallToActionDescription:
-    'Choose a category, combine illustrated parts, and keep a clean PNG reference for your next character or setting.',
+    'Use Weapon Creator to choose a category, combine illustrated parts, and keep a clean PNG reference for your next character or setting.',
   howToUseAction: 'Start creating',
   toolComparison: {
     title: 'Weapon Creator vs. Photoshop vs. Illustrator',
@@ -582,16 +591,16 @@ const englishWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
   faqEyebrow: 'FAQ',
   faqTitle: 'Weapon Creator FAQ',
   faqDescription:
-    'Learn how weapon categories, part replacement, saved slots, preview layering, and PNG downloads work.',
+    'Learn how Weapon Creator handles weapon categories, part replacement, saved slots, preview layering, and PNG downloads.',
   faqItems: [
     {
       question: 'Who is Weapon Creator for?',
       answer:
-        'It is designed for D&D and TTRPG players, DM / GMs, fantasy writers, worldbuilders, and anyone who needs a weapon concept reference.',
+        'Weapon Creator is designed for D&D and TTRPG players, DM / GMs, fantasy writers, worldbuilders, and anyone who needs a weapon concept reference.',
     },
     {
       question: 'Is Weapon Creator free to use?',
-      answer: 'Yes. You can combine parts, save four weapon slots, and download the current preview in your browser for free.',
+      answer: 'Yes. Weapon Creator lets you combine parts, save four weapon slots, and download the current preview in your browser for free.',
     },
     {
       question: 'Which weapon categories are available?',
@@ -612,11 +621,11 @@ const englishWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
 };
 
 const chineseWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description'> = {
-  navigationName: '奇幻武器拼装工具',
-  pageTitle: '奇幻武器拼装工具｜免费组合 RPG、TRPG 与世界观武器概念',
+  navigationName: '武器制作器',
+  pageTitle: '武器制作器｜免费在线制作 RPG 与 TRPG 奇幻武器',
   pageDescription:
-    '奇幻武器拼装工具可以帮助 D&D / TRPG 玩家、DM/GM、奇幻小说与世界观创作者，以及需要武器概念参考的人，在线免费组合剑、斧、弓、法杖和长柄武器部件。',
-  heroAction: '试用武器拼装工具',
+    '使用武器制作器，在线免费组合剑、斧、弓、法杖和长柄武器部件，制作 RPG 与 TRPG 奇幻武器。保存不同组合，并下载 PNG 图片，用于角色设定、战役笔记与世界观创作。',
+  heroAction: '试用武器制作器',
   categoryPickerLabel: '武器部件分类',
   categoryLabels: {
     hilts: '剑握柄',
@@ -650,6 +659,10 @@ const chineseWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
   },
   clearEquipment: '清空武器',
   downloadImage: '下载 PNG',
+  exportSizeLabel: '导出尺寸',
+  exportSizeStandardLabel: '标准尺寸',
+  exportSizeLargeLabel: '大尺寸',
+  exportSizeDescription: '大尺寸采用平滑放大，保留原有图案细节。',
   imageLoadError(imagePath: string) {
     return `武器部件图片加载失败。收到的路径：${JSON.stringify(imagePath)}。`;
   },
@@ -659,19 +672,19 @@ const chineseWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
   replaceSaveConfirm(slotNumber: number) {
     return formatWeaponSlotLabel('替换保存', slotNumber, '？');
   },
-  whatIsTitle: '什么是奇幻武器拼装工具？',
+  whatIsTitle: '什么是武器制作器？',
   whatIsDescription:
-    '奇幻武器拼装工具是一款面向 D&D / TRPG 玩家、DM/GM、奇幻小说作者、世界观创作者，以及需要武器概念参考的人的在线视觉工具。你可以从剑刃、握柄、护手、斧头、弓、法杖、镰刀、长柄武器和长矛等分类中选择白色线稿部件，查看自动叠放后的武器预览。你还可以在当前浏览器中保存最多四种组合，并将结果下载为 PNG，用于战役笔记、角色参考或故事设定。',
+    '武器制作器是一款面向 D&D / TRPG 玩家、DM/GM、奇幻小说作者、世界观创作者，以及需要武器概念参考的人的在线视觉工具。你可以从剑刃、握柄、护手、斧头、弓、法杖、镰刀、长柄武器和长矛等分类中选择白色线稿部件，查看自动叠放后的武器预览。你还可以在当前浏览器中保存最多四种组合，并将结果下载为 PNG，用于战役笔记、角色参考或故事设定。',
   caseStudies: chineseWeaponCreatorCaseStudies,
   featureOverview: {
     title: '组合一把武器概念',
     subtitle:
-      '从可用分类中选择部件，让预设图层位置保持轮廓清晰，并为战役或故事保留不同的武器构想。',
+      '在武器制作器中，从可用分类中选择部件，让预设图层位置保持轮廓清晰，并为战役或故事保留不同的武器构想。',
     features: [
       {
         icon: 'categories',
         title: '浏览 17 类部件',
-        description: '浏览剑握柄、柄首、剑刃、握柄、斧头、钉头锤、弓、法杖、镰刀、长柄武器、长矛等部件。',
+        description: '在武器制作器中浏览剑握柄、柄首、剑刃、握柄、斧头、钉头锤、弓、法杖、镰刀、长柄武器、长矛等部件。',
       },
       {
         icon: 'parts',
@@ -686,7 +699,7 @@ const chineseWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
       {
         icon: 'slots',
         title: '保留四个武器槽位',
-        description: '使用四个本地浏览器槽位保存不同组合，比较角色或世界观概念时可以快速切换。',
+        description: '使用武器制作器的四个本地浏览器槽位保存不同组合，比较角色或世界观概念时可以快速切换。',
       },
       {
         icon: 'preview',
@@ -701,31 +714,31 @@ const chineseWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
     ],
   },
   howToUseEyebrow: '使用方式',
-  howToUseTitle: '如何使用奇幻武器拼装工具？',
+  howToUseTitle: '如何使用武器制作器？',
   howToUseSteps: [
     {
       title: '打开武器部件分类',
-      description: '选择剑刃、斧头、弓、法杖、长矛等分类，浏览对应的线稿选项。',
+      description: '在武器制作器中选择剑刃、斧头、弓、法杖、长矛等分类，浏览对应的线稿选项。',
     },
     {
       title: '组合武器部件',
-      description: '从不同分类中选择部件；同一分类重新选择会替换原部件，再次点击当前部件即可移除。',
+      description: '从不同分类中选择部件，在武器制作器中进行组合；同一分类重新选择会替换原部件，再次点击当前部件即可移除。',
     },
     {
       title: '保存或下载概念',
-      description: '将不同组合保存在四个武器槽位中，完成后把当前组合预览下载为 PNG 图片。',
+      description: '使用武器制作器将不同组合保存在四个武器槽位中，完成后把当前组合预览下载为 PNG 图片。',
     },
   ],
   howToUseCallToActionTitle: '开始拼装武器概念',
-  howToUseCallToActionDescription: '选择分类，组合线稿部件，为下一个角色或世界观保留清晰的 PNG 参考。',
+  howToUseCallToActionDescription: '使用武器制作器选择分类，组合线稿部件，为下一个角色或世界观保留清晰的 PNG 参考。',
   howToUseAction: '开始创作',
   toolComparison: {
-    title: '奇幻武器拼装工具 vs. Photoshop vs. Illustrator',
+    title: '武器制作器 vs. Photoshop vs. Illustrator',
     description:
-      '奇幻武器拼装工具提供专门的部件库和预设组合方式，适合快速制作概念参考；通用绘图工具则需要你自行准备素材和整理图层。',
+      '武器制作器提供专门的部件库和预设组合方式，适合快速制作概念参考；通用绘图工具则需要你自行准备素材和整理图层。',
     tableLabel: '武器创作工具对比',
     dimensionHeading: '对比项目',
-    weaponCreatorHeading: '武器拼装工具',
+    weaponCreatorHeading: '武器制作器',
     photoshopHeading: 'Photoshop',
     illustratorHeading: 'Illustrator',
     rows: [
@@ -762,16 +775,16 @@ const chineseWeaponCreatorCopy: Omit<WeaponCreatorCopy, 'heading' | 'description
     ],
   },
   faqEyebrow: '常见问题',
-  faqTitle: '奇幻武器拼装工具常见问题',
-  faqDescription: '了解武器分类、部件替换、保存槽位、预览叠放和 PNG 下载的使用方式。',
+  faqTitle: '武器制作器常见问题',
+  faqDescription: '了解武器制作器中的武器分类、部件替换、保存槽位、预览叠放和 PNG 下载的使用方式。',
   faqItems: [
     {
-      question: '奇幻武器拼装工具适合哪些人使用？',
-      answer: '适合 D&D / TRPG 玩家、DM/GM、奇幻小说作者、世界观创作者，以及需要武器概念参考的人。',
+      question: '武器制作器适合哪些人使用？',
+      answer: '武器制作器适合 D&D / TRPG 玩家、DM/GM、奇幻小说作者、世界观创作者，以及需要武器概念参考的人。',
     },
     {
-      question: '奇幻武器拼装工具可以免费使用吗？',
-      answer: '可以。你可以在浏览器中免费组合部件、保存四个武器槽位，并下载当前预览。',
+      question: '武器制作器可以免费使用吗？',
+      answer: '可以。使用武器制作器，你可以在浏览器中免费组合部件、保存四个武器槽位，并下载当前预览。',
     },
     {
       question: '目前有哪些武器部件分类？',

@@ -517,7 +517,7 @@ describe('coat maker routes', () => {
         { label: '纹章制作器', href: '/zh/coat-of-arms-maker' },
         { label: '护甲制作器', href: '/zh/armor-creator' },
         { label: '服装搭配工具', href: '/zh/outfit-creator' },
-        { label: '奇幻武器拼装工具', href: '/zh/weapon-creator' },
+        { label: '武器制作器', href: '/zh/weapon-creator' },
         { label: '军队阵型制作器', href: '/zh/army-formation-creator' },
         { label: '徽标制作工具', href: '/zh/emblem-creator' },
       ],

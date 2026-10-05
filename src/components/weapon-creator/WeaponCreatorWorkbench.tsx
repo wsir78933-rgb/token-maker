@@ -36,6 +36,9 @@ const WEAPON_LINE_ART_SURFACE_CLASS =
   'border border-[var(--site-accent-strong)] bg-[#fffaf4]';
 const WEAPON_EXPORT_WIDTH = WEAPON_PREVIEW_WIDTH * WEAPON_EXPORT_SCALE;
 const WEAPON_EXPORT_HEIGHT = WEAPON_PREVIEW_HEIGHT * WEAPON_EXPORT_SCALE;
+const WEAPON_EXPORT_SIZE_DESCRIPTION_ID = 'weapon-export-size-description';
+
+type WeaponExportScale = 1 | typeof WEAPON_EXPORT_SCALE;
 
 type WeaponWriteGenerations = Record<WeaponSaveSlotNumber, number>;
 type WeaponSlotSelections = Record<WeaponSaveSlotNumber, WeaponSelection | null>;
@@ -337,6 +340,31 @@ function weaponSlotLabels(copy: WeaponCreatorCopy): readonly [string, string, st
   return [copy.weaponSlot(1), copy.weaponSlot(2), copy.weaponSlot(3), copy.weaponSlot(4)];
 }
 
+function requireWeaponExportScale(value: unknown): WeaponExportScale {
+  if (value === 1 || value === '1') {
+    return 1;
+  }
+
+  if (value === WEAPON_EXPORT_SCALE || value === String(WEAPON_EXPORT_SCALE)) {
+    return WEAPON_EXPORT_SCALE;
+  }
+
+  throw new Error(
+    `Weapon export scale must be 1 or ${String(WEAPON_EXPORT_SCALE)}. Received ${describeReceivedValue(value)}.`,
+  );
+}
+
+function weaponExportCanvasDimensions(exportScale: unknown): {
+  width: number;
+  height: number;
+} {
+  const validatedExportScale = requireWeaponExportScale(exportScale);
+  return {
+    width: WEAPON_PREVIEW_WIDTH * validatedExportScale,
+    height: WEAPON_PREVIEW_HEIGHT * validatedExportScale,
+  };
+}
+
 function WeaponPreview({
   copy,
   canvasRef,
@@ -344,6 +372,8 @@ function WeaponPreview({
   activeWeaponSlot,
   onSelectWeaponSlot,
   onClear,
+  exportScale,
+  onExportScaleChange,
   onDownload,
 }: {
   copy: WeaponCreatorCopy;
@@ -352,6 +382,8 @@ function WeaponPreview({
   activeWeaponSlot: WeaponSaveSlotNumber | null;
   onSelectWeaponSlot: (slotNumber: WeaponSaveSlotNumber) => void;
   onClear: () => void;
+  exportScale: WeaponExportScale;
+  onExportScaleChange: (value: string) => void;
   onDownload: () => void;
 }) {
   return (
@@ -372,6 +404,34 @@ function WeaponPreview({
           activeWeaponSlot={activeWeaponSlot}
           onSelect={onSelectWeaponSlot}
         />
+      </div>
+      <div className="mt-3 min-w-0 space-y-1">
+        <label
+          htmlFor="weapon-export-size"
+          className="block text-sm font-medium text-[var(--site-ink)]"
+        >
+          {copy.exportSizeLabel}
+        </label>
+        <select
+          id="weapon-export-size"
+          value={String(exportScale)}
+          aria-describedby={WEAPON_EXPORT_SIZE_DESCRIPTION_ID}
+          className="w-full min-w-0 rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel-deep)] px-3 py-2 text-sm text-[var(--site-ink)] focus:border-[var(--site-accent-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--site-accent-strong)]"
+          onChange={(event) => onExportScaleChange(event.target.value)}
+        >
+          <option value="1">
+            {copy.exportSizeStandardLabel} ({WEAPON_PREVIEW_WIDTH} × {WEAPON_PREVIEW_HEIGHT})
+          </option>
+          <option value={String(WEAPON_EXPORT_SCALE)}>
+            {copy.exportSizeLargeLabel} ({WEAPON_EXPORT_WIDTH} × {WEAPON_EXPORT_HEIGHT})
+          </option>
+        </select>
+        <p
+          id={WEAPON_EXPORT_SIZE_DESCRIPTION_ID}
+          className="text-xs leading-5 text-[var(--site-ink-soft)]"
+        >
+          {copy.exportSizeDescription}
+        </p>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <button
@@ -488,13 +548,11 @@ function requireCanvasContext2d(canvas: HTMLCanvasElement, action: string): Canv
 
 async function paintSelectionForExport(
   selection: WeaponSelection,
+  exportScale: WeaponExportScale,
   shouldApply?: () => boolean,
 ): Promise<HTMLCanvasElement> {
-  const canvas = createWeaponCanvas(
-    WEAPON_EXPORT_WIDTH,
-    WEAPON_EXPORT_HEIGHT,
-    'download',
-  );
+  const dimensions = weaponExportCanvasDimensions(exportScale);
+  const canvas = createWeaponCanvas(dimensions.width, dimensions.height, 'download');
   const context = requireCanvasContext2d(canvas, 'download');
   await drawWeaponLayers(context, selection, shouldApply);
   return canvas;
@@ -629,8 +687,11 @@ async function downloadWeaponPreview(canvas: HTMLCanvasElement): Promise<void> {
   }
 }
 
-async function downloadWeaponSelection(selection: WeaponSelection): Promise<void> {
-  const canvas = await paintSelectionForExport(selection);
+async function downloadWeaponSelection(
+  selection: WeaponSelection,
+  exportScale: WeaponExportScale,
+): Promise<void> {
+  const canvas = await paintSelectionForExport(selection, exportScale);
   await downloadWeaponPreview(canvas);
 }
 
@@ -646,6 +707,7 @@ export function WeaponCreatorWorkbench({ locale }: { locale: SiteLocale }) {
   const [selection, setSelection] = useState<WeaponSelection>(createInitialWeaponSelection);
   const [activeCategory, setActiveCategory] = useState<WeaponCategory>(WEAPON_CATEGORIES[0]);
   const [activeWeaponSlot, setActiveWeaponSlot] = useState<WeaponSaveSlotNumber | null>(null);
+  const [exportScale, setExportScale] = useState<WeaponExportScale>(1);
   const [failureMessage, setFailureMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -695,6 +757,10 @@ export function WeaponCreatorWorkbench({ locale }: { locale: SiteLocale }) {
 
   function interactionGenerationIsCurrent(generation: number): boolean {
     return interactionGenerationRef.current === generation;
+  }
+
+  function handleExportScaleChange(value: string): void {
+    setExportScale(requireWeaponExportScale(value));
   }
 
   function reportWeaponSaveFailure(
@@ -818,7 +884,8 @@ export function WeaponCreatorWorkbench({ locale }: { locale: SiteLocale }) {
     const downloadGeneration = nextInteractionGeneration();
     actionFailureRef.current = false;
     const selectionAtClick = selection;
-    void downloadWeaponSelection(selectionAtClick)
+    const exportScaleAtClick = exportScale;
+    void downloadWeaponSelection(selectionAtClick, exportScaleAtClick)
       .then(() => {
         if (interactionGenerationIsCurrent(downloadGeneration)) {
           setFailureMessage(null);
@@ -850,6 +917,8 @@ export function WeaponCreatorWorkbench({ locale }: { locale: SiteLocale }) {
           activeWeaponSlot={activeWeaponSlot}
           onSelectWeaponSlot={selectWeaponSlot}
           onClear={() => commitSelection(clearWeaponSelection(selection))}
+          exportScale={exportScale}
+          onExportScaleChange={handleExportScaleChange}
           onDownload={handleDownload}
         />
       </div>

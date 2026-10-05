@@ -332,7 +332,83 @@ describe('WeaponCreatorWorkbench', () => {
     });
   });
 
-  it('downloads a separately rendered current selection', async () => {
+  it.each([
+    {
+      locale: 'en' as const,
+      exportSizeLabel: 'Export size',
+      standardSizeLabel: 'Standard size',
+      largeSizeLabel: 'Large size',
+      description: 'Large size smooths and enlarges the existing artwork without adding new detail.',
+      bladeCategoryLabel: 'Blades',
+      bladeOneLabel: 'Blades 1',
+    },
+    {
+      locale: 'zh' as const,
+      exportSizeLabel: '导出尺寸',
+      standardSizeLabel: '标准尺寸',
+      largeSizeLabel: '大尺寸',
+      description: '大尺寸采用平滑放大，保留原有图案细节。',
+      bladeCategoryLabel: '剑刃',
+      bladeOneLabel: '剑刃 1',
+    },
+  ])('lets $locale choose an export size without changing the preview or equipped parts', ({
+    locale,
+    exportSizeLabel,
+    standardSizeLabel,
+    largeSizeLabel,
+    description,
+    bladeCategoryLabel,
+    bladeOneLabel,
+  }) => {
+    render(<WeaponCreatorWorkbench locale={locale} />);
+
+    const exportSizeSelect = screen.getByRole('combobox', { name: exportSizeLabel });
+    const previewCanvas = document.querySelector('canvas');
+    if (!(previewCanvas instanceof HTMLCanvasElement)) {
+      throw new Error('Weapon workbench test preview canvas was not rendered.');
+    }
+
+    expect(exportSizeSelect.tagName).toBe('SELECT');
+    expect((exportSizeSelect as HTMLSelectElement).value).toBe('1');
+    expect(screen.getByRole('option', { name: new RegExp(standardSizeLabel) }).textContent).toMatch(
+      /800\s*×\s*635/,
+    );
+    expect(screen.getByRole('option', { name: new RegExp(largeSizeLabel) }).textContent).toMatch(
+      /3200\s*×\s*2540/,
+    );
+    expect(screen.getByText(description)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: bladeCategoryLabel }));
+    const bladeOne = screen.getByRole('button', { name: bladeOneLabel });
+    fireEvent.click(bladeOne);
+
+    fireEvent.change(exportSizeSelect, { target: { value: '1' } });
+
+    expect((exportSizeSelect as HTMLSelectElement).value).toBe('1');
+    expect(previewCanvas.width).toBe(WEAPON_PREVIEW_WIDTH);
+    expect(previewCanvas.height).toBe(WEAPON_PREVIEW_HEIGHT);
+    expect(bladeOne.getAttribute('aria-pressed')).toBe('true');
+
+    fireEvent.change(exportSizeSelect, { target: { value: String(WEAPON_EXPORT_SCALE) } });
+
+    expect((exportSizeSelect as HTMLSelectElement).value).toBe(String(WEAPON_EXPORT_SCALE));
+    expect(bladeOne.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('keeps the selected size and weapon selection captured when a download is already drawing', async () => {
+    const pendingExportDraws: Array<{
+      canvas: HTMLCanvasElement;
+      selection: unknown;
+      release: () => void;
+    }> = [];
+    vi.mocked(weaponRender.drawWeaponLayers).mockImplementation(async (context, selection) => {
+      const canvas = context.canvas as HTMLCanvasElement;
+      if (!canvas.isConnected) {
+        await new Promise<void>((resolve) => {
+          pendingExportDraws.push({ canvas, selection, release: resolve });
+        });
+      }
+    });
     vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:weapon-export');
     vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
     const downloadedNames: string[] = [];
@@ -345,6 +421,64 @@ describe('WeaponCreatorWorkbench', () => {
     render(<WeaponCreatorWorkbench locale="en" />);
     fireEvent.click(screen.getByRole('button', { name: 'Blades' }));
     fireEvent.click(screen.getByRole('button', { name: 'Blades 1' }));
+    fireEvent.change(screen.getByRole('combobox', { name: 'Export size' }), {
+      target: { value: '1' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
+
+    await waitFor(() => {
+      expect(pendingExportDraws).toHaveLength(1);
+    });
+
+    const startedExport = pendingExportDraws[0];
+    if (startedExport === undefined) {
+      throw new Error('Weapon download test did not capture its pending export draw.');
+    }
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Export size' }), {
+      target: { value: String(WEAPON_EXPORT_SCALE) },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Blades 2' }));
+
+    expect(startedExport.canvas.width).toBe(WEAPON_PREVIEW_WIDTH);
+    expect(startedExport.canvas.height).toBe(WEAPON_PREVIEW_HEIGHT);
+    expect(startedExport.selection).toEqual({ equippedPieceIds: { blade: 'blade1' } });
+    expect(screen.getByRole('button', { name: 'Blades 1' }).getAttribute('aria-pressed')).toBe(
+      'false',
+    );
+    expect(screen.getByRole('button', { name: 'Blades 2' }).getAttribute('aria-pressed')).toBe(
+      'true',
+    );
+
+    await act(async () => {
+      startedExport.release();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    await waitFor(() => {
+      expect(downloadedNames).toEqual(['weapon.png']);
+    });
+  });
+
+  it.each([1, WEAPON_EXPORT_SCALE] as const)('downloads a separately rendered current selection at %sx', async (exportScale) => {
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:weapon-export');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    const downloadedNames: string[] = [];
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function mockClick(
+      this: HTMLAnchorElement,
+    ) {
+      downloadedNames.push(this.download);
+    });
+
+    render(<WeaponCreatorWorkbench locale="en" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Blades' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Blades 1' }));
+    if (exportScale === WEAPON_EXPORT_SCALE) {
+      fireEvent.change(screen.getByRole('combobox', { name: 'Export size' }), {
+        target: { value: String(WEAPON_EXPORT_SCALE) },
+      });
+    }
     fireEvent.click(screen.getByRole('button', { name: 'Download PNG' }));
 
     await waitFor(() => {
@@ -355,8 +489,8 @@ describe('WeaponCreatorWorkbench', () => {
       .mocked(weaponRender.drawWeaponLayers)
       .mock.calls.find(([context]) => !(context.canvas as HTMLCanvasElement).isConnected);
     expect(exportDraw?.[1]).toEqual({ equippedPieceIds: { blade: 'blade1' } });
-    expect(exportDraw?.[0].canvas.width).toBe(WEAPON_PREVIEW_WIDTH * WEAPON_EXPORT_SCALE);
-    expect(exportDraw?.[0].canvas.height).toBe(WEAPON_PREVIEW_HEIGHT * WEAPON_EXPORT_SCALE);
+    expect(exportDraw?.[0].canvas.width).toBe(WEAPON_PREVIEW_WIDTH * exportScale);
+    expect(exportDraw?.[0].canvas.height).toBe(WEAPON_PREVIEW_HEIGHT * exportScale);
     expect(weaponRender.canvasToWeaponPng).toHaveBeenCalled();
   });
 });
