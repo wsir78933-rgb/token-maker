@@ -99,7 +99,7 @@ describe('content site topbar model', () => {
       { href: '/zh/coat-of-arms-maker', title: '纹章制作器' },
       { href: '/zh/armor-creator', title: '护甲制作器' },
       { href: '/zh/outfit-creator', title: '服装搭配工具' },
-      { href: '/zh/weapon-creator', title: '奇幻武器拼装工具' },
+      { href: '/zh/weapon-creator', title: '武器制作器' },
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },

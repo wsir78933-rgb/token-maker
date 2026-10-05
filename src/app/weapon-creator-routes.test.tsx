@@ -45,7 +45,7 @@ describe('Weapon Creator routes', () => {
       },
     });
     expect(chineseMetadata.title).toEqual({
-      absolute: expect.stringContaining('奇幻武器拼装工具'),
+      absolute: expect.stringContaining('武器制作器'),
     });
   });
 

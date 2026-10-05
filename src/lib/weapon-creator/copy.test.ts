@@ -100,7 +100,7 @@ describe('getWeaponCreatorCopy', () => {
   it('keeps Chinese labels and behavior copy parallel to English', () => {
     const copy = getWeaponCreatorCopy('zh');
 
-    expect(copy.navigationName).toBe('奇幻武器拼装工具');
+    expect(copy.navigationName).toBe('武器制作器');
     expect(Object.keys(copy.categoryLabels)).toEqual(WEAPON_CATEGORY_IDS);
     expect(copy.categoryLabels.hilts).toBe('剑握柄');
     expect(copy.categoryLabels.spear).toBe('长矛部件');
