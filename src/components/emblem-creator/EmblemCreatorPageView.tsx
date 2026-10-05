@@ -1,3 +1,8 @@
+import { EmblemCreatorCallToAction } from '@/components/emblem-creator/EmblemCreatorCallToAction';
+import { EmblemCreatorFaq } from '@/components/emblem-creator/EmblemCreatorFaq';
+import { EmblemCreatorFeaturesGrid } from '@/components/emblem-creator/EmblemCreatorFeaturesGrid';
+import { EmblemCreatorHowItWorks } from '@/components/emblem-creator/EmblemCreatorHowItWorks';
+import { EmblemCreatorToolComparison } from '@/components/emblem-creator/EmblemCreatorToolComparison';
 import { EmblemCreatorWorkbench } from '@/components/emblem-creator/EmblemCreatorWorkbench';
 import { EmblemCreatorWhatIs } from '@/components/emblem-creator/EmblemCreatorWhatIs';
 import {
@@ -26,6 +31,11 @@ export function EmblemCreatorPageView({ locale }: { locale: EmblemLocale }) {
           <EmblemCreatorWorkbench locale={locale} copy={copy} />
         </div>
         <EmblemCreatorWhatIs copy={copy} />
+        <EmblemCreatorFeaturesGrid copy={copy.features} />
+        <EmblemCreatorHowItWorks copy={copy.howItWorks} />
+        <EmblemCreatorToolComparison copy={copy.toolComparison} />
+        <EmblemCreatorCallToAction copy={copy.callToAction} />
+        <EmblemCreatorFaq {...copy.faq} />
       </div>
     </InnerPageChrome>
   );
