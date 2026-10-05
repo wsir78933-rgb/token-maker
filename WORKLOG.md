@@ -1,5 +1,46 @@
 # WORKLOG
 
+## 交接单 · 2026-10-05 14:40 CST +0800 · Codex
+
+### 本次目标
+
+为 Emblem Creator 中英文页面增加 FAQ、功能介绍、How It Works、CTA 和优势对比模块，参考 Army Formation Creator 的页面样式；对比文案先交用户审核，批准后落地；只创建一个「微标文案」工作树，使用真实内置子代理并行实现和独立审核，不使用 Orca；最后提交合并到本地 main，通知用户删除工作树。本次 offhand 用户选择 A（不存档），只写交接单。
+
+### 已完成
+
+- 新增五个组件：`src/components/emblem-creator/EmblemCreatorFaq.tsx`、`EmblemCreatorFeaturesGrid.tsx`、`EmblemCreatorHowItWorks.tsx`、`EmblemCreatorToolComparison.tsx`、`EmblemCreatorCallToAction.tsx`。FAQ 使用真实按钮、单项展开、旋转箭头及动态高度；Features 为六项功能，How It Works 为四步，CTA 链接至公开的编辑器 ID。沿用项目主题与字体，没有新增依赖。
+- `src/components/emblem-creator/EmblemCreatorPageView.tsx` 的正文顺序为编辑器 → What Is → Features → How It Works → Comparison → CTA → FAQ。`src/lib/emblem-creator/copy.ts` 同步 EN/ZH 内容，`src/app/emblem-creator-routes.test.tsx` 覆盖双语渲染、区块顺序、FAQ 控制、CTA 链接、唯一 H1 与表格语义。编辑器行为未改。
+- 最终用户批准的中文对比标题是「制作徽章，选素材就能开始」，描述是「素材、图层和画布已备好，在浏览器中组合并导出徽章。」五个维度为制作定位、使用方式、素材准备、图层准备、成品导出，竞品列明确为 Photoshop / Illustrator 桌面版。两列的后三项按用户逐项要求保留「自行准备素材。」「自行准备图层。」「需要自己调整尺寸。」英文已同步，不再使用早期中性清单及跨域限制长文案；相关技术条件仍在 FAQ。
+- 功能提交为 `8316de0e0976d365bb3e813f8dd1cbcb0c199f7d`（`feat: add bilingual emblem creator landing sections`），共上述八个文件、1201 insertions。已无冲突合并为 `8b232806f33a1e9620ce6747cb82d824d556667d`（`Merge emblem creator landing sections`），父提交为 main 的 `fc3755112b8b80ddfbdf18e679b310a7485b8505` 与功能提交。本次 offhand 首次回读 main HEAD 为该合并提交；写交接期间 main 新增 `715608efce0ca794bb841131c44f7ab9b05707f4`（`Update WORKLOG.md`），仅提交了原有 WORKLOG 内容，其文件 SHA-256 与写交接前的 `8d3d5b1dba5da4706b5082c2a6a1e0ae357de1c732c9169a5bf011da7eaaf207` 完全一致，不含本交接单。本会话没有执行这次提交，不归因提交者。最新回读 main HEAD 为 `715608e`，八个工作文件字节仍与功能提交完全一致，功能提交及合并提交均是 main 的祖先。没有推送或部署。
+- 合并后的 main 实际验证：`pnpm exec vitest run src/app/emblem-creator-routes.test.tsx src/lib/emblem-creator src/components/emblem-creator` 为 14 files、224/224 tests、exit 0；`pnpm typecheck` 与八文件 scoped ESLint 均 exit 0。合并前最终双语路由/copy 测试为 2 files、12/12 tests、exit 0。本次 offhand 仅回读状态与源码，没有重新运行测试、类型检查、Lint 或构建。
+- 原工作树本地 ego-browser 已核对最终文案的 EN/ZH × 1440×1000 / 375×900 显示。桌面表格宽 1024px；窄屏表格宽 768px，由局部横向滚动区承载，未发现页面横向溢出或单元格内容溢出；原生鼠标横滚可到右端。TaskSpace 53 已 finish。合并收尾时 main 的 40001 双语路由均 HTTP 200，响应含最终对比标题；这不是合并后 main 的全新浏览器交互验收。
+- 本次 offhand 回读：Git worktree 清单仅剩主仓库；原 `/Users/wusir/Desktop/开发项目集合/微标文案` 目录与本地 `codex/微标文案` 分支均不存在。本会话只通知用户可删除，未执行工作树或分支删除，不归因删除者。自建 40011 服务已停止，本次回读无监听；40001 在本次 offhand 首轮回读时由 PID 26609 监听，cwd 为主仓库，本次未操作它。
+- 本次 offhand 回读以下五张非空截图仍存在：`/tmp/emblem-approved-comparison-zh-desktop.png`、`/tmp/emblem-approved-comparison-en-desktop.png`、`/tmp/emblem-approved-comparison-zh-mobile.png`、`/tmp/emblem-approved-comparison-en-mobile.png`、`/tmp/emblem-approved-comparison-zh-mobile-right.png`。系统清理 /tmp 后可能失效。旧 WORKLOG 的 SHA-256 在提交合并前后及本次写入前均为 `8d3d5b1dba5da4706b5082c2a6a1e0ae357de1c732c9169a5bf011da7eaaf207`，本次只在标题下插入新条目，旧内容原样保留。
+
+### 做到一半
+
+无未完成编码或待合并改动。未存档：初次读取时仅既有 `WORKLOG.md` 为 unstaged，暂存区和未跟踪文件均为空；旧 WORKLOG 在写入期间已进入上述 `715608e` 提交。用户选择 A，本会话只写本交接单、不运行提交；本交接单仍为未提交改动。完整仓库测试、完整 Vinext 发布构建链、推送、部署以及合并后 main 的新浏览器交互验收未执行，不能用相关 224 项测试或 HTTP 200 代替。
+
+### 下一步
+
+下一班输入 `$pickup`，先核对 main HEAD、工作区和本条交接，再按用户的新需求继续。徽章页面改动及批准文案已合入 main，无需再次提交合并，也无需再次删除已经不存在的原工作树或分支。保留 WORKLOG 未提交状态，不擅自改用户确认的对比文案。后续编码 Task spec 仍需显式要求高内聚低耦合、单一职责、公开接口通信、KISS、Fail Fast（具体异常值且不吞未知异常）、YAGNI 和精确命名；不使用 Orca 编排。
+
+### 踩过的坑
+
+- 两个竞品列使用相同文字后，旧测试在整个表格调用 `getByText`，导致双语两项测试实际失败。已改为按 rowheader 定位具体行，严格比较三列文本数组及列顺序，保留 5 行、4 列、scope、caption、可聚焦 region 和唯一 H1 的断言；最终 12/12 与 main 的 224/224 测试通过。
+- 原工作树的 node_modules 为指向主仓库的符号链接，独立预览使用 `pnpm exec next dev --webpack --hostname 127.0.0.1 --port 40011`。项目 `pnpm dev` 会先清理 40001 端口，不应用它启动独立临时预览而影响既有主服务。原 40011 已停止，原工作树也已不存在。
+- 本会话早期 Next/Webpack 生产构建在未修改的 `/api/coat-export` 导入 `cloudflare:workers` 时失败；未修改该范围外 API。早期直接 Vinext 构建曾通过，但没有执行完整 `build:vinext` 链，不能作为最终 main 的新生产构建证据。
+- 浏览器 Monica 扩展注入 body 的 monica-id/monica-version 曾伴随 hydration 警告，未作范围外修复。额外 ArrowRight 横滚验证脚本曾多次等待超时，原因未确认，未计为通过；一次真实 ArrowLeft 事件及横滚、鼠标横滚有实际输出。没有据此声称双向键盘横滚全通过；如用户要求该专项验收，需在当前 main 重新生成证据。
+
+### 怎么验证
+
+以下为可重跑步骤，本次 offhand 未重新执行这些测试或浏览器操作：
+
+- Git：`git status --short --branch`；`git log -1 --oneline`；`git merge-base --is-ancestor 8316de0e0976d365bb3e813f8dd1cbcb0c199f7d main`；`git worktree list --porcelain`。本次最新回读 main HEAD 为 `715608e`，工作树清单只有主仓库，dirty 仅本次 WORKLOG.md 交接单，暂存区为空。
+- 相关测试：`pnpm exec vitest run src/app/emblem-creator-routes.test.tsx src/lib/emblem-creator src/components/emblem-creator`。较小复核：`pnpm exec vitest run src/app/emblem-creator-routes.test.tsx src/lib/emblem-creator/copy.test.ts`。类型检查：`pnpm typecheck`。
+- Scoped Lint：`pnpm exec eslint src/app/emblem-creator-routes.test.tsx src/components/emblem-creator/EmblemCreatorCallToAction.tsx src/components/emblem-creator/EmblemCreatorFaq.tsx src/components/emblem-creator/EmblemCreatorFeaturesGrid.tsx src/components/emblem-creator/EmblemCreatorHowItWorks.tsx src/components/emblem-creator/EmblemCreatorPageView.tsx src/components/emblem-creator/EmblemCreatorToolComparison.tsx src/lib/emblem-creator/copy.ts`。
+- UI：先确认 40001 服务仍绑定当前 main，再用本地 ego-browser 打开 `http://localhost:40001/zh/emblem-creator` 与 `http://localhost:40001/emblem-creator`。以 1440×1000 和 375×900 检查区块顺序、五行四列表格及批准文案，横向滚动查看两列竞品；检查页面无横向溢出。点击 CTA 应返回编辑器；展开/关闭 FAQ，检查单项展开、箭头旋转和键盘操作。表格键盘横滚专项需单独生成新证据。
+
 ## 交接单 · 2026-10-05 13:50 CST +0800 · Codex
 
 ### 本次目标
