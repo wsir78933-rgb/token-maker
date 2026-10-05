@@ -58,6 +58,7 @@ describe('content site topbar model', () => {
       { href: '/coat-of-arms-maker', title: 'Coat of Arms Maker' },
       { href: '/armor-creator', title: 'Armor Creator' },
       { href: '/outfit-creator', title: 'Outfit Creator' },
+      { href: '/weapon-creator', title: 'Weapon Creator' },
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
     ]);
@@ -97,6 +98,7 @@ describe('content site topbar model', () => {
       { href: '/zh/coat-of-arms-maker', title: '纹章制作器' },
       { href: '/zh/armor-creator', title: '护甲制作器' },
       { href: '/zh/outfit-creator', title: '服装搭配工具' },
+      { href: '/zh/weapon-creator', title: '奇幻武器拼装工具' },
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
     ]);
@@ -133,6 +135,10 @@ describe('content site topbar model', () => {
     const outfit = readTopbar('en', '/outfit-creator', '/zh/outfit-creator');
     const chineseOutfit = readTopbar('zh', '/zh/outfit-creator', '/outfit-creator');
     const outfitNested = readTopbar('en', '/outfit-creator/saved', '/zh/outfit-creator/saved');
+    const weapon = readTopbar('en', '/weapon-creator', '/zh/weapon-creator');
+    const chineseWeapon = readTopbar('zh', '/zh/weapon-creator', '/weapon-creator');
+    const weaponNested = readTopbar('en', '/weapon-creator/saved', '/zh/weapon-creator/saved');
+    const weaponSibling = readTopbar('en', '/weapon-creator-extra', '/zh');
     const army = readTopbar('en', '/army-formation-creator', '/zh/army-formation-creator');
     const nested = readTopbar('en', '/army-formation-creator/saved', '/zh/army-formation-creator/saved');
     const sibling = readTopbar('en', '/army-formation-creator-extra', '/zh');
@@ -147,6 +153,10 @@ describe('content site topbar model', () => {
     expect(outfit.freeToolsMenuIsActive).toBe(true);
     expect(chineseOutfit.freeToolsMenuIsActive).toBe(true);
     expect(outfitNested.freeToolsMenuIsActive).toBe(true);
+    expect(weapon.freeToolsMenuIsActive).toBe(true);
+    expect(chineseWeapon.freeToolsMenuIsActive).toBe(true);
+    expect(weaponNested.freeToolsMenuIsActive).toBe(true);
+    expect(weaponSibling.freeToolsMenuIsActive).toBe(false);
     expect(army.freeToolsMenuIsActive).toBe(true);
     expect(nested.freeToolsMenuIsActive).toBe(true);
     expect(sibling.freeToolsMenuIsActive).toBe(false);

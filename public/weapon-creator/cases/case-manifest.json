@@ -1,0 +1,874 @@
+{
+  "version": 1,
+  "source": {
+    "pageUrl": "https://rollforfantasy.com/tools/weapon-creator.php",
+    "assetManifest": "/weapon-creator/asset-manifest.json",
+    "preview": {
+      "width": 800,
+      "height": 635
+    }
+  },
+  "background": "#fffaf4",
+  "cases": [
+    {
+      "index": 1,
+      "output": {
+        "path": "/weapon-creator/cases/01-warden-greatblade.png",
+        "sha256": "499b25371d531783884c0f4e303be14f4c51ec15eedbfe3dbb202c53644a701a",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 253065
+      },
+      "parts": [
+        {
+          "id": "blade1",
+          "category": "blade",
+          "sourcePath": "/weapon-creator/high-resolution/blade1-4x.png",
+          "sourceSha256": "3a2b5c80c8ca55041a7a9b5dff90008a4acea6052661f6393801acce5d82be52",
+          "source": {
+            "width": 804,
+            "height": 1880,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 313,
+            "y": 22,
+            "width": 201,
+            "height": 470,
+            "zIndex": 9
+          }
+        },
+        {
+          "id": "grip1",
+          "category": "hilts",
+          "sourcePath": "/weapon-creator/high-resolution/grip1-4x.png",
+          "sourceSha256": "687985320f03a37c40fcfda942a557221081e432167d1c47babeebdb238ecdcb",
+          "source": {
+            "width": 348,
+            "height": 472,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 355,
+            "y": 477,
+            "width": 87,
+            "height": 118,
+            "zIndex": 12
+          }
+        },
+        {
+          "id": "pommel1",
+          "category": "pommels",
+          "sourcePath": "/weapon-creator/high-resolution/pommel1-4x.png",
+          "sourceSha256": "27ee7af9bf2d7e78915c2a6aaedeb7ca2f5e01520f175c973a2f19a803ecaf21",
+          "source": {
+            "width": 272,
+            "height": 260,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 365,
+            "y": 569,
+            "width": 68,
+            "height": 65,
+            "zIndex": 19
+          }
+        },
+        {
+          "id": "crossguard1",
+          "category": "crossguards",
+          "sourcePath": "/weapon-creator/high-resolution/crossguard1-4x.png",
+          "sourceSha256": "d3a9de26c3cb5e4bf4ac836ad5b2e57ddf56b0464f8bcf4952741959886c5ff3",
+          "source": {
+            "width": 680,
+            "height": 344,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 314,
+            "y": 431,
+            "width": 170,
+            "height": 80,
+            "zIndex": 20
+          }
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "output": {
+        "path": "/weapon-creator/cases/02-moonlit-duelist.png",
+        "sha256": "fe9286166df4ea538d4e61648b70e90443505a0cb9ce9164bf2ff7e878cac67a",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 333131
+      },
+      "parts": [
+        {
+          "id": "blade12",
+          "category": "blade",
+          "sourcePath": "/weapon-creator/high-resolution/blade12-4x.png",
+          "sourceSha256": "eff070deacb7191ec7a837718d6ecd6089a54ae17af0e896f4a0eef187ecc9c9",
+          "source": {
+            "width": 804,
+            "height": 1880,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 313,
+            "y": 22,
+            "width": 201,
+            "height": 470,
+            "zIndex": 9
+          }
+        },
+        {
+          "id": "grip12",
+          "category": "hilts",
+          "sourcePath": "/weapon-creator/high-resolution/grip12-4x.png",
+          "sourceSha256": "6428d94f69048e398734da79f23e3dc868ff82f9f15216e0cd7a6a868b1d8fcd",
+          "source": {
+            "width": 348,
+            "height": 472,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 355,
+            "y": 477,
+            "width": 87,
+            "height": 118,
+            "zIndex": 12
+          }
+        },
+        {
+          "id": "pommel12",
+          "category": "pommels",
+          "sourcePath": "/weapon-creator/high-resolution/pommel12-4x.png",
+          "sourceSha256": "2b6f4710e559249b47e625d57a57a18099fc763e37efa885ea4e51852735a450",
+          "source": {
+            "width": 272,
+            "height": 260,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 365,
+            "y": 569,
+            "width": 68,
+            "height": 65,
+            "zIndex": 19
+          }
+        },
+        {
+          "id": "crossguard12",
+          "category": "crossguards",
+          "sourcePath": "/weapon-creator/high-resolution/crossguard12-4x.png",
+          "sourceSha256": "5d78a2c3c1229ce51f109d5e6e15944c7b7de4c04c1266e106dd1149c870813e",
+          "source": {
+            "width": 680,
+            "height": 344,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 314,
+            "y": 431,
+            "width": 170,
+            "height": 80,
+            "zIndex": 20
+          }
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "output": {
+        "path": "/weapon-creator/cases/03-storm-lancer.png",
+        "sha256": "23472c010ceb83aa3f178b19ae15c19401960fe2414a16bc76fe3ab2975b7580",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 157184
+      },
+      "parts": [
+        {
+          "id": "stick8",
+          "category": "handle",
+          "sourcePath": "/weapon-creator/high-resolution/stick8-4x.png",
+          "sourceSha256": "214acb31b79cb02f97dfca1b5600263e65af9a9d0eb3ac247ed6e3bb3a4e6b63",
+          "source": {
+            "width": 336,
+            "height": 1868,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 356,
+            "y": 25,
+            "width": 84,
+            "height": 468,
+            "zIndex": 11
+          }
+        },
+        {
+          "id": "spear8",
+          "category": "spear",
+          "sourcePath": "/weapon-creator/high-resolution/spear8-4x.png",
+          "sourceSha256": "ca44326c600acdba458af3c0e3eb043d6e2cc25cc2b86e1e59fc119ff23f1414",
+          "source": {
+            "width": 184,
+            "height": 408,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 362,
+            "y": 8,
+            "width": 46,
+            "height": 102,
+            "zIndex": 26
+          }
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "output": {
+        "path": "/weapon-creator/cases/04-ember-witch-staff.png",
+        "sha256": "114f57f845e60f4532a27bc72d590b7033db95110085907c090502e671e652ef",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 106313
+      },
+      "parts": [
+        {
+          "id": "staff4",
+          "category": "staff",
+          "sourcePath": "/weapon-creator/high-resolution/staff4-4x.png",
+          "sourceSha256": "ba348864474faaf1a712637c7765718202cd06bf14a031d8cab9a87d5b4258f3",
+          "source": {
+            "width": 1600,
+            "height": 2480,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 180,
+            "y": 40,
+            "width": 400,
+            "height": 620,
+            "zIndex": 23
+          }
+        },
+        {
+          "id": "stafftop4",
+          "category": "stafftop",
+          "sourcePath": "/weapon-creator/high-resolution/stafftop4-4x.png",
+          "sourceSha256": "5e6df474401ee3f22914db97e823021d15eee2da0372da36fca957ec3fc14414",
+          "source": {
+            "width": 560,
+            "height": 520,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 314,
+            "y": 40,
+            "width": 130,
+            "height": 130,
+            "zIndex": 24
+          }
+        },
+        {
+          "id": "staffbtm4",
+          "category": "staffbtm",
+          "sourcePath": "/weapon-creator/high-resolution/staffbtm4-4x.png",
+          "sourceSha256": "856e826090b00e4f18ce937c2ad1fa324634bb8f5b5f4ea47f8e5cf007f966b9",
+          "source": {
+            "width": 340,
+            "height": 600,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 341,
+            "y": 440,
+            "width": 80,
+            "height": 150,
+            "zIndex": 25
+          }
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "output": {
+        "path": "/weapon-creator/cases/05-tavern-mercenary.png",
+        "sha256": "0513b5e93330c2187097438c2d5cd5c4d82a21e239037bedea584092a8902643",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 457824
+      },
+      "parts": [
+        {
+          "id": "axe18",
+          "category": "axe",
+          "sourcePath": "/weapon-creator/high-resolution/axe18-4x.png",
+          "sourceSha256": "35f36cd4d28a5f17a567e3099b9cbd89bc21e7064ec9077aa1cd1ce95e43aa86",
+          "source": {
+            "width": 852,
+            "height": 820,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 292,
+            "y": 25,
+            "width": 213,
+            "height": 205,
+            "zIndex": 10
+          }
+        },
+        {
+          "id": "stick18",
+          "category": "handle",
+          "sourcePath": "/weapon-creator/high-resolution/stick18-4x.png",
+          "sourceSha256": "5228382e6f645969dffd73836c2f3dadb26526bbcb395d90f3a3c58a16ab669a",
+          "source": {
+            "width": 336,
+            "height": 1868,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 356,
+            "y": 25,
+            "width": 84,
+            "height": 468,
+            "zIndex": 11
+          }
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "output": {
+        "path": "/weapon-creator/cases/06-royal-armourer.png",
+        "sha256": "4a0d7c1fc44d2f63fa79d6164bf08d6389931c4532b9aba9ae1bc7c71d7d2dbf",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 311231
+      },
+      "parts": [
+        {
+          "id": "stick7",
+          "category": "handle",
+          "sourcePath": "/weapon-creator/high-resolution/stick7-4x.png",
+          "sourceSha256": "436abb4b0fca8f5693513d2470d20d4a2fb40801dfb93c8343a69a53719f76e7",
+          "source": {
+            "width": 336,
+            "height": 1868,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 356,
+            "y": 25,
+            "width": 84,
+            "height": 468,
+            "zIndex": 11
+          }
+        },
+        {
+          "id": "hammer7",
+          "category": "hammer",
+          "sourcePath": "/weapon-creator/high-resolution/hammer7-4x.png",
+          "sourceSha256": "cc987fa2a73726331355d8083723f9070a5d67a714e4b0beadfc72414aa667b3",
+          "source": {
+            "width": 960,
+            "height": 560,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 294,
+            "y": 0,
+            "width": 240,
+            "height": 140,
+            "zIndex": 18
+          }
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "output": {
+        "path": "/weapon-creator/cases/07-caravan-guard.png",
+        "sha256": "a4b517ebcb032fc1fd69755a7fefc8bd5e22be3185f99e4cdc99e7e0233e9e8a",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 143371
+      },
+      "parts": [
+        {
+          "id": "bow6",
+          "category": "bow",
+          "sourcePath": "/weapon-creator/high-resolution/bow6-4x.png",
+          "sourceSha256": "b0879c22fb5f0b687dde018dbea6e179e4d2cdff0e49fbde80760913c46681f2",
+          "source": {
+            "width": 1600,
+            "height": 2480,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 180,
+            "y": 0,
+            "width": 400,
+            "height": 620,
+            "zIndex": 21
+          }
+        },
+        {
+          "id": "bowhandle6",
+          "category": "bowhandle",
+          "sourcePath": "/weapon-creator/high-resolution/bowhandle6-4x.png",
+          "sourceSha256": "d2a1c9e79461f51f27f8f5648ebfab2ba0e360f377551e6a55a15aeadae323b7",
+          "source": {
+            "width": 276,
+            "height": 648,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 440,
+            "y": 228,
+            "width": 70,
+            "height": 170,
+            "zIndex": 22
+          }
+        },
+        {
+          "id": "bowtip6",
+          "category": "bowtip",
+          "sourcePath": "/weapon-creator/high-resolution/bowtip6-4x.png",
+          "sourceSha256": "334577f7350264ddeee94e469f8874784a325fa64a87a4a23a16d34499f940fc",
+          "source": {
+            "width": 1600,
+            "height": 2480,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 180,
+            "y": 0,
+            "width": 400,
+            "height": 620,
+            "zIndex": 23
+          }
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "output": {
+        "path": "/weapon-creator/cases/08-ruin-keeper.png",
+        "sha256": "b7f2b5339fc7c1c05d98f69e07ca1c3b2d0515231417530db32abb79d6cb7f95",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 239278
+      },
+      "parts": [
+        {
+          "id": "stick23",
+          "category": "handle",
+          "sourcePath": "/weapon-creator/high-resolution/stick23-4x.png",
+          "sourceSha256": "ce76a4ae986a70b22605db09addb95be68b567cdcaa4041a60dbdf4635171bd7",
+          "source": {
+            "width": 336,
+            "height": 1868,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 356,
+            "y": 25,
+            "width": 84,
+            "height": 468,
+            "zIndex": 11
+          }
+        },
+        {
+          "id": "mace23",
+          "category": "mace",
+          "sourcePath": "/weapon-creator/high-resolution/mace23-4x.png",
+          "sourceSha256": "a95e6626d6b6d60cafc6a92ba5fe0687c1f89169722792434a19880eaebca519",
+          "source": {
+            "width": 960,
+            "height": 560,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 294,
+            "y": 0,
+            "width": 240,
+            "height": 140,
+            "zIndex": 17
+          }
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "output": {
+        "path": "/weapon-creator/cases/09-frostbound-relic.png",
+        "sha256": "748429ecad6fe23485ae803fdef9fd12aca0367f4e242591ad1a9523529fd171",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 294555
+      },
+      "parts": [
+        {
+          "id": "blade24",
+          "category": "blade",
+          "sourcePath": "/weapon-creator/high-resolution/blade24-4x.png",
+          "sourceSha256": "abadbdaf77239927da7980430cae00e1dd2b883009329a58e4d8feda614a395b",
+          "source": {
+            "width": 804,
+            "height": 1880,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 313,
+            "y": 22,
+            "width": 201,
+            "height": 470,
+            "zIndex": 9
+          }
+        },
+        {
+          "id": "grip24",
+          "category": "hilts",
+          "sourcePath": "/weapon-creator/high-resolution/grip24-4x.png",
+          "sourceSha256": "19fa19cc0c352f00f302d5780422a4b81d647c95c841f10ae4988355f148bdd4",
+          "source": {
+            "width": 348,
+            "height": 472,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 355,
+            "y": 477,
+            "width": 87,
+            "height": 118,
+            "zIndex": 12
+          }
+        },
+        {
+          "id": "pommel24",
+          "category": "pommels",
+          "sourcePath": "/weapon-creator/high-resolution/pommel24-4x.png",
+          "sourceSha256": "96a3b6fb0f61620c0b2af1b15d2d97fb6da53443128dadb6264c4968ab18966f",
+          "source": {
+            "width": 272,
+            "height": 260,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 365,
+            "y": 569,
+            "width": 68,
+            "height": 65,
+            "zIndex": 19
+          }
+        },
+        {
+          "id": "crossguard24",
+          "category": "crossguards",
+          "sourcePath": "/weapon-creator/high-resolution/crossguard24-4x.png",
+          "sourceSha256": "8525f095085f91729a1408508d04088a746ae47af477a5495a78fc041c0de5d1",
+          "source": {
+            "width": 680,
+            "height": 344,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 314,
+            "y": 431,
+            "width": 170,
+            "height": 80,
+            "zIndex": 20
+          }
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "output": {
+        "path": "/weapon-creator/cases/10-skyship-navigator.png",
+        "sha256": "befc1467b0352eac4b711ad006266cd2c43424bdd5be7422f794a1263499da42",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 150599
+      },
+      "parts": [
+        {
+          "id": "bow17",
+          "category": "bow",
+          "sourcePath": "/weapon-creator/high-resolution/bow17-4x.png",
+          "sourceSha256": "51a00938e440180e133c72ea6dad70bf699af76b3ad14d7608f1d987fb73b99c",
+          "source": {
+            "width": 1600,
+            "height": 2480,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 180,
+            "y": 0,
+            "width": 400,
+            "height": 620,
+            "zIndex": 21
+          }
+        },
+        {
+          "id": "bowhandle17",
+          "category": "bowhandle",
+          "sourcePath": "/weapon-creator/high-resolution/bowhandle17-4x.png",
+          "sourceSha256": "6dab8c95033d1bc7446e9e75ebc3f93505ed6d5692df96bace6d3ed22f1102da",
+          "source": {
+            "width": 276,
+            "height": 648,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 440,
+            "y": 228,
+            "width": 70,
+            "height": 170,
+            "zIndex": 22
+          }
+        },
+        {
+          "id": "bowtip17",
+          "category": "bowtip",
+          "sourcePath": "/weapon-creator/high-resolution/bowtip17-4x.png",
+          "sourceSha256": "1aa17429e4df846db0f5a3fc96f6bd7b87fdfd6333cb20d8104b1fc5c05f1bfb",
+          "source": {
+            "width": 1600,
+            "height": 2480,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 180,
+            "y": 0,
+            "width": 400,
+            "height": 620,
+            "zIndex": 23
+          }
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "output": {
+        "path": "/weapon-creator/cases/11-thorn-court-sceptre.png",
+        "sha256": "1aa9e551d8c85cacdca25cbb42959b11e1ce2f85a29c0c761e8ab7c84543f863",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 159667
+      },
+      "parts": [
+        {
+          "id": "staff20",
+          "category": "staff",
+          "sourcePath": "/weapon-creator/high-resolution/staff20-4x.png",
+          "sourceSha256": "27c6f66bd1bfebbacacf3618e9be82412a4bd5d99503f10f7a9d935c42dbf515",
+          "source": {
+            "width": 1600,
+            "height": 2480,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 180,
+            "y": 40,
+            "width": 400,
+            "height": 620,
+            "zIndex": 23
+          }
+        },
+        {
+          "id": "stafftop20",
+          "category": "stafftop",
+          "sourcePath": "/weapon-creator/high-resolution/stafftop20-4x.png",
+          "sourceSha256": "598e76c01541ea399adc6183c628f6d3504528d1ef3a787597f72920c17d63f8",
+          "source": {
+            "width": 560,
+            "height": 520,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 314,
+            "y": 40,
+            "width": 130,
+            "height": 130,
+            "zIndex": 24
+          }
+        },
+        {
+          "id": "staffbtm20",
+          "category": "staffbtm",
+          "sourcePath": "/weapon-creator/high-resolution/staffbtm20-4x.png",
+          "sourceSha256": "52f3c63953d2aa756965927d5847dd4dd9bb51e1184513d519c61a0bcceb0f3a",
+          "source": {
+            "width": 340,
+            "height": 600,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 341,
+            "y": 440,
+            "width": 80,
+            "height": 150,
+            "zIndex": 25
+          }
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "output": {
+        "path": "/weapon-creator/cases/12-deep-road-scythe.png",
+        "sha256": "89761768e5e55f31174bab960b62849854fb11c578b9e76c3947c35ca9f21194",
+        "width": 3200,
+        "height": 2540,
+        "format": "png",
+        "channels": 4,
+        "hasAlpha": true,
+        "nonBackgroundPixelCount": 188778
+      },
+      "parts": [
+        {
+          "id": "stick15",
+          "category": "handle",
+          "sourcePath": "/weapon-creator/high-resolution/stick15-4x.png",
+          "sourceSha256": "8497a4e4f6e41e5607a8d3e4e06b8099da7323b44ac81304d6535fb31fa27442",
+          "source": {
+            "width": 336,
+            "height": 1868,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 356,
+            "y": 25,
+            "width": 84,
+            "height": 468,
+            "zIndex": 11
+          }
+        },
+        {
+          "id": "scythe15",
+          "category": "scythe",
+          "sourcePath": "/weapon-creator/high-resolution/scythe15-4x.png",
+          "sourceSha256": "b5150811b13cfb520e265f30f887f5fae2c9417cb2878abef4cff329f5b59a27",
+          "source": {
+            "width": 1240,
+            "height": 848,
+            "format": "png",
+            "channels": 4,
+            "hasAlpha": true
+          },
+          "targetBox": {
+            "x": 266,
+            "y": 8,
+            "width": 310,
+            "height": 212,
+            "zIndex": 27
+          }
+        }
+      ]
+    }
+  ]
+}

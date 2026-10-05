@@ -1,0 +1,1009 @@
+{
+  "version": 1,
+  "status": "PASS",
+  "verifiedAt": "2026-10-05T11:04:08.573Z",
+  "worktree": "/Users/wusir/Desktop/开发项目集合/武器",
+  "branch": "武器",
+  "scope": "全部部件列表、预览、保存缩略图、下载与12个案例切换至已逐张核对的4x高清素材；删除旧版网站素材。",
+  "contract": "A：非AI四倍保形平滑；保留原有部件外形、比例和纹样，允许抗锯齿边缘变化，不新增真实细节。",
+  "summary": {
+    "highResolutionAssets": 540,
+    "unchangedHighResolutionHashes": 540,
+    "oldAssetPngsInWebsite": 0,
+    "oldAssetPngsInProductionBuild": 0,
+    "highResolutionCases": 12,
+    "independentCaseVisualPass": 12,
+    "liveAssetDirectory": "/weapon-creator/high-resolution",
+    "preview": {
+      "width": 800,
+      "height": 635,
+      "usesHighResolutionAssets": true
+    },
+    "savedThumbnails": {
+      "slots": 4,
+      "width": 800,
+      "height": 635,
+      "usesHighResolutionAssets": true
+    },
+    "download": {
+      "width": 3200,
+      "height": 2540,
+      "usesHighResolutionAssets": true
+    },
+    "sharing": false
+  },
+  "sourceProvenance": {
+    "sourceManifestSha256": "a069b65914b779dea49bc4d3fb67326d815d3b2ba056ac79b1e98bf0390036c8",
+    "highResolutionManifestSha256": "e28dcec1f3460b52a8cc33de60445968a2e35be7fb104d7bcc7537beddf54354",
+    "note": "保留的asset-manifest.json和高清manifest的source字段记录原图历史来源及SHA，不代表旧PNG仍可访问。",
+    "originalBackup": "/tmp/weapon-hd-replacement/original-backup"
+  },
+  "deletedPaths": [
+    {
+      "relativePath": "public/weapon-creator/rollforfantasy",
+      "exists": false
+    },
+    {
+      "relativePath": "public/weapon-creator/high-resolution-samples",
+      "exists": false
+    },
+    {
+      "relativePath": "scripts/weapon-creator-high-resolution.mjs",
+      "exists": false
+    }
+  ],
+  "browser": {
+    "engine": "ego-browser",
+    "taskSpace": 8,
+    "pickerCategories": 17,
+    "uniqueLoadedPickerImages": 540,
+    "allPickerNaturalDimensionsMatchHighResolutionManifest": true,
+    "observedCanvasDraws": 35,
+    "allDrawSourcesCanonicalHighResolution": true,
+    "previewDraws": 21,
+    "thumbnailDraws": 9,
+    "exportDraws": 5,
+    "fourSlotsRestored": true,
+    "thumbnails": [
+      {
+        "slot": 1,
+        "width": 800,
+        "height": 635,
+        "selection": {
+          "hilts": "grip1",
+          "crossguards": "crossguard1",
+          "pommels": "pommel1",
+          "blade": "blade1"
+        }
+      },
+      {
+        "slot": 2,
+        "width": 800,
+        "height": 635,
+        "selection": {
+          "axe": "axe18",
+          "handle": "stick18"
+        }
+      },
+      {
+        "slot": 3,
+        "width": 800,
+        "height": 635,
+        "selection": {
+          "bow": "bow6",
+          "bowhandle": "bowhandle6",
+          "bowtip": "bowtip6"
+        }
+      },
+      {
+        "slot": 4,
+        "width": 800,
+        "height": 635,
+        "selection": {
+          "stafftop": "stafftop4",
+          "staffbtm": "staffbtm4",
+          "staff": "staff4",
+          "hilts": "grip8",
+          "blade": "blade6"
+        }
+      }
+    ],
+    "editorAlerts": [],
+    "downloads": [
+      {
+        "path": "/tmp/weapon-hd-replacement/download-zh.png",
+        "sha256": "77852d5a4803ef33dc1a0b08b6f970709d4d98bd8acbafc08ff462c19cf40a1e",
+        "width": 3200,
+        "height": 2540,
+        "channels": 4,
+        "hasAlpha": true
+      },
+      {
+        "path": "/tmp/weapon-hd-replacement/download-mobile-en.png",
+        "sha256": "77852d5a4803ef33dc1a0b08b6f970709d4d98bd8acbafc08ff462c19cf40a1e",
+        "width": 3200,
+        "height": 2540,
+        "channels": 4,
+        "hasAlpha": true
+      }
+    ],
+    "productionHttp": {
+      "origin": "http://127.0.0.1:40014",
+      "results": [
+        {
+          "path": "/weapon-creator",
+          "status": 200,
+          "bytes": 179529
+        },
+        {
+          "path": "/zh/weapon-creator",
+          "status": 200,
+          "bytes": 178768
+        },
+        {
+          "path": "/weapon-creator/rollforfantasy/grip1.png",
+          "status": 404,
+          "bytes": 22043
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip1-4x.png",
+          "status": 200,
+          "bytes": 49309,
+          "sha256": "687985320f03a37c40fcfda942a557221081e432167d1c47babeebdb238ecdcb"
+        },
+        {
+          "path": "/weapon-creator/cases/01-warden-greatblade.png",
+          "status": 200,
+          "bytes": 416197,
+          "sha256": "499b25371d531783884c0f4e303be14f4c51ec15eedbfe3dbb202c53644a701a"
+        },
+        {
+          "path": "/weapon-creator/cases/02-moonlit-duelist.png",
+          "status": 200,
+          "bytes": 400686,
+          "sha256": "fe9286166df4ea538d4e61648b70e90443505a0cb9ce9164bf2ff7e878cac67a"
+        },
+        {
+          "path": "/weapon-creator/cases/03-storm-lancer.png",
+          "status": 200,
+          "bytes": 477802,
+          "sha256": "23472c010ceb83aa3f178b19ae15c19401960fe2414a16bc76fe3ab2975b7580"
+        },
+        {
+          "path": "/weapon-creator/cases/04-ember-witch-staff.png",
+          "status": 200,
+          "bytes": 324678,
+          "sha256": "114f57f845e60f4532a27bc72d590b7033db95110085907c090502e671e652ef"
+        },
+        {
+          "path": "/weapon-creator/cases/05-tavern-mercenary.png",
+          "status": 200,
+          "bytes": 434738,
+          "sha256": "0513b5e93330c2187097438c2d5cd5c4d82a21e239037bedea584092a8902643"
+        },
+        {
+          "path": "/weapon-creator/cases/06-royal-armourer.png",
+          "status": 200,
+          "bytes": 369441,
+          "sha256": "4a0d7c1fc44d2f63fa79d6164bf08d6389931c4532b9aba9ae1bc7c71d7d2dbf"
+        },
+        {
+          "path": "/weapon-creator/cases/07-caravan-guard.png",
+          "status": 200,
+          "bytes": 495907,
+          "sha256": "a4b517ebcb032fc1fd69755a7fefc8bd5e22be3185f99e4cdc99e7e0233e9e8a"
+        },
+        {
+          "path": "/weapon-creator/cases/08-ruin-keeper.png",
+          "status": 200,
+          "bytes": 462120,
+          "sha256": "b7f2b5339fc7c1c05d98f69e07ca1c3b2d0515231417530db32abb79d6cb7f95"
+        },
+        {
+          "path": "/weapon-creator/cases/09-frostbound-relic.png",
+          "status": 200,
+          "bytes": 475152,
+          "sha256": "748429ecad6fe23485ae803fdef9fd12aca0367f4e242591ad1a9523529fd171"
+        },
+        {
+          "path": "/weapon-creator/cases/10-skyship-navigator.png",
+          "status": 200,
+          "bytes": 502189,
+          "sha256": "befc1467b0352eac4b711ad006266cd2c43424bdd5be7422f794a1263499da42"
+        },
+        {
+          "path": "/weapon-creator/cases/11-thorn-court-sceptre.png",
+          "status": 200,
+          "bytes": 411699,
+          "sha256": "1aa9e551d8c85cacdca25cbb42959b11e1ce2f85a29c0c761e8ab7c84543f863"
+        },
+        {
+          "path": "/weapon-creator/cases/12-deep-road-scythe.png",
+          "status": 200,
+          "bytes": 432717,
+          "sha256": "89761768e5e55f31174bab960b62849854fb11c578b9e76c3947c35ca9f21194"
+        }
+      ]
+    },
+    "diagnostics": [
+      {
+        "status": "RECOVERED",
+        "detail": "本地Next dev请求已删除旧图触发现有not-found.tsx缺少root layout错误；未修改范围外路由，重启本任务预览后有效页面恢复。旧图404及全部案例HTTP哈希已在本地生产构建40014验证。"
+      },
+      {
+        "status": "TOOL_SCREENSHOT_UNAVAILABLE",
+        "detail": "Page.captureScreenshot 超时，随后底层 CDP 截图返回 Unable to capture screenshot。已提取并实际 view_image 查看浏览器渲染的800×635 canvas PNG；中英文DOM、1440/390无横向溢出、540实际图片加载、canvas高清来源与3200×2540下载核验均通过。"
+      }
+    ],
+    "mobileEnglish": {
+      "lang": "en",
+      "viewport": 390,
+      "documentWidth": 390,
+      "oldLiveImages": 0,
+      "editorImages": [
+        {
+          "path": "/weapon-creator/high-resolution/grip1-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip2-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip3-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip4-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip5-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip6-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip7-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip8-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip9-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip10-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip11-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip12-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip13-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip14-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip15-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip16-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip17-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip18-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip19-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip20-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip21-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip22-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip23-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip24-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip25-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip26-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip27-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip28-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip29-4x.png",
+          "width": 348,
+          "height": 472
+        },
+        {
+          "path": "/weapon-creator/high-resolution/grip30-4x.png",
+          "width": 348,
+          "height": 472
+        }
+      ],
+      "casePaths": [
+        "/weapon-creator/cases/01-warden-greatblade.png",
+        "/weapon-creator/cases/02-moonlit-duelist.png",
+        "/weapon-creator/cases/03-storm-lancer.png",
+        "/weapon-creator/cases/04-ember-witch-staff.png",
+        "/weapon-creator/cases/05-tavern-mercenary.png",
+        "/weapon-creator/cases/06-royal-armourer.png",
+        "/weapon-creator/cases/07-caravan-guard.png",
+        "/weapon-creator/cases/08-ruin-keeper.png",
+        "/weapon-creator/cases/09-frostbound-relic.png",
+        "/weapon-creator/cases/10-skyship-navigator.png",
+        "/weapon-creator/cases/11-thorn-court-sceptre.png",
+        "/weapon-creator/cases/12-deep-road-scythe.png"
+      ],
+      "editorAlerts": [],
+      "shareButtons": 0
+    },
+    "finalChinese": {
+      "selected": [
+        "剑握柄",
+        "剑握柄 1"
+      ],
+      "alerts": [],
+      "viewport": 390,
+      "documentWidth": 390
+    },
+    "savedCompositionsPreserved": {
+      "fourSavedCompositionsPreserved": true,
+      "slots": [
+        {
+          "slot": 1,
+          "selection": {
+            "hilts": "grip1",
+            "crossguards": "crossguard1",
+            "pommels": "pommel1",
+            "blade": "blade1"
+          }
+        },
+        {
+          "slot": 2,
+          "selection": {
+            "axe": "axe18",
+            "handle": "stick18"
+          }
+        },
+        {
+          "slot": 3,
+          "selection": {
+            "bow": "bow6",
+            "bowhandle": "bowhandle6",
+            "bowtip": "bowtip6"
+          }
+        },
+        {
+          "slot": 4,
+          "selection": {
+            "stafftop": "stafftop4",
+            "staffbtm": "staffbtm4",
+            "staff": "staff4"
+          }
+        }
+      ]
+    },
+    "actualCanvasPreview": {
+      "path": "/tmp/weapon-hd-replacement/browser-preview.png",
+      "rootViewed": true,
+      "width": 800,
+      "height": 635
+    }
+  },
+  "caseReview": {
+    "summary": {
+      "comparisonImagesViewed": 12,
+      "casesPassed": 12,
+      "casesFailed": 0,
+      "outputDimensions": "3200x2540",
+      "outputFormat": "RGBA PNG",
+      "inputPartsVerified": 34,
+      "targetBoxesPreserved": true
+    },
+    "cases": [
+      {
+        "index": 1,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "左侧旧图与右侧HD图均为宽直大剑、弧月护手、交叉编织握柄和小型装饰柄首；轮廓、相对位置、纹样和暖米色背景一致，HD边缘更平滑，未见裁切、断线或新增线条。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/01-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/01-warden-greatblade.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "blade1",
+          "grip1",
+          "pommel1",
+          "crossguard1"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 2,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为窄长弧刃、中央宝石护手、分段握柄和环形柄首；刀尖、锯齿侧纹、护手与握柄比例一致，未见黑白背景、裁切或意外内容。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/02-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/02-moonlit-duelist.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "blade12",
+          "grip12",
+          "pommel12",
+          "crossguard12"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 3,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为细长枪杆、顶部尖矛头和连续人字缠绕纹；矛头与杆端位置一致，线条连续，HD只改善边缘平滑度。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/03-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/03-storm-lancer.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "stick8",
+          "spear8"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 4,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为圆环式复杂法杖顶、长直杖身和底部锥形挂饰；顶部纹样、杖身分段和底部轮廓均保留，无新增或缺失细节。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/04-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/04-ember-witch-staff.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "staff4",
+          "stafftop4",
+          "staffbtm4"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 5,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为宽大的对称双环斧头、中央长柄和下段握带；斧刃弧线、环带数量及握柄长度一致，背景与颜色一致。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/05-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/05-tavern-mercenary.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "axe18",
+          "stick18"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 6,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为对称胶囊状战锤头、中央连接环和长柄，下段保留交叉握纹；整体比例和所有轮廓线一致，无裁切或光晕。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/06-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/06-royal-armourer.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "stick7",
+          "hammer7"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 7,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为反曲弓、居中缠绕握柄、连续弓弦与上下端帽；弓臂曲率、弦线和握柄纹样一致，HD未加入新内容。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/07-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/07-caravan-guard.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "bow6",
+          "bowhandle6",
+          "bowtip6"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 8,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为月牙形锤/棍头、两侧羽状装饰和长直缠绕握柄；头部尖端与握柄细线完整保留，未见断线、裁切或背景变化。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/08-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/08-ruin-keeper.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "stick23",
+          "mace23"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 9,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为长尖剑刃、羽翼状护手、密集缠绕握柄和环形柄首；剑刃弧度、护手纹样及底部细节一致。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/09-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/09-frostbound-relic.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "blade24",
+          "grip24",
+          "pommel24",
+          "crossguard24"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 10,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为反曲弓、中央多段装饰握柄、两端尖饰和弓弦；弓臂比例、中央纹样与弦线一致，HD仅平滑边缘。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/10-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/10-skyship-navigator.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "bow17",
+          "bowhandle17",
+          "bowtip17"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 11,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为带叶片/卷环装饰的法杖顶、长直杖身和底部菱形挂饰；顶部内外环线、杖身和底部结构均一致。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/11-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/11-thorn-court-sceptre.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "staff20",
+          "stafftop20",
+          "staffbtm20"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      },
+      {
+        "index": 12,
+        "status": "PASS",
+        "viewed": true,
+        "observed": "两侧均为长直缠绕杖身、顶部弯曲镰刃与羽状连接装饰；镰刃曲线、握带数量、端帽和比例一致，无新增真实细节。",
+        "comparisonPath": "/tmp/weapon-hd-replacement/visual/12-old-vs-hd.png",
+        "outputPath": "/Users/wusir/Desktop/开发项目集合/武器/public/weapon-creator/cases/12-deep-road-scythe.png",
+        "outputDimensions": [
+          3200,
+          2540
+        ],
+        "outputMode": "RGBA",
+        "alphaExtrema": [
+          255,
+          255
+        ],
+        "inputPartIds": [
+          "stick15",
+          "scythe15"
+        ],
+        "inputUsesHighResolution4x": true,
+        "targetBoxesUnchangedFromBackup": true
+      }
+    ]
+  },
+  "validation": {
+    "fullTests": {
+      "command": "pnpm test --maxWorkers=4",
+      "exitCode": 0,
+      "filesPassed": 237,
+      "testsPassed": 2544,
+      "log": "/tmp/weapon-hd-replacement-full-tests.log"
+    },
+    "typecheck": {
+      "command": "pnpm typecheck",
+      "exitCode": 0,
+      "log": "/tmp/weapon-hd-replacement-final-typecheck.log"
+    },
+    "lint": {
+      "command": "pnpm lint",
+      "exitCode": 0,
+      "baselineWarnings": 8,
+      "log": "/tmp/weapon-hd-replacement-lint.log"
+    },
+    "productionBuild": {
+      "command": "pnpm exec vinext build",
+      "exitCode": 0,
+      "log": "/tmp/weapon-hd-replacement-build.log"
+    },
+    "workersTypes": {
+      "command": "pnpm check:workers-types",
+      "exitCode": 0,
+      "log": "/tmp/weapon-hd-replacement-workers-types.log"
+    },
+    "workersDryRun": {
+      "command": "pnpm check:workers-build",
+      "exitCode": 0,
+      "log": "/tmp/weapon-hd-replacement-workers-build.log"
+    },
+    "publicAndProductionBuildReadback": {
+      "highResolutionManifestSha256": "e28dcec1f3460b52a8cc33de60445968a2e35be7fb104d7bcc7537beddf54354",
+      "publicAndDistHdMatching": 540,
+      "publicAndDistCasesMatching": 12,
+      "publicOldExists": false,
+      "distOldExists": false,
+      "samplesExist": false,
+      "oldGeneratorExists": false,
+      "downloads": [
+        {
+          "path": "/tmp/weapon-hd-replacement/download-zh.png",
+          "sha256": "77852d5a4803ef33dc1a0b08b6f970709d4d98bd8acbafc08ff462c19cf40a1e",
+          "width": 3200,
+          "height": 2540,
+          "channels": 4,
+          "hasAlpha": true
+        },
+        {
+          "path": "/tmp/weapon-hd-replacement/download-mobile-en.png",
+          "sha256": "77852d5a4803ef33dc1a0b08b6f970709d4d98bd8acbafc08ff462c19cf40a1e",
+          "width": 3200,
+          "height": 2540,
+          "channels": 4,
+          "hasAlpha": true
+        }
+      ]
+    },
+    "diffWhitespace": {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  },
+  "delivery": {
+    "merged": false,
+    "committed": false,
+    "deployed": false,
+    "previewUrl": "http://localhost:40002/zh/weapon-creator",
+    "browserTaskFinished": true,
+    "localProductionPreviewStopped": true
+  },
+  "independentCodeReview": {
+    "sha256": "072473c0f7328a4ef0677ee27e18c339398877fdad10242ef657c3fadf0f99fb",
+    "report": {
+      "auditVersion": 1,
+      "generatedAt": "2026-10-05T11:03:24.429684Z",
+      "reviewer": "independent read-only final replacement gate",
+      "repository": "/Users/wusir/Desktop/开发项目集合/武器",
+      "readOnly": true,
+      "repoFilesModifiedByReviewer": false,
+      "scope": {
+        "reviewed": [
+          "src/lib/weapon-creator/icons.ts",
+          "src/lib/weapon-creator/render.ts",
+          "src/lib/weapon-creator/assets.test.ts",
+          "src/lib/weapon-creator/copy.ts",
+          "src/components/weapon-creator/WeaponCreatorWorkbench.tsx",
+          "public/weapon-creator/asset-manifest.json",
+          "public/weapon-creator/high-resolution/high-resolution-manifest.json",
+          "public/weapon-creator/cases/case-manifest.json",
+          "public/weapon-creator/high-resolution/*.png",
+          "public/weapon-creator/cases/*.png"
+        ],
+        "excluded": [
+          "browser acceptance",
+          "full repository tests",
+          "lint/typecheck/build/production HTTP"
+        ]
+      },
+      "principles": {
+        "highCohesionLowCoupling": {
+          "status": "PASS",
+          "evidence": "Runtime path construction is centralized in exported weaponPieceImagePath; renderer and workbench consume that public function."
+        },
+        "singleResponsibility": {
+          "status": "PASS",
+          "evidence": "Renderer separates context validation, image loading, layer drawing, and PNG export; asset tests separate manifest, PNG metadata, SHA, and file-set checks."
+        },
+        "publicExportCommunication": {
+          "status": "PASS",
+          "evidence": "Runtime imports exported catalog/constants/icons functions; no runtime import of catalog private prefix/count tables."
+        },
+        "kiss": {
+          "status": "PASS",
+          "evidence": "The replacement uses one HD path convention and the existing canvas flow; no new runtime abstraction was found."
+        },
+        "failFast": {
+          "status": "PASS",
+          "evidence": "Focused tests and manifests fail on concrete ID/path/SHA/dimension/channel mismatches; render validation includes received values and load failures are surfaced."
+        },
+        "yagni": {
+          "status": "PASS",
+          "evidence": "Deleted one-off generation script and old/sample asset trees; only frozen runtime assets/manifests remain."
+        },
+        "preciseNaming": {
+          "status": "PASS",
+          "evidence": "Reviewed exported names include weaponPieceImagePath, WEAPON_EXPORT_SCALE, high-resolution manifest, and case-specific records."
+        }
+      },
+      "checks": {
+        "highResolutionAssets": {
+          "status": "PASS",
+          "evidencePath": "/tmp/weapon-hd-replacement/hd-assets-audit.json",
+          "catalogExpectedCount": 540,
+          "manifestCount": 540,
+          "outputPngCount": 540,
+          "shaMatchedCount": 540,
+          "metadataPassCount": 540,
+          "issueCount": 0,
+          "manifestSha256": "e28dcec1f3460b52a8cc33de60445968a2e35be7fb104d7bcc7537beddf54354",
+          "metadataRule": "Every output is PNG RGBA with alpha, 4x source dimensions; actual SHA equals high-resolution manifest SHA."
+        },
+        "caseOutputsAndComposition": {
+          "status": "PASS",
+          "evidencePath": "/tmp/weapon-hd-replacement/cases-independent-audit.json",
+          "caseCount": 12,
+          "passCount": 12,
+          "failCount": 0,
+          "compositionRule": "Independent sharp RGBA composition from current HD source paths, public catalog boxes, public layer order, and 4x export scale",
+          "caseManifestSha256": "c10542b2b2c485984d8fb1085f2d2b01db89b15bc7a85f198041f10d61e57a7a",
+          "case12": {
+            "index": 12,
+            "outputPath": "/weapon-creator/cases/12-deep-road-scythe.png",
+            "outputSha256": "89761768e5e55f31174bab960b62849854fb11c578b9e76c3947c35ca9f21194",
+            "dimensions": {
+              "width": 3200,
+              "height": 2540
+            },
+            "channels": 4,
+            "hasAlpha": true,
+            "partIds": [
+              "stick15",
+              "scythe15"
+            ],
+            "orderedPartIds": [
+              "stick15",
+              "scythe15"
+            ],
+            "manifestNonBackgroundPixelCount": 188778,
+            "actualNonBackgroundPixelCount": 188778,
+            "rawPixelExact": true,
+            "differences": {
+              "byteDiffCount": 0,
+              "maxByteDelta": 0,
+              "totalByteDelta": 0
+            }
+          }
+        },
+        "caseCopyPathConsistency": {
+          "status": "PASS",
+          "evidence": "Independent case audit extracted 12 distinct paths from copy.ts and matched each case manifest output path in order.",
+          "copyPathCount": 12,
+          "caseManifestPathCount": 12,
+          "allCasePathsMatch": true
+        },
+        "runtimeOldPathScan": {
+          "status": "PASS",
+          "command": "find src -type f ! -name '*.test.*' -print0 | xargs -0 grep -nH -E 'weapon-creator/rollforfantasy|high-resolution-samples|weapon-creator-high-resolution'",
+          "exitCode": 1,
+          "normalizedResult": "NO_OLD_RUNTIME_MATCHES",
+          "note": "grep exit 1 means no match; scan was normalized to audit exit 0 by the wrapper. Historical provenance strings remain only in manifests/docs/tests and are not runtime asset references."
+        },
+        "deletedLegacyAssets": {
+          "status": "PASS",
+          "entries": {
+            "public/weapon-creator/rollforfantasy": {
+              "exists": false
+            },
+            "public/weapon-creator/high-resolution-samples": {
+              "exists": false
+            },
+            "scripts/weapon-creator-high-resolution.mjs": {
+              "exists": false
+            }
+          }
+        },
+        "focusedVitest": {
+          "status": "PASS",
+          "command": "pnpm exec vitest run src/lib/weapon-creator/assets.test.ts src/lib/weapon-creator/render.test.ts src/lib/weapon-creator/icons.test.ts src/lib/weapon-creator/copy.test.ts src/components/weapon-creator/WeaponCreatorCaseStudies.test.tsx",
+          "exitCode": 0,
+          "testFiles": "5 passed",
+          "tests": "23 passed"
+        },
+        "runtimeHdBinding": {
+          "status": "PASS",
+          "evidence": [
+            "icons.ts exports weaponPieceImagePath and returns /weapon-creator/high-resolution/{validatedPieceId}-4x.png.",
+            "render.ts obtains every layer source through the exported weaponPieceImagePath function.",
+            "WeaponCreatorWorkbench uses weaponPieceImagePath for picker images and 3200x2540 (800x635*4) export canvas dimensions."
+          ]
+        }
+      },
+      "historicalProvenance": {
+        "status": "ALLOWED",
+        "files": [
+          "public/weapon-creator/asset-manifest.json",
+          "public/weapon-creator/high-resolution/high-resolution-manifest.json source fields",
+          "src/lib/weapon-creator/assets.test.ts source assertions"
+        ],
+        "reason": "These strings identify the original source and preserve historical hashes; the runtime scan excludes tests and found no legacy path reference."
+      },
+      "findings": [],
+      "limitations": [
+        "This report does not claim deployment or browser acceptance; root owns those gates.",
+        "The independent composition check proves current case PNGs match current HD sources, public boxes, layer order, clipping, and 4x scale byte-for-byte in decoded RGBA; it does not prove visual equivalence to the deleted pre-HD case files beyond the retained comparison evidence."
+      ],
+      "conclusion": {
+        "status": "PASS",
+        "summary": "The final HD replacement gate passed: 540/540 assets have matching manifest SHA and RGBA metadata, 12/12 HD case PNGs are 3200x2540 and independently recomposite byte-exactly, copy references match, legacy runtime trees/script are absent, and focused weapon tests passed 23/23."
+      }
+    }
+  }
+}
