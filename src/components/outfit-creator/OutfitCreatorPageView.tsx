@@ -2,13 +2,12 @@ import { ArrowRight } from 'lucide-react';
 
 import { OutfitCreatorFaq } from '@/components/outfit-creator/OutfitCreatorFaq';
 import { OutfitCreatorCaseStudies } from '@/components/outfit-creator/OutfitCreatorCaseStudies';
-import {
-  OUTFIT_CREATOR_EDITOR_ID,
-  OutfitCreatorPageHeading,
-} from '@/components/outfit-creator/OutfitCreatorPageHeading';
+import { OutfitCreatorPageHeading } from '@/components/outfit-creator/OutfitCreatorPageHeading';
 import { OutfitCreatorFeatureGrid } from '@/components/outfit-creator/OutfitCreatorFeatureGrid';
 import { OutfitCreatorWorkbench } from '@/components/outfit-creator/OutfitCreatorWorkbench';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { Button } from '@/components/ui/button';
+import { OUTFIT_CREATOR_EDITOR_ID } from '@/lib/outfit-creator/constants';
 import {
   getOutfitCreatorCopy,
   type OutfitCreatorCopy,
@@ -128,15 +127,36 @@ function OutfitCreatorHowToUse({ copy }: { copy: OutfitCreatorCopy }) {
           </div>
         ))}
       </div>
+    </section>
+  );
+}
 
-      <div className="mt-14 flex justify-center">
-        <a
-          className="group/button inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-full border border-transparent bg-clip-padding bg-primary px-8 text-sm font-medium text-primary-foreground whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover:bg-primary/80"
-          href={`#${OUTFIT_CREATOR_EDITOR_ID}`}
+function OutfitCreatorCallToAction({ copy }: { copy: OutfitCreatorCopy }) {
+  return (
+    <section
+      id="outfit-creator-call-to-action"
+      aria-labelledby="outfit-creator-call-to-action-title"
+      className="mx-auto max-w-5xl px-5 py-20 text-stone-100 sm:py-24 lg:px-8 lg:py-28"
+    >
+      <div className="flex flex-col items-center gap-3 text-center">
+        <h2
+          id="outfit-creator-call-to-action-title"
+          className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl"
+        >
+          {copy.howToUseCallToActionTitle}
+        </h2>
+        <p className="max-w-3xl text-sm leading-7 text-stone-300 text-pretty sm:text-base">
+          {copy.howToUseCallToActionDescription}
+        </p>
+        <Button
+          size="lg"
+          className="mt-2 h-11 rounded-full px-8"
+          nativeButton={false}
+          render={<a href={`#${OUTFIT_CREATOR_EDITOR_ID}`} />}
         >
           {copy.howToUseAction}
           <ArrowRight aria-hidden="true" className="size-4" />
-        </a>
+        </Button>
       </div>
     </section>
   );
@@ -172,6 +192,7 @@ function OutfitCreatorContent({ locale }: { locale: SiteLocale }) {
       <OutfitCreatorFeatureGrid featureOverview={copy.featureOverview} />
       <OutfitCreatorToolComparison copy={copy.toolComparison} />
       <OutfitCreatorHowToUse copy={copy} />
+      <OutfitCreatorCallToAction copy={copy} />
       <OutfitCreatorFaq
         eyebrow={copy.faqEyebrow}
         title={copy.faqTitle}

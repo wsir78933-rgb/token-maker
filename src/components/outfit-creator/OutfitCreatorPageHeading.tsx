@@ -4,8 +4,7 @@ import { useRef } from 'react';
 
 import type { SiteLocale } from '@/lib/site-locale';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
-
-export const OUTFIT_CREATOR_EDITOR_ID = 'outfit-creator-editor';
+import { OUTFIT_CREATOR_EDITOR_ID } from '@/lib/outfit-creator/constants';
 
 const OUTFIT_HERO_FADE_CLASS = 'outfit-creator-hero-fade';
 const OUTFIT_HERO_UNDERLINE_CLASS = 'outfit-creator-hero-underline';

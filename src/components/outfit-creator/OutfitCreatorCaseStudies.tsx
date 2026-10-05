@@ -75,7 +75,7 @@ export function OutfitCreatorCaseStudies({
         </p>
       </header>
 
-      <div className="flex flex-col gap-20 sm:gap-28 lg:gap-36">
+      <div className="flex flex-col gap-10 sm:gap-12 lg:gap-14">
         {copy.groups.map((caseGroup) => (
           <OutfitCreatorCaseStudyGroup key={caseGroup.id} caseGroup={caseGroup} />
         ))}

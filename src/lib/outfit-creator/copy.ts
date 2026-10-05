@@ -120,6 +120,8 @@ export type OutfitCreatorCopy = {
   featureOverview: OutfitCreatorFeatureOverviewCopy;
   howToUseEyebrow: string;
   howToUseTitle: string;
+  howToUseCallToActionTitle: string;
+  howToUseCallToActionDescription: string;
   howToUseSteps: readonly [
     OutfitCreatorHowToUseStepCopy,
     OutfitCreatorHowToUseStepCopy,
@@ -157,7 +159,7 @@ const OUTFIT_CREATOR_CASE_STUDY_IMAGE_PATHS = {
 const englishOutfitCreatorCaseStudies: OutfitCreatorCaseStudiesCopy = {
   title: 'What can you do with Outfit Creator?',
   description:
-    'One tool, many characters. From RPG / D&D adventurers and NPCs to characters from fantasy and science-fiction worlds, explore 12 outfit examples to inspire your adventures, novels, and worldbuilding.',
+    'One tool, many characters. With Outfit Creator, explore 12 outfit examples spanning RPG / D&D adventurers, NPCs, and fantasy and science-fiction worlds to inspire your adventures, novels, and worldbuilding.',
   groups: [
     {
       id: 'rpg',
@@ -296,7 +298,7 @@ const englishOutfitCreatorCaseStudies: OutfitCreatorCaseStudiesCopy = {
 
 const chineseOutfitCreatorCaseStudies: OutfitCreatorCaseStudiesCopy = {
   title: '用服装搭配工具能做什么',
-  description: '一个工具，搭出各种角色。从 RPG / D&D 冒险者、故事中的 NPC，到奇幻与科幻世界的居民——12 套穿搭案例，为你的冒险、小说和世界观提供灵感。',
+  description: '借助服装搭配工具，可以搭出各种角色。从 RPG / D&D 冒险者、故事中的 NPC，到奇幻与科幻世界的居民——12 套穿搭案例，为你的冒险、小说和世界观提供灵感。',
   groups: [
     {
       id: 'rpg',
@@ -467,19 +469,19 @@ const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
   featureOverview: {
     title: 'Build a Complete Character Look',
     subtitle:
-      'Choose a figure, add clothing one category at a time, and keep alternate combinations ready for your campaign notes or character references.',
+      'In Outfit Creator, choose a figure, add clothing one category at a time, and keep alternate combinations ready for your campaign notes or character references.',
     features: [
       {
         icon: 'character',
         title: 'Choose Your Character',
         description:
-          'Start with a male or female figure. Your selected character stays visible while you browse each clothing category.',
+          'Start with a male or female figure in Outfit Creator. Your selected character stays visible while you browse each clothing category.',
       },
       {
         icon: 'categories',
         title: 'Browse Outfit Categories',
         description:
-          'Explore jackets, shirts, pants, skirts, shoes, scarves, belts, and gloves from a focused category picker.',
+          'Explore jackets, shirts, pants, skirts, shoes, scarves, belts, and gloves in the Outfit Creator category picker.',
       },
       {
         icon: 'layers',
@@ -491,7 +493,7 @@ const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
         icon: 'slots',
         title: 'Keep Four Outfit Slots',
         description:
-          'Use four local outfit slots to keep alternate looks available while you compare character ideas.',
+          'Use the four local outfit slots in Outfit Creator to keep alternate looks available while you compare character ideas.',
       },
       {
         icon: 'preview',
@@ -512,7 +514,7 @@ const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
   howToUseSteps: [
     {
       title: 'Choose a character',
-      description: 'Select a male or female figure to set the base for your outfit preview.',
+      description: 'In Outfit Creator, select a male or female figure to set the base for your outfit preview.',
     },
     {
       title: 'Mix clothing and accessories',
@@ -525,11 +527,14 @@ const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
         'Keep alternate combinations in four outfit slots, then download the finished preview as a PNG.',
     },
   ],
+  howToUseCallToActionTitle: 'Start styling with Outfit Creator',
+  howToUseCallToActionDescription:
+    'Choose a character, combine clothing and accessories, and save or download your look.',
   howToUseAction: 'Start creating',
   toolComparison: {
     title: 'Outfit Creator vs Photoshop vs Illustrator',
     description:
-      'Skip drawing clothing from scratch or arranging layers by hand. Choose pieces to build a look, switch outfits, and download your image.',
+      'With Outfit Creator, skip drawing clothing from scratch or arranging layers by hand. Choose pieces to build a look, switch outfits, and download your image.',
     tableLabel: 'Outfit creation tools comparison',
     dimensionHeading: 'Comparison',
     outfitCreatorHeading: 'Outfit Creator',
@@ -571,7 +576,7 @@ const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
   faqEyebrow: 'FAQ',
   faqTitle: 'Outfit Creator FAQ',
   faqDescription:
-    'Learn how the clothing categories, outfit slots, preview, and PNG download work.',
+    'Learn how the clothing categories, outfit slots, preview, and PNG download work in Outfit Creator.',
   faqItems: [
     {
       question: 'Who is the Outfit Creator for?',
@@ -580,7 +585,7 @@ const englishOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
     },
     {
       question: 'Is the Outfit Creator free to use?',
-      answer: 'Yes. You can build, save, and download outfit looks in the browser for free.',
+      answer: 'Yes. In Outfit Creator, you can build, save, and download outfit looks in the browser for free.',
     },
     {
       question: 'Which outfit categories are available?',
@@ -648,17 +653,17 @@ const chineseOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
   featureOverview: {
     title: '组合完整角色造型',
     subtitle:
-      '先选择角色，再按分类添加服装，并保留不同组合，方便整理战役笔记或角色视觉参考。',
+      '在服装搭配工具中先选择角色，再按分类添加服装，并保留不同组合，方便整理战役笔记或角色视觉参考。',
     features: [
       {
         icon: 'character',
         title: '选择角色',
-        description: '先选择男性或女性角色；浏览各类服装时，所选角色会持续显示在预览中。',
+        description: '先在服装搭配工具中选择男性或女性角色；浏览各类服装时，所选角色会持续显示在预览中。',
       },
       {
         icon: 'categories',
         title: '浏览服装分类',
-        description: '通过分类选择器浏览夹克、衬衫、裤子、裙子、鞋子、围巾、腰带和手套。',
+        description: '通过服装搭配工具的分类选择器浏览夹克、衬衫、裤子、裙子、鞋子、围巾、腰带和手套。',
       },
       {
         icon: 'layers',
@@ -668,7 +673,7 @@ const chineseOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
       {
         icon: 'slots',
         title: '保留四个套装槽位',
-        description: '使用四个本地套装槽位保存不同造型，比较角色设计时可以随时切换。',
+        description: '在服装搭配工具中使用四个本地套装槽位保存不同造型，比较角色设计时可以随时切换。',
       },
       {
         icon: 'preview',
@@ -687,7 +692,7 @@ const chineseOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
   howToUseSteps: [
     {
       title: '选择角色',
-      description: '选择男性或女性角色，为服装预览设定基础人物。',
+      description: '在服装搭配工具中选择男性或女性角色，为服装预览设定基础人物。',
     },
     {
       title: '组合服装与配饰',
@@ -698,11 +703,13 @@ const chineseOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
       description: '将不同组合保存在四个套装槽位中，完成后把当前预览下载为 PNG 图片。',
     },
   ],
+  howToUseCallToActionTitle: '用服装搭配工具开始搭配角色造型',
+  howToUseCallToActionDescription: '选择角色，组合服装与配饰，保存或下载你的造型。',
   howToUseAction: '开始搭配',
   toolComparison: {
     title: '服装搭配工具 vs Photoshop vs Illustrator',
     description:
-      '无需从零绘制服装或手动排布图层，选择部件即可组合造型、切换搭配并下载图片。',
+      '使用服装搭配工具，无需从零绘制服装或手动排布图层，选择部件即可组合造型、切换搭配并下载图片。',
     tableLabel: '服装搭配工具对比',
     dimensionHeading: '对比维度',
     outfitCreatorHeading: '服装搭配工具',
@@ -743,7 +750,7 @@ const chineseOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
   },
   faqEyebrow: '常见问题',
   faqTitle: '服装搭配工具常见问题',
-  faqDescription: '了解服装分类、套装槽位、预览和 PNG 下载的使用方式。',
+  faqDescription: '了解服装搭配工具中的服装分类、套装槽位、预览和 PNG 下载的使用方式。',
   faqItems: [
     {
       question: '服装搭配工具适合哪些人使用？',
@@ -751,7 +758,7 @@ const chineseOutfitCreatorCopy: Omit<OutfitCreatorCopy, 'heading' | 'description
     },
     {
       question: '服装搭配工具可以免费使用吗？',
-      answer: '可以。你可以在浏览器中免费搭配、保存和下载服装造型。',
+      answer: '可以。你可以在浏览器中使用服装搭配工具，免费搭配、保存和下载服装造型。',
     },
     {
       question: '目前有哪些服装分类？',
