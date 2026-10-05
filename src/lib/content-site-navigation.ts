@@ -1,5 +1,6 @@
 import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
+import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
 import { getBlogCategories, getBlogCategoryPath, type BlogCategoryCopy } from '@/lib/blog-content';
 import { getHomeCopy, getNavLabels, type NavLabels } from '@/lib/site-content';
@@ -8,6 +9,7 @@ import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } fr
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
 const EMBLEM_CREATOR_PATH = '/emblem-creator';
+const LANGUAGE_GENERATOR_PATH = '/language-generator';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
 const FREE_TOOLS_PATHS = [
   '/',
@@ -16,6 +18,7 @@ const FREE_TOOLS_PATHS = [
   OUTFIT_CREATOR_PATH,
   ARMY_FORMATION_CREATOR_PATH,
   EMBLEM_CREATOR_PATH,
+  LANGUAGE_GENERATOR_PATH,
 ] as const;
 
 const FREE_TOOLS_MENU_COPY = {
@@ -187,6 +190,11 @@ function buildContentSiteFreeToolFeatures(
       readArmyFormationNavigationName(locale),
     ),
     buildContentSiteFreeToolFeature(locale, EMBLEM_CREATOR_PATH, getEmblemCreatorCopy(locale).heading),
+    buildContentSiteFreeToolFeature(
+      locale,
+      LANGUAGE_GENERATOR_PATH,
+      getLanguageGeneratorCopy(locale).navigationTitle,
+    ),
   ];
 }
 
