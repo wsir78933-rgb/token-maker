@@ -1,5 +1,88 @@
 # WORKLOG
 
+## 交接单 · 2026-10-05 13:50 CST +0800 · Codex
+
+### 本次目标
+
+收紧 Outfit Creator 三组案例的间距；参考 Army Formation Creator，把使用步骤下方的孤立按钮改成完整 CTA；同步 EN/ZH，将英文完整短语 `Outfit Creator` 和中文对应名称 `服装搭配工具` 的关键词密度调整到 2%–3%；提交合并到本地 main，并通知用户删除唯一新建的「穿搭文案」工作树。
+
+### 已完成
+
+- `src/components/outfit-creator/OutfitCreatorCaseStudies.tsx` 的三组间距改为 `gap-10 sm:gap-12 lg:gap-14`，对应手机 40px、平板 48px、桌面 56px。EN/ZH 共用该组件。
+- `src/components/outfit-creator/OutfitCreatorPageView.tsx` 将使用步骤和 CTA 分成独立普通函数，区块顺序为 How To Use → CTA → FAQ。CTA 包含本地化标题、描述、44px 高圆角按钮及箭头，链接为 `#outfit-creator-editor`。`src/lib/outfit-creator/constants.ts` 公开导出编辑器 ID，PageView 与客户端 PageHeading 共用，避免服务端从 Client Component 读取普通常量。中文 CTA 标题为「用服装搭配工具开始搭配角色造型」，英文为「Start styling with Outfit Creator」。
+- `src/lib/outfit-creator/copy.ts` 的案例介绍、功能说明、操作步骤、CTA 标题、FAQ 说明与免费使用答案，EN/ZH 各调整 10 个现有字段；未改 meta、alt、ARIA、轮播案例或新增功能。按完整短语出现次数 ÷ 页面分词数计算，正文包含五个 FAQ 答案：英文 21/870 = 2.41%，含导航页脚的全页 21/942 = 2.23%；中文 21/934 = 2.25%，全页 21/1010 = 2.08%。初始折叠 FAQ 的可见关键词为 20 次，其正文和全页也在 2%–3%。
+- 提交 `fc3755112b8b80ddfbdf18e679b310a7485b8505`（`feat: refine outfit creator layout and bilingual copy`）包含上述五个文件，58 insertions、30 deletions，已 fast-forward 合入本地 main。本次 offhand 回读 main HEAD 仍为该提交，五个源码 SHA-256 与已验证版本一致；copy.ts 为 `9460f500458caef7a41a7e162fd8c97a5b8efc786acc60bed9dae193aa2c8e3d`。没有推送或部署。
+- 原工作树与合并后的 main 均运行三组聚焦 Vitest，分别为 3 files、14/14 tests、exit 0。合并后的 main 另有 `pnpm typecheck` 和五文件 scoped ESLint exit 0。本次 offhand 只回读现状和日志，没有重新跑这些检查。
+- 原工作树 40003 的真实 ego-browser 验证覆盖 EN/ZH × 1440×900 / 375×812，CTA 点击、免费 FAQ 展开和横向溢出检查通过。每组四个案例均实际切换显示；按独立组词数计算的 64 种组合全页密度范围为英文约 2.22%–2.25%、中文约 2.07%–2.09%。手机截图已查看，TaskSpace 49 已 finish。本次 offhand 未重新验收 main 的 40001 页面。
+- 当前「穿搭文案」目录、本地 `codex/穿搭文案` 分支均不存在，也不在 worktree 清单中；本会话只通知删除，没有执行删除，不归因删除者。当前清单保留主仓库和既有「微标文案」。本会话已停止自建的 40003 服务，本次回读无监听；40001 当前 PID 26609，cwd 为主仓库，本次未操作该服务。
+- 当前仍可回读的证据：`/tmp/token-maker-outfit-density-browser.json`、`/tmp/token-maker-outfit-density-vitest.log`、`/tmp/token-maker-outfit-main-merge-vitest.log`、`/tmp/token-maker-outfit-density-en-mobile.png`、`/tmp/token-maker-outfit-density-zh-mobile.png`。系统清理 /tmp 后文件可能消失。
+
+### 做到一半
+
+无未完成编码。本交接单未存档；写入前唯一 dirty 文件是既有 `WORKLOG.md`，暂存区为空，旧条目原样保留。完整仓库测试、完整 Vinext 生产构建链、推送、部署以及合并后 main 的新浏览器验收未执行，不能用上述聚焦检查代替。
+
+### 下一步
+
+下一班输入 `$pickup`，先核对 main HEAD、工作区与本条交接。穿搭改动已合入 main，工作树和分支已不存在，无需再次删除；不处理既有「微标文案」。根据用户的新需求继续，保留 WORKLOG 未提交状态。若用户要求复验 main，用下节命令与浏览器步骤生成对应当前源码的新证据。
+
+### 踩过的坑
+
+- main 中已有与提交完全相同的 CaseStudies 间距改动，首次 fast-forward 被未提交文件阻挡。核对工作文件 blob 与提交 blob 都为 `5d56912a25306b0c6d36ed8d6a30febeb13a751a` 后，仅暂存该文件再合并成功；没有 restore、stash 或处理 WORKLOG。原 WORKLOG 的 SHA-256 在合并前后均为 `e43786dcb7234d845712e474a66a17e621435fd63e46afde104eddaff6370e15`。
+- 服务端从带 `use client` 的 PageHeading 导入编辑器 ID，曾使 CTA href 变成 client-reference 函数文本；中性 constants 模块已修正该边界。浏览器导航不能只等 hash 更新，还要等编辑器实际进入可见范围。
+- Turbopack 不接受指向工作树根目录之外的 node_modules 符号链接；原工作树改用既有依赖的本地副本，没有新增依赖。此前默认 Next build 编译和类型检查通过后，在收集 `/api/coat-export` 时无法加载 `cloudflare:workers`；该 API 属范围外，未修复，也不声称完整生产构建通过。
+- 密度不能按源码所有字符串直接计算：隐藏表格 caption 会重复标题，meta/alt/ARIA 不属于本次正文，案例组的 title/description 未渲染，轮播只统计当前案例。FAQ 含答案与初始折叠可见文本是不同口径，必须分开标明。验收设置 reduced-motion 停止轮播自动播放，减少采样漂移。
+
+### 怎么验证
+
+以下为可重跑步骤，本次 offhand 没有执行测试、Lint、构建或浏览器：
+
+- Git：`git status --short --branch`；`git log -1 --oneline`；`git merge-base --is-ancestor fc3755112b8b80ddfbdf18e679b310a7485b8505 main`；`git worktree list --porcelain`。本交接写完预期仅 WORKLOG.md 为 unstaged，暂存区为空。
+- 聚焦测试：`pnpm exec vitest run src/app/outfit-creator-routes.test.tsx src/lib/outfit-creator/copy.test.ts src/components/outfit-creator/OutfitCreatorCaseStudies.test.tsx`。类型：`pnpm typecheck`。Lint：`pnpm exec eslint src/components/outfit-creator/OutfitCreatorCaseStudies.tsx src/components/outfit-creator/OutfitCreatorPageHeading.tsx src/components/outfit-creator/OutfitCreatorPageView.tsx src/lib/outfit-creator/copy.ts src/lib/outfit-creator/constants.ts`。
+- UI：先核实 40001 仍对应当前 main，再用 ego-browser 打开 `http://localhost:40001/outfit-creator` 与 `http://localhost:40001/zh/outfit-creator`，以 1440×900 和 375×812 检查案例间距、CTA 标题/描述/按钮、无横向溢出；点击 CTA 应进入编辑器，展开免费使用 FAQ，逐组切换四个案例。
+- 密度：从实际渲染的 main 提取 reader 文本，分别统计正文及含导航页脚的全页。主口径计入五个 FAQ 答案，排除 meta、alt、ARIA、sr-only、SVG、调试界面；轮播按当前显示内容。用 `Intl.Segmenter('en'/'zh', { granularity: 'word' })` 的 isWordLike 分词数作分母，完整关键词每次出现计 1，不把英文短语的两个单词乘入分子。FAQ 折叠的实际可见口径另外计算；目标均为 2%–3%。
+
+## 交接单 · 2026-10-05 11:29 CST +0800 · Codex CLI
+
+### 本次目标
+
+为 Outfit Creator 中英文页面增加案例展示模块，放在 What Is 下面，使用用户提供的 CircularTestimonials 切换方式，三组各四张图片，桌面排列为左文案右图片 → 左图片右文案 → 左文案右图片。调整标题、移除三组内部标题与说明，补充线稿、配色和材质影响最终效果的说明，修复后排卡片裁切；完成提交并合并到本地 main，通知用户可删除工作树。
+
+### 已完成
+
+- `src/components/outfit-creator/OutfitCreatorCaseStudies.tsx` 实现三组共 12 个案例；`OutfitCreatorPageView.tsx` 将模块接在 What Is 后、功能介绍前。EN/ZH 共用组件，分组图片位置为 `right / left / right`。中文主标题为「用服装搭配工具能做什么」，英文为「What can you do with Outfit Creator?」。三组内部标题与说明已从渲染中移除，分组保留可访问的轮播名称。
+- `src/lib/outfit-creator/copy.ts` 提供两种语言的案例、图片 alt、前后按钮名称，并在 What Is 中说明：服装组合是线稿参考，最终效果取决于对线稿的理解、导出后的绘画、配色和材质表现。`public/outfit-creator/cases/` 中有 12 张 600×500 PNG。
+- `src/components/armor-creator/circular-testimonials.tsx` 保留前/左/右叠放、文字动画、5 秒自动播放、手动操作后暂停和聚焦范围内的方向键切换；支持中文分词及 reduced-motion。裁切修复新增公开可选属性 `clipImageStack`，默认 true；Outfit 显式传 false，图片 stage 使用 overflow-visible 并按卡片高度与上移距离预留 min-height。圆角图片 frame 仍使用 overflow-hidden，后排 scale(0.85) 与 rotateY(±15deg) 保留。既有 Armor 调用继续采用默认裁切和高度。
+- 提交 `aab49ccfda557308395dee5a9b53377902993de3`（`feat: add bilingual outfit creator case studies`）已通过 fast-forward 合入本地 main，共 20 个文件：8 个代码/测试文件、12 张 PNG。此次 offhand 写入前 main clean，HEAD 仍为该提交；实际回读的 20 个源文件 SHA256 与已验收记录全部相同。没有推送或部署。
+- 本会话合并前相关 Vitest 验证为 4 个文件、42/42 测试通过，exit 0；此前 `pnpm typecheck` exit 0，轮播与案例模块的三文件 ESLint exit 0。这些检查在原工作树执行，本次 offhand 没有重新运行测试、类型检查、Lint 或构建。
+- 本地 ego-browser 验收记录为 EN/ZH × 360、390、640、767、768、1024、1440px，共 14/14 组几何检查通过：三组可见卡片完整、基础尺寸一致、无文案/按钮交叠和横向溢出。中英文三组共 6/6 轮播完成真实下一页按钮与聚焦方向键返回检查；Armor 两种语言的默认 stage overflow/min-height 兼容检查通过。桌面、手机截图已实际查看；TaskSpace 39 已 finish。
+- 当前 Git worktree 清单只剩主仓库，原「穿搭案例展示」目录与本地分支均不存在；本轮没有执行删除，不归因删除者。此次工作树的 40002 预览服务已停止且本轮回读无监听。40001 当前监听 PID 41766，cwd 为本主仓库；本次 offhand 未操作该服务，也未重新验收其页面。
+- 当前可回读证据位于 `/tmp/outfit-card-clipping-PiICU1/`：`merge-validation.json`、`final-validation.json`、`responsive-browser-receipts.json`、`controls-browser-receipts.json`、`armor-compatibility-browser-receipts.json`、`worker-height-validation.log` 及 `final-cards-390-zh.png`、`final-cards-390-en.png`、`final-640-zh.png`、`final-1440-zh.png`、`final-1440-en.png`。系统清理 /tmp 后这些文件可能消失。
+
+### 做到一半
+
+无未完成编码。本交接单保持未提交。完整仓库测试、完整生产构建、推送和部署未在本任务执行；不能用局部测试或本地浏览器通过代替这些结果。
+
+### 下一步
+
+下一班输入 `$pickup`，先核对 main HEAD、工作区和本交接单。案例展示及裁切修复已完成，无需再次删除原工作树。根据用户的新需求继续；如需复验合并后的 main，使用下节命令并生成新证据。保留 WORKLOG 未提交状态。
+
+### 踩过的坑
+
+- image stage 的 overflow-hidden 会切掉因 `translateY(-gap × 0.8)` 上移的后排卡片顶部。只取消裁切会在 640px 宽手机视口遮挡文案与按钮，必须同时预留叠放所需高度。前大后小是组件原有 85% 缩放与倾斜效果，不应误当成基础图片尺寸不一致。
+- 轮播自动播放会在浏览器滚动到按钮的期间改变 active index；验收时先用聚焦方向键触发手动暂停，再读取索引并执行按钮检查。中文根语言为 zh-CN，不能用严格等于 zh 的断言；圆角应核对实际样式，不硬编码默认 Tailwind 数值。
+- 浏览器中的 Monica 扩展向 body 注入 monica-id/monica-version，曾出现 hydration 属性警告；本任务未修改这项范围外行为，不声称全局 console 干净。
+- `pnpm dev` 会先执行 `scripts/free-port.mjs 40001`，该脚本会终止占用 40001 的进程。若需要独立临时服务，直接执行 next dev 并选择另一个空闲端口，避免影响现有主仓库服务。
+
+### 怎么验证
+
+本次 offhand 只核对 Git、源码哈希、现有证据和服务状态；下面是可重跑步骤：
+
+- Git：`git status --short --branch`；`git log -1 --oneline`；`git merge-base --is-ancestor aab49ccfda557308395dee5a9b53377902993de3 main`；`git worktree list --porcelain`。本交接完成后预期只有 WORKLOG.md 为 unstaged，暂存区为空。
+- 相关测试：`pnpm exec vitest run src/components/armor-creator/circular-testimonials.test.tsx src/components/outfit-creator/OutfitCreatorCaseStudies.test.tsx src/app/outfit-creator-routes.test.tsx src/lib/outfit-creator/copy.test.ts --maxWorkers=2`。
+- 类型检查：`pnpm typecheck`。定向 Lint：`pnpm exec eslint src/components/armor-creator/circular-testimonials.tsx src/components/armor-creator/circular-testimonials.test.tsx src/components/outfit-creator/OutfitCreatorCaseStudies.tsx`。
+- UI：在核实对应当前 main 的本地服务打开 `http://localhost:40001/zh/outfit-creator#outfit-creator-case-studies` 和英文 `/outfit-creator#outfit-creator-case-studies`。检查 What Is 下三组各四张、桌面图文交替、主标题本地化、分组标题说明未渲染；360–1440px 尤其 640/767px 检查后排顶部圆角完整且不遮挡文案/按钮。点击各组前后按钮，聚焦该组后按左右键，确认图片与文案一起切换。检查 `/armor-creator` 与 `/zh/armor-creator` 的原有轮播默认表现。使用真实 ego-browser 输入和截图保留交互证据。
+- 若需临时服务，在已确认空闲端口使用 `pnpm exec next dev --webpack --port 40002 --hostname 127.0.0.1`；40002 当前已停止，重新启动必须绑定当前源码后再做验收。
+
 ## 交接单 · 2026-10-04 22:51 CST +0800 · Codex（Orca 会话）
 
 ### 本次目标
