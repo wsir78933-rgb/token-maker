@@ -13,6 +13,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
+import { preload as preloadReactDomResource } from 'react-dom';
 
 import {
   readArmyFormationBrowserSave,
@@ -70,6 +71,10 @@ import {
   type ArmyFormationCatalogIcon,
   type ArmyFormationIconCategoryId,
 } from '@/lib/army-formation/icon-catalog';
+import {
+  getArmyFormationIconSpriteUrl,
+  getArmyFormationIconThumbnailSvgMarkup,
+} from '@/lib/army-formation/icon-thumbnails';
 import { cn } from '@/lib/utils';
 
 const ARMY_FIELD_WIDTH_PX = 780;
@@ -77,8 +82,7 @@ const ARMY_BATTLEFIELD_SLIDE_DURATION_MS = 280;
 const ARMY_BATTLEFIELD_SLIDE_CLEANUP_DELAY_MS = ARMY_BATTLEFIELD_SLIDE_DURATION_MS + 80;
 const ARMY_DRAG_START_PX = 3;
 const ARMY_ROTATION_HANDLE_SIZE_PX = 44;
-const ARMY_ROTATION_HANDLE_GAP_PX = 8;
-const ARMY_ROTATION_HANDLE_GUTTER_PX = ARMY_ROTATION_HANDLE_SIZE_PX + ARMY_ROTATION_HANDLE_GAP_PX;
+const ARMY_ROTATION_HANDLE_GAP_PX = 4;
 const ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX =
   (Math.hypot(ARMY_PIECE_WIDTH, ARMY_PIECE_HEIGHT) - ARMY_PIECE_HEIGHT) / 2;
 const ARMY_FORMATION_FILE_NAME = 'army-formation-creator.txt';
@@ -646,18 +650,80 @@ function requireArmyRotationPieceButton(
   return adjacentPieceButton;
 }
 
-function readArmyRotationHandleTopGutterPx(renderedScale: number): number {
-  if (!Number.isFinite(renderedScale) || renderedScale <= 0) {
-    throw new Error(`Army rotation handle rendered scale must be positive and finite. Received ${renderedScale}.`);
+type ArmyRotationHandlePosition = Readonly<{
+  topPx: number;
+  isBelowPiece: boolean;
+}>;
+
+function readArmyRotationHandlePosition(
+  pieceY: number,
+  renderedMapScale: number,
+  viewportFieldScale: number,
+  viewOffsetYPx: number,
+  viewScale: number,
+  battlefieldHeightPx: number,
+): ArmyRotationHandlePosition {
+  if (!Number.isFinite(pieceY)) {
+    throw new Error(`Army rotation handle piece y must be finite. Received ${pieceY}.`);
+  }
+  if (!Number.isFinite(renderedMapScale) || renderedMapScale <= 0) {
+    throw new Error(
+      `Army rotation handle rendered map scale must be positive and finite. Received ${renderedMapScale}.`,
+    );
+  }
+  if (!Number.isFinite(viewportFieldScale) || viewportFieldScale <= 0) {
+    throw new Error(
+      `Army rotation handle viewport field scale must be positive and finite. Received ${viewportFieldScale}.`,
+    );
+  }
+  if (!Number.isFinite(viewOffsetYPx)) {
+    throw new Error(`Army rotation handle view offset y must be finite. Received ${viewOffsetYPx}.`);
+  }
+  if (!Number.isFinite(viewScale) || viewScale <= 0) {
+    throw new Error(`Army rotation handle view scale must be positive and finite. Received ${viewScale}.`);
+  }
+  if (!Number.isFinite(battlefieldHeightPx) || battlefieldHeightPx <= 0) {
+    throw new Error(
+      `Army rotation handle battlefield height must be positive and finite. Received ${battlefieldHeightPx}.`,
+    );
   }
 
-  const topGutterPx =
-    ARMY_ROTATION_HANDLE_GUTTER_PX + ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX * renderedScale;
-  if (!Number.isFinite(topGutterPx)) {
-    throw new Error(`Army rotation handle top gutter must be finite. Received ${topGutterPx}.`);
+  const handleGapInMapPx = ARMY_ROTATION_HANDLE_GAP_PX / renderedMapScale;
+  const naturalTopPx =
+    pieceY
+    - ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX
+    - (ARMY_ROTATION_HANDLE_SIZE_PX + ARMY_ROTATION_HANDLE_GAP_PX) / renderedMapScale;
+  const belowPieceTopPx =
+    pieceY
+    + ARMY_PIECE_HEIGHT
+    + ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX
+    + handleGapInMapPx;
+  const minimumVisibleTopPx = -viewOffsetYPx / viewScale;
+  const maximumVisibleTopPx =
+    (battlefieldHeightPx - ARMY_ROTATION_HANDLE_SIZE_PX / viewportFieldScale - viewOffsetYPx)
+    / viewScale;
+  if (!Number.isFinite(naturalTopPx) || !Number.isFinite(belowPieceTopPx)) {
+    throw new Error(
+      `Army rotation handle preferred top must be finite. naturalTop=${naturalTopPx} belowPieceTop=${belowPieceTopPx}.`,
+    );
+  }
+  if (!Number.isFinite(minimumVisibleTopPx) || !Number.isFinite(maximumVisibleTopPx)) {
+    throw new Error(
+      `Army rotation handle visible top limits must be finite. minimumTop=${minimumVisibleTopPx} maximumTop=${maximumVisibleTopPx}.`,
+    );
   }
 
-  return topGutterPx;
+  const isBelowPiece = naturalTopPx < minimumVisibleTopPx;
+  const preferredTopPx = isBelowPiece ? belowPieceTopPx : naturalTopPx;
+  const visibleTopLimitPx = Math.max(minimumVisibleTopPx, maximumVisibleTopPx);
+  const topPx = Math.min(Math.max(preferredTopPx, minimumVisibleTopPx), visibleTopLimitPx);
+  if (!Number.isFinite(topPx)) {
+    throw new Error(
+      `Army rotation handle top must be finite. preferredTop=${preferredTopPx} minimumTop=${minimumVisibleTopPx} maximumTop=${maximumVisibleTopPx}.`,
+    );
+  }
+
+  return { topPx, isBelowPiece };
 }
 
 function readArmyRotationHandleLeftPx(pieceX: number, handleSizeInFieldPx: number): number {
@@ -957,7 +1023,7 @@ function ArmyFormationIconButton({
       <span
         className="pointer-events-none block h-full w-full [&_svg]:h-full [&_svg]:w-full"
         style={{ filter: ARMY_FORMATION_ICON_THUMBNAIL_FILTER }}
-        dangerouslySetInnerHTML={{ __html: icon.svgMarkup }}
+        dangerouslySetInnerHTML={{ __html: getArmyFormationIconThumbnailSvgMarkup(icon.id) }}
       />
     </button>
   );
@@ -1502,7 +1568,11 @@ function ArmyFormationPieceButton({
 function ArmyFormationRotationHandleButton({
   copy,
   piece,
-  fieldScale,
+  renderedMapScale,
+  viewportFieldScale,
+  viewOffsetYPx,
+  viewScale,
+  battlefieldHeightPx,
   onPointerDown,
   onPointerMove,
   onPointerUp,
@@ -1511,38 +1581,50 @@ function ArmyFormationRotationHandleButton({
 }: {
   copy: ArmyFormationCreatorCopy;
   piece: ArmyFormationPiece;
-  fieldScale: number;
+  renderedMapScale: number;
+  viewportFieldScale: number;
+  viewOffsetYPx: number;
+  viewScale: number;
+  battlefieldHeightPx: number;
   onPointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onPointerMove: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onPointerUp: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onPointerCancel: (event: PointerEvent<HTMLButtonElement>) => void;
   onLostPointerCapture: (event: PointerEvent<HTMLButtonElement>) => void;
 }) {
-  if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
-    throw new Error(`Army rotation handle field scale must be positive and finite. Received ${fieldScale}.`);
+  if (!Number.isFinite(renderedMapScale) || renderedMapScale <= 0) {
+    throw new Error(
+      `Army rotation handle rendered map scale must be positive and finite. Received ${renderedMapScale}.`,
+    );
   }
 
-  const handleSizeInField = ARMY_ROTATION_HANDLE_SIZE_PX / fieldScale;
-  const rotationHandleSymbolFontSizePx = 16 / fieldScale;
-  const rotationHandleSymbolPaddingBottomPx = 4 / fieldScale;
+  const handleSizeInField = ARMY_ROTATION_HANDLE_SIZE_PX / renderedMapScale;
+  const rotationHandleSymbolFontSizePx = 16 / renderedMapScale;
+  const rotationHandleSymbolPaddingPx = ARMY_ROTATION_HANDLE_GAP_PX / renderedMapScale;
+  const rotationHandlePosition = readArmyRotationHandlePosition(
+    piece.y,
+    renderedMapScale,
+    viewportFieldScale,
+    viewOffsetYPx,
+    viewScale,
+    battlefieldHeightPx,
+  );
   return (
     <button
       type="button"
       data-army-rotation-handle=""
       data-piece-id={piece.id}
       aria-label={copy.rotatePiece}
-      className="absolute z-30 box-border flex cursor-grab touch-none select-none items-end justify-center bg-transparent text-black hover:bg-transparent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)] active:cursor-grabbing"
+      className={`absolute z-30 box-border flex cursor-grab touch-none select-none ${rotationHandlePosition.isBelowPiece ? 'items-start' : 'items-end'} justify-center bg-transparent text-black hover:bg-transparent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)] active:cursor-grabbing`}
       style={{
         left: readArmyRotationHandleLeftPx(piece.x, handleSizeInField),
-        top:
-          piece.y
-          - ARMY_ROTATION_HANDLE_MAX_TOP_EXTENSION_PX
-          - ARMY_ROTATION_HANDLE_GUTTER_PX / fieldScale,
+        top: rotationHandlePosition.topPx,
         width: handleSizeInField,
         height: handleSizeInField,
         fontSize: rotationHandleSymbolFontSizePx,
         lineHeight: `${rotationHandleSymbolFontSizePx}px`,
-        paddingBottom: rotationHandleSymbolPaddingBottomPx,
+        paddingTop: rotationHandlePosition.isBelowPiece ? rotationHandleSymbolPaddingPx : 0,
+        paddingBottom: rotationHandlePosition.isBelowPiece ? 0 : rotationHandleSymbolPaddingPx,
       }}
       onPointerDown={(event) => onPointerDown(event, piece)}
       onPointerMove={(event) => onPointerMove(event, piece)}
@@ -1631,7 +1713,6 @@ function ArmyFormationBattlefieldCanvas({
   onBattlefieldPointerUp,
   onBattlefieldPointerCancel,
   onBattlefieldWheel,
-  rotationHandleTopGutterPx,
   onPiecePointerDown,
   onPiecePointerMove,
   onPiecePointerUp,
@@ -1660,9 +1741,7 @@ function ArmyFormationBattlefieldCanvas({
     battlefieldIndex: number,
     point: { xPx: number; yPx: number },
     scaleFactor: number,
-    fieldScale: number,
   ) => void;
-  rotationHandleTopGutterPx: number;
   onPiecePointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onPiecePointerMove: (event: PointerEvent<HTMLButtonElement>) => void;
   onPiecePointerUp: (event: PointerEvent<HTMLButtonElement>) => void;
@@ -1692,13 +1771,12 @@ function ArmyFormationBattlefieldCanvas({
           yPx: (event.clientY - fieldRect.top) / renderedFieldScale,
         },
         Math.exp(-event.deltaY * 0.002),
-        fieldScale,
       );
     };
 
     field.addEventListener('wheel', handleBattlefieldWheel, { passive: false });
     return () => field.removeEventListener('wheel', handleBattlefieldWheel);
-  }, [battlefieldIndex, fieldScale, onBattlefieldWheel]);
+  }, [battlefieldIndex, onBattlefieldWheel]);
 
   return (
     <div
@@ -1710,7 +1788,7 @@ function ArmyFormationBattlefieldCanvas({
       style={{
         width: ARMY_FIELD_WIDTH_PX,
         height: battlefield.heightPx,
-        top: rotationHandleTopGutterPx,
+        top: 0,
         backgroundColor: battlefield.fieldBackgroundColor,
         transform: `scale(${fieldScale})`,
         transformOrigin: 'top left',
@@ -1759,7 +1837,11 @@ function ArmyFormationBattlefieldCanvas({
                 <ArmyFormationRotationHandleButton
                   copy={copy}
                   piece={piece}
-                  fieldScale={fieldScale * battlefieldViewTransform.scale}
+                  renderedMapScale={fieldScale * battlefieldViewTransform.scale}
+                  viewportFieldScale={fieldScale}
+                  viewOffsetYPx={battlefieldViewTransform.offsetYPx}
+                  viewScale={battlefieldViewTransform.scale}
+                  battlefieldHeightPx={battlefield.heightPx}
                   onPointerDown={onRotationPointerDown}
                   onPointerMove={onRotationPointerMove}
                   onPointerUp={onRotationPointerUp}
@@ -1841,7 +1923,6 @@ function ArmyFormationBattlefieldPane({
     battlefieldIndex: number,
     point: { xPx: number; yPx: number },
     scaleFactor: number,
-    fieldScale: number,
   ) => void;
   onRotationPointerDown: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
   onRotationPointerMove: (event: PointerEvent<HTMLButtonElement>, piece: ArmyFormationPiece) => void;
@@ -1909,14 +1990,7 @@ function ArmyFormationBattlefieldPane({
   }, [movingSlideId, onSlideFinished, slideId]);
 
   const fieldScale = fieldViewportWidth > 0 ? fieldViewportWidth / ARMY_FIELD_WIDTH_PX : 1;
-  const maximumRenderedMapScale = Math.max(
-    battlefieldViewTransform.scale,
-    slide?.outgoingBattlefieldViewTransform.scale ?? battlefieldViewTransform.scale,
-  );
-  const rotationHandleTopGutterPx = readArmyRotationHandleTopGutterPx(
-    fieldScale * maximumRenderedMapScale,
-  );
-  const renderedFieldHeight = battlefield.heightPx * fieldScale + rotationHandleTopGutterPx;
+  const renderedFieldHeight = battlefield.heightPx * fieldScale;
   const slideIsMoving = slide !== null && movingSlideId === slide.id;
   const outgoingOffset = slide === null || !slideIsMoving ? 0 : -slide.direction * 100;
   const incomingOffset = slide === null ? 0 : slideIsMoving ? 0 : slide.direction * 100;
@@ -1938,7 +2012,7 @@ function ArmyFormationBattlefieldPane({
       />
       <div
         ref={fieldViewportRef}
-        className="col-start-2 row-start-2 min-w-0 overflow-hidden rounded-md border border-[var(--site-border-strong)]"
+        className="col-start-2 row-start-2 self-start min-w-0 overflow-hidden rounded-md border border-[var(--site-border-strong)]"
       >
         <div className="relative w-full" style={{ height: renderedFieldHeight }}>
           {slide === null ? (
@@ -1953,7 +2027,6 @@ function ArmyFormationBattlefieldPane({
               onBattlefieldPointerUp={onBattlefieldPointerUp}
               onBattlefieldPointerCancel={onBattlefieldPointerCancel}
               onBattlefieldWheel={onBattlefieldWheel}
-              rotationHandleTopGutterPx={rotationHandleTopGutterPx}
               onPiecePointerDown={onPiecePointerDown}
               onPiecePointerMove={onPiecePointerMove}
               onPiecePointerUp={onPiecePointerUp}
@@ -1985,7 +2058,6 @@ function ArmyFormationBattlefieldPane({
                   onBattlefieldPointerUp={onBattlefieldPointerUp}
                   onBattlefieldPointerCancel={onBattlefieldPointerCancel}
                   onBattlefieldWheel={onBattlefieldWheel}
-                  rotationHandleTopGutterPx={rotationHandleTopGutterPx}
                   onPiecePointerDown={onPiecePointerDown}
                   onPiecePointerMove={onPiecePointerMove}
                   onPiecePointerUp={onPiecePointerUp}
@@ -2016,7 +2088,6 @@ function ArmyFormationBattlefieldPane({
                   onBattlefieldPointerUp={onBattlefieldPointerUp}
                   onBattlefieldPointerCancel={onBattlefieldPointerCancel}
                   onBattlefieldWheel={onBattlefieldWheel}
-                  rotationHandleTopGutterPx={rotationHandleTopGutterPx}
                   onPiecePointerDown={onPiecePointerDown}
                   onPiecePointerMove={onPiecePointerMove}
                   onPiecePointerUp={onPiecePointerUp}
@@ -2131,6 +2202,12 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
   const activeBattlefieldViewTransform =
     battlefieldViewTransformsByIndex.get(armyDocument.activeBattlefieldIndex) ??
     DEFAULT_ARMY_FORMATION_BACKGROUND_TRANSFORM;
+
+  preloadReactDomResource(getArmyFormationIconSpriteUrl('helmet'), {
+    as: 'image',
+    type: 'image/png',
+    fetchPriority: 'high',
+  });
 
   const finishBattlefieldSlide = useCallback((slideId: number) => {
     setBattlefieldSlide((currentSlide) => (currentSlide?.id === slideId ? null : currentSlide));
@@ -2325,42 +2402,15 @@ export function ArmyFormationCreator({ locale }: { locale: 'en' | 'zh' }) {
     battlefieldIndex: number,
     point: { xPx: number; yPx: number },
     scaleFactor: number,
-    fieldScale: number,
   ): void {
     reportArmyFormationAction(() => {
-      if (!Number.isFinite(fieldScale) || fieldScale <= 0) {
-        throw new Error(`Army battlefield field scale must be positive and finite. Received ${fieldScale}.`);
-      }
-
       const currentViewTransform = readBattlefieldViewTransform(battlefieldIndex);
       const nextViewTransform = zoomArmyFormationBackgroundTransformAtPoint(
         currentViewTransform,
         point,
         scaleFactor,
       );
-      const outgoingViewScale = battlefieldSlide?.outgoingBattlefieldViewTransform.scale;
-      const currentViewportScale =
-        outgoingViewScale === undefined
-          ? currentViewTransform.scale
-          : Math.max(currentViewTransform.scale, outgoingViewScale);
-      const nextViewportScale =
-        outgoingViewScale === undefined
-          ? nextViewTransform.scale
-          : Math.max(nextViewTransform.scale, outgoingViewScale);
-      const currentViewportGutterPx = readArmyRotationHandleTopGutterPx(
-        fieldScale * currentViewportScale,
-      );
-      const nextViewportGutterPx = readArmyRotationHandleTopGutterPx(
-        fieldScale * nextViewportScale,
-      );
-      const viewportGutterChangePx = nextViewportGutterPx - currentViewportGutterPx;
-      const nextViewTransformWithGutterCompensation = translateArmyFormationBackgroundTransform(
-        nextViewTransform,
-        0,
-        -viewportGutterChangePx / fieldScale,
-      );
-
-      writeBattlefieldViewTransform(battlefieldIndex, nextViewTransformWithGutterCompensation);
+      writeBattlefieldViewTransform(battlefieldIndex, nextViewTransform);
     });
   }
 
