@@ -116,21 +116,21 @@ const englishCopy: EmblemCreatorCopy = {
   description: 'Build and edit your emblem.',
   heroAction: 'Start Creating',
   whatIs: {
-    title: 'What is the Emblem Creator?',
+    title: 'What is the Emblem Maker?',
     paragraphs: [
-      'Emblem Creator is an online tool that helps you quickly make black-and-white emblems, logos, icons, and rank insignia. Use it to design a badge for your adventuring party, create a symbol for a faction, guild, or legion, or give characters and organizations in your fantasy world a mark of their own.',
-      'Whether you are a tabletop RPG or D&D player or GM, a fantasy worldbuilder, a fiction writer, or an indie game developer, Emblem Creator helps bring distinctive visual marks to your world and makes each faction and organization easier to recognize and remember.',
+      'Emblem Maker is an online tool that helps you quickly make black-and-white emblems, logos, icons, and rank insignia. Use it to design a badge for your adventuring party, create a symbol for a faction, guild, or legion, or give characters and organizations in your fantasy world a mark of their own.',
+      'Whether you are a tabletop RPG or D&D player or GM, a fantasy worldbuilder, a fiction writer, or an indie game developer, Emblem Maker helps bring distinctive visual marks to your world and makes each faction and organization easier to recognize and remember.',
     ],
   },
   features: {
-    title: 'Emblem-making features',
+    title: 'Emblem Maker features',
     description:
-      'Start with catalog assets or a web image, then adjust, layer, export, and save your emblem project.',
+      'Start with catalog assets or a web image in Emblem Maker, then adjust, layer, export, and save your emblem project.',
     items: [
       {
         title: 'Browse assets by category',
         description:
-          'Choose catalog assets from Subject, Details, or Icons, then add them to the canvas.',
+          'Choose catalog assets from Subject, Details, or Icons in Emblem Maker, then add them to the canvas.',
       },
       {
         title: 'Adjust each element',
@@ -145,7 +145,7 @@ const englishCopy: EmblemCreatorCopy = {
       {
         title: 'Add a custom image by URL',
         description:
-          'Enter a full HTTP or HTTPS image URL to load an image into a chosen category. The external image server must allow cross-origin loading; otherwise adding the image or exporting a PNG may fail.',
+          'Enter a full HTTP or HTTPS image URL in Emblem Maker to load an image into a chosen category. The external image server must allow cross-origin loading; otherwise adding the image or exporting a PNG may fail.',
       },
       {
         title: 'Export a 1024 × 1024 PNG',
@@ -154,19 +154,19 @@ const englishCopy: EmblemCreatorCopy = {
       {
         title: 'Save and reopen a JSON project',
         description:
-          'Save an emblem-project.json file, then open it later to continue editing. The image URLs saved in the project must still load.',
+          'Save an Emblem Maker project as emblem-project.json, then open it later to continue editing. The image URLs saved in the project must still load.',
       },
     ],
   },
   howItWorks: {
     eyebrow: 'How it works',
-    title: 'How to use Emblem Creator',
+    title: 'How to use Emblem Maker',
     label: 'Emblem Creator steps',
     steps: [
       {
         title: 'Choose an asset',
         description:
-          'Pick Subject, Details, or Icons, then choose a catalog asset to add to the canvas.',
+          'In Emblem Maker, pick Subject, Details, or Icons, then choose a catalog asset to add to the canvas.',
       },
       {
         title: 'Adjust the element',
@@ -186,23 +186,23 @@ const englishCopy: EmblemCreatorCopy = {
     ],
   },
   callToAction: {
-    title: 'Start making your emblem',
+    title: 'Start making an emblem with Emblem Maker',
     description:
       'Build an emblem in the editor, then export a PNG or save the project when you are ready.',
     label: 'Start Creating',
   },
   toolComparison: {
-    title: 'Start your emblem with ready-made assets',
+    title: 'Start your Emblem Maker project with ready-made assets',
     description: 'Assets, layers, and the canvas are ready. Compose and export your emblem in your browser.',
     dimensionHeading: 'Feature',
-    emblemCreatorHeading: 'Emblem Creator',
+    emblemCreatorHeading: 'Emblem Maker',
     photoshopHeading: 'Photoshop (desktop)',
     illustratorHeading: 'Illustrator (desktop)',
     tableLabel: 'Emblem Creator tool comparison',
     rows: [
       {
         dimension: 'Purpose',
-        emblemCreator: 'Focused on creating emblems by combining assets.',
+        emblemCreator: 'Emblem Maker combines assets into custom emblems.',
         photoshop: 'General image editing and compositing.',
         illustrator: 'General vector drawing and design.',
       },
@@ -234,13 +234,13 @@ const englishCopy: EmblemCreatorCopy = {
   },
   faq: {
     eyebrow: 'FAQ',
-    title: 'Emblem Creator FAQ',
-    description: 'Quick answers for building, saving, and exporting an emblem.',
+    title: 'Emblem Maker FAQ',
+    description: 'Quick answers about Emblem Maker, from building an emblem to saving and exporting it.',
     items: [
       {
-        question: 'What can I use Emblem Creator for?',
+        question: 'What can I use Emblem Maker for?',
         answer:
-          'Combine catalog assets and images on the 1024 × 1024 canvas to make a black-and-white emblem, logo, icon, or rank insignia.',
+          'Combine catalog assets and images in Emblem Maker on the 1024 × 1024 canvas to make a black-and-white emblem, logo, icon, or rank insignia.',
       },
       {
         question: 'How do I build an emblem?',
@@ -255,12 +255,12 @@ const englishCopy: EmblemCreatorCopy = {
       {
         question: 'How do I export a PNG?',
         answer:
-          'Select Export PNG in the toolbar. The editor renders the visible layers to a 1024 × 1024 PNG and downloads it as emblem.png.',
+          "In Emblem Maker, select Export PNG in the toolbar. The editor renders the visible layers to a 1024 × 1024 PNG and downloads it as emblem.png.",
       },
       {
         question: 'How do I save and continue editing later?',
         answer:
-          'Select Save project to download emblem-project.json. Later, choose Open project and select that JSON file to continue editing; the image URLs in the project must still load.',
+          'In Emblem Maker, select Save project to download emblem-project.json. Later, choose Open project and select that JSON file to continue editing; the image URLs in the project must still load.',
       },
     ],
   },
@@ -311,12 +311,12 @@ const chineseCopy: EmblemCreatorCopy = {
     ],
   },
   features: {
-    title: '用于徽章制作的功能',
-    description: '从目录素材或网页图片开始，调整元素、组合图层，并导出或保存你的工程。',
+    title: '徽章制作器功能',
+    description: '从徽章制作器的目录素材或网页图片开始，调整元素、组合图层，并导出或保存你的工程。',
     items: [
       {
         title: '按分类选择素材',
-        description: '从“主体”“细节”或“图标”分类中选择素材并添加到画布。',
+        description: '在徽章制作器中，从“主体”“细节”或“图标”分类选择素材并添加到画布。',
       },
       {
         title: '调整元素',
@@ -329,7 +329,7 @@ const chineseCopy: EmblemCreatorCopy = {
       {
         title: '通过 URL 添加自定义图片',
         description:
-          '输入完整的 HTTP 或 HTTPS 图片地址，将图片加载到所选分类；外部图片服务器需要允许跨域加载，否则添加图片或导出 PNG 可能失败。',
+          '在徽章制作器中输入完整的 HTTP 或 HTTPS 图片地址，将图片加载到所选分类；外部图片服务器需要允许跨域加载，否则添加图片或导出 PNG 可能失败。',
       },
       {
         title: '导出 1024 × 1024 PNG',
@@ -337,7 +337,7 @@ const chineseCopy: EmblemCreatorCopy = {
       },
       {
         title: '保存并重新打开 JSON 工程',
-        description: '下载 emblem-project.json，之后重新打开它继续编辑；工程中的图片 URL 仍需能够加载。',
+        description: '将徽章制作器工程下载为 emblem-project.json，之后重新打开它继续编辑；工程中的图片 URL 仍需能够加载。',
       },
     ],
   },
@@ -348,7 +348,7 @@ const chineseCopy: EmblemCreatorCopy = {
     steps: [
       {
         title: '选择素材',
-        description: '选择“主体”“细节”或“图标”分类，再选取素材添加到画布。',
+        description: '在徽章制作器中，选择“主体”“细节”或“图标”分类，再选取素材添加到画布。',
       },
       {
         title: '调整元素',
@@ -365,12 +365,12 @@ const chineseCopy: EmblemCreatorCopy = {
     ],
   },
   callToAction: {
-    title: '现在开始制作你的徽章',
+    title: '现在用徽章制作器制作你的徽标',
     description: '在编辑器中组合素材、调整图层，准备好后导出 PNG 或保存工程。',
     label: '开始制作',
   },
   toolComparison: {
-    title: '制作徽章，选素材就能开始',
+    title: '徽章制作器：选素材，开始制作',
     description: '素材、图层和画布已备好，在浏览器中组合并导出徽章。',
     dimensionHeading: '对比维度',
     emblemCreatorHeading: '徽章制作器',
@@ -380,7 +380,7 @@ const chineseCopy: EmblemCreatorCopy = {
     rows: [
       {
         dimension: '制作定位',
-        emblemCreator: '专注通过素材组合制作徽章。',
+        emblemCreator: '徽章制作器专注于通过素材组合制作徽章。',
         photoshop: '通用图片编辑与合成。',
         illustrator: '通用矢量绘制与设计。',
       },
@@ -412,12 +412,12 @@ const chineseCopy: EmblemCreatorCopy = {
   },
   faq: {
     eyebrow: '常见问题',
-    title: '徽章制作常见问题',
-    description: '快速了解徽章制作、图片添加、PNG 导出和工程继续编辑。',
+    title: '徽章制作器常见问题',
+    description: '快速了解徽章制作器中的图片添加、PNG 导出和工程继续编辑。',
     items: [
       {
         question: '徽章制作器可以用来做什么？',
-        answer: '你可以在 1024 × 1024 画布上组合素材和图片，制作黑白徽章、标志、图标或等级徽记。',
+        answer: '你可以在徽章制作器的 1024 × 1024 画布上组合素材和图片，制作黑白徽章、标志、图标或等级徽记。',
       },
       {
         question: '如何制作一个徽章？',
@@ -431,12 +431,12 @@ const chineseCopy: EmblemCreatorCopy = {
       },
       {
         question: '如何导出 PNG？',
-        answer: '在工具栏点击“导出 PNG”。编辑器会把当前可见图层渲染为 1024 × 1024 的 PNG，并下载为 emblem.png。',
+        answer: '在徽章制作器的工具栏点击“导出 PNG”。编辑器会把当前可见图层渲染为 1024 × 1024 的 PNG，并下载为 emblem.png。',
       },
       {
         question: '如何保存并继续编辑？',
         answer:
-          '点击“保存工程”下载 emblem-project.json。之后点击“打开工程”并选择这个 JSON 文件即可继续编辑；工程中的图片 URL 仍需能够加载。',
+          '点击“保存工程”下载 emblem-project.json。之后在徽章制作器中点击“打开工程”并选择这个 JSON 文件即可继续编辑；工程中的图片 URL 仍需能够加载。',
       },
     ],
   },

@@ -1,3 +1,4 @@
+import { EmblemCreatorCaseStudies } from '@/components/emblem-creator/EmblemCreatorCaseStudies';
 import { EmblemCreatorCallToAction } from '@/components/emblem-creator/EmblemCreatorCallToAction';
 import { EmblemCreatorFaq } from '@/components/emblem-creator/EmblemCreatorFaq';
 import { EmblemCreatorFeaturesGrid } from '@/components/emblem-creator/EmblemCreatorFeaturesGrid';
@@ -31,6 +32,7 @@ export function EmblemCreatorPageView({ locale }: { locale: EmblemLocale }) {
           <EmblemCreatorWorkbench locale={locale} copy={copy} />
         </div>
         <EmblemCreatorWhatIs copy={copy} />
+        <EmblemCreatorCaseStudies locale={locale} />
         <EmblemCreatorFeaturesGrid copy={copy.features} />
         <EmblemCreatorHowItWorks copy={copy.howItWorks} />
         <EmblemCreatorToolComparison copy={copy.toolComparison} />
