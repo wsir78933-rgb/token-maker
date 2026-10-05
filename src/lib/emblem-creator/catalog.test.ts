@@ -81,7 +81,7 @@ describe('emblem catalog', () => {
     }
   });
 
-  it('references all local original PNGs with matching signature and IHDR dimensions', () => {
+  it('references all local RollForFantasy PNGs with valid signatures and proportional IHDR dimensions', () => {
     const assetDirectory = realpathSync(
       resolve(process.cwd(), 'public/emblem-creator/rollforfantasy'),
     );
@@ -105,8 +105,13 @@ describe('emblem catalog', () => {
       const pngBytes = readFileSync(realFilePath);
       expect(pngBytes.subarray(0, PNG_SIGNATURE.length), asset.id).toEqual(PNG_SIGNATURE);
       expect(pngBytes.toString('ascii', 12, 16), asset.id).toBe('IHDR');
-      expect(pngBytes.readUInt32BE(16), asset.id).toBe(asset.width);
-      expect(pngBytes.readUInt32BE(20), asset.id).toBe(asset.height);
+      const actualWidth = pngBytes.readUInt32BE(16);
+      const actualHeight = pngBytes.readUInt32BE(20);
+      // Catalog dimensions are the logical viewport kept for legacy project layouts;
+      // high-resolution PNGs may increase actual pixels while preserving their ratio.
+      expect(actualWidth, asset.id).toBeGreaterThanOrEqual(asset.width);
+      expect(actualHeight, asset.id).toBeGreaterThanOrEqual(asset.height);
+      expect(actualWidth * asset.height, asset.id).toBe(actualHeight * asset.width);
       expect(asset.width, asset.id).toBeGreaterThan(0);
       expect(asset.height, asset.id).toBeGreaterThan(0);
     }
