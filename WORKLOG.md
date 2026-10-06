@@ -1,5 +1,51 @@
 # WORKLOG
 
+## 交接单 · 2026-10-05 23:14 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+在唯一的「军阵素材」工作树中解决 Army Formation Creator 图标加载延迟，按用户后续确认修复滚轮导致的画布空条、移除深色顶部空白，并把截图中下方旋转符号到棋子的可见间距缩短约一半；保留棋子尺寸、默认倍率、拖动、存档与导出行为。使用真实内置子代理实施及独立复核，不使用 Orca 编排。最后按授权提交并合并本地 main，通知用户删除工作树。本次 offhand 只核对状态并写交接单。
+
+### 已完成
+
+- 图标架改用 5 张按类别生成、带内容哈希的 sprite；默认头盔分类从 39 个原图请求合为 1 个，武器分类从 23 个合为 1 个。通过 React DOM preload 优先加载头盔 sprite；`public/_headers` 仅给 `/army-formation-icons/sprites/*.png` 设置一年 immutable 缓存。独立只读核对确认 292/292 原图与 sprite 单元 raw RGBA 一致。292 张原始 PNG、`icon-catalog.ts`、`export-image.ts` 和棋子的原始 SVG 渲染未替换。
+- 画布 `top` 为 0，外层高度仅为战场高度乘响应缩放；`self-start` 避免窄屏画布被旁边箭头撑出底部空白。滚轮缩放继续保持鼠标锚点，移除旧的顶部空条补偿。手柄上方放不下时放到棋子下方，保留视口夹紧和左右居中。
+- 旋转手柄点击区域维持 44 CSS px、符号字体及行高 16 CSS px；几何间隔 8→4 px。上方符号靠底侧，下方符号靠顶侧，近侧 padding 4 px。1492px 同一窗口中的未旋转棋子实测文本边界空隙 45.106→21.099 px，约为原来的 0.468；这是截图场景的近似减半，不是所有窗口、角度、倍率都严格 0.5。默认地图棋子仍为 50×30，视角初始倍率为 1。
+- 功能提交 `4cf66a42d7742f7772d85f978f4d0f053c2cf355`（Optimize army icon loading and battlefield controls）；合并提交及当前 main HEAD 为 `ec78560e06cf8a251d1da50f335f04d9ce9dd63e`（Merge army asset loading and battlefield control fixes）。父提交为原 main `46db200aa41ca84adaec27c3cd6b303f9234d7c9` 与功能提交。合并无冲突，相对原 main 仅改变约定的 11 个文件，保留原 main 的其他改动；11/11 文件 SHA256 与已验证 manifest 相符，两个提交均已回读为 main 祖先。
+- 11 个文件为组件及其测试、新增 thumbnail 模块及其测试、sprite 生成脚本、`public/_headers` 和 5 张 sprite；无新增依赖或其他产品代码改动。实际范围清单见 `/tmp/army-assets-commit-manifest.json`。
+- main 合并后相关军阵及共享路由／导航测试 20 files / 336 tests、scoped ESLint、Vinext 构建和 Workers dry-run 均 exit 0。标准 `pnpm typecheck` 遇到合并前已有的 `.next/dev/types/validator.ts:291` TS1128；保留该开发缓存及现有开发服务，通过临时配置额外排除 dev 缓存完成隔离类型检查，exit 0，覆盖与原配置相同的 701 个 src 文件。没有把标准检查宣称为通过。
+- 同一最终军阵源码此前已有 EN/ZH、1920px／390px、0.25／1／8 倍及自然上方分支共 14 组真实指针旋转和棋子拖动验证；44px 命中区、棋子中心可拖动、旋转不改变棋子坐标／视角、滚轮锚点和画布边界均通过。存档测试备份通过 guard 与精确回读恢复。合并后没有重跑这 14 组浏览器交互，仅核对相同源码字节和 main 测试／构建；这是本地证据，不是线上部署证据。
+- 已通知用户可以删除「军阵素材」，本实例停止了自己运行的 40004 临时预览。此次 offhand 实际回读确认：军阵目录、worktree 条目及 `refs/heads/军阵素材` 均不存在；这些删除不是本实例执行的。其他现有工作树未清理。40004 当前无监听，旧预览 URL 已不可用；40001 的监听 PID10325 cwd 为主仓库，本轮只读核对，未操作其服务或页面。
+- 写交接单前 main 工作区、暂存区、未跟踪文件均为空。本实例没有 push 或部署，也没有核查最新线上部署版本。
+
+### 做到一半
+
+无未完成的已授权产品改动、提交或合并事项。未存档：本交接单按 offhand 要求只写 WORKLOG.md，不提交。现有 Next 开发类型缓存语法错误保留，未获授权修改构建脚本或缓存处理方案。
+
+### 下一步
+
+下一班输入 `$pickup`，先回读本条、main HEAD、工作区和服务状态，再按用户新任务继续。不要重建、合并或删除已不存在的「军阵素材」工作树。保留本交接单未提交；push、部署、依赖变更或缓存修复均未授权。后续编码 Task spec 必须显式要求高内聚／低耦合、单一职责、主函数调度、公开函数／类型／命令通信、KISS、Fail Fast（具体异常值且不吞异常）、YAGNI、精确命名及 EN/ZH 同步，继续遵守用户不使用 Orca 的要求。
+
+### 踩过的坑
+
+- 只把间隔常量 8 改成 4 不能让下方符号的可见距离减半；旧的 `items-end` 在 44px 按钮内又增加了符号偏移，必须根据上／下位置把符号放在靠近棋子的一侧。保留 44px 命中区和最大旋转外扩，不能靠缩小命中区或覆盖棋子解决。
+- 用户曾报告点击新棋子直接变成 3.25 倍。线上和预览 EN/ZH 的首次真实点击均验证为 1→1，未复现该异常。不能凭两张不同状态的截图归因已有缩放或断言用户滚动过；需要在用户实际发生问题的页面复现后再判断。
+- Next 与 Vinext 会写同一路径的 `.next/types/routes.d.ts`，类型生成与 Vinext 构建不能并行验证。构建后需顺序运行 `next typegen` 再做 Next 类型检查。已有损坏 dev validator 的 hash 在隔离验证及本次 offhand 回读均保持一致；不要顺手删除缓存、停别人的开发服务或修改仓库 tsconfig。
+- 原生 WheelEvent 的 clientX/clientY 在该浏览器中是整数：一次测试请求 748.596／238.481，实际可信事件为 748／238。锚点测试应按实际整数坐标比较，不要把自动化测试的小数坐标差判成滚轮代码回归。
+- ego-browser TaskSpace40 已 finish 一次；40004 已停止且军阵目录已删除。`/tmp/army-handle-gap-browser.mjs` 等临时脚本使用该端口和测试存档，不能原样续跑；复验需核对主仓库服务、重新建立一个 TaskSpace，保护并精确恢复对应 origin 的存档。临时证据可能被系统清理。
+- 本次 offhand 没有重跑测试、类型检查、Lint、构建或浏览器交互；下列计数是此前实际执行结果及本轮回读。没有运行完整全仓库测试或完整发布流水线；合并、本地构建、HTTP 和部署必须分开。
+
+### 怎么验证
+
+- Git：`git status --short --branch`；`git log -3 --oneline`；`git merge-base --is-ancestor 4cf66a42d7742f7772d85f978f4d0f053c2cf355 main`；`git merge-base --is-ancestor ec78560e06cf8a251d1da50f335f04d9ce9dd63e main`；`git worktree list --porcelain`。本条写入后预期仅 WORKLOG.md 未暂存，暂存区为空。
+- main 相关测试：`pnpm exec vitest run src/lib/army-formation src/components/army-formation/ArmyFormationCreator.test.tsx src/app/army-formation-creator-routes.test.tsx src/app/site-routes.test.tsx src/lib/content-site-navigation.test.ts --reporter=dot`，此前 20 files / 336 tests、exit 0。
+- scoped Lint：`pnpm exec eslint src/components/army-formation/ArmyFormationCreator.tsx src/components/army-formation/ArmyFormationCreator.test.tsx src/lib/army-formation/icon-thumbnails.ts src/lib/army-formation/icon-thumbnails.test.ts scripts/generate-army-formation-icon-sprites.mjs`，此前 exit 0。
+- 构建与打包：`CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false pnpm exec vinext build`；构建结束后 `CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false pnpm check:workers-build`（dry-run，不部署）。此前均 exit 0；日志为 `/tmp/army-assets-main-build.log`、`/tmp/army-assets-main-workers-build.log`。
+- 类型：标准 `pnpm typecheck` 的缓存错误见上述记录。此前隔离验证按顺序执行 `pnpm exec next typegen` 和 `pnpm exec tsc --noEmit --project /tmp/army-assets-main-typecheck.json`，最后 exit 0；配置仅额外排除已有 `.next/dev` 缓存，源码覆盖证据为 `/tmp/army-assets-main-typecheck-coverage.json`。先确认临时文件仍存在且 current main 未改变，不把隔离结果当成标准检查通过。
+- 总收尾证据：`/tmp/army-assets-main-final-verification.md`、`/tmp/army-assets-main-integration-review.md`、`/tmp/army-assets-pre-merge-review.md`、`/tmp/army-assets-commit-manifest.json`。浏览器间距与交互证据：`/tmp/army-handle-gap-final-verification.md`、`/tmp/army-handle-gap-interactions.json`、`/tmp/army-handle-gap-before-1492.json`、`/tmp/army-handle-gap-after-1492.json`。这些文件本轮已确认主要记录仍存在。
+- 重新页面验收需先确认 40001 服务仍来自主仓库，再打开 `http://127.0.0.1:40001/army-formation-creator` 与 `/zh/army-formation-creator`，点击素材确认默认 1 倍／50×30 地图尺寸，检查下方手柄距离、旋转、棋子中心拖动、滚轮锚点、画布贴顶及切换四战场，必要时实际导出 PNG。保护已有存档；本次 offhand 未打开这些页面或证明 40001 当前交互状态。
+
+
 ## 交接单 · 2026-10-05 22:47 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
