@@ -62,6 +62,7 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/family-tree-creator', title: 'Family Tree Creator' },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -103,6 +104,7 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/family-tree-creator', title: '人物家谱制作器' },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -151,6 +153,14 @@ describe('content site topbar model', () => {
       '/zh/language-generator/saved',
     );
     const languageGeneratorSibling = readTopbar('en', '/language-generator-extra', '/zh');
+    const familyTree = readTopbar('en', '/family-tree-creator', '/zh/family-tree-creator');
+    const chineseFamilyTree = readTopbar('zh', '/zh/family-tree-creator', '/family-tree-creator');
+    const familyTreeNested = readTopbar(
+      'en',
+      '/family-tree-creator/saved',
+      '/zh/family-tree-creator/saved',
+    );
+    const familyTreeSibling = readTopbar('en', '/family-tree-creator-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
@@ -172,6 +182,10 @@ describe('content site topbar model', () => {
     expect(languageGenerator.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorNested.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorSibling.freeToolsMenuIsActive).toBe(false);
+    expect(familyTree.freeToolsMenuIsActive).toBe(true);
+    expect(chineseFamilyTree.freeToolsMenuIsActive).toBe(true);
+    expect(familyTreeNested.freeToolsMenuIsActive).toBe(true);
+    expect(familyTreeSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);

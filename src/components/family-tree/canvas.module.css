@@ -1,0 +1,439 @@
+.canvasShell,
+.connectionEditor {
+  min-width: 0;
+  border: 1px solid var(--border, #d8d5cf);
+  border-radius: 0.75rem;
+  background: var(--background, #fff);
+  color: var(--foreground, #2e2d2b);
+}
+
+.canvasShell {
+  overflow: hidden;
+}
+
+.canvasHeader,
+.editorHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.125rem;
+  border-bottom: 1px solid var(--border, #d8d5cf);
+}
+
+.canvasHeader {
+  flex-wrap: wrap;
+}
+
+.canvasHeaderTitle {
+  min-width: 0;
+  flex: 1 1 16rem;
+}
+
+.canvasHeaderActions {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.canvasTitle,
+.editorTitle,
+.subheading {
+  margin: 0;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.canvasTitle,
+.editorTitle {
+  font-size: 1rem;
+}
+
+.subheading {
+  font-size: 0.875rem;
+}
+
+.canvasHint,
+.editorHint,
+.emptyState {
+  margin: 0.35rem 0 0;
+  color: var(--muted-foreground, #6b6862);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.canvasViewport {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  padding: 1rem;
+  background: var(--site-panel-deep, #f3f1ed);
+}
+
+.scene {
+  position: relative;
+  min-height: 660px;
+  isolation: isolate;
+}
+
+.generationLabel {
+  position: absolute;
+  left: 1rem;
+  z-index: 1;
+  width: 5.25rem;
+  color: var(--site-ink-soft, #6b6862);
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.gapRail {
+  position: absolute;
+  z-index: 0;
+  border-top: 1px solid color-mix(in srgb, var(--border, #d8d5cf) 66%, transparent);
+  pointer-events: none;
+}
+
+.personCard {
+  position: absolute;
+  z-index: 3;
+  width: 116px;
+  height: 112px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border, #d8d5cf);
+  border-radius: 0.625rem;
+  background: var(--background, #fff);
+  color: inherit;
+  cursor: grab;
+  touch-action: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.personCard:active {
+  cursor: grabbing;
+}
+
+.personCard:hover,
+.personCard:focus-visible {
+  border-color: var(--primary, #7d5b43);
+  outline: none;
+}
+
+.personCardSelected {
+  border-color: var(--primary, #7d5b43);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary, #7d5b43) 25%, transparent);
+}
+
+.avatarFrame {
+  position: absolute;
+  display: block;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border: 1px solid var(--border, #d8d5cf);
+  border-radius: 0.5rem;
+  background: #f7f5f0;
+}
+
+.avatarFrame > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.personName {
+  position: absolute;
+  right: 0.25rem;
+  bottom: 0.3rem;
+  left: 0.25rem;
+  overflow: hidden;
+  color: var(--foreground, #2e2d2b);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.endpointLine {
+  position: absolute;
+  z-index: 2;
+  background: transparent;
+  pointer-events: none;
+}
+
+.endpoint-horizontal {
+  border-top: var(--family-tree-connection-stroke-width, 2px) solid var(--family-tree-connection-color, #b66b38);
+}
+
+.endpoint-vertical {
+  border-left: var(--family-tree-connection-stroke-width, 2px) solid var(--family-tree-connection-color, #b66b38);
+}
+
+.endpoint-dashed {
+  border-style: dashed;
+}
+
+.endpoint-none {
+  opacity: 0.42;
+}
+
+.connection {
+  position: absolute;
+  z-index: 1;
+  border: 0;
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+}
+
+.connection::before {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 44px;
+  content: '';
+  background: transparent;
+  transform: translateY(-50%);
+}
+
+.connection:active {
+  cursor: grabbing;
+}
+
+.connectionSelected {
+  z-index: 2;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--family-tree-connection-color, #b66b38) 28%, transparent);
+}
+
+.connectionHandle {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 2;
+  border: 2px solid var(--family-tree-connection-color, #b66b38);
+  border-radius: 50%;
+  background: var(--background, #fff);
+  cursor: ew-resize;
+  transform: translate(-50%, -50%);
+}
+
+.connectionHandle::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  content: '';
+  background: transparent;
+  transform: translate(-50%, -50%);
+}
+
+.connectionHandleEnd {
+  right: 0;
+  left: auto;
+  transform: translate(50%, -50%);
+}
+
+.contextBar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid var(--border, #d8d5cf);
+  background: var(--site-panel-strong, #fff);
+}
+
+.contextName {
+  min-width: 7rem;
+  max-width: 12rem;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.endpointControls {
+  display: flex;
+  flex: 1 1 22rem;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.endpointButton,
+.endpointChoice,
+.primaryButton,
+.secondaryButton,
+.toggleButton,
+.dangerButton,
+.connectionListItem {
+  min-height: 44px;
+  border: 1px solid var(--border, #d8d5cf);
+  border-radius: 0.5rem;
+  background: var(--background, #fff);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  padding: 0.5rem 0.75rem;
+}
+
+.endpointButton:hover,
+.endpointButton:focus-visible,
+.endpointChoice:hover,
+.endpointChoice:focus-visible,
+.secondaryButton:hover,
+.secondaryButton:focus-visible,
+.toggleButton:hover,
+.toggleButton:focus-visible,
+.connectionListItem:hover,
+.connectionListItem:focus-visible {
+  border-color: var(--primary, #7d5b43);
+  outline: none;
+}
+
+.endpoint-solid[aria-pressed='true'],
+.endpointChoice.endpoint-solid[aria-pressed='true'] {
+  border-color: var(--family-tree-connection-color, #b66b38);
+  box-shadow: inset 0 -2px 0 var(--family-tree-connection-color, #b66b38);
+}
+
+.endpoint-dashed[aria-pressed='true'],
+.endpointChoice.endpoint-dashed[aria-pressed='true'] {
+  border-color: var(--family-tree-connection-color, #b66b38);
+  border-style: dashed;
+}
+
+.dangerButton {
+  border-color: color-mix(in srgb, #b24a3c 45%, var(--border, #d8d5cf));
+  color: #8d3027;
+}
+
+.primaryButton {
+  min-height: 48px;
+  background: color-mix(in srgb, var(--primary, #7d5b43) 10%, #fff);
+}
+
+.connectionEditor {
+  overflow: hidden;
+}
+
+.endpointEditor,
+.connectionEditorSection {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem 1.125rem;
+}
+
+.connectionEditorSection {
+  border-top: 1px solid var(--border, #d8d5cf);
+}
+
+.endpointRow {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.endpointLabel {
+  color: var(--muted-foreground, #6b6862);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.endpointChoiceGroup,
+.connectionAddGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.endpointChoice {
+  min-height: 44px;
+  padding-inline: 0.35rem;
+}
+
+.connectionAddGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.connectionList {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.connectionListItem {
+  min-height: 44px;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.connectionListItem[aria-pressed='true'] {
+  border-color: var(--family-tree-connection-color, #b66b38);
+  box-shadow: inset 0 -2px 0 var(--family-tree-connection-color, #b66b38);
+}
+
+@media (max-width: 640px) {
+  .canvasHeader,
+  .editorHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .canvasHeaderActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .canvasHeaderTitle {
+    flex: 0 1 auto;
+  }
+
+  .canvasHeaderActions > button {
+    min-width: 0;
+    flex: 1 1 calc(50% - 0.25rem);
+  }
+
+  .contextBar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .contextName {
+    max-width: none;
+  }
+
+  .endpointControls {
+    flex: 1 1 auto;
+  }
+
+  .endpointButton,
+  .dangerButton {
+    flex: 1 1 calc(50% - 0.375rem);
+  }
+
+  .endpointRow {
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+  }
+
+  .endpointChoiceGroup,
+  .connectionAddGrid {
+    gap: 0.375rem;
+  }
+}

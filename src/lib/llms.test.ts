@@ -22,6 +22,8 @@ const REQUIRED_LINES = [
   '- [虚构语言生成器](https://www.tokenmaker.one/zh/language-generator): 为奇幻世界观、D&D、TTRPG 战役、小说和游戏创建可复用的拼写规则并转换词汇或自定义文本。',
   '- [Army formation creator](https://www.tokenmaker.one/army-formation-creator): Place battlefield pieces in the browser and download an image.',
   '- [Army formation creator Chinese](https://www.tokenmaker.one/zh/army-formation-creator): 在浏览器里摆放战场棋子并下载图片。',
+  '- [Family tree creator](https://www.tokenmaker.one/family-tree-creator): Build editable family trees for novel characters, fantasy worlds, and D&D or TRPG campaigns, then save files or download an image.',
+  '- [人物家谱制作器](https://www.tokenmaker.one/zh/family-tree-creator): 为小说人物、奇幻世界观和 D&D / TRPG 战役制作可编辑的家谱，保存文件或下载图片。',
   'Token Maker is designed for tabletop creators, game masters, players, and content publishers who need practical virtual tabletop tokens. The normal editor workflow is local-first: portrait images can stay in the browser during crop, style, and export.',
   'The site has English pages at root-level URLs and Simplified Chinese pages under `/zh`. Use `sitemap.xml` for the full indexable URL set and `robots.txt` for crawler access rules. Do not treat this file as permission to access disallowed paths such as `/api/`.',
 ];
@@ -38,6 +40,8 @@ const RETAINED_NON_ARTICLE_PATHS = [
   '/zh/outfit-creator',
   '/army-formation-creator',
   '/zh/army-formation-creator',
+  '/family-tree-creator',
+  '/zh/family-tree-creator',
   '/templates/square-token-maker',
   '/zh/templates/square-token-maker',
   '/faq',
