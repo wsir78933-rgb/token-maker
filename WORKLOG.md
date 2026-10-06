@@ -1,5 +1,78 @@
 # WORKLOG
 
+## 交接单 · 2026-10-06 10:46 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+完成 Language Generator 的 EN/ZH 说明页面，视觉参考 Outfit Creator，补充功能介绍、How It Works、FAQ、FAQ 上方 CTA、What Is、对比表，以及紧接 What Is 的文字案例展示。关键词为 Fantasy Language Generator / 奇幻语言生成器，突出免费、无需注册，面向小说作者、世界观设定者、TRPG/D&D 玩家和 GM、独立游戏开发者。
+
+用户最后要求：正文关键词密度达到 2%–3%，排除导航和 footer；本轮密度调整保持页面顶部 Hero 标题及描述原样。已按授权提交、合并到本地 main 并删除唯一「语言文案」工作树；使用内置子代理，没有使用 Orca 编排。本次 offhand 只核对并写交接单；用户选择 A，不新增提交。
+
+### 已完成
+
+- 页面顺序为 Hero → 工具工作区 → What Is → 案例展示 → 功能介绍 → How It Works → 对比表 → CTA → FAQ。CTA 指向 #language-generator-workspace；FAQ 支持按钮键盘操作和展开状态标记。
+- 主要入口为 src/components/language-generator/LanguageGeneratorPageView.tsx；各区块为同目录 LanguageGenerator*.tsx；双语正文通过 src/lib/language-generator/page-copy.ts 的公开函数 getLanguageGeneratorPageCopy(locale) 提供；Hero 文案在 src/lib/language-generator/copy.ts。没有新增依赖，工具行为保持原样。
+- 对比表列为 Fantasy Language Generator、Manual Conlanging、Vulgarlang，没有外链。案例仅展示实际预设词汇/拼写结果，不暗示工具生成图片、语义翻译或自动完整语法。
+- 案例：预设 1 的 hello → akkou、welcome → bakgouhma；预设 2 的 the gate opens at dawn → klo sako avort ak bavr；预设 3 的 silver lake → tigsir gaqi、black tower → dgakq touxir、moonstone → choustousi。中文场景解释是你赋予的含义。
+- 用户批准的提示保持为「结果来自固定词汇预设，词义与语法由你设定。」；英文为 These results come from fixed vocabulary presets; you set the meanings and grammar.
+- 工具边界：25 个预设、67 个可编辑词汇/短语字段、46 个固定罗马字参考词汇、8 组浏览器本地规则存档。规则作用于字母/组合拼写，不是语义翻译；未匹配字符保留。词汇、自定义文本和组合开关不随规则组保存。
+- 最终正文密度：英文完整关键词 29 / 1310 = 2.21%；中文完整关键词 29 / 1377 = 2.11%。桌面 1440px、移动端 375px 得到一致统计，合并后 main 页面也一致。
+- 统计包含 Hero、默认可见工具内容、下面所有说明和 6 条 FAQ 答案；排除导航/footer、隐藏选项/标签页、metadata/script/style 以及 sr-only 重复内容。英文完整短语每次算 1 次；词数用 Intl.Segmenter(locale, { granularity: 'word' }) 的 isWordLike，中文按词而非字统计。
+
+密度调整期间保护的 Hero 标题与描述：
+
+- EN 标题：Free Fantasy Language Generator
+- EN 描述：Create a fictional language for your novel, fantasy world, D&D or TRPG campaign, or indie game for free. Generate words and phrases, customize spelling rules, and get started without an account.
+- ZH 标题：免费奇幻语言生成器
+- ZH 描述：免费为小说、世界观设定、TRPG/D&D 战役和独立游戏创建虚构语言。生成词汇与短语，自定义拼写规则，无需注册即可开始。
+
+提交和当前状态：
+
+- 功能提交 7e737bd14845b1a34691e2437b22c3ff8ea06cae，14 个文件；本地合并提交 38730b482051961a0adc3d8904dd04d17c310f17，两者均是当前 main 的祖先。未 push、未部署。
+- 当前 main HEAD 为 b35c0bb9363506c154fef9d48920dcc74c325165。该新增提交仅修改 src/lib/army-formation/page-copy.ts，本实例未执行该提交。询问 A 时该军阵文案尚未提交，复核时已提交；写交接单前工作区和暂存区均干净，main 相对本地 origin/main 引用 ahead 3。
+- 当前 14 个语言页面文件与已验证 SHA 清单完全一致；写入前检查的 720 个源代码/配置文件与 /tmp/language-offhand-protected-hashes.json 一致。
+- /Users/wusir/Desktop/开发项目集合/语言文案 路径和 Git 工作树登记均已移除；分支「语言文案」仍指向 7e737bd。现有「纹章」「骰子」工作树不在本次修改范围。
+- 40002 工作树预览已停止；写交接单前 40001 由 main 的 node 进程 PID 21202 监听。未来使用前重新核对，不沿用旧 PID 或已结束的浏览器任务。
+
+已有验证记录（历史运行，本次 offhand 没有重跑测试、构建或浏览器）：
+
+- 最后一次工作树版本：pnpm typecheck、两个定向测试文件（2 文件 / 8 测试）、page-copy.ts 的 ESLint、git diff --check、pnpm exec vinext build 均退出 0。
+- ego-browser：EN/ZH × 1440px/375px，Hero 保持相同，无文字截断或页面横向溢出；FAQ Enter 展开/折叠和 CTA 滚动通过。
+- 合并后 main：pnpm typecheck、相同 8 个定向测试通过；localhost:40001 的 EN/ZH 文案与已验证工作树完全一致，3 个案例、FAQ 键盘操作及 CTA 通过。
+- 未在 main 重跑 Vinext 构建；没有执行全仓测试、完整 build:vinext、Workers dry-run、远程部署或线上验证。工作树构建证据与 main 定向验证分别记录，不能混为同一验证。
+
+### 做到一半
+
+语言页面需求、提交合并、工作树清理均无未完成项。未存档：本交接单 WORKLOG.md；按用户 A 不提交。本次不处理军阵、纹章、骰子或其他并行任务。
+
+### 下一步
+
+下一班输入 $pickup，先读本条交接单并核对 main HEAD、git status、工作树和服务现状；没有新的用户需求时无需继续改页面。不要重建已删除的工作树，也不要擅自 push、部署或提交 WORKLOG。
+
+若用户要求继续改文案，保护上述 Hero 标题/描述及已批准提示，同步 EN/ZH。每个编码 Task spec 明确要求高内聚/低耦合、单一职责、公开导出通信、KISS、Fail Fast（错误指出异常值，禁止吞异常）、YAGNI、精确命名；不顺手扩展范围。
+
+### 踩过的坑
+
+- 直接统计源码、body.innerText 或 textContent 会混入隐藏 FAQ、重复表格 caption、select 选项或脚本。应按上述正文范围采集；所有 FAQ 答案只计一次，使用分词而非中文字符数。
+- 案例中的中文剧情含义由你设定；英文输入只是拼写规则转换，不可写成中文翻译、语义理解或完整语法生成。
+- 平滑滚动尚未完成时截图会拍到错误区域。CTA 验证要同时检查 hash 和工作区顶部滚动稳定；截图也要等目标位置稳定。
+- 衬线标题字形超出行高且 overflow 可见，不等于实际截断；检查真实边界、溢出样式和截图，不单凭 scrollHeight 比 clientHeight 多 2px 判失败。
+- 合并操作成功后，后续验证脚本曾因多余大括号报语法错误；只重跑了验证，读取 Git 状态与 14 文件 SHA 后才删除工作树。复合命令失败不代表前面的提交/合并失败，不要盲目重复写操作。
+- offhand 期间 main 和其他工作树发生并行变化；必须重新核对当前状态，保留他人提交，不回滚或归因到本实例。
+
+### 怎么验证
+
+以下是下一班按需重跑的命令，不代表本次 offhand 已执行：
+
+- git status --porcelain=v1 --branch；本次写完应只有 WORKLOG.md 未提交，暂存区为空。git log -3 --oneline、git merge-base --is-ancestor 7e737bd HEAD、git merge-base --is-ancestor 38730b4 HEAD 可核对提交关系；git worktree list --porcelain 确认「语言文案」不存在。
+- pnpm typecheck
+- pnpm exec vitest run src/app/language-generator-routes.test.tsx src/lib/language-generator/copy.test.ts（已有结果为 2 文件 / 8 测试通过）
+- pnpm exec eslint src/lib/language-generator/page-copy.ts
+- pnpm exec vinext build（已有通过证据来自合并前工作树；若要证明当前 main 构建，需重新运行）
+- UI 使用本地 ego-browser，先核对 40001 服务，再打开 http://localhost:40001/language-generator 和 http://localhost:40001/zh/language-generator；1440px/375px 检查 Hero、区块顺序、3 个文字案例、FAQ Enter 操作、CTA 回到工具及横向溢出。重新统计密度时使用本条已写明的分母口径。
+
+可回读的历史证据：/tmp/language-main-merge-allowlist.json（14 文件 SHA）、/tmp/language-density-final-browser-results.json（四种视口结果）、/tmp/language-main-merge-browser-results.json（main 双语结果）、/tmp/language-density-build.log、/tmp/language-main-merge-typecheck.log、/tmp/language-main-merge-tests.log；最终截图为 /tmp/language-density-{en,zh}-{1440,375}.png。/tmp 是临时证据目录，可能被清理；缺失时如实标注并按需重新验证。
+
 ## 交接单 · 2026-10-05 23:14 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
