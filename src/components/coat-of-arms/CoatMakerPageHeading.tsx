@@ -19,18 +19,22 @@ type CoatMakerHeroAction = {
 type CoatMakerSeoCopy = ReturnType<typeof getCoatMakerSeoCopy>;
 
 const coatMakerHeroImageSources = [
-  '/coat-of-arms-maker/hero/hero-crimson-lion.webp',
-  '/coat-of-arms-maker/hero/hero-azure-stag.webp',
-  '/coat-of-arms-maker/hero/hero-verdant-phoenix.webp',
+  '/coat-of-arms-maker/hero/tool-made/ivory/crimson-lion.webp',
+  '/coat-of-arms-maker/hero/tool-made/ivory/azure-stag.webp',
+  '/coat-of-arms-maker/hero/tool-made/ivory/verdant-phoenix.webp',
 ] as const;
 
 const coatMakerHeroImageAlts = {
   en: [
-    'Crimson lion coat of arms on a dark textured ground',
-    'Azure stag coat of arms on a dark textured ground',
-    'Verdant phoenix coat of arms on a dark textured ground',
+    'Crimson pointed shield with a gold lion over red-and-gold rope trim and a dark gray border',
+    'Azure rounded shield with a gold stag and a dark gray border',
+    'Verdant flat-topped shield with a red-and-gold phoenix above flames and a dark gray border',
   ],
-  zh: ['深色纹理底上的绛红狮纹章', '深色纹理底上的蔚蓝鹿纹章', '深色纹理底上的翠绿凤凰纹章'],
+  zh: [
+    '绛红尖顶盾牌中央有金色狮子，底部饰红金绳结，外沿为深灰色边框',
+    '蔚蓝圆肩盾牌中央有金色雄鹿，外沿为深灰色边框',
+    '翠绿平顶盾牌中央有红金凤凰与火焰，外沿为深灰色边框',
+  ],
 } satisfies Record<SiteLocale, readonly [string, string, string]>;
 
 const coatMakerHeroCardClassNames = [
