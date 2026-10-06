@@ -327,12 +327,76 @@ export interface DiceRollerPreset {
   description: string;
 }
 
+export interface DiceRollerCaseStudyCopy {
+  id: string;
+  name: string;
+  quote: string;
+  expression: string;
+  src: string;
+  alt: string;
+  exampleTotal: number;
+  rolledValues: number[];
+}
+
+export interface DiceRollerCaseStudyGroupCopy {
+  id: string;
+  title: string;
+  carouselLabel: string;
+  previousLabel: string;
+  nextLabel: string;
+  imagePosition: 'left' | 'right';
+  examples: DiceRollerCaseStudyCopy[];
+}
+
+export interface DiceRollerCaseStudiesCopy {
+  title: string;
+  description: string;
+  exampleTotalLabel: string;
+  rollValuesLabel: string;
+  caseLabel: string;
+  groups: DiceRollerCaseStudyGroupCopy[];
+}
+
 export interface DiceRollerPageCopy {
   metadataTitle: string;
   metadataDescription: string;
   eyebrow: string;
   title: string;
   description: string;
+  whatIsTitle: string;
+  whatIsDescription: string;
+  featureOverview: {
+    title: string;
+    subtitle: string;
+    features: Array<{
+      icon: 'dice' | 'pool' | 'modifier' | 'animation' | 'copy' | 'history';
+      title: string;
+      description: string;
+    }>;
+  };
+  howToUseEyebrow: string;
+  howToUseTitle: string;
+  howToUseSteps: Array<{ title: string; description: string }>;
+  callToActionTitle: string;
+  callToActionDescription: string;
+  callToActionLabel: string;
+  toolComparison: {
+    title: string;
+    description: string;
+    tableLabel: string;
+    dimensionHeading: string;
+    diceRollerHeading: string;
+    physicalDiceHeading: string;
+    roll20Heading: string;
+    rows: Array<{
+      dimension: string;
+      diceRoller: string;
+      physicalDice: string;
+      roll20: string;
+    }>;
+  };
+  caseStudies: DiceRollerCaseStudiesCopy;
+  faqEyebrow: string;
   intro: string;
   heroBadges: string[];
   trayEyebrow: string;
@@ -349,17 +413,6 @@ export interface DiceRollerPageCopy {
   faqDescription: string;
   faqItems: FaqItem[];
   structuredDataFeatures: string[];
-  statsGuide: {
-    headline: string;
-    methodTitle: string;
-    methodBody: string[];
-    connectTitle: string;
-    connectBody: string[];
-    extraTitle: string;
-    extraBody: string[];
-    alternativesTitle: string;
-    alternativesBody: string[];
-  };
 }
 
 export const siteConfigZh = {
@@ -932,6 +985,293 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
     title: 'dice roller dnd',
     description:
       'A DnD dice roller inside Token Maker with an animated tray, fast expression input, common tabletop presets, roll breakdowns, and a local roll log.',
+    whatIsTitle: 'What is this DnD dice roller?',
+    whatIsDescription:
+      'This DnD Dice Roller is a browser tool for tabletop sessions: choose from seven standard dice, adjust their counts, build a mixed dice pool, and add a positive or negative modifier. After rolling, see each die value and the total, copy the result, and review up to 20 rolls from the current page session. It supports ability checks, attack rolls, and damage rolls for in-person games, online sessions, and preparation, and is designed for D&D players, Dungeon Masters, and newcomers to tabletop role-playing, who apply their own table rules.',
+    featureOverview: {
+      title: 'Everything you need for a quick roll',
+      subtitle:
+        'Build a dice pool, roll it, and keep each result easy to read during the game.',
+      features: [
+        {
+          icon: 'dice',
+          title: 'Seven standard dice',
+          description:
+            'The DnD Dice Roller offers seven standard options: d4, d6, d8, d10, d12, d20, and d100.',
+        },
+        {
+          icon: 'pool',
+          title: 'Mix a dice pool',
+          description:
+            'With the DnD Dice Roller, combine different die sizes and roll up to 15 dice in one throw.',
+        },
+        {
+          icon: 'modifier',
+          title: 'Add a modifier',
+          description:
+            'Use the DnD Dice Roller to add a positive or negative integer as a bonus or penalty to the total.',
+        },
+        {
+          icon: 'animation',
+          title: 'See the roll breakdown',
+          description:
+            'The DnD Dice Roller shows the roll animation, then lets you review every die value and the calculated total.',
+        },
+        {
+          icon: 'copy',
+          title: 'Copy the result',
+          description:
+            'Use the DnD Dice Roller to copy the latest roll together with its individual values when you need to share it.',
+        },
+        {
+          icon: 'history',
+          title: 'Review recent rolls',
+          description:
+            'The DnD Dice Roller keeps up to 20 recent rolls in the current page session so you can review the roll log.',
+        },
+      ],
+    },
+    howToUseEyebrow: 'How it works',
+    howToUseTitle: 'Roll in three simple steps',
+    howToUseSteps: [
+      {
+        title: 'Choose your dice',
+        description:
+          'Start the DnD Dice Roller by selecting one or more die sizes and adjusting the count for each kind of die.',
+      },
+      {
+        title: 'Set the count and modifier',
+        description:
+          'In the DnD Dice Roller, build a pool of up to 15 dice, then add the positive or negative integer you need.',
+      },
+      {
+        title: 'Roll, check, and copy',
+        description:
+          'Roll with the DnD Dice Roller to see the animation, every die value, and the total, then copy the latest result if needed.',
+      },
+    ],
+    callToActionTitle: 'Start rolling your dice',
+    callToActionDescription:
+      'Open the DnD Dice Roller, choose your dice, set the counts and modifier, and see the resulting roll.',
+    callToActionLabel: 'Start rolling',
+    toolComparison: {
+      title: 'Online DnD Dice Roller vs Physical Dice vs Roll20',
+      description:
+        'Open the DnD Dice Roller to combine common dice, set a modifier, and see the calculated result. Compare this roller with physical dice and Roll20 to find the option that best fits quick rolls, tabletop sessions, or online games.',
+      tableLabel: 'DnD dice rolling method comparison',
+      dimensionHeading: 'Comparison',
+      diceRollerHeading: 'Online DnD Dice Roller',
+      physicalDiceHeading: 'Physical Dice',
+      roll20Heading: 'Roll20',
+      rows: [
+        {
+          dimension: 'Getting started',
+          diceRoller: 'Open the page, choose your dice and counts, and roll.',
+          physicalDice: 'Prepare your dice and a rolling space; no software needed.',
+          roll20: 'Enter the game, then use the dice panel or a chat command.',
+        },
+        {
+          dimension: 'Everyday rolls',
+          diceRoller:
+            'Seven common dice, up to 15 combined dice, with the total and positive or negative modifier calculated automatically.',
+          physicalDice: 'Use the dice you have, add them by hand, and calculate the modifier yourself.',
+          roll20: 'Supports the dice panel and mixed dice expressions, with results calculated automatically.',
+        },
+        {
+          dimension: 'Complex rules',
+          diceRoller:
+            'For rules such as drop lowest, read the breakdown and handle the selection manually.',
+          physicalDice: 'Reroll, select, or remove dice by hand according to the rule.',
+          roll20: 'Dice expressions can handle rules such as drop lowest, rerolls, and exploding dice.',
+        },
+        {
+          dimension: 'Sharing with a group',
+          diceRoller: 'Copy the result, then send it to the group yourself; there is no real-time room sync.',
+          physicalDice: 'People at the table can see it directly; remote players need a spoken result or camera view.',
+          roll20: 'Public rolls appear in game chat, and private rolls are also supported.',
+        },
+        {
+          dimension: 'Record keeping',
+          diceRoller:
+            'The current page keeps the latest 20 rolls and clears them after refresh; copy results to save them elsewhere.',
+          physicalDice: 'Use paper, photos, or another tool to record the results.',
+          roll20: 'Game chat history can persist across sessions, making results easier to review.',
+        },
+      ],
+    },
+    caseStudies: {
+      title: 'DnD dice rolls for everyday play',
+      description:
+        'Use the DnD Dice Roller to explore 12 practical examples across checks, combat damage, spells, and session preparation. Each group includes four cases you can browse with the arrows; the roller shows dice values and totals, while modifiers and rule choices remain examples for you to apply at your table.',
+      exampleTotalLabel: 'Example total',
+      rollValuesLabel: 'Rolled values',
+      caseLabel: 'Example',
+      groups: [
+        {
+          id: 'basic-checks',
+          title: 'Checks, saves, and initiative',
+          carouselLabel: 'Basic check examples',
+          previousLabel: 'Previous basic check example',
+          nextLabel: 'Next basic check example',
+          imagePosition: 'right',
+          examples: [
+            {
+              id: 'attack',
+              name: 'Attack roll',
+              quote:
+                "For an attack against a goblin or another target, roll the d20 in the DnD Dice Roller, add the example modifier, and compare the total with the target's AC.",
+              expression: '1d20 + 5',
+              src: '/images/dice-cases/attack.webp',
+              alt: 'DnD attack roll example using 1d20 plus 5',
+              exampleTotal: 17,
+              rolledValues: [12],
+            },
+            {
+              id: 'stealth',
+              name: 'Stealth check',
+              quote:
+                "To sneak past a guard, make a Stealth check with the DnD Dice Roller and compare the total with the DC set by the DM.",
+              expression: '1d20 + 4',
+              src: '/images/dice-cases/stealth.webp',
+              alt: 'DnD Stealth check example using 1d20 plus 4',
+              exampleTotal: 23,
+              rolledValues: [19],
+            },
+            {
+              id: 'dexterity-save',
+              name: 'Dexterity saving throw',
+              quote:
+                "When you dodge a trap or spell, roll the Dexterity saving throw with the DnD Dice Roller and compare the total with the effect's DC.",
+              expression: '1d20 + 2',
+              src: '/images/dice-cases/dexterity-save.webp',
+              alt: 'DnD Dexterity saving throw example using 1d20 plus 2',
+              exampleTotal: 21,
+              rolledValues: [19],
+            },
+            {
+              id: 'initiative',
+              name: 'Initiative roll',
+              quote:
+                'When combat starts, use the DnD Dice Roller to roll initiative and compare the totals to set the turn order.',
+              expression: '1d20 + 2',
+              src: '/images/dice-cases/initiative.webp',
+              alt: 'DnD initiative roll example using 1d20 plus 2',
+              exampleTotal: 4,
+              rolledValues: [2],
+            },
+          ],
+        },
+        {
+          id: 'combat-damage',
+          title: 'Weapon and extra damage',
+          carouselLabel: 'Combat damage examples',
+          previousLabel: 'Previous combat damage example',
+          nextLabel: 'Next combat damage example',
+          imagePosition: 'left',
+          examples: [
+            {
+              id: 'greatsword',
+              name: 'Greatsword damage',
+              quote:
+                'After a greatsword hit, use the DnD Dice Roller to roll 2d6 and add the example modifier to get the damage total.',
+              expression: '2d6 + 3',
+              src: '/images/dice-cases/greatsword.webp',
+              alt: 'DnD greatsword damage example using 2d6 plus 3',
+              exampleTotal: 11,
+              rolledValues: [4, 4],
+            },
+            {
+              id: 'dagger-critical',
+              name: 'Dagger critical',
+              quote:
+                'After a confirmed dagger critical, use the DnD Dice Roller to roll 2d4 for the doubled dagger dice; this example adds no separate damage die, then add the modifier.',
+              expression: '2d4 + 3',
+              src: '/images/dice-cases/dagger-critical.webp',
+              alt: 'DnD dagger critical example using 2d4 plus 3',
+              exampleTotal: 5,
+              rolledValues: [1, 1],
+            },
+            {
+              id: 'sneak-attack',
+              name: "3rd-level Rogue Sneak Attack",
+              quote:
+                'On a normal, non-critical rapier hit by a 3rd-level Rogue, use the DnD Dice Roller to roll 1d8 and 2d6 together when the attack qualifies for Sneak Attack, then add the modifier.',
+              expression: '1d8 + 2d6 + 3',
+              src: '/images/dice-cases/sneak-attack.webp',
+              alt: 'DnD 3rd-level Rogue Sneak Attack example using 1d8 plus 2d6 plus 3',
+              exampleTotal: 13,
+              rolledValues: [3, 6, 1],
+            },
+            {
+              id: 'hunters-mark',
+              name: "Hunter's Mark damage",
+              quote:
+                "After a longbow hits a target marked by Hunter's Mark, use the DnD Dice Roller to roll 1d8 and 1d6 together, then add the example modifier.",
+              expression: '1d8 + 1d6 + 3',
+              src: '/images/dice-cases/hunters-mark.webp',
+              alt: "DnD Hunter's Mark damage example using 1d8 plus 1d6 plus 3",
+              exampleTotal: 13,
+              rolledValues: [2, 8],
+            },
+          ],
+        },
+        {
+          id: 'spells-and-prep',
+          title: 'Spells and session preparation',
+          carouselLabel: 'Spell and preparation examples',
+          previousLabel: 'Previous spell or preparation example',
+          nextLabel: 'Next spell or preparation example',
+          imagePosition: 'right',
+          examples: [
+            {
+              id: 'blessed-attack',
+              name: 'Blessed attack',
+              quote:
+                "When a Bless effect applies to an attack, use the DnD Dice Roller to roll the d20 with the extra d4 and modifier, then compare the total with the target's AC.",
+              expression: '1d20 + 1d4 + 5',
+              src: '/images/dice-cases/blessed-attack.webp',
+              alt: 'DnD blessed attack example using 1d20 plus 1d4 plus 5',
+              exampleTotal: 11,
+              rolledValues: [1, 5],
+            },
+            {
+              id: 'fireball',
+              name: 'Fireball damage',
+              quote:
+                "For a 3rd-level Fireball, use the DnD Dice Roller to roll 8d6 for the damage; after the target's saving throw, apply full or half damage according to the result.",
+              expression: '8d6',
+              src: '/images/dice-cases/fireball.webp',
+              alt: 'DnD Fireball damage example using 8d6',
+              exampleTotal: 30,
+              rolledValues: [2, 6, 4, 6, 4, 3, 2, 3],
+            },
+            {
+              id: 'cure-wounds',
+              name: '2024 first-level Cure Wounds',
+              quote:
+                'For a 2024 first-level Cure Wounds cast, use the DnD Dice Roller to roll 2d8 and add your spellcasting ability modifier to get the healing total.',
+              expression: '2d8 + 3',
+              src: '/images/dice-cases/cure-wounds.webp',
+              alt: '2024 DnD first-level Cure Wounds example using 2d8 plus 3',
+              exampleTotal: 15,
+              rolledValues: [8, 4],
+            },
+            {
+              id: 'random-table',
+              name: 'Random table result',
+              quote:
+                'When your own random table calls for a d100, use the DnD Dice Roller to roll 1d100 and look up the result in that table.',
+              expression: '1d100',
+              src: '/images/dice-cases/random-table.webp',
+              alt: 'DnD random table example using 1d100',
+              exampleTotal: 48,
+              rolledValues: [48],
+            },
+          ],
+        },
+      ],
+    },
+    faqEyebrow: 'FAQ',
     intro:
       'Roll d20, d12, d10, d8, d6, d4, and d100 directly in the tray, or type expressions such as 1d20+5, 2d6+3, and 4d6dl1.',
     heroBadges: ['Common DnD rolls', 'Animated dice tray', 'Local roll log and breakdown'],
@@ -987,59 +1327,46 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
     ],
     faqTitle: 'Dice Roller DnD FAQ',
     faqDescription:
-      'These answers clarify what the roller supports, how the 3D tray works in practice, and why dice rolling lives separately from token editing.',
+      'Clear answers about supported dice, mixed pools, modifiers, roll history, and the latest result.',
     faqItems: [
       {
-        question: 'What is the dice roller dnd page for on Token Maker?',
+        question: 'Which dice does the roller support?',
         answer:
-          'It is a tabletop utility page for DnD-style dice rolling. It combines an interactive tray, expression input, quick presets, roll breakdown, local history, and FAQ notes.',
+          'With the DnD Dice Roller, you can roll d4, d6, d8, d10, d12, d20, and d100. These seven die sizes cover the standard dice used in most DnD rolls.',
       },
       {
-        question: 'Which dice should the page focus on first?',
+        question: 'Can I mix different dice and add a modifier?',
         answer:
-          'The first layer covers the standard DnD dice set: d4, d6, d8, d10, d12, d20, and d100, along with common expressions such as 1d20 plus a modifier or 4d6 drop lowest.',
+          'Yes. In the DnD Dice Roller, select as many supported die sizes as you need, set each count, and add a positive or negative integer modifier before rolling.',
       },
       {
-        question: 'Why not merge this directly into the token editor?',
+        question: 'How many dice can I roll at once?',
         answer:
-          'The token editor and the dice roller solve different jobs. Keeping dice roller dnd on its own page makes the tray easier to open during play and keeps the main editor flow focused on token creation.',
+          'A single roll can contain up to 15 dice in total. The limit applies across all selected die sizes in the mixed pool.',
       },
       {
-        question: 'Does the 3D tray still include written rules help?',
+        question: 'Are my roll results saved?',
         answer:
-          'Yes. The 3D tray handles the interaction, while the surrounding text explains supported dice, common DnD expressions, stat rolling, and practical table use.',
+          'During a session, the DnD Dice Roller keeps up to 20 recent rolls. Refreshing the page starts a new session, and the log has its own clear button.',
+      },
+      {
+        question: 'Can I copy the latest roll?',
+        answer:
+          'Yes. After a roll, use the Copy button below the dice tray to copy the latest result and the individual die values.',
+      },
+      {
+        question: 'How do I roll 4d6 and drop the lowest die?',
+        answer:
+          'In the DnD Dice Roller, select four d6 dice, roll them, and identify the lowest value in the breakdown. Add the other three values yourself; this tool reports the full total and does not remove a die automatically.',
       },
     ],
     structuredDataFeatures: [
       'Dedicated dice roller dnd tool inside Token Maker',
-      'Animated physics-like dice tray with live roll animation',
-      'DnD-focused dice language including d20 checks and 4d6 drop lowest',
-      'Roll breakdown, local history, FAQ, and practical rules notes',
+      'Seven supported dice: d4, d6, d8, d10, d12, d20, and d100',
+      'Mixed dice pools with up to 15 dice and positive or negative integer modifiers',
+      'Animated rolls with per-die breakdowns and a calculated total',
+      'Copyable latest result and up to 20 recent rolls in the current page session',
     ],
-    statsGuide: {
-      headline: 'How Many Dice to Roll for Stats DnD?',
-      methodTitle: 'The Default Method: 4d6 Drop Lowest',
-      methodBody: [
-        'If you are reading the Player’s Handbook for Dungeons & Dragons 5th Edition, the standard and most widely accepted way to generate character ability scores is the "4d6 drop lowest" method.',
-        'The process is simple: grab four 6-sided dice (4d6) and roll them all at once. Look at the numbers, find the die showing the lowest value, and remove it from the pool. Then, add the remaining three numbers together. This final sum is one of your ability scores. You need to repeat this exact process six times to generate a complete array of six numbers—one for Strength, Dexterity, Constitution, Intelligence, Wisdom, and Charisma.',
-        'Once you have your six numbers, you are completely free to assign them to your stats in whichever order best fits the class you are building. Want to be a wizard? Put your highest roll into Intelligence. Rolling a barbarian? Prioritize Strength.'
-      ],
-      connectTitle: 'Generating Stats Instantly',
-      connectBody: [
-        'Manually rolling 24 individual dice by hand can be tedious when you just want to get to Character Creation. You can bypass the busywork while still keeping the true randomness by using the interactive dice tray above.',
-        'Simply click the "4d6 drop lowest" preset button. The tool automatically rolls four d6s, mathematically identifies and drops the lowest value, and logs the final summed result for you. Click it six times, and your character’s baseline stats are ready.'
-      ],
-      extraTitle: 'Why do we roll 4d6 instead of just 3d6?',
-      extraBody: [
-        'In the very early, hardcore days of tabletop gaming, players generated stats by simply rolling 3d6 strictly "down the line". This created a pure, unyielding bell curve where the average stat was always 10.5—representing an average, unremarkable commoner.',
-        'Modern DnD 5e is designed around heroic fantasy. By rolling a fourth die and dropping the lowest result, the statistical average is pulled upward to roughly 12.24, and the chances of rolling extremely crippling low numbers (like a 3 or 4) are drastically reduced. This mathematical shift ensures that player characters begin the game feeling inherently more competent, durable, and ready for adventure.'
-      ],
-      alternativesTitle: 'Alternative Stat Generation Methods',
-      alternativesBody: [
-        'While rolling dice is iconic and fun, it inherently creates unbalanced parties—some players will roll like gods, while others roll terribly. If your Dungeon Master prefers a balanced table, they might ask you to skip the dice altogether.',
-        'The primary alternatives are the "Standard Array" (where every player gets the exact same six numbers: 15, 14, 13, 12, 10, 8 to assign as they please) or "Point Buy" (where players spend a pool of 27 points to purchase their stats from a fixed escalating cost table, allowing for completely customized stat lines without the risk of a bad roll).'
-      ],
-    },
   },
   zh: {
     metadataTitle: 'dice roller dnd | 在线 d20、d6、d8、d10、d12 与 d100 掷骰页',
@@ -1049,6 +1376,278 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
     title: 'dice roller dnd',
     description:
       '这是 Token Maker 的 DnD 掷骰工具页，包含动态骰子托盘、表达式输入、常见 DnD 预设、结果分解、日志和 FAQ。',
+    whatIsTitle: '什么是 DnD 在线掷骰器？',
+    whatIsDescription:
+      'DND掷骰器是一个在浏览器中使用的跑团辅助工具，你可以从七种常用骰子中选择、调整数量、组合骰池并设置正负加值。投掷后可查看每颗骰子的点数与总和、复制结果，并查看当前页面会话中的投掷记录。它适用于线下跑团、线上团和备团中的检定、攻击与伤害投掷，面向 D&D 玩家、地下城主和刚接触跑团的新手，具体桌规由你自行应用。',
+    featureOverview: {
+      title: '一次掷骰所需的功能',
+      subtitle: '用 DND掷骰器自由组建骰池，查看清晰结果，把重要数值留在眼前。',
+      features: [
+        {
+          icon: 'dice',
+          title: '七种常用骰子',
+          description: 'DND掷骰器支持 d4、d6、d8、d10、d12、d20 和 d100 七种常用骰子。',
+        },
+        {
+          icon: 'pool',
+          title: '混合骰池',
+          description: '使用 DND掷骰器组合不同面数的骰子，一次最多投掷 15 颗。',
+        },
+        {
+          icon: 'modifier',
+          title: '添加加值',
+          description: '在 DND掷骰器中输入正数或负数，把奖励或惩罚计入总和。',
+        },
+        {
+          icon: 'animation',
+          title: '动画与投掷明细',
+          description: 'DND掷骰器会播放投掷动画，随后逐颗显示结果和计算后的总和。',
+        },
+        {
+          icon: 'copy',
+          title: '复制结果',
+          description: '使用 DND掷骰器复制最近一次投掷的结果及每颗骰子的点数，方便分享或记录。',
+        },
+        {
+          icon: 'history',
+          title: '查看最近记录',
+          description: 'DND掷骰器会在当前页面会话中保留最近 20 次投掷，方便你回看日志，也可以随时清空。',
+        },
+      ],
+    },
+    howToUseEyebrow: '操作步骤',
+    howToUseTitle: '三步完成一次投掷',
+    howToUseSteps: [
+      {
+        title: '选择骰子',
+        description: '打开 DND掷骰器，选择一种或多种骰子，并调整每类骰子的数量。',
+      },
+      {
+        title: '设置数量与加值',
+        description: '在 DND掷骰器中组合骰池，最多放入 15 颗骰子，再输入需要加入总和的正数或负数。',
+      },
+      {
+        title: '投掷、查看并复制',
+        description: '点击投掷后，DND掷骰器会显示动画、每颗骰子的点数和总和；需要时复制最新结果。',
+      },
+    ],
+    callToActionTitle: '现在开始掷骰',
+    callToActionDescription: '打开 DND掷骰器，选择骰子、调整数量与加值，查看你的投掷结果。',
+    callToActionLabel: '开始掷骰',
+    toolComparison: {
+      title: 'DnD 在线掷骰器 vs 实体骰子 vs Roll20',
+      description:
+        '打开 DND掷骰器即可组合常用骰子、设置加值并查看计算结果。对比实体骰子与 Roll20，看看哪种方式更适合你的快速掷骰、桌面跑团或线上游戏需求。',
+      tableLabel: 'DnD 掷骰方式对比',
+      dimensionHeading: '对比维度',
+      diceRollerHeading: 'DnD 在线掷骰器',
+      physicalDiceHeading: '实体骰子',
+      roll20Heading: 'Roll20',
+      rows: [
+        {
+          dimension: '开始使用',
+          diceRoller: '打开网页，选择骰子与数量即可投掷',
+          physicalDice: '准备骰子和投掷空间，无需操作软件',
+          roll20: '进入游戏后，使用掷骰面板或聊天命令。',
+        },
+        {
+          dimension: '常规掷骰',
+          diceRoller: '七种常用骰子，最多组合 15 颗，自动计算总和与正负加值',
+          physicalDice: '使用手头骰子，手动求和并添加加值',
+          roll20: '支持骰子面板和混合骰式，自动计算结果。',
+        },
+        {
+          dimension: '复杂规则',
+          diceRoller: '去最低等规则需要查看明细后手动处理',
+          physicalDice: '按规则手动重掷、选取或剔除骰子',
+          roll20: '可用骰式处理去最低、重掷、爆骰等规则。',
+        },
+        {
+          dimension: '多人共享',
+          diceRoller: '复制结果后自行发送给团员，没有实时房间同步',
+          physicalDice: '同桌直接查看，远程需口述或摄像头展示',
+          roll20: '公开投掷显示在游戏聊天中，也支持私密投掷。',
+        },
+        {
+          dimension: '记录保存',
+          diceRoller: '当前页面保留最近 20 次投掷，刷新后清空；可复制结果另存',
+          physicalDice: '使用纸笔、照片或其他工具记录',
+          roll20: '游戏聊天记录可跨会话保留，方便回查。',
+        },
+      ],
+    },
+    caseStudies: {
+      title: 'DnD 掷骰的实际场景',
+      description:
+        '用 DND掷骰器查看检定、战斗伤害、法术和备团中的 12 个实际案例；内容分为 3 组，每组 4 个案例，可用左右箭头切换。工具提供骰子点数和总和，下面的加值只是示例，具体规则由你结合自己的桌规应用。',
+      exampleTotalLabel: '示例总和',
+      rollValuesLabel: '骰子点数',
+      caseLabel: '案例',
+      groups: [
+        {
+          id: 'basic-checks',
+          title: '检定、豁免与先攻',
+          carouselLabel: '基础检定案例',
+          previousLabel: '上一个基础检定案例',
+          nextLabel: '下一个基础检定案例',
+          imagePosition: 'right',
+          examples: [
+            {
+              id: 'attack',
+              name: '攻击检定',
+              quote:
+                '面对地精等目标进行攻击时，用 DND掷骰器投掷 d20 并加上示例加值，再将总和与目标 AC 比较。',
+              expression: '1d20 + 5',
+              src: '/images/dice-cases/attack.webp',
+              alt: '使用 1d20 加 5 的 DnD 攻击检定案例',
+              exampleTotal: 17,
+              rolledValues: [12],
+            },
+            {
+              id: 'stealth',
+              name: '隐匿检定',
+              quote:
+                '想悄悄绕过守卫时，使用 DND掷骰器进行隐匿投掷，再把总和与 DM 设定的 DC 比较。',
+              expression: '1d20 + 4',
+              src: '/images/dice-cases/stealth.webp',
+              alt: '使用 1d20 加 4 的 DnD 隐匿检定案例',
+              exampleTotal: 23,
+              rolledValues: [19],
+            },
+            {
+              id: 'dexterity-save',
+              name: '敏捷豁免',
+              quote:
+                '需要躲开陷阱或法术时，使用 DND掷骰器投掷敏捷豁免，再将总和与效果的 DC 比较。',
+              expression: '1d20 + 2',
+              src: '/images/dice-cases/dexterity-save.webp',
+              alt: '使用 1d20 加 2 的 DnD 敏捷豁免案例',
+              exampleTotal: 21,
+              rolledValues: [19],
+            },
+            {
+              id: 'initiative',
+              name: '先攻投掷',
+              quote: '战斗开始前，使用 DND掷骰器投掷先攻，再把总和与其他参与者比较以排出行动顺序。',
+              expression: '1d20 + 2',
+              src: '/images/dice-cases/initiative.webp',
+              alt: '使用 1d20 加 2 的 DnD 先攻投掷案例',
+              exampleTotal: 4,
+              rolledValues: [2],
+            },
+          ],
+        },
+        {
+          id: 'combat-damage',
+          title: '武器与额外伤害',
+          carouselLabel: '战斗伤害案例',
+          previousLabel: '上一个战斗伤害案例',
+          nextLabel: '下一个战斗伤害案例',
+          imagePosition: 'left',
+          examples: [
+            {
+              id: 'greatsword',
+              name: '巨剑伤害',
+              quote:
+                '巨剑命中后，使用 DND掷骰器投掷 2d6 并加上示例加值，得到伤害总和。',
+              expression: '2d6 + 3',
+              src: '/images/dice-cases/greatsword.webp',
+              alt: '使用 2d6 加 3 的 DnD 巨剑伤害案例',
+              exampleTotal: 11,
+              rolledValues: [4, 4],
+            },
+            {
+              id: 'dagger-critical',
+              name: '匕首暴击',
+              quote:
+                '确认匕首暴击后，使用 DND掷骰器投掷翻倍后的 2d4；这个示例不再额外添加另一颗伤害骰，最后加上示例加值。',
+              expression: '2d4 + 3',
+              src: '/images/dice-cases/dagger-critical.webp',
+              alt: '使用 2d4 加 3 的 DnD 匕首暴击案例',
+              exampleTotal: 5,
+              rolledValues: [1, 1],
+            },
+            {
+              id: 'sneak-attack',
+              name: '3 级盗贼刺剑偷袭',
+              quote:
+                '3 级盗贼用刺剑普通命中且满足偷袭条件时，使用 DND掷骰器把 1d8 和 2d6 一起投掷，再加上示例加值；这里不包含暴击翻倍。',
+              expression: '1d8 + 2d6 + 3',
+              src: '/images/dice-cases/sneak-attack.webp',
+              alt: '使用 1d8 加 2d6 加 3 的 3 级盗贼刺剑偷袭案例',
+              exampleTotal: 13,
+              rolledValues: [3, 6, 1],
+            },
+            {
+              id: 'hunters-mark',
+              name: "Hunter's Mark 伤害",
+              quote:
+                '长弓命中已经被 Hunter\'s Mark 标记的目标时，使用 DND掷骰器把 1d8 和 1d6 一起投掷，再加上示例加值。',
+              expression: '1d8 + 1d6 + 3',
+              src: '/images/dice-cases/hunters-mark.webp',
+              alt: "使用 1d8 加 1d6 加 3 的 Hunter's Mark 伤害案例",
+              exampleTotal: 13,
+              rolledValues: [2, 8],
+            },
+          ],
+        },
+        {
+          id: 'spells-and-prep',
+          title: '法术与备团',
+          carouselLabel: '法术和备团案例',
+          previousLabel: '上一个法术或备团案例',
+          nextLabel: '下一个法术或备团案例',
+          imagePosition: 'right',
+          examples: [
+            {
+              id: 'blessed-attack',
+              name: 'Bless 加成攻击',
+              quote:
+                'Bless 效果适用于攻击时，使用 DND掷骰器把 d20、额外 d4 和加值一起投掷，再将总和与目标 AC 比较。',
+              expression: '1d20 + 1d4 + 5',
+              src: '/images/dice-cases/blessed-attack.webp',
+              alt: '使用 1d20 加 1d4 加 5 的 DnD Bless 加成攻击案例',
+              exampleTotal: 11,
+              rolledValues: [1, 5],
+            },
+            {
+              id: 'fireball',
+              name: '火球术伤害',
+              quote:
+                '施放 3 环火球术时，使用 DND掷骰器投掷 8d6；目标进行豁免后，按结果应用全额或半额伤害。',
+              expression: '8d6',
+              src: '/images/dice-cases/fireball.webp',
+              alt: '使用 8d6 的 DnD 火球术伤害案例',
+              exampleTotal: 30,
+              rolledValues: [2, 6, 4, 6, 4, 3, 2, 3],
+            },
+            {
+              id: 'cure-wounds',
+              name: '2024 规则一环治疗术（Cure Wounds）',
+              quote:
+                '按 2024 规则施放一环 Cure Wounds 时，使用 DND掷骰器投掷 2d8 并加上你的施法属性加值，得到治疗总和。',
+              expression: '2d8 + 3',
+              src: '/images/dice-cases/cure-wounds.webp',
+              alt: '使用 2d8 加 3 的 2024 规则一环 Cure Wounds 案例',
+              exampleTotal: 15,
+              rolledValues: [8, 4],
+            },
+            {
+              id: 'random-table',
+              name: '随机表结果',
+              quote:
+                '需要查询自己的随机表时，使用 DND掷骰器投掷 1d100，再用点数查找对应条目。',
+              expression: '1d100',
+              src: '/images/dice-cases/random-table.webp',
+              alt: '使用 1d100 的 DnD 随机表结果案例',
+              exampleTotal: 48,
+              rolledValues: [48],
+            },
+          ],
+        },
+      ],
+    },
+    faqEyebrow: '常见问题',
     intro:
       '你可以直接在骰盘里掷出 d20、d12、d10、d8、d6、d4 和 d100，也可以输入 1d20+5、2d6+3、4d6dl1 这类常见表达式。',
     heroBadges: ['DnD 常用骰式', '直观动态骰盘', '结果分解与本地日志'],
@@ -1101,61 +1700,48 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
           'FAQ 和简短说明会讲清常见骰式、角色属性生成、结果分解和日志使用方式。',
       },
     ],
-    faqTitle: 'dice roller dnd 页面 FAQ',
+    faqTitle: 'dice roller dnd 常见问题',
     faqDescription:
-      '这些问题会讲清页面现在支持什么、3D 托盘怎么用，以及为什么骰子工具适合单独成页。',
+      '了解 DND掷骰器支持的骰子、混合骰池、加值、掷骰日志和最新结果的使用方式。',
     faqItems: [
       {
-        question: 'Token Maker 里的 dice roller dnd 页面是做什么的？',
+        question: '这个掷骰器支持哪些骰子？',
         answer:
-          '它是一个面向 DnD 风格掷骰的独立工具页，内含互动式动画骰子托盘、表达式输入、常用预设、结果分解和 FAQ。',
+          '使用 DND掷骰器可以投掷 d4、d6、d8、d10、d12、d20 和 d100，共七种常见 DnD 骰子。',
       },
       {
-        question: '这页第一步应该优先覆盖哪些骰子？',
+        question: '可以混合不同骰子并添加加值吗？',
         answer:
-          '第一层先覆盖 DnD 最常见的标准骰组: d4、d6、d8、d10、d12、d20 和 d100，并支持 1d20 加修正值、4d6 去最低 这类常见表达。',
+          '可以。在 DND掷骰器中选择需要的骰子类型，分别设置数量，再输入正数或负数加值后投掷即可。',
       },
       {
-        question: '为什么不直接把骰子功能塞进主编辑器？',
+        question: '一次最多可以投掷多少颗骰子？',
         answer:
-          '因为 token 编辑器和掷骰器是两种不同任务。把 dice roller dnd 做成独立页面，跑团时更容易快速打开，也不会打断主编辑器里的头像处理流程。',
+          '一次最多投掷 15 颗骰子，限制针对骰池中的所有骰子总数。',
       },
       {
-        question: '除了 3D 骰盘，这页还有文字说明吗？',
+        question: '掷骰结果会保存吗？',
         answer:
-          '有。骰盘负责交互，旁边的说明和 FAQ 会补充常见骰式、角色属性生成、结果分解和本地日志怎么用。',
+          'DND掷骰器的日志会在当前页面会话中保留最近 20 次投掷。刷新页面会开始新的会话，日志也有单独的清空按钮。',
+      },
+      {
+        question: '可以复制最近一次投掷结果吗？',
+        answer:
+          '可以。投掷完成后，点击骰子托盘下方的“复制”按钮，即可复制最近一次结果和每颗骰子的点数。',
+      },
+      {
+        question: '如何投掷 4d6 并去掉最低点？',
+        answer:
+          '在 DND掷骰器中先选择 4 颗 d6 并投掷，再在明细中找出最低点，手动把其他三颗相加。工具会报告全部骰子的总和，不会自动去掉某颗骰子。',
       },
     ],
     structuredDataFeatures: [
       'Token Maker 内的独立 dice roller dnd 工具页',
-      'CSS 动画物理感骰盘与在线掷骰体验',
-      '覆盖 d20 检定与 4d6 去最低等 DnD 场景',
-      '结果分解、本地日志、FAQ 与规则说明一并保留',
+      '支持 d4、d6、d8、d10、d12、d20 和 d100 七种骰子',
+      '支持最多 15 颗混合骰池与正负整数加值',
+      '提供动画投掷、逐颗明细和计算后的总和',
+      '支持复制最近结果，并在当前页面会话保留最近 20 次投掷',
     ],
-    statsGuide: {
-      headline: 'How many dice to roll for stats dnd (DnD 5e 属性掷骰指南)',
-      methodTitle: '标准规则：4d6 去最低 (4d6 Drop Lowest)',
-      methodBody: [
-        '如果你翻开《龙与地下城》第五版（DnD 5e）的玩家手册，官方推荐且目前跑团中最普遍使用的属性生成方法，就是大名鼎鼎的“4d6 去最低”法则。',
-        '具体操作极其简单：手里捏住 4 颗六面骰（4d6）同时掷出。挑出其中点数最小的一颗拿走，然后把剩下三颗的点数相加。这加起来的最终防数值，就是你的其中一项能力值（Ability Score）。你需要把这个“掷四去一”的流程完完整整地重复 6 次，从而获得总共 6 个数字。',
-        '当你拿着这 6 个数字后，就可以根据你想要扮演的职业来自由分配它们：分别填进力量、敏捷、体质、智力、感知与魅力中。比如你想玩法师，就把最大的那个数字丢给智力；想玩野蛮人，自然要优先拉满力量。'
-      ],
-      connectTitle: '在这个工具里一键搞定',
-      connectBody: [
-        '如果你真的在桌面上捏塑料骰子，那为了建卡你得手工投 24 次，还要频繁做加减法，很多人嫌麻烦。你完全可以借助上方真正的物理模拟骰盘来省去这些繁琐工作，同时还能享受骰子滚动的快乐。',
-        '只要在面板上点击预设的“4d6 去最低 (4d6 drop lowest)”，系统会立刻投出 4 颗 d6。更重要的是，它懂规则——算法会自动帮你把那颗最小的废点剔除，并在下方的日志区清楚地给你列出计算公式和最终数值。连点 6 次，你的初始人物卡属性就出炉了。'
-      ],
-      extraTitle: '冷知识：为什么要掷四留三，而不是直接掷 3 颗？',
-      extraBody: [
-        '在非常古老的古典桌面角色扮演时代（也就是所谓的 OSR 硬核时期），老前辈们真的是硬碰硬地直接掷 3d6，而且掷出什么就按顺位填什么。但这在概率学上会造就一条毫无情面的“铁血钟形曲线”——平均值永远死死卡在 10.5。这意味着你扮演出来的角色大概率只是一个平平无奇、随处可见的平民。',
-        '但现代的 DnD 5e 主打的是“超凡英雄奇幻”。设计师引入了第四颗骰子并允许你丢掉最差的运气（哪怕掷出 1, 1, 1, 6 也能去掉一个 1）。这一规则上的微调，硬生生把属性的数学期望（平均值）拉高到了 12.24 左右。这一举动极大降低了玩家在一开局就遭遇“天崩开局（属性残废跑不动路）”的挫败感，保证了所有冒险者起步就有超出常人的潜力和英雄光环。'
-      ],
-      alternativesTitle: '除了掷骰子，还有别的办法吗？',
-      alternativesBody: [
-        '虽然“4d6”充满了随机的心跳刺激感，但这也意味着同桌的玩家之间会出现“极度不平衡”的惨象——欧皇全属性 16+ 叱咤风云，非酋最高属性可能才 12。如果你的 DM（地下城主）极其看重团队战斗的数值平衡，他们通常会禁止玩家掷属性。',
-        '这时候的替代方案就是“标准阵列（Standard Array）”——让全桌所有人都拿完全一模一样的 6 个数字（15, 14, 13, 12, 10, 8）去自由分配；或是采用“购点法（Point Buy）”——拨给你一笔 27 点的预算本金，你自己对着价格表去自由选购属性高低。这些方法虽然少了惊心动魄的掷骰环节，但绝对公平。'
-      ],
-    },
   },
 };
 

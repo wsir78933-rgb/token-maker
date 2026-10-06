@@ -20,6 +20,7 @@ const CIRCULAR_TESTIMONIAL_COLOR_FIELDS = [
   'name',
   'designation',
   'testimony',
+  'imageBackground',
   'arrowBackground',
   'arrowForeground',
   'arrowHoverBackground',
@@ -59,6 +60,7 @@ type CircularTestimonialImageProps = {
   src: string;
   alt: string;
   frameClassName: string;
+  backgroundColor: string;
 };
 
 type CircularTestimonialImagePosition = 'center' | 'left' | 'right' | 'hidden';
@@ -73,6 +75,7 @@ const DEFAULT_CIRCULAR_TESTIMONIAL_COLORS: Required<CircularTestimonialsColors> 
   name: '#f5f0e6',
   designation: '#a8a29e',
   testimony: '#d6d3d1',
+  imageBackground: '#f4eee5',
   arrowBackground: '#17130d',
   arrowForeground: '#f3ddb0',
   arrowHoverBackground: '#71521c',
@@ -387,11 +390,17 @@ function getCircularTestimonialLandscapeImageStackMinHeight(
   return `max(20rem, calc(${imageHeight}px + ${imageGap * 1.6}px))`;
 }
 
-function CircularTestimonialImage({ src, alt, frameClassName }: CircularTestimonialImageProps) {
+function CircularTestimonialImage({
+  src,
+  alt,
+  frameClassName,
+  backgroundColor,
+}: CircularTestimonialImageProps) {
   return (
     <div
       data-part="testimonial-image-frame"
       className={`relative overflow-hidden rounded-2xl border border-[#d7b46a]/30 bg-[#f4eee5] shadow-[0_18px_44px_rgba(0,0,0,0.36)] ${frameClassName}`}
+      style={{ backgroundColor }}
     >
       <Image
         src={src}
@@ -715,6 +724,7 @@ export function CircularTestimonials({
                 <CircularTestimonialImage
                   src={testimonial.src}
                   alt={isActive ? testimonial.alt ?? testimonial.name : ''}
+                  backgroundColor={resolvedColors.imageBackground}
                   frameClassName="h-full w-full"
                 />
               </div>

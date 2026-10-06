@@ -1,5 +1,134 @@
 # WORKLOG
 
+## 交接单 · 2026-10-06 21:34 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+完成 Coat of Arms Maker / 纹章制作器的 EN/ZH 页面调整：移除用户截图中的旧使用场景、旧三步说明/工具介绍和「继续创作」模块；参考 Outfit Creator 增加 What Is、功能介绍、How It Works、对比模块与 FAQ 样式。使用工具制作 12 张案例，放到桌面供审核，并在 What Is 下方用 CircularTestimonials 展示三组交替图文；移除案例展示的整体标题与导语。补齐 Hero 的三个实际工具案例，改为与下方案例一致的浅色背景。
+
+随后把正文关键词密度提高到 2%–3%，保护已有标题。全部实现只使用唯一「纹章」工作树与内置子代理，没有使用 Orca 编排；根代理负责收尾和独立验证。用户最后明确授权提交、合并到本地 main 并删除工作树，均已完成。本次 offhand 只核对现状并写交接单，不新增功能。
+
+### 已完成
+
+- 工具下方顺序为 What Is → 12 个案例 → 6 项功能 → 3 步 How It Works → 对比表 → 返回编辑器 CTA → FAQ。CTA 指向 #coat-editor-workspace。FAQ 双语各 5 条，使用原生 details/summary、分隔线、旋转箭头及单项展开行为。
+- 主要入口为 src/components/coat-of-arms/CoatMakerSeoContent.tsx、CoatMakerPageHeading.tsx；双语正文公开入口为 coat-maker-seo-copy.ts 的 getCoatMakerSeoCopy(locale)。案例组件为 CoatMakerShowcase.tsx，双语案例由 coat-maker-showcase-copy.ts 的 getCoatMakerShowcaseCopy(locale) 提供。FAQ 在 CoatMakerFaqAccordion.tsx。
+- 12 个案例每组 4 个：角色与家族、公会与社团、地区与地点。桌面布局依次左文右图、左图右文、左文右图；复用共享 CircularTestimonials 的公开 props。整体「纹章案例展示」标题/导语已不渲染，保留 section 的 aria-label 和三组标题、描述及案例内容。
+- 案例 WebP 位于 public/coat-assets/showcase/。桌面 /Users/wusir/Desktop/纹章 保留 01–12 的 12 张案例 PNG 和 00_案例总览.png，共 13 张；这是案例文件夹，与已删除的开发工作树是不同路径。
+- Hero 使用工具实际导出的 crimson-lion、azure-stag、verdant-phoenix 三个纹章，当前引用 public/coat-of-arms-maker/hero/tool-made/ivory/ 下三个 WebP，背景为 #f4eee5，尺寸 1120×1400。tool-made/ 下此前深色版与旧 Hero 素材保留；没有用 AI 生成图替代工具导出。三个透明原始 PNG 仍在 /tmp/coat-hero-tool-exports/。
+- 最后密度调整只修改工具下方已有正文段落及对应测试文案；各语言 20 个正文字段增加完整关键词。标题、FAQ 问题、Hero 全部文案、metadata、What Is 和案例内容受保护。editorCtaDescription 同时被 Hero 使用，因此保持原样。没有新增依赖、重构工具或改变编辑器行为。
+- 完整正文密度：英文 Coat of Arms Maker 为 29 / 1259 = 2.3034%；中文 纹章制作器为 30 / 1204 = 2.4917%。此前分别为 9 / 1163 = 0.7739% 和 10 / 1132 = 0.8834%。
+- 统计按用户公式「完整关键词出现次数 ÷ 正文词数」。英文完整短语每次算 1 次，忽略大小写并兼容空白；中文精确匹配纹章制作器。分母使用 Intl.Segmenter('en' 或 'zh-CN', { granularity: 'word' }) 的 isWordLike。包含 Hero、正文标题、全部 12 个轮播案例、全部 5 条 FAQ 问答及对比表；排除编辑器操作文字、导航/footer、按钮标签、alt、metadata、sr-only caption 和 aria-hidden 步骤序号。不得把英文关键词的四个词乘入分子，也不得混用初始可见轮播与完整轮播口径。
+
+提交与当前状态：
+
+- 功能提交 23483a2ebd983b5b3de69f70dadabd18403f60b2（feat: refresh bilingual coat of arms maker page）。本地合并提交及本次写入前 main HEAD 为 d9c229b1c21297fea2d04e4c06b935cc090d7c85（Merge bilingual coat of arms maker updates）；合并前 main 为 b73ba106458ba13bbda813e08590db01ad3bbe49。两个提交均已重新核对为 main 祖先，合并无冲突。
+- 精确提交范围为 26 个文件：上述页面、FAQ、正文/案例 copy 和两个页面测试共 8 个源码/测试文件；12 个案例 WebP；Hero 工具导出的 3 个深色版和 3 个 ivory 版。本次再次核对 26/26 文件与已验收 SHA256 相同，原 main 6095/6095 个保护文件也与合并前清单相同。
+- 主分支中其他任务对共享 circular-testimonials.tsx 的 imageBackground 支持已保留，纹章继续使用浅色默认背景。没有覆盖其他已合并任务或删除其他工作树。
+- 本次写入前工作区、暂存区和未跟踪文件均干净。main 相对本地 origin/main 引用 ahead 9、behind 0；没有 fetch、push 或部署，不能据此判断最新远端状态。
+- /Users/wusir/Desktop/开发项目集合/纹章 已不存在，Git 工作树登记也已移除；纹章分支仍指向功能提交，未删除。当前共 6 个工作树：主项目、元素周期表、卷轴、塔罗牌、族谱、星系。
+- 属于旧纹章工作树的 40003 开发预览此前已停止，本次 lsof 回读无监听。旧 http://hero.localhost:40003 的双语预览 URL 已失效；不要沿用旧 PID 或重建旧工作树来重复收尾。
+
+已有产品验证（此前实际执行，本次 offhand 回读日志，未重新运行产品测试、Lint、类型检查、构建或浏览器）：
+
+- 合并后 main：CoatMakerPageHeading.test.tsx、CoatMakerSeoContent.test.tsx、共享 circular-testimonials.test.tsx 共 3 文件 / 58 测试通过；pnpm typecheck 与 pnpm exec vinext build 均退出 0。类型生成成功，Vinext 日志显示 Build complete。
+- 最后密度版本在工作树：2 个定向页面测试文件 / 29 测试、定向 ESLint、typecheck、Vinext 构建通过。测试修改只同步 32 个文案字符串，原断言/测试逻辑未减少；范围核对与独立只读复核通过。
+- 本地 ego-browser 在合并前工作树遍历 EN/ZH 各 12 个案例和全部 FAQ，得到上述密度；保护 DOM 对照均为 true。桌面 1440px 和移动端 375px 截图及边界检查通过，没有功能卡片文字截断或整页横向溢出。此为工作树浏览器证据，不冒充合并后 main 浏览器验收。
+- 本次 offhand 重新读取 Git、源码、26 个已验收文件及 6095 个保护文件哈希、密度/构建/测试回执、工作树/桌面路径和 40003 监听状态；另行复算历史浏览器正文的词数和关键词次数，均与回执一致。没有执行全仓测试、标准 Next 构建、完整 build:vinext 发布流水线、Workers dry-run 或线上验收。
+
+### 做到一半
+
+无。已授权的页面调整、案例制作、Hero 替换、双语密度调整、提交、本地合并和工作树清理均完成。未存档：本次 WORKLOG.md 交接单，按 offhand 要求保持未提交；没有其他产品改动。
+
+### 下一步
+
+下一班输入 $pickup，先读取本条，重新核对 main HEAD、Git 状态、工作树和服务，再按新的用户需求继续。没有新需求时无需修改页面。保护用户已有标题和 Hero 文案，同步检查 EN/ZH；新增修改先按用户 AGENTS.md 对齐范围和验收。不要重复合并、重复删除、重建纹章工作树或擅自删除保留分支；未授权 push、部署、新增依赖或提交 WORKLOG。
+
+每个编码 Task spec 显式要求高内聚、低耦合、单一职责、多步主函数只调度、公开函数/类型/命令通信、KISS、Fail Fast（指出具体异常值且禁止吞异常）、YAGNI 和精确命名，不顺手扩展范围。只读 reviewer 不能修复代码；验收须读取真实证据，不能只信 agent 自报。
+
+### 踩过的坑
+
+- 轮播当前显示的案例不等于完整 12 个案例；FAQ 默认折叠也不等于正文不存在。固定完整正文口径后，通过真实按钮遍历采集；图片 alt、ARIA 标签和隐藏 caption 不重复计入。中文按词数而非汉字数统计。
+- editorCtaDescription 被 Hero 复用，修改 CTA 描述会连带改 Hero；最后密度提升改的是独立 editorCtaEmphasis 等下方段落。
+- 用户要的「白底」最终使用下方案例同款 #f4eee5 浅色；不能误改回深色版或误替换为 AI 图。桌面案例文件夹和开发工作树同名但父路径不同，删除工作树不能删桌面图片。
+- 浏览器曾有 Monica 扩展注入 body 属性导致的 hydration 提示，已查看实际覆盖层确认；不能因此声称应用控制台完全无错误。本次交接没有重跑该浏览器诊断。
+- 初次测试在文案同步尚未结束时遇到 2 个旧 CTA fixture，完成同步后 29 项通过。临时保护脚本的字符串扫描曾误判模板尾部，改用 TypeScript AST 后通过；没有为验证脚本误报扩展产品改动。
+- /tmp 回执和截图可能被系统清理。证据缺失应标记无法回读并按需重新验证，不能把 Git/构建/本地浏览器通过等同于部署或线上状态。
+
+### 怎么验证
+
+以下供下一班按需重跑；本次 offhand 没有重跑这些产品命令：
+
+- Git：git status --porcelain=v1 --branch；git log -3 --oneline；git merge-base --is-ancestor 23483a2ebd983b5b3de69f70dadabd18403f60b2 main；git worktree list --porcelain。本次写完预期只出现 WORKLOG.md 未暂存，暂存区为空，HEAD 不变。
+- 定向测试：pnpm exec vitest run src/components/coat-of-arms/CoatMakerPageHeading.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx src/components/armor-creator/circular-testimonials.test.tsx（此前 main 为 3 文件 / 58 测试通过）。
+- 类型：pnpm typecheck。
+- 定向 Lint：pnpm exec eslint src/components/coat-of-arms/CoatMakerFaqAccordion.tsx src/components/coat-of-arms/CoatMakerPageHeading.tsx src/components/coat-of-arms/CoatMakerPageHeading.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx src/components/coat-of-arms/coat-maker-seo-copy.ts src/components/coat-of-arms/CoatMakerShowcase.tsx src/components/coat-of-arms/coat-maker-showcase-copy.ts。
+- 构建：pnpm exec vinext build；空白检查：git diff --check。先看 package.json scripts；typecheck 和构建顺序执行，避免共同生成文件互相干扰。
+- UI：先确认一个属于 main 的预览服务，用本地 ego-browser 新建任务空间打开 /coat-of-arms-maker 和 /zh/coat-of-arms-maker；在 1440px/375px 检查标题/描述、Hero 三张浅底图、What Is 下方 3 组各 4 案例、左右箭头、FAQ 展开/键盘操作、CTA 回到 #coat-editor-workspace、移动端对比表局部横向滚动和整页无横向溢出。保护用户浏览器草稿，不复用已结束的 TaskSpace 142，也不使用已停的 40003 URL。
+- 密度：按本条口径遍历全部案例及全部 FAQ，再用 locale-aware Intl.Segmenter 复算；标题和 Hero 不能为密度调整而改动。
+- 可回读历史证据：/tmp/coat-release-receipt.json、/tmp/coat-release-files.json、/tmp/coat-release-main-before.json、/tmp/coat-release-main-tests.log、/tmp/coat-release-main-typecheck.log、/tmp/coat-release-main-build.log、/tmp/coat-keyword-density.json、/tmp/coat-keyword-density-after.json、/tmp/coat-density-typecheck.log、/tmp/coat-density-build.log。截图为 /tmp/coat-density-{en,zh}-{desktop,mobile}.png，采集脚本为 /tmp/coat-density-browser-capture.mjs；这些是历史证据，不是本次重跑。
+
+## 交接单 · 2026-10-06 13:04 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+完成 dice-roller-dnd 的 EN/ZH 工具下方内容，参考 Outfit Creator 的区块和 Army Formation Creator 的 CTA：增加 What Is、功能介绍、How It Works、对比表、案例展示、FAQ 及 FAQ 上方 CTA。What Is 要说明是什么、有什么功能、用在哪里和面向谁；保护元标题、页面标题及原描述，不改变工具行为。仅使用唯一「骰子」工作树和内置子代理，没有使用 Orca 编排。
+
+用户最后授权提交、合并本地 main 并删除工作树；这些事项均已完成。本次 handoff 使用已改名的 offhand 技能，只核对现状并写本交接单，不新增功能或提交。
+
+### 已完成
+
+- 页面下方顺序为 What Is → 6 项功能 → 12 个案例 → 对比表 → 3 步使用说明 → CTA → FAQ。CTA 指向 #dice-roller-tool，FAQ 双语各 6 条，可用按钮展开。旧工具下方文章已移除。
+- What Is 说明浏览器掷骰工具的定义、七种骰子、数量/混合骰池/正负加值、单颗结果及总和；使用场景为攻击、检定、豁免、伤害及备团，受众为 D&D 玩家、地下城主和新手。AC/DC 比较、行动顺序和具体桌规由使用者应用。
+- 对比列为本站掷骰器、实体骰子和 Roll20；各语言保留开始使用、常规掷骰、复杂规则、多人共享、记录保存共 5 行。已移除比较模块外链，以及用户截图中的网络依赖行。移动端表格局部横向滚动。
+- 12 个案例分为 3 组、每组 4 个，按左文右图／左图右文／左文右图交替，使用 CircularTestimonials。案例为攻击、隐匿、敏捷豁免、先攻、巨剑伤害、匕首暴击、3 级盗贼刺剑偷袭、Hunter's Mark、Bless、火球术、2024 规则 Cure Wounds 和随机表。展示具体表达式、骰子点数和示例总和；不暗示自动裁定规则。
+- 「试试这个投掷」案例按钮已移除；12 张 WebP 为实际工具截图，图片展示使用深色背景。共享 carousel 增加公开 imageBackground prop，保留已有默认颜色。可用按钮和链接的手型光标规则限于骰子页面，没有全局修改。
+- 元标题、页面 H1、原 Hero/metadata 描述及 DiceRollerTool.tsx 和其测试均受保护；没有新增依赖。主要公开内容入口为 src/lib/site-content.ts 的 getDiceRollerPageCopy(locale)，页面入口为 src/components/site/views/DiceRollerPageView.tsx，区块为 src/components/dice/DiceRollerContentSections.tsx、DiceRollerCaseStudies.tsx、DiceRollerFaq.tsx。
+- 最终完整正文密度：EN 的 DnD Dice Roller 为 33 / 1465 = 2.2526%；ZH 的 DND掷骰器为 31 / 1406 = 2.2048%。初始 3 个案例加全部 FAQ 答案的口径也达标：EN 24 / 1086 = 2.2099%，ZH 22 / 1033 = 2.1297%。
+- 密度口径：完整关键词每次算 1 次，忽略大小写；中文匹配允许 DND 与中文词之间的空白，未改变关键词名称。分母使用 Intl.Segmenter 的 isWordLike 分词，包含 Hero、模块标题、所有 12 个案例及全部 FAQ 答案；排除导航、页脚、工具 UI 标签和图片 alt。不是汉字数或源代码字符串数。后续统计不能混用完整轮播内容与初始可见案例的分母。
+
+提交与当前状态：
+
+- 功能提交 aafcbe5491a7f8ea5bd4465897d598a9a57fb1c8（feat: enrich bilingual DnD dice roller page）；本地合并及当前 main HEAD 为 dd1e652cb9a31da7f28c0a1b937aa3ac4077d50f（Merge bilingual DnD dice roller page）。合并父提交为原 main 616a75aecbaddfed763cd7fcafb6a4d3586a056b 和功能提交。
+- 精确提交范围为 20 个文件：上述页面和区块／案例测试、src/lib/site-content.ts、共享 circular-testimonials.tsx 及其测试共 8 个源码/测试文件，加 public/images/dice-cases/ 下 12 张 WebP。根代理独立核对 20 个最终文件与已验收哈希完全一致；合并前 main 其余 6081 个 tracked 文件哈希保持一致。
+- 本轮 handoff 写入前 main 工作区、暂存区和未跟踪文件均干净，相对本地 origin/main 引用 ahead 6；未 push、未部署，不代表核查了最新远端或线上版本。
+- /Users/wusir/Desktop/开发项目集合/骰子 目录和 Git 工作树登记已移除；骰子分支保留并已合入 main。main 的 node_modules 保留。仅停止了属于该工作树的 40007 预览，当前回读该端口无监听；其他「卷轴」「族谱」「纹章」工作树仍存在，未清理。
+
+已有验证记录（此前实际执行，本次 handoff 未重跑测试、类型检查、Lint、构建或浏览器）：
+
+- 合并后的 main：4 个定向测试文件、80 项测试通过；pnpm typecheck、8 个源码/测试文件的 scoped ESLint、pnpm exec vinext build 和 git diff --check 均退出 0。构建完成，包含 EN/ZH 骰子路由；没有执行完整全仓测试、完整 build:vinext 发布流水线、Workers dry-run 或部署。
+- 合并前相同已验收文件：本地 ego-browser 真实遍历 EN/ZH 各 12 个案例及全部 FAQ，核对上述密度；中文 1440px/375px 标题保护、FAQ、5 行表格、3 组案例和无整页横向溢出通过。375px 对比表 clientWidth=335、scrollWidth=768、overflowX=auto。本地浏览器证据来自工作树，不冒充合并后 main 浏览器验收。
+- 本次 handoff 只重新读取 Git HEAD/status/worktree、提交/清理/密度/布局证据和页面源码，核对 40007 无监听，并验证本交接单插入时旧 WORKLOG 字节保留。
+
+### 做到一半
+
+无。已授权的页面内容、中文密度调整、提交、本地合并和工作树删除均完成。未存档：本次新增 WORKLOG.md 交接单，按技能要求保持未提交；没有其他产品改动。
+
+### 下一步
+
+下一班输入 $pickup，先读取本条并重新核对 main HEAD、工作区、工作树和当前服务，再按新的用户需求继续。没有新需求时无需再改页面；不要重建或重复删除骰子工作树，不复用旧 PID 或已结束的 ego-browser TaskSpace 86。原 40007 URL 已失效，复验应指向确认属于 main 的服务。
+
+继续改页面时保护元标题、页面标题和原描述，同步检查 EN/ZH。每个编码 Task spec 必须显式写出高内聚、低耦合、单一职责、多步主函数仅调度、公开函数/类型/命令通信、KISS、Fail Fast（指出具体异常值且不吞异常）、YAGNI 和精确命名；不要顺手扩大范围。未授权 push、部署、删除分支或提交 WORKLOG。
+
+### 踩过的坑
+
+- 所有 12 个轮播案例与初始 3 个案例是不同统计范围；必须先固定口径。FAQ 答案各计一次，排除重复 caption、alt、导航和工具 UI 标签，中文用词数而非汉字数。当前两种已记录口径都在 2%–3%。
+- 工具仅计算骰子点数和算术总和；4d6 去最低需手动相加其他三颗，不自动删除最低骰子。案例中的 AC/DC、暴击、偷袭、法术规则由用户确认；Cure Wounds 示例明确针对 2024 规则。
+- 审计脚本曾把 diff 格式、模块函数身份、已授权删除的旧下方文章和行号变化误判为越界；修正临时审计脚本后 scope PASS、failures=[]。仓库未为修正审计误报做额外改动，不能只信 agent 口头自报。
+- 删除回执的 expectedMainHead 曾漏写一位，已仅修正临时 JSON，并与实际 main HEAD 三方相等验证通过；不要依据有误的临时字符串重复执行合并或删除。
+- /tmp 证据可能被清理。缺失时标记无法回读，按需重新验证；构建、本地浏览器、Git 合并和部署是不同证据，本次没有线上验收。
+
+### 怎么验证
+
+以下命令供下一班按需重跑，不代表本次 handoff 已重新执行产品检查：
+
+- Git：git status --porcelain=v1 --branch；git log -3 --oneline；git merge-base --is-ancestor aafcbe5491a7f8ea5bd4465897d598a9a57fb1c8 main；git worktree list --porcelain。本条写完预期仅 WORKLOG.md 未暂存，暂存区为空。
+- 定向测试：pnpm exec vitest run src/app/site-routes.test.tsx src/components/dice/DiceRollerCaseStudies.test.tsx src/components/dice/DiceRollerTool.test.tsx src/components/armor-creator/circular-testimonials.test.tsx（此前 4 文件 / 80 测试通过）。
+- 类型：pnpm typecheck。
+- Lint：pnpm exec eslint src/components/armor-creator/circular-testimonials.test.tsx src/components/armor-creator/circular-testimonials.tsx src/components/site/views/DiceRollerPageView.tsx src/lib/site-content.ts src/components/dice/DiceRollerCaseStudies.test.tsx src/components/dice/DiceRollerCaseStudies.tsx src/components/dice/DiceRollerContentSections.tsx src/components/dice/DiceRollerFaq.tsx。
+- 构建：pnpm exec vinext build；空白检查：git diff --check。类型检查和构建按顺序执行，避免共同生成文件互相干扰。
+- UI：先确认现有 main 服务，再用本地 ego-browser 新建任务空间打开 /dice-roller-dnd 和 /zh/dice-roller-dnd；桌面/375px 检查 3 组案例各 4 个、左右箭头、FAQ 按钮、CTA 回到 #dice-roller-tool、手型光标、深色图片背景、5 行无外链对比表和移动端局部横向滚动。按固定密度口径遍历案例后统计；保护用户已有浏览器状态。
+- 可回读历史证据：/tmp/dice-merge-manifest.json、/tmp/dice-main-root-merge-proof.json、/tmp/dice-commit-merge-proof.json、/tmp/dice-worktree-removal-proof.json、/tmp/dice-root-final-cleanup-proof.json、/tmp/dice-commit-scope-review.json、/tmp/dice-zh-density-browser-report.json、/tmp/dice-zh-density-copy-review.json、/tmp/dice-zh-density-layout-proof.json。截图为 /tmp/dice-zh-density-zh-{1440,375}-{comparison,cases}.png；这些是此前验证记录，不是本次重跑。
+
 ## 交接单 · 2026-10-06 10:46 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
