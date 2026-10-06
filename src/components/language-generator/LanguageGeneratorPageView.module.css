@@ -1,10 +1,10 @@
 .pageShell {
-  background-attachment: fixed;
+  background-attachment: scroll;
   background-size: auto;
 }
 
 .pageShell :global(.pointer-events-none) {
-  background-attachment: fixed;
+  background-attachment: scroll;
   background-size: auto;
 }
 

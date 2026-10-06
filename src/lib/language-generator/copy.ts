@@ -7,6 +7,7 @@ export type LanguageGeneratorCopy = {
   readonly eyebrow: string;
   readonly title: string;
   readonly description: string;
+  readonly heroAction: string;
   readonly workspaceLabel: string;
   readonly vocabularyTab: string;
   readonly textTab: string;
@@ -75,13 +76,14 @@ export type LanguageGeneratorCopy = {
 
 const englishLanguageGeneratorCopy: LanguageGeneratorCopy = {
   navigationTitle: 'Language Generator',
-  pageTitle: 'Fictional Language Generator for Fantasy Worldbuilding',
+  pageTitle: 'Free Fantasy Language Generator – Create Fictional Languages',
   pageDescription:
-    'Create a reusable spelling system for fictional languages in D&D, TTRPG campaigns, fantasy novels, and games.',
+    'Free fantasy language generator for novels, worldbuilding, D&D, TRPG, and indie games. Generate words and phrases with custom spelling rules. No account needed.',
   eyebrow: 'FANTASY WORLDBUILDING TOOL',
-  title: 'Fictional Language Generator',
+  title: 'Free Fantasy Language Generator',
   description:
-    'Build a custom spelling system, shape a vocabulary, and convert your own text for a fantasy or science-fiction setting.',
+    'Create a fictional language for your novel, fantasy world, D&D or TRPG campaign, or indie game for free. Generate words and phrases, customize spelling rules, and get started without an account.',
+  heroAction: 'Try for Free',
   workspaceLabel: 'Language workspace',
   vocabularyTab: 'Vocabulary',
   textTab: 'Text converter',
@@ -158,13 +160,14 @@ const englishLanguageGeneratorCopy: LanguageGeneratorCopy = {
 
 const chineseLanguageGeneratorCopy: LanguageGeneratorCopy = {
   navigationTitle: '语言生成器',
-  pageTitle: '虚构语言生成器｜奇幻世界观、D&D 与 TTRPG',
+  pageTitle: '免费奇幻语言生成器｜为小说、跑团和游戏创建虚构语言',
   pageDescription:
-    '为 D&D、TTRPG 战役、奇幻小说和游戏创建可复用的虚构语言拼写规则。',
+    '免费为小说、世界观、TRPG/D&D 跑团和独立游戏创建虚构语言。生成词汇与短语，自定义拼写规则，无需注册。',
   eyebrow: '奇幻世界观工具',
-  title: '虚构语言生成器',
+  title: '免费奇幻语言生成器',
   description:
-    '创建自定义拼写系统、整理词汇，并把自己的文本转换成适用于奇幻或科幻世界观的语言形式。',
+    '免费为小说、世界观设定、TRPG/D&D 战役和独立游戏创建虚构语言。生成词汇与短语，自定义拼写规则，无需注册即可开始。',
+  heroAction: '免费试用',
   workspaceLabel: '语言工作区',
   vocabularyTab: '词汇生成',
   textTab: '文本转换',

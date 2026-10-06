@@ -11,6 +11,7 @@ const EXPECTED_LANGUAGE_GENERATOR_COPY_KEYS = [
   'eyebrow',
   'title',
   'description',
+  'heroAction',
   'workspaceLabel',
   'vocabularyTab',
   'textTab',
@@ -98,9 +99,9 @@ describe('language generator copy', () => {
     const chineseCopy = getLanguageGeneratorCopy('zh');
 
     expect(englishCopy.navigationTitle).toBe('Language Generator');
-    expect(englishCopy.title).toBe('Fictional Language Generator');
+    expect(englishCopy.title).toBe('Free Fantasy Language Generator');
     expect(chineseCopy.navigationTitle).toBe('语言生成器');
-    expect(chineseCopy.title).toBe('虚构语言生成器');
+    expect(chineseCopy.title).toBe('免费奇幻语言生成器');
     expect(chineseCopy.title).not.toBe(englishCopy.title);
   });
 
