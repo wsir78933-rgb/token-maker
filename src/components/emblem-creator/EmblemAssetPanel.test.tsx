@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getEmblemCatalogAsset, listEmblemCatalogAssets } from '@/lib/emblem-creator/catalog';
@@ -66,7 +66,8 @@ describe('EmblemAssetPanel', () => {
       const expectedIds = expectedGroups.flatMap((group) =>
         Array.from({ length: group.count }, (_, index) => 'rff-' + group.fileType + '-' + (index + 1)));
       expect(assets.map((asset) => asset.id)).toEqual(expectedIds);
-      expect(screen.getAllByRole('listitem')).toHaveLength(expectedIds.length);
+      const assetItems = screen.getAllByRole('listitem');
+      expect(assetItems).toHaveLength(expectedIds.length);
 
       for (const group of expectedGroups) {
         const groupAssets = assets.filter((asset) => asset.id.startsWith('rff-' + group.fileType + '-'));
@@ -84,8 +85,8 @@ describe('EmblemAssetPanel', () => {
         }
       }
 
-      for (const asset of assets) {
-        const button = screen.getByRole('button', { name: copy.assets.chooseAsset + ': ' + asset.name[locale] });
+      for (const [index, asset] of assets.entries()) {
+        const button = within(assetItems[index]).getByRole('button', { name: copy.assets.chooseAsset + ': ' + asset.name[locale] });
         expect(button.querySelector('img')?.getAttribute('src')).toBe(asset.publicPath);
       }
       unmount();
