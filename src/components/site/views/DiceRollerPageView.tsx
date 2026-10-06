@@ -1,14 +1,51 @@
+import { ArrowRight } from 'lucide-react';
+
 import { DiceRollerTool } from '@/components/dice/DiceRollerTool';
+import { DiceRollerContentSections } from '@/components/dice/DiceRollerContentSections';
+import { DiceRollerFaq } from '@/components/dice/DiceRollerFaq';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
+import { Button } from '@/components/ui/button';
 import {
   absoluteUrl,
   getDiceRollerPageCopy,
   getNavLabels,
+  type DiceRollerPageCopy,
 } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
+
+function DiceRollerCallToAction({ copy }: { copy: DiceRollerPageCopy }) {
+  return (
+    <section
+      id="dice-roller-call-to-action"
+      aria-labelledby="dice-roller-call-to-action-title"
+      className="mx-auto max-w-5xl px-5 py-20 text-stone-100 text-center sm:py-24 lg:px-8 lg:py-28"
+    >
+      <div className="flex flex-col items-center gap-3">
+        <h2
+          id="dice-roller-call-to-action-title"
+          className="font-display text-2xl font-semibold leading-tight text-stone-50 text-balance sm:text-3xl"
+        >
+          {copy.callToActionTitle}
+        </h2>
+        <p className="max-w-3xl text-sm leading-7 text-stone-300 text-pretty sm:text-base">
+          {copy.callToActionDescription}
+        </p>
+        <Button
+          size="lg"
+          className="mt-2 h-11 rounded-full px-8"
+          nativeButton={false}
+          render={<a href="#dice-roller-tool" />}
+        >
+          {copy.callToActionLabel}
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </Button>
+      </div>
+    </section>
+  );
+}
 
 export function DiceRollerPageView({ locale }: { locale: SiteLocale }) {
   const copy = getDiceRollerPageCopy(locale);
@@ -51,7 +88,12 @@ export function DiceRollerPageView({ locale }: { locale: SiteLocale }) {
         ])}
       />
 
-      <InnerPageChrome locale={locale} currentPath={path} tone="hub">
+      <InnerPageChrome
+        locale={locale}
+        currentPath={path}
+        tone="hub"
+        className="[&_button:enabled:not([aria-disabled=true])]:cursor-pointer [&_a[href]:not([aria-disabled=true])]:cursor-pointer"
+      >
         <div className="mx-auto max-w-[82rem] px-5 py-8 lg:px-8 lg:py-10">
           <PageBreadcrumbs
             locale={locale}
@@ -60,65 +102,18 @@ export function DiceRollerPageView({ locale }: { locale: SiteLocale }) {
               { label: navLabels.diceRoller },
             ]}
           />
-          <DiceRollerTool locale={locale} />
-          
-          <div className="mt-16 sm:mt-24 border-t border-white/10 pt-16 sm:pt-20 w-full">
-            <h2 className="font-display text-3xl sm:text-4xl text-stone-50 text-center mb-12 sm:mb-16">
-              {copy.statsGuide.headline}
-            </h2>
-            
-            <div className="space-y-8 sm:space-y-12">
-              {/* Top Hero Article (Centered) */}
-              <article className="mx-auto max-w-5xl rounded-[32px] border border-[#d7b46a]/20 bg-[linear-gradient(180deg,rgba(215,180,106,0.06),rgba(215,180,106,0.01))] p-8 sm:p-10 lg:p-14 text-center">
-                <h3 className="font-display text-2xl sm:text-3xl text-[#f1d492]">
-                  {copy.statsGuide.methodTitle}
-                </h3>
-                <div className="mt-8 space-y-5 text-left md:text-center max-w-3xl mx-auto">
-                  {copy.statsGuide.methodBody.map((paragraph, i) => (
-                    <p key={i} className="text-[1.05rem] leading-[1.85] text-stone-300">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </article>
-
-              {/* Bottom 3-Column Grid for Supporting Content */}
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
-                <article className="rounded-[28px] border border-white/8 bg-black/40 p-6 sm:p-8 flex flex-col">
-                  <h3 className="font-display text-xl text-stone-100 mb-5">{copy.statsGuide.connectTitle}</h3>
-                  <div className="space-y-4 flex-1">
-                    {copy.statsGuide.connectBody.map((paragraph, i) => (
-                      <p key={i} className="text-[0.95rem] leading-[1.75] text-stone-400">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </article>
-                <article className="rounded-[28px] border border-white/8 bg-black/40 p-6 sm:p-8 flex flex-col">
-                  <h3 className="font-display text-xl text-stone-100 mb-5">{copy.statsGuide.extraTitle}</h3>
-                  <div className="space-y-4 flex-1">
-                    {copy.statsGuide.extraBody.map((paragraph, i) => (
-                      <p key={i} className="text-[0.95rem] leading-[1.75] text-stone-400">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </article>
-                <article className="rounded-[28px] border border-white/8 bg-black/40 p-6 sm:p-8 flex flex-col sm:col-span-2 lg:col-span-1">
-                  <h3 className="font-display text-xl text-stone-100 mb-5">{copy.statsGuide.alternativesTitle}</h3>
-                  <div className="space-y-4 flex-1">
-                    {copy.statsGuide.alternativesBody.map((paragraph, i) => (
-                      <p key={i} className="text-[0.95rem] leading-[1.75] text-stone-400">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </article>
-              </div>
-            </div>
+          <div id="dice-roller-tool" className="scroll-mt-24">
+            <DiceRollerTool locale={locale} />
           </div>
-
         </div>
+        <DiceRollerContentSections copy={copy} />
+        <DiceRollerCallToAction copy={copy} />
+        <DiceRollerFaq
+          eyebrow={copy.faqEyebrow}
+          title={copy.faqTitle}
+          description={copy.faqDescription}
+          items={copy.faqItems}
+        />
       </InnerPageChrome>
     </>
   );

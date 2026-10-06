@@ -850,14 +850,25 @@ describe('CircularTestimonials', () => {
         previousLabel={PREVIOUS_LABEL}
         nextLabel={NEXT_LABEL}
         autoplay={false}
-        colors={{ name: '#123456' }}
+        colors={{ imageBackground: '#080910', name: '#123456' }}
         fontSizes={{ quote: '1rem' }}
       />,
     );
     const testimonialName = container.querySelector<HTMLElement>('[data-part="testimonial-name"]');
     const testimonialQuote = container.querySelector<HTMLElement>('[data-part="testimonial-quote"]');
+    const imageFrame = container.querySelector<HTMLElement>('[data-part="testimonial-image-frame"]');
+    const previousButton = within(container).getByRole('button', { name: PREVIOUS_LABEL });
 
     expect(testimonialName?.style.color).not.toBe('');
     expect(testimonialQuote?.style.fontSize).toBe('1rem');
+    expect(imageFrame?.style.backgroundColor).toBe('rgb(8, 9, 16)');
+    expect(previousButton.style.backgroundColor).toBe('rgb(23, 19, 13)');
+  });
+
+  it('默认保留原图片框背景色', () => {
+    const { container } = renderedCarousel();
+    const imageFrame = container.querySelector<HTMLElement>('[data-part="testimonial-image-frame"]');
+
+    expect(imageFrame?.style.backgroundColor).toBe('rgb(244, 238, 229)');
   });
 });
