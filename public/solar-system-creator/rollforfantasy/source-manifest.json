@@ -1,0 +1,2406 @@
+{
+  "sourcePage": "https://rollforfantasy.com/tools/solar-system-creator.php",
+  "assetDirectory": "/solar-system-creator/rollforfantasy",
+  "assets": [
+    {
+      "category": "star",
+      "index": 1,
+      "filename": "sun1.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun1.png",
+      "sha256": "b91ae12acfd3d795d9175b1782e2c5a8b1dcfdc4dc0d9c29687dd7460cad7beb",
+      "width": 175,
+      "height": 400,
+      "byteLength": 37155
+    },
+    {
+      "category": "star",
+      "index": 2,
+      "filename": "sun2.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun2.png",
+      "sha256": "e76c60012dc1f1747be12d77e7e5e6b28484fef3812a284c822e0fed2e19fc5c",
+      "width": 175,
+      "height": 400,
+      "byteLength": 37407
+    },
+    {
+      "category": "star",
+      "index": 3,
+      "filename": "sun3.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun3.png",
+      "sha256": "7898cfecd56d022beeec618a945bd0ef77170ed34be6a112a69da5b703f6e6d7",
+      "width": 175,
+      "height": 400,
+      "byteLength": 33059
+    },
+    {
+      "category": "star",
+      "index": 4,
+      "filename": "sun4.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun4.png",
+      "sha256": "33d57402ce9ce7b053a429eeeaa30a9aafe27d02d7a6de434418b902f27d4ff1",
+      "width": 175,
+      "height": 400,
+      "byteLength": 31557
+    },
+    {
+      "category": "star",
+      "index": 5,
+      "filename": "sun5.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun5.png",
+      "sha256": "8885232ff4059a0e64821981e4eab5c73d039751b75131aa0c378a75a711cd55",
+      "width": 175,
+      "height": 400,
+      "byteLength": 26610
+    },
+    {
+      "category": "star",
+      "index": 6,
+      "filename": "sun6.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun6.png",
+      "sha256": "2093d8c40e6b1eaa5cc29198d07411deb55aa30024f17c7fe6e5bec9b880e26a",
+      "width": 175,
+      "height": 400,
+      "byteLength": 35676
+    },
+    {
+      "category": "star",
+      "index": 7,
+      "filename": "sun7.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun7.png",
+      "sha256": "6c2e3c9f8699545613b022d1d433541115ef364588721571489d7c72442298da",
+      "width": 175,
+      "height": 400,
+      "byteLength": 33134
+    },
+    {
+      "category": "star",
+      "index": 8,
+      "filename": "sun8.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun8.png",
+      "sha256": "0442b147a75c3162537eeeeb0e3a2249174193d2565ad53a344d0dc4706a416a",
+      "width": 175,
+      "height": 400,
+      "byteLength": 34480
+    },
+    {
+      "category": "star",
+      "index": 9,
+      "filename": "sun9.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun9.png",
+      "sha256": "f90c2246cec2fd409b9f27cb379215a3c7602fa1765863d43c913dde70ed5aa6",
+      "width": 175,
+      "height": 400,
+      "byteLength": 39962
+    },
+    {
+      "category": "star",
+      "index": 10,
+      "filename": "sun10.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun10.png",
+      "sha256": "1d9edc63f0b46743240570f0939f35e7b935a6d1521cc656e8f1705bec1c1043",
+      "width": 175,
+      "height": 400,
+      "byteLength": 33936
+    },
+    {
+      "category": "star",
+      "index": 11,
+      "filename": "sun11.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun11.png",
+      "sha256": "49f547c7aae61e8b4707dbc81baf104dae5e5e291c70ca0ba370d865d4fb76c2",
+      "width": 175,
+      "height": 400,
+      "byteLength": 33688
+    },
+    {
+      "category": "star",
+      "index": 12,
+      "filename": "sun12.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun12.png",
+      "sha256": "16edc5189810a2577672e4ff020a98773faa915b2ac508c4a8022028935f0bbb",
+      "width": 175,
+      "height": 400,
+      "byteLength": 38037
+    },
+    {
+      "category": "star",
+      "index": 13,
+      "filename": "sun13.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun13.png",
+      "sha256": "2cb72f4ea146f1aa18e7a5e541073c7507934a4604b8fa841a67f4ef765b1318",
+      "width": 175,
+      "height": 400,
+      "byteLength": 35593
+    },
+    {
+      "category": "star",
+      "index": 14,
+      "filename": "sun14.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun14.png",
+      "sha256": "281847d2059127df206b4efff5da0958254727ee715790bd5b353f94878fc878",
+      "width": 175,
+      "height": 400,
+      "byteLength": 32922
+    },
+    {
+      "category": "star",
+      "index": 15,
+      "filename": "sun15.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun15.png",
+      "sha256": "f02e9aa84fcad5d9915978ac36b4702fe3576a6b213361800d946816f06a5e41",
+      "width": 175,
+      "height": 400,
+      "byteLength": 27701
+    },
+    {
+      "category": "star",
+      "index": 16,
+      "filename": "sun16.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun16.png",
+      "sha256": "ba9f6d40cf3c6909219c8c1247c8cf7d31190d9fcde0cf857ace1b338e143749",
+      "width": 175,
+      "height": 400,
+      "byteLength": 38003
+    },
+    {
+      "category": "star",
+      "index": 17,
+      "filename": "sun17.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun17.png",
+      "sha256": "70ec9979967c7afa378d2ee5940a00df4aa717bfa2cb5f7816442ce569928424",
+      "width": 175,
+      "height": 400,
+      "byteLength": 35219
+    },
+    {
+      "category": "star",
+      "index": 18,
+      "filename": "sun18.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun18.png",
+      "sha256": "8fcafe87772e352e8a91abc7f90b30c1c17d222b76fd7820beb1eb5f960359c4",
+      "width": 175,
+      "height": 400,
+      "byteLength": 35157
+    },
+    {
+      "category": "star",
+      "index": 19,
+      "filename": "sun19.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun19.png",
+      "sha256": "0d7e6b579bfb13eb429d7b3bcaeceb437c9ac9f03007e3f58245a9c85677d6fd",
+      "width": 175,
+      "height": 400,
+      "byteLength": 42528
+    },
+    {
+      "category": "star",
+      "index": 20,
+      "filename": "sun20.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun20.png",
+      "sha256": "c30bae88106d8369544964a15c540aca00c6926c5ad8a29b6847ebb97b264097",
+      "width": 175,
+      "height": 400,
+      "byteLength": 36706
+    },
+    {
+      "category": "star",
+      "index": 21,
+      "filename": "sun21.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun21.png",
+      "sha256": "42879a43f75af2e283d55c6d5f4db7137f7dfc41676a8c2e598da87cfca001f5",
+      "width": 175,
+      "height": 400,
+      "byteLength": 35566
+    },
+    {
+      "category": "star",
+      "index": 22,
+      "filename": "sun22.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun22.png",
+      "sha256": "d8c7984166d3c427a2a6c05107366359a4444346f6ea3e651085f2b3f3fe0df2",
+      "width": 175,
+      "height": 400,
+      "byteLength": 39494
+    },
+    {
+      "category": "star",
+      "index": 23,
+      "filename": "sun23.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun23.png",
+      "sha256": "7bc74ebc6de9f75168f65c64c8dde82ded4d9b4b361ad090ce9fbd454a09c146",
+      "width": 175,
+      "height": 400,
+      "byteLength": 39380
+    },
+    {
+      "category": "star",
+      "index": 24,
+      "filename": "sun24.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun24.png",
+      "sha256": "859f94fe9846822e198dacdd913fac314c19aa65dd626b13c0a0312ed0b0113c",
+      "width": 175,
+      "height": 400,
+      "byteLength": 35474
+    },
+    {
+      "category": "star",
+      "index": 25,
+      "filename": "sun25.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun25.png",
+      "sha256": "333a755e2f1dace362e9c135a1eeb0eeb100ce74a76b530e481618bd0467c0a3",
+      "width": 175,
+      "height": 400,
+      "byteLength": 28460
+    },
+    {
+      "category": "star",
+      "index": 26,
+      "filename": "sun26.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun26.png",
+      "sha256": "72a49d0c50183df9dbe32f68dca03493c8ea4835fa4315bb4d76b48565766186",
+      "width": 175,
+      "height": 400,
+      "byteLength": 39866
+    },
+    {
+      "category": "star",
+      "index": 27,
+      "filename": "sun27.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun27.png",
+      "sha256": "439579b5c521caccf08ac17f38759d8a1e2d67f6f73814152187e4f347e717d8",
+      "width": 175,
+      "height": 400,
+      "byteLength": 34849
+    },
+    {
+      "category": "star",
+      "index": 28,
+      "filename": "sun28.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun28.png",
+      "sha256": "9613ec759f2313e6c1f6b51335df19f5978800a1ee205465b49da0bda2a9cf6b",
+      "width": 175,
+      "height": 400,
+      "byteLength": 39271
+    },
+    {
+      "category": "star",
+      "index": 29,
+      "filename": "sun29.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun29.png",
+      "sha256": "1f03e7945191f07076253bd724e5e528ca4e0d8b47c632082fd369bebe07ee33",
+      "width": 175,
+      "height": 400,
+      "byteLength": 42854
+    },
+    {
+      "category": "star",
+      "index": 30,
+      "filename": "sun30.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun30.png",
+      "sha256": "8c19bf465f590d5539b93c9b5e71496c8c7f4828d6912a80155fcf769ec292aa",
+      "width": 175,
+      "height": 400,
+      "byteLength": 35684
+    },
+    {
+      "category": "star",
+      "index": 31,
+      "filename": "sun31.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun31.png",
+      "sha256": "50fce922f5b6120d2ef391b2045d0c76a6638f10c360ec9f60cd177d9b7d3ff2",
+      "width": 175,
+      "height": 400,
+      "byteLength": 34372
+    },
+    {
+      "category": "star",
+      "index": 32,
+      "filename": "sun32.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun32.png",
+      "sha256": "c9bd3796a1eea45ea0f0754aaa9090d9b2debd07d22552ce30791825b35ccd80",
+      "width": 175,
+      "height": 400,
+      "byteLength": 38686
+    },
+    {
+      "category": "star",
+      "index": 33,
+      "filename": "sun33.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun33.png",
+      "sha256": "eb952ab9f4ea192b7fafbb9ba762800ccf9af09d95cb7fffc609da475aca1b4f",
+      "width": 175,
+      "height": 400,
+      "byteLength": 40510
+    },
+    {
+      "category": "star",
+      "index": 34,
+      "filename": "sun34.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun34.png",
+      "sha256": "6d97c7000079a3cfa2585eb99ceb14a43ab225176ca302752a0a6df3077cbb79",
+      "width": 175,
+      "height": 400,
+      "byteLength": 29906
+    },
+    {
+      "category": "star",
+      "index": 35,
+      "filename": "sun35.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun35.png",
+      "sha256": "08936b0bd42f102d1335342673a8efb237048d463e63fdf0fe8f707e70f04d42",
+      "width": 175,
+      "height": 400,
+      "byteLength": 30514
+    },
+    {
+      "category": "star",
+      "index": 36,
+      "filename": "sun36.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun36.png",
+      "sha256": "9368da79d71250ffe4e5447042f2b522aa5d95cefab7edef616ae28eff3fbe9a",
+      "width": 175,
+      "height": 400,
+      "byteLength": 39831
+    },
+    {
+      "category": "star",
+      "index": 37,
+      "filename": "sun37.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun37.png",
+      "sha256": "c5896a13f0b9dc5caeed675245be54abe7967ee2c2c1b27edecd3c9f345c33ca",
+      "width": 175,
+      "height": 400,
+      "byteLength": 32377
+    },
+    {
+      "category": "star",
+      "index": 38,
+      "filename": "sun38.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun38.png",
+      "sha256": "3aff4a3c399ef6ead886c7895895868f6360c0c9bd0796c005b4830a2cf62776",
+      "width": 175,
+      "height": 400,
+      "byteLength": 33839
+    },
+    {
+      "category": "star",
+      "index": 39,
+      "filename": "sun39.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun39.png",
+      "sha256": "3e0b724690c13a2306cc8eceb91eff6f47f41316822f0262a0c12ba4c8b98c23",
+      "width": 175,
+      "height": 400,
+      "byteLength": 41241
+    },
+    {
+      "category": "star",
+      "index": 40,
+      "filename": "sun40.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/sun40.png",
+      "sha256": "1ed1e1afacad9d874b2aebfde9b19ed4d6a9098ed01c9beeaa60ac4cd7326403",
+      "width": 175,
+      "height": 400,
+      "byteLength": 34209
+    },
+    {
+      "category": "type-1",
+      "index": 1,
+      "filename": "earthPlanet01.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet01.png",
+      "sha256": "1163b5c159eb86a65e9641d8e359667f5a66243e90908a192055ea719795fbfb",
+      "width": 234,
+      "height": 234,
+      "byteLength": 84771
+    },
+    {
+      "category": "type-1",
+      "index": 2,
+      "filename": "earthPlanet02.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet02.png",
+      "sha256": "60d17da3511777f47b9ce68242b3c3b228c7ed421bb6f9f8c57247b6e56aee97",
+      "width": 234,
+      "height": 234,
+      "byteLength": 80862
+    },
+    {
+      "category": "type-1",
+      "index": 3,
+      "filename": "earthPlanet03.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet03.png",
+      "sha256": "e31cba2acfe9cbe7c0352da32a04f9968494d8a91d70b54d75cc7de057518921",
+      "width": 234,
+      "height": 234,
+      "byteLength": 78018
+    },
+    {
+      "category": "type-1",
+      "index": 4,
+      "filename": "earthPlanet04.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet04.png",
+      "sha256": "0715ea56eb78850cab6950bc123e25a9bc49ced8c50ab79b0ecfeca8fa0aabd9",
+      "width": 234,
+      "height": 234,
+      "byteLength": 74892
+    },
+    {
+      "category": "type-1",
+      "index": 5,
+      "filename": "earthPlanet05.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet05.png",
+      "sha256": "2cc8e7b0a0d846421bfc78adecad6969b52a3e3832cec434b6224ebb3f910fe8",
+      "width": 234,
+      "height": 234,
+      "byteLength": 77794
+    },
+    {
+      "category": "type-1",
+      "index": 6,
+      "filename": "earthPlanet06.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet06.png",
+      "sha256": "db5c04ad9d038fde32144d05abb69054878c410cb1dad5645c008005fc7c1444",
+      "width": 234,
+      "height": 234,
+      "byteLength": 78410
+    },
+    {
+      "category": "type-1",
+      "index": 7,
+      "filename": "earthPlanet07.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet07.png",
+      "sha256": "50ff4edc1dab3caa23084d0c466f427d1530219d3b5590dcd3e320272bf4a576",
+      "width": 234,
+      "height": 234,
+      "byteLength": 75983
+    },
+    {
+      "category": "type-1",
+      "index": 8,
+      "filename": "earthPlanet08.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet08.png",
+      "sha256": "b55abe3bb4a93144e340a21c723241e0f8e30a906088e95620a4a760cba39c8b",
+      "width": 234,
+      "height": 234,
+      "byteLength": 78956
+    },
+    {
+      "category": "type-1",
+      "index": 9,
+      "filename": "earthPlanet09.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet09.png",
+      "sha256": "1d1afd5c651c643e10f01ba210007a031bac2230f3a3553bf8d8a60aa7b423ea",
+      "width": 234,
+      "height": 234,
+      "byteLength": 85625
+    },
+    {
+      "category": "type-1",
+      "index": 10,
+      "filename": "earthPlanet10.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet10.png",
+      "sha256": "8697715cc053aae0abede16940766478ba91c4975a7c8603d4e154869ef0eeaf",
+      "width": 234,
+      "height": 234,
+      "byteLength": 88651
+    },
+    {
+      "category": "type-1",
+      "index": 11,
+      "filename": "earthPlanet11.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet11.png",
+      "sha256": "52e90eb21b1aa583faf76f1da02c760c46dbb8fea27207606c090a30e98e1c7b",
+      "width": 234,
+      "height": 234,
+      "byteLength": 86391
+    },
+    {
+      "category": "type-1",
+      "index": 12,
+      "filename": "earthPlanet12.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet12.png",
+      "sha256": "4037b1f05cefe56cb63ca30921a060da573023c90eda021e647ac976d4612adb",
+      "width": 234,
+      "height": 234,
+      "byteLength": 82084
+    },
+    {
+      "category": "type-1",
+      "index": 13,
+      "filename": "earthPlanet13.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet13.png",
+      "sha256": "f9c30a778e9b7af9966a3ee691dcf7d0ea999dfbf02a2e1c035bb73c352f9a43",
+      "width": 234,
+      "height": 234,
+      "byteLength": 78821
+    },
+    {
+      "category": "type-1",
+      "index": 14,
+      "filename": "earthPlanet14.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet14.png",
+      "sha256": "302265334d17b86cde2efcd00af26e54c2b71750a9b67f94ce0f83e3a376c6ec",
+      "width": 234,
+      "height": 234,
+      "byteLength": 76378
+    },
+    {
+      "category": "type-1",
+      "index": 15,
+      "filename": "earthPlanet15.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet15.png",
+      "sha256": "3ea6e054bd366e027bc720e66a8c65231fc8b0da18ab66e21c874b60f158cdbd",
+      "width": 234,
+      "height": 234,
+      "byteLength": 79274
+    },
+    {
+      "category": "type-1",
+      "index": 16,
+      "filename": "earthPlanet16.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet16.png",
+      "sha256": "0db962e23fbb36822a2e63b8bf2e252a188dabe5e7fbd3e5908b24f427ff7a58",
+      "width": 234,
+      "height": 234,
+      "byteLength": 79360
+    },
+    {
+      "category": "type-1",
+      "index": 17,
+      "filename": "earthPlanet17.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet17.png",
+      "sha256": "9c07172eac6db525609bb6585ddb26e3698e5b3b43d9b3c1ce0b1eddf1881d4f",
+      "width": 234,
+      "height": 234,
+      "byteLength": 77350
+    },
+    {
+      "category": "type-1",
+      "index": 18,
+      "filename": "earthPlanet18.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet18.png",
+      "sha256": "cb7349fccf829fa583d9c86e2b2d99dc5204cf99aa4eae4046c560811a3a7e14",
+      "width": 234,
+      "height": 234,
+      "byteLength": 80243
+    },
+    {
+      "category": "type-1",
+      "index": 19,
+      "filename": "earthPlanet19.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet19.png",
+      "sha256": "2bd43b71f12fc0c58d8b7d27a88f25a95bd95c3ecf5b82679e7e74e0e03c396f",
+      "width": 234,
+      "height": 234,
+      "byteLength": 87456
+    },
+    {
+      "category": "type-1",
+      "index": 20,
+      "filename": "earthPlanet20.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet20.png",
+      "sha256": "d5767d522fcfbf456169555c7ca38de215066f36f77ff5a2d1131c2c95797ba8",
+      "width": 234,
+      "height": 234,
+      "byteLength": 90325
+    },
+    {
+      "category": "type-1",
+      "index": 21,
+      "filename": "earthPlanet21.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet21.png",
+      "sha256": "aa698ce31e387cc3e147288a27e1abfd314ac08c6018874fb9d0728ae945d045",
+      "width": 234,
+      "height": 234,
+      "byteLength": 87235
+    },
+    {
+      "category": "type-1",
+      "index": 22,
+      "filename": "earthPlanet22.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet22.png",
+      "sha256": "d411136450fe90b103335bf596c836a5194362430352c2c9eb12c6ec5bffdebc",
+      "width": 234,
+      "height": 234,
+      "byteLength": 82929
+    },
+    {
+      "category": "type-1",
+      "index": 23,
+      "filename": "earthPlanet23.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet23.png",
+      "sha256": "71c8021526c0789c99befc9a6f18e4aae4a78dbaede867568ff9fe4aac974141",
+      "width": 234,
+      "height": 234,
+      "byteLength": 79398
+    },
+    {
+      "category": "type-1",
+      "index": 24,
+      "filename": "earthPlanet24.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet24.png",
+      "sha256": "0fa566adbe032ca4f82b3a74078e671434ebfd6209ef9e056747080b665d441f",
+      "width": 234,
+      "height": 234,
+      "byteLength": 77611
+    },
+    {
+      "category": "type-1",
+      "index": 25,
+      "filename": "earthPlanet25.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet25.png",
+      "sha256": "03bb9a09ab269039a6c909966932fb1272b61a57358bca37bc83ece3476d0f58",
+      "width": 234,
+      "height": 234,
+      "byteLength": 79062
+    },
+    {
+      "category": "type-1",
+      "index": 26,
+      "filename": "earthPlanet26.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet26.png",
+      "sha256": "d1c0e17958cb3f7e95ca98cd5312ad63961eebf3ebe63122abcafd6f3f105b42",
+      "width": 234,
+      "height": 234,
+      "byteLength": 79314
+    },
+    {
+      "category": "type-1",
+      "index": 27,
+      "filename": "earthPlanet27.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet27.png",
+      "sha256": "de45a423722701cfda1d024090d275e475fcc68abba8496080c97ba366016ac6",
+      "width": 234,
+      "height": 234,
+      "byteLength": 77015
+    },
+    {
+      "category": "type-1",
+      "index": 28,
+      "filename": "earthPlanet28.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet28.png",
+      "sha256": "d4667efc1c5e182345ece3d5ce891a366bb2a44596334bc86441f6e986aa0870",
+      "width": 234,
+      "height": 234,
+      "byteLength": 81010
+    },
+    {
+      "category": "type-1",
+      "index": 29,
+      "filename": "earthPlanet29.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet29.png",
+      "sha256": "a0b9e3f405d00825b9f0f6615f06b3e0aa66e069157607dd1e88ae15a08162d9",
+      "width": 234,
+      "height": 234,
+      "byteLength": 85922
+    },
+    {
+      "category": "type-1",
+      "index": 30,
+      "filename": "earthPlanet30.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet30.png",
+      "sha256": "eb3531bc6fb91a7be3ced9f74507e4cfe1f829b9c803eeda9eda85bdcb737a75",
+      "width": 234,
+      "height": 234,
+      "byteLength": 89563
+    },
+    {
+      "category": "type-1",
+      "index": 31,
+      "filename": "earthPlanet31.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet31.png",
+      "sha256": "b4c8cf02870cf9b4aab30a607d57d094c16c8d05094ef09a47a6defa4bb909a5",
+      "width": 234,
+      "height": 234,
+      "byteLength": 76767
+    },
+    {
+      "category": "type-1",
+      "index": 32,
+      "filename": "earthPlanet32.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet32.png",
+      "sha256": "07bef0ed9cad7939548820c3bea4cf1f4d23a3eb05140a788ff96f9c049a194e",
+      "width": 234,
+      "height": 234,
+      "byteLength": 70661
+    },
+    {
+      "category": "type-1",
+      "index": 33,
+      "filename": "earthPlanet33.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet33.png",
+      "sha256": "35989596d8f07b51feae83ffbb1324b22b69e79b449a0e4b9e022030512d09a2",
+      "width": 234,
+      "height": 234,
+      "byteLength": 70401
+    },
+    {
+      "category": "type-1",
+      "index": 34,
+      "filename": "earthPlanet34.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet34.png",
+      "sha256": "b7f0bf6df1cdf80652b57b034f03d439acea91e806e23b81b0fab01888973267",
+      "width": 234,
+      "height": 234,
+      "byteLength": 59813
+    },
+    {
+      "category": "type-1",
+      "index": 35,
+      "filename": "earthPlanet35.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet35.png",
+      "sha256": "6273a2eebdeb015b9c711216bb8c9c70f795853ca60cd1d50a504a5d64f7cbc8",
+      "width": 234,
+      "height": 234,
+      "byteLength": 67327
+    },
+    {
+      "category": "type-1",
+      "index": 36,
+      "filename": "earthPlanet36.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet36.png",
+      "sha256": "a18ea7dce450be5a8e49fdb177503bc51bea024642def4b41f9aaedcbb0a1083",
+      "width": 234,
+      "height": 234,
+      "byteLength": 62147
+    },
+    {
+      "category": "type-1",
+      "index": 37,
+      "filename": "earthPlanet37.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet37.png",
+      "sha256": "8a9563823cabc6ae4ae6527444af5eff4a313e2328f804a6a113332fd0501c82",
+      "width": 234,
+      "height": 234,
+      "byteLength": 66716
+    },
+    {
+      "category": "type-1",
+      "index": 38,
+      "filename": "earthPlanet38.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet38.png",
+      "sha256": "67c588d56d19222fddbed83190c6374b09cca7fa5cc4b1000e460465b0112263",
+      "width": 234,
+      "height": 234,
+      "byteLength": 72808
+    },
+    {
+      "category": "type-1",
+      "index": 39,
+      "filename": "earthPlanet39.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet39.png",
+      "sha256": "a8cbc73c8c19a09371aaf8368d268ec2c716556aeb4f0122d0992e1db0752450",
+      "width": 234,
+      "height": 234,
+      "byteLength": 71520
+    },
+    {
+      "category": "type-1",
+      "index": 40,
+      "filename": "earthPlanet40.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/earthPlanet40.png",
+      "sha256": "502025f167c06715a8b453f0fdce7c7878feadc53b2eadf86b3a2b6b4667ac96",
+      "width": 234,
+      "height": 234,
+      "byteLength": 81613
+    },
+    {
+      "category": "type-2",
+      "index": 1,
+      "filename": "gasPlanet1.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet1.png",
+      "sha256": "855bf88fe82a6e611bc1ce3cb2b5c69236055ad49aa03e7d7d360fe32f24f9d7",
+      "width": 234,
+      "height": 234,
+      "byteLength": 42569
+    },
+    {
+      "category": "type-2",
+      "index": 2,
+      "filename": "gasPlanet2.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet2.png",
+      "sha256": "e0df76de056c09b0c531758e8a91748aca72c051ff7e7a680d318ac0c24bc02f",
+      "width": 234,
+      "height": 234,
+      "byteLength": 41919
+    },
+    {
+      "category": "type-2",
+      "index": 3,
+      "filename": "gasPlanet3.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet3.png",
+      "sha256": "540f69c252dabd2378f434f5893183d317aa5eb4e12b2c26f8d873aa5bb9c974",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43132
+    },
+    {
+      "category": "type-2",
+      "index": 4,
+      "filename": "gasPlanet4.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet4.png",
+      "sha256": "2b0717782b7bebdbffa1f590cbf9a737a80e465995fbef601c9f6688bb3ec905",
+      "width": 234,
+      "height": 234,
+      "byteLength": 67611
+    },
+    {
+      "category": "type-2",
+      "index": 5,
+      "filename": "gasPlanet5.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet5.png",
+      "sha256": "419e8a84905485ef6ec3a4191fe8240af20d97e38685ba5567c32806f9512a6e",
+      "width": 234,
+      "height": 234,
+      "byteLength": 49141
+    },
+    {
+      "category": "type-2",
+      "index": 6,
+      "filename": "gasPlanet6.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet6.png",
+      "sha256": "4218ab43f667b11b3f0032b8c873e4dc56ffea7370bfb1be3c3662abb4445f5c",
+      "width": 234,
+      "height": 234,
+      "byteLength": 55413
+    },
+    {
+      "category": "type-2",
+      "index": 7,
+      "filename": "gasPlanet7.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet7.png",
+      "sha256": "2da4a52d02f4d5ac37bb283629b8573c1972c94f746221246380bcf7ff4f5d2b",
+      "width": 234,
+      "height": 234,
+      "byteLength": 44273
+    },
+    {
+      "category": "type-2",
+      "index": 8,
+      "filename": "gasPlanet8.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet8.png",
+      "sha256": "08bb52e23d795fbb83cec18fba50213950fb8fcb5b5ccb6de93be424caa7b56e",
+      "width": 234,
+      "height": 234,
+      "byteLength": 41257
+    },
+    {
+      "category": "type-2",
+      "index": 9,
+      "filename": "gasPlanet9.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet9.png",
+      "sha256": "f969642ed9371f34b08044d78f7bb635972bc39966b0f53fd833b74e14d36597",
+      "width": 234,
+      "height": 234,
+      "byteLength": 38058
+    },
+    {
+      "category": "type-2",
+      "index": 10,
+      "filename": "gasPlanet10.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet10.png",
+      "sha256": "5ca566683a82670e901abe18740e9c90c7427a88485fba8e5f8f90c876182df2",
+      "width": 234,
+      "height": 234,
+      "byteLength": 37001
+    },
+    {
+      "category": "type-2",
+      "index": 11,
+      "filename": "gasPlanet11.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet11.png",
+      "sha256": "5cb9789d8f1705b41f9c2bc85e3f871a58e9ec9c23fe23e14159c99cd7e3b1f9",
+      "width": 234,
+      "height": 234,
+      "byteLength": 44618
+    },
+    {
+      "category": "type-2",
+      "index": 12,
+      "filename": "gasPlanet12.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet12.png",
+      "sha256": "9561cbf214782f7a40df91a363dced863591ad04e4a8897e6c5319cada30fd48",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46948
+    },
+    {
+      "category": "type-2",
+      "index": 13,
+      "filename": "gasPlanet13.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet13.png",
+      "sha256": "1c8032e530ea3cdf721f70190198f64507c4dc407e2fb282fb04c0d5f757c194",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43717
+    },
+    {
+      "category": "type-2",
+      "index": 14,
+      "filename": "gasPlanet14.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet14.png",
+      "sha256": "87824e0d10a70f8df58f76a15a0e8788a6d7236ca360b86b1ba9eb06a1b59aae",
+      "width": 234,
+      "height": 234,
+      "byteLength": 66443
+    },
+    {
+      "category": "type-2",
+      "index": 15,
+      "filename": "gasPlanet15.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet15.png",
+      "sha256": "2197f9e06444979a6da002f982637f395577222b3aca348f6da19cfdbdc38563",
+      "width": 234,
+      "height": 234,
+      "byteLength": 50946
+    },
+    {
+      "category": "type-2",
+      "index": 16,
+      "filename": "gasPlanet16.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet16.png",
+      "sha256": "a0db24b5df28f6ce0cac015004545a5d4b30c8039797e7b7ccee99156c8d3b7d",
+      "width": 234,
+      "height": 234,
+      "byteLength": 57717
+    },
+    {
+      "category": "type-2",
+      "index": 17,
+      "filename": "gasPlanet17.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet17.png",
+      "sha256": "af207478bd25fb93222a44c746eb876a7e38621726c78065777bbadd4519db25",
+      "width": 234,
+      "height": 234,
+      "byteLength": 35439
+    },
+    {
+      "category": "type-2",
+      "index": 18,
+      "filename": "gasPlanet18.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet18.png",
+      "sha256": "1e2b4f588804b7a6bfc3731ccd812e5b0a14078acfe25a765b2ecbe3dcc24d0a",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43320
+    },
+    {
+      "category": "type-2",
+      "index": 19,
+      "filename": "gasPlanet19.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet19.png",
+      "sha256": "9d6e073cba8397e63b633a797c95533b35297484faab2db3a93440ad67aac96c",
+      "width": 234,
+      "height": 234,
+      "byteLength": 39964
+    },
+    {
+      "category": "type-2",
+      "index": 20,
+      "filename": "gasPlanet20.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet20.png",
+      "sha256": "9719c4938488262512899228faf343fd1b61bf1569bd37805cbf61ebd2cb74f5",
+      "width": 234,
+      "height": 234,
+      "byteLength": 36058
+    },
+    {
+      "category": "type-2",
+      "index": 21,
+      "filename": "gasPlanet21.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet21.png",
+      "sha256": "7092e7834da7eed56fcab1469f3e0377603687a5c988335e246bc34ce51837e1",
+      "width": 234,
+      "height": 234,
+      "byteLength": 47673
+    },
+    {
+      "category": "type-2",
+      "index": 22,
+      "filename": "gasPlanet22.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet22.png",
+      "sha256": "000b0fc2c8baa4edb9cc3c2e63d663ee3d26411b02c8820e70de9ef35ec9b68c",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45626
+    },
+    {
+      "category": "type-2",
+      "index": 23,
+      "filename": "gasPlanet23.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet23.png",
+      "sha256": "adf44e2fe9c31ece5b5d241eca340aa8b20f59720005aa133c81c91b595fabe5",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45501
+    },
+    {
+      "category": "type-2",
+      "index": 24,
+      "filename": "gasPlanet24.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet24.png",
+      "sha256": "33006fdde1173121674c1bce4a0aaf331f08b54e6b518a24834734ef65d7b355",
+      "width": 234,
+      "height": 234,
+      "byteLength": 42640
+    },
+    {
+      "category": "type-2",
+      "index": 25,
+      "filename": "gasPlanet25.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet25.png",
+      "sha256": "3065c97e12be35679ce66f96e68bfe99d1fb792c12551f3ba945ada81e38664b",
+      "width": 234,
+      "height": 234,
+      "byteLength": 51808
+    },
+    {
+      "category": "type-2",
+      "index": 26,
+      "filename": "gasPlanet26.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet26.png",
+      "sha256": "dafdff6919e5d761ccba260af66be31e2aa9a7e56b40cb3914adb0197db6ad30",
+      "width": 234,
+      "height": 234,
+      "byteLength": 58272
+    },
+    {
+      "category": "type-2",
+      "index": 27,
+      "filename": "gasPlanet27.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet27.png",
+      "sha256": "17789e76964d62a671a1569164d57e0aeb434b0d9d28d4418ddf2996602819d8",
+      "width": 234,
+      "height": 234,
+      "byteLength": 35643
+    },
+    {
+      "category": "type-2",
+      "index": 28,
+      "filename": "gasPlanet28.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet28.png",
+      "sha256": "36db2678e0a991b4f818e01cf238e131e823160e58fb612b272f2261844958b7",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43199
+    },
+    {
+      "category": "type-2",
+      "index": 29,
+      "filename": "gasPlanet29.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet29.png",
+      "sha256": "513f0417450de1b7dafe0ef164d5b30843b42f042f016caf2aea418508b7100f",
+      "width": 234,
+      "height": 234,
+      "byteLength": 35614
+    },
+    {
+      "category": "type-2",
+      "index": 30,
+      "filename": "gasPlanet30.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet30.png",
+      "sha256": "b3f63043e5cbfe164d12bd5586f5bce78366abce5f4668da7b9063b24f099a2d",
+      "width": 234,
+      "height": 234,
+      "byteLength": 32926
+    },
+    {
+      "category": "type-2",
+      "index": 31,
+      "filename": "gasPlanet31.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet31.png",
+      "sha256": "69540051f34546601289f9180c4af3c48d6903ce637c5a9ead17056415c78fd5",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46985
+    },
+    {
+      "category": "type-2",
+      "index": 32,
+      "filename": "gasPlanet32.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet32.png",
+      "sha256": "b7e0c2d23c3f9aee2b4ecc44c99c7ef53d151aa46cb8eff3985d31a3783f4614",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45918
+    },
+    {
+      "category": "type-2",
+      "index": 33,
+      "filename": "gasPlanet33.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet33.png",
+      "sha256": "2ddde6ceb641c2021b417e9813b56d3c0a5971d9ca3234ab2b0dcc192a6bff00",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46348
+    },
+    {
+      "category": "type-2",
+      "index": 34,
+      "filename": "gasPlanet34.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet34.png",
+      "sha256": "495744ab995bdd82cd053d62d41d81c09a3a4f2b4414c212ef098aa91fc3ea90",
+      "width": 234,
+      "height": 234,
+      "byteLength": 31499
+    },
+    {
+      "category": "type-2",
+      "index": 35,
+      "filename": "gasPlanet35.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet35.png",
+      "sha256": "f7fdd9ca9254b9bcbb5fec0affff8230d6cd54527cf4a5edbb7064596685f08e",
+      "width": 234,
+      "height": 234,
+      "byteLength": 50864
+    },
+    {
+      "category": "type-2",
+      "index": 36,
+      "filename": "gasPlanet36.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet36.png",
+      "sha256": "811f4147e539c2e24862a51930632ab1376f9bdd39e570d633469fc41f602ab8",
+      "width": 234,
+      "height": 234,
+      "byteLength": 30686
+    },
+    {
+      "category": "type-2",
+      "index": 37,
+      "filename": "gasPlanet37.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet37.png",
+      "sha256": "07c430f88f4ba88f004e3d949527118a76cc98dba5077cbfb461fd4413ae41d8",
+      "width": 234,
+      "height": 234,
+      "byteLength": 40380
+    },
+    {
+      "category": "type-2",
+      "index": 38,
+      "filename": "gasPlanet38.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet38.png",
+      "sha256": "985033724d3ac5510830ae90c7bf1e40a143f54b862e7b479b277b8822f84033",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43569
+    },
+    {
+      "category": "type-2",
+      "index": 39,
+      "filename": "gasPlanet39.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet39.png",
+      "sha256": "be7fcb56a89f7c8a27ac2af307c7b88817175f90e06f1b139a0798190b9c4cda",
+      "width": 234,
+      "height": 234,
+      "byteLength": 35103
+    },
+    {
+      "category": "type-2",
+      "index": 40,
+      "filename": "gasPlanet40.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/gasPlanet40.png",
+      "sha256": "c149b35b095e925bd578f5536dea3548cad80455fec7a7a851724f9fde039b7c",
+      "width": 234,
+      "height": 234,
+      "byteLength": 33480
+    },
+    {
+      "category": "type-3",
+      "index": 1,
+      "filename": "moonPlanet1.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet1.png",
+      "sha256": "69cfa812acfb50cf8272b3f9878133a7693bf9c4a95d3100a2311ebd2585ed8f",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43071
+    },
+    {
+      "category": "type-3",
+      "index": 2,
+      "filename": "moonPlanet2.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet2.png",
+      "sha256": "fa7eb563d9701c398404b886958149027cec6e9edede95f44006045eb0e73df1",
+      "width": 234,
+      "height": 234,
+      "byteLength": 37749
+    },
+    {
+      "category": "type-3",
+      "index": 3,
+      "filename": "moonPlanet3.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet3.png",
+      "sha256": "d311a8573d53340eeb3b31ecdc132593c77dadb28ecaa903b12da9576c3a8b03",
+      "width": 234,
+      "height": 234,
+      "byteLength": 44437
+    },
+    {
+      "category": "type-3",
+      "index": 4,
+      "filename": "moonPlanet4.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet4.png",
+      "sha256": "8c8aae98991321fe09e9d41475e91bcf8e2a98a9696da6b53845711ad086d8bf",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46691
+    },
+    {
+      "category": "type-3",
+      "index": 5,
+      "filename": "moonPlanet5.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet5.png",
+      "sha256": "2bae4dd8ff0d8863fb0f0e5c2f3da2f5092d14c6279578faaecf16933ef67376",
+      "width": 234,
+      "height": 234,
+      "byteLength": 47722
+    },
+    {
+      "category": "type-3",
+      "index": 6,
+      "filename": "moonPlanet6.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet6.png",
+      "sha256": "b112064c0ce326b7ee416e98557cff7460b124bdbc8e340b1fd60563b9b911c6",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46549
+    },
+    {
+      "category": "type-3",
+      "index": 7,
+      "filename": "moonPlanet7.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet7.png",
+      "sha256": "db84369e600689e78a5310a3519d8d421ed13f6b8b6c5a6fa415937f4cb924bf",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43307
+    },
+    {
+      "category": "type-3",
+      "index": 8,
+      "filename": "moonPlanet8.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet8.png",
+      "sha256": "1e53a9c34cfc72e03d0d7ff3cd0e32f303d0935c44acd2a73efdf0d271da8ac7",
+      "width": 234,
+      "height": 234,
+      "byteLength": 48964
+    },
+    {
+      "category": "type-3",
+      "index": 9,
+      "filename": "moonPlanet9.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet9.png",
+      "sha256": "bb4314f82e31a54f5644606f7a2c3b5f756215990c50fd203141116a62def033",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45189
+    },
+    {
+      "category": "type-3",
+      "index": 10,
+      "filename": "moonPlanet10.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet10.png",
+      "sha256": "74fdd0de9be154c4e2319bfd51cc638d0c3484aeeeecf2eb2bf174dc8a4a31a6",
+      "width": 234,
+      "height": 234,
+      "byteLength": 48588
+    },
+    {
+      "category": "type-3",
+      "index": 11,
+      "filename": "moonPlanet11.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet11.png",
+      "sha256": "01931a8f6bd8540f4a95cfc749ea9fca560cb21f85c7d724e4bf24c917fd1428",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45899
+    },
+    {
+      "category": "type-3",
+      "index": 12,
+      "filename": "moonPlanet12.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet12.png",
+      "sha256": "609bc2d9e244fb0b4da8336c375e54fa1b72f7f059a686171251a018ecbac3b3",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43772
+    },
+    {
+      "category": "type-3",
+      "index": 13,
+      "filename": "moonPlanet13.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet13.png",
+      "sha256": "c13c1156107180754b03630e533f74f33c6f15d8e9e464a911e591aa963d596d",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46555
+    },
+    {
+      "category": "type-3",
+      "index": 14,
+      "filename": "moonPlanet14.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet14.png",
+      "sha256": "dae7aabf6fc5947401a717169873832343e19e6da89c10007ef58349c0eedbbb",
+      "width": 234,
+      "height": 234,
+      "byteLength": 47116
+    },
+    {
+      "category": "type-3",
+      "index": 15,
+      "filename": "moonPlanet15.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet15.png",
+      "sha256": "c310ad8fddc797135fe6665705600791dd5a8d4b5e137e5aaf799fd5aa2f28b2",
+      "width": 234,
+      "height": 234,
+      "byteLength": 50367
+    },
+    {
+      "category": "type-3",
+      "index": 16,
+      "filename": "moonPlanet16.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet16.png",
+      "sha256": "0457e065802e89e1c0c4c3d2e2e9656d5cf8a9640ed4b8aa02ddf25813e2aee4",
+      "width": 234,
+      "height": 234,
+      "byteLength": 48771
+    },
+    {
+      "category": "type-3",
+      "index": 17,
+      "filename": "moonPlanet17.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet17.png",
+      "sha256": "95e9f9b66f92af6428984bb4e740f8fec0d278ae47855ddf30df8821739a7ec0",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45222
+    },
+    {
+      "category": "type-3",
+      "index": 18,
+      "filename": "moonPlanet18.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet18.png",
+      "sha256": "16d6c75c9b39e3f4e3472fe7b6692d717f4980dabd610ab5c63ebece08c1026c",
+      "width": 234,
+      "height": 234,
+      "byteLength": 50721
+    },
+    {
+      "category": "type-3",
+      "index": 19,
+      "filename": "moonPlanet19.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet19.png",
+      "sha256": "d3725b460655cc3c483177027e10f1ee5af9ec58aabdda2186bcc89ed1870e10",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46022
+    },
+    {
+      "category": "type-3",
+      "index": 20,
+      "filename": "moonPlanet20.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet20.png",
+      "sha256": "65afaa1b4484128b8c24e333b9d046ff8244add3de5048beb7cf706936ba4582",
+      "width": 234,
+      "height": 234,
+      "byteLength": 49184
+    },
+    {
+      "category": "type-3",
+      "index": 21,
+      "filename": "moonPlanet21.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet21.png",
+      "sha256": "2b32843b387e60abc5f9e5e5706bfce3b1a885c42458ba753cdcbe95dddaebb8",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45588
+    },
+    {
+      "category": "type-3",
+      "index": 22,
+      "filename": "moonPlanet22.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet22.png",
+      "sha256": "0f55d1eaee683aa00e83556d784192111afc4fa9e198a3f2fd54016c46e129b7",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45057
+    },
+    {
+      "category": "type-3",
+      "index": 23,
+      "filename": "moonPlanet23.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet23.png",
+      "sha256": "0a88c6984f51882aa1dccde3da272180addeb138c3ef787e0d684431b6c0cbf0",
+      "width": 234,
+      "height": 234,
+      "byteLength": 48525
+    },
+    {
+      "category": "type-3",
+      "index": 24,
+      "filename": "moonPlanet24.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet24.png",
+      "sha256": "87ca797add658ead6ed76c0c05496fa3a378b456cc5a6b810576df6b602e20d1",
+      "width": 234,
+      "height": 234,
+      "byteLength": 47468
+    },
+    {
+      "category": "type-3",
+      "index": 25,
+      "filename": "moonPlanet25.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet25.png",
+      "sha256": "c2e3296fa502dcf5a3fa34feb4500004fde1ae7d2ab427833a123882f4b29dad",
+      "width": 234,
+      "height": 234,
+      "byteLength": 49743
+    },
+    {
+      "category": "type-3",
+      "index": 26,
+      "filename": "moonPlanet26.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet26.png",
+      "sha256": "03ebb8b6cacb45ef1cb201b4ca154517528999eecad74596457002a5bfb766fe",
+      "width": 234,
+      "height": 234,
+      "byteLength": 50244
+    },
+    {
+      "category": "type-3",
+      "index": 27,
+      "filename": "moonPlanet27.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet27.png",
+      "sha256": "d3e4e4934ac4a4e5a9fe3ce5dfbf7e3d315252c43a2d82d88acf179dbc1c6106",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46585
+    },
+    {
+      "category": "type-3",
+      "index": 28,
+      "filename": "moonPlanet28.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet28.png",
+      "sha256": "1d6d2b918620d85243aa08003888d399edb139a2363232c26033b45766d6b606",
+      "width": 234,
+      "height": 234,
+      "byteLength": 51338
+    },
+    {
+      "category": "type-3",
+      "index": 29,
+      "filename": "moonPlanet29.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet29.png",
+      "sha256": "89d3b5e0c190d9350d3d0d263d9d95e2f7852cb56e227ecfc0beeaa8a27ae4f2",
+      "width": 234,
+      "height": 234,
+      "byteLength": 47390
+    },
+    {
+      "category": "type-3",
+      "index": 30,
+      "filename": "moonPlanet30.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet30.png",
+      "sha256": "a29ab7fea54690f680a472983eab015f02914143eccdc9133d901c7494528188",
+      "width": 234,
+      "height": 234,
+      "byteLength": 24680
+    },
+    {
+      "category": "type-3",
+      "index": 31,
+      "filename": "moonPlanet31.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet31.png",
+      "sha256": "d35a1dc93d993ae403b9e4f680e9a7fdc6843e703973e79974d24344c22cee72",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46184
+    },
+    {
+      "category": "type-3",
+      "index": 32,
+      "filename": "moonPlanet32.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet32.png",
+      "sha256": "80ecd51318a949962d566bcc257c896fe75ce317acbbc677ad22ede136d441aa",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46447
+    },
+    {
+      "category": "type-3",
+      "index": 33,
+      "filename": "moonPlanet33.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet33.png",
+      "sha256": "06d8099854e2919cb1a228c0389f4a63d808f21d2eb1e60a21daf9397b2d7be3",
+      "width": 234,
+      "height": 234,
+      "byteLength": 23724
+    },
+    {
+      "category": "type-3",
+      "index": 34,
+      "filename": "moonPlanet34.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet34.png",
+      "sha256": "e9319279cef3232a3d0f008f5d00d0ef77a5186a37eaec5ba795b7687552cff6",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45024
+    },
+    {
+      "category": "type-3",
+      "index": 35,
+      "filename": "moonPlanet35.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet35.png",
+      "sha256": "23c9895e8fd74824b8e29019312794aa0796dc3bb8fbf0380691eace6d05dbed",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45971
+    },
+    {
+      "category": "type-3",
+      "index": 36,
+      "filename": "moonPlanet36.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet36.png",
+      "sha256": "128ebaaf364969d40aa94cc0949c68c9e94a06397ff38c6535963da622d27aef",
+      "width": 234,
+      "height": 234,
+      "byteLength": 45716
+    },
+    {
+      "category": "type-3",
+      "index": 37,
+      "filename": "moonPlanet37.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet37.png",
+      "sha256": "95c84a445a5e412bd54c4f0502a944b2f3849942ccdbca47b592d290a64b223c",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46822
+    },
+    {
+      "category": "type-3",
+      "index": 38,
+      "filename": "moonPlanet38.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet38.png",
+      "sha256": "2b4b2f013f80e85e310633a7bcce336e92ef88df10b7fbb0dff90f0b958e0d2c",
+      "width": 234,
+      "height": 234,
+      "byteLength": 51699
+    },
+    {
+      "category": "type-3",
+      "index": 39,
+      "filename": "moonPlanet39.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet39.png",
+      "sha256": "3c29943ce4a4762b2cf2cfb63700e1512209780b08a25b830d95bc99ad2be1aa",
+      "width": 234,
+      "height": 234,
+      "byteLength": 36998
+    },
+    {
+      "category": "type-3",
+      "index": 40,
+      "filename": "moonPlanet40.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/moonPlanet40.png",
+      "sha256": "b8c7aad4987ddf1b348b858ef67b4c6632061f68c5a16a1a83875be62545700a",
+      "width": 234,
+      "height": 234,
+      "byteLength": 51119
+    },
+    {
+      "category": "type-4",
+      "index": 1,
+      "filename": "terplanet1.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet1.png",
+      "sha256": "ee6764cda7ddad8ed26f1e8fd1a6bc21d5e2ed484798ed362823c97a10b418a2",
+      "width": 234,
+      "height": 234,
+      "byteLength": 51076
+    },
+    {
+      "category": "type-4",
+      "index": 2,
+      "filename": "terplanet2.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet2.png",
+      "sha256": "8c9c42af128cff1b7eb8927de8d354fe032569bef1adea9842070ff468e1cd3b",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43035
+    },
+    {
+      "category": "type-4",
+      "index": 3,
+      "filename": "terplanet3.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet3.png",
+      "sha256": "969427c7f3e94fed75f7e20e97acf83afde36cf25998d294d2b22c19fc2b626f",
+      "width": 234,
+      "height": 234,
+      "byteLength": 33773
+    },
+    {
+      "category": "type-4",
+      "index": 4,
+      "filename": "terplanet4.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet4.png",
+      "sha256": "202604fbfb65388a61f701c472784e590df421049ed1d4c23a50cf38aa333a1a",
+      "width": 234,
+      "height": 234,
+      "byteLength": 42843
+    },
+    {
+      "category": "type-4",
+      "index": 5,
+      "filename": "terplanet5.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet5.png",
+      "sha256": "2cf55eec3c5e48a9a3ce4c0bc4e3562fcb9b7630628482db0198ebc9d51ef0f6",
+      "width": 234,
+      "height": 234,
+      "byteLength": 30787
+    },
+    {
+      "category": "type-4",
+      "index": 6,
+      "filename": "terplanet6.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet6.png",
+      "sha256": "f6624476f28fb44781a87e29793d17469f84277376354bc4c099c1b3d6ee08d4",
+      "width": 234,
+      "height": 234,
+      "byteLength": 76107
+    },
+    {
+      "category": "type-4",
+      "index": 7,
+      "filename": "terplanet7.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet7.png",
+      "sha256": "17612204548da7c693be9886f4971d3e4288dec2866c538e1d1fde700743ebb2",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43511
+    },
+    {
+      "category": "type-4",
+      "index": 8,
+      "filename": "terplanet8.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet8.png",
+      "sha256": "90061fe2592b2e7f219c301e1572d320d2090c1722b45f1ae139082ca0e8a610",
+      "width": 234,
+      "height": 234,
+      "byteLength": 57207
+    },
+    {
+      "category": "type-4",
+      "index": 9,
+      "filename": "terplanet9.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet9.png",
+      "sha256": "962e8cc47bbe305d5c4fccd89fef614460220be8b824a4feac757b4923866235",
+      "width": 234,
+      "height": 234,
+      "byteLength": 59414
+    },
+    {
+      "category": "type-4",
+      "index": 10,
+      "filename": "terplanet10.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet10.png",
+      "sha256": "d710fe6278413c1b0de3888c8227f1e8226b8c843591bad619fbc21337256207",
+      "width": 234,
+      "height": 234,
+      "byteLength": 47435
+    },
+    {
+      "category": "type-4",
+      "index": 11,
+      "filename": "terplanet11.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet11.png",
+      "sha256": "6d4255bc959ecef005407e3a0b86b3395d1de41b32b8d3356e38e97d8f099a28",
+      "width": 234,
+      "height": 234,
+      "byteLength": 49848
+    },
+    {
+      "category": "type-4",
+      "index": 12,
+      "filename": "terplanet12.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet12.png",
+      "sha256": "a7e8a5b3fee64ab7a5eb8c176119d37330d16fdfd9b4a8d103a3759fa08b6b67",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43187
+    },
+    {
+      "category": "type-4",
+      "index": 13,
+      "filename": "terplanet13.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet13.png",
+      "sha256": "b4c59ff5a6178e93a17f9734af71dd55e30afaa66ca19e4d9b198b09e5392e1a",
+      "width": 234,
+      "height": 234,
+      "byteLength": 35326
+    },
+    {
+      "category": "type-4",
+      "index": 14,
+      "filename": "terplanet14.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet14.png",
+      "sha256": "0b8ba62084df1c0da4149f336f826157166b18bcf0230a5047653e8221d57485",
+      "width": 234,
+      "height": 234,
+      "byteLength": 20892
+    },
+    {
+      "category": "type-4",
+      "index": 15,
+      "filename": "terplanet15.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet15.png",
+      "sha256": "a415f121f451f2faa8913611788af0292eaaa564a24be7a96a8ba92e04b2446b",
+      "width": 234,
+      "height": 234,
+      "byteLength": 31993
+    },
+    {
+      "category": "type-4",
+      "index": 16,
+      "filename": "terplanet16.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet16.png",
+      "sha256": "b3ed5fd4b541ea596242e25d6d1818eb0eb640baaa3209437e8e5573edf44caa",
+      "width": 234,
+      "height": 234,
+      "byteLength": 79073
+    },
+    {
+      "category": "type-4",
+      "index": 17,
+      "filename": "terplanet17.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet17.png",
+      "sha256": "aac635a2293b4cf89481d05010e50dffcd355fa1b16e169df340d65842a3853a",
+      "width": 234,
+      "height": 234,
+      "byteLength": 48055
+    },
+    {
+      "category": "type-4",
+      "index": 18,
+      "filename": "terplanet18.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet18.png",
+      "sha256": "f306e4bdff3b21c4c5a2bf79c2221c3bda63a9d799b8a04ec16be536e7a3893e",
+      "width": 234,
+      "height": 234,
+      "byteLength": 60605
+    },
+    {
+      "category": "type-4",
+      "index": 19,
+      "filename": "terplanet19.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet19.png",
+      "sha256": "428dea4f47c052fd0bc75a771589683f113585693b3f13ca475c8297e459bdfd",
+      "width": 234,
+      "height": 234,
+      "byteLength": 62419
+    },
+    {
+      "category": "type-4",
+      "index": 20,
+      "filename": "terplanet20.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet20.png",
+      "sha256": "9d1cdd892935a7fab9aa7802be462aa372597ea52e4a0a09f826074dbad600ae",
+      "width": 234,
+      "height": 234,
+      "byteLength": 48072
+    },
+    {
+      "category": "type-4",
+      "index": 21,
+      "filename": "terplanet21.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet21.png",
+      "sha256": "958c8c071b6bc13397b0c864be44a8b2e272636a9e3dba9e196db3f7ff25fa5d",
+      "width": 234,
+      "height": 234,
+      "byteLength": 50725
+    },
+    {
+      "category": "type-4",
+      "index": 22,
+      "filename": "terplanet22.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet22.png",
+      "sha256": "960788dcf816885ad9cc0c7bbce5df925a4f50fb85e3d51a1d2778824b1caeab",
+      "width": 234,
+      "height": 234,
+      "byteLength": 17348
+    },
+    {
+      "category": "type-4",
+      "index": 23,
+      "filename": "terplanet23.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet23.png",
+      "sha256": "7c839ec6778dbb70901528e4010baddf473dff501eeb71efc327887b7e4ead89",
+      "width": 234,
+      "height": 234,
+      "byteLength": 36252
+    },
+    {
+      "category": "type-4",
+      "index": 24,
+      "filename": "terplanet24.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet24.png",
+      "sha256": "00879a6bc826b508aee073d5b75d6de0927771ab1539de7805e3b55cd0199afd",
+      "width": 234,
+      "height": 234,
+      "byteLength": 47771
+    },
+    {
+      "category": "type-4",
+      "index": 25,
+      "filename": "terplanet25.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet25.png",
+      "sha256": "ecde23288c70f8a127a276216368a9a75ffc08d02a2cff65ae0f500000f3eead",
+      "width": 234,
+      "height": 234,
+      "byteLength": 31266
+    },
+    {
+      "category": "type-4",
+      "index": 26,
+      "filename": "terplanet26.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet26.png",
+      "sha256": "ddb284115a81c4a59f37b085f87d2005400e73495f162e94f1b9a8603db1cec8",
+      "width": 234,
+      "height": 234,
+      "byteLength": 79090
+    },
+    {
+      "category": "type-4",
+      "index": 27,
+      "filename": "terplanet27.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet27.png",
+      "sha256": "fa5de2ae5a8bb84bc8d30aa1289788bda19ffea50ae153f45235fb3b1f4fc887",
+      "width": 234,
+      "height": 234,
+      "byteLength": 36544
+    },
+    {
+      "category": "type-4",
+      "index": 28,
+      "filename": "terplanet28.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet28.png",
+      "sha256": "36ce592fc68e921307cace931941e32183604259c2578129c7ce2e1bb9087336",
+      "width": 234,
+      "height": 234,
+      "byteLength": 57791
+    },
+    {
+      "category": "type-4",
+      "index": 29,
+      "filename": "terplanet29.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet29.png",
+      "sha256": "be63bdf43d34aada7665d27fb4fb49f3bcb41cad4920bf05ce8e06d3f3686122",
+      "width": 234,
+      "height": 234,
+      "byteLength": 60481
+    },
+    {
+      "category": "type-4",
+      "index": 30,
+      "filename": "terplanet30.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet30.png",
+      "sha256": "83c6d1f409785dfd10483eec87cc5eb63ad3c17f9ef3dd16ce75c18b2dd89c26",
+      "width": 234,
+      "height": 234,
+      "byteLength": 44120
+    },
+    {
+      "category": "type-4",
+      "index": 31,
+      "filename": "terplanet31.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet31.png",
+      "sha256": "dbb1f3c5bbd3fdd4dfb274f3a5fbf1007b7eb92b51ac088dd181102cbff9c2fd",
+      "width": 234,
+      "height": 234,
+      "byteLength": 40260
+    },
+    {
+      "category": "type-4",
+      "index": 32,
+      "filename": "terplanet32.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet32.png",
+      "sha256": "58b740e202596b47cf18a9f7f35a4c6ff18e94df63081bad4b8535a9b8eb55a9",
+      "width": 234,
+      "height": 234,
+      "byteLength": 35821
+    },
+    {
+      "category": "type-4",
+      "index": 33,
+      "filename": "terplanet33.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet33.png",
+      "sha256": "2d9b4f367f1588d4c6707273d247be7ea4d69bcf2f26cdf6e3ccae37774a42e0",
+      "width": 234,
+      "height": 234,
+      "byteLength": 37713
+    },
+    {
+      "category": "type-4",
+      "index": 34,
+      "filename": "terplanet34.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet34.png",
+      "sha256": "1f3dea723dd43976f53006c699d622a73b2965b541ce1e4f12ab5c5c1a208b09",
+      "width": 234,
+      "height": 234,
+      "byteLength": 48435
+    },
+    {
+      "category": "type-4",
+      "index": 35,
+      "filename": "terplanet35.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet35.png",
+      "sha256": "3bac402eba2cf3557927b13229cf4c95916ea2687f4d694597db3d13249388da",
+      "width": 234,
+      "height": 234,
+      "byteLength": 32030
+    },
+    {
+      "category": "type-4",
+      "index": 36,
+      "filename": "terplanet36.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet36.png",
+      "sha256": "1d9d93b675d1d3b9ca63c60cd7d6343ea8385185e83adabfeaa65c63ff47e30d",
+      "width": 234,
+      "height": 234,
+      "byteLength": 60401
+    },
+    {
+      "category": "type-4",
+      "index": 37,
+      "filename": "terplanet37.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet37.png",
+      "sha256": "1c8d0ae9aa8426c22f3c3500bbbcd231e46e6940bee6dce4d5f50ac33c12b3b6",
+      "width": 234,
+      "height": 234,
+      "byteLength": 38783
+    },
+    {
+      "category": "type-4",
+      "index": 38,
+      "filename": "terplanet38.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet38.png",
+      "sha256": "b2ed7c598dbe6cbaf1296efe6e52fbb1f498ecc5b174f0c03ee95ddef95b2e4a",
+      "width": 234,
+      "height": 234,
+      "byteLength": 46622
+    },
+    {
+      "category": "type-4",
+      "index": 39,
+      "filename": "terplanet39.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet39.png",
+      "sha256": "6dcf56b1f55f19e678c12a2bd616c77addc05b0f79c1b39bff4b3774c51a1d16",
+      "width": 234,
+      "height": 234,
+      "byteLength": 56159
+    },
+    {
+      "category": "type-4",
+      "index": 40,
+      "filename": "terplanet40.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/terplanet40.png",
+      "sha256": "a32d890647e37ebf8b2889164f8b16de2315fae45d3621ed2451a3a4a15112b8",
+      "width": 234,
+      "height": 234,
+      "byteLength": 43022
+    },
+    {
+      "category": "type-5",
+      "index": 1,
+      "filename": "layerPlanet1.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet1.png",
+      "sha256": "e89ef01adb26118c88130d0ff9870ba69c5c8353b3440669df2ac65a9951198a",
+      "width": 234,
+      "height": 234,
+      "byteLength": 69924
+    },
+    {
+      "category": "type-5",
+      "index": 2,
+      "filename": "layerPlanet2.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet2.png",
+      "sha256": "b230a55de5d5cd7f8200d2f790784abb3c72b558a6c12886ad4cc6f9a1977a37",
+      "width": 234,
+      "height": 234,
+      "byteLength": 78841
+    },
+    {
+      "category": "type-5",
+      "index": 3,
+      "filename": "layerPlanet3.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet3.png",
+      "sha256": "f20788dc7d634f5052c07d4fcf8ffeb886d221b7dada876ffe57bd43c9e79270",
+      "width": 234,
+      "height": 234,
+      "byteLength": 80300
+    },
+    {
+      "category": "type-5",
+      "index": 4,
+      "filename": "layerPlanet4.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet4.png",
+      "sha256": "7e1ba1775f838d67510ad7550b02de3cee87635ec83831eb9022e0db6d1b0282",
+      "width": 234,
+      "height": 234,
+      "byteLength": 83434
+    },
+    {
+      "category": "type-5",
+      "index": 5,
+      "filename": "layerPlanet5.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet5.png",
+      "sha256": "7015e0481126f1a5b795a37c2d86f1dafd2737edacef99c1340f16ea11f268e3",
+      "width": 234,
+      "height": 234,
+      "byteLength": 80208
+    },
+    {
+      "category": "type-5",
+      "index": 6,
+      "filename": "layerPlanet6.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet6.png",
+      "sha256": "b3701da3609c7cb30eff63782c5079b4422dd819321e31d60f7346b790998f9f",
+      "width": 234,
+      "height": 234,
+      "byteLength": 75857
+    },
+    {
+      "category": "type-5",
+      "index": 7,
+      "filename": "layerPlanet7.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet7.png",
+      "sha256": "63f3eb1ea19cbbed6ddbed72807aa2f50189385894c68bb0228c50433f1ad563",
+      "width": 234,
+      "height": 234,
+      "byteLength": 85356
+    },
+    {
+      "category": "type-5",
+      "index": 8,
+      "filename": "layerPlanet8.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet8.png",
+      "sha256": "817849ef5ff305619395cad75dffe784e15f59b418133ba356c20b901511a62d",
+      "width": 234,
+      "height": 234,
+      "byteLength": 73877
+    },
+    {
+      "category": "type-5",
+      "index": 9,
+      "filename": "layerPlanet9.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet9.png",
+      "sha256": "9f41097a75f11a61af7d6ba78add1012a6f51df398141f9b1d5267ec04b2fb8b",
+      "width": 234,
+      "height": 234,
+      "byteLength": 83062
+    },
+    {
+      "category": "type-5",
+      "index": 10,
+      "filename": "layerPlanet10.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet10.png",
+      "sha256": "be8a4e95a29219948cb04234d428df236be28cd038376a27ccae6ccfe7f253c0",
+      "width": 234,
+      "height": 234,
+      "byteLength": 75364
+    },
+    {
+      "category": "type-5",
+      "index": 11,
+      "filename": "layerPlanet11.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet11.png",
+      "sha256": "29efa1428d67cded66baad0367e5cdc27181a7438f09be19e95062da0f7c5a06",
+      "width": 234,
+      "height": 234,
+      "byteLength": 73575
+    },
+    {
+      "category": "type-5",
+      "index": 12,
+      "filename": "layerPlanet12.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet12.png",
+      "sha256": "179c3be07e9973e33b1f71f4b6b0f1dc9e1d433f2174bfbc4486582335058ffe",
+      "width": 234,
+      "height": 234,
+      "byteLength": 81854
+    },
+    {
+      "category": "type-5",
+      "index": 13,
+      "filename": "layerPlanet13.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet13.png",
+      "sha256": "9c7e1a8b14b44985af929e1ad10bb9ffba10381abfd594f48a59ebcd84ca51d1",
+      "width": 234,
+      "height": 234,
+      "byteLength": 83906
+    },
+    {
+      "category": "type-5",
+      "index": 14,
+      "filename": "layerPlanet14.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet14.png",
+      "sha256": "295ac1d26924c3227e0130f119be23542d47052beba8843beaf907dec44614af",
+      "width": 234,
+      "height": 234,
+      "byteLength": 81384
+    },
+    {
+      "category": "type-5",
+      "index": 15,
+      "filename": "layerPlanet15.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet15.png",
+      "sha256": "ec42e7678b389210031386fc6182d16392d9fbf5bc4948539d45412df2990d0c",
+      "width": 234,
+      "height": 234,
+      "byteLength": 60397
+    },
+    {
+      "category": "type-5",
+      "index": 16,
+      "filename": "layerPlanet16.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet16.png",
+      "sha256": "c2ebd3fb5189c3b99fc7275a27094088e81130b8148423fa8063886ea8724899",
+      "width": 234,
+      "height": 234,
+      "byteLength": 80083
+    },
+    {
+      "category": "type-5",
+      "index": 17,
+      "filename": "layerPlanet17.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet17.png",
+      "sha256": "706f3c475ac894b5c4da921c42dffc3f4a370e75e0e5f928ebbf47775cf45df5",
+      "width": 234,
+      "height": 234,
+      "byteLength": 72801
+    },
+    {
+      "category": "type-5",
+      "index": 18,
+      "filename": "layerPlanet18.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet18.png",
+      "sha256": "d0605d2b7185582f16f52a277f0536379ca7544e63aa638d5e5a0e5525e6d0d5",
+      "width": 234,
+      "height": 234,
+      "byteLength": 76125
+    },
+    {
+      "category": "type-5",
+      "index": 19,
+      "filename": "layerPlanet19.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet19.png",
+      "sha256": "95328b9322f2f6bf88935dba48d45335f41c046426a116bf70d25870c97af9ef",
+      "width": 234,
+      "height": 234,
+      "byteLength": 84571
+    },
+    {
+      "category": "type-5",
+      "index": 20,
+      "filename": "layerPlanet20.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet20.png",
+      "sha256": "5ec951199c223c186ca7d2376e32f56b7e27071df723f6e60f6be79e96ffdd9d",
+      "width": 234,
+      "height": 234,
+      "byteLength": 77782
+    },
+    {
+      "category": "type-5",
+      "index": 21,
+      "filename": "layerPlanet21.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet21.png",
+      "sha256": "22012eac1840a5aad584072fb5d9ce514863e235d52b9e0ec65116c2406023f1",
+      "width": 234,
+      "height": 234,
+      "byteLength": 71973
+    },
+    {
+      "category": "type-5",
+      "index": 22,
+      "filename": "layerPlanet22.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet22.png",
+      "sha256": "dbe67d72e39e11b09d77ea0084701edb4de0dda49b81c5979cfdb9c2711aba11",
+      "width": 234,
+      "height": 234,
+      "byteLength": 83419
+    },
+    {
+      "category": "type-5",
+      "index": 23,
+      "filename": "layerPlanet23.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet23.png",
+      "sha256": "46847242beca44a5590c67d609131db6c79d96864cf66d5316f250bd57cbff88",
+      "width": 234,
+      "height": 234,
+      "byteLength": 84154
+    },
+    {
+      "category": "type-5",
+      "index": 24,
+      "filename": "layerPlanet24.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet24.png",
+      "sha256": "20d7184ef489f9eeb4961bf4f2af2283c918076738b14dd9b5bd63d6df1d5477",
+      "width": 234,
+      "height": 234,
+      "byteLength": 83427
+    },
+    {
+      "category": "type-5",
+      "index": 25,
+      "filename": "layerPlanet25.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet25.png",
+      "sha256": "947c3182bbc11f98a5b0fb5e308c615068cd33d3a902601781e37cb4310a31f7",
+      "width": 234,
+      "height": 234,
+      "byteLength": 69351
+    },
+    {
+      "category": "type-5",
+      "index": 26,
+      "filename": "layerPlanet26.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet26.png",
+      "sha256": "7b2907a35de3b4f165351cdf7ea8ee35e7a751f2d8834156ee88f6fb598001bc",
+      "width": 234,
+      "height": 234,
+      "byteLength": 79606
+    },
+    {
+      "category": "type-5",
+      "index": 27,
+      "filename": "layerPlanet27.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet27.png",
+      "sha256": "04baf1b4eb4562208b48599e402fb860981a48d51612fa0d9d78d591550a0431",
+      "width": 234,
+      "height": 234,
+      "byteLength": 88353
+    },
+    {
+      "category": "type-5",
+      "index": 28,
+      "filename": "layerPlanet28.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet28.png",
+      "sha256": "bbc66575e4eab72dabfd5a059aefff85abeed3d633c9a46580389ebb798c64d0",
+      "width": 234,
+      "height": 234,
+      "byteLength": 77303
+    },
+    {
+      "category": "type-5",
+      "index": 29,
+      "filename": "layerPlanet29.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet29.png",
+      "sha256": "6a411ee680f19dc0a3a865be25ca58c76cb1116988e96fcacb079ea5bb5328c4",
+      "width": 234,
+      "height": 234,
+      "byteLength": 85180
+    },
+    {
+      "category": "type-5",
+      "index": 30,
+      "filename": "layerPlanet30.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet30.png",
+      "sha256": "9a496ad6e7d1a1e2b39ea58ef99a52d945a297301a6cc5723f3c5dc108fc02c0",
+      "width": 234,
+      "height": 234,
+      "byteLength": 66754
+    },
+    {
+      "category": "type-5",
+      "index": 31,
+      "filename": "layerPlanet31.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet31.png",
+      "sha256": "9180c64a8179dd8b4cc616fe96da0a7e61da6f87565a85a119875c81ffbdde31",
+      "width": 234,
+      "height": 234,
+      "byteLength": 74221
+    },
+    {
+      "category": "type-5",
+      "index": 32,
+      "filename": "layerPlanet32.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet32.png",
+      "sha256": "d96e25d9ff34a7a2fdf1ed02479d33ff2857dd1f5907ef58c011feaa4a0522cc",
+      "width": 234,
+      "height": 234,
+      "byteLength": 55561
+    },
+    {
+      "category": "type-5",
+      "index": 33,
+      "filename": "layerPlanet33.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet33.png",
+      "sha256": "7dbdd4d9ee5c8be22fc322a1e86f1bd8012e7fb4044db9592af2a6310ab7df1e",
+      "width": 234,
+      "height": 234,
+      "byteLength": 62200
+    },
+    {
+      "category": "type-5",
+      "index": 34,
+      "filename": "layerPlanet34.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet34.png",
+      "sha256": "9996b86aec38fb080841a403c694e6b4f33b04623d5f18fcc536b1269d60dc79",
+      "width": 234,
+      "height": 234,
+      "byteLength": 89292
+    },
+    {
+      "category": "type-5",
+      "index": 35,
+      "filename": "layerPlanet35.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet35.png",
+      "sha256": "e596d90f04968fe86a2f7d4fa523464dd0be80141e594de50dd9586c01418914",
+      "width": 234,
+      "height": 234,
+      "byteLength": 86954
+    },
+    {
+      "category": "type-5",
+      "index": 36,
+      "filename": "layerPlanet36.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet36.png",
+      "sha256": "d5200cb064fa79563e3e0c753de999a65f5c07815324ccbb369e665f65faadf7",
+      "width": 234,
+      "height": 234,
+      "byteLength": 83668
+    },
+    {
+      "category": "type-5",
+      "index": 37,
+      "filename": "layerPlanet37.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet37.png",
+      "sha256": "18cb14dc6eaab67a4e85f7dcd6849d0455a2e01e6c55882945de95c3d56d9377",
+      "width": 234,
+      "height": 234,
+      "byteLength": 84987
+    },
+    {
+      "category": "type-5",
+      "index": 38,
+      "filename": "layerPlanet38.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet38.png",
+      "sha256": "6c9e2d87bfab8007e5bf7e9ac78efdc6d7643b1324df384624ea28107e066eda",
+      "width": 234,
+      "height": 234,
+      "byteLength": 60994
+    },
+    {
+      "category": "type-5",
+      "index": 39,
+      "filename": "layerPlanet39.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet39.png",
+      "sha256": "4e45d9424ca239cde03bf55a57ef8de13df87b7c3aa01105faad47883f61ea8a",
+      "width": 234,
+      "height": 234,
+      "byteLength": 84481
+    },
+    {
+      "category": "type-5",
+      "index": 40,
+      "filename": "layerPlanet40.png",
+      "sourceUrl": "https://rollforfantasy.com/images/planets/layerPlanet40.png",
+      "sha256": "ee54376843486884176825c0139647045e5c50c6b75c89164c5a879c07bc73f2",
+      "width": 234,
+      "height": 234,
+      "byteLength": 78518
+    }
+  ]
+}

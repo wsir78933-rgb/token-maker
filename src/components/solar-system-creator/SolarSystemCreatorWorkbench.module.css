@@ -1,0 +1,556 @@
+.workbench {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--site-border-soft);
+  border-radius: 1rem;
+  background: var(--site-panel-deep);
+  color: var(--site-ink);
+  box-shadow: var(--site-card-shadow);
+}
+
+:global(.solar-system-creator-page):has(.workbench) :is(a[href], button:enabled, input:enabled, select:enabled, textarea:enabled, label, summary, [role='button']),
+.fileDialog :is(a[href], button:enabled),
+.imageDialog :is(a[href], button:enabled),
+.generatedImage {
+  cursor: pointer;
+}
+
+.workbenchHeader {
+  display: grid;
+  gap: 1rem;
+  border-bottom: 1px solid var(--site-border-soft);
+  padding: 1rem;
+}
+
+.headerMain {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.headerCopy {
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--site-accent-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.helpDetails {
+  margin-top: 0.35rem;
+  color: var(--site-ink);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.helpDetails summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--site-ink);
+  font-weight: 600;
+}
+
+.helpDetails summary:focus-visible,
+.modeTab:focus-visible,
+.mobileTab:focus-visible,
+.secondaryButton:focus-visible,
+.dangerButton:focus-visible,
+.panelCloseButton:focus-visible,
+.toggleLabel:focus-within {
+  outline: 2px solid var(--site-accent-strong);
+  outline-offset: 2px;
+}
+
+.helpSteps {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--site-ink);
+}
+
+.fileActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.secondaryButton,
+.dangerButton,
+.panelCloseButton,
+.mobileTab,
+.modeTab {
+  min-height: 2.75rem;
+  border: 1px solid var(--site-border-soft);
+  border-radius: 0.625rem;
+  background: var(--site-panel);
+  color: var(--site-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+}
+
+.secondaryButton {
+  padding: 0.5rem 0.75rem;
+}
+
+.secondaryButton:hover,
+.mobileTab:hover,
+.modeTab:hover,
+.panelCloseButton:hover {
+  border-color: var(--site-border-strong);
+  background: var(--site-accent-bg);
+  color: var(--site-ink-strong);
+}
+
+.secondaryButton:disabled,
+.dangerButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.dangerButton {
+  padding: 0.5rem 0.75rem;
+}
+
+.modeTabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+  max-width: 26rem;
+  border-radius: 0.75rem;
+  background: var(--site-panel);
+  padding: 0.25rem;
+}
+
+.modeTab,
+.mobileTab {
+  border-color: transparent;
+  background: transparent;
+  padding: 0.5rem 0.75rem;
+}
+
+.modeTab[data-selected='true'],
+.mobileTab[data-selected='true'] {
+  border-color: var(--site-border-strong);
+  background: var(--site-accent-bg);
+  color: var(--site-accent-strong);
+}
+
+.alert,
+.status {
+  margin: 1rem 1rem 0;
+  border-radius: 0.625rem;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.alert {
+  border: 1px solid color-mix(in oklab, var(--destructive) 50%, var(--site-border-soft));
+  background: color-mix(in oklab, var(--destructive) 14%, var(--site-panel));
+  color: var(--site-ink-strong);
+}
+
+.status {
+  border: 1px solid var(--site-border-strong);
+  background: var(--site-accent-bg);
+  color: var(--site-ink-strong);
+}
+
+.screenWorkspace {
+  display: grid;
+  grid-template-columns: minmax(15.5rem, 248px) minmax(0, 1fr) minmax(18rem, 312px);
+  gap: 1rem;
+  min-width: 0;
+  padding: 1rem;
+}
+
+.sidePanel,
+.canvasPanel {
+  min-width: 0;
+  border: 1px solid var(--site-border-soft);
+  border-radius: 0.875rem;
+  background: var(--site-panel);
+}
+
+.sidePanel {
+  padding: 1rem;
+}
+
+.panelTitle {
+  margin: 0;
+  color: var(--site-ink-strong);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.canvasPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.canvasViewport {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 2 / 1;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--site-border-soft);
+  border-radius: 0.75rem;
+  background: var(--site-panel-deep);
+}
+
+.canvasViewport > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+.manualCanvasControls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggleLabel {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--site-border-soft);
+  border-radius: 0.625rem;
+  padding: 0.5rem 0.625rem;
+  color: var(--site-ink);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.toggleLabel input {
+  accent-color: var(--site-accent-strong);
+  flex: 0 0 auto;
+  height: 1rem;
+  width: 1rem;
+}
+
+.manualCanvasControls .dangerButton {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.imageHint {
+  margin: 0 1rem 1rem;
+  color: var(--site-ink);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.mobileWorkspace {
+  display: none;
+}
+
+.mobilePanel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  max-height: min(70svh, 34rem);
+  overflow: hidden;
+  border: 1px solid var(--site-border-soft);
+  border-radius: 1rem 1rem 0 0;
+  background: var(--background);
+  box-shadow: 0 -1rem 2.5rem color-mix(in srgb, #000 30%, transparent);
+}
+
+.mobilePanel[hidden] {
+  display: none;
+}
+
+.mobilePanelHeader {
+  display: flex;
+  flex: 0 0 auto;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--site-border-soft);
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+}
+
+.panelCloseButton {
+  display: inline-flex;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  font-size: 1.25rem;
+}
+
+.mobilePanelBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.mobileBottomNav {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem;
+  border-top: 1px solid var(--site-border-soft);
+  background: var(--background);
+  padding: 0.5rem;
+}
+
+.mobileBottomNav[data-panel-count='4'] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mobileBottomNav[data-panel-count='4'] .mobileTab {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.mobileTab {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.printArea {
+  display: none;
+}
+
+.printDescriptions {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.printDescriptions article {
+  break-inside: avoid;
+}
+
+.printDescriptions h2,
+.printDescriptions p {
+  margin: 0;
+}
+
+.printDescriptions p {
+  margin-top: 0.25rem;
+  white-space: pre-wrap;
+}
+
+.fileDialog,
+.imageDialog {
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 48rem;
+  border-color: var(--site-border-soft);
+  background: var(--background);
+  color: var(--site-ink);
+}
+
+.fileDialog {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.imageDialog {
+  overflow-y: auto;
+}
+
+.dialogClose {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+}
+
+.generatedImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 70svh;
+  object-fit: contain;
+  border-radius: 0.625rem;
+  background: var(--site-panel-deep);
+}
+
+@media (max-width: 767px) {
+  .workbenchHeader {
+    padding: 0.875rem;
+  }
+
+  .headerMain {
+    display: block;
+  }
+
+  .fileActions {
+    display: none;
+  }
+
+  .screenWorkspace {
+    display: block;
+    padding: 0.75rem;
+  }
+
+  .sidePanel {
+    display: none;
+  }
+
+  .canvasPanel {
+    padding: 0.75rem;
+  }
+
+  .canvasViewport {
+    min-height: 11rem;
+  }
+
+  .manualCanvasControls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mobileWorkspace {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-height: 100dvh;
+    min-width: 0;
+    pointer-events: none;
+  }
+
+  .mobileWorkspace[data-mobile-panel='settings'] {
+    position: static;
+    max-height: none;
+    pointer-events: auto;
+  }
+
+  .mobilePanel {
+    order: 1;
+    width: 100%;
+    max-height: min(70svh, calc(100dvh - 4rem));
+    pointer-events: auto;
+  }
+
+  .mobileWorkspace[data-mobile-panel='settings'] .mobilePanel {
+    max-height: none;
+    box-shadow: none;
+  }
+
+  .mobileBottomNav {
+    order: 2;
+    width: 100%;
+    pointer-events: auto;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+
+  .mobileWorkspace[data-mobile-panel='settings'] .mobileBottomNav {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+  }
+
+  .imageHint {
+    margin: 0 0.75rem 0.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobileWorkspace {
+    display: none;
+  }
+}
+
+@media print {
+  :global(body):has(.workbench) {
+    transition: none !important;
+    background-color: #fff !important;
+    background-image: none !important;
+    color: #000 !important;
+  }
+
+  :global(.solar-system-creator-page):has(.workbench) {
+    transition: none !important;
+    background-color: #fff !important;
+    background-image: none !important;
+    color: #000 !important;
+  }
+
+  :global(.solar-system-creator-page):has(.workbench) [data-solar-print-hidden='true'] {
+    display: none !important;
+  }
+
+  :global(.solar-system-creator-page):has(.workbench) :global(header),
+  :global(.solar-system-creator-page):has(.workbench) :global(nav),
+  :global(.solar-system-creator-page):has(.workbench) :global(footer),
+  :global(.solar-system-creator-page):has(.workbench) :global(.site-topbar) {
+    display: none !important;
+  }
+
+  :global(body):has(.workbench) :global([data-slot='dialog-viewport']),
+  :global(body):has(.workbench) :global([data-slot='dialog-backdrop']) {
+    display: none !important;
+  }
+
+  :global(.solar-system-creator-page) .workbench {
+    display: block;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: #000;
+  }
+
+  :global(.solar-system-creator-page) .workbench .screenWorkspace,
+  :global(.solar-system-creator-page) .workbench .mobileWorkspace,
+  :global(.solar-system-creator-page) .workbench .imageHint {
+    display: none !important;
+  }
+
+  :global(.solar-system-creator-page) .workbench .printArea {
+    display: block;
+    color: #000;
+  }
+
+  :global(.solar-system-creator-page) .workbench .printArea :global(svg) {
+    display: block;
+    max-width: 100%;
+    border: 1px solid #000;
+  }
+
+  :global(.solar-system-creator-page) .workbench .printDescriptions {
+    color: #000;
+  }
+}

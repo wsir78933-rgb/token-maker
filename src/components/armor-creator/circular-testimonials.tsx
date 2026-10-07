@@ -55,6 +55,7 @@ export type CircularTestimonialsProps = {
   fontSizes?: CircularTestimonialsFontSizes;
   imagePosition?: 'left' | 'right';
   imageSize?: CircularTestimonialsImageSize;
+  imageShape?: 'portrait' | 'landscape';
   clipImageStack?: boolean;
 };
 
@@ -67,6 +68,7 @@ type CircularTestimonialImageProps = {
 };
 
 type CircularTestimonialImagePosition = 'center' | 'left' | 'right' | 'hidden';
+type CircularTestimonialImageShape = 'portrait' | 'landscape';
 type CircularTestimonialsNavigationDirection = 'previous' | 'next';
 
 type CircularTestimonialsStyle = CSSProperties & {
@@ -282,6 +284,27 @@ function requireCircularTestimonialsImageSize(imageSize: unknown): CircularTesti
   );
 }
 
+function requireCircularTestimonialsImageShape(imageShape: unknown): CircularTestimonialImageShape {
+  if (imageShape === 'portrait' || imageShape === 'landscape') {
+    return imageShape;
+  }
+
+  throw new Error(
+    `CircularTestimonials imageShape must be "portrait" or "landscape". Received ${describeCircularTestimonialsValue(imageShape)}.`,
+  );
+}
+
+function requireCircularTestimonialsImageCombination(
+  imageShape: CircularTestimonialImageShape,
+  imageSize: CircularTestimonialsImageSize,
+): void {
+  if (imageShape === 'landscape' && imageSize === 'large') {
+    throw new Error(
+      `CircularTestimonials does not support imageShape ${JSON.stringify(imageShape)} with imageSize ${JSON.stringify(imageSize)}.`,
+    );
+  }
+}
+
 function getCircularTestimonialsReducedMotionSnapshot(): boolean {
   return typeof window !== 'undefined'
     && typeof window.matchMedia === 'function'
@@ -376,6 +399,24 @@ function getCircularTestimonialImageGap(stageWidth: number): number {
   }
 
   return 80 + ((stageWidth - 320) / (560 - 320)) * (140 - 80);
+}
+
+function getCircularTestimonialLandscapeImageGap(stageWidth: number): number {
+  if (!Number.isFinite(stageWidth) || stageWidth < 0) {
+    throw new Error(`CircularTestimonials image stage width must be a non-negative number. Received ${stageWidth}.`);
+  }
+
+  return Math.max(24, Math.min(60, stageWidth * 0.12));
+}
+
+function getCircularTestimonialLandscapeImageStackMinHeight(
+  stageWidth: number,
+  imageGap: number,
+): string {
+  const imageWidth = Math.min(32 * 16, stageWidth * 0.78);
+  const imageHeight = imageWidth * (676 / 1024);
+
+  return `max(20rem, calc(${imageHeight}px + ${imageGap * 1.6}px))`;
 }
 
 function CircularTestimonialImage({
@@ -533,6 +574,7 @@ export function CircularTestimonials({
   fontSizes,
   imagePosition = 'left',
   imageSize = 'default',
+  imageShape = 'portrait',
   clipImageStack = true,
 }: CircularTestimonialsProps) {
   const validatedTestimonials = requireCircularTestimonials(testimonials);
@@ -544,6 +586,8 @@ export function CircularTestimonials({
   const validatedFontSizes = requireCircularTestimonialsFontSizes(fontSizes);
   const validatedImagePosition = requireCircularTestimonialsImagePosition(imagePosition);
   const validatedImageSize = requireCircularTestimonialsImageSize(imageSize);
+  const validatedImageShape = requireCircularTestimonialsImageShape(imageShape);
+  requireCircularTestimonialsImageCombination(validatedImageShape, validatedImageSize);
   const validatedClipImageStack = requireCircularTestimonialsClipImageStack(clipImageStack);
   const resolvedColors = { ...DEFAULT_CIRCULAR_TESTIMONIAL_COLORS, ...validatedColors };
   const resolvedFontSizes = { ...DEFAULT_CIRCULAR_TESTIMONIAL_FONT_SIZES, ...validatedFontSizes };
@@ -556,14 +600,24 @@ export function CircularTestimonials({
   const imageStageRef = useRef<HTMLDivElement>(null);
   const activeIndex = selectedIndex % validatedTestimonials.length;
   const activeTestimonial = validatedTestimonials[activeIndex];
-  const imageGap = getCircularTestimonialImageGap(imageStageWidth);
-  const imageStackMinHeight = validatedImageSize === 'large'
-    ? `max(20rem, calc(min(27rem, ${imageStageWidth * 1.125}px) + ${imageGap * 1.6}px))`
-    : `max(20rem, calc(min(18rem, ${imageStageWidth * 0.72}px) + ${imageGap * 1.6}px))`;
-  const imageLayerClassName = validatedImageSize === 'large'
-    ? 'absolute left-1/2 top-1/2 h-[min(27rem,112.5cqw)] w-[min(18rem,75cqw)] [transform-style:preserve-3d]'
-    : 'absolute left-1/2 top-1/2 h-[min(18rem,72cqw)] w-[min(15rem,58cqw)] [transform-style:preserve-3d]';
-  const imagePaddingClassName = validatedImageSize === 'large' ? 'p-1' : 'p-3';
+  const imageGap =
+    validatedImageShape === 'landscape'
+      ? getCircularTestimonialLandscapeImageGap(imageStageWidth)
+      : getCircularTestimonialImageGap(imageStageWidth);
+  const imageStackMinHeight =
+    validatedImageShape === 'landscape'
+      ? getCircularTestimonialLandscapeImageStackMinHeight(imageStageWidth, imageGap)
+      : validatedImageSize === 'large'
+        ? `max(20rem, calc(min(27rem, ${imageStageWidth * 1.125}px) + ${imageGap * 1.6}px))`
+      : `max(20rem, calc(min(18rem, ${imageStageWidth * 0.72}px) + ${imageGap * 1.6}px))`;
+  const imageLayerClassName =
+    validatedImageShape === 'landscape'
+      ? 'aspect-[1024/676] w-[min(32rem,78cqw)]'
+      : validatedImageSize === 'large'
+        ? 'h-[min(27rem,112.5cqw)] w-[min(18rem,75cqw)]'
+      : 'h-[min(18rem,72cqw)] w-[min(15rem,58cqw)]';
+  const imagePaddingClassName =
+    validatedImageShape === 'portrait' && validatedImageSize === 'large' ? 'p-1' : 'p-3';
   const layoutClassName =
     validatedImagePosition === 'left'
       ? 'flex-col md:flex-row'
@@ -691,7 +745,7 @@ export function CircularTestimonials({
               <div
                 key={`${testimonialIndex}-${testimonial.src}`}
                 aria-hidden={!isActive}
-                className={imageLayerClassName}
+                className={`absolute left-1/2 top-1/2 ${imageLayerClassName} [transform-style:preserve-3d]`}
                 data-index={testimonialIndex}
                 data-part={isActive ? 'active-testimonial-image' : 'testimonial-image-layer'}
                 data-position={position}

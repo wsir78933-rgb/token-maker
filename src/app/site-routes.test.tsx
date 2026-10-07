@@ -498,6 +498,9 @@ describe('coat maker routes', () => {
         { label: 'Army Formation Creator', href: '/army-formation-creator' },
         { label: 'Emblem Creator', href: '/emblem-creator' },
         { label: 'Language Generator', href: '/language-generator' },
+        { label: 'Family Tree Creator', href: '/family-tree-creator' },
+        { label: 'Solar System Creator', href: '/solar-system-creator' },
+        { label: 'Periodic Table Creator', href: '/periodic-table-creator' },
         { label: 'Tarot Cards', href: '/tarot-cards' },
       ],
       sharedNavigationLinks: [
@@ -523,6 +526,9 @@ describe('coat maker routes', () => {
         { label: '军队阵型制作器', href: '/zh/army-formation-creator' },
         { label: '徽标制作工具', href: '/zh/emblem-creator' },
         { label: '语言生成器', href: '/zh/language-generator' },
+        { label: '人物家谱制作器', href: '/zh/family-tree-creator' },
+        { label: '太阳系创建器', href: '/zh/solar-system-creator' },
+        { label: '元素周期表制作器', href: '/zh/periodic-table-creator' },
         { label: '塔罗牌工具', href: '/zh/tarot-cards' },
       ],
       sharedNavigationLinks: [

@@ -418,11 +418,43 @@ describe('CircularTestimonials', () => {
     }
 
     expect(activeQuoteText(carousel)).toBe('First armor case quote.');
+    expect(testimonialImageLayer(carousel, 0).className).toContain('h-[min(18rem,72cqw)]');
+    expect(testimonialImageLayer(carousel, 0).className).toContain('w-[min(15rem,58cqw)]');
+    expect(testimonialImageLayer(carousel, 0).className).not.toContain('aspect-[1024/676]');
     expect(within(carousel).getByRole('img', { name: 'First character' }).className).toContain(
       'object-contain',
     );
     expect(within(carousel).getByRole('button', { name: PREVIOUS_LABEL })).toBeTruthy();
     expect(within(carousel).getByRole('button', { name: NEXT_LABEL })).toBeTruthy();
+  });
+
+  it('支持横向图片比例并根据宽图尺寸保留完整预览', () => {
+    const { container } = render(
+      <CircularTestimonials
+        testimonials={TESTIMONIALS}
+        ariaLabel="Landscape armor cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+        autoplay={false}
+        imageShape="landscape"
+        clipImageStack={false}
+      />,
+    );
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    const imageStage = carousel.querySelector<HTMLElement>('[data-part="image-stage"]');
+    const activeImageLayer = testimonialImageLayer(carousel, 0);
+    expect(activeImageLayer.className).toContain('aspect-[1024/676]');
+    expect(activeImageLayer.className).toContain('w-[min(32rem,78cqw)]');
+    expect(activeImageLayer.className).not.toContain('h-[min(18rem,72cqw)]');
+    expect(imageStage?.className).toContain('overflow-visible');
+    expect(imageStage?.style.minHeight).toContain('max(20rem');
+    expect(within(carousel).getByRole('img', { name: 'First character' }).className).toContain(
+      'object-contain',
+    );
   });
 
   it('支持左右交替图文位置，且两个实例的切换状态互不影响', async () => {
@@ -678,6 +710,39 @@ describe('CircularTestimonials', () => {
         />,
       ),
     ).toThrow('CircularTestimonials imageSize must be "default" or "large". Received "wide".');
+  });
+
+  it('拒绝不支持的 imageShape 并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid image shape carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageShape={'square' as never}
+        />,
+      ),
+    ).toThrow('CircularTestimonials imageShape must be "portrait" or "landscape". Received "square".');
+  });
+
+  it('拒绝未定义的 landscape large 组合并报告两个值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid image combination carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageShape="landscape"
+          imageSize="large"
+        />,
+      ),
+    ).toThrow(
+      'CircularTestimonials does not support imageShape "landscape" with imageSize "large".',
+    );
   });
 
   it('保留英文空格、对中文分词并支持中英混合文案自然换行', () => {

@@ -1,10 +1,5 @@
 import type { SiteLocale } from '@/lib/site-locale';
 
-interface CoatMakerSeoStep {
-  title: string;
-  description: string;
-}
-
 interface CoatMakerSeoFaqItem {
   question: string;
   answer: string;
@@ -15,16 +10,21 @@ interface CoatMakerSeoLink {
   label: string;
 }
 
-export interface CoatMakerSeoUseCase {
-  title: string;
-  body: string;
-  imageSrc: string;
-  imageAlt: string;
-}
-
 export interface CoatMakerSeoComparisonRow {
   rowLabel: string;
   cellText: readonly string[];
+}
+
+export type CoatMakerFeatureIcon = 'shield' | 'symbols' | 'text' | 'layers' | 'drawing' | 'export';
+
+export interface CoatMakerFeatureOverviewCopy {
+  title: string;
+  subtitle: string;
+  features: readonly {
+    icon: CoatMakerFeatureIcon;
+    title: string;
+    description: string;
+  }[];
 }
 
 const englishTitle = 'Coat of Arms Maker: Free Online Fantasy and Guild Badges';
@@ -39,23 +39,28 @@ export interface CoatMakerSeoCopy {
   metadataTitle: string;
   metadataDescription: string;
   introduction: string;
-  stepsHeading: string;
-  stepsAriaLabel: string;
-  steps: readonly CoatMakerSeoStep[];
-  featuresHeading: string;
-  verifiedCapabilities: readonly string[];
-  useCasesHeading: string;
-  useCasesLead: string;
-  useCases: readonly CoatMakerSeoUseCase[];
+  whatIsTitle: string;
+  whatIsDescription: string;
+  howItWorksEyebrow: string;
+  howItWorksHeading: string;
+  howItWorksSteps: readonly {
+    title: string;
+    description: string;
+  }[];
+  featureOverview: CoatMakerFeatureOverviewCopy;
   comparisonHeading: string;
   comparisonLead: string;
+  comparisonDimensionHeading: string;
+  comparisonTableLabel: string;
   comparisonColumns: readonly string[];
   comparisonRows: readonly CoatMakerSeoComparisonRow[];
   editorCtaHeading: string;
   editorCtaEmphasis: string;
   editorCtaDescription: string;
   editorCtaLabel: string;
+  faqEyebrow: string;
   faqHeading: string;
+  faqDescription: string;
   faqItems: readonly CoatMakerSeoFaqItem[];
   relatedToolsHeading: string;
   contextualLinks: readonly CoatMakerSeoLink[];
@@ -68,66 +73,73 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
     metadataTitle: englishTitle,
     metadataDescription: englishDescription,
     introduction: englishDescription,
-    stepsHeading: 'Create a heraldic design in three steps',
-    stepsAriaLabel: 'Coat maker steps',
-    steps: [
+    whatIsTitle: 'What is the Coat of Arms Maker?',
+    whatIsDescription:
+      'Coat of Arms Maker is a free online editor for creating custom shields, character emblems, and guild badges. Choose a shield shape and field pattern, combine symbols, text, and layers, or add your own images and drawn details. Download the finished design as PNG, JPEG, or PDF.',
+    howItWorksEyebrow: 'How it works',
+    howItWorksHeading: 'How to use the Coat of Arms Maker',
+    howItWorksSteps: [
       {
-        title: 'Choose a shield',
-        description: 'Start with a shield style and field pattern that give the design its structure.',
+        title: 'Choose a shield and field',
+        description: 'In Coat of Arms Maker, choose a shield shape, set its field divisions, and adjust patterns and colors to define the base of your design.',
       },
       {
-        title: 'Add your symbols',
-        description: 'Place charges, text, colours, and layers until the design reads clearly at a glance.',
+        title: 'Combine symbols and text',
+        description: 'Use Coat of Arms Maker to combine built-in symbols and text, then add your own images or draw extra details in the editor.',
       },
       {
-        title: 'Finish and export',
-        description: 'Adjust the final details, then export the image when it is ready.',
-      },
-    ],
-    featuresHeading: 'Tools for a complete design',
-    verifiedCapabilities: [
-      'Shield styles, field patterns, charges, text, layers, and drawing tools',
-      'Browser draft recovery after a reload',
-      'PNG, JPEG, PDF, print, and batch export options',
-    ],
-    useCasesHeading: 'Jobs for this coat of arms maker',
-    useCasesLead:
-      'Most people arrive with a table, a club, a character, or a map that needs a mark they can export from this page and reuse on a handout, a header, or a title sheet.',
-    useCases: [
-      {
-        title: 'Tabletop houses and factions',
-        body: 'Give each tabletop house or faction a shield that still reads on a session handout, a virtual table portrait frame, or a printed banner behind the screen. This coat of arms maker lets you lock one strong charge as the house tell so players can spot the mark across the table without squinting at tiny flourishes or a busy field. Keep the field quieter than the charge, export a PNG for the digital table and a PDF for the printed pack, and reuse the same shield on every faction sheet in the campaign so the set stays consistent from the first session to the last.',
-        imageSrc: '/coat-of-arms-maker/use-cases/tabletop-houses.webp',
-        imageAlt: 'House shields laid out on a tabletop session handout',
-      },
-      {
-        title: 'Guild, club, and community badges',
-        body: 'Make a badge for a guild, a live-action group, a weekend club, or a community header that has to work as a small icon and as a sticker on a printed sheet. A coat of arms maker on this page gives you a clean-edged PNG you can drop on a roster, a header, and a print sheet without redrawing the mark in a second file. Pick one symbol, one contrast pair, and a short name on its own layer; if the badge muddies at stamp size, delete decoration instead of adding more charges to the field.',
-        imageSrc: '/coat-of-arms-maker/use-cases/guild-badges.webp',
-        imageAlt: 'A guild badge on a roster header and a printed sticker sheet',
-      },
-      {
-        title: 'Fantasy characters and invented banners',
-        body: 'Invent a banner for a fantasy character who never had a historical crest: a motto on a ribbon and a single beast is enough for a character sheet, a chapter heading, or a costume cloak. Use this coat of arms maker to try colours and charges until the thumbnail still reads at a glance, then export the file for the story rather than hunting a lineage you do not have. You are drawing an original graphic for fiction, a live-action persona, or a house that exists only in the campaign notes you already keep.',
-        imageSrc: '/coat-of-arms-maker/use-cases/fantasy-banners.webp',
-        imageAlt: 'An invented banner on a character sheet and a costume cloak',
-      },
-      {
-        title: 'Worldbuilding maps and title pages',
-        body: 'Build a set of banners for regional maps, title pages, appendix charts, and notebook headers so every place in the setting carries a mark that belongs on that page. Batch export helps when the same shield has to exist as a tiny map icon and as a large title-page plate without redrawing the charges by hand each time the scale changes for a print run. Keep a shared field colour across neighbouring regions if you want the atlas to feel like one world, and change only the main charge so readers can tell the realms apart at a glance on the map, the title page, and the notes.',
-        imageSrc: '/coat-of-arms-maker/use-cases/worldbuilding-maps.webp',
-        imageAlt: 'Regional banners on a setting map and a title page',
+        title: 'Preview and export',
+        description: 'Preview your design in Coat of Arms Maker, adjust layer positions and sizes, then download it as PNG, JPEG, or PDF.',
       },
     ],
+    featureOverview: {
+      title: 'Create Your Own Coat of Arms',
+      subtitle:
+        'Use Coat of Arms Maker to shape the shield, add symbols and a motto, then arrange the details and export your design—all in your browser.',
+      features: [
+        {
+          icon: 'shield',
+          title: 'Shield shapes and field patterns',
+          description: 'Choose a shield shape, divide the field, and adjust patterns and colors to build the base of your design in Coat of Arms Maker.',
+        },
+        {
+          icon: 'symbols',
+          title: 'Heraldic symbols',
+          description: 'Browse the built-in symbols by category in Coat of Arms Maker and add the shapes that suit your character, family, or guild.',
+        },
+        {
+          icon: 'text',
+          title: 'Text and mottos',
+          description: 'Add a name or motto as straight, curved, or ring text in Coat of Arms Maker, then adjust its font, size, and color.',
+        },
+        {
+          icon: 'layers',
+          title: 'Layer controls',
+          description: 'Use Coat of Arms Maker to reorder, group, hide, lock, or duplicate layers, and adjust the position, size, rotation, and opacity of your elements.',
+        },
+        {
+          icon: 'drawing',
+          title: 'Draw or add your own images',
+          description: 'Upload an image from your device or draw details in Coat of Arms Maker with adjustable brush width, color, and opacity.',
+        },
+        {
+          icon: 'export',
+          title: 'Browser drafts and exports',
+          description: 'Restore a recent draft in Coat of Arms Maker when your browser still has it, then download your finished design as PNG, JPEG, or PDF.',
+        },
+      ],
+    },
     comparisonHeading: 'Why choose our coat of arms maker',
     comparisonLead:
-      'Start creating without an account or paid plan. Add your own images for free, finish an original coat of arms in the browser, and export PNG, JPEG, or PDF; print and batch export are available when you need them.',
+      'Start creating in Coat of Arms Maker without an account or paid plan. Add your own images for free, finish an original coat of arms in the browser, and export PNG, JPEG, or PDF; print and batch export are available when you need them.',
+    comparisonDimensionHeading: 'Comparison',
+    comparisonTableLabel: 'Coat of Arms Maker comparison',
     comparisonColumns: ['Our coat of arms maker', 'CoaMaker', 'Roll for Fantasy'],
     comparisonRows: [
       {
         rowLabel: 'Start',
         cellText: [
-          'Open the page and draw at once — the editor is already on the canvas, with no login and no paywall.',
+          'Open Coat of Arms Maker and draw at once — the editor is already on the canvas, with no login and no paywall.',
           'The editor opens too, but the free workspace already shows ads, a Go Pro header, and in-editor Upgrade Now cards.',
           'Loads inline with no login or paywall.',
         ],
@@ -143,7 +155,7 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
       {
         rowLabel: 'Export',
         cellText: [
-          'One-click real export to PNG, JPEG, or PDF, with print and batch ZIP in the same menu.',
+          'Use Coat of Arms Maker for one-click real export to PNG, JPEG, or PDF, with print and batch ZIP in the same menu.',
           'Its export dialog covers PNG, JPG, PDF, print, and share for the current design.',
           'Export is "Turn to image" then right-click save; in the live test it produced no image and no download link, and it suggests a screenshot when that fails.',
         ],
@@ -158,35 +170,37 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
       },
     ],
     editorCtaHeading: 'Start with a shield. Leave with a mark of your own.',
-    editorCtaEmphasis: 'Keep shaping the shield, field, symbols, and text',
+    editorCtaEmphasis: 'Keep shaping the shield, field, symbols, and text in Coat of Arms Maker',
     editorCtaDescription:
       'Finish your design in the editor, then export PNG, JPEG, or PDF for a character, faction, guild, or invented family.',
     editorCtaLabel: 'Start creating',
+    faqEyebrow: 'FAQ',
     faqHeading: 'Frequently asked questions',
+    faqDescription: 'Find answers about free use of Coat of Arms Maker, browser drafts, accounts, your own images, and export formats.',
     faqItems: [
       {
         question: 'Is this coat of arms maker free to use?',
-        answer: 'Yes. You can create and export a design in the browser without a paid plan.',
+        answer: 'Yes. You can use Coat of Arms Maker to create and export a design in the browser without a paid plan.',
       },
       {
         question: 'Can I return to a design later?',
         answer:
-          'Yes. If the browser still has a recent draft, you can restore it when you reopen the maker. Export an image when you want a finished copy.',
+          'Yes. If the browser still has a recent draft, you can restore it when you reopen Coat of Arms Maker. Export an image when you want a finished copy.',
       },
       {
         question: 'Which image formats can I export?',
         answer:
-          'Use PNG or JPEG for images, export PDF for documents, or use the print and batch tools when they fit your work.',
+          'Use Coat of Arms Maker to download PNG or JPEG images, export PDF documents, or use the print and batch tools when they fit your work.',
       },
       {
         question: 'Do I need an account to use the coat of arms maker?',
         answer:
-          'No. You can edit and export a design directly in the browser, and the project stays in your current browser.',
+          'No. You can use Coat of Arms Maker to edit and export a design directly in the browser, and the project stays in your current browser.',
       },
       {
         question: 'Can I add my own images to the coat of arms?',
         answer:
-          'Yes. Add a local image, adjust its position, size, and layer in the editor, then export it as part of the finished design.',
+          'Yes. Add a local image to Coat of Arms Maker, adjust its position, size, and layer in the editor, then export it as part of the finished design.',
       },
     ],
     relatedToolsHeading: 'Keep creating',
@@ -206,64 +220,71 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
     metadataTitle: chineseTitle,
     metadataDescription: chineseDescription,
     introduction: chineseDescription,
-    stepsHeading: '三步完成纹章设计',
-    stepsAriaLabel: '纹章制作步骤',
-    steps: [
+    whatIsTitle: '什么是纹章制作器？',
+    whatIsDescription:
+      '纹章制作器是一款免费在线视觉编辑工具，用于制作自己的盾徽、角色标志和公会徽章。你可以选择盾形与底纹，组合图形、文字和图层，也可加入图片或绘制细节。完成后将设计导出为 PNG、JPEG 或 PDF。',
+    howItWorksEyebrow: '使用方式',
+    howItWorksHeading: '如何使用纹章制作器？',
+    howItWorksSteps: [
       {
-        title: '选择盾牌',
-        description: '先选定盾牌样式和底纹，为整体结构定下基础。',
+        title: '选择盾形与底纹',
+        description: '使用纹章制作器选择盾形，设置底色分区，再调整底纹和颜色，确定设计基础。',
       },
       {
-        title: '添加元素',
-        description: '加入图形、文字、颜色和图层，让设计在缩小时依然清晰。',
+        title: '组合图形与文字',
+        description: '使用纹章制作器组合内置图形和文字，也可以加入自己的图片或绘制额外细节。',
       },
       {
-        title: '完成并导出',
-        description: '调整最后细节，再导出完成的图片。',
-      },
-    ],
-    featuresHeading: '完成设计所需的工具',
-    verifiedCapabilities: [
-      '盾牌样式、底纹、图形、文字、图层和绘图工具',
-      '重新打开页面后可恢复浏览器草稿',
-      'PNG、JPEG、PDF、打印和批量导出选项',
-    ],
-    useCasesHeading: '这个纹章制作器适合完成的工作',
-    useCasesLead: '多数人带着一桌游戏、一个社团、一个角色或一张地图而来，在本页导出后带走。',
-    useCases: [
-      {
-        title: '桌面团的家族与阵营',
-        body: '给桌面团里每个家族或阵营一块在讲义、头像框或印刷旗帜上仍能认出的盾。用这个纹章制作器锁住一枚主图当家记，玩家隔桌也能认出。底纹比主图安静，导出 PNG 给电子桌面、PDF 给印刷包，同一盾用在每张阵营表上。',
-        imageSrc: '/coat-of-arms-maker/use-cases/tabletop-houses.webp',
-        imageAlt: '几面家族盾摆在桌面团讲义上',
-      },
-      {
-        title: '公会、社团和社区徽章',
-        body: '给公会、社团、周末俱乐部或社区页眉做徽章，既当小图标也能印贴纸。本页编辑器导出边缘干净的 PNG，名册和印刷页共用，不必另画。选一枚符号和一对对比色；发糊就删装饰。',
-        imageSrc: '/coat-of-arms-maker/use-cases/guild-badges.webp',
-        imageAlt: '社团徽章印在名册页眉和贴纸页上',
-      },
-      {
-        title: '奇幻角色与发明的旗帜',
-        body: '给没有历史纹章的奇幻角色发明旗帜：一句格言加一只兽，就够用在角色卡或服饰上。在本页试颜色和图形，缩略图能读再交给故事，不必追查谱系。你画的是虚构或战役笔记里家族的原创图形。',
-        imageSrc: '/coat-of-arms-maker/use-cases/fantasy-banners.webp',
-        imageAlt: '角色卡和披风上的虚构旗帜',
-      },
-      {
-        title: '世界观地图与扉页',
-        body: '给地图、扉页、附录和笔记做一套旗帜，让每个地方带着属于那一页的标识。同一盾要当小图标和大图时，用批量导出。相邻地区共用底色、只改主图。',
-        imageSrc: '/coat-of-arms-maker/use-cases/worldbuilding-maps.webp',
-        imageAlt: '设定地图和扉页上的地区旗帜',
+        title: '预览并导出',
+        description: '在纹章制作器中预览设计，调整图层位置和大小，再下载 PNG、JPEG 或 PDF。',
       },
     ],
+    featureOverview: {
+      title: '设计属于你的纹章',
+      subtitle: '使用纹章制作器选择盾形与底纹，加入图形和格言，再调整细节并导出设计，整个过程都在浏览器中完成。',
+      features: [
+        {
+          icon: 'shield',
+          title: '盾形与底纹',
+          description: '使用纹章制作器选择盾牌轮廓，划分底色区域，再调整底纹与颜色，为设计打好基础。',
+        },
+        {
+          icon: 'symbols',
+          title: '图形符号',
+          description: '在纹章制作器中按分类浏览内置图形，加入适合角色、家族或公会的纹章符号。',
+        },
+        {
+          icon: 'text',
+          title: '文字与格言',
+          description: '在纹章制作器中加入普通文字、弧形文字或环形文字，填写名字与格言，再调整字体、大小和颜色。',
+        },
+        {
+          icon: 'layers',
+          title: '图层管理',
+          description: '使用纹章制作器调整图层顺序，分组、隐藏、锁定或复制元素，并设置位置、大小、旋转和透明度。',
+        },
+        {
+          icon: 'drawing',
+          title: '绘图与自有图片',
+          description: '在纹章制作器中加入设备上的图片，或用可调整粗细、颜色和透明度的画笔绘制细节。',
+        },
+        {
+          icon: 'export',
+          title: '草稿恢复与导出',
+          description: '如果浏览器仍保留纹章制作器的最近草稿，可恢复后继续编辑；完成后下载 PNG、JPEG 或 PDF。',
+        },
+      ],
+    },
     comparisonHeading: '为什么选择我们的纹章制作器',
-    comparisonLead: '无需账号或付费方案，即可开始制作。你可以免费加入自己的图片，在浏览器中完成原创纹章，并导出 PNG、JPEG 或 PDF；需要时也能打印或批量导出。',
+    comparisonLead: '无需账号或付费方案，即可使用纹章制作器开始制作。你可以免费加入自己的图片，在浏览器中完成原创纹章，并导出 PNG、JPEG 或 PDF；需要时也能打印或批量导出。',
+    comparisonDimensionHeading: '对比维度',
+    comparisonTableLabel: '纹章制作器对比',
     comparisonColumns: ['我们的纹章制作器', 'CoaMaker', 'Roll for Fantasy'],
     comparisonRows: [
       {
         rowLabel: '开始',
         cellText: [
-          '打开即在画布上，免登录、免付费墙，直接开画。',
+          '打开纹章制作器即可在画布上直接开画，免登录、免付费墙。',
           '也是打开即用，但免费界面已有广告、顶栏 Go Pro，以及编辑器内的 Upgrade Now 升级卡。',
           '内嵌加载，免登录、免付费墙。',
         ],
@@ -279,7 +300,7 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
       {
         rowLabel: '导出',
         cellText: [
-          '一键真导出 PNG、JPEG、PDF，同一菜单还有打印与批量 ZIP。',
+          '纹章制作器支持一键真导出 PNG、JPEG、PDF，同一菜单还有打印与批量 ZIP。',
           '导出对话框对当前设计提供 PNG、JPG、PDF、打印和分享。',
           '导出是"Turn to image"后右键保存；实测点击后无图、无下载链接，失败时只建议截图。',
         ],
@@ -294,30 +315,32 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
       },
     ],
     editorCtaHeading: '从一面盾开始，做出属于你的标志',
-    editorCtaEmphasis: '盾形、底纹、图形和文字都可以继续调整',
+    editorCtaEmphasis: '在纹章制作器中继续调整盾形、底纹、图形和文字',
     editorCtaDescription: '在编辑器里完成设计，再从设备上导出 PNG、JPEG 或 PDF，用于角色、阵营、社团或虚构家族。',
     editorCtaLabel: '开始制作纹章',
+    faqEyebrow: 'FAQ',
     faqHeading: '常见问题',
+    faqDescription: '了解免费使用纹章制作器、浏览器草稿、账号、自有图片和导出格式等常见问题。',
     faqItems: [
       {
         question: '纹章制作器可以免费使用吗？',
-        answer: '可以。你可以直接在浏览器中创建和导出设计，不需要付费方案。',
+        answer: '可以。你可以直接使用纹章制作器在浏览器中创建和导出设计，不需要付费方案。',
       },
       {
         question: '以后还能继续编辑吗？',
-        answer: '可以。重新打开制作器时，如果浏览器仍保留最近草稿，可以恢复后继续调整。需要成品时再导出图片。',
+        answer: '可以。重新打开纹章制作器时，如果浏览器仍保留最近草稿，可以恢复后继续调整。需要成品时再导出图片。',
       },
       {
         question: '可以导出哪些格式？',
-        answer: '可导出 PNG、JPEG 和 PDF；需要时也能使用打印或批量导出工具。',
+        answer: '使用纹章制作器可导出 PNG、JPEG 和 PDF；需要时也能使用打印或批量导出工具。',
       },
       {
         question: '使用纹章制作器需要注册账号吗？',
-        answer: '不需要。你可以直接在浏览器中编辑和导出设计，项目会保留在当前浏览器中。',
+        answer: '不需要。你可以直接在纹章制作器中编辑和导出设计，项目会保留在当前浏览器中。',
       },
       {
         question: '可以把自己的图片加入纹章吗？',
-        answer: '可以。你可以加入本地图片，在编辑器中调整位置、大小和图层，然后随整个设计一起导出。',
+        answer: '可以。你可以把本地图片加入纹章制作器，在编辑器中调整位置、大小和图层，然后随整个设计一起导出。',
       },
     ],
     relatedToolsHeading: '继续创作',
@@ -346,23 +369,91 @@ function assertCopyField(fieldName: string, value: string, locale: SiteLocale): 
   }
 }
 
+function assertDisplayCopyField(fieldName: string, value: string, locale: SiteLocale): void {
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    throw new Error(`Invalid Coat Maker display field ${fieldName} for locale ${locale}: ${JSON.stringify(value)}`);
+  }
+}
+
+const allowedCoatMakerFeatureIcons: readonly CoatMakerFeatureIcon[] = [
+  'shield', 'symbols', 'text', 'layers', 'drawing', 'export',
+];
+
+function assertCoatMakerFeatureText(fieldName: string, value: string, locale: SiteLocale): void {
+  if (value.trim().length === 0) {
+    throw new Error(`Invalid Coat Maker SEO field ${fieldName} for locale ${locale}: ${JSON.stringify(value)}`);
+  }
+}
+
+function assertCoatMakerFeatureOverview(
+  featureOverview: CoatMakerFeatureOverviewCopy,
+  locale: SiteLocale,
+): void {
+  assertCoatMakerFeatureText('featureOverview.title', featureOverview.title, locale);
+  assertCoatMakerFeatureText('featureOverview.subtitle', featureOverview.subtitle, locale);
+  if (featureOverview.features.length !== 6) {
+    throw new Error(`Invalid Coat Maker SEO featureOverview.features length for locale ${locale}: ${String(featureOverview.features.length)}`);
+  }
+  for (const [featureIndex, feature] of featureOverview.features.entries()) {
+    if (!allowedCoatMakerFeatureIcons.includes(feature.icon)) {
+      throw new Error(`Invalid Coat Maker SEO featureOverview.features[${featureIndex}].icon for locale ${locale}: ${JSON.stringify(feature.icon)}`);
+    }
+    assertCoatMakerFeatureText(`featureOverview.features[${featureIndex}].title`, feature.title, locale);
+    assertCoatMakerFeatureText(`featureOverview.features[${featureIndex}].description`, feature.description, locale);
+  }
+}
+
+function assertCoatMakerHowItWorksCopy(
+  eyebrow: string,
+  heading: string,
+  steps: CoatMakerSeoCopy['howItWorksSteps'],
+  locale: SiteLocale,
+): void {
+  assertDisplayCopyField('howItWorksEyebrow', eyebrow, locale);
+  assertDisplayCopyField('howItWorksHeading', heading, locale);
+
+  if (!Array.isArray(steps) || steps.length !== 3) {
+    throw new Error(
+      `Invalid Coat Maker SEO field howItWorksSteps[index=all] for locale ${locale}: ${JSON.stringify(steps)}`,
+    );
+  }
+
+  for (const [stepIndex, howItWorksStep] of steps.entries()) {
+    if (howItWorksStep === null || typeof howItWorksStep !== 'object') {
+      throw new Error(
+        `Invalid Coat Maker SEO field howItWorksSteps[${stepIndex}] for locale ${locale}: ${JSON.stringify(howItWorksStep)}`,
+      );
+    }
+    assertDisplayCopyField(`howItWorksSteps[${stepIndex}].title`, howItWorksStep.title, locale);
+    assertDisplayCopyField(`howItWorksSteps[${stepIndex}].description`, howItWorksStep.description, locale);
+  }
+}
+
 function assertCoatMakerSeoCopyFields(copy: CoatMakerSeoCopy, locale: SiteLocale): void {
   assertCopyField('heading', copy.heading, locale);
   assertCopyField('metadataTitle', copy.metadataTitle, locale);
   assertCopyField('metadataDescription', copy.metadataDescription, locale);
   assertCopyField('introduction', copy.introduction, locale);
-  assertCopyField('stepsHeading', copy.stepsHeading, locale);
-  assertCopyField('stepsAriaLabel', copy.stepsAriaLabel, locale);
-  assertCopyField('featuresHeading', copy.featuresHeading, locale);
-  assertCopyField('useCasesHeading', copy.useCasesHeading, locale);
-  assertCopyField('useCasesLead', copy.useCasesLead, locale);
+  assertCoatMakerFeatureText('whatIsTitle', copy.whatIsTitle, locale);
+  assertCoatMakerFeatureText('whatIsDescription', copy.whatIsDescription, locale);
+  assertCoatMakerHowItWorksCopy(
+    copy.howItWorksEyebrow,
+    copy.howItWorksHeading,
+    copy.howItWorksSteps,
+    locale,
+  );
+  assertCoatMakerFeatureOverview(copy.featureOverview, locale);
   assertCopyField('comparisonHeading', copy.comparisonHeading, locale);
   assertCopyField('comparisonLead', copy.comparisonLead, locale);
+  assertDisplayCopyField('comparisonDimensionHeading', copy.comparisonDimensionHeading, locale);
+  assertDisplayCopyField('comparisonTableLabel', copy.comparisonTableLabel, locale);
   assertCopyField('editorCtaHeading', copy.editorCtaHeading, locale);
   assertCopyField('editorCtaEmphasis', copy.editorCtaEmphasis, locale);
   assertCopyField('editorCtaDescription', copy.editorCtaDescription, locale);
   assertCopyField('editorCtaLabel', copy.editorCtaLabel, locale);
+  assertDisplayCopyField('faqEyebrow', copy.faqEyebrow, locale);
   assertCopyField('faqHeading', copy.faqHeading, locale);
+  assertDisplayCopyField('faqDescription', copy.faqDescription, locale);
   assertCopyField('relatedToolsHeading', copy.relatedToolsHeading, locale);
 
   if (copy.heading !== copy.metadataTitle) {
@@ -371,34 +462,6 @@ function assertCoatMakerSeoCopyFields(copy: CoatMakerSeoCopy, locale: SiteLocale
 
   if (copy.introduction !== copy.metadataDescription) {
     throw new Error(`Missing Coat Maker SEO field introduction for locale: ${locale}`);
-  }
-
-  if (copy.steps.length !== 3) {
-    throw new Error(`Missing Coat Maker SEO field steps for locale: ${locale}`);
-  }
-
-  for (const [stepIndex, step] of copy.steps.entries()) {
-    assertCopyField(`steps[${stepIndex}].title`, step.title, locale);
-    assertCopyField(`steps[${stepIndex}].description`, step.description, locale);
-  }
-
-  if (copy.verifiedCapabilities.length !== 3) {
-    throw new Error(`Missing Coat Maker SEO field verifiedCapabilities for locale: ${locale}`);
-  }
-
-  for (const [capabilityIndex, capability] of copy.verifiedCapabilities.entries()) {
-    assertCopyField(`verifiedCapabilities[${capabilityIndex}]`, capability, locale);
-  }
-
-  if (copy.useCases.length !== 4) {
-    throw new Error(`Missing Coat Maker SEO field useCases for locale: ${locale}`);
-  }
-
-  for (const [useCaseIndex, useCase] of copy.useCases.entries()) {
-    assertCopyField(`useCases[${useCaseIndex}].title`, useCase.title, locale);
-    assertCopyField(`useCases[${useCaseIndex}].body`, useCase.body, locale);
-    assertCopyField(`useCases[${useCaseIndex}].imageSrc`, useCase.imageSrc, locale);
-    assertCopyField(`useCases[${useCaseIndex}].imageAlt`, useCase.imageAlt, locale);
   }
 
   if (copy.comparisonColumns.length !== 3) {

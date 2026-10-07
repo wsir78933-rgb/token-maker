@@ -3178,3 +3178,26 @@
     background: transparent;
   }
 }
+
+@layer base {
+  .family-tree-creator-page :where(
+    button,
+    a[href],
+    select,
+    input[type='file']
+  ):not(:disabled):not([aria-disabled='true']):not([aria-disabled='true'] *):not([data-disabled]):not([data-disabled] *):not([inert]):not([inert] *):not([aria-busy='true']):not([aria-busy='true'] *) {
+    cursor: pointer;
+  }
+
+  .family-tree-creator-page :where(
+    label[for]:has(+ input[type='file']:not(:disabled):not([aria-disabled='true']):not([data-disabled]):not([inert]):not([aria-busy='true']))
+  ):not(:disabled):not([aria-disabled='true']):not([aria-disabled='true'] *):not([data-disabled]):not([data-disabled] *):not([inert]):not([inert] *):not([aria-busy='true']):not([aria-busy='true'] *) {
+    cursor: pointer;
+  }
+
+  .family-tree-creator-page :where(
+    input[type='file']
+  ):not(:disabled):not([aria-disabled='true']):not([aria-disabled='true'] *):not([data-disabled]):not([data-disabled] *):not([inert]):not([inert] *):not([aria-busy='true']):not([aria-busy='true'] *)::file-selector-button {
+    cursor: pointer;
+  }
+}
