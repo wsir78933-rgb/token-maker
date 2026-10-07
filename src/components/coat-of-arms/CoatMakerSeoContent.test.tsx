@@ -1,65 +1,11 @@
 // @vitest-environment jsdom
 
-import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
-
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { CoatMakerPageHeading } from './CoatMakerPageHeading';
 import { CoatMakerSeoContent } from './CoatMakerSeoContent';
+import { getCoatMakerShowcaseCopy } from './coat-maker-showcase-copy';
 import { getCoatMakerSeoCopy } from './coat-maker-seo-copy';
-
-function countEnglishTokens(text: string) {
-  return text.match(/[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)*/g)?.length ?? 0;
-}
-
-function countChineseTokens(text: string) {
-  const hanCharacterCount = text.match(/[\p{Script=Han}]/gu)?.length ?? 0;
-
-  return hanCharacterCount + countEnglishTokens(text);
-}
-
-function collectVisibleSemanticText(contentRoot: HTMLElement) {
-  const visibleSemanticTextSelector = 'h1, h2, h3, p, li, a, th, td';
-  const semanticTextElements = Array.from(contentRoot.querySelectorAll<HTMLElement>(visibleSemanticTextSelector));
-
-  return semanticTextElements
-    .filter((semanticTextElement) => !semanticTextElement.querySelector(visibleSemanticTextSelector))
-    .map((semanticTextElement) => semanticTextElement.textContent?.trim() ?? '')
-    .filter((semanticText) => semanticText.length > 0)
-    .join(' ');
-}
-
-function countEnglishKeyphraseOccurrences(text: string, keyphrase: string) {
-  const escapedKeyphrase = keyphrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replaceAll(' ', '\\s+');
-  const keyphrasePattern = new RegExp(`\\b${escapedKeyphrase}\\b`, 'gi');
-
-  return text.match(keyphrasePattern)?.length ?? 0;
-}
-
-function countChineseKeyphraseOccurrences(text: string, keyphrase: string) {
-  return text.split(keyphrase).length - 1;
-}
-
-function calculateKeyphraseDensity(semanticText: string, keyphrase: string, locale: 'en' | 'zh') {
-  const countTokens = locale === 'en' ? countEnglishTokens : countChineseTokens;
-  const totalTokenCount = countTokens(semanticText);
-  const keyphraseTokenCount = countTokens(keyphrase);
-  const keyphraseOccurrenceCount = locale === 'en'
-    ? countEnglishKeyphraseOccurrences(semanticText, keyphrase)
-    : countChineseKeyphraseOccurrences(semanticText, keyphrase);
-
-  return (keyphraseOccurrenceCount * keyphraseTokenCount) / totalTokenCount;
-}
-
-function resolvePublicAssetFilePath(publicAssetSource: string) {
-  if (!publicAssetSource.startsWith('/')) {
-    throw new Error(`Expected a root-relative public asset source, received: ${publicAssetSource}`);
-  }
-
-  return resolve(process.cwd(), 'public', publicAssetSource.slice(1));
-}
 
 afterEach(() => {
   cleanup();
@@ -70,33 +16,77 @@ describe('CoatMakerSeoContent', () => {
     {
       locale: 'en' as const,
       heading: 'Coat of Arms Maker: Free Online Fantasy and Guild Badges',
-      verifiedCapability: 'Shield styles, field patterns, charges, text, layers, and drawing tools',
-      editorCtaEmphasis: 'Keep shaping the shield, field, symbols, and text',
+      removedSectionHeadings: [
+        'Jobs for this coat of arms maker',
+        'Create a heraldic design in three steps',
+        'Tools for a complete design',
+      ],
+      removedUseCaseCardTitles: [
+        'Tabletop houses and factions',
+        'Guild, club, and community badges',
+        'Fantasy characters and invented banners',
+        'Worldbuilding maps and title pages',
+      ],
+      removedUseCaseImageAlts: [
+        'House shields laid out on a tabletop session handout',
+        'A guild badge on a roster header and a printed sticker sheet',
+        'An invented banner on a character sheet and a costume cloak',
+        'Regional banners on a setting map and a title page',
+      ],
+      removedStepTexts: ['Choose a shield', 'Add your symbols', 'Finish and export'],
+      removedFeatureTexts: [
+        'Shield styles, field patterns, charges, text, layers, and drawing tools',
+        'Browser draft recovery after a reload',
+        'PNG, JPEG, PDF, print, and batch export options',
+      ],
+      editorCtaEmphasis: 'Keep shaping the shield, field, symbols, and text in Coat of Arms Maker',
       faqQuestion: 'Is this coat of arms maker free to use?',
-      internalLink: 'Square Token Maker',
-      href: '/templates/square-token-maker',
+      relatedToolsHeading: 'Keep creating',
+      contextualLinkLabels: ['Square Token Maker', 'Dice Roller', 'Read the FAQ'],
       firstComparisonColumnKeyphrase: 'Our coat of arms maker',
       expectedComparisonRowLabels: ['Start', 'Edit', 'Export', 'Account'],
     },
     {
       locale: 'zh' as const,
       heading: '纹章制作器：免费在线做奇幻与公会徽章',
-      verifiedCapability: '盾牌样式、底纹、图形、文字、图层和绘图工具',
-      editorCtaEmphasis: '盾形、底纹、图形和文字都可以继续调整',
+      removedSectionHeadings: ['这个纹章制作器适合完成的工作', '三步完成纹章设计', '完成设计所需的工具'],
+      removedUseCaseCardTitles: [
+        '桌面团的家族与阵营',
+        '公会、社团和社区徽章',
+        '奇幻角色与发明的旗帜',
+        '世界观地图与扉页',
+      ],
+      removedUseCaseImageAlts: [
+        '几面家族盾摆在桌面团讲义上',
+        '社团徽章印在名册页眉和贴纸页上',
+        '角色卡和披风上的虚构旗帜',
+        '设定地图和扉页上的地区旗帜',
+      ],
+      removedStepTexts: ['选择盾牌', '添加元素', '完成并导出'],
+      removedFeatureTexts: [
+        '盾牌样式、底纹、图形、文字、图层和绘图工具',
+        '重新打开页面后可恢复浏览器草稿',
+        'PNG、JPEG、PDF、打印和批量导出选项',
+      ],
+      editorCtaEmphasis: '在纹章制作器中继续调整盾形、底纹、图形和文字',
       faqQuestion: '纹章制作器可以免费使用吗？',
-      internalLink: '方形 Token 制作器',
-      href: '/zh/templates/square-token-maker',
+      relatedToolsHeading: '继续创作',
+      contextualLinkLabels: ['方形 Token 制作器', '骰子工具', '查看常见问题'],
       firstComparisonColumnKeyphrase: '我们的纹章制作器',
       expectedComparisonRowLabels: ['开始', '编辑', '导出', '账号'],
     },
-  ])('renders the complete $locale localized SEO contract', ({
+  ])('renders the remaining $locale localized SEO contract', ({
     locale,
     heading,
-    verifiedCapability,
+    removedSectionHeadings,
+    removedUseCaseCardTitles,
+    removedUseCaseImageAlts,
+    removedStepTexts,
+    removedFeatureTexts,
     editorCtaEmphasis,
     faqQuestion,
-    internalLink,
-    href,
+    relatedToolsHeading,
+    contextualLinkLabels,
     firstComparisonColumnKeyphrase,
     expectedComparisonRowLabels,
   }) => {
@@ -105,86 +95,80 @@ describe('CoatMakerSeoContent', () => {
     const contentRoot = screen.getByTestId('coat-maker-seo-content');
     const copy = getCoatMakerSeoCopy(locale);
 
+    expect(copy).not.toHaveProperty('stepsHeading');
+    expect(copy).not.toHaveProperty('stepsAriaLabel');
+    expect(copy).not.toHaveProperty('steps');
+    expect(copy).not.toHaveProperty('featuresHeading');
+    expect(copy).not.toHaveProperty('verifiedCapabilities');
+    expect(copy).not.toHaveProperty('useCasesHeading');
+    expect(copy).not.toHaveProperty('useCasesLead');
+    expect(copy).not.toHaveProperty('useCases');
+
     expect(within(contentRoot).queryByRole('heading', { level: 1 })).toBeNull();
     expect(
       within(contentRoot).queryByRole('heading', { level: 1, name: heading }),
       `Unexpected ${locale} heading below the editor: ${heading}`,
     ).toBeNull();
-    const stepsList = within(contentRoot).getByRole('list', { name: /steps|步骤/i });
 
-    expect(stepsList.tagName).toBe('OL');
-    expect(within(stepsList).getAllByRole('listitem')).toHaveLength(3);
-    expect(within(contentRoot).getByText(verifiedCapability)).not.toBeNull();
+    for (const removedSectionHeading of removedSectionHeadings) {
+      expect(
+        within(contentRoot).queryByRole('heading', { name: removedSectionHeading }),
+        `Unexpected removed ${locale} section heading: ${removedSectionHeading}`,
+      ).toBeNull();
+    }
+    for (const removedUseCaseCardTitle of removedUseCaseCardTitles) {
+      expect(
+        within(contentRoot).queryByRole('heading', { level: 3, name: removedUseCaseCardTitle }),
+        `Unexpected removed ${locale} use-case card title: ${removedUseCaseCardTitle}`,
+      ).toBeNull();
+    }
+    for (const removedUseCaseImageAlt of removedUseCaseImageAlts) {
+      expect(
+        within(contentRoot).queryByRole('img', { name: removedUseCaseImageAlt }),
+        `Unexpected removed ${locale} use-case image: ${removedUseCaseImageAlt}`,
+      ).toBeNull();
+    }
+    for (const removedStepText of removedStepTexts) {
+      expect(
+        within(contentRoot).queryByText(removedStepText),
+        `Unexpected removed ${locale} step text: ${removedStepText}`,
+      ).toBeNull();
+    }
+    for (const removedFeatureText of removedFeatureTexts) {
+      expect(
+        within(contentRoot).queryByText(removedFeatureText),
+        `Unexpected removed ${locale} feature text: ${removedFeatureText}`,
+      ).toBeNull();
+    }
     expect(within(contentRoot).getByText(editorCtaEmphasis)).not.toBeNull();
     expect(
       within(contentRoot).queryByRole('heading', { name: faqQuestion }),
       `Missing ${locale} heading: ${faqQuestion}`,
     ).not.toBeNull();
-    expect(within(contentRoot).getByRole('link', { name: internalLink }).getAttribute('href')).toBe(href);
-
-    const useCasesSectionHeading = within(contentRoot).queryByRole('heading', {
-      level: 2,
-      name: copy.useCasesHeading,
-    });
-
+    expect(copy.contextualLinks.map((contextualLink) => contextualLink.label)).toEqual(contextualLinkLabels);
     expect(
-      useCasesSectionHeading,
-      `Missing ${locale} heading: ${copy.useCasesHeading}`,
-    ).not.toBeNull();
-
-    const useCasesSection = useCasesSectionHeading?.closest('section');
-
+      within(contentRoot).queryByRole('heading', { level: 2, name: relatedToolsHeading }),
+      `Unexpected ${locale} removed related-tools heading: ${relatedToolsHeading}`,
+    ).toBeNull();
     expect(
-      useCasesSection,
-      `Missing ${locale} section for heading: ${copy.useCasesHeading}`,
-    ).not.toBeNull();
-
-    if (!useCasesSection) {
-      expect.fail(`Missing ${locale} section for heading: ${copy.useCasesHeading}`);
+      within(contentRoot).queryByRole('navigation', { name: relatedToolsHeading }),
+      `Unexpected ${locale} removed related-tools navigation: ${relatedToolsHeading}`,
+    ).toBeNull();
+    for (const contextualLinkLabel of contextualLinkLabels) {
+      expect(
+        within(contentRoot).queryByRole('link', { name: contextualLinkLabel }),
+        `Unexpected ${locale} related-tools link: ${contextualLinkLabel}`,
+      ).toBeNull();
     }
 
-    const visibleUseCaseArticles = within(useCasesSection).queryAllByRole('article');
-    const visibleUseCaseHeadings = within(useCasesSection).queryAllByRole('heading', { level: 3 });
-    const visibleUseCaseImages = within(useCasesSection).queryAllByRole('img');
-
-    expect(visibleUseCaseArticles, `Expected exactly 4 visible ${locale} use-case articles`).toHaveLength(4);
-    expect(visibleUseCaseHeadings, `Expected exactly 4 visible ${locale} use-case headings`).toHaveLength(4);
-    expect(visibleUseCaseImages, `Expected exactly 4 visible ${locale} use-case images`).toHaveLength(4);
-    for (const [useCaseIndex, useCase] of copy.useCases.entries()) {
-      expect(
-        visibleUseCaseArticles.some((visibleArticle) => (
-          within(visibleArticle).queryByRole('heading', { level: 3, name: useCase.title }) !== null
-        )),
-        `Missing ${locale} heading: ${useCase.title}`,
-      ).toBe(true);
-      const visibleUseCaseImage = visibleUseCaseImages[useCaseIndex];
-      if (!visibleUseCaseImage) {
-        throw new Error(`Missing ${locale} use-case image at index ${useCaseIndex}.`);
-      }
-
-      const visibleUseCaseImageSource = visibleUseCaseImage.getAttribute('src');
-      expect(visibleUseCaseImageSource).not.toBeNull();
-      expect(new URL(visibleUseCaseImageSource ?? '', 'http://localhost').searchParams.get('url')).toBe(
-        useCase.imageSrc,
-      );
-      expect(visibleUseCaseImages[useCaseIndex]?.getAttribute('alt')).toBe(useCase.imageAlt);
-      expect(
-        existsSync(resolvePublicAssetFilePath(useCase.imageSrc)),
-        `Missing public asset for ${locale} use case: ${useCase.imageSrc}`,
-      ).toBe(true);
-    }
-
-    const comparisonSectionHeading = within(contentRoot).queryByRole('heading', {
-      level: 2,
-      name: copy.comparisonHeading,
-    });
+    const comparisonSectionHeading = document.getElementById('coat-maker-comparison-heading');
 
     expect(
       comparisonSectionHeading,
       `Missing ${locale} heading: ${copy.comparisonHeading}`,
     ).not.toBeNull();
 
-    const comparisonSection = comparisonSectionHeading?.closest('section');
+    const comparisonSection = document.getElementById('coat-maker-comparison');
 
     expect(
       comparisonSection,
@@ -194,6 +178,10 @@ describe('CoatMakerSeoContent', () => {
     if (!comparisonSection) {
       expect.fail(`Missing ${locale} section for heading: ${copy.comparisonHeading}`);
     }
+
+    expect(comparisonSection.parentElement).toBe(contentRoot);
+    expect(comparisonSection.getAttribute('aria-labelledby')).toBe('coat-maker-comparison-heading');
+    expect(comparisonSectionHeading?.closest('section')).toBe(comparisonSection);
 
     expect(
       within(comparisonSection).queryByText(copy.comparisonLead),
@@ -219,18 +207,18 @@ describe('CoatMakerSeoContent', () => {
     );
 
     expect(copy.comparisonColumns, `Expected exactly 3 ${locale} comparison columns`).toHaveLength(3);
-    expect(visibleComparisonColumnHeaders, `Expected exactly 3 visible ${locale} comparison columns`).toHaveLength(3);
+    expect(visibleComparisonColumnHeaders, `Expected one dimension and 3 visible ${locale} comparison columns`).toHaveLength(4);
     expect(
       visibleComparisonColumnHeaders[0]?.textContent?.trim(),
-      `Missing ${locale} comparison column string: ${firstComparisonColumnKeyphrase}`,
-    ).toBe(firstComparisonColumnKeyphrase);
+      `Missing ${locale} comparison dimension heading: ${copy.comparisonDimensionHeading}`,
+    ).toBe(copy.comparisonDimensionHeading);
     for (const [columnIndex, expectedColumnFragment] of expectedComparisonColumnFragments.entries()) {
       expect(
         copy.comparisonColumns[columnIndex]?.includes(expectedColumnFragment),
         `Missing ${locale} comparison column string: ${expectedColumnFragment}`,
       ).toBe(true);
       expect(
-        visibleComparisonColumnHeaders[columnIndex]?.textContent?.includes(expectedColumnFragment),
+        visibleComparisonColumnHeaders[columnIndex + 1]?.textContent?.includes(expectedColumnFragment),
         `Missing visible ${locale} comparison column string: ${expectedColumnFragment}`,
       ).toBe(true);
     }
@@ -297,39 +285,6 @@ describe('CoatMakerSeoContent', () => {
       }
     }
 
-    const stepsSectionHeading = within(contentRoot).queryByRole('heading', { level: 2, name: copy.stepsHeading });
-    const toolsSectionHeading = within(contentRoot).queryByRole('heading', { level: 2, name: copy.featuresHeading });
-
-    expect(stepsSectionHeading, `Missing ${locale} heading: ${copy.stepsHeading}`).not.toBeNull();
-    expect(toolsSectionHeading, `Missing ${locale} heading: ${copy.featuresHeading}`).not.toBeNull();
-
-    if (!stepsSectionHeading || !toolsSectionHeading) {
-      expect.fail(`Missing ${locale} steps/tools heading: ${copy.stepsHeading} / ${copy.featuresHeading}`);
-    }
-
-    const lastUseCaseArticle = visibleUseCaseArticles.at(-1);
-    const stepsAndToolsBlock = stepsSectionHeading.closest('section')?.parentElement;
-
-    expect(lastUseCaseArticle, `Missing fourth ${locale} use-case card before steps/tools block`).toBeDefined();
-    expect(stepsAndToolsBlock, `Missing ${locale} steps/tools block`).toBeDefined();
-    expect(
-      stepsAndToolsBlock?.contains(toolsSectionHeading),
-      `Missing ${locale} tools heading from steps/tools block: ${copy.featuresHeading}`,
-    ).toBe(true);
-
-    if (!lastUseCaseArticle || !stepsAndToolsBlock) {
-      expect.fail(`Missing ${locale} DOM order boundary for use cases, steps/tools, and comparison table`);
-    }
-
-    expect(
-      lastUseCaseArticle.compareDocumentPosition(stepsAndToolsBlock) & Node.DOCUMENT_POSITION_FOLLOWING,
-      `Expected ${locale} steps/tools block after fourth use-case card`,
-    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-    expect(
-      stepsAndToolsBlock.compareDocumentPosition(comparisonTable) & Node.DOCUMENT_POSITION_FOLLOWING,
-      `Expected ${locale} steps/tools block before comparison table`,
-    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-
     expect(copy).not.toHaveProperty('overviewParagraphs');
     expect(copy).not.toHaveProperty('featuresIntro');
     expect(copy).not.toHaveProperty('useCasesIntro');
@@ -342,16 +297,349 @@ describe('CoatMakerSeoContent', () => {
   it.each([
     {
       locale: 'en' as const,
+      eyebrow: 'How it works',
+      heading: 'How to use the Coat of Arms Maker',
+      steps: [
+        {
+          title: 'Choose a shield and field',
+          description:
+            'In Coat of Arms Maker, choose a shield shape, set its field divisions, and adjust patterns and colors to define the base of your design.',
+        },
+        {
+          title: 'Combine symbols and text',
+          description: 'Use Coat of Arms Maker to combine built-in symbols and text, then add your own images or draw extra details in the editor.',
+        },
+        {
+          title: 'Preview and export',
+          description: 'Preview your design in Coat of Arms Maker, adjust layer positions and sizes, then download it as PNG, JPEG, or PDF.',
+        },
+      ],
+    },
+    {
+      locale: 'zh' as const,
+      eyebrow: '使用方式',
+      heading: '如何使用纹章制作器？',
+      steps: [
+        {
+          title: '选择盾形与底纹',
+          description: '使用纹章制作器选择盾形，设置底色分区，再调整底纹和颜色，确定设计基础。',
+        },
+        {
+          title: '组合图形与文字',
+          description: '使用纹章制作器组合内置图形和文字，也可以加入自己的图片或绘制额外细节。',
+        },
+        {
+          title: '预览并导出',
+          description: '在纹章制作器中预览设计，调整图层位置和大小，再下载 PNG、JPEG 或 PDF。',
+        },
+      ],
+    },
+  ])('renders the localized $locale how-it-works steps with ordered semantics', ({
+    locale,
+    eyebrow,
+    heading,
+    steps,
+  }) => {
+    render(<CoatMakerSeoContent locale={locale} />);
+
+    const contentRoot = screen.getByTestId('coat-maker-seo-content');
+    const copy = getCoatMakerSeoCopy(locale);
+    const howItWorksSection = document.getElementById('coat-maker-how-it-works');
+    const howItWorksHeading = document.getElementById('coat-maker-how-it-works-heading');
+
+    expect(copy.howItWorksEyebrow).toBe(eyebrow);
+    expect(copy.howItWorksHeading).toBe(heading);
+    expect(copy.howItWorksSteps).toEqual(steps);
+    expect(howItWorksSection, `Missing ${locale} how-it-works section`).not.toBeNull();
+    expect(howItWorksHeading, `Missing ${locale} how-it-works heading`).not.toBeNull();
+
+    if (!howItWorksSection || !howItWorksHeading) {
+      expect.fail(`Missing ${locale} how-it-works landmark`);
+    }
+
+    expect(howItWorksSection.parentElement).toBe(contentRoot);
+    expect(howItWorksSection.getAttribute('aria-labelledby')).toBe(howItWorksHeading.id);
+    expect(howItWorksHeading.textContent?.trim()).toBe(heading);
+    expect(within(howItWorksSection).getByText(eyebrow)).not.toBeNull();
+
+    const orderedSteps = within(howItWorksSection).getByRole('list');
+    const stepItems = within(orderedSteps).getAllByRole('listitem');
+
+    expect(orderedSteps.tagName).toBe('OL');
+    expect(stepItems).toHaveLength(3);
+    expect(copy.howItWorksSteps.map((step) => step.title)).toEqual(steps.map((step) => step.title));
+
+    for (const [stepIndex, step] of steps.entries()) {
+      const stepItem = stepItems[stepIndex];
+
+      expect(stepItem?.tagName).toBe('LI');
+      expect(within(stepItem).getByText(String(stepIndex + 1).padStart(2, '0'))).not.toBeNull();
+      expect(within(stepItem).getByRole('heading', { level: 3, name: step.title })).not.toBeNull();
+      expect(within(stepItem).getByText(step.description)).not.toBeNull();
+    }
+  });
+
+  it.each([
+    {
+      locale: 'en' as const,
+      comparisonDimensionHeading: 'Comparison',
+      comparisonTableLabel: 'Coat of Arms Maker comparison',
+    },
+    {
+      locale: 'zh' as const,
+      comparisonDimensionHeading: '对比维度',
+      comparisonTableLabel: '纹章制作器对比',
+    },
+  ])('exposes the localized $locale comparison table landmarks', ({
+    locale,
+    comparisonDimensionHeading,
+    comparisonTableLabel,
+  }) => {
+    render(<CoatMakerSeoContent locale={locale} />);
+
+    const contentRoot = screen.getByTestId('coat-maker-seo-content');
+    const copy = getCoatMakerSeoCopy(locale);
+    const comparisonSection = document.getElementById('coat-maker-comparison');
+    const comparisonHeading = document.getElementById('coat-maker-comparison-heading');
+    const comparisonScrollFrame = document.getElementById('coat-maker-comparison-scroll');
+
+    expect(copy.comparisonDimensionHeading).toBe(comparisonDimensionHeading);
+    expect(copy.comparisonTableLabel).toBe(comparisonTableLabel);
+    expect(comparisonSection, `Missing ${locale} comparison section`).not.toBeNull();
+    expect(comparisonHeading, `Missing ${locale} comparison heading`).not.toBeNull();
+    expect(comparisonScrollFrame, `Missing ${locale} comparison scroll frame`).not.toBeNull();
+
+    if (!comparisonSection || !comparisonHeading || !comparisonScrollFrame) {
+      expect.fail(`Missing ${locale} comparison landmark`);
+    }
+
+    expect(contentRoot.querySelectorAll('#coat-maker-comparison')).toHaveLength(1);
+    expect(comparisonSection.parentElement).toBe(contentRoot);
+    expect(comparisonSection.getAttribute('aria-labelledby')).toBe(comparisonHeading.id);
+    expect(comparisonHeading.textContent?.trim()).toBe(copy.comparisonHeading);
+    expect(comparisonScrollFrame.parentElement).toBe(comparisonSection);
+    expect(comparisonScrollFrame.getAttribute('role')).toBe('region');
+    expect(comparisonScrollFrame.tabIndex).toBe(0);
+    expect(comparisonScrollFrame.getAttribute('aria-label')).toBe(copy.comparisonTableLabel);
+
+    const comparisonTable = within(comparisonScrollFrame).getByRole('table');
+    const tableCaptions = comparisonTable.querySelectorAll('caption');
+    const comparisonColumnHeaders = Array.from(
+      comparisonTable.querySelectorAll<HTMLTableCellElement>('thead th[scope="col"]'),
+    );
+    const comparisonRows = Array.from(comparisonTable.querySelectorAll<HTMLTableRowElement>('tbody tr'));
+
+    expect(tableCaptions, `Expected one ${locale} comparison table caption`).toHaveLength(1);
+    expect(tableCaptions[0]?.textContent?.trim()).toBe(copy.comparisonHeading);
+    expect(comparisonColumnHeaders, `Expected one dimension and 3 ${locale} tool columns`).toHaveLength(4);
+    expect(comparisonColumnHeaders[0]?.textContent?.trim()).toBe(comparisonDimensionHeading);
+    expect(comparisonColumnHeaders.slice(1).map((headerCell) => headerCell.textContent?.trim())).toEqual(
+      copy.comparisonColumns,
+    );
+    expect(comparisonRows, `Expected exactly 4 visible ${locale} comparison rows`).toHaveLength(4);
+    for (const comparisonRow of comparisonRows) {
+      expect(comparisonRow.querySelectorAll('td')).toHaveLength(3);
+    }
+  });
+
+  it.each([
+    {
+      locale: 'en' as const,
+      whatIsTitle: 'What is the Coat of Arms Maker?',
+      whatIsDescription:
+        'Coat of Arms Maker is a free online editor for creating custom shields, character emblems, and guild badges. Choose a shield shape and field pattern, combine symbols, text, and layers, or add your own images and drawn details. Download the finished design as PNG, JPEG, or PDF.',
+      featureOverviewTitle: 'Create Your Own Coat of Arms',
+      featureOverviewSubtitle:
+        'Use Coat of Arms Maker to shape the shield, add symbols and a motto, then arrange the details and export your design—all in your browser.',
+      features: [
+        {
+          icon: 'shield',
+          title: 'Shield shapes and field patterns',
+          description: 'Choose a shield shape, divide the field, and adjust patterns and colors to build the base of your design in Coat of Arms Maker.',
+        },
+        {
+          icon: 'symbols',
+          title: 'Heraldic symbols',
+          description: 'Browse the built-in symbols by category in Coat of Arms Maker and add the shapes that suit your character, family, or guild.',
+        },
+        {
+          icon: 'text',
+          title: 'Text and mottos',
+          description: 'Add a name or motto as straight, curved, or ring text in Coat of Arms Maker, then adjust its font, size, and color.',
+        },
+        {
+          icon: 'layers',
+          title: 'Layer controls',
+          description: 'Use Coat of Arms Maker to reorder, group, hide, lock, or duplicate layers, and adjust the position, size, rotation, and opacity of your elements.',
+        },
+        {
+          icon: 'drawing',
+          title: 'Draw or add your own images',
+          description: 'Upload an image from your device or draw details in Coat of Arms Maker with adjustable brush width, color, and opacity.',
+        },
+        {
+          icon: 'export',
+          title: 'Browser drafts and exports',
+          description: 'Restore a recent draft in Coat of Arms Maker when your browser still has it, then download your finished design as PNG, JPEG, or PDF.',
+        },
+      ],
+    },
+    {
+      locale: 'zh' as const,
+      whatIsTitle: '什么是纹章制作器？',
+      whatIsDescription:
+        '纹章制作器是一款免费在线视觉编辑工具，用于制作自己的盾徽、角色标志和公会徽章。你可以选择盾形与底纹，组合图形、文字和图层，也可加入图片或绘制细节。完成后将设计导出为 PNG、JPEG 或 PDF。',
+      featureOverviewTitle: '设计属于你的纹章',
+      featureOverviewSubtitle: '使用纹章制作器选择盾形与底纹，加入图形和格言，再调整细节并导出设计，整个过程都在浏览器中完成。',
+      features: [
+        {
+          icon: 'shield',
+          title: '盾形与底纹',
+          description: '使用纹章制作器选择盾牌轮廓，划分底色区域，再调整底纹与颜色，为设计打好基础。',
+        },
+        {
+          icon: 'symbols',
+          title: '图形符号',
+          description: '在纹章制作器中按分类浏览内置图形，加入适合角色、家族或公会的纹章符号。',
+        },
+        {
+          icon: 'text',
+          title: '文字与格言',
+          description: '在纹章制作器中加入普通文字、弧形文字或环形文字，填写名字与格言，再调整字体、大小和颜色。',
+        },
+        {
+          icon: 'layers',
+          title: '图层管理',
+          description: '使用纹章制作器调整图层顺序，分组、隐藏、锁定或复制元素，并设置位置、大小、旋转和透明度。',
+        },
+        {
+          icon: 'drawing',
+          title: '绘图与自有图片',
+          description: '在纹章制作器中加入设备上的图片，或用可调整粗细、颜色和透明度的画笔绘制细节。',
+        },
+        {
+          icon: 'export',
+          title: '草稿恢复与导出',
+          description: '如果浏览器仍保留纹章制作器的最近草稿，可恢复后继续编辑；完成后下载 PNG、JPEG 或 PDF。',
+        },
+      ],
+    },
+  ])('renders the localized What Is and feature overview contract for $locale', ({
+    locale,
+    whatIsTitle,
+    whatIsDescription,
+    featureOverviewTitle,
+    featureOverviewSubtitle,
+    features,
+  }) => {
+    render(<CoatMakerSeoContent locale={locale} />);
+
+    const contentRoot = screen.getByTestId('coat-maker-seo-content');
+    const copy = getCoatMakerSeoCopy(locale);
+    const whatIsHeading = within(contentRoot).getByRole('heading', { level: 2, name: whatIsTitle });
+    const whatIsSection = whatIsHeading.closest('section');
+
+    expect(copy.whatIsTitle).toBe(whatIsTitle);
+    expect(copy.whatIsDescription).toBe(whatIsDescription);
+    expect(copy.featureOverview.title).toBe(featureOverviewTitle);
+    expect(copy.featureOverview.subtitle).toBe(featureOverviewSubtitle);
+    expect(copy.featureOverview.features.map((feature) => feature.icon)).toEqual(
+      features.map((feature) => feature.icon),
+    );
+    expect(whatIsSection, `Missing ${locale} What Is section`).not.toBeNull();
+
+    if (!whatIsSection) {
+      expect.fail(`Missing ${locale} What Is section`);
+    }
+
+    expect(whatIsSection.id).toBe('coat-maker-what-is');
+    expect(whatIsSection.parentElement).toBe(contentRoot);
+    expect(whatIsSection.getAttribute('aria-labelledby')).toBe('coat-maker-what-is-heading');
+    expect(whatIsHeading.id).toBe('coat-maker-what-is-heading');
+    expect(whatIsSection.querySelectorAll('p')).toHaveLength(1);
+    expect(within(whatIsSection).getByText(whatIsDescription)).not.toBeNull();
+
+    const featureSection = document.getElementById('coat-maker-features');
+    expect(featureSection, `Missing ${locale} feature section`).not.toBeNull();
+
+    if (!featureSection) {
+      expect.fail(`Missing ${locale} feature section`);
+    }
+
+    const featureHeading = within(featureSection).getByRole('heading', { level: 2, name: featureOverviewTitle });
+    const featureCards = within(featureSection).getAllByRole('article');
+
+    expect(featureSection.parentElement).toBe(contentRoot);
+    expect(featureSection.getAttribute('aria-labelledby')).toBe('coat-maker-features-heading');
+    expect(featureHeading.id).toBe('coat-maker-features-heading');
+    expect(within(featureSection).getByText(featureOverviewSubtitle)).not.toBeNull();
+    expect(featureCards).toHaveLength(6);
+    expect(featureSection.querySelectorAll('article svg')).toHaveLength(6);
+    expect(featureSection.querySelectorAll('article svg:not([aria-hidden="true"])')).toHaveLength(0);
+
+    for (const feature of features) {
+      const featureCardHeading = within(featureSection).getByRole('heading', {
+        level: 3,
+        name: feature.title,
+      });
+      const featureCard = featureCardHeading.closest('article');
+
+      expect(featureCard, `Missing ${locale} feature card: ${feature.title}`).not.toBeNull();
+
+      if (!featureCard) {
+        expect.fail(`Missing ${locale} feature card: ${feature.title}`);
+      }
+
+      expect(within(featureCard).getByText(feature.description)).not.toBeNull();
+    }
+
+    const howItWorksSection = document.getElementById('coat-maker-how-it-works');
+    const comparisonSection = document.getElementById('coat-maker-comparison');
+    const ctaSection = within(contentRoot)
+      .getByRole('heading', { level: 2, name: copy.editorCtaHeading })
+      .closest('section');
+    const faqSection = within(contentRoot)
+      .getByRole('heading', { level: 2, name: copy.faqHeading })
+      .closest('section');
+
+    expect(howItWorksSection, `Missing ${locale} how-it-works section`).not.toBeNull();
+    expect(comparisonSection, `Missing ${locale} comparison section`).not.toBeNull();
+    expect(ctaSection, `Missing ${locale} CTA section`).not.toBeNull();
+    expect(faqSection, `Missing ${locale} FAQ section`).not.toBeNull();
+
+    if (!howItWorksSection || !comparisonSection || !ctaSection || !faqSection) {
+      expect.fail(`Missing ${locale} downstream SEO section after the new What Is/features sections`);
+    }
+
+    const orderedSeoBlocks = [whatIsSection, featureSection, howItWorksSection, comparisonSection, ctaSection, faqSection];
+
+    for (const [blockIndex, currentBlock] of orderedSeoBlocks.entries()) {
+      const nextBlock = orderedSeoBlocks[blockIndex + 1];
+
+      if (!nextBlock) {
+        continue;
+      }
+
+      expect(
+        currentBlock.compareDocumentPosition(nextBlock) & Node.DOCUMENT_POSITION_FOLLOWING,
+        `Expected ${locale} SEO block ${blockIndex} to precede block ${blockIndex + 1}`,
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    }
+  });
+
+  it.each([
+    {
+      locale: 'en' as const,
       heading: 'Why choose our coat of arms maker',
       readerCopy:
-        'Start creating without an account or paid plan. Add your own images for free, finish an original coat of arms in the browser, and export PNG, JPEG, or PDF; print and batch export are available when you need them.',
+        'Start creating in Coat of Arms Maker without an account or paid plan. Add your own images for free, finish an original coat of arms in the browser, and export PNG, JPEG, or PDF; print and batch export are available when you need them.',
       authorNarration: /rows below|other makers/i,
     },
     {
       locale: 'zh' as const,
       heading: '为什么选择我们的纹章制作器',
       readerCopy:
-        '无需账号或付费方案，即可开始制作。你可以免费加入自己的图片，在浏览器中完成原创纹章，并导出 PNG、JPEG 或 PDF；需要时也能打印或批量导出。',
+        '无需账号或付费方案，即可使用纹章制作器开始制作。你可以免费加入自己的图片，在浏览器中完成原创纹章，并导出 PNG、JPEG 或 PDF；需要时也能打印或批量导出。',
       authorNarration: /下面几行|另外两家|逐项摆开比/,
     },
   ])('renders the $locale comparison introduction for readers without author-facing narration', ({
@@ -380,7 +668,7 @@ describe('CoatMakerSeoContent', () => {
     {
       locale: 'en' as const,
       heading: 'Start with a shield. Leave with a mark of your own.',
-      emphasis: 'Keep shaping the shield, field, symbols, and text',
+      emphasis: 'Keep shaping the shield, field, symbols, and text in Coat of Arms Maker',
       description:
         'Finish your design in the editor, then export PNG, JPEG, or PDF for a character, faction, guild, or invented family.',
       ctaLabel: 'Start creating',
@@ -388,7 +676,7 @@ describe('CoatMakerSeoContent', () => {
     {
       locale: 'zh' as const,
       heading: '从一面盾开始，做出属于你的标志',
-      emphasis: '盾形、底纹、图形和文字都可以继续调整',
+      emphasis: '在纹章制作器中继续调整盾形、底纹、图形和文字',
       description:
         '在编辑器里完成设计，再从设备上导出 PNG、JPEG 或 PDF，用于角色、阵营、社团或虚构家族。',
       ctaLabel: '开始制作纹章',
@@ -417,6 +705,7 @@ describe('CoatMakerSeoContent', () => {
     expect(within(ctaSection).getByRole('link', { name: ctaLabel }).getAttribute('href')).toBe(
       '#coat-editor-workspace',
     );
+    expect(within(contentRoot).getAllByRole('link')).toHaveLength(1);
   });
 
   it.each([
@@ -493,24 +782,30 @@ describe('CoatMakerSeoContent', () => {
     {
       locale: 'en' as const,
       faqHeading: 'Frequently asked questions',
+      faqEyebrow: 'FAQ',
+      faqDescription: 'Find answers about free use of Coat of Arms Maker, browser drafts, accounts, your own images, and export formats.',
       accountQuestion: 'Do I need an account to use the coat of arms maker?',
       accountAnswer:
-        'No. You can edit and export a design directly in the browser, and the project stays in your current browser.',
+        'No. You can use Coat of Arms Maker to edit and export a design directly in the browser, and the project stays in your current browser.',
       uploadQuestion: 'Can I add my own images to the coat of arms?',
       uploadAnswer:
-        'Yes. Add a local image, adjust its position, size, and layer in the editor, then export it as part of the finished design.',
+        'Yes. Add a local image to Coat of Arms Maker, adjust its position, size, and layer in the editor, then export it as part of the finished design.',
     },
     {
       locale: 'zh' as const,
       faqHeading: '常见问题',
+      faqEyebrow: 'FAQ',
+      faqDescription: '了解免费使用纹章制作器、浏览器草稿、账号、自有图片和导出格式等常见问题。',
       accountQuestion: '使用纹章制作器需要注册账号吗？',
-      accountAnswer: '不需要。你可以直接在浏览器中编辑和导出设计，项目会保留在当前浏览器中。',
+      accountAnswer: '不需要。你可以直接在纹章制作器中编辑和导出设计，项目会保留在当前浏览器中。',
       uploadQuestion: '可以把自己的图片加入纹章吗？',
-      uploadAnswer: '可以。你可以加入本地图片，在编辑器中调整位置、大小和图层，然后随整个设计一起导出。',
+      uploadAnswer: '可以。你可以把本地图片加入纹章制作器，在编辑器中调整位置、大小和图层，然后随整个设计一起导出。',
     },
   ])('renders five $locale FAQ items including account and local-image guidance', ({
     locale,
     faqHeading,
+    faqEyebrow,
+    faqDescription,
     accountQuestion,
     accountAnswer,
     uploadQuestion,
@@ -519,90 +814,41 @@ describe('CoatMakerSeoContent', () => {
     render(<CoatMakerSeoContent locale={locale} />);
 
     const contentRoot = screen.getByTestId('coat-maker-seo-content');
-    const heading = within(contentRoot).getByRole('heading', { level: 2, name: faqHeading });
-    const faqSection = heading.closest('section');
+    const copy = getCoatMakerSeoCopy(locale);
+    const heading = document.getElementById('coat-maker-faq-heading');
+    const faqSection = document.getElementById('coat-maker-faq');
+    const description = document.getElementById('coat-maker-faq-description');
 
+    expect(heading, `Missing ${locale} FAQ heading`).not.toBeNull();
     expect(faqSection, `Missing ${locale} FAQ section`).not.toBeNull();
+    expect(description, `Missing ${locale} FAQ description`).not.toBeNull();
 
-    if (!faqSection) {
+    if (!heading || !faqSection || !description) {
       expect.fail(`Missing ${locale} FAQ section`);
     }
 
-    expect(within(faqSection).getAllByRole('button')).toHaveLength(5);
+    expect(contentRoot.querySelectorAll('#coat-maker-faq')).toHaveLength(1);
+    expect(faqSection.parentElement).toBe(contentRoot);
+    expect(faqSection.getAttribute('aria-labelledby')).toBe(heading.id);
+    expect(faqSection.getAttribute('aria-describedby')).toBe(description.id);
+    expect(heading.textContent?.trim()).toBe(faqHeading);
+    expect(within(faqSection).getByText(faqEyebrow)).not.toBeNull();
+    expect(description.tagName).toBe('P');
+    expect(description.textContent?.trim()).toBe(faqDescription);
+    const faqButtons = within(faqSection).getAllByRole('button');
+
+    expect(faqButtons).toHaveLength(5);
+    expect(faqButtons.map((faqButton) => faqButton.textContent?.trim())).toEqual(
+      copy.faqItems.map((faqItem) => faqItem.question),
+    );
+    for (const faqItem of copy.faqItems) {
+      expect(within(faqSection).getByRole('button', { name: faqItem.question })).not.toBeNull();
+      expect(within(faqSection).getByText(faqItem.answer)).not.toBeNull();
+    }
     expect(within(faqSection).getByRole('button', { name: accountQuestion })).not.toBeNull();
     expect(within(faqSection).getByText(accountAnswer)).not.toBeNull();
     expect(within(faqSection).getByRole('button', { name: uploadQuestion })).not.toBeNull();
     expect(within(faqSection).getByText(uploadAnswer)).not.toBeNull();
-  });
-
-  it('counts Chinese all-content tokens as Han characters plus Latin and numeric tokens', () => {
-    expect(countChineseTokens('纹章制作器 Token 5e')).toBe(7);
-  });
-
-  it('collects visible semantic text from headings, paragraphs, list items, links, and table cells only', () => {
-    render(
-      <section data-testid="semantic-text-fixture">
-        <h1>Heading one</h1>
-        <h2>Heading two</h2>
-        <h3>Heading three</h3>
-        <p>Paragraph</p>
-        <ul>
-          <li>List item</li>
-        </ul>
-        <a href="/semantic-link">Link</a>
-        <table>
-          <thead>
-            <tr>
-              <th>Column heading</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Table cell</td>
-            </tr>
-          </tbody>
-        </table>
-        <h4>Heading four</h4>
-        <div>Division</div>
-        <span>Span</span>
-        <button type="button">Button</button>
-      </section>,
-    );
-
-    expect(collectVisibleSemanticText(screen.getByTestId('semantic-text-fixture'))).toBe(
-      'Heading one Heading two Heading three Paragraph List item Link Column heading Table cell',
-    );
-  });
-
-  it.each([
-    { locale: 'en' as const, keyphrase: 'coat of arms maker' },
-    { locale: 'zh' as const, keyphrase: '纹章制作器' },
-  ])('records the $locale keyphrase density after putting metadata copy on the page', ({ locale, keyphrase }) => {
-    render(
-      <div data-testid="coat-maker-page-copy">
-        <CoatMakerPageHeading locale={locale} />
-        <CoatMakerSeoContent locale={locale} />
-      </div>,
-    );
-
-    const contentRoot = screen.getByTestId('coat-maker-page-copy');
-    const semanticText = collectVisibleSemanticText(contentRoot);
-    const density = calculateKeyphraseDensity(semanticText, keyphrase, locale);
-    const totalTokenCount = locale === 'zh' ? countChineseTokens(semanticText) : countEnglishTokens(semanticText);
-    const keyphraseOccurrenceCount = locale === 'zh'
-      ? countChineseKeyphraseOccurrences(semanticText, keyphrase)
-      : countEnglishKeyphraseOccurrences(semanticText, keyphrase);
-    const keyphraseTokenCount = locale === 'zh' ? countChineseTokens(keyphrase) : countEnglishTokens(keyphrase);
-
-    expect(
-      density,
-      `Expected ${locale} keyphrase density to be at least 2%, received ${density} (${density * 100}%)`,
-    ).toBeGreaterThanOrEqual(0.02);
-    expect(
-      density,
-      `Expected ${locale} keyphrase density to be at most 4%, received ${density} (${density * 100}%)`,
-    ).toBeLessThanOrEqual(0.04);
-    expect(density).toBeCloseTo((keyphraseOccurrenceCount * keyphraseTokenCount) / totalTokenCount, 10);
   });
 
   it.each(['en', 'zh'] as const)('exposes verified WebApplication feature names for $locale', (locale) => {
@@ -610,6 +856,98 @@ describe('CoatMakerSeoContent', () => {
 
     expect(copy.webApplicationFeatureNames).toHaveLength(3);
     expect(copy.webApplicationFeatureNames.every((featureName) => featureName.trim().length > 0)).toBe(true);
+  });
+
+  it.each(['en', 'zh'] as const)('renders the localized three-group showcase with isolated carousels for $locale', async (locale) => {
+    render(<CoatMakerSeoContent locale={locale} />);
+
+    const showcaseSection = screen.getByTestId('coat-maker-showcase');
+    const copy = getCoatMakerShowcaseCopy(locale);
+    const groupSections = Array.from(showcaseSection.querySelectorAll<HTMLElement>('[data-showcase-group]'));
+    const whatIsSection = document.getElementById('coat-maker-what-is');
+    const featureSection = document.getElementById('coat-maker-features');
+
+    expect(showcaseSection.getAttribute('aria-label')).toBe(copy.heading);
+    expect(showcaseSection.getAttribute('aria-labelledby')).toBeNull();
+    expect(within(showcaseSection).queryByRole('heading', { level: 2, name: copy.heading })).toBeNull();
+    expect(within(showcaseSection).queryByText(copy.description)).toBeNull();
+    expect(showcaseSection.parentElement).toBe(screen.getByTestId('coat-maker-seo-content'));
+    expect(whatIsSection).not.toBeNull();
+    expect(featureSection).not.toBeNull();
+
+    if (!whatIsSection || !featureSection) {
+      expect.fail(`Missing ${locale} What Is or feature section around showcase.`);
+    }
+
+    expect(whatIsSection.compareDocumentPosition(showcaseSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(showcaseSection.compareDocumentPosition(featureSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(groupSections).toHaveLength(3);
+    expect(groupSections.map((groupSection) => groupSection.dataset.showcaseGroup)).toEqual([
+      'characters',
+      'guilds',
+      'regions',
+    ]);
+
+    const groupCarousels: HTMLElement[] = [];
+
+    for (const [groupIndex, groupCopy] of copy.groups.entries()) {
+      const groupSection = groupSections[groupIndex];
+
+      if (!groupSection) {
+        expect.fail(`Missing ${locale} showcase group at index ${groupIndex}.`);
+      }
+
+      expect(within(groupSection).getByRole('heading', { level: 3, name: groupCopy.title })).not.toBeNull();
+      expect(within(groupSection).getByText(groupCopy.description)).not.toBeNull();
+
+      const carousel = groupSection.querySelector<HTMLElement>('[data-circular-testimonials="true"]');
+
+      expect(carousel, `Missing ${locale} showcase carousel: ${groupCopy.id}`).not.toBeNull();
+
+      if (!carousel) {
+        expect.fail(`Missing ${locale} showcase carousel: ${groupCopy.id}`);
+      }
+
+      expect(carousel.getAttribute('aria-label')).toBe(groupCopy.title);
+      expect(carousel.querySelectorAll('[data-part="testimonial-image-frame"]')).toHaveLength(4);
+      expect(within(carousel).getAllByRole('button')).toHaveLength(2);
+      expect(within(carousel).getByRole('button', { name: `${copy.previousLabel} — ${groupCopy.title}` })).not.toBeNull();
+      expect(within(carousel).getByRole('button', { name: `${copy.nextLabel} — ${groupCopy.title}` })).not.toBeNull();
+      groupCarousels.push(carousel);
+    }
+
+    const firstGroup = copy.groups[0];
+    const secondGroup = copy.groups[1];
+    const firstCarousel = groupCarousels[0];
+    const secondCarousel = groupCarousels[1];
+
+    if (!firstGroup || !secondGroup || !firstCarousel || !secondCarousel) {
+      expect.fail(`Missing ${locale} showcase carousel interaction fixture.`);
+    }
+
+    const firstGroupInitialExample = firstGroup.examples[0];
+    const firstGroupNextExample = firstGroup.examples[1];
+    const secondGroupInitialExample = secondGroup.examples[0];
+
+    if (!firstGroupInitialExample || !firstGroupNextExample || !secondGroupInitialExample) {
+      expect.fail(`Missing ${locale} showcase examples for carousel interaction fixture.`);
+    }
+
+    expect(within(firstCarousel).getByText(firstGroupInitialExample.name)).not.toBeNull();
+    expect(within(secondCarousel).getByText(secondGroupInitialExample.name)).not.toBeNull();
+
+    fireEvent.click(within(firstCarousel).getByRole('button', {
+      name: `${copy.nextLabel} — ${firstGroup.title}`,
+    }));
+
+    await waitFor(() => {
+      expect(within(firstCarousel).getByText(firstGroupNextExample.name)).not.toBeNull();
+    });
+    expect(within(secondCarousel).getByText(secondGroupInitialExample.name)).not.toBeNull();
   });
 
   it.each(['fr', 'toString', 'constructor', '__proto__'])('rejects unsupported locale key %s before returning copy', (invalidLocale) => {

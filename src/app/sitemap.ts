@@ -21,6 +21,10 @@ const OUTFIT_CREATOR_LAST_MODIFIED = '2026-10-04';
 const WEAPON_CREATOR_LAST_MODIFIED = '2026-10-05';
 const LANGUAGE_GENERATOR_LAST_MODIFIED = '2026-10-05';
 const SCROLL_CREATOR_LAST_MODIFIED = '2026-10-06';
+const FAMILY_TREE_CREATOR_LAST_MODIFIED = '2026-10-06';
+const SOLAR_SYSTEM_CREATOR_LAST_MODIFIED = '2026-10-06';
+const PERIODIC_TABLE_CREATOR_LAST_MODIFIED = '2026-10-06';
+const TAROT_CARDS_LAST_MODIFIED = '2026-10-06';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
 const TEMPLATE_LAST_MODIFIED = '2026-05-06';
 
@@ -111,6 +115,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/emblem-creator',
     '/language-generator',
     '/scroll-creator',
+    '/family-tree-creator',
+    '/solar-system-creator',
+    '/periodic-table-creator',
+    '/tarot-cards',
     '/coat-of-arms-maker',
     '/contact',
   ] as const;
@@ -136,6 +144,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(LANGUAGE_GENERATOR_LAST_MODIFIED)
             : path === '/scroll-creator'
             ? new Date(SCROLL_CREATOR_LAST_MODIFIED)
+            : path === '/family-tree-creator'
+            ? new Date(FAMILY_TREE_CREATOR_LAST_MODIFIED)
+            : path === '/solar-system-creator'
+            ? new Date(SOLAR_SYSTEM_CREATOR_LAST_MODIFIED)
+            : path === '/periodic-table-creator'
+            ? new Date(PERIODIC_TABLE_CREATOR_LAST_MODIFIED)
+            : path === '/tarot-cards'
+            ? new Date(TAROT_CARDS_LAST_MODIFIED)
             : path === '/contact'
             ? new Date(CONTACT_LAST_MODIFIED)
             : supportPage

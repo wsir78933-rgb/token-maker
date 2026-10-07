@@ -1,0 +1,296 @@
+import type { TarotSpread } from './types';
+
+export const TAROT_SPREADS: readonly TarotSpread[] = [
+  {
+    id: 'celtic-cross',
+    name: { en: 'Celtic Cross', zh: '凯尔特十字' },
+    description: {
+      en: 'A broad reading for the present situation, its influences, and its likely direction.',
+      zh: '综合查看当前状态、影响因素与可能走向。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Present self', zh: '当前自我' }, description: { en: 'Your current state and perspective.', zh: '你此刻的状态与视角。' }, x: -155, y: 235 },
+      { number: 2, label: { en: 'Influence or obstacle', zh: '影响或阻碍' }, description: { en: 'The force helping or crossing your path.', zh: '正在帮助你或挡在路上的力量。' }, x: -155, y: 285, fixedRotationDeg: 90 },
+      { number: 3, label: { en: 'Root of the question', zh: '问题根源' }, description: { en: 'Where the question or struggle begins.', zh: '问题或挣扎的起点。' }, x: -155, y: 30 },
+      { number: 4, label: { en: 'Recent past', zh: '近期过去' }, description: { en: 'Recent events that shaped the situation.', zh: '塑造当前局面的近期事件。' }, x: -155, y: 445 },
+      { number: 5, label: { en: 'Changeable future issue', zh: '可变化的未来议题' }, description: { en: 'A future concern shaped by your present response.', zh: '会因你现在的回应而改变的未来议题。' }, x: 20, y: 235 },
+      { number: 6, label: { en: 'Near future', zh: '近未来' }, description: { en: 'The direction the situation is moving toward.', zh: '局面正在走向的方向。' }, x: -330, y: 235 },
+      { number: 7, label: { en: 'Emotional stance', zh: '情绪立场' }, description: { en: 'Your feelings as you face the matter.', zh: '你面对这件事时的情绪。' }, x: 175, y: 650 },
+      { number: 8, label: { en: 'Outside influence', zh: '外部影响' }, description: { en: 'People, circumstances, and the surrounding world.', zh: '他人、环境与周遭世界。' }, x: 175, y: 445 },
+      { number: 9, label: { en: 'Hopes and desires', zh: '希望与愿望' }, description: { en: 'What you hope to receive from the situation.', zh: '你希望从这件事中得到的结果。' }, x: 175, y: 235 },
+      { number: 10, label: { en: 'Likely outcome', zh: '可能结果' }, description: { en: 'The result suggested by continuing the present course.', zh: '沿着当前道路继续前进时的可能结果。' }, x: 175, y: 30 },
+    ],
+  },
+  {
+    id: 'cross-and-triangle',
+    name: { en: 'Cross and Triangle', zh: '十字与三角' },
+    description: {
+      en: 'A nine-card reading for inner resources, resistance, and resolution.',
+      zh: '查看内在资源、阻力与解决方向。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Life force', zh: '生命力' }, description: { en: 'The energy currently animating you.', zh: '此刻驱动你的能量。' }, x: 0, y: 185 },
+      { number: 2, label: { en: 'Thoughts', zh: '思想' }, description: { en: 'Your mental focus and reasoning.', zh: '你的思考重点与判断方式。' }, x: 0, y: 0 },
+      { number: 3, label: { en: 'Emotions', zh: '情绪' }, description: { en: 'Your emotional response to the matter.', zh: '你对此事的情感反应。' }, x: 150, y: 110 },
+      { number: 4, label: { en: 'Spirit', zh: '精神' }, description: { en: 'The spiritual meaning or inner attitude involved.', zh: '其中的精神意义或内在态度。' }, x: 0, y: 370 },
+      { number: 5, label: { en: 'Physical being', zh: '身体状态' }, description: { en: 'The bodily and practical side of your experience.', zh: '经历中的身体与现实层面。' }, x: -150, y: 110 },
+      { number: 6, label: { en: 'Primary opposition', zh: '主要阻力' }, description: { en: 'The strongest force working against you.', zh: '最主要的对抗力量。' }, x: -150, y: 740 },
+      { number: 7, label: { en: 'Secondary opposition', zh: '次要阻力' }, description: { en: 'Another force complicating the path.', zh: '让道路变复杂的另一股力量。' }, x: 150, y: 740 },
+      { number: 8, label: { en: 'Required energy', zh: '所需能量' }, description: { en: 'The quality or resource you need to call upon.', zh: '你需要调动的品质或资源。' }, x: 0, y: 740 },
+      { number: 9, label: { en: 'Outcome', zh: '结果' }, description: { en: 'The resolution suggested by the spread.', zh: '牌阵显示的解决方向与结果。' }, x: 0, y: 555 },
+    ],
+  },
+  {
+    id: 'tetraktys',
+    name: { en: 'Tetraktys', zh: '四元牌阵' },
+    description: {
+      en: 'A ten-card reading that moves from the four elements to the wider cosmic picture.',
+      zh: '从四元素出发，逐层查看个人行动与更大环境。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Fire: creative will', zh: '火：创造意志' }, description: { en: 'Will, ambition, and the urge to create.', zh: '意志、野心与创造冲动。' }, x: 217.5, y: 555 },
+      { number: 2, label: { en: 'Air: plans and thought', zh: '风：计划与思考' }, description: { en: 'Your plans and ideas for reaching a goal.', zh: '为实现目标形成的计划与想法。' }, x: 72.5, y: 555 },
+      { number: 3, label: { en: 'Water: emotional self', zh: '水：情感自我' }, description: { en: 'Your feelings and emotional perspective.', zh: '你的感受与情绪视角。' }, x: -72.5, y: 555 },
+      { number: 4, label: { en: 'Earth: daily life', zh: '土：日常生活' }, description: { en: 'How you meet practical everyday demands.', zh: '你应对日常现实要求的方式。' }, x: -217.5, y: 555 },
+      { number: 5, label: { en: 'Creator', zh: '创造者' }, description: { en: 'What pushes you toward a new direction.', zh: '推动你走向新方向的力量。' }, x: 145, y: 370 },
+      { number: 6, label: { en: 'Sustainer', zh: '维系者' }, description: { en: 'What preserves your health and balance.', zh: '维持健康与平衡的因素。' }, x: 0, y: 370 },
+      { number: 7, label: { en: 'Destroyer', zh: '终结者' }, description: { en: 'What must be released to move onward.', zh: '为了继续前进必须放下的事物。' }, x: -145, y: 370 },
+      { number: 8, label: { en: 'Light', zh: '光' }, description: { en: 'The larger forces that support you.', zh: '支持你的更大力量。' }, x: 72.5, y: 185 },
+      { number: 9, label: { en: 'Dark', zh: '暗' }, description: { en: 'How the wider world responds to your state.', zh: '更大环境对你当前状态的回应。' }, x: -72.5, y: 185 },
+      { number: 10, label: { en: 'Premise', zh: '根基' }, description: { en: 'The foundation beneath the whole reading.', zh: '整个牌阵与自身的底层根基。' }, x: 0, y: 0 },
+    ],
+  },
+  {
+    id: 'planetary',
+    name: { en: 'Planetary', zh: '行星牌阵' },
+    description: {
+      en: 'An eight-card view of personal life through home, love, work, and planetary themes.',
+      zh: '从居所、爱情、工作与行星主题查看个人生活。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Self', zh: '自身' }, description: { en: 'Your role in the question.', zh: '你在问题中的位置。' }, x: 0, y: 565 },
+      { number: 2, label: { en: 'Home · Moon', zh: '居所 · 月亮' }, description: { en: 'Home life, roots, and private surroundings.', zh: '家庭生活、根基与私人环境。' }, x: -67.5, y: 380 },
+      { number: 3, label: { en: 'Work · Mercury', zh: '工作 · 水星' }, description: { en: 'Skills, integrity, and daily work.', zh: '技能、诚信与日常工作。' }, x: -202.5, y: 280 },
+      { number: 4, label: { en: 'Love · Venus', zh: '爱情 · 金星' }, description: { en: 'Love and affection in your life.', zh: '生活中的爱情与情感。' }, x: -67.5, y: 185 },
+      { number: 5, label: { en: 'Conflict · Mars', zh: '冲突 · 火星' }, description: { en: 'Aggression, friction, and hostility.', zh: '攻击性、摩擦与敌意。' }, x: 0, y: 0 },
+      { number: 6, label: { en: 'Money · Jupiter', zh: '金钱 · 木星' }, description: { en: 'Money, growth, and material opportunity.', zh: '金钱、增长与物质机会。' }, x: 67.5, y: 185 },
+      { number: 7, label: { en: 'Mind · Saturn', zh: '思维 · 土星' }, description: { en: 'Intellectual responsibilities and limits.', zh: '智识层面的责任与限制。' }, x: 202.5, y: 280 },
+      { number: 8, label: { en: 'Outcome', zh: '结果' }, description: { en: 'The overall direction of the matter.', zh: '事情整体的发展方向。' }, x: 67.5, y: 380 },
+    ],
+  },
+  {
+    id: 'astrological',
+    name: { en: 'Astrological', zh: '占星牌阵' },
+    description: {
+      en: 'A thirteen-card survey of life areas matched with the twelve zodiac signs.',
+      zh: '用十三张牌查看自我与十二个星座对应的人生领域。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Self', zh: '自身' }, description: { en: 'Your identity and place in the reading.', zh: '你的身份与在问题中的位置。' }, x: 0, y: 400 },
+      { number: 2, label: { en: 'Mood · Aries', zh: '心境 · 白羊座' }, description: { en: 'Mood, instinct, and immediate drive.', zh: '心境、本能与即时驱动力。' }, x: -145, y: 400 },
+      { number: 3, label: { en: 'Finances · Taurus', zh: '财务 · 金牛座' }, description: { en: 'Money, possessions, and security.', zh: '金钱、拥有之物与安全感。' }, x: -145, y: 595 },
+      { number: 4, label: { en: 'Communication · Gemini', zh: '沟通 · 双子座' }, description: { en: 'Communication, learning, and travel.', zh: '沟通、学习与旅行。' }, x: -145, y: 790 },
+      { number: 5, label: { en: 'Home · Cancer', zh: '家庭 · 巨蟹座' }, description: { en: 'Family, home, and emotional roots.', zh: '家庭、居所与情感根基。' }, x: 0, y: 595 },
+      { number: 6, label: { en: 'Pleasure · Leo', zh: '享受 · 狮子座' }, description: { en: 'Pleasure, creativity, and self-expression.', zh: '享受、创造力与自我表达。' }, x: 145, y: 790 },
+      { number: 7, label: { en: 'Health · Virgo', zh: '健康 · 处女座' }, description: { en: 'Health, routines, and practical care.', zh: '健康、日常习惯与现实照料。' }, x: 145, y: 595 },
+      { number: 8, label: { en: 'Romance · Libra', zh: '关系 · 天秤座' }, description: { en: 'Romantic partnership and balance.', zh: '恋爱关系与相处平衡。' }, x: 145, y: 400 },
+      { number: 9, label: { en: 'Inheritance · Scorpio', zh: '继承 · 天蝎座' }, description: { en: 'Loss, inheritance, and deep transformation.', zh: '失去、继承与深层转化。' }, x: 145, y: 205 },
+      { number: 10, label: { en: 'Learning · Sagittarius', zh: '学习 · 射手座' }, description: { en: 'Education, dreams, and spirituality.', zh: '教育、梦想与灵性。' }, x: 145, y: 10 },
+      { number: 11, label: { en: 'Career · Capricorn', zh: '事业 · 摩羯座' }, description: { en: 'Career, responsibility, and public direction.', zh: '事业、责任与公众方向。' }, x: 0, y: 205 },
+      { number: 12, label: { en: 'Friends · Aquarius', zh: '朋友 · 水瓶座' }, description: { en: 'Friendships, groups, and shared ideals.', zh: '友谊、群体与共同理念。' }, x: -145, y: 10 },
+      { number: 13, label: { en: 'Fears · Pisces', zh: '恐惧 · 双鱼座' }, description: { en: 'Fears, doubts, and burdens carried inward.', zh: '内在承受的恐惧、疑虑与负担。' }, x: -145, y: 205 },
+    ],
+  },
+  {
+    id: 'relationship',
+    name: { en: 'Relationship', zh: '关系' },
+    description: {
+      en: 'A nine-card reading for two viewpoints, shared needs, and relationship direction.',
+      zh: '查看双方视角、彼此需求与关系走向。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Your view of your partner', zh: '你眼中的伴侣' }, description: { en: 'How you currently perceive your partner.', zh: '你目前如何看待伴侣。' }, x: -72.5, y: 985 },
+      { number: 2, label: { en: "Your partner's view of you", zh: '伴侣眼中的你' }, description: { en: 'How your partner currently perceives you.', zh: '伴侣目前如何看待你。' }, x: -72.5, y: 790 },
+      { number: 3, label: { en: 'Your needs', zh: '你的需求' }, description: { en: 'What you need from the relationship.', zh: '你希望从关系中获得什么。' }, x: -72.5, y: 595 },
+      { number: 4, label: { en: "Your partner's needs", zh: '伴侣的需求' }, description: { en: 'What your partner needs from the relationship.', zh: '伴侣希望从关系中获得什么。' }, x: -72.5, y: 400 },
+      { number: 5, label: { en: 'Relationship state', zh: '关系现状' }, description: { en: 'The condition of the relationship now.', zh: '关系当前的状态。' }, x: -217.5, y: 205 },
+      { number: 6, label: { en: 'Your preferred path', zh: '你期待的方向' }, description: { en: 'The direction you want the relationship to take.', zh: '你希望关系走向的方向。' }, x: -72.5, y: 205 },
+      { number: 7, label: { en: "Your partner's preferred path", zh: '伴侣期待的方向' }, description: { en: 'The direction your partner wants it to take.', zh: '伴侣希望关系走向的方向。' }, x: 72.5, y: 205 },
+      { number: 8, label: { en: 'Factors to consider', zh: '需要考虑的因素' }, description: { en: 'Relationship elements that deserve attention.', zh: '关系中需要正视的因素。' }, x: 217.5, y: 205 },
+      { number: 9, label: { en: 'Outcome', zh: '结果' }, description: { en: 'The direction suggested for the relationship.', zh: '牌阵显示的关系发展方向。' }, x: -72.5, y: 10 },
+    ],
+  },
+  {
+    id: 'star-guide',
+    name: { en: 'Star Guide', zh: '星之指引' },
+    description: {
+      en: 'A six-card guide to a challenge, the changes it asks for, and its outcome.',
+      zh: '查看困境、所需改变、可用优势与结果。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Current situation', zh: '当前处境' }, description: { en: 'The situation as it stands now.', zh: '目前真实的处境。' }, x: 0, y: 0 },
+      { number: 2, label: { en: 'Source of struggle', zh: '困境成因' }, description: { en: 'What is creating or sustaining the difficulty.', zh: '造成或维持困难的因素。' }, x: -145, y: 195 },
+      { number: 3, label: { en: 'Required change', zh: '需要的改变' }, description: { en: 'The adjustment that can help you move through it.', zh: '帮助你走出困境的调整。' }, x: 145, y: 195 },
+      { number: 4, label: { en: 'Strength', zh: '优势' }, description: { en: 'The strength available to you.', zh: '你可以运用的优势。' }, x: -145, y: 575 },
+      { number: 5, label: { en: 'Further challenge', zh: '后续挑战' }, description: { en: 'Another challenge that may appear along the way.', zh: '途中可能出现的另一项挑战。' }, x: 145, y: 575 },
+      { number: 6, label: { en: 'Outcome', zh: '结果' }, description: { en: 'The likely result of meeting the challenge.', zh: '面对挑战后的可能结果。' }, x: 0, y: 380 },
+    ],
+  },
+  {
+    id: 'birthday',
+    name: { en: 'Birthday', zh: '生日' },
+    description: {
+      en: 'A nine-card birthday reading for the year ahead, its resources, and its actions.',
+      zh: '围绕新一年的目标、资源、阻碍与行动。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Current life position', zh: '当前人生位置' }, description: { en: 'Where you are standing in life now.', zh: '你此刻处于人生的什么位置。' }, x: -217.5, y: 0 },
+      { number: 2, label: { en: 'Next-year goals', zh: '下一年目标' }, description: { en: 'What you want to pursue over the next year.', zh: '未来一年想要追求的目标。' }, x: -72.5, y: 0 },
+      { number: 3, label: { en: 'Empowering factors', zh: '赋能因素' }, description: { en: 'The people, qualities, or conditions that empower you.', zh: '给予你力量的人、品质或条件。' }, x: 72.5, y: 0 },
+      { number: 4, label: { en: 'Inner powers to develop', zh: '待发展的内在能力' }, description: { en: 'An inner ability worth cultivating.', zh: '值得培养的内在能力。' }, x: 217.5, y: 0 },
+      { number: 5, label: { en: 'Material and physical state', zh: '物质与身体状态' }, description: { en: 'Your present material and physical well-being.', zh: '当前的物质与身体状况。' }, x: -145, y: 185 },
+      { number: 6, label: { en: 'Emotional state', zh: '情绪状态' }, description: { en: 'Your emotional condition at this stage.', zh: '你此阶段的情绪状况。' }, x: 0, y: 185 },
+      { number: 7, label: { en: 'Spiritual state', zh: '灵性状态' }, description: { en: 'Your current spiritual orientation.', zh: '你当前的灵性方向。' }, x: 145, y: 185 },
+      { number: 8, label: { en: 'Obstacle', zh: '阻碍' }, description: { en: 'What stands between you and your aims.', zh: '挡在你与目标之间的因素。' }, x: -72.5, y: 370 },
+      { number: 9, label: { en: 'Required action', zh: '所需行动' }, description: { en: 'What you can do to pursue position 2.', zh: '为了追求第 2 位目标可以采取的行动。' }, x: 72.5, y: 370 },
+    ],
+  },
+  {
+    id: 'mandala',
+    name: { en: 'Mandala', zh: '曼陀罗' },
+    description: {
+      en: 'A nine-card circle for self-image, strengths, patterns, and higher purpose.',
+      zh: '围绕自我形象、优势、模式与更高目的展开。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Self', zh: '自身' }, description: { en: 'Your central identity in the reading.', zh: '你在牌阵中的核心身份。' }, x: 0, y: 370 },
+      { number: 2, label: { en: 'Ambitions and urges', zh: '野心与冲动' }, description: { en: 'Your ambitions, desires, and instinctive drives.', zh: '你的野心、欲望与本能驱动力。' }, x: 72.5, y: 185 },
+      { number: 3, label: { en: 'Spiritual path', zh: '灵性道路' }, description: { en: 'The path toward spiritual satisfaction and ideals.', zh: '通往灵性满足与理想的道路。' }, x: 145, y: 370 },
+      { number: 4, label: { en: 'Accomplishments and path', zh: '成就与人生道路' }, description: { en: 'What you have achieved and where life is taking you.', zh: '你的成就与人生正在前往的方向。' }, x: 72.5, y: 555 },
+      { number: 5, label: { en: 'Dependencies', zh: '依赖关系' }, description: { en: 'The people, habits, or supports you rely upon.', zh: '你依赖的人、习惯或支持。' }, x: 0, y: 740 },
+      { number: 6, label: { en: 'Strengths and virtues', zh: '优势与美德' }, description: { en: 'The qualities that serve you well.', zh: '对你有帮助的品质。' }, x: -72.5, y: 555 },
+      { number: 7, label: { en: 'Flaws and weaknesses', zh: '缺陷与弱点' }, description: { en: 'Patterns or limitations that make things harder.', zh: '让事情变难的模式或限制。' }, x: -145, y: 370 },
+      { number: 8, label: { en: 'Self-image', zh: '自我形象' }, description: { en: 'How you understand and present yourself.', zh: '你如何理解并呈现自己。' }, x: -72.5, y: 185 },
+      { number: 9, label: { en: 'Higher purpose', zh: '更高目的' }, description: { en: 'Your deeper desire and sense of purpose.', zh: '你更深层的愿望与目的感。' }, x: 0, y: 0 },
+    ],
+  },
+  {
+    id: 'dream-exploration',
+    name: { en: 'Dream Exploration', zh: '梦境探索' },
+    description: {
+      en: 'A three-card reflection on a dream and how to use its lesson.',
+      zh: '理解梦境意义，并把梦中的启示带回现实。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Dream relevance', zh: '梦境关联' }, description: { en: 'How the dream connects with your waking life.', zh: '梦境如何与你的现实生活相连。' }, x: -145, y: 30 },
+      { number: 2, label: { en: 'Dream lesson', zh: '梦境课题' }, description: { en: 'What the dream may be teaching you.', zh: '梦境可能带给你的教训。' }, x: 0, y: 30 },
+      { number: 3, label: { en: 'Practical application', zh: '现实应用' }, description: { en: 'How to apply the dream insight in life.', zh: '如何把梦境启示应用到生活中。' }, x: 145, y: 30 },
+    ],
+  },
+  {
+    id: 'tree-of-life',
+    name: { en: 'Tree of Life', zh: '生命之树' },
+    description: {
+      en: 'A ten-card tree for ideals, creative power, inner life, and the body.',
+      zh: '从理想、创造力与内在生命一路看到身体层面。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Highest ideals', zh: '最高理想' }, description: { en: 'The ideals that give your life direction.', zh: '为人生提供方向的理想。' }, x: 0, y: 0 },
+      { number: 2, label: { en: 'Creative force', zh: '创造力' }, description: { en: 'The energy through which you create.', zh: '你用来创造事物的能量。' }, x: 150, y: 125 },
+      { number: 3, label: { en: 'Wisdom', zh: '智慧' }, description: { en: 'Knowledge and insight you can draw upon.', zh: '你可以运用的知识与洞察。' }, x: -150, y: 125 },
+      { number: 4, label: { en: 'Virtues', zh: '美德' }, description: { en: 'The qualities that express your better nature.', zh: '体现你更好一面的品质。' }, x: 150, y: 310 },
+      { number: 5, label: { en: 'Life force', zh: '生命力' }, description: { en: 'The vitality supporting your path.', zh: '支撑你道路的活力。' }, x: -150, y: 310 },
+      { number: 6, label: { en: 'Health and beauty', zh: '健康与美感' }, description: { en: 'Your physical harmony and well-being.', zh: '你的身体和谐与健康。' }, x: 0, y: 475 },
+      { number: 7, label: { en: 'Desire and art', zh: '欲望与艺术' }, description: { en: 'Lust, love, instinct, and artistic feeling.', zh: '欲望、爱情、本能与艺术感受。' }, x: 150, y: 585 },
+      { number: 8, label: { en: 'Creation and design', zh: '创造与设计' }, description: { en: 'Your scientific, designing, and generative side.', zh: '你的科学、设计与创造性一面。' }, x: -150, y: 585 },
+      { number: 9, label: { en: 'Psychic imagination', zh: '心灵与想象' }, description: { en: 'Intuition, imagination, and the unseen self.', zh: '直觉、想象力与不可见的自我。' }, x: 0, y: 660 },
+      { number: 10, label: { en: 'Physical self', zh: '身体自我' }, description: { en: 'Your body and embodied experience.', zh: '你的身体与具身经验。' }, x: 0, y: 845 },
+    ],
+  },
+  {
+    id: 'past-life',
+    name: { en: 'Past Life', zh: '前世' },
+    description: {
+      en: 'An eight-card reflection on inherited patterns and their effect across time.',
+      zh: '观察前世影响、业力课题及其对今后道路的作用。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Emotional influence', zh: '情绪影响' }, description: { en: 'Emotional patterns carried from the past.', zh: '从过去延续而来的情绪模式。' }, x: -217.5, y: 0 },
+      { number: 2, label: { en: 'Mental influence', zh: '思维影响' }, description: { en: 'Ideas and habits of thought carried forward.', zh: '延续至今的想法与思维习惯。' }, x: -72.5, y: 0 },
+      { number: 3, label: { en: 'Spiritual influence', zh: '灵性影响' }, description: { en: 'Spiritual themes that remain active.', zh: '仍在发挥作用的灵性主题。' }, x: 72.5, y: 0 },
+      { number: 4, label: { en: 'Physical influence', zh: '身体影响' }, description: { en: 'Physical or material patterns carried forward.', zh: '延续至今的身体或物质模式。' }, x: 217.5, y: 0 },
+      { number: 5, label: { en: 'Karmic debt', zh: '业力负担' }, description: { en: 'A debt or imbalance asking to be addressed.', zh: '需要面对的亏欠或失衡。' }, x: -145, y: 185 },
+      { number: 6, label: { en: 'Karmic lesson', zh: '业力课题' }, description: { en: 'The lesson that can be learned from it.', zh: '可以从中学习的课题。' }, x: 0, y: 185 },
+      { number: 7, label: { en: 'Past effect on the present', zh: '前世对今生的影响' }, description: { en: 'How the past life appears in your present life.', zh: '前世如何显现在今生。' }, x: 145, y: 185 },
+      { number: 8, label: { en: 'Past effect on the future', zh: '前世对未来的影响' }, description: { en: 'How that pattern may shape what comes next.', zh: '这种模式可能如何影响未来。' }, x: 0, y: 370 },
+    ],
+  },
+  {
+    id: 'true-love',
+    name: { en: 'True Love', zh: '真爱' },
+    description: {
+      en: 'A seven-card reading about meeting a lasting love and the path toward it.',
+      zh: '探索真爱是否到来、对方特质与相遇方式。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Finding true love', zh: '遇到真爱' }, description: { en: 'Whether a lasting love is likely to enter your life.', zh: '稳定的爱情是否可能进入你的生活。' }, x: 0, y: 0 },
+      { number: 2, label: { en: 'Instant or gradual love', zh: '一见钟情或渐进' }, description: { en: 'Whether recognition is immediate or develops over time.', zh: '感情会立即确认还是逐渐发展。' }, x: 0, y: 300 },
+      { number: 3, label: { en: 'Physical qualities', zh: '外在特征' }, description: { en: 'The likely physical qualities of this person.', zh: '此人可能具有的外在特征。' }, x: -150, y: 125 },
+      { number: 4, label: { en: 'Emotional qualities', zh: '情感特征' }, description: { en: 'The emotional qualities this person may show.', zh: '此人可能展现的情感特征。' }, x: 150, y: 125 },
+      { number: 5, label: { en: 'Your delaying issues', zh: '你的延迟因素' }, description: { en: 'What you may need to resolve before connection grows.', zh: '在关系发展前你可能需要处理的事。' }, x: -150, y: 425 },
+      { number: 6, label: { en: "Their delaying issues", zh: '对方的延迟因素' }, description: { en: 'What the other person may need to resolve.', zh: '对方可能需要处理的事。' }, x: 150, y: 425 },
+      { number: 7, label: { en: 'Meeting circumstances', zh: '相遇方式' }, description: { en: 'When, where, or how the meeting may happen.', zh: '可能相遇的时间、地点或方式。' }, x: 0, y: 600 },
+    ],
+  },
+  {
+    id: 'never-too-late',
+    name: { en: 'Never Too Late', zh: '永远不晚' },
+    description: {
+      en: 'A nine-card reading for a future relationship, its timing, and its potential.',
+      zh: '查看未来爱情的相遇线索、延迟因素与发展潜力。',
+    },
+    positions: [
+      { number: 1, label: { en: 'Finding love again', zh: '再次找到爱情' }, description: { en: 'Whether another meaningful love is likely.', zh: '是否可能再次遇到重要的爱情。' }, x: 0, y: 0 },
+      { number: 2, label: { en: 'Already known?', zh: '是否已经认识' }, description: { en: 'Whether this person is already in your life.', zh: '这个人是否已经出现在你的生活中。' }, x: 0, y: 185 },
+      { number: 3, label: { en: 'Where you connect', zh: '相识地点' }, description: { en: 'Where you know or may meet this person.', zh: '你认识或可能遇见对方的地方。' }, x: -150, y: 295 },
+      { number: 4, label: { en: 'Speed of attraction', zh: '吸引速度' }, description: { en: 'If needed, whether attraction is instant or gradual.', zh: '在需要时判断吸引是一见即生还是逐渐形成。' }, x: 150, y: 295 },
+      { number: 5, label: { en: 'Delaying issues', zh: '延迟因素' }, description: { en: 'What may delay meeting or relationship growth.', zh: '可能延迟相遇或关系发展的因素。' }, x: 0, y: 370 },
+      { number: 6, label: { en: 'Physical qualities', zh: '外在特征' }, description: { en: 'The likely physical qualities of this person.', zh: '此人可能具有的外在特征。' }, x: -145, y: 555 },
+      { number: 7, label: { en: 'Emotional qualities', zh: '情感特征' }, description: { en: 'The emotional qualities this person may show.', zh: '此人可能展现的情感特征。' }, x: 0, y: 555 },
+      { number: 8, label: { en: 'Romantic qualities', zh: '恋爱特征' }, description: { en: 'How this person may behave in romance.', zh: '此人在恋爱中的表达与行为。' }, x: 145, y: 555 },
+      { number: 9, label: { en: 'Relationship potential', zh: '关系潜力' }, description: { en: 'The possible depth and future of the relationship.', zh: '这段关系可能的深度与未来。' }, x: 0, y: 740 },
+    ],
+  },
+  {
+    id: 'annual',
+    name: { en: 'Annual', zh: '年度' },
+    description: {
+      en: 'A thirteen-card year overview with one card for each month and one for the year as a whole.',
+      zh: '每月一张牌，再用一张牌概括全年主题。',
+    },
+    positions: [
+      { number: 1, label: { en: 'January', zh: '一月' }, description: { en: 'The theme and direction for January.', zh: '一月的主题与发展方向。' }, x: -435, y: 425 },
+      { number: 2, label: { en: 'February', zh: '二月' }, description: { en: 'The theme and direction for February.', zh: '二月的主题与发展方向。' }, x: -290, y: 250 },
+      { number: 3, label: { en: 'March', zh: '三月' }, description: { en: 'The theme and direction for March.', zh: '三月的主题与发展方向。' }, x: -145, y: 125 },
+      { number: 4, label: { en: 'April', zh: '四月' }, description: { en: 'The theme and direction for April.', zh: '四月的主题与发展方向。' }, x: 0, y: 0 },
+      { number: 5, label: { en: 'May', zh: '五月' }, description: { en: 'The theme and direction for May.', zh: '五月的主题与发展方向。' }, x: 145, y: 125 },
+      { number: 6, label: { en: 'June', zh: '六月' }, description: { en: 'The theme and direction for June.', zh: '六月的主题与发展方向。' }, x: 290, y: 250 },
+      { number: 7, label: { en: 'July', zh: '七月' }, description: { en: 'The theme and direction for July.', zh: '七月的主题与发展方向。' }, x: 435, y: 425 },
+      { number: 8, label: { en: 'August', zh: '八月' }, description: { en: 'The theme and direction for August.', zh: '八月的主题与发展方向。' }, x: 290, y: 600 },
+      { number: 9, label: { en: 'September', zh: '九月' }, description: { en: 'The theme and direction for September.', zh: '九月的主题与发展方向。' }, x: 145, y: 725 },
+      { number: 10, label: { en: 'October', zh: '十月' }, description: { en: 'The theme and direction for October.', zh: '十月的主题与发展方向。' }, x: 0, y: 850 },
+      { number: 11, label: { en: 'November', zh: '十一月' }, description: { en: 'The theme and direction for November.', zh: '十一月的主题与发展方向。' }, x: -145, y: 725 },
+      { number: 12, label: { en: 'December', zh: '十二月' }, description: { en: 'The theme and direction for December.', zh: '十二月的主题与发展方向。' }, x: -290, y: 600 },
+      { number: 13, label: { en: 'Overall year', zh: '全年总览' }, description: { en: 'The overall significance and tone of the year.', zh: '这一整年的总体意义与基调。' }, x: 0, y: 425 },
+    ],
+  },
+];
+
+export function getTarotSpread(id: string): TarotSpread {
+  const spread = TAROT_SPREADS.find((candidate) => candidate.id === id);
+  if (!spread) {
+    throw new Error(`Unknown tarot spread id: ${id}`);
+  }
+
+  return spread;
+}

@@ -81,22 +81,22 @@ function CoatMakerFaqAccordionItem({
   return (
     <details
       name={COAT_MAKER_FAQ_ACCORDION_NAME}
-      className="group border-b border-white/10 last:border-b-0"
+      className="group"
     >
       <summary
         id={triggerId}
         role="button"
-        className="flex min-h-11 w-full cursor-pointer list-none items-center justify-between gap-4 py-3.5 text-left text-sm text-stone-100 hover:text-[#f1d492] [&::-webkit-details-marker]:hidden"
+        className="flex min-h-11 w-full cursor-pointer list-none items-center justify-between gap-6 py-5 text-left font-semibold tracking-tight text-stone-50 transition-colors hover:text-amber-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-300 motion-reduce:transition-none [&::-webkit-details-marker]:hidden"
         onClick={handleCoatMakerFaqSummaryClick}
       >
-        <h3 className="m-0 min-w-0 flex-1 text-sm font-normal">{faqItem.question}</h3>
+        <h3 className="m-0 min-w-0 flex-1 text-base font-semibold tracking-tight">{faqItem.question}</h3>
         <ChevronDownIcon
           aria-hidden="true"
-          className="pointer-events-none size-4 shrink-0 opacity-60 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
+          className="pointer-events-none size-5 shrink-0 text-stone-400 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
         />
       </summary>
       <div id={panelId} aria-labelledby={triggerId}>
-        <p className="pb-4 leading-7 text-stone-300 text-pretty">{faqItem.answer}</p>
+        <p className="pb-5 pr-10 text-sm leading-7 text-stone-300 text-pretty sm:text-base">{faqItem.answer}</p>
       </div>
     </details>
   );
@@ -112,7 +112,7 @@ export function CoatMakerFaqAccordion({
   assertCoatMakerFaqItems(faqItems, locale);
 
   return (
-    <div className="mt-6">
+    <div className="mx-auto max-w-3xl divide-y divide-white/10 border-y border-white/10">
       {faqItems.map((faqItem, faqIndex) => (
         <CoatMakerFaqAccordionItem
           key={faqItem.question}

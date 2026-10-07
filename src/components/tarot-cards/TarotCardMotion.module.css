@@ -1,0 +1,295 @@
+.dealEntry {
+  animation: deal-entry 700ms cubic-bezier(0.16, 1, 0.3, 1) var(--tarot-deal-delay, 0ms) both;
+  transform-origin: center;
+}
+
+.motionStage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.6rem;
+  perspective: 900px;
+}
+
+.flipShell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform var(--tarot-flip-duration, 560ms) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.flipShellRevealed {
+  transform: rotateY(180deg);
+}
+
+.cardFace {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.6rem;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.cardFront {
+  z-index: 1;
+  transform: rotateY(180deg);
+}
+
+.dealOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 0.6rem;
+  background: radial-gradient(circle, rgba(241, 212, 146, 0.28), transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+  animation: deal-overlay 700ms ease-out var(--tarot-deal-delay, 0ms) both;
+}
+
+.dealOverlay::before {
+  position: absolute;
+  inset: 18%;
+  border: 1px solid rgba(241, 212, 146, 0.52);
+  border-radius: 50%;
+  content: '';
+  opacity: 0;
+  animation: deal-ring 700ms ease-out var(--tarot-deal-delay, 0ms) both;
+}
+
+.dealRune {
+  width: 1.65rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(241, 212, 146, 0.86);
+  border-radius: 0.25rem;
+  box-shadow: 0 0 16px rgba(241, 212, 146, 0.48);
+  opacity: 0;
+  transform: rotate(45deg) scale(0.72);
+  animation: deal-rune 700ms ease-out var(--tarot-deal-delay, 0ms) both;
+}
+
+.dealSpark {
+  position: absolute;
+  width: 0.25rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  background: rgba(255, 248, 224, 0.9);
+  box-shadow: 0 0 12px rgba(241, 212, 146, 0.9);
+  opacity: 0;
+  transform: rotate(45deg) scaleY(0.35);
+  animation: deal-spark 700ms ease-out var(--tarot-deal-delay, 0ms) both;
+}
+
+@keyframes deal-entry {
+  0% {
+    opacity: 0;
+    transform: translateY(-1.1rem) rotate(-3deg) scale(0.96);
+  }
+
+  58% {
+    opacity: 1;
+    transform: translateY(0.15rem) rotate(0.8deg) scale(1.01);
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes deal-overlay {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  18% {
+    opacity: 0.86;
+    transform: scale(1);
+  }
+
+  58% {
+    opacity: 0.34;
+    transform: scale(1.04);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes deal-ring {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+
+  28% {
+    opacity: 0.88;
+    transform: scale(1);
+  }
+
+  72% {
+    opacity: 0.18;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes deal-rune {
+  0%,
+  100% {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.72);
+  }
+
+  32% {
+    opacity: 0.9;
+    transform: rotate(135deg) scale(1);
+  }
+
+  74% {
+    opacity: 0.12;
+    transform: rotate(180deg) scale(1.1);
+  }
+}
+
+@keyframes deal-spark {
+  0%,
+  100% {
+    opacity: 0;
+    transform: rotate(45deg) scaleY(0.35);
+  }
+
+  30% {
+    opacity: 0.92;
+    transform: rotate(45deg) scaleY(1);
+  }
+
+  76% {
+    opacity: 0;
+    transform: rotate(45deg) scaleY(0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dealEntry {
+    animation-name: deal-entry-reduced;
+    animation-duration: 180ms;
+  }
+
+  .flipShell {
+    transform: none;
+    transition: none;
+  }
+
+  .cardFace {
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+    transition: opacity 160ms ease-out;
+  }
+
+  .cardFront {
+    opacity: 0;
+    transform: none;
+  }
+
+  .flipShellRevealed .cardBack {
+    opacity: 0;
+  }
+
+  .flipShellRevealed .cardFront {
+    opacity: 1;
+  }
+
+  .dealOverlay {
+    animation-name: deal-overlay-reduced;
+    animation-duration: 240ms;
+  }
+
+  .dealOverlay::before {
+    transform: none;
+    animation-name: deal-ring-reduced;
+    animation-duration: 240ms;
+  }
+
+  .dealRune {
+    transform: none;
+    animation-name: deal-rune-reduced;
+    animation-duration: 240ms;
+  }
+
+  .dealSpark {
+    transform: none;
+    animation-name: deal-spark-reduced;
+    animation-duration: 240ms;
+  }
+}
+
+@keyframes deal-entry-reduced {
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes deal-overlay-reduced {
+  0% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 0.72;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes deal-ring-reduced {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 0.62;
+  }
+}
+
+@keyframes deal-rune-reduced {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 0.72;
+  }
+}
+
+@keyframes deal-spark-reduced {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 0.76;
+  }
+}

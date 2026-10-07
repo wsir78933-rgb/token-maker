@@ -1,5 +1,321 @@
 # WORKLOG
 
+## 交接单 · 2026-10-07 09:00 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+参照 https://rollforfantasy.com/tools/periodic-table-creator.php，在唯一「元素周期表」工作树中实现 EN/ZH 元素周期表制作器，完成用户指定的工具操作、Hero、工具下方介绍、优势对比、12 个可编辑案例和关键词密度调整；最后按授权提交、合并到本地 main 并删除工作树。使用内置子代理分工及独立审核，不使用 Orca 编排，根代理负责整合和验收。本次 offhand 只核对现状并写交接单，不修改产品、提交、push 或部署。
+
+### 已完成
+
+- 双语入口为 src/app/(en)/periodic-table-creator/page.tsx 和 src/app/(zh)/zh/periodic-table-creator/page.tsx，路由 /periodic-table-creator、/zh/periodic-table-creator。共用 PeriodicTableCreatorPageView.tsx；编辑器锚点 #periodic-table-creator-workspace。导航、sitemap 和 public/llms.txt 已接入。
+- 领域公开函数在 src/lib/periodic-table-creator/ 下：table.ts（矩形文档校验、选择、文字及批量样式）、templates.ts（空白、真实、随机表格）、html.ts（安全解析和可编辑 HTML 序列化）、storage.ts（五个浏览器手动槽位）；类型 types.ts，双语工具文案 copy.ts。工作台、网格、侧栏和弹窗在 src/components/periodic-table-creator/ 下，分别由 PeriodicTableCreatorWorkbench、PeriodicTableGrid、PeriodicTableInspector、PeriodicTableDialogs 承担。
+- 支持 1–50 行、1–50 列空白布局、真实元素周期表模板和随机幻想布局。每格六个独立多行文字栏位：左上、右上、主符号、名称、左下、右下。可单选、多选、全选、清除选择；所选或全部单元格可调整背景/文字/边框颜色、透明背景、显示/隐藏/反转边框及外部图片 URL。重置所选清除文字和文字样式，保留背景、图片、边框颜色。
+- 随机新表格替换布局；随机化当前表格只更新边框可见单元格，保留尺寸、样式、图片和底部两个文字栏位，只替换四个主要文字栏位。五个槽位手动保存在当前浏览器，保留布局、文字、样式、图片和选择状态，不自动保存。替换编辑、覆盖槽位前确认。
+- 下载为包含可编辑表格 HTML 的 UTF-8 TXT，可把副本改名 .html 后离线编辑；支持兼容 TXT/HTML/HTM 导入，最大 5 MiB。导入悬浮说明已接入 Tooltip，说明用途、类型和大小，避免原生「未选择任何文件」提示。工具没有内置 PNG 导出；案例 PNG 是用工具表格渲染后截图制作的展示素材，不能当作新增导出能力宣传。
+- 按用户反馈调整按钮文字对比度；主操作按钮显式设置深色文字。案例「使用此案例」加载时保留 opacity:1、禁用和等待光标，历史浏览器实测文字对比度约 9.36:1。桌面侧栏不再通过 overscroll-behavior:contain 阻断页面滚动，contain 仅保留在手机编辑面板；手机表格横向滚动，更多操作及底部编辑面板保留。
+- Hero 使用用户要求的 Outfit Creator 风格。工具下方顺序为 What Is → 案例展示 → 六项功能 → 三步 How It Works → 工具对比 → CTA → FAQ，对比表位于 How It Works 下。正文公开入口 getPeriodicTablePageContentCopy(locale)，文件 src/lib/periodic-table-creator/page-content-copy.ts；CTA 返回编辑器。
+- 对比对象为普通表格和绘图软件，本站列突出起始布局、六栏文字、随机灵感、批量样式、五个设定版本和继续编辑。用户指定的灵感行竞品单元格为 EN「Design it yourself」/ZH「自行设计」。后续不得顺手重写这些批准单元格、标题或 Hero。
+- 案例公开入口为 getPeriodicTableCaseStudiesCopy(locale)、getPeriodicTableCaseAsset(caseId)、loadPeriodicTableCaseDocument(caseId)，在 case-studies-copy.ts 与 case-studies.ts。三组共 12 个案例，数量 4/5/3，桌面布局左图右文、左文右图、左图右文；周期表自己的 PeriodicTableCreatorCaseStudies 实现用户提供的叠图、动画文字、轮播结构。每案提供「使用此案例」载入工作台及「下载 TXT 模板」。案例载入保护当前编辑，加载后定位/聚焦工作台。
+- 12 个案例为元素学派、魔法晶体、禁忌元素、锻造金属、附魔宝石、生物材料、暮林草药、荒野生物素材、炼金试剂、星际矿物、能源介质、工程合金。public/periodic-table-creator/cases/ 有 12 张 1600×1000 WebP 和 12 份 TXT；每案 4×6、24 格、六栏，全部内容为原创虚构设定。荒野生物素材和星际矿物最后重做为浅色，当前 WebP 左上像素均为 RGB(243,238,229)，没有残留该两张旧黑背景图。
+- 桌面 /Users/wusir/Desktop/元素周期表 保留 12 张 3200×2000 PNG、可导入样例/ 下的 12 份 TXT，以及案例说明.md，共 25 文件；本次逐一 SHA-256 回读均与删除前清单一致。它与已删除的开发工作树是不同路径。
+- 最后密度修改仅涉及 page-content-copy.ts 的 45 个正文字符串（EN20/ZH25），标题、FAQ 问题、Hero 标题/描述、metadata、案例名/组别、功能及资产均保留。关键词 EN「Periodic Table Creator」，ZH「元素周期表制作器」；最终 main HTTP 回执为 EN29/1367=2.1214337966%，ZH33/1526=2.1625163827%，EN/ZH 各 28 个 H1/H2/H3 标题与基线一致。
+- 密度口径是完整关键词出现次数 ÷ 正文词数 ×100，每个完整词组只计一次，不乘词组分词数量。分母用 Intl.Segmenter 的 isWordLike（en / zh-CN）。measure.mjs 统计 main 的 8 个顶层 section（Hero 加工具下方七模块），排除工作台；克隆后删除 script/style/svg/img/.sr-only、非 FAQ 标题按钮和链接，只采 h1/h2/h3/p/th/td。包含标题、当前各组显示的三个案例正文和已挂载的全部 FAQ 答案（即使折叠）；排除导航/footer、工具 UI、按钮/链接、图片文字及 metadata。不要混用全十二案例、纯可见文字、汉字数或加权词组算法。
+- 功能提交 1cfda75ef77ca77788e4287e7deae7ff558ba75a（76文件）；整合提交及当前 main HEAD 为 0233bfd86784196ad21dd92781bc7b81a24ead1a，父提交为功能提交和原 main f7e28bbfe86b8b2db5b0b853755a91cc3e7a7dd2。先在元素周期表工作树整合 main，再把 main 快进到已验收版本。五个共享冲突已保留 Family Tree、Solar System 和周期表内容；site-routes 测试补齐主分支已有 Solar 菜单的预期。
+- 合并前验证主分支 11,133 个非重叠文件和周期表 69 个非共享文件哈希未变；合并后 main 与整合版 11,209 个 tracked 文件逐一相同（WORKLOG 单独保护）。开发工作树目录和 Git 登记均已移除，「元素周期表」分支保留。当前剩余主项目、卷轴、历法、城堡、塔罗牌五个工作树。本次再次核对目录缺失、登记列表、提交祖先关系和 main 状态。
+- 当前未存档只有此前 WORKLOG 记录及本条交接单，暂存区为空，无未跟踪产品文件。main 相对本地 origin/main 引用 ahead16；未 fetch，不代表最新远端状态。没有 push/部署。旧工作树 40126 服务已核对所属目录后停止，本次该端口无监听；当前 40001 主目录预览服务 PID77360 仍在，下一班须重新核对而非复用固定 PID。
+
+### 做到一半
+
+产品实现、正文密度、提交、本地合并与工作树删除已完成。待补做的是最终密度文案及整合版本的 EN/ZH 桌面1440px、手机390px真实浏览器交互验收；这一项没有完成，不能把 HTTP200、测试或较早案例验收称为最终浏览器验收。密度阶段 Ego TaskSpace185 已不存在，Chrome 备用验收时用户接管，根代理停止操作；新建 Ego 验收会话的询问未获答复。没有进行中的源码修改，也不要重建已删除工作树。未存档：WORKLOG.md，按 offhand 要求保持未提交。
+
+### 下一步
+
+下一班输入 $pickup，先读本条，再核对 main HEAD/status、工作树及服务；有新需求时先对齐授权范围。若用户要补最终浏览器验收，先确认允许新建验收会话，再通过 ego-browser 操作，不复用失效185或其他任务空间。没有新需求不继续改页面、提交、删除分支、push 或部署。
+
+继续修改时同步 EN/ZH，保护所有标题和 Hero 文案。普通内置子代理按互斥文件分工，只读 reviewer 禁止修复/写 Git；每个编码 Task spec 显式要求高内聚、低耦合、单一职责、多步主函数只调度、公开函数/类型/命令通信、KISS、Fail Fast（异常含具体值、禁止吞错）、YAGNI、精确命名。不使用 Orca 编排。
+
+### 踩过的坑
+
+- 工具本身只导出 TXT/HTML 可编辑表格，系统截图和案例 PNG 是视觉展示，不可宣传成工具 PNG 导出。截图展示框中的标题、图例和行列说明是案例呈现注释，不等于编辑器有这些控件。
+- 密度基线与最终数据见归档 measure.mjs、final-density.json 和 main-http-validation.json；保护标题/Hero并保持同一统计范围。快照使用 .ts.snapshot，不能当 .ts 放进 build 让 tsc 扫入。
+- Next .next 生成类型曾因 dev/typegen 状态不一致失败；停止所属开发服务并用 pnpm typecheck 重新生成后退出0。不能把生成目录错误直接当源码错误，也不能吞掉失败。
+- 一名只读审核子代理越界执行 git checkout --ours + git add 五个冲突文件，暂存区一度变成仅功能侧版本；已停止其写入，由唯一执行者从固定 BASE b73ba106、OURS1cfda75e、THEIRS f7e28bbf 重建，根代理重新 stage、核对共享 diff（67新增/0删除）、哈希、测试和提交。后续只读任务禁止 git apply/checkout/restore/add 等写命令，不能仅因 git ls-files -u 为空就判合并正确。
+- 桌面 TXT 位于可导入样例/ 子目录，核对25文件须递归或按清单读；不能拿顶层 readdir 与递归清单直接比较。删除工作树不得误删桌面同名交付目录或共享 node_modules 链接目标。
+- main 原有 WORKLOG 未提交改动在合并期间由别的交接新增过内容；合并前重新捕获最新字节并原样保留，不能用过期快照覆盖。当前 WORKLOG 受 Git 跟踪，旧记忆里的 ignored 状态不适用。
+- 默认 pnpm dev 会先释放40001，不能为了交接运行它而中断现有服务。Ego 会话失效后按 /Users/wusir/.mirasim/skills/ego-browser/SKILL.md 的「stop and ask the user」要求停止，不能自行新建空间恢复或抢占用户 Chrome。
+
+### 怎么验证
+
+以下是此前真实验证及供下一班按需重跑的命令；本次 offhand 未重跑测试、Lint、typecheck、build、浏览器或 HTTP 请求，只回读文件/日志、Git/端口状态、资产元数据和哈希。
+
+- 此前整合版本：21个相关测试文件/223项通过；pnpm typecheck、定向 ESLint、CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false pnpm exec vinext build、git diff --check 均退出0。真实日志在 build/periodic-table-integration/tests.log、typecheck.log、lint.log、build.log。完整测试命令：pnpm exec vitest run src/lib/periodic-table-creator src/components/periodic-table-creator src/app/periodic-table-creator-routes.test.tsx src/lib/content-site-navigation.test.ts src/lib/llms.test.ts src/app/site-routes.test.tsx src/app/sitemap.test.ts src/app/sitemap-category.test.ts src/app/family-tree-creator-routes.test.tsx src/app/solar-system-creator-routes.test.tsx。不是全仓测试或完整 build:vinext/Workers发布流水线。
+- 定向 Lint：pnpm exec eslint src/app/sitemap.ts src/app/site-routes.test.tsx src/app/sitemap.test.ts src/lib/content-site-navigation.ts src/lib/content-site-navigation.test.ts src/lib/llms.test.ts src/app/periodic-table-creator-routes.test.tsx 'src/app/(en)/periodic-table-creator' 'src/app/(zh)/zh/periodic-table-creator' src/components/periodic-table-creator src/lib/periodic-table-creator。先读 package.json scripts，typecheck与构建顺序执行，避免生成文件相互污染。
+- Git/清理：git status --porcelain=v1 --branch；git log -2 --oneline；git merge-base --is-ancestor 1cfda75ef77ca77788e4287e7deae7ff558ba75a main；git worktree list --porcelain。本次写完预期仅 WORKLOG.md 未暂存、HEAD不变、元素周期表开发目录不存在，桌面25文件和其他工作树保留。
+- 此前实际 HTTP：最终 main 的 http://localhost:40001/periodic-table-creator 与 /zh/periodic-table-creator 均200，标题/Hero与基线一致并得到上述密度；删除工作树后两页再次200。这是 HTTP/DOM文字证据，不是浏览器交互验收。先核对现有服务归属及端口，再请求或开浏览器。
+- 较早实际案例浏览器证据：feature-evidence/periodic-table-case-integration/ 中 desktop-final-browser.json、mobile-en-browser.json、mobile-zh-browser.json、twelve-cases-browser.json、edit-protection-browser.json，覆盖12案例加载/下载、六栏文字样式、草稿确认保护、下载后重新导入、键盘、reduced-motion、自动轮播、1440/390布局；浅色改图回执在 feature-evidence/periodic-table-light-refresh/browser-validation.json，覆盖中文1440和英文390两张浅色案例预览/载入/下载。它们早于最终密度文案与 main 整合，本次只回读，不代表重跑。
+- 补最终 UI 时检查 EN/ZH 1440/390：标题/Hero不变、正文不截断/整页不溢出、侧栏滚轮到边界能继续滚页面、随机按钮文字清晰、导入 Tooltip、FAQ展开收起、三个案例组4/5/3及两张浅色图、左右切换、使用案例确认/取消/先备份、TXT实际下载和导入、CTA回到工作台。不要覆盖用户真实浏览器存档；不要用全局键盘监听抢走工作台文字编辑。
+- 归档根目录 build/periodic-table-integration/：preflight.json、integration-scope-audit.json、merge-verification.json、cleanup-verification.json、main-http-validation.json、desktop-files-pre-cleanup.json、worktrees-before/after-cleanup.txt；原工作树 build 的112证据文件已归档到 feature-evidence/。历史脚本含旧工作树绝对路径和40126 URL，工作树已删除，不要直接运行，需先审阅并改为当前 main/40001 对应路径。本次 offhand 的旧 WORKLOG 字节与其他11209个 tracked 文件哈希快照在 /var/folders/52/j_dv3mh12r71qvz2qv17q2kc0000gn/T/periodic-offhand-p9j_4dja，只用于核对交接写入范围。
+
+## 交接单 · 2026-10-07 08:45 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+参照 Roll for Fantasy Solar System Creator 的功能，在唯一「星系」工作树中新增 EN/ZH 太阳系创建器，使用用户批准的布局、竞品素材和文案；完成案例展示、正文关键词密度调整、提交、本地合并与工作树删除。使用内置子代理分工实现及独立审核，不使用 Orca 编排，根代理负责最终收尾和验证。本次 offhand 仅核对现状并写交接单，不新增功能、提交、push 或部署。
+
+### 已完成
+
+- 双语路由为 /solar-system-creator 和 /zh/solar-system-creator，入口分别为 src/app/(en)/solar-system-creator/page.tsx、src/app/(zh)/zh/solar-system-creator/page.tsx，共用 src/components/solar-system-creator/SolarSystemCreatorPageView.tsx；导航与 sitemap 已接入。编辑器锚点为 #solar-system-creator-workspace。
+- 随机模式支持普通恒星、包含蓝色恒星、仅蓝色恒星；行星数量 1–10，输入 0 或留空随机生成 4–10 颗。选择行星可编辑环境、大气、表面地图、昼长、重力、公转周期、卫星和轴向倾角共八项资料。
+- 手动模式支持选择恒星、从五类行星素材添加行星、选择/取消选择、开关拖动和调整大小、编辑描述、删除选中行星和清空行星；提供五个当前浏览器本地保存/加载槽位。随机和手动两种模式均有 PNG 生成与打印。PNG 只包含画面；随机打印包含八项资料，手动打印包含行星描述。画布与 PNG 尺寸为 800×400。
+- 工作台主要入口为 SolarSystemCreatorWorkbench.tsx；公开领域函数位于 src/lib/solar-system-creator/catalog.ts、random.ts、manual.ts、saves.ts 和 export-image.ts。双语文案公开入口为 copy.ts 的 getSolarSystemCopy(locale)。交互手型规则、按钮文字与颜色问题已在本会话此前处理；未为本次交接重改页面。
+- 竞品素材位于 public/solar-system-creator/rollforfantasy/，共 240 张 PNG（40 款恒星及五类各 40 款行星），来源记录为 source-manifest.json。本次重新读取素材数量；来源记录不等于复用许可，没有发布或部署。
+- 工具下方顺序为 What Is → 案例展示 → 六项功能 → 工具对比 → 三步 How It Works → CTA → FAQ。What Is 按是什么、功能、用途、适合人群写成一段；对比对象为 Photoshop、Illustrator。用户最后指定的单元格改为「自行准备」「提供 5 个浏览器槽位」「需要自行保存」「需要复杂操作」「简单方便」，其余批准内容保留。
+- What Is 下有三组、每组四个工具创建的案例，布局依次左图右文、左文右图、左图右文；使用用户提供的 CircularTestimonials 组件，经公开 props 接入。源码为 SolarSystemCreatorCaseStudies.tsx、CircularTestimonials.tsx，双语案例公开入口为 src/lib/solar-system-creator/case-studies.ts 的 getSolarSystemCaseStudiesCopy(locale)。
+- 十二张案例 PNG 位于 public/solar-system-creator/examples/：新家园、海洋文明、沙漠贸易、帝国核心、冰封边境、失落遗迹、资源冲突、未知探索、熔岩危险、巨行星与卫星、紧凑多行星、神话星序。本次读取桌面 /Users/wusir/Desktop/星系 的十二张 PNG 与页面素材，12/12 张 SHA-256 相同，案例说明.md 仍在；没有用 AI 生成图替代工具导出。
+- 受保护元标题：EN 为 Free Solar System Creator – Build Your Own Planetary System；ZH 为 免费太阳系创建器 – 打造你的行星系统。描述没有加入「导出 PNG 或打印」的结尾。Hero 已参照 Weapon Creator，标题中的多余连接短横线已去掉。最后密度调整保护了全部标题与 Hero，不得为后续密度工作改写它们。
+- 正文关键词为 EN：Solar System Creator，ZH：太阳系创建器。此前在最终 main 的本地浏览器回执中，初始案例组合 EN 为 21 / 801 = 2.6217%，ZH 为 21 / 874 = 2.4027%。口径为完整关键词出现次数 ÷ 正文词数；统计工具下方说明段落和对比表文字、当前各组案例正文及全部 FAQ 答案，排除标题、Hero、工具 UI、导航/footer、按钮、alt 和 metadata。英文完整短语每次算一次，中文按 locale-aware Intl.Segmenter 的 isWordLike 分词，不能换成汉字数；完整十二案例累加与当前三案例可见组合是不同口径，不能混用。本次未重跑密度或浏览器。
+
+提交与本次核对状态：
+
+- 功能提交 bbdfc7a56fcf5b62a66db53ec06342deed03e38c（feat: add bilingual solar system creator）；整合提交及当前 main HEAD 为 f7e28bbfe86b8b2db5b0b853755a91cc3e7a7dd2（merge: integrate main updates with solar system creator）。先在星系工作树整合原 main 8689ebb83230e73d0722f3112d2b3150140202cb，再将 main 快进到已验收版本。功能提交已核对为 main 祖先；星系分支保留并指向整合提交。
+- 本轮提交范围共 300 个文件：296 个新增太阳系文件与四个共享 sitemap/navigation 文件。本次逐一核对 300 个文件与当前 HEAD 的 Git blob 完全相同，296 个新增文件仍与提交前 SHA-256 清单相同。整合时三个冲突文件为 src/app/sitemap.ts、src/lib/content-site-navigation.ts、src/lib/content-site-navigation.test.ts；保留主分支 Family Tree 与 Solar System 双语入口及测试，经独立复核。
+- /Users/wusir/Desktop/开发项目集合/星系 已删除，Git 工作树登记也已移除；不同路径的桌面 /Users/wusir/Desktop/星系 原始案例保留。当前工作树为主项目、元素周期表、卷轴、历法、城堡、塔罗牌；未删除其他工作树或星系分支。
+- 旧工作树 40017 服务此前核对所属目录后停止，本次 lsof 回读该端口无监听。当前 40001 由主目录既有服务 PID 77360 监听；这是本次读取到的状态，下一班应重新核对而非假设 PID 永远有效。最后清理回执中两条主目录页面均返回 HTTP 200。
+- 写交接前 main 相对本地 origin/main 引用 ahead 14；没有 fetch，不能据此声称核查了最新远端。暂存区为空、没有未跟踪产品文件，仅 M WORKLOG.md。已有 WORKLOG 字节哈希为 bdb1864b98c46b8f768b3b317cd837f93ef772e24c94dfcb857f27e800488366；本条插在根标题下，旧记录原样保留，保持未提交。
+
+此前实际验证（本次 offhand 没有重跑产品测试、类型检查、Lint、构建或浏览器）：
+
+- 整合版十九个相关测试文件 / 189 项测试通过；pnpm typecheck、定向 ESLint、pnpm exec vinext build 与差异空白检查退出 0。Vinext 构建包含 EN/ZH Solar System 与 Family Tree 路由，有现有大 chunk 警告。未执行全仓测试、全仓 Lint、完整 build:vinext 发布流水线、Workers dry-run 或部署。
+- 最终 main 的本地 ego-browser 验证 EN/ZH 菜单同时保留 Family Tree 和 Solar System，标题匹配、工作台存在、三组十二张图片全部加载、下一案例按钮有效、页面无横向溢出；得到上述正文密度。TaskSpace 3 已完成，不复用。本次交接仅回读 main-browser-proof.json，不把历史浏览器回执冒充本次重跑。
+- 本次只读核对了 Git HEAD/status/staging/worktree、源码/公开入口、300 个提交文件及 296 个新增文件哈希、桌面十二张 PNG、素材数量、监听端口与此前合并/删除/浏览器证据。写入后核对旧 WORKLOG 字节和其他 11,140 个 tracked 文件；这些检查不等于产品测试重新通过。
+
+### 做到一半
+
+无。已授权的工具实现、双语内容、案例、密度调整、提交、本地合并与工作树删除已完成。未存档：既有 WORKLOG 修改及本次新增交接单，按 offhand 要求保持未提交；无其他产品改动。
+
+### 下一步
+
+下一班输入 $pickup，先读取本条并重新核对 main HEAD、Git 状态、工作树和服务，再按新的用户需求继续。没有新需求无需改页面；不要重复合并、删除或重建星系工作树，不擅自删除保留分支，不提交 WORKLOG，不推送或部署。
+
+后续修改需保护全部标题及 Hero 文案，同步 EN/ZH，并先按用户 AGENTS.md 对齐目标、范围、验收及关键假设。若继续采用内置子代理，按文件边界分工，每个编码 Task spec 显式要求高内聚、低耦合、单一职责、多步主函数只调度、公开函数/类型/命令通信、KISS、Fail Fast（错误包含具体异常值，禁止吞异常）、YAGNI 和精确命名；只读 reviewer 不修复，验收读取真实证据而非 agent 自报。不使用 Orca 编排。
+
+### 踩过的坑
+
+- 五个槽位用于手动作品继续编辑，生成 PNG 用于画面输出；随机模式也支持 PNG 与打印。不要把「保存」文案写成两种模式都有浏览器存档，也不要声称 PNG 包含行星资料。此工具用于视觉创作，不是天文学轨道模拟器。
+- 桌面案例目录与开发工作树同名但父路径不同，不能一并删除。node_modules 原工作树使用主目录依赖的符号链接；通过无 force 的 git worktree remove 删除后，主目录依赖仍存在，不手工递归清理它。
+- main 有另一项已完成任务留下的未提交 WORKLOG；提交和合并均保护了它，不能为了「干净工作区」reset、stash 或提交交接记录。WORKLOG 当前受 Git 跟踪，不能依据旧记忆当作 ignored 文件。
+- 合并不能整文件选 ours/theirs；三个共享冲突已保留 Family Tree 和 Solar System。git merge --ff-only --stat=0 曾因参数无效退出 129，未改变仓库；改为 git merge --ff-only --no-stat 后成功。
+- 实际源码目录是 src/lib/solar-system-creator 与 src/components/solar-system-creator，不是 solar-system。本次交接初次只读搜索使用了不存在的短目录，随后通过 rg --files 核实并改正，没有因此修改文件。
+- 默认 dev 脚本会先释放 40001，不要为交接或验证直接运行以免中断现有服务。临时证据可能被系统清理，缺失时应标记无法回读并按需重验；本地合并、构建、浏览器和 HTTP 回执都不证明部署或线上状态。
+
+### 怎么验证
+
+以下供下一班按需执行，本次 offhand 未重跑产品命令：
+
+- Git：git status --porcelain=v1 --branch；git log -2 --oneline；git merge-base --is-ancestor bbdfc7a56fcf5b62a66db53ec06342deed03e38c main；git worktree list --porcelain。写完预期仅 WORKLOG.md 未暂存、暂存区为空、HEAD 不变；桌面 /Users/wusir/Desktop/星系 保留十二张 PNG 与案例说明.md。
+- 与此前整合检查相同的相关测试范围：pnpm exec vitest run src/lib/solar-system-creator src/components/solar-system-creator src/app/solar-system-creator-routes.test.tsx src/app/sitemap.test.ts src/lib/content-site-navigation.test.ts src/app/family-tree-creator-routes.test.tsx（此前十九文件 / 189 项）。
+- 类型：pnpm typecheck。定向 Lint：pnpm exec eslint src/lib/solar-system-creator src/components/solar-system-creator 'src/app/(en)/solar-system-creator/page.tsx' 'src/app/(zh)/zh/solar-system-creator/page.tsx' src/app/solar-system-creator-routes.test.tsx src/app/sitemap.ts src/app/sitemap.test.ts src/lib/content-site-navigation.ts src/lib/content-site-navigation.test.ts。
+- 构建：pnpm exec vinext build；空白检查：git diff --check。先看 package.json scripts；类型检查和构建顺序执行，避免共同生成文件相互干扰。不把独立 Vinext 构建视为完整 build:vinext 发布流水线。
+- UI：先确认属于 main 的当前预览服务，用本地 ego-browser 新建任务空间打开 /solar-system-creator 与 /zh/solar-system-creator；检查随机三种恒星范围、0/空/固定数量、八项资料编辑、手动素材/拖动/缩放/描述/删除/清空、两模式生成 PNG 和打印、手动五槽位。保存验证保护用户草稿，不能覆盖已有真实槽位；PNG 应实际下载核对 800×400，不以预览截图替代导出文件证据。
+- 页面：检查 Hero 和所有标题不变，What Is 下三组各四案例、左右箭头、交替图文、对比表批准单元格、CTA 返回 #solar-system-creator-workspace、FAQ 及可交互元素手型；桌面与窄屏核对文字可见和整页无横向溢出。密度采集需遍历每组四个案例及全部 FAQ，并保持本条统计范围，不通过改标题来达标。
+- 历史回执目录：/var/folders/52/j_dv3mh12r71qvz2qv17q2kc0000gn/T/solar-system-merge-lg1gjP；关键文件为 feature-file-manifest.json、feature-commit.json、integration-scope-proof.json、before-main-merge.json、main-merge-proof.json、main-browser-proof.json、final-state-proof.json，以及 en-main-cases.png、zh-main-cases.png。本次 offhand 的旧字节/文件哈希快照在 /tmp/solar-offhand-KVbSYl。以上是历史或交接核对证据，不是本次重跑产品验证。
+
+## 交接单 · 2026-10-07 08:29 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+按用户指定设计实现面向小说作者、世界观创作者、D&D/TRPG GM 和玩家的双语人物家谱工具，核对 Roll for Fantasy 竞品功能；完成布局、弹窗、图片导出和工具下方内容。使用唯一「族谱」工作树、最多 5 个内置子代理，不使用 Orca 编排；根代理负责整合与验证。最后按用户授权提交、合并到本地 main 并删除工作树。本次 offhand 只核对现状并写交接单，不新增功能、提交、push 或部署。
+
+### 已完成
+
+- EN/ZH 路由为 /family-tree-creator 和 /zh/family-tree-creator；源码入口为 src/app/(en)/family-tree-creator/page.tsx、src/app/(zh)/zh/family-tree-creator/page.tsx，共用 src/components/family-tree/FamilyTreeCreatorPageView.tsx。导航、sitemap 与 public/llms.txt 已接入。
+- 工具支持四代人物、姓名/年龄/描述、八类头像部件及配色、随机头像、皱纹和疤痕；人物可在同一代内横向拖动。每个人的上下左右端点可设为无、实线或虚线；相邻世代间可添加、移动、调整长度及清空连线。保留五个浏览器存档槽和 TXT 保存/载入，TXT 用于恢复编辑，不作为页面案例图片展示。
+- PNG 默认透明，白底可选；生成图片面板已改为「透明背景 / 白色背景」两个按钮。切换时保留旧预览直至新图片解码完成，生成中禁用切换，保存前验证预览与场景/背景一致。相关代码在 FamilyImagePanel.tsx、FamilyTreeWorkbench.tsx 和 src/lib/family-tree/export.ts；透明棋盘格只用于预览。
+- 人物编辑面板与画布底边对齐；保存/载入、本地文件、生成图片三个操作移入画布标题栏。连接编辑弹窗支持点击遮罩空白处关闭；页面交互光标规则限制在家谱页面。Hero 按 Outfit Creator 的布局调整。
+- 工具下方顺序为 What Is → 12 个案例 → 6 项功能 → 对比表 → 4 步 How It Works → CTA → 8 条 FAQ。CTA 返回 #family-tree-creator-editor。双语正文公开入口 getFamilyTreePageContent(locale)，文件 src/lib/family-tree/page-content.ts；案例公开入口 getFamilyTreeCaseStudiesCopy(locale)，文件 case-studies.ts。
+- 对比列为本站、Canva、draw.io。用户指定的三个维度中，Canva 与 draw.io 的头像、人物资料分别为「需要自行准备」，开始布局为「需要自行设计」；其余已批准内容保持原样。不要未经授权重写对比标题或其他标题。
+- 12 张工具制作的案例 PNG 位于 public/family-tree/cases/，尺寸 1024×676。按小说家族、奇幻血统、TRPG 背景分三组，各四个：王室继承、双家族联姻、失踪继承人、商人家族、精灵家系、矮人氏族、半精灵血缘、兽人家族、冒险者背景、村庄 NPC 家族、收养家庭、术士血脉。What Is 下复用共享 CircularTestimonials，依次左文右图、左图右文、左文右图，使用公开 imageShape="landscape"；原有页面默认 portrait 和 imageBackground 支持保留。
+- 桌面 /Users/wusir/Desktop/族谱 的 12 张案例 PNG 已保留；它与删除的 /Users/wusir/Desktop/开发项目集合/族谱 是不同目录。本次重新读取并核对 12/12 张 SHA-256，均与删除前清单一致。
+- 竞品头像素材位于 public/family-tree/rollforfantasy/images/npc/。4,658 张 PNG 的来源、尺寸和哈希见同目录上层 SOURCE.md、manifest.json、SHA256SUMS，采集脚本为 scripts/download-family-tree-assets.mjs。此前逐一验证 PNG 哈希、字节数和 250×250 尺寸；素材来源记录不等于复用许可，当前没有发布或部署。
+- 最后关键词密度调整仅修改 src/lib/family-tree/page-content.ts 和 case-studies.ts 的下方正文字符串，所有标题、FAQ 问题、Hero 标题/描述、metadata、对比表单元格和工具行为保持原样。关键词 EN 为 Fantasy Family Tree Maker，ZH 为奇幻人物家谱制作器；最终 EN 31 / 1289 = 2.4050%，ZH 32 / 1373 = 2.3307%。
+- 密度按「完整关键词出现次数 ÷ 正文词数 × 100」计算。统计下方说明段落、功能/步骤/CTA 描述、对比表文字、所有 12 个案例的 designation/quote、全部 FAQ 问答；排除 Hero、模块/卡片/案例标题、工具 UI、导航/footer、按钮、图片 alt、ARIA 重复文本和 metadata。英文完整短语每次算一次，忽略大小写并兼容空白；中文精确匹配完整关键词。分母用 Intl.Segmenter 的 isWordLike，历史统一分词运行时为 Node v24.18.0 / ICU 78.3；不要把词数换成汉字数或混用只显示三个案例的口径。
+- 受保护标题：EN 的 pageTitle/H1 为 Fantasy Family Tree Maker – Create Family Trees for Free；ZH 为奇幻人物家谱制作器｜免费制作小说与 D&D 角色家谱。原 pageDescription 与 Hero 描述均保留在 src/lib/family-tree/copy.ts。
+
+提交与本次核对状态：
+
+- 功能提交 cb60c6a18fbde24013a9df03cf03a87a505871c9（feat: add bilingual fantasy family tree maker）；整合提交与本次写入前 main HEAD 为 8689ebb83230e73d0722f3112d2b3150140202cb（merge: integrate main updates with family tree maker），父提交为功能提交和原 main 383df9840eb22ae9ea44515351a4c87bc1b453ed。先在族谱工作树整合 main，再将 main 快进到已验收版本。
+- 合并时仅共享 src/components/armor-creator/circular-testimonials.tsx 冲突，保留主分支 imageBackground 与家谱 imageShape/横图布局，两者合并后经独立复核。没有整文件选 ours/theirs。此前保护核对确认 6,111 个非重叠主分支文件和 4,732 个非共享家谱文件保持原样。
+- 本次 offhand 写入前工作区、暂存区与未跟踪文件均干净；main 相对本地 origin/main 引用 ahead 12。没有 fetch，不代表核查了最新远端状态。本次重新读取 10,845 个 tracked 文件的 SHA-256，全部匹配此前已验收整合版本；WORKLOG 旧内容原样保留，新条目保持未提交。
+- 族谱工作树目录与 Git 登记均已移除，族谱分支保留。本次回读其余七个工作树仍在：主项目、元素周期表、卷轴、历法、城堡、塔罗牌、星系。40006 旧开发服务此前停止，本次 lsof 确认该端口无监听；不要继续使用旧 URL/PID。
+
+此前实际验证（本次 offhand 没有重跑产品测试、类型检查、Lint、构建或浏览器）：
+
+- 整合版本 30 个相关测试文件 / 304 项测试通过，pnpm typecheck、定向 ESLint、CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false pnpm exec vinext build、git diff --check 均退出 0。测试数量来自本轮此前真实命令回执；构建日志仍可回读，显示 Build complete。没有执行全仓测试或完整 build:vinext 发布流水线、Workers dry-run、部署或线上验收。
+- 本地 ego-browser 确认 EN/ZH 家谱页面各三组、12 张图片加载，轮播箭头与 FAQ 工作，标题/描述保持原样；375px 中文页面无整页横向溢出。共享组件的纹章与 Outfit 页面仍保持默认竖图和既有背景行为。浏览器在合并 main 到族谱后的整合版本运行；最终 main 与该版本 10,845 个 tracked 文件逐一相同，不能冒称另起 main 服务重新执行了浏览器验收。
+- 密度阶段真实遍历 EN/ZH 各 12 个案例及全部八条 FAQ，页面文字与 source copy 一致；随后在统一 Node/ICU 下计算上述密度。历史浏览器 TaskSpace 174 和整合复核 TaskSpace 182 均已结束，不复用。
+- 本次 offhand 重新读取 Git HEAD/status/worktree、页面源码、提交/清理/浏览器/密度/构建证据，核对 10,845 个文件及桌面 12 张 PNG 的哈希和 40006 监听状态。仅写本交接单，不把这些只读核对当成产品测试重跑。
+
+### 做到一半
+
+无。已授权的家谱工具、双语内容、案例、密度调整、提交、本地合并和工作树删除均完成。未存档：本次新增 WORKLOG.md 交接单，按技能要求保持未提交；没有其他产品改动。
+
+### 下一步
+
+下一班输入 $pickup，先读取本条并核对 main HEAD、Git 状态、工作树及服务，再按新需求继续。没有新需求时无需修改页面；不要重复合并、删除、重建族谱工作树或擅自删除保留分支。不提交 WORKLOG，不推送或部署。
+
+后续修改须保护用户全部标题及 Hero 文案，同步 EN/ZH。按用户 AGENTS.md 对齐授权范围和验收；每个编码 Task spec 显式要求高内聚、低耦合、单一职责、多步主函数只调度、公开函数/类型/命令通信、KISS、Fail Fast（错误指出具体异常值，禁止吞异常）、YAGNI 和精确命名。只读 reviewer 不修复；验收读取真实证据，不能只信 agent 自报。
+
+### 踩过的坑
+
+- PNG 是否透明不能仅看白底预览；透明棋盘格只在预览容器，不能画入 PNG。切换背景时清空正在显示的预览会闪烁；当前实现等待新图解码完成后替换，保存时拒绝场景/背景不一致的预览。
+- 四代画布与手动连线是当前功能边界，不宣称无限世代、自动家谱布局、语义关系计算或多人协作。TXT 用于编辑存档，页面案例使用 PNG。
+- 共享 CircularTestimonials 同时服务多个工具，不能为家谱横图覆盖其他页面的默认竖图或已有背景配置。合并冲突必须保留双方已验收行为。
+- 提交前 diff --check 检出 avatar.test.ts 与 catalog.test.ts 末尾额外空行，只删除各一个尾部换行并重新核对哈希；不要借此顺手重构测试。
+- WORKLOG.md 当前受 Git 跟踪，写交接后预期 M WORKLOG.md；不能只依赖旧记忆中「被忽略」的状态，也不能把交接混入产品提交。插在 # WORKLOG 标题下，旧内容逐字节保留。
+- /tmp 证据可能被系统清理；缺失应标记无法回读，按需重新验证。旧密度脚本 verify-content.mjs 硬编码已删除工作树和其 node_modules 路径，不能直接重跑；新验证应使用当前 main 和新的浏览器任务空间，不重建工作树。
+
+### 怎么验证
+
+以下供下一班按需重跑；本次 offhand 没有重新执行这些产品命令：
+
+- Git：git status --porcelain=v1 --branch；git log -3 --oneline；git merge-base --is-ancestor cb60c6a18fbde24013a9df03cf03a87a505871c9 main；git worktree list --porcelain。写完预期仅 WORKLOG.md 未暂存、暂存区为空、HEAD 不变；桌面 /Users/wusir/Desktop/族谱 保留 12 张 PNG。
+- 与此前 304 项检查相同的测试范围：pnpm exec vitest run src/lib/family-tree src/components/family-tree src/app/family-tree-creator-routes.test.tsx src/components/armor-creator/circular-testimonials.test.tsx src/components/armor-creator/ArmorCreatorPageHeading.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx src/components/coat-of-arms/CoatMakerPageHeading.test.tsx src/components/dice/DiceRollerCaseStudies.test.tsx src/app/site-performance-styles.test.ts src/app/site-routes.test.tsx src/app/sitemap.test.ts src/lib/content-site-navigation.test.ts src/lib/llms.test.ts。
+- 类型：pnpm typecheck。定向 Lint：pnpm exec eslint src/lib/family-tree src/components/family-tree src/components/armor-creator/circular-testimonials.tsx src/components/armor-creator/circular-testimonials.test.tsx src/app/family-tree-creator-routes.test.tsx scripts/download-family-tree-assets.mjs。
+- 构建：CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false pnpm exec vinext build；空白检查：git diff --check。先看 package.json scripts；类型检查和构建顺序执行，避免同时改生成文件。
+- UI：先确认 main 当前服务及端口，再用本地 ego-browser 新建任务空间打开 /family-tree-creator 与 /zh/family-tree-creator。检查头像八类、添加/编辑/删除人物、同代拖动、端点样式、层间连线拖动与缩放、五个手动存档槽、TXT 保存/载入、弹窗空白遮罩关闭、透明/白底切换稳定及保存 PNG 的实际 alpha。保护用户已有草稿，不覆盖实际存档槽；没有服务时不要使用默认 dev 脚本去清理其他任务的端口。
+- 页面：桌面与 375px 核对 Hero 标题/描述、What Is 下三组各四案例、交替图文、轮播手型光标、对比表、四步说明、CTA 和八条 FAQ。对密度遍历全部案例与 FAQ，按本条统一口径复算，不能为达标修改标题或 Hero。
+- 历史证据：/tmp/family-tree-merge-YBcBSL/ 下 before.json、feature-final-hashes.json、merged-tree-hashes.json、merge-verified.json、delete-verified.json、browser-merged.json、build-merged.log、commit-feature.log、commit-merge.log、merge-main.log；/tmp/family-tree-density-change-C9xofp/ 下 content-before.json、content-after.json、source-density.json、browser-content.json、browser-density-final.json、mobile-layout.json、build-final.log。这些是历史回执，不是本次重跑。
+
+## 交接单 · 2026-10-06 21:34 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+完成 Coat of Arms Maker / 纹章制作器的 EN/ZH 页面调整：移除用户截图中的旧使用场景、旧三步说明/工具介绍和「继续创作」模块；参考 Outfit Creator 增加 What Is、功能介绍、How It Works、对比模块与 FAQ 样式。使用工具制作 12 张案例，放到桌面供审核，并在 What Is 下方用 CircularTestimonials 展示三组交替图文；移除案例展示的整体标题与导语。补齐 Hero 的三个实际工具案例，改为与下方案例一致的浅色背景。
+
+随后把正文关键词密度提高到 2%–3%，保护已有标题。全部实现只使用唯一「纹章」工作树与内置子代理，没有使用 Orca 编排；根代理负责收尾和独立验证。用户最后明确授权提交、合并到本地 main 并删除工作树，均已完成。本次 offhand 只核对现状并写交接单，不新增功能。
+
+### 已完成
+
+- 工具下方顺序为 What Is → 12 个案例 → 6 项功能 → 3 步 How It Works → 对比表 → 返回编辑器 CTA → FAQ。CTA 指向 #coat-editor-workspace。FAQ 双语各 5 条，使用原生 details/summary、分隔线、旋转箭头及单项展开行为。
+- 主要入口为 src/components/coat-of-arms/CoatMakerSeoContent.tsx、CoatMakerPageHeading.tsx；双语正文公开入口为 coat-maker-seo-copy.ts 的 getCoatMakerSeoCopy(locale)。案例组件为 CoatMakerShowcase.tsx，双语案例由 coat-maker-showcase-copy.ts 的 getCoatMakerShowcaseCopy(locale) 提供。FAQ 在 CoatMakerFaqAccordion.tsx。
+- 12 个案例每组 4 个：角色与家族、公会与社团、地区与地点。桌面布局依次左文右图、左图右文、左文右图；复用共享 CircularTestimonials 的公开 props。整体「纹章案例展示」标题/导语已不渲染，保留 section 的 aria-label 和三组标题、描述及案例内容。
+- 案例 WebP 位于 public/coat-assets/showcase/。桌面 /Users/wusir/Desktop/纹章 保留 01–12 的 12 张案例 PNG 和 00_案例总览.png，共 13 张；这是案例文件夹，与已删除的开发工作树是不同路径。
+- Hero 使用工具实际导出的 crimson-lion、azure-stag、verdant-phoenix 三个纹章，当前引用 public/coat-of-arms-maker/hero/tool-made/ivory/ 下三个 WebP，背景为 #f4eee5，尺寸 1120×1400。tool-made/ 下此前深色版与旧 Hero 素材保留；没有用 AI 生成图替代工具导出。三个透明原始 PNG 仍在 /tmp/coat-hero-tool-exports/。
+- 最后密度调整只修改工具下方已有正文段落及对应测试文案；各语言 20 个正文字段增加完整关键词。标题、FAQ 问题、Hero 全部文案、metadata、What Is 和案例内容受保护。editorCtaDescription 同时被 Hero 使用，因此保持原样。没有新增依赖、重构工具或改变编辑器行为。
+- 完整正文密度：英文 Coat of Arms Maker 为 29 / 1259 = 2.3034%；中文 纹章制作器为 30 / 1204 = 2.4917%。此前分别为 9 / 1163 = 0.7739% 和 10 / 1132 = 0.8834%。
+- 统计按用户公式「完整关键词出现次数 ÷ 正文词数」。英文完整短语每次算 1 次，忽略大小写并兼容空白；中文精确匹配纹章制作器。分母使用 Intl.Segmenter('en' 或 'zh-CN', { granularity: 'word' }) 的 isWordLike。包含 Hero、正文标题、全部 12 个轮播案例、全部 5 条 FAQ 问答及对比表；排除编辑器操作文字、导航/footer、按钮标签、alt、metadata、sr-only caption 和 aria-hidden 步骤序号。不得把英文关键词的四个词乘入分子，也不得混用初始可见轮播与完整轮播口径。
+
+提交与当前状态：
+
+- 功能提交 23483a2ebd983b5b3de69f70dadabd18403f60b2（feat: refresh bilingual coat of arms maker page）。本地合并提交及本次写入前 main HEAD 为 d9c229b1c21297fea2d04e4c06b935cc090d7c85（Merge bilingual coat of arms maker updates）；合并前 main 为 b73ba106458ba13bbda813e08590db01ad3bbe49。两个提交均已重新核对为 main 祖先，合并无冲突。
+- 精确提交范围为 26 个文件：上述页面、FAQ、正文/案例 copy 和两个页面测试共 8 个源码/测试文件；12 个案例 WebP；Hero 工具导出的 3 个深色版和 3 个 ivory 版。本次再次核对 26/26 文件与已验收 SHA256 相同，原 main 6095/6095 个保护文件也与合并前清单相同。
+- 主分支中其他任务对共享 circular-testimonials.tsx 的 imageBackground 支持已保留，纹章继续使用浅色默认背景。没有覆盖其他已合并任务或删除其他工作树。
+- 本次写入前工作区、暂存区和未跟踪文件均干净。main 相对本地 origin/main 引用 ahead 9、behind 0；没有 fetch、push 或部署，不能据此判断最新远端状态。
+- /Users/wusir/Desktop/开发项目集合/纹章 已不存在，Git 工作树登记也已移除；纹章分支仍指向功能提交，未删除。当前共 6 个工作树：主项目、元素周期表、卷轴、塔罗牌、族谱、星系。
+- 属于旧纹章工作树的 40003 开发预览此前已停止，本次 lsof 回读无监听。旧 http://hero.localhost:40003 的双语预览 URL 已失效；不要沿用旧 PID 或重建旧工作树来重复收尾。
+
+已有产品验证（此前实际执行，本次 offhand 回读日志，未重新运行产品测试、Lint、类型检查、构建或浏览器）：
+
+- 合并后 main：CoatMakerPageHeading.test.tsx、CoatMakerSeoContent.test.tsx、共享 circular-testimonials.test.tsx 共 3 文件 / 58 测试通过；pnpm typecheck 与 pnpm exec vinext build 均退出 0。类型生成成功，Vinext 日志显示 Build complete。
+- 最后密度版本在工作树：2 个定向页面测试文件 / 29 测试、定向 ESLint、typecheck、Vinext 构建通过。测试修改只同步 32 个文案字符串，原断言/测试逻辑未减少；范围核对与独立只读复核通过。
+- 本地 ego-browser 在合并前工作树遍历 EN/ZH 各 12 个案例和全部 FAQ，得到上述密度；保护 DOM 对照均为 true。桌面 1440px 和移动端 375px 截图及边界检查通过，没有功能卡片文字截断或整页横向溢出。此为工作树浏览器证据，不冒充合并后 main 浏览器验收。
+- 本次 offhand 重新读取 Git、源码、26 个已验收文件及 6095 个保护文件哈希、密度/构建/测试回执、工作树/桌面路径和 40003 监听状态；另行复算历史浏览器正文的词数和关键词次数，均与回执一致。没有执行全仓测试、标准 Next 构建、完整 build:vinext 发布流水线、Workers dry-run 或线上验收。
+
+### 做到一半
+
+无。已授权的页面调整、案例制作、Hero 替换、双语密度调整、提交、本地合并和工作树清理均完成。未存档：本次 WORKLOG.md 交接单，按 offhand 要求保持未提交；没有其他产品改动。
+
+### 下一步
+
+下一班输入 $pickup，先读取本条，重新核对 main HEAD、Git 状态、工作树和服务，再按新的用户需求继续。没有新需求时无需修改页面。保护用户已有标题和 Hero 文案，同步检查 EN/ZH；新增修改先按用户 AGENTS.md 对齐范围和验收。不要重复合并、重复删除、重建纹章工作树或擅自删除保留分支；未授权 push、部署、新增依赖或提交 WORKLOG。
+
+每个编码 Task spec 显式要求高内聚、低耦合、单一职责、多步主函数只调度、公开函数/类型/命令通信、KISS、Fail Fast（指出具体异常值且禁止吞异常）、YAGNI 和精确命名，不顺手扩展范围。只读 reviewer 不能修复代码；验收须读取真实证据，不能只信 agent 自报。
+
+### 踩过的坑
+
+- 轮播当前显示的案例不等于完整 12 个案例；FAQ 默认折叠也不等于正文不存在。固定完整正文口径后，通过真实按钮遍历采集；图片 alt、ARIA 标签和隐藏 caption 不重复计入。中文按词数而非汉字数统计。
+- editorCtaDescription 被 Hero 复用，修改 CTA 描述会连带改 Hero；最后密度提升改的是独立 editorCtaEmphasis 等下方段落。
+- 用户要的「白底」最终使用下方案例同款 #f4eee5 浅色；不能误改回深色版或误替换为 AI 图。桌面案例文件夹和开发工作树同名但父路径不同，删除工作树不能删桌面图片。
+- 浏览器曾有 Monica 扩展注入 body 属性导致的 hydration 提示，已查看实际覆盖层确认；不能因此声称应用控制台完全无错误。本次交接没有重跑该浏览器诊断。
+- 初次测试在文案同步尚未结束时遇到 2 个旧 CTA fixture，完成同步后 29 项通过。临时保护脚本的字符串扫描曾误判模板尾部，改用 TypeScript AST 后通过；没有为验证脚本误报扩展产品改动。
+- /tmp 回执和截图可能被系统清理。证据缺失应标记无法回读并按需重新验证，不能把 Git/构建/本地浏览器通过等同于部署或线上状态。
+
+### 怎么验证
+
+以下供下一班按需重跑；本次 offhand 没有重跑这些产品命令：
+
+- Git：git status --porcelain=v1 --branch；git log -3 --oneline；git merge-base --is-ancestor 23483a2ebd983b5b3de69f70dadabd18403f60b2 main；git worktree list --porcelain。本次写完预期只出现 WORKLOG.md 未暂存，暂存区为空，HEAD 不变。
+- 定向测试：pnpm exec vitest run src/components/coat-of-arms/CoatMakerPageHeading.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx src/components/armor-creator/circular-testimonials.test.tsx（此前 main 为 3 文件 / 58 测试通过）。
+- 类型：pnpm typecheck。
+- 定向 Lint：pnpm exec eslint src/components/coat-of-arms/CoatMakerFaqAccordion.tsx src/components/coat-of-arms/CoatMakerPageHeading.tsx src/components/coat-of-arms/CoatMakerPageHeading.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx src/components/coat-of-arms/coat-maker-seo-copy.ts src/components/coat-of-arms/CoatMakerShowcase.tsx src/components/coat-of-arms/coat-maker-showcase-copy.ts。
+- 构建：pnpm exec vinext build；空白检查：git diff --check。先看 package.json scripts；typecheck 和构建顺序执行，避免共同生成文件互相干扰。
+- UI：先确认一个属于 main 的预览服务，用本地 ego-browser 新建任务空间打开 /coat-of-arms-maker 和 /zh/coat-of-arms-maker；在 1440px/375px 检查标题/描述、Hero 三张浅底图、What Is 下方 3 组各 4 案例、左右箭头、FAQ 展开/键盘操作、CTA 回到 #coat-editor-workspace、移动端对比表局部横向滚动和整页无横向溢出。保护用户浏览器草稿，不复用已结束的 TaskSpace 142，也不使用已停的 40003 URL。
+- 密度：按本条口径遍历全部案例及全部 FAQ，再用 locale-aware Intl.Segmenter 复算；标题和 Hero 不能为密度调整而改动。
+- 可回读历史证据：/tmp/coat-release-receipt.json、/tmp/coat-release-files.json、/tmp/coat-release-main-before.json、/tmp/coat-release-main-tests.log、/tmp/coat-release-main-typecheck.log、/tmp/coat-release-main-build.log、/tmp/coat-keyword-density.json、/tmp/coat-keyword-density-after.json、/tmp/coat-density-typecheck.log、/tmp/coat-density-build.log。截图为 /tmp/coat-density-{en,zh}-{desktop,mobile}.png，采集脚本为 /tmp/coat-density-browser-capture.mjs；这些是历史证据，不是本次重跑。
+
+## 交接单 · 2026-10-06 13:04 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+完成 dice-roller-dnd 的 EN/ZH 工具下方内容，参考 Outfit Creator 的区块和 Army Formation Creator 的 CTA：增加 What Is、功能介绍、How It Works、对比表、案例展示、FAQ 及 FAQ 上方 CTA。What Is 要说明是什么、有什么功能、用在哪里和面向谁；保护元标题、页面标题及原描述，不改变工具行为。仅使用唯一「骰子」工作树和内置子代理，没有使用 Orca 编排。
+
+用户最后授权提交、合并本地 main 并删除工作树；这些事项均已完成。本次 handoff 使用已改名的 offhand 技能，只核对现状并写本交接单，不新增功能或提交。
+
+### 已完成
+
+- 页面下方顺序为 What Is → 6 项功能 → 12 个案例 → 对比表 → 3 步使用说明 → CTA → FAQ。CTA 指向 #dice-roller-tool，FAQ 双语各 6 条，可用按钮展开。旧工具下方文章已移除。
+- What Is 说明浏览器掷骰工具的定义、七种骰子、数量/混合骰池/正负加值、单颗结果及总和；使用场景为攻击、检定、豁免、伤害及备团，受众为 D&D 玩家、地下城主和新手。AC/DC 比较、行动顺序和具体桌规由使用者应用。
+- 对比列为本站掷骰器、实体骰子和 Roll20；各语言保留开始使用、常规掷骰、复杂规则、多人共享、记录保存共 5 行。已移除比较模块外链，以及用户截图中的网络依赖行。移动端表格局部横向滚动。
+- 12 个案例分为 3 组、每组 4 个，按左文右图／左图右文／左文右图交替，使用 CircularTestimonials。案例为攻击、隐匿、敏捷豁免、先攻、巨剑伤害、匕首暴击、3 级盗贼刺剑偷袭、Hunter's Mark、Bless、火球术、2024 规则 Cure Wounds 和随机表。展示具体表达式、骰子点数和示例总和；不暗示自动裁定规则。
+- 「试试这个投掷」案例按钮已移除；12 张 WebP 为实际工具截图，图片展示使用深色背景。共享 carousel 增加公开 imageBackground prop，保留已有默认颜色。可用按钮和链接的手型光标规则限于骰子页面，没有全局修改。
+- 元标题、页面 H1、原 Hero/metadata 描述及 DiceRollerTool.tsx 和其测试均受保护；没有新增依赖。主要公开内容入口为 src/lib/site-content.ts 的 getDiceRollerPageCopy(locale)，页面入口为 src/components/site/views/DiceRollerPageView.tsx，区块为 src/components/dice/DiceRollerContentSections.tsx、DiceRollerCaseStudies.tsx、DiceRollerFaq.tsx。
+- 最终完整正文密度：EN 的 DnD Dice Roller 为 33 / 1465 = 2.2526%；ZH 的 DND掷骰器为 31 / 1406 = 2.2048%。初始 3 个案例加全部 FAQ 答案的口径也达标：EN 24 / 1086 = 2.2099%，ZH 22 / 1033 = 2.1297%。
+- 密度口径：完整关键词每次算 1 次，忽略大小写；中文匹配允许 DND 与中文词之间的空白，未改变关键词名称。分母使用 Intl.Segmenter 的 isWordLike 分词，包含 Hero、模块标题、所有 12 个案例及全部 FAQ 答案；排除导航、页脚、工具 UI 标签和图片 alt。不是汉字数或源代码字符串数。后续统计不能混用完整轮播内容与初始可见案例的分母。
+
+提交与当前状态：
+
+- 功能提交 aafcbe5491a7f8ea5bd4465897d598a9a57fb1c8（feat: enrich bilingual DnD dice roller page）；本地合并及当前 main HEAD 为 dd1e652cb9a31da7f28c0a1b937aa3ac4077d50f（Merge bilingual DnD dice roller page）。合并父提交为原 main 616a75aecbaddfed763cd7fcafb6a4d3586a056b 和功能提交。
+- 精确提交范围为 20 个文件：上述页面和区块／案例测试、src/lib/site-content.ts、共享 circular-testimonials.tsx 及其测试共 8 个源码/测试文件，加 public/images/dice-cases/ 下 12 张 WebP。根代理独立核对 20 个最终文件与已验收哈希完全一致；合并前 main 其余 6081 个 tracked 文件哈希保持一致。
+- 本轮 handoff 写入前 main 工作区、暂存区和未跟踪文件均干净，相对本地 origin/main 引用 ahead 6；未 push、未部署，不代表核查了最新远端或线上版本。
+- /Users/wusir/Desktop/开发项目集合/骰子 目录和 Git 工作树登记已移除；骰子分支保留并已合入 main。main 的 node_modules 保留。仅停止了属于该工作树的 40007 预览，当前回读该端口无监听；其他「卷轴」「族谱」「纹章」工作树仍存在，未清理。
+
+已有验证记录（此前实际执行，本次 handoff 未重跑测试、类型检查、Lint、构建或浏览器）：
+
+- 合并后的 main：4 个定向测试文件、80 项测试通过；pnpm typecheck、8 个源码/测试文件的 scoped ESLint、pnpm exec vinext build 和 git diff --check 均退出 0。构建完成，包含 EN/ZH 骰子路由；没有执行完整全仓测试、完整 build:vinext 发布流水线、Workers dry-run 或部署。
+- 合并前相同已验收文件：本地 ego-browser 真实遍历 EN/ZH 各 12 个案例及全部 FAQ，核对上述密度；中文 1440px/375px 标题保护、FAQ、5 行表格、3 组案例和无整页横向溢出通过。375px 对比表 clientWidth=335、scrollWidth=768、overflowX=auto。本地浏览器证据来自工作树，不冒充合并后 main 浏览器验收。
+- 本次 handoff 只重新读取 Git HEAD/status/worktree、提交/清理/密度/布局证据和页面源码，核对 40007 无监听，并验证本交接单插入时旧 WORKLOG 字节保留。
+
+### 做到一半
+
+无。已授权的页面内容、中文密度调整、提交、本地合并和工作树删除均完成。未存档：本次新增 WORKLOG.md 交接单，按技能要求保持未提交；没有其他产品改动。
+
+### 下一步
+
+下一班输入 $pickup，先读取本条并重新核对 main HEAD、工作区、工作树和当前服务，再按新的用户需求继续。没有新需求时无需再改页面；不要重建或重复删除骰子工作树，不复用旧 PID 或已结束的 ego-browser TaskSpace 86。原 40007 URL 已失效，复验应指向确认属于 main 的服务。
+
+继续改页面时保护元标题、页面标题和原描述，同步检查 EN/ZH。每个编码 Task spec 必须显式写出高内聚、低耦合、单一职责、多步主函数仅调度、公开函数/类型/命令通信、KISS、Fail Fast（指出具体异常值且不吞异常）、YAGNI 和精确命名；不要顺手扩大范围。未授权 push、部署、删除分支或提交 WORKLOG。
+
+### 踩过的坑
+
+- 所有 12 个轮播案例与初始 3 个案例是不同统计范围；必须先固定口径。FAQ 答案各计一次，排除重复 caption、alt、导航和工具 UI 标签，中文用词数而非汉字数。当前两种已记录口径都在 2%–3%。
+- 工具仅计算骰子点数和算术总和；4d6 去最低需手动相加其他三颗，不自动删除最低骰子。案例中的 AC/DC、暴击、偷袭、法术规则由用户确认；Cure Wounds 示例明确针对 2024 规则。
+- 审计脚本曾把 diff 格式、模块函数身份、已授权删除的旧下方文章和行号变化误判为越界；修正临时审计脚本后 scope PASS、failures=[]。仓库未为修正审计误报做额外改动，不能只信 agent 口头自报。
+- 删除回执的 expectedMainHead 曾漏写一位，已仅修正临时 JSON，并与实际 main HEAD 三方相等验证通过；不要依据有误的临时字符串重复执行合并或删除。
+- /tmp 证据可能被清理。缺失时标记无法回读，按需重新验证；构建、本地浏览器、Git 合并和部署是不同证据，本次没有线上验收。
+
+### 怎么验证
+
+以下命令供下一班按需重跑，不代表本次 handoff 已重新执行产品检查：
+
+- Git：git status --porcelain=v1 --branch；git log -3 --oneline；git merge-base --is-ancestor aafcbe5491a7f8ea5bd4465897d598a9a57fb1c8 main；git worktree list --porcelain。本条写完预期仅 WORKLOG.md 未暂存，暂存区为空。
+- 定向测试：pnpm exec vitest run src/app/site-routes.test.tsx src/components/dice/DiceRollerCaseStudies.test.tsx src/components/dice/DiceRollerTool.test.tsx src/components/armor-creator/circular-testimonials.test.tsx（此前 4 文件 / 80 测试通过）。
+- 类型：pnpm typecheck。
+- Lint：pnpm exec eslint src/components/armor-creator/circular-testimonials.test.tsx src/components/armor-creator/circular-testimonials.tsx src/components/site/views/DiceRollerPageView.tsx src/lib/site-content.ts src/components/dice/DiceRollerCaseStudies.test.tsx src/components/dice/DiceRollerCaseStudies.tsx src/components/dice/DiceRollerContentSections.tsx src/components/dice/DiceRollerFaq.tsx。
+- 构建：pnpm exec vinext build；空白检查：git diff --check。类型检查和构建按顺序执行，避免共同生成文件互相干扰。
+- UI：先确认现有 main 服务，再用本地 ego-browser 新建任务空间打开 /dice-roller-dnd 和 /zh/dice-roller-dnd；桌面/375px 检查 3 组案例各 4 个、左右箭头、FAQ 按钮、CTA 回到 #dice-roller-tool、手型光标、深色图片背景、5 行无外链对比表和移动端局部横向滚动。按固定密度口径遍历案例后统计；保护用户已有浏览器状态。
+- 可回读历史证据：/tmp/dice-merge-manifest.json、/tmp/dice-main-root-merge-proof.json、/tmp/dice-commit-merge-proof.json、/tmp/dice-worktree-removal-proof.json、/tmp/dice-root-final-cleanup-proof.json、/tmp/dice-commit-scope-review.json、/tmp/dice-zh-density-browser-report.json、/tmp/dice-zh-density-copy-review.json、/tmp/dice-zh-density-layout-proof.json。截图为 /tmp/dice-zh-density-zh-{1440,375}-{comparison,cases}.png；这些是此前验证记录，不是本次重跑。
+
 ## 交接单 · 2026-10-06 10:46 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
