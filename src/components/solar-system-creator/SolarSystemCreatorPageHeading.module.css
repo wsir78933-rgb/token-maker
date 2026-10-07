@@ -1,0 +1,66 @@
+.underline {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: -5px;
+  pointer-events: none;
+}
+
+@keyframes solar-system-creator-hero-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade {
+  animation: solar-system-creator-hero-fade-in-up 0.6s ease-out both;
+}
+
+.delayedOne {
+  animation-delay: 0.2s;
+}
+
+.delayedTwo {
+  animation-delay: 0.4s;
+}
+
+.button {
+  transition: none;
+}
+
+@keyframes solar-system-creator-hero-button-bounce {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.button.bouncing {
+  animation: solar-system-creator-hero-button-bounce 0.3s cubic-bezier(0.36, 0, 0.66, -0.56);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade,
+  .button.bouncing {
+    animation: none;
+  }
+}

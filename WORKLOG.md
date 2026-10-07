@@ -1,5 +1,72 @@
 # WORKLOG
 
+## 交接单 · 2026-10-06 21:34 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+完成 Coat of Arms Maker / 纹章制作器的 EN/ZH 页面调整：移除用户截图中的旧使用场景、旧三步说明/工具介绍和「继续创作」模块；参考 Outfit Creator 增加 What Is、功能介绍、How It Works、对比模块与 FAQ 样式。使用工具制作 12 张案例，放到桌面供审核，并在 What Is 下方用 CircularTestimonials 展示三组交替图文；移除案例展示的整体标题与导语。补齐 Hero 的三个实际工具案例，改为与下方案例一致的浅色背景。
+
+随后把正文关键词密度提高到 2%–3%，保护已有标题。全部实现只使用唯一「纹章」工作树与内置子代理，没有使用 Orca 编排；根代理负责收尾和独立验证。用户最后明确授权提交、合并到本地 main 并删除工作树，均已完成。本次 offhand 只核对现状并写交接单，不新增功能。
+
+### 已完成
+
+- 工具下方顺序为 What Is → 12 个案例 → 6 项功能 → 3 步 How It Works → 对比表 → 返回编辑器 CTA → FAQ。CTA 指向 #coat-editor-workspace。FAQ 双语各 5 条，使用原生 details/summary、分隔线、旋转箭头及单项展开行为。
+- 主要入口为 src/components/coat-of-arms/CoatMakerSeoContent.tsx、CoatMakerPageHeading.tsx；双语正文公开入口为 coat-maker-seo-copy.ts 的 getCoatMakerSeoCopy(locale)。案例组件为 CoatMakerShowcase.tsx，双语案例由 coat-maker-showcase-copy.ts 的 getCoatMakerShowcaseCopy(locale) 提供。FAQ 在 CoatMakerFaqAccordion.tsx。
+- 12 个案例每组 4 个：角色与家族、公会与社团、地区与地点。桌面布局依次左文右图、左图右文、左文右图；复用共享 CircularTestimonials 的公开 props。整体「纹章案例展示」标题/导语已不渲染，保留 section 的 aria-label 和三组标题、描述及案例内容。
+- 案例 WebP 位于 public/coat-assets/showcase/。桌面 /Users/wusir/Desktop/纹章 保留 01–12 的 12 张案例 PNG 和 00_案例总览.png，共 13 张；这是案例文件夹，与已删除的开发工作树是不同路径。
+- Hero 使用工具实际导出的 crimson-lion、azure-stag、verdant-phoenix 三个纹章，当前引用 public/coat-of-arms-maker/hero/tool-made/ivory/ 下三个 WebP，背景为 #f4eee5，尺寸 1120×1400。tool-made/ 下此前深色版与旧 Hero 素材保留；没有用 AI 生成图替代工具导出。三个透明原始 PNG 仍在 /tmp/coat-hero-tool-exports/。
+- 最后密度调整只修改工具下方已有正文段落及对应测试文案；各语言 20 个正文字段增加完整关键词。标题、FAQ 问题、Hero 全部文案、metadata、What Is 和案例内容受保护。editorCtaDescription 同时被 Hero 使用，因此保持原样。没有新增依赖、重构工具或改变编辑器行为。
+- 完整正文密度：英文 Coat of Arms Maker 为 29 / 1259 = 2.3034%；中文 纹章制作器为 30 / 1204 = 2.4917%。此前分别为 9 / 1163 = 0.7739% 和 10 / 1132 = 0.8834%。
+- 统计按用户公式「完整关键词出现次数 ÷ 正文词数」。英文完整短语每次算 1 次，忽略大小写并兼容空白；中文精确匹配纹章制作器。分母使用 Intl.Segmenter('en' 或 'zh-CN', { granularity: 'word' }) 的 isWordLike。包含 Hero、正文标题、全部 12 个轮播案例、全部 5 条 FAQ 问答及对比表；排除编辑器操作文字、导航/footer、按钮标签、alt、metadata、sr-only caption 和 aria-hidden 步骤序号。不得把英文关键词的四个词乘入分子，也不得混用初始可见轮播与完整轮播口径。
+
+提交与当前状态：
+
+- 功能提交 23483a2ebd983b5b3de69f70dadabd18403f60b2（feat: refresh bilingual coat of arms maker page）。本地合并提交及本次写入前 main HEAD 为 d9c229b1c21297fea2d04e4c06b935cc090d7c85（Merge bilingual coat of arms maker updates）；合并前 main 为 b73ba106458ba13bbda813e08590db01ad3bbe49。两个提交均已重新核对为 main 祖先，合并无冲突。
+- 精确提交范围为 26 个文件：上述页面、FAQ、正文/案例 copy 和两个页面测试共 8 个源码/测试文件；12 个案例 WebP；Hero 工具导出的 3 个深色版和 3 个 ivory 版。本次再次核对 26/26 文件与已验收 SHA256 相同，原 main 6095/6095 个保护文件也与合并前清单相同。
+- 主分支中其他任务对共享 circular-testimonials.tsx 的 imageBackground 支持已保留，纹章继续使用浅色默认背景。没有覆盖其他已合并任务或删除其他工作树。
+- 本次写入前工作区、暂存区和未跟踪文件均干净。main 相对本地 origin/main 引用 ahead 9、behind 0；没有 fetch、push 或部署，不能据此判断最新远端状态。
+- /Users/wusir/Desktop/开发项目集合/纹章 已不存在，Git 工作树登记也已移除；纹章分支仍指向功能提交，未删除。当前共 6 个工作树：主项目、元素周期表、卷轴、塔罗牌、族谱、星系。
+- 属于旧纹章工作树的 40003 开发预览此前已停止，本次 lsof 回读无监听。旧 http://hero.localhost:40003 的双语预览 URL 已失效；不要沿用旧 PID 或重建旧工作树来重复收尾。
+
+已有产品验证（此前实际执行，本次 offhand 回读日志，未重新运行产品测试、Lint、类型检查、构建或浏览器）：
+
+- 合并后 main：CoatMakerPageHeading.test.tsx、CoatMakerSeoContent.test.tsx、共享 circular-testimonials.test.tsx 共 3 文件 / 58 测试通过；pnpm typecheck 与 pnpm exec vinext build 均退出 0。类型生成成功，Vinext 日志显示 Build complete。
+- 最后密度版本在工作树：2 个定向页面测试文件 / 29 测试、定向 ESLint、typecheck、Vinext 构建通过。测试修改只同步 32 个文案字符串，原断言/测试逻辑未减少；范围核对与独立只读复核通过。
+- 本地 ego-browser 在合并前工作树遍历 EN/ZH 各 12 个案例和全部 FAQ，得到上述密度；保护 DOM 对照均为 true。桌面 1440px 和移动端 375px 截图及边界检查通过，没有功能卡片文字截断或整页横向溢出。此为工作树浏览器证据，不冒充合并后 main 浏览器验收。
+- 本次 offhand 重新读取 Git、源码、26 个已验收文件及 6095 个保护文件哈希、密度/构建/测试回执、工作树/桌面路径和 40003 监听状态；另行复算历史浏览器正文的词数和关键词次数，均与回执一致。没有执行全仓测试、标准 Next 构建、完整 build:vinext 发布流水线、Workers dry-run 或线上验收。
+
+### 做到一半
+
+无。已授权的页面调整、案例制作、Hero 替换、双语密度调整、提交、本地合并和工作树清理均完成。未存档：本次 WORKLOG.md 交接单，按 offhand 要求保持未提交；没有其他产品改动。
+
+### 下一步
+
+下一班输入 $pickup，先读取本条，重新核对 main HEAD、Git 状态、工作树和服务，再按新的用户需求继续。没有新需求时无需修改页面。保护用户已有标题和 Hero 文案，同步检查 EN/ZH；新增修改先按用户 AGENTS.md 对齐范围和验收。不要重复合并、重复删除、重建纹章工作树或擅自删除保留分支；未授权 push、部署、新增依赖或提交 WORKLOG。
+
+每个编码 Task spec 显式要求高内聚、低耦合、单一职责、多步主函数只调度、公开函数/类型/命令通信、KISS、Fail Fast（指出具体异常值且禁止吞异常）、YAGNI 和精确命名，不顺手扩展范围。只读 reviewer 不能修复代码；验收须读取真实证据，不能只信 agent 自报。
+
+### 踩过的坑
+
+- 轮播当前显示的案例不等于完整 12 个案例；FAQ 默认折叠也不等于正文不存在。固定完整正文口径后，通过真实按钮遍历采集；图片 alt、ARIA 标签和隐藏 caption 不重复计入。中文按词数而非汉字数统计。
+- editorCtaDescription 被 Hero 复用，修改 CTA 描述会连带改 Hero；最后密度提升改的是独立 editorCtaEmphasis 等下方段落。
+- 用户要的「白底」最终使用下方案例同款 #f4eee5 浅色；不能误改回深色版或误替换为 AI 图。桌面案例文件夹和开发工作树同名但父路径不同，删除工作树不能删桌面图片。
+- 浏览器曾有 Monica 扩展注入 body 属性导致的 hydration 提示，已查看实际覆盖层确认；不能因此声称应用控制台完全无错误。本次交接没有重跑该浏览器诊断。
+- 初次测试在文案同步尚未结束时遇到 2 个旧 CTA fixture，完成同步后 29 项通过。临时保护脚本的字符串扫描曾误判模板尾部，改用 TypeScript AST 后通过；没有为验证脚本误报扩展产品改动。
+- /tmp 回执和截图可能被系统清理。证据缺失应标记无法回读并按需重新验证，不能把 Git/构建/本地浏览器通过等同于部署或线上状态。
+
+### 怎么验证
+
+以下供下一班按需重跑；本次 offhand 没有重跑这些产品命令：
+
+- Git：git status --porcelain=v1 --branch；git log -3 --oneline；git merge-base --is-ancestor 23483a2ebd983b5b3de69f70dadabd18403f60b2 main；git worktree list --porcelain。本次写完预期只出现 WORKLOG.md 未暂存，暂存区为空，HEAD 不变。
+- 定向测试：pnpm exec vitest run src/components/coat-of-arms/CoatMakerPageHeading.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx src/components/armor-creator/circular-testimonials.test.tsx（此前 main 为 3 文件 / 58 测试通过）。
+- 类型：pnpm typecheck。
+- 定向 Lint：pnpm exec eslint src/components/coat-of-arms/CoatMakerFaqAccordion.tsx src/components/coat-of-arms/CoatMakerPageHeading.tsx src/components/coat-of-arms/CoatMakerPageHeading.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx src/components/coat-of-arms/coat-maker-seo-copy.ts src/components/coat-of-arms/CoatMakerShowcase.tsx src/components/coat-of-arms/coat-maker-showcase-copy.ts。
+- 构建：pnpm exec vinext build；空白检查：git diff --check。先看 package.json scripts；typecheck 和构建顺序执行，避免共同生成文件互相干扰。
+- UI：先确认一个属于 main 的预览服务，用本地 ego-browser 新建任务空间打开 /coat-of-arms-maker 和 /zh/coat-of-arms-maker；在 1440px/375px 检查标题/描述、Hero 三张浅底图、What Is 下方 3 组各 4 案例、左右箭头、FAQ 展开/键盘操作、CTA 回到 #coat-editor-workspace、移动端对比表局部横向滚动和整页无横向溢出。保护用户浏览器草稿，不复用已结束的 TaskSpace 142，也不使用已停的 40003 URL。
+- 密度：按本条口径遍历全部案例及全部 FAQ，再用 locale-aware Intl.Segmenter 复算；标题和 Hero 不能为密度调整而改动。
+- 可回读历史证据：/tmp/coat-release-receipt.json、/tmp/coat-release-files.json、/tmp/coat-release-main-before.json、/tmp/coat-release-main-tests.log、/tmp/coat-release-main-typecheck.log、/tmp/coat-release-main-build.log、/tmp/coat-keyword-density.json、/tmp/coat-keyword-density-after.json、/tmp/coat-density-typecheck.log、/tmp/coat-density-build.log。截图为 /tmp/coat-density-{en,zh}-{desktop,mobile}.png，采集脚本为 /tmp/coat-density-browser-capture.mjs；这些是历史证据，不是本次重跑。
+
 ## 交接单 · 2026-10-06 13:04 Asia/Shanghai +0800 · Codex
 
 ### 本次目标

@@ -1,8 +1,10 @@
 import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
+import { getFamilyTreeCopy } from '@/lib/family-tree/copy';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
 import { getPeriodicTableCopy } from '@/lib/periodic-table-creator/copy';
+import { getSolarSystemCopy } from '@/lib/solar-system-creator/copy';
 import { getWeaponCreatorCopy } from '@/lib/weapon-creator/copy';
 import { getBlogCategories, getBlogCategoryPath, type BlogCategoryCopy } from '@/lib/blog-content';
 import { getHomeCopy, getNavLabels, type NavLabels } from '@/lib/site-content';
@@ -11,9 +13,11 @@ import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } fr
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
 const EMBLEM_CREATOR_PATH = '/emblem-creator';
+const FAMILY_TREE_CREATOR_PATH = '/family-tree-creator';
 const LANGUAGE_GENERATOR_PATH = '/language-generator';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
 const PERIODIC_TABLE_CREATOR_PATH = '/periodic-table-creator';
+const SOLAR_SYSTEM_CREATOR_PATH = '/solar-system-creator';
 const WEAPON_CREATOR_PATH = '/weapon-creator';
 const FREE_TOOLS_PATHS = [
   '/',
@@ -24,6 +28,8 @@ const FREE_TOOLS_PATHS = [
   ARMY_FORMATION_CREATOR_PATH,
   EMBLEM_CREATOR_PATH,
   LANGUAGE_GENERATOR_PATH,
+  FAMILY_TREE_CREATOR_PATH,
+  SOLAR_SYSTEM_CREATOR_PATH,
   PERIODIC_TABLE_CREATOR_PATH,
 ] as const;
 
@@ -208,6 +214,16 @@ function buildContentSiteFreeToolFeatures(
     ),
     buildContentSiteFreeToolFeature(
       locale,
+      FAMILY_TREE_CREATOR_PATH,
+      readFamilyTreeNavigationName(locale),
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
+      SOLAR_SYSTEM_CREATOR_PATH,
+      readSolarSystemCreatorNavigationName(locale),
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
       PERIODIC_TABLE_CREATOR_PATH,
       getPeriodicTableCopy(locale).navigationTitle,
     ),
@@ -304,6 +320,28 @@ function readWeaponCreatorNavigationName(locale: SiteLocale): string {
   if (navigationName.trim() === '') {
     throw new Error(
       `Weapon creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
+    );
+  }
+
+  return navigationName;
+}
+
+function readFamilyTreeNavigationName(locale: SiteLocale): string {
+  const navigationName = getFamilyTreeCopy(locale).navigationName;
+  if (navigationName.trim() === '') {
+    throw new Error(
+      `Family tree creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
+    );
+  }
+
+  return navigationName;
+}
+
+function readSolarSystemCreatorNavigationName(locale: SiteLocale): string {
+  const navigationName = getSolarSystemCopy(locale).navigationTitle;
+  if (typeof navigationName !== 'string' || navigationName.trim() === '') {
+    throw new Error(
+      `Solar system creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
     );
   }
 

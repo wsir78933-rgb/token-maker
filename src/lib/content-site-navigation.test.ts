@@ -62,6 +62,8 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/family-tree-creator', title: 'Family Tree Creator' },
+      { href: '/solar-system-creator', title: 'Solar System Creator' },
       { href: '/periodic-table-creator', title: 'Periodic Table Creator' },
     ]);
     expect(model.links).toEqual([
@@ -104,6 +106,8 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/family-tree-creator', title: '人物家谱制作器' },
+      { href: '/zh/solar-system-creator', title: '太阳系创建器' },
       { href: '/zh/periodic-table-creator', title: '元素周期表制作器' },
     ]);
     expect(model.links).toEqual([
@@ -153,6 +157,26 @@ describe('content site topbar model', () => {
       '/zh/language-generator/saved',
     );
     const languageGeneratorSibling = readTopbar('en', '/language-generator-extra', '/zh');
+    const familyTree = readTopbar('en', '/family-tree-creator', '/zh/family-tree-creator');
+    const chineseFamilyTree = readTopbar('zh', '/zh/family-tree-creator', '/family-tree-creator');
+    const familyTreeNested = readTopbar(
+      'en',
+      '/family-tree-creator/saved',
+      '/zh/family-tree-creator/saved',
+    );
+    const familyTreeSibling = readTopbar('en', '/family-tree-creator-extra', '/zh');
+    const solarSystemCreator = readTopbar('en', '/solar-system-creator', '/zh/solar-system-creator');
+    const chineseSolarSystemCreator = readTopbar(
+      'zh',
+      '/zh/solar-system-creator',
+      '/solar-system-creator',
+    );
+    const solarSystemCreatorNested = readTopbar(
+      'en',
+      '/solar-system-creator/saved',
+      '/zh/solar-system-creator/saved',
+    );
+    const solarSystemCreatorSibling = readTopbar('en', '/solar-system-creator-extra', '/zh');
     const periodicTable = readTopbar('en', '/periodic-table-creator', '/zh/periodic-table-creator');
     const periodicTableNested = readTopbar(
       'en',
@@ -191,6 +215,14 @@ describe('content site topbar model', () => {
     expect(languageGenerator.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorNested.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorSibling.freeToolsMenuIsActive).toBe(false);
+    expect(familyTree.freeToolsMenuIsActive).toBe(true);
+    expect(chineseFamilyTree.freeToolsMenuIsActive).toBe(true);
+    expect(familyTreeNested.freeToolsMenuIsActive).toBe(true);
+    expect(familyTreeSibling.freeToolsMenuIsActive).toBe(false);
+    expect(solarSystemCreator.freeToolsMenuIsActive).toBe(true);
+    expect(chineseSolarSystemCreator.freeToolsMenuIsActive).toBe(true);
+    expect(solarSystemCreatorNested.freeToolsMenuIsActive).toBe(true);
+    expect(solarSystemCreatorSibling.freeToolsMenuIsActive).toBe(false);
     expect(periodicTable.freeToolsMenuIsActive).toBe(true);
     expect(periodicTableNested.freeToolsMenuIsActive).toBe(true);
     expect(periodicTableChinese.freeToolsMenuIsActive).toBe(true);
