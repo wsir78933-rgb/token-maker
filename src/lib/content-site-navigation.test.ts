@@ -62,6 +62,7 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/solar-system-creator', title: 'Solar System Creator' },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -103,6 +104,7 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/solar-system-creator', title: '太阳系创建器' },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -151,6 +153,18 @@ describe('content site topbar model', () => {
       '/zh/language-generator/saved',
     );
     const languageGeneratorSibling = readTopbar('en', '/language-generator-extra', '/zh');
+    const solarSystemCreator = readTopbar('en', '/solar-system-creator', '/zh/solar-system-creator');
+    const chineseSolarSystemCreator = readTopbar(
+      'zh',
+      '/zh/solar-system-creator',
+      '/solar-system-creator',
+    );
+    const solarSystemCreatorNested = readTopbar(
+      'en',
+      '/solar-system-creator/saved',
+      '/zh/solar-system-creator/saved',
+    );
+    const solarSystemCreatorSibling = readTopbar('en', '/solar-system-creator-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
@@ -172,6 +186,10 @@ describe('content site topbar model', () => {
     expect(languageGenerator.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorNested.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorSibling.freeToolsMenuIsActive).toBe(false);
+    expect(solarSystemCreator.freeToolsMenuIsActive).toBe(true);
+    expect(chineseSolarSystemCreator.freeToolsMenuIsActive).toBe(true);
+    expect(solarSystemCreatorNested.freeToolsMenuIsActive).toBe(true);
+    expect(solarSystemCreatorSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
