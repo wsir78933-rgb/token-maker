@@ -189,6 +189,7 @@ function ConstellationShowcaseGroup({
           clipImageStack={false}
           onImageClick={handleImageClick}
           imageActionLabel={imageActionLabel}
+          previewImagesClickable={true}
         />
       </div>
       <ConstellationShowcaseImageDialog

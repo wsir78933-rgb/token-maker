@@ -3083,6 +3083,12 @@
   cursor: text;
 }
 
+.tarot-cards-page :is(button, a[href], [role='button'], [role='tab'], [role='menuitem']):not(:disabled):not([aria-disabled='true']),
+[data-tarot-help-dialog] :is(button, a[href], [role='button'], [role='tab'], [role='menuitem']):not(:disabled):not([aria-disabled='true']),
+[data-tarot-details-mobile-dialog] :is(button, a[href], [role='button'], [role='tab'], [role='menuitem']):not(:disabled):not([aria-disabled='true']) {
+  cursor: pointer;
+}
+
 .emblem-creator-page [aria-busy='true'],
 .emblem-creator-page [inert],
 .emblem-creator-page [inert] button:not(:disabled),

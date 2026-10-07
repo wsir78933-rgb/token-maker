@@ -502,6 +502,7 @@ describe('coat maker routes', () => {
         { label: 'Constellation Map Creator', href: '/constellation-map-creator' },
         { label: 'Solar System Creator', href: '/solar-system-creator' },
         { label: 'Periodic Table Creator', href: '/periodic-table-creator' },
+        { label: 'Tarot Cards', href: '/tarot-cards' },
       ],
       sharedNavigationLinks: [
         { label: 'Dice Roller', href: '/dice-roller-dnd' },
@@ -530,6 +531,7 @@ describe('coat maker routes', () => {
         { label: '星座地图创建器', href: '/zh/constellation-map-creator' },
         { label: '太阳系创建器', href: '/zh/solar-system-creator' },
         { label: '元素周期表制作器', href: '/zh/periodic-table-creator' },
+        { label: '塔罗牌工具', href: '/zh/tarot-cards' },
       ],
       sharedNavigationLinks: [
         { label: '骰子', href: '/zh/dice-roller-dnd' },
