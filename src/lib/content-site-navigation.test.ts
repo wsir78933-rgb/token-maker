@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { getBlogCategories } from '@/lib/blog-content';
+import { getTarotCopy } from '@/lib/tarot-cards/copy';
 import {
   assertContentSiteTopbarModel,
   getContentSiteTopbarModel,
@@ -62,6 +63,7 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/tarot-cards', title: getTarotCopy('en').navigationTitle },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -103,6 +105,7 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/tarot-cards', title: getTarotCopy('zh').navigationTitle },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -151,6 +154,9 @@ describe('content site topbar model', () => {
       '/zh/language-generator/saved',
     );
     const languageGeneratorSibling = readTopbar('en', '/language-generator-extra', '/zh');
+    const tarotCards = readTopbar('en', '/tarot-cards', '/zh/tarot-cards');
+    const tarotCardsNested = readTopbar('en', '/tarot-cards/saved', '/zh/tarot-cards/saved');
+    const tarotCardsSibling = readTopbar('en', '/tarot-cards-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
@@ -172,6 +178,9 @@ describe('content site topbar model', () => {
     expect(languageGenerator.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorNested.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorSibling.freeToolsMenuIsActive).toBe(false);
+    expect(tarotCards.freeToolsMenuIsActive).toBe(true);
+    expect(tarotCardsNested.freeToolsMenuIsActive).toBe(true);
+    expect(tarotCardsSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
@@ -189,6 +198,27 @@ describe('content site topbar model', () => {
     const current = readTopbar(locale, `${prefix}/emblem-creator?tab=layers#canvas`, switchedPath);
     const nested = readTopbar(locale, `${prefix}/emblem-creator/saved`, switchedPath);
     const sibling = readTopbar(locale, `${prefix}/emblem-creator-extra`, switchedPath);
+
+    expect(current.freeToolsMenuIsActive).toBe(true);
+    expect(current.featureMenuIsActive).toBe(false);
+    expect(current.links.every((link) => !link.isActive)).toBe(true);
+    expect(current.localeSwitch.href).toBe(switchedPath);
+    expect(nested.freeToolsMenuIsActive).toBe(true);
+    expect(sibling.freeToolsMenuIsActive).toBe(false);
+  });
+
+  it.each([
+    { locale: 'en' as const, prefix: '', otherPrefix: '/zh' },
+    { locale: 'zh' as const, prefix: '/zh', otherPrefix: '' },
+  ])('activates the tarot cards tool boundary and preserves the $locale language switch', ({
+    locale,
+    prefix,
+    otherPrefix,
+  }) => {
+    const switchedPath = `${otherPrefix}/tarot-cards`;
+    const current = readTopbar(locale, `${prefix}/tarot-cards?mode=spread#reading`, switchedPath);
+    const nested = readTopbar(locale, `${prefix}/tarot-cards/saved`, switchedPath);
+    const sibling = readTopbar(locale, `${prefix}/tarot-cards-extra`, switchedPath);
 
     expect(current.freeToolsMenuIsActive).toBe(true);
     expect(current.featureMenuIsActive).toBe(false);

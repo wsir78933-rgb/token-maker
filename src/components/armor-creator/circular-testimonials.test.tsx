@@ -665,6 +665,21 @@ describe('CircularTestimonials', () => {
     ).toThrow('CircularTestimonials clipImageStack must be a boolean. Received "false".');
   });
 
+  it('拒绝非法 imageSize 并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid image size carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageSize={'wide' as never}
+        />,
+      ),
+    ).toThrow('CircularTestimonials imageSize must be "default" or "large". Received "wide".');
+  });
+
   it('保留英文空格、对中文分词并支持中英混合文案自然换行', () => {
     const chineseQuote = '林地游侠适合森林旅行。';
     const englishQuote = 'A wrap  coat, panelled trousers.';
