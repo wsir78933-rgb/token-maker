@@ -63,6 +63,7 @@ describe('content site topbar model', () => {
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
       { href: '/family-tree-creator', title: 'Family Tree Creator' },
+      { href: '/constellation-map-creator', title: 'Constellation Map Creator' },
       { href: '/solar-system-creator', title: 'Solar System Creator' },
       { href: '/periodic-table-creator', title: 'Periodic Table Creator' },
     ]);
@@ -107,6 +108,7 @@ describe('content site topbar model', () => {
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
       { href: '/zh/family-tree-creator', title: '人物家谱制作器' },
+      { href: '/zh/constellation-map-creator', title: '星座地图创建器' },
       { href: '/zh/solar-system-creator', title: '太阳系创建器' },
       { href: '/zh/periodic-table-creator', title: '元素周期表制作器' },
     ]);
@@ -165,6 +167,26 @@ describe('content site topbar model', () => {
       '/zh/family-tree-creator/saved',
     );
     const familyTreeSibling = readTopbar('en', '/family-tree-creator-extra', '/zh');
+    const constellationMapCreator = readTopbar(
+      'en',
+      '/constellation-map-creator',
+      '/zh/constellation-map-creator',
+    );
+    const chineseConstellationMapCreator = readTopbar(
+      'zh',
+      '/zh/constellation-map-creator',
+      '/constellation-map-creator',
+    );
+    const constellationMapCreatorNested = readTopbar(
+      'en',
+      '/constellation-map-creator/saved',
+      '/zh/constellation-map-creator/saved',
+    );
+    const constellationMapCreatorSibling = readTopbar(
+      'en',
+      '/constellation-map-creator-extra',
+      '/zh',
+    );
     const solarSystemCreator = readTopbar('en', '/solar-system-creator', '/zh/solar-system-creator');
     const chineseSolarSystemCreator = readTopbar(
       'zh',
@@ -219,6 +241,10 @@ describe('content site topbar model', () => {
     expect(chineseFamilyTree.freeToolsMenuIsActive).toBe(true);
     expect(familyTreeNested.freeToolsMenuIsActive).toBe(true);
     expect(familyTreeSibling.freeToolsMenuIsActive).toBe(false);
+    expect(constellationMapCreator.freeToolsMenuIsActive).toBe(true);
+    expect(chineseConstellationMapCreator.freeToolsMenuIsActive).toBe(true);
+    expect(constellationMapCreatorNested.freeToolsMenuIsActive).toBe(true);
+    expect(constellationMapCreatorSibling.freeToolsMenuIsActive).toBe(false);
     expect(solarSystemCreator.freeToolsMenuIsActive).toBe(true);
     expect(chineseSolarSystemCreator.freeToolsMenuIsActive).toBe(true);
     expect(solarSystemCreatorNested.freeToolsMenuIsActive).toBe(true);

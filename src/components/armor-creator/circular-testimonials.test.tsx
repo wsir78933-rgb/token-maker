@@ -95,6 +95,7 @@ type ImageLayerRole = keyof typeof IMAGE_LAYER_ROLE_STYLES;
 
 const PREVIOUS_LABEL = 'Previous armor case';
 const NEXT_LABEL = 'Next armor case';
+const IMAGE_ACTION_LABEL = 'Open armor case';
 
 function renderedCarousel(testimonials: readonly CircularTestimonial[] = TESTIMONIALS) {
   return render(
@@ -264,6 +265,141 @@ describe('CircularTestimonials', () => {
     }
 
     expectImageLayerRole(carousel, index, role);
+  });
+
+  it('默认不为图片增加按钮并保留隐藏预览层语义', () => {
+    const { container } = renderedCarousel(IMAGE_POSITION_TESTIMONIALS);
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    const imageStage = carousel.querySelector('[data-part="image-stage"]');
+    expect(imageStage?.querySelectorAll('button')).toHaveLength(0);
+    expect(testimonialImageLayer(carousel, 1).getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('通过公开图片回调提供中心和可见预览图按钮，并携带准确素材与触发元素', () => {
+    const onImageClick = vi.fn();
+    const { container } = render(
+      <CircularTestimonials
+        testimonials={IMAGE_POSITION_TESTIMONIALS}
+        ariaLabel="Clickable armor cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+        autoplay={false}
+        onImageClick={onImageClick}
+        imageActionLabel={IMAGE_ACTION_LABEL}
+      />,
+    );
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    const imageStage = carousel.querySelector<HTMLElement>('[data-part="image-stage"]');
+    if (!imageStage) {
+      throw new Error('CircularTestimonials test expected an image stage.');
+    }
+
+    const activeButton = within(imageStage).getByRole('button', {
+      name: `${IMAGE_ACTION_LABEL}: First character`,
+    });
+    const nextPreviewButton = within(imageStage).getByRole('button', {
+      name: `${IMAGE_ACTION_LABEL}: Second character`,
+    });
+    const previousPreviewButton = within(imageStage).getByRole('button', {
+      name: `${IMAGE_ACTION_LABEL}: Fourth character`,
+    });
+
+    expect(activeButton.tabIndex).toBe(0);
+    expect(nextPreviewButton.tabIndex).toBe(-1);
+    expect(previousPreviewButton.tabIndex).toBe(-1);
+    expect(activeButton.closest('[aria-hidden="true"]')).toBeNull();
+    expect(nextPreviewButton.closest('[aria-hidden="true"]')).toBeNull();
+    expect(previousPreviewButton.closest('[aria-hidden="true"]')).toBeNull();
+    expect(testimonialImageLayer(carousel, 2).querySelector('button')).toBeNull();
+    expect(within(carousel).getByRole('img', { name: 'First character' }).className).toContain(
+      'object-contain',
+    );
+
+    fireEvent.click(activeButton);
+    fireEvent.click(nextPreviewButton);
+    fireEvent.click(previousPreviewButton);
+
+    expect(onImageClick).toHaveBeenCalledTimes(3);
+    const expectedImageClicks = [
+      [activeButton, 'First character', '/armor-creator/cases/first.png'],
+      [nextPreviewButton, 'Second character', '/armor-creator/cases/second.png'],
+      [previousPreviewButton, 'Fourth character', '/armor-creator/cases/fourth.png'],
+    ] as const;
+    expectedImageClicks.forEach(([triggerElement, name, src], clickIndex) => {
+      const callbackArguments = onImageClick.mock.calls[clickIndex];
+      expect(callbackArguments?.[0]).toMatchObject({ name, src });
+      expect(callbackArguments?.[1]).toBe(triggerElement);
+    });
+  });
+
+  it('中心图片可获得键盘焦点，点击后只暂停当前轮播自动播放', async () => {
+    vi.useFakeTimers();
+    const setIntervalSpy = vi.spyOn(window, 'setInterval');
+    const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
+    const onImageClick = vi.fn();
+
+    try {
+      const { container } = render(
+        <>
+          <CircularTestimonials
+            testimonials={TESTIMONIALS}
+            ariaLabel="Clickable autoplay armor cases"
+            previousLabel={PREVIOUS_LABEL}
+            nextLabel={NEXT_LABEL}
+            onImageClick={onImageClick}
+            imageActionLabel={IMAGE_ACTION_LABEL}
+          />
+          <CircularTestimonials
+            testimonials={TESTIMONIALS}
+            ariaLabel="Independent autoplay armor cases"
+            previousLabel="Previous independent case"
+            nextLabel="Next independent case"
+          />
+        </>,
+      );
+      const [clickableCarousel, independentCarousel] = carouselRegions(container);
+      if (!clickableCarousel || !independentCarousel) {
+        throw new Error('CircularTestimonials test expected two carousel regions.');
+      }
+
+      const clickableImageButton = within(clickableCarousel).getByRole('button', {
+        name: `${IMAGE_ACTION_LABEL}: First character`,
+      });
+      clickableImageButton.focus();
+      expect(document.activeElement).toBe(clickableImageButton);
+      expect(clickableImageButton.tabIndex).toBe(0);
+
+      const intervalIds = setIntervalSpy.mock.results.map((result) => result.value);
+      if (intervalIds.length !== 2 || intervalIds[0] === undefined || intervalIds[1] === undefined) {
+        throw new Error('CircularTestimonials test expected one autoplay interval per instance.');
+      }
+
+      fireEvent.click(clickableImageButton);
+      expect(onImageClick).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5000);
+      });
+
+      expect(activeQuoteText(clickableCarousel)).toBe('First armor case quote.');
+      expect(activeQuoteText(independentCarousel)).toBe('Second armor case quote.');
+      expect(clearIntervalSpy).toHaveBeenCalledWith(intervalIds[0]);
+      expect(clearIntervalSpy).not.toHaveBeenCalledWith(intervalIds[1]);
+    } finally {
+      cleanup();
+      vi.clearAllTimers();
+      setIntervalSpy.mockRestore();
+      clearIntervalSpy.mockRestore();
+      vi.useRealTimers();
+    }
   });
 
   it('moves image layers with next, previous, and wrapped arrow navigation', async () => {
@@ -710,6 +846,54 @@ describe('CircularTestimonials', () => {
         />,
       ),
     ).toThrow('CircularTestimonials imageShape must be "portrait" or "landscape". Received "square".');
+  });
+
+  it('拒绝非法图片点击回调并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid image callback carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          onImageClick={'open' as never}
+          imageActionLabel={IMAGE_ACTION_LABEL}
+        />,
+      ),
+    ).toThrow('CircularTestimonials onImageClick must be a function or undefined. Received "open".');
+  });
+
+  it('拒绝缺少图片操作标签的点击回调并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Missing image action label carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          onImageClick={vi.fn()}
+        />,
+      ),
+    ).toThrow('CircularTestimonials imageActionLabel must be a non-empty string. Received undefined.');
+  });
+
+  it('拒绝单独提供图片操作标签并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Standalone image action label carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageActionLabel={IMAGE_ACTION_LABEL}
+        />,
+      ),
+    ).toThrow(
+      `CircularTestimonials imageActionLabel requires onImageClick. Received "${IMAGE_ACTION_LABEL}".`,
+    );
   });
 
   it('保留英文空格、对中文分词并支持中英混合文案自然换行', () => {

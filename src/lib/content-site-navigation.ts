@@ -1,4 +1,5 @@
 import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
+import { getConstellationMapCopy } from '@/lib/constellation-map-creator/copy';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { getFamilyTreeCopy } from '@/lib/family-tree/copy';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
@@ -14,6 +15,7 @@ const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
 const EMBLEM_CREATOR_PATH = '/emblem-creator';
 const FAMILY_TREE_CREATOR_PATH = '/family-tree-creator';
+const CONSTELLATION_MAP_CREATOR_PATH = '/constellation-map-creator';
 const LANGUAGE_GENERATOR_PATH = '/language-generator';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
 const PERIODIC_TABLE_CREATOR_PATH = '/periodic-table-creator';
@@ -29,6 +31,7 @@ const FREE_TOOLS_PATHS = [
   EMBLEM_CREATOR_PATH,
   LANGUAGE_GENERATOR_PATH,
   FAMILY_TREE_CREATOR_PATH,
+  CONSTELLATION_MAP_CREATOR_PATH,
   SOLAR_SYSTEM_CREATOR_PATH,
   PERIODIC_TABLE_CREATOR_PATH,
 ] as const;
@@ -216,6 +219,11 @@ function buildContentSiteFreeToolFeatures(
       locale,
       FAMILY_TREE_CREATOR_PATH,
       readFamilyTreeNavigationName(locale),
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
+      CONSTELLATION_MAP_CREATOR_PATH,
+      getConstellationMapCopy(locale).navigationTitle,
     ),
     buildContentSiteFreeToolFeature(
       locale,

@@ -21,6 +21,7 @@ const OUTFIT_CREATOR_LAST_MODIFIED = '2026-10-04';
 const WEAPON_CREATOR_LAST_MODIFIED = '2026-10-05';
 const LANGUAGE_GENERATOR_LAST_MODIFIED = '2026-10-05';
 const FAMILY_TREE_CREATOR_LAST_MODIFIED = '2026-10-06';
+const CONSTELLATION_MAP_CREATOR_LAST_MODIFIED = '2026-10-07';
 const SOLAR_SYSTEM_CREATOR_LAST_MODIFIED = '2026-10-06';
 const PERIODIC_TABLE_CREATOR_LAST_MODIFIED = '2026-10-06';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
@@ -113,6 +114,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/emblem-creator',
     '/language-generator',
     '/family-tree-creator',
+    '/constellation-map-creator',
     '/solar-system-creator',
     '/periodic-table-creator',
     '/coat-of-arms-maker',
@@ -140,6 +142,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(LANGUAGE_GENERATOR_LAST_MODIFIED)
             : path === '/family-tree-creator'
             ? new Date(FAMILY_TREE_CREATOR_LAST_MODIFIED)
+            : path === '/constellation-map-creator'
+            ? new Date(CONSTELLATION_MAP_CREATOR_LAST_MODIFIED)
             : path === '/solar-system-creator'
             ? new Date(SOLAR_SYSTEM_CREATOR_LAST_MODIFIED)
             : path === '/periodic-table-creator'
