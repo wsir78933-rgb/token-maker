@@ -20,6 +20,7 @@ const EMBLEM_CREATOR_LAST_MODIFIED = '2026-10-03';
 const OUTFIT_CREATOR_LAST_MODIFIED = '2026-10-04';
 const WEAPON_CREATOR_LAST_MODIFIED = '2026-10-05';
 const LANGUAGE_GENERATOR_LAST_MODIFIED = '2026-10-05';
+const PERIODIC_TABLE_CREATOR_LAST_MODIFIED = '2026-10-06';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
 const TEMPLATE_LAST_MODIFIED = '2026-05-06';
 
@@ -109,6 +110,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/army-formation-creator/backgrounds',
     '/emblem-creator',
     '/language-generator',
+    '/periodic-table-creator',
     '/coat-of-arms-maker',
     '/contact',
   ] as const;
@@ -132,6 +134,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(WEAPON_CREATOR_LAST_MODIFIED)
             : path === '/language-generator'
             ? new Date(LANGUAGE_GENERATOR_LAST_MODIFIED)
+            : path === '/periodic-table-creator'
+            ? new Date(PERIODIC_TABLE_CREATOR_LAST_MODIFIED)
             : path === '/contact'
             ? new Date(CONTACT_LAST_MODIFIED)
             : supportPage

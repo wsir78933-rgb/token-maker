@@ -62,6 +62,7 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/periodic-table-creator', title: 'Periodic Table Creator' },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -103,6 +104,7 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/periodic-table-creator', title: '元素周期表制作器' },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -151,6 +153,23 @@ describe('content site topbar model', () => {
       '/zh/language-generator/saved',
     );
     const languageGeneratorSibling = readTopbar('en', '/language-generator-extra', '/zh');
+    const periodicTable = readTopbar('en', '/periodic-table-creator', '/zh/periodic-table-creator');
+    const periodicTableNested = readTopbar(
+      'en',
+      '/periodic-table-creator/saved',
+      '/zh/periodic-table-creator/saved',
+    );
+    const periodicTableChinese = readTopbar(
+      'zh',
+      '/zh/periodic-table-creator',
+      '/periodic-table-creator',
+    );
+    const periodicTableChineseNested = readTopbar(
+      'zh',
+      '/zh/periodic-table-creator/saved',
+      '/periodic-table-creator/saved',
+    );
+    const periodicTableSibling = readTopbar('en', '/periodic-table-creator-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
@@ -172,6 +191,11 @@ describe('content site topbar model', () => {
     expect(languageGenerator.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorNested.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorSibling.freeToolsMenuIsActive).toBe(false);
+    expect(periodicTable.freeToolsMenuIsActive).toBe(true);
+    expect(periodicTableNested.freeToolsMenuIsActive).toBe(true);
+    expect(periodicTableChinese.freeToolsMenuIsActive).toBe(true);
+    expect(periodicTableChineseNested.freeToolsMenuIsActive).toBe(true);
+    expect(periodicTableSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);

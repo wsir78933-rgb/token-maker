@@ -14,6 +14,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [DnD dice roller Chinese](https://www.tokenmaker.one/zh/dice-roller-dnd): Simplified Chinese version of the DnD dice roller.
 - [Fictional language generator](https://www.tokenmaker.one/language-generator): Create reusable spelling rules and convert vocabulary or custom text for fantasy worldbuilding, D&D, TTRPG campaigns, novels, and games.
 - [虚构语言生成器](https://www.tokenmaker.one/zh/language-generator): 为奇幻世界观、D&D、TTRPG 战役、小说和游戏创建可复用的拼写规则并转换词汇或自定义文本。
+- [Periodic table creator](https://www.tokenmaker.one/periodic-table-creator): Create editable real or fantasy element tables with custom text, layouts, colors, borders, images, local saves, and offline HTML downloads.
+- [元素周期表制作器](https://www.tokenmaker.one/zh/periodic-table-creator): 创建可编辑的真实或幻想元素周期表，自定义文字、布局、颜色、边框和图片，支持本地保存及离线 HTML 下载。
 - [Armor creator](https://www.tokenmaker.one/armor-creator): Assemble armor in the browser and download an image.
 - [Armor creator Chinese](https://www.tokenmaker.one/zh/armor-creator): 在浏览器里搭配护甲并下载图片。
 - [Outfit creator](https://www.tokenmaker.one/outfit-creator): Mix clothing layers in the browser, save four looks, and download a PNG.

@@ -2,6 +2,7 @@ import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
+import { getPeriodicTableCopy } from '@/lib/periodic-table-creator/copy';
 import { getWeaponCreatorCopy } from '@/lib/weapon-creator/copy';
 import { getBlogCategories, getBlogCategoryPath, type BlogCategoryCopy } from '@/lib/blog-content';
 import { getHomeCopy, getNavLabels, type NavLabels } from '@/lib/site-content';
@@ -12,6 +13,7 @@ const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
 const EMBLEM_CREATOR_PATH = '/emblem-creator';
 const LANGUAGE_GENERATOR_PATH = '/language-generator';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
+const PERIODIC_TABLE_CREATOR_PATH = '/periodic-table-creator';
 const WEAPON_CREATOR_PATH = '/weapon-creator';
 const FREE_TOOLS_PATHS = [
   '/',
@@ -22,6 +24,7 @@ const FREE_TOOLS_PATHS = [
   ARMY_FORMATION_CREATOR_PATH,
   EMBLEM_CREATOR_PATH,
   LANGUAGE_GENERATOR_PATH,
+  PERIODIC_TABLE_CREATOR_PATH,
 ] as const;
 
 const FREE_TOOLS_MENU_COPY = {
@@ -202,6 +205,11 @@ function buildContentSiteFreeToolFeatures(
       locale,
       LANGUAGE_GENERATOR_PATH,
       getLanguageGeneratorCopy(locale).navigationTitle,
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
+      PERIODIC_TABLE_CREATOR_PATH,
+      getPeriodicTableCopy(locale).navigationTitle,
     ),
   ];
 }
