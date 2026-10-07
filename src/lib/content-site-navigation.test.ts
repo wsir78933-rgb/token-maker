@@ -62,6 +62,7 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/scroll-creator', title: 'Scroll Creator' },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -103,6 +104,7 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/scroll-creator', title: '卷轴制作器' },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -152,6 +154,13 @@ describe('content site topbar model', () => {
     );
     const languageGeneratorSibling = readTopbar('en', '/language-generator-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
+    const scrollCreator = readTopbar('en', '/scroll-creator', '/zh/scroll-creator');
+    const scrollCreatorNested = readTopbar(
+      'en',
+      '/scroll-creator/saved',
+      '/zh/scroll-creator/saved',
+    );
+    const scrollCreatorSibling = readTopbar('en', '/scroll-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
     expect(chineseEditor.freeToolsMenuIsActive).toBe(true);
@@ -173,6 +182,9 @@ describe('content site topbar model', () => {
     expect(languageGeneratorNested.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
+    expect(scrollCreator.freeToolsMenuIsActive).toBe(true);
+    expect(scrollCreatorNested.freeToolsMenuIsActive).toBe(true);
+    expect(scrollCreatorSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
   });

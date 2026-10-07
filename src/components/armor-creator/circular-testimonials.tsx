@@ -10,6 +10,7 @@ import {
   useSyncExternalStore,
   type CSSProperties,
   type KeyboardEvent,
+  type MouseEvent,
 } from 'react';
 
 const CIRCULAR_TESTIMONIAL_AUTOPLAY_INTERVAL_MS = 5000;
@@ -23,6 +24,7 @@ const CIRCULAR_TESTIMONIAL_COLOR_FIELDS = [
   'arrowBackground',
   'arrowForeground',
   'arrowHoverBackground',
+  'imageBackground',
 ] as const;
 
 const CIRCULAR_TESTIMONIAL_FONT_SIZE_FIELDS = ['name', 'designation', 'quote'] as const;
@@ -50,6 +52,8 @@ export type CircularTestimonialsProps = {
   autoplay?: boolean;
   colors?: CircularTestimonialsColors;
   fontSizes?: CircularTestimonialsFontSizes;
+  onImageClick?: (testimonial: CircularTestimonial, trigger: HTMLButtonElement) => void;
+  imageActionLabel?: string;
   imagePosition?: 'left' | 'right';
   clipImageStack?: boolean;
 };
@@ -57,6 +61,7 @@ export type CircularTestimonialsProps = {
 type CircularTestimonialImageProps = {
   src: string;
   alt: string;
+  backgroundColor: string;
   frameClassName: string;
 };
 
@@ -74,6 +79,7 @@ const DEFAULT_CIRCULAR_TESTIMONIAL_COLORS: Required<CircularTestimonialsColors> 
   arrowBackground: '#17130d',
   arrowForeground: '#f3ddb0',
   arrowHoverBackground: '#71521c',
+  imageBackground: '#f4eee5',
 };
 
 const DEFAULT_CIRCULAR_TESTIMONIAL_FONT_SIZES: Required<CircularTestimonialsFontSizes> = {
@@ -231,6 +237,33 @@ function requireCircularTestimonialsLabel(label: unknown, field: string): string
   return requireCircularTestimonialsText(label, field);
 }
 
+function requireCircularTestimonialsImageClick(
+  onImageClick: unknown,
+): ((testimonial: CircularTestimonial, trigger: HTMLButtonElement) => void) | undefined {
+  if (onImageClick === undefined) {
+    return undefined;
+  }
+
+  if (typeof onImageClick !== 'function') {
+    throw new Error(
+      `CircularTestimonials onImageClick must be a function or undefined. Received ${describeCircularTestimonialsValue(onImageClick)}.`,
+    );
+  }
+
+  return onImageClick as (testimonial: CircularTestimonial, trigger: HTMLButtonElement) => void;
+}
+
+function requireCircularTestimonialsImageActionLabel(
+  imageActionLabel: unknown,
+  onImageClick: ((testimonial: CircularTestimonial, trigger: HTMLButtonElement) => void) | undefined,
+): string | undefined {
+  if (imageActionLabel === undefined && onImageClick === undefined) {
+    return undefined;
+  }
+
+  return requireCircularTestimonialsText(imageActionLabel, 'imageActionLabel');
+}
+
 function requireCircularTestimonialsAutoplay(autoplay: unknown): boolean {
   if (typeof autoplay === 'boolean') {
     return autoplay;
@@ -357,11 +390,17 @@ function getCircularTestimonialImageGap(stageWidth: number): number {
   return 80 + ((stageWidth - 320) / (560 - 320)) * (140 - 80);
 }
 
-function CircularTestimonialImage({ src, alt, frameClassName }: CircularTestimonialImageProps) {
+function CircularTestimonialImage({
+  src,
+  alt,
+  backgroundColor,
+  frameClassName,
+}: CircularTestimonialImageProps) {
   return (
     <div
       data-part="testimonial-image-frame"
       className={`relative overflow-hidden rounded-2xl border border-[#d7b46a]/30 bg-[#f4eee5] shadow-[0_18px_44px_rgba(0,0,0,0.36)] ${frameClassName}`}
+      style={{ backgroundColor }}
     >
       <Image
         src={src}
@@ -372,6 +411,39 @@ function CircularTestimonialImage({ src, alt, frameClassName }: CircularTestimon
         className="object-contain p-3"
       />
     </div>
+  );
+}
+
+function CircularTestimonialImageButton({
+  testimonial,
+  actionLabel,
+  backgroundColor,
+  onImageClick,
+}: {
+  testimonial: CircularTestimonial;
+  actionLabel: string;
+  backgroundColor: string;
+  onImageClick: (testimonial: CircularTestimonial, trigger: HTMLButtonElement) => void;
+}) {
+  function handleImageClick(event: MouseEvent<HTMLButtonElement>): void {
+    onImageClick(testimonial, event.currentTarget);
+  }
+
+  return (
+    <button
+      aria-haspopup="dialog"
+      aria-label={`${actionLabel}: ${testimonial.name}`}
+      className="block h-full w-full cursor-zoom-in rounded-2xl border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d7b46a]"
+      onClick={handleImageClick}
+      type="button"
+    >
+      <CircularTestimonialImage
+        src={testimonial.src}
+        alt={testimonial.alt ?? testimonial.name}
+        backgroundColor={backgroundColor}
+        frameClassName="h-full w-full"
+      />
+    </button>
   );
 }
 
@@ -503,6 +575,8 @@ export function CircularTestimonials({
   autoplay = true,
   colors,
   fontSizes,
+  onImageClick,
+  imageActionLabel,
   imagePosition = 'left',
   clipImageStack = true,
 }: CircularTestimonialsProps) {
@@ -513,6 +587,11 @@ export function CircularTestimonials({
   const validatedAutoplay = requireCircularTestimonialsAutoplay(autoplay);
   const validatedColors = requireCircularTestimonialsColors(colors);
   const validatedFontSizes = requireCircularTestimonialsFontSizes(fontSizes);
+  const validatedOnImageClick = requireCircularTestimonialsImageClick(onImageClick);
+  const validatedImageActionLabel = requireCircularTestimonialsImageActionLabel(
+    imageActionLabel,
+    validatedOnImageClick,
+  );
   const validatedImagePosition = requireCircularTestimonialsImagePosition(imagePosition);
   const validatedClipImageStack = requireCircularTestimonialsClipImageStack(clipImageStack);
   const resolvedColors = { ...DEFAULT_CIRCULAR_TESTIMONIAL_COLORS, ...validatedColors };
@@ -603,6 +682,14 @@ export function CircularTestimonials({
     setSelectedIndex((currentIndex) => (currentIndex + 1) % validatedTestimonials.length);
   }
 
+  function handleActiveImageClick(
+    testimonial: CircularTestimonial,
+    trigger: HTMLButtonElement,
+  ): void {
+    setAutoplayPausedByInteraction(true);
+    validatedOnImageClick?.(testimonial, trigger);
+  }
+
   function handleCarouselKeyDown(event: KeyboardEvent<HTMLElement>): void {
     if (!event.currentTarget.contains(document.activeElement)) {
       return;
@@ -670,11 +757,21 @@ export function CircularTestimonials({
                   zIndex: isActive ? 3 : isPreview ? 2 : 1,
                 }}
               >
-                <CircularTestimonialImage
-                  src={testimonial.src}
-                  alt={isActive ? testimonial.alt ?? testimonial.name : ''}
-                  frameClassName="h-full w-full"
-                />
+                {isActive && validatedOnImageClick !== undefined && validatedImageActionLabel !== undefined ? (
+                  <CircularTestimonialImageButton
+                    testimonial={testimonial}
+                    actionLabel={validatedImageActionLabel}
+                    backgroundColor={resolvedColors.imageBackground}
+                    onImageClick={handleActiveImageClick}
+                  />
+                ) : (
+                  <CircularTestimonialImage
+                    src={testimonial.src}
+                    alt={isActive ? testimonial.alt ?? testimonial.name : ''}
+                    backgroundColor={resolvedColors.imageBackground}
+                    frameClassName="h-full w-full"
+                  />
+                )}
               </div>
             );
           })}
