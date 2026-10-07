@@ -20,6 +20,7 @@ const EMBLEM_CREATOR_LAST_MODIFIED = '2026-10-03';
 const OUTFIT_CREATOR_LAST_MODIFIED = '2026-10-04';
 const WEAPON_CREATOR_LAST_MODIFIED = '2026-10-05';
 const LANGUAGE_GENERATOR_LAST_MODIFIED = '2026-10-05';
+const FAMILY_TREE_CREATOR_LAST_MODIFIED = '2026-10-06';
 const SOLAR_SYSTEM_CREATOR_LAST_MODIFIED = '2026-10-06';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
 const TEMPLATE_LAST_MODIFIED = '2026-05-06';
@@ -110,6 +111,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/army-formation-creator/backgrounds',
     '/emblem-creator',
     '/language-generator',
+    '/family-tree-creator',
     '/solar-system-creator',
     '/coat-of-arms-maker',
     '/contact',
@@ -134,6 +136,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(WEAPON_CREATOR_LAST_MODIFIED)
             : path === '/language-generator'
             ? new Date(LANGUAGE_GENERATOR_LAST_MODIFIED)
+            : path === '/family-tree-creator'
+            ? new Date(FAMILY_TREE_CREATOR_LAST_MODIFIED)
             : path === '/solar-system-creator'
             ? new Date(SOLAR_SYSTEM_CREATOR_LAST_MODIFIED)
             : path === '/contact'
