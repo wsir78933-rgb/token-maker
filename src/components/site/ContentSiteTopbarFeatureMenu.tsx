@@ -3,6 +3,7 @@
 import {
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type JSX,
@@ -13,6 +14,7 @@ import { ChevronDown } from 'lucide-react';
 import type { ContentSiteTopbarFeature } from '@/lib/content-site-navigation';
 
 const FEATURE_MENU_CLOSE_DELAY_MS = 120;
+const FREE_TOOLS_VIEWPORT_INSET_PX = 16;
 
 type CloseTimerIdRef = {
   current: number | null;
@@ -154,6 +156,77 @@ function readFeatureMenuToggle(menuToggle: HTMLButtonElement | null): HTMLButton
   return menuToggle;
 }
 
+function featureMenuPanelClassName(freeToolsPanelClassName: string | undefined): string {
+  const panelClassName = 'site-nav-dropdown__panel site-nav-dropdown__panel--features';
+  if (freeToolsPanelClassName === undefined) {
+    return panelClassName;
+  }
+
+  return `${panelClassName} ${freeToolsPanelClassName}`;
+}
+
+function readFreeToolsDropdownElement(dropdown: HTMLElement | null): HTMLElement {
+  if (dropdown instanceof HTMLElement) {
+    return dropdown;
+  }
+
+  throw new Error(
+    `Free tools dropdown is missing. Received ${dropdown === null ? 'null' : typeof dropdown}.`,
+  );
+}
+
+function readFreeToolsPanelElement(dropdown: HTMLElement, freeToolsPanelClassName: string): HTMLElement {
+  const panel = dropdown.querySelector(`.${freeToolsPanelClassName}`);
+  if (panel instanceof HTMLElement) {
+    return panel;
+  }
+
+  const received = panel === null ? 'null' : panel instanceof Node ? panel.nodeName : typeof panel;
+  throw new Error(
+    `Free tools panel ${JSON.stringify(freeToolsPanelClassName)} is missing. Received ${received}.`,
+  );
+}
+
+function clampFreeToolsDropdownToViewport(dropdown: HTMLElement, freeToolsPanelClassName: string): void {
+  const viewportWidth = window.innerWidth;
+  const minimumViewportWidth = FREE_TOOLS_VIEWPORT_INSET_PX * 2;
+  if (!Number.isFinite(viewportWidth) || viewportWidth <= minimumViewportWidth) {
+    throw new Error(
+      `Free tools dropdown viewport width must be greater than ${minimumViewportWidth}px. Received ${viewportWidth}.`,
+    );
+  }
+
+  const panel = readFreeToolsPanelElement(dropdown, freeToolsPanelClassName);
+  const unclampedRect = panel.getBoundingClientRect();
+  if (unclampedRect.width === 0 && unclampedRect.height === 0) {
+    panel.style.maxWidth = '';
+    dropdown.style.left = '';
+    return;
+  }
+
+  dropdown.style.left = '0px';
+  panel.style.maxWidth = '';
+  const expandedRect = panel.getBoundingClientRect();
+  const viewportEndPx = viewportWidth - FREE_TOOLS_VIEWPORT_INSET_PX;
+  const availableWidthPx = viewportEndPx - FREE_TOOLS_VIEWPORT_INSET_PX;
+  if (expandedRect.width > availableWidthPx) {
+    panel.style.maxWidth = `${availableWidthPx}px`;
+  }
+
+  const placedRect = panel.getBoundingClientRect();
+  let leftOffsetPx = 0;
+  if (placedRect.right > viewportEndPx) {
+    leftOffsetPx -= placedRect.right - viewportEndPx;
+  }
+
+  const shiftedLeftPx = placedRect.left + leftOffsetPx;
+  if (shiftedLeftPx < FREE_TOOLS_VIEWPORT_INSET_PX) {
+    leftOffsetPx += FREE_TOOLS_VIEWPORT_INSET_PX - shiftedLeftPx;
+  }
+
+  dropdown.style.left = `${leftOffsetPx}px`;
+}
+
 function triggerTabLeavesFeatureMenu(
   currentTarget: EventTarget,
   menuToggle: HTMLButtonElement | null,
@@ -173,6 +246,7 @@ export function ContentSiteTopbarFeatureMenu(props: {
   featureMenuIsActive: boolean;
   featureMenuAccessibleName: string;
   features: readonly ContentSiteTopbarFeature[];
+  freeToolsPanelClassName?: string;
 }): JSX.Element {
   const {
     featureMenuLabel,
@@ -180,9 +254,11 @@ export function ContentSiteTopbarFeatureMenu(props: {
     featureMenuIsActive,
     featureMenuAccessibleName,
     features,
+    freeToolsPanelClassName,
   } = props;
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const menuRootRef = useRef<HTMLDivElement>(null);
+  const menuDropdownRef = useRef<HTMLDivElement>(null);
   const menuToggleRef = useRef<HTMLButtonElement>(null);
   const menuItemRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const closeTimerIdRef = useRef<number | null>(null);
@@ -284,6 +360,28 @@ export function ContentSiteTopbarFeatureMenu(props: {
     });
   }, []);
 
+  useLayoutEffect(() => {
+    if (freeToolsPanelClassName === undefined) {
+      return;
+    }
+
+    const panelClassName = freeToolsPanelClassName;
+    const dropdown = readFreeToolsDropdownElement(menuDropdownRef.current);
+    clampFreeToolsDropdownToViewport(dropdown, panelClassName);
+
+    function clampOpenFreeToolsDropdown() {
+      clampFreeToolsDropdownToViewport(
+        readFreeToolsDropdownElement(menuDropdownRef.current),
+        panelClassName,
+      );
+    }
+
+    window.addEventListener('resize', clampOpenFreeToolsDropdown);
+    return () => {
+      window.removeEventListener('resize', clampOpenFreeToolsDropdown);
+    };
+  }, [freeToolsPanelClassName, menuIsOpen]);
+
   useEffect(() => {
     if (menuIsOpen) {
       restoreFocusOnCloseRef.current = false;
@@ -337,11 +435,12 @@ export function ContentSiteTopbarFeatureMenu(props: {
       </div>
       <div
         id={panelId}
+        ref={menuDropdownRef}
         className="site-nav-dropdown"
         role="menu"
         aria-label={featureMenuAccessibleName}
       >
-        <div className="site-nav-dropdown__panel site-nav-dropdown__panel--features">
+        <div className={featureMenuPanelClassName(freeToolsPanelClassName)}>
           {features.map((feature) => (
             <Link
               key={`${feature.href}-${feature.title}`}

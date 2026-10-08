@@ -150,11 +150,19 @@ describe('localized homepage routes', () => {
     editableContent.append(guide.cloneNode(true), faq.cloneNode(true));
     const visibleWords = getVisibleEnglishWords(editableContent);
 
-    expect(getExactWordCount(visibleWords, 'maker')).toBeGreaterThanOrEqual(21);
-    expect(getExactWordCount(visibleWords, 'maker')).toBeLessThanOrEqual(22);
-    expect(getExactWordCount(visibleWords, 'stamp')).toBeGreaterThanOrEqual(36);
-    expect(getExactWordCount(visibleWords, 'stamp')).toBeLessThanOrEqual(37);
+    expect(getExactWordCount(visibleWords, 'maker')).toBe(15);
+    expect(getExactWordCount(visibleWords, 'stamp')).toBe(27);
     expect(getExactWordCount(visibleWords, 'stmap')).toBe(0);
+
+    const hiddenAnswers = faq.querySelectorAll('[hidden]');
+    if (hiddenAnswers.length !== 5) {
+      throw new Error(
+        `SSR English homepage FAQ should keep five hidden answers in the markup. Received ${hiddenAnswers.length}.`,
+      );
+    }
+    expect(hiddenAnswers[0]?.textContent).toContain(
+      'Token stamp describes a browser-based maker workflow for character tokens.',
+    );
   });
 
   it.each([
