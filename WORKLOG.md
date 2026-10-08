@@ -1,5 +1,137 @@
 # WORKLOG
 
+## 交接单 · 2026-10-07 13:24 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+参考 https://rollforfantasy.com/tools/scroll-creator.php，在唯一「卷轴」工作树中实现适合 D&D/TRPG GM、玩家、奇幻小说作者和世界观创作者的双语羊皮纸卷轴/奇幻信件制作工具，按用户反馈完善字体对比度、纸张尺寸与重置、视口对齐、正文溢出、Hero、工具介绍及十二个案例展示。最后保护标题并把中英文关键词密度调整至 2%–3%，按授权提交、合并到本地 main，再删除开发工作树。使用内置子代理实现和独立复核，不使用 Orca 编排；根代理负责整合与真实证据验收。本次 offhand 只核对当前文件、Git 和既有日志并写交接单，不修改产品、不重新运行测试/构建/浏览器、不提交、不 push、不部署。
+
+### 已完成
+
+- 项目根目录 /Users/wusir/Desktop/开发项目集合/token-maker-app，当前 main HEAD 为 f33c0848e692d3cd9554f6b78cbb62b13908d76d。功能提交 0ca92c501a875bee87d4424087f98192d7fef3ea（feat: add bilingual parchment scroll creator），整合提交 f33c0848（merge: integrate main updates with parchment scroll creator）。先在卷轴分支整合原 main 3cdbc7d81164d7c174e35fd04f85761f71e20d5c，再把 main 快进到已验收版本；功能提交为 main 祖先，本次重新核对。
+- EN/ZH 路由为 /scroll-creator 和 /zh/scroll-creator，入口 src/app/(en)/scroll-creator/page.tsx 与 src/app/(zh)/zh/scroll-creator/page.tsx，共用 src/components/scroll-creator/ScrollCreatorPageView.tsx；工作台锚点 #scroll-creator-editor。导航、语言切换、sitemap 及 public/llms.txt 已接入，main 原有家族树、太阳系、周期表、塔罗入口保留。
+- 工具领域源码在 src/lib/scroll-creator/：types.ts、catalog.ts、geometry.ts、project.ts、storage.ts、fonts.ts、image-loading.ts、copy.ts；公开入口包括 getScrollPaper、createDefaultScrollProject、requireScrollProject、parseScrollProjectJson、serializeScrollProject、clampScrollPaperSize、clampScrollImageDrag、resizeScrollImageGeometry、readScrollSaveSlots、saveScrollToSlot、requireScrollFont。UI 在 src/components/scroll-creator/，由 Workbench 调度 Canvas、SettingsPanel、SaveDialog、HelpDialog；纸张、文字、图片三标签分工。
+- 支持十五种纸张、默认600×865逻辑尺寸、宽高输入及纸张拖动调整、重置大小；正文可直接在纸张预览编辑，支持字体/字号/颜色、粗体/斜体、左/中/右对齐、添加 Google Fonts 样式表及字体名称。图片通过 URL 添加，支持显示/隐藏、选择、移动、缩放和删除所选；四个浏览器本地存档槽位与加载、帮助、浏览器打印保留。存档键 tokenmaker.scroll-creator.saves；不宣传为跨设备云存档或内置 PNG 导出。
+- 纸张素材在 public/scroll-creator/scroll-1.png 至 scroll-15.png，SOURCES.md 记录竞品原始 URL、347×500 RGBA 元数据和 SHA256；本地引用，不运行时热链。用户明确指定素材使用竞品的，本次没有新增素材来源或重下载。
+- 用户选择「保留纸张尺寸，正文限制在纸内，并提示增高纸张或缩小字号」。正文保留完整文本，在纸内编辑区域滚动；溢出提示不自动改变逻辑尺寸，溢出时阻止打印并提示调整。外部预览保留 overflow:auto，但隐藏滚动条；不能把隐藏滚动条改成截断交互所需滚动。纸张面板在切换文字/图片时保留布局占位，使用 visibility:hidden、aria-hidden 与 inert，文字/图片为覆盖面板；桌面网格使左右外框高度保持纸张基准。移动端仍是独立底部标签/设置面板。
+- Hero 参考用户指定的 Outfit 页面；当前结构为 Hero → 工作台 → 十二案例 → What Is → 六项功能 → 工具对比 → 三步 How It Works → CTA → 八问 FAQ。文案公开入口 getScrollCreatorCopy、getScrollCreatorPageContent、getScrollCreatorCaseStudies，文件 copy.ts、page-content.ts、case-studies.ts；CTA 返回工作台。后续不能拿其它工具的段落顺序当作当前卷轴实际结构。
+- 当前受保护 metadata：EN title「Free Online Fantasy Scroll Creator for D&D and RPG Letters」，description「Create a parchment scroll or fantasy letter for D&D, TTRPG sessions, fantasy novels, and worldbuilding.」；ZH title「免费在线奇幻羊皮纸卷轴制作器：D&D 与跑团信件」，description「为 D&D、TRPG 跑团、奇幻小说和世界观设定制作羊皮纸卷轴或奇幻信件。」Hero 标题 EN「Parchment Scroll Creator – Free Fantasy Letter Maker」，ZH「羊皮纸卷轴制作器｜免费在线奇幻信件制作工具」。本次密度调整保留所有标题、Hero 与 metadata，不能顺手重写。
+- 十二个原创案例为任务委托、悬赏通缉、村民求救信、贵族宴会邀请、截获密令、古老预言、冒险者家书、航海日志、魔法契约、王室通行令、学者研究手记、遗嘱继承文书。public/scroll-creator/examples/ 有十二张900×1300 PNG，三组各四张，图片位置左/右/左，使用公开 CircularTestimonials；案例图正文是英文，案例名称、受众说明和配套文案同步 EN/ZH。
+- 案例 PNG 自带白色边距，卷轴消费者 colors.imageBackground='#fff'，避免与旧米色框产生明显分层；没有修改原图像素。只让当前中心图成为真实按钮，onImageClick(testimonial,trigger) 与 imageActionLabel 成对传入，通过共享 Dialog 完整展示原图（object-contain）。关闭按钮、Esc、遮罩关闭及 finalFocus 恢复触发按钮保留；非活动预览图不获得按钮焦点。回调或标签异常均 Fail Fast，包含具体值。
+- 桌面独立交付 /Users/wusir/Desktop/羊皮卷 仍保留十二张案例 PNG、案例说明.md 和案例内容与参数.json，共十四个文件；本次重新逐一比对合并前 SHA256，均未变化。网页十二 PNG 本次读取 IHDR 均为900×1300。该桌面目录与已删除的开发工作树不同，不得误删。
+- 关键词 EN「Parchment scroll creator」、ZH「羊皮纸卷轴制作器」。最终全页读者口径：EN36/1526=2.3591087811%，ZH36/1652=2.1791767554%。分子为完整关键词出现次数（英文忽略大小写，每个词组计一次，不乘词组词数）；分母为 Intl.Segmenter(locale,{granularity:'word'}) 的 isWordLike。包含 Hero 标题/描述/行动文案、案例标题/介绍及全部十二案例的名称/受众/正文、下方六模块及全部八问答案；排除工作台、导航/footer、metadata、图片 alt/ARIA/sr-only。与只统计初始三个案例、可见文本、汉字数或工具下方单独口径不能混用。
+- 最后密度阶段仅调整 page-content.ts 每语言17个允许正文字段和 case-studies.ts 每语言12条 quote。最终浏览器逐一切换十二案例并核对116个读者字符串；EN/ZH标题与metadata均匹配保护基线。合并后84个增量文件逐一哈希与验收版本相同；本次再次核对这些84文件未变化。
+- 合并中七个冲突为 public/llms.txt、src/app/sitemap.ts、src/lib/content-site-navigation.ts/test.ts、src/lib/llms.test.ts、共享 circular-testimonials.tsx/test.tsx。保留 main 的所有导航/sitemap 工具，LLMS 保留原有家谱/周期表条目并新增卷轴两条；未额外补写 main 原本缺失的太阳系/塔罗 LLMS 条目。
+- 共享轮播同时保留 imageShape=portrait|landscape、imageSize=default|large、padding与背景。默认 portrait/default 保持 p-3，Family Tree landscape 保持横图/p-3，Tarot portrait/large 保持大图/p-1；landscape+large 仍明确拒绝。整合只增加卷轴可点击中心图能力。独立复核发现按钮包裹div的内容模型及label-only静默无效配置，两处已修正并复核关闭：按钮自身作为图片frame，直接放Image；单独标签无回调抛具体错误，shared39测试通过。
+- 最终合并候选版本相关测试27文件/285项通过；定向 ESLint exit0（0错误、1条 ScrollCanvas.tsx 原生img优化提示），pnpm typecheck、pnpm exec vinext build、pnpm check:workers-types、pnpm check:workers-build 均 exit0。Workers构建检查是 wrangler deploy --dry-run，不是发布或运行时验收；没有把这些独立局部检查称为完整全仓测试、完整 build:vinext 流水线或线上验证。本次 offhand 只回读日志，没有重跑产品命令。
+- 合并阶段浏览器通过本地 ego-browser TaskSpace46、唯一p1、Next dev localhost:40009：EN/ZH ×1440/375，三标签高度不变、左右外框对齐、912×2014输入及600×865重置、长正文完整保留且不出纸、三个案例组查看原图/关闭/恢复焦点、白色框、FAQ展开、手机整页无横向溢出。共享 Family Tree横图、Tarot大图、Outfit默认图在两语言均保留，手动切换组互不影响。完整读者/密度回执遍历全部十二案例。截图 mobile-en.png、mobile-zh.png 已实际查看。
+- 开发工作树 /Users/wusir/Desktop/开发项目集合/卷轴 已用 git worktree remove 删除，目录和Git登记均不存在；卷轴分支保留并指向f33c0848。合并清理时其余五个开发工作树历法、城堡、星座、公告、魔法阵均保留。本次offhand读取的当前列表另有「城镇」工作树（/Users/wusir/Desktop/开发项目集合/城镇，分支城镇，HEAD f33c0848），其locked initializing状态在写入期间消失；本次未对该工作树执行创建、删除或锁定命令。当前五个原有工作树仍存在，卷轴分支保留；没有push或部署。
+- 合并前原40009服务PID45097和验收服务PID28502已核对cwd后停止；本次lsof确认40009无监听，旧URL不能直接当作仍在运行的预览。TaskSpace46已finish({keep:[]})恰好一次，不可复用。本次未操作其他预览服务或浏览器。
+- 写交接前 main 仅 WORKLOG.md 未暂存、暂存区为空、没有未跟踪产品文件；这是先前已有交接记录，不是待归档产品源码。旧WORKLOG字节SHA256为bdf5b88b30dcdb9b99a9aac866c354ea4be5866f7c657fc17445ee1d3a536724；本条插在根标题下，旧记录完整保留，不提交WORKLOG。
+
+### 做到一半
+
+无进行中的产品实现、密度、合并或清理工作；已授权范围完成，没有待处理代理写任务或合并冲突。未存档：原有 WORKLOG.md 交接记录及本条，按 offhand 要求保持未提交。没有进行中的部署或推送。
+
+桌面线框图旧指定路径 /Users/wusir/Desktop/羊皮纸信件制作工具-线框图.excalidraw 在合并前与本次核查均不存在；本次未寻找替代路径、重建或删除它。不能声称该路径当前存在或已再次验收。
+
+### 下一步
+
+下一班输入 $pickup，先读本条并重新核对 main HEAD/status、工作树与服务；有新需求再对齐范围。没有新需求不改页面、不重复提交/合并/删除工作树、不删除保留分支、不提交WORKLOG、不push或部署。需要重验UI时先确认现有服务归属或选择空闲端口，从当前main启动，不沿用已删除工作树或旧TaskSpace46。若需要线框图，先确认用户当前实际文件位置，不猜测缺失原因。
+
+继续编码时同步EN/ZH，保护已批准标题、Hero、metadata和密度口径。每个worker Task spec显式要求高内聚低耦合、单一职责、多步主函数只调度、模块通过公开函数/类型/命令通信、KISS、Fail Fast（异常含具体值且不吞未知异常）、YAGNI和精确命名；只读reviewer不修复、不写Git，按真实命令/文件/回读验收，不使用Orca编排。写Next代码前按AGENTS.md阅读本地node_modules/next/dist/docs/相关指南。
+
+### 踩过的坑
+
+- 共享轮播冲突不能整文件选ours/theirs，否则会丢main横图/大图或卷轴图片查看功能。必须在main结构上叠加公开click能力，并保留三个已验收尺寸路径和默认背景；卷轴白色仅通过自己的colors prop传入。
+- 案例PNG已有白边，米色外框造成色块分层；使用白框即可，不能为了修框重新处理原图或改变所有消费者背景。中心图片按钮必须使用有效内容模型，避免button内放div；点击参数必须成对，禁止配置静默无效。
+- browser-responsive.log最初exit1是验收断言受Family Tree既有五秒自动播放干扰，不能直接判产品组切换耦合。已读取源码/DOM确认其默认autoplay；修正后的browser-consumers-zh.mjs先逐组原生点击暂停自动播放，再测手动切换，三页均通过；未因此修改产品。初次脚本前半段EN/ZH手机与EN三种共享图结果通过，后续ZH补验日志单独保存，不能把初次整条脚本称为exit0。
+- Ego nodejs进程未读到自定义环境变量，最初taskSpace(Number(process.env.SCROLL_MERGE_SPACE))得到NaN。实际TaskSpace46已建立，改为同一脚本显式46后恢复；没有新建空间绕过错误。46已结束，下次新目标按skill创建一次。
+- 密度脚本必须统计三组全部十二案例与折叠FAQ答案；不能改标题凑次数，也不能把英文词组次数乘分词数量。浏览器与源文案回执分母一致才可对比。
+- 纸张逻辑尺寸与屏幕缩放分开；保留正文内部滚动和完整文本，隐藏的是外部滚动条，不是关闭滚动。纸张面板保留占位用于桌面高度，移动端有独立规则；不要改回按当前标签内容高度缩短预览。
+- 默认pnpm dev会先释放40001，不能为了交接运行它影响已有服务。40009已经停用；当前main在其他端口的服务状态未在本次核查，不能猜测可用URL。
+- 本次最终生产构建使用Vinext。普通pnpm build没有在最终合并阶段重跑，不能标记通过；历史Next构建曾在既有coat-export链路遇到cloudflare:workers打包问题，仅作历史说明，不据此断言当前main仍失败，不扩大修复范围。
+- 交接完整性初次校验对工作树原始列表严格相等，因「城镇」的locked initializing标记消失而断言失败；已回读真实列表，路径/HEAD/分支与写入前快照一致，只有初始化状态变化。本次没有改该工作树；最终校验分别核对文件完整性和工作树登记内容，不回滚其它工作的状态变化。
+- /tmp证据可能被系统清理；缺失时明确无法回读，按新授权重新验证，不能只信代理自报。当前保留分支和main已存档源码可以恢复工作，不需重建本次开发工作树。
+
+### 怎么验证
+
+以下为此前真实验收及下一班按需重跑方式；本次offhand只做状态、文件哈希、图片头和日志回读，不重跑产品测试、Lint、typecheck、build、浏览器或HTTP。
+
+- Git与清理：git status --porcelain=v1；git log -2 --oneline；git merge-base --is-ancestor 0ca92c501a875bee87d4424087f98192d7fef3ea main；git worktree list --porcelain；git branch --list 卷轴。写交接后预期仅WORKLOG.md未暂存、暂存区为空、main HEAD仍为f33c0848、卷轴开发目录不存在，桌面十四文件与其他工作树保留。
+- 相关测试（此前27文件/285项）：pnpm exec vitest run src/lib/scroll-creator src/components/scroll-creator src/app/scroll-creator-routes.test.tsx src/app/sitemap.test.ts src/components/armor-creator/circular-testimonials.test.tsx src/components/site/ContentSiteTopbar.test.tsx src/lib/content-site-navigation.test.ts src/lib/llms.test.ts src/lib/security-headers.test.ts src/components/family-tree/FamilyTreeCreatorCaseStudies.test.tsx src/components/tarot-cards/TarotCaseStudies.test.tsx src/components/outfit-creator/OutfitCreatorCaseStudies.test.tsx --reporter=dot。原运行参数还含两个不存在的Armor/Emblem CaseStudies测试路径，Vitest未将其计作测试；上列仅保留实际文件，不能声称测试了不存在文件。
+- 定向Lint：pnpm exec eslint next.config.ts src/app/sitemap.ts src/app/sitemap.test.ts 'src/app/(en)/scroll-creator/page.tsx' 'src/app/(zh)/zh/scroll-creator/page.tsx' src/app/scroll-creator-routes.test.tsx src/components/scroll-creator src/lib/scroll-creator src/components/armor-creator/circular-testimonials.tsx src/components/armor-creator/circular-testimonials.test.tsx src/components/site/ContentSiteTopbar.test.tsx src/lib/content-site-navigation.ts src/lib/content-site-navigation.test.ts src/lib/llms.test.ts src/lib/security-headers.test.ts。此前exit0，保留一条img提示，不能说无警告。
+- 类型/构建：先读package.json；按需运行pnpm typecheck、pnpm exec vinext build、pnpm check:workers-types、pnpm check:workers-build、git diff --check。workers-build是dry-run；这些独立检查不等于完整build:vinext发布流水线或Workers运行时验证。
+- UI：在已核对归属的main服务或空闲端口使用pnpm exec next dev --hostname 127.0.0.1 --port <空闲端口>；使用localhost浏览器URL。本地ego-browser检查EN/ZH ×1440/375，纸张→文字→图片切换时左/右高度不变，开启尺寸输入及重置，長正文在纸内滚动/提示/阻止溢出打印，字体和图片功能、本地保存加载、帮助与正常打印；十二案例全部切换，中心图原图查看、关闭、焦点恢复、白边一致、FAQ展开及整页横向溢出。后半组工具路径检查Family Tree landscape/p-3、Tarot large/p-1、Outfit default/p-3；先暂停各组autoplay再验证独立切换。
+- 主要真实证据目录 /tmp/tokenmaker-scroll-merge/：verification.json、baseline.json、verified-source-hashes.json、final-worktrees.txt；final-tests.log、final-eslint.log、final-typecheck.log、vinext-build.log、workers-types.log、workers-build.log；shared-tests.log、shared-independent-review.log、routes-tests.log、routes-independent-review.log；browser-copy.log及browser-en/zh-1440.json、browser-interactions.log及browser-en/zh-interactions.json、browser-responsive.log、browser-consumers-zh.log/.json、mobile-en.png、mobile-zh.png。此目录包含初次失败和修正后的证据，不可只择一日志下结论。
+- 密度基线/脚本在 /tmp/tokenmaker-scroll-density/：measure.mjs、expected-copy.json、density-source.json、copy-review.log、density-review.log。较早完整功能/案例证据在 /tmp/tokenmaker-scroll-preview/、/tmp/tokenmaker-scroll-showcase/、/tmp/tokenmaker-scroll-implementation/。这些脚本可能硬编码已删除卷轴路径、旧TaskSpace41/46或40009，不能原样运行；新验收须调整到当前main与新的唯一会话/服务，保持统计口径。
+- 本次offhand旧字节快照 /tmp/tokenmaker-scroll-offhand-20261007/WORKLOG.before.md，写入前状态baseline.json。写完核对根标题下原记录逐字节完整、84个功能文件哈希不变、main HEAD不变、暂存区为空和只有WORKLOG.md未暂存；这仅证明交接文件写入完整性，不是新的产品验收。
+
+## 交接单 · 2026-10-07 11:14 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+参考 https://rollforfantasy.com/tools/tarot-cards.php，在唯一「塔罗牌」工作树中制作双语幻想塔罗牌工具、素材、创作案例和工具下方介绍，按反馈处理布局、翻牌、神秘特效和高清展示，并将关键词密度调整至 2%–3%。用户授权提交、合并到本地 main 并删除工作树；使用内置子代理实现和独立审核，不使用 Orca 编排，根代理负责收尾与真实证据验收。本次 offhand 仅核对当前状态并写交接单，不修改产品、不重新运行产品测试、不提交、不 push、不部署。
+
+### 已完成
+
+- 定位为服务幻想创作者、RPG 玩家与 GM 的随机创作灵感工具，用于角色背景、世界设定、遭遇和剧情转折。关键词 EN「tarot cards」、ZH「塔罗牌」。保留 78 张牌的结构与双语正逆位提示，采用自定义幻想视觉素材。
+- EN/ZH 路由为 /tarot-cards 和 /zh/tarot-cards；入口 src/app/(en)/tarot-cards/page.tsx 与 src/app/(zh)/zh/tarot-cards/page.tsx，共用 src/components/tarot-cards/TarotPageView.tsx。工作台锚点 #tarot-cards-workspace；导航、语言切换与 sitemap 均接入。
+- 领域源码在 src/lib/tarot-cards/：cards.ts、meanings.ts、spreads.ts、engine.ts、copy.ts、page-content.ts、case-studies.ts；公开入口包括 getTarotCard、getTarotSpread、getTarotCopy、getTarotPageContent、getTarotCaseStudies，以及 createTarotState、dealSingleCard、dealTarotSpread、revealTarotCard、revealAllTarotCards、shuffleTarotDeck。UI 在 src/components/tarot-cards/，工作台由 TarotWorkbench、TarotTable、TarotCardTile、TarotSpreadPicker、TarotDetailsPanel 和 TarotHelpPanel 分工。
+- 工具包含 78 张牌（22 张大牌、四花色共 56 张小牌）、15 种双语牌阵；支持单牌、牌阵预览、更换牌阵、重新发牌、逐张翻开、全部翻开、洗牌、剩余/已翻开计数、位置与正逆位详情、使用说明。单牌和牌阵共用牌堆，洗牌前不重复；不足发牌时显示具体剩余/所需数量。单牌重新发牌也先显示牌背，必须点击后才显示正面。
+- 单牌和牌阵均有发牌入场、符文/光效、逐张翻牌效果；效果常量在 constants.ts（发牌 1000ms、翻牌 560ms），CSS 在 TarotCardMotion.module.css，支持 reduced-motion。页面及帮助/详情弹窗的可交互元素手型规则位于 src/app/globals.css。
+- TarotTable 已处理非预期重叠、横牌尺寸和上方标题预留；源码显式区分凯尔特十字位置 1/2 的有意交叉，后续不能把这一标准布局当作所有牌阵的排版故障。合并后浏览器对 EN/ZH 单牌初次/重新发牌、10 张凯尔特十字发牌、点击一张仅翻开一张、神秘效果 active 和 pointer 进行了真实复核。
+- Hero 按用户指定的 Weapon Creator 风格实现；工具下方固定顺序为 What Is → 案例展示 → 六项功能 → 三步 How It Works → 工具对比 → CTA → FAQ。对比对象为实体卡牌与随机灵感表，CTA 返回工作台，FAQ 有八问。正文/案例公开文案在 page-content.ts 和 case-studies.ts；后续密度修改保护标题、Hero 与 metadata。
+- 已批准标题 EN「Fantasy Tarot Cards – Free Online Card Draw Tool」，ZH「幻想塔罗牌 – 免费在线随机抽牌工具」。描述 EN「Draw custom fantasy tarot cards to inspire stories and RPG campaigns. Use 15 spreads to spark ideas for characters, worlds, encounters, and plot twists.」；ZH「随机抽取幻想主题塔罗牌，搭配 15 种牌阵，为角色背景、世界设定、冒险遭遇和剧情转折寻找灵感。」Hero 与 metadata 使用这些内容，不要顺手重写。
+- 案例为角色、世界、冒险三组，每组四个，共十二个；图文布局左图右文、左文右图、左图右文，接入共享 CircularTestimonials，autoplay=false，imageSize="large"、clipImageStack=false，图片 object-contain。牌面源图为 1024×1536；合并后 Next 浏览器回执中的中心图框桌面为 288×432、375px 视口为 210×315，p-1，整页无横向溢出。
+- 页面素材位于 public/tarot-cards/：78 张牌面和一张牌背，共 79 个 WebP，均随功能提交保留。另一个独立交付目录 /Users/wusir/Desktop/塔罗牌 仍存在，本次只读列出 223 个文件，含 PNG、WebP、使用说明.md、制作记录、牌名对照.json、素材清单.csv、预览与塔罗牌工具-布局设计.excalidraw；本次未对桌面交付做逐文件哈希验收。它与已删除的 /Users/wusir/Desktop/开发项目集合/塔罗牌 开发工作树是不同路径，不能误删。
+- 最终密度修改只涉及 page-content.ts 与 case-studies.ts 的正文。两文件最终 SHA256 分别为 34cd95a025f7dea70f95d37e352b13102f4d7ad0744d2cb5bbb6b8dcf841845f、8977e660db62613131c71b76486d5298f46d6f1dabea4d4de35d71654395d48f，合并前后保持一致。
+- 密度口径是完整关键词出现次数 ÷ 正文词数 ×100，英文词组每次只计一次，不能乘以两个英文单词；分母用 Intl.Segmenter(locale, granularity='word') 的 isWordLike（en/zh），不是汉字数。合并验收脚本遍历三组全部十二个案例，各例只计一次，包含全部八问的正文答案及读者内容标题/段落/对比表；全页读者口径还包含 Hero 的标题、描述与行动文案，工具下方口径排除 Hero。排除工作台、导航/footer、metadata、图片 alt、ARIA 标签、svg、sr-only 等隐藏辅助文本；FAQ 即使折叠也采集已挂载答案。不能与只看初始三个案例、纯可见文字或只统计段落的结果混用。
+- 合并后真实浏览器密度：完整读者内容 EN46/1878=2.4494142705%，ZH49/2075=2.3614457831%；工具下方 EN43/1843=2.3331524688%，ZH47/2037=2.3073146784%。两口径均满足用户的 2%–3%。标题、Hero、metadata、图片/alt 与基线一致；EN/ZH ×1440/375 视口 ×四种案例组合共 16 个布局回执 PASS，FAQ 可展开且无整页溢出。
+- 功能提交 7eca4f5d20fd2074a1e7dbdead2d2ea9047f90b8（feat: add bilingual fantasy tarot cards tool）；整合提交及当前 main HEAD 为 3cdbc7d81164d7c174e35fd04f85761f71e20d5c（merge: integrate current main with tarot cards），树 d8460052ff4d98b0c5a7f332f6753b1d85f9fe50。先在塔罗牌分支合入原 main 64b4c9db31968563dc4276f68c2eddce17792e24，再将 main 快进到验收版本；功能提交为 main 祖先。相对原 main 仅 130 个允许文件改变（122 新文件、8 共享文件），11,202 个非重叠 main 文件字节保持不变。
+- 七个冲突文件为共享 circular-testimonials.tsx/test、site-routes.test.tsx、sitemap.ts/test、content-site-navigation.ts/test；保留 main 的家谱、太阳系、周期表双语路径/日期/导航/测试，以及 Tarot 功能。共享轮播同时保留 imageShape=portrait|landscape 与 imageSize=default|large：默认 portrait/default 保持旧尺寸/p-3，Family Tree landscape 保持横图比例/p-3，Tarot portrait/large 使用大图/p-1；未定义的 landscape+large 组合明确 Fail Fast，异常包含两个实际值，不静默忽略任何属性。两路独立只读复核 PASS，根代理读取日志、源码、哈希后结算。
+- 合并候选版本 28 个相关测试文件/291 项测试 PASS，pnpm typecheck、定向 ESLint、pnpm exec vinext build、Workers 类型检查、Workers build dry-run 均 exit0。最终浏览器运行在 Next dev，EN/ZH 单牌/牌阵交互、12 个大图/横图/默认图布局回执、双语导航及 sitemap HTTP200 均 PASS。没有把这些局部检查称为合并后全仓测试或线上部署验证。
+- 已删除开发工作树 /Users/wusir/Desktop/开发项目集合/塔罗牌，目录和 Git 登记均不存在；「塔罗牌」分支保留并指向整合提交。其它六个工作树（卷轴、历法、城堡、星座、公告、魔法阵）保留。本次重新读取 Git 工作树列表和分支；没有重建工作树、删除其他分支、push 或部署。
+- 合并验收的临时 40117 预览已核对所属工作树后停止，本次该端口无监听；ego-browser TaskSpace35 已 finish({keep:[]}) 一次并关闭，不可复用。当前 40001 有既有 node 服务 PID77360 监听，本次仅观察，没有重启；下次必须重新核对 PID、所属目录和当前构建，不假定旧服务已包含最新 main。
+- 本次 offhand 写入前 main 干净、暂存区为空、无未跟踪产品文件；WORKLOG.md 受 Git 跟踪，旧字节 SHA256 为 7cf0ddaee452a88c50980e8edcb4ccbcf0cdeb9ccf8223f4e407bac74922d1e1。交接单插入根标题下，原记录字节保留，交接单不提交。
+
+### 做到一半
+
+无进行中的产品代码、密度或 Git 清理工作。已授权范围完成。遗留环境限制：整合后 Wrangler 本地 preview 连续在启动 workerd 时抛 spawn EBADF，尚未修复；本地 Workers 运行时验收未完成，不能把 Next 浏览器验收或 Workers dry-run 称为完整 Workers 运行时验证。没有进行中的代理写任务或待处理合并冲突。
+
+未存档：仅本次 WORKLOG.md 交接单，按 offhand 要求保持未提交。
+
+### 下一步
+
+下一班输入 $pickup，先读本条并重新核对 main HEAD/status、工作树、服务，再根据新需求对齐范围。没有新需求不改页面、不重复提交/合并/删除工作树、不删除保留分支、不提交 WORKLOG、不 push 或部署。若用户要修复 Workers 本地预览，先读取下面的诊断日志并提出已验证的方案，配置/依赖/系统改动需要单独确认；不要把本次只读诊断当作修复授权。
+
+继续编码时同步 EN/ZH，并保护已批准标题、描述与素材。每个编码 Task spec 显式要求高内聚、低耦合、单一职责、多步主函数只调度、模块通过公开函数/类型/命令通信、KISS、Fail Fast（错误含具体值、禁止吞异常）、YAGNI、精确命名；只读 reviewer 禁止修复和 Git 写入，按真实命令/文件/外部回读验收，不使用 Orca 编排。写 Next 代码前按 AGENTS.md 阅读本机 node_modules/next/dist/docs/ 的相关指南。
+
+### 踩过的坑
+
+- 共享轮播合并不能整文件选 ours/theirs，否则丢掉 main 的 imageShape 横图或 Tarot 的 imageSize 大图。默认 portrait、Family Tree 横图、Tarot 大图是三条已验收路径；landscape+large 暂不支持，没有授权新增组合能力。
+- Workers 本地 preview 的 spawn EBADF 已由只读 probe 复现：当前 dist/client 10,385 个普通文件，Wrangler 资产 watcher 逐文件 fs.watch；同一 Node24/workerd、四个 pipe，在打开 10,220 个文件时 workerd --version exit0，10,221 个及全部资产时同步 EBADF，finally 关闭全部 fd。错误发生在向 workerd 写入配置之前；无额外大量 fd 时二进制版本、架构和签名检查通过。更底层 macOS/Node 为何映射为 EBADF 未证实，不猜测。诊断是本地监听/进程资源问题的证据，不是 Worker 发布后故障证据；本次没有升级工具链或改配置。
+- 不可将 Next dev、Vinext build、Workers dry-run 和 Workers runtime 当作同一验收。三个 Wrangler 启动方式实际失败后使用现有 Next dev 完成 UI 检查，dry-run 只验证构建和资产配置；不要说最终 Workers 本地预览已成功。
+- Ego goto 曾等 load 超时但页面已提交；按返回状态在同一 TaskSpace35 恢复，使用已文档化的 domcontentloaded 和可观察条件。神秘效果为短时状态，双 requestAnimationFrame 抽样错过 active 后，改用 MutationObserver 直接捕获真实 DOM 的 active 变更，单牌及牌阵均通过；不要把验收脚本的采样问题误改成产品行为。35 已结束，新目标新建会话，不能复用或为失败擅自新建恢复空间。
+- 默认 pnpm dev 会释放40001，不能为了交接直接运行而中断已有服务。临时40117已经关闭，原 URL当前不能继续使用；需要重验时先核对并选择空闲端口，不沿用旧 PID。
+- 桌面交付 /Users/wusir/Desktop/塔罗牌 与已删除开发工作树父目录不同。只删除获准开发工作树，保留桌面素材、wireframe、主目录 node_modules 及其它工作树。
+- pnpm test -- <paths> 在此前流程会扩大到全仓；按需定向测试使用 pnpm exec vitest run <paths>。密度统计必须遍历全部十二案例并使用同一分母；不能为达标改 Hero/metadata、拿汉字数当词数或把英文词组出现次数乘二。
+- /tmp 证据可能被系统清理；证据缺失时标记无法回读，再按新授权重验，不能只信代理自报。本次 offhand 只读回顾此前真实日志和当前 Git/文件/端口，没有重新运行测试、构建或浏览器。
+
+### 怎么验证
+
+以下为上次合并阶段的真实验收范围及下一班按需重跑方式；本次 offhand 不重跑产品命令。
+
+- 当前状态：git status --porcelain=v1；git log -2 --oneline；git merge-base --is-ancestor 7eca4f5d20fd2074a1e7dbdead2d2ea9047f90b8 main；git worktree list --porcelain。交接写入后预期仅 WORKLOG.md 为未暂存改动，暂存区为空，HEAD保持3cdbc7d8；开发工作树目录缺失，桌面独立交付目录存在。
+- 相关测试（上次28文件/291项）：pnpm exec vitest run src/lib/tarot-cards src/components/tarot-cards src/app/tarot-cards-routes.test.tsx src/components/armor-creator/circular-testimonials.test.tsx src/lib/content-site-navigation.test.ts src/app/sitemap.test.ts src/app/site-routes.test.tsx src/components/family-tree/FamilyTreeCreatorCaseStudies.test.tsx src/components/weapon-creator/WeaponCreatorCaseStudies.test.tsx src/components/outfit-creator/OutfitCreatorCaseStudies.test.tsx src/components/dice/DiceRollerCaseStudies.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx。
+- 类型/构建：pnpm typecheck；pnpm exec vinext build；pnpm check:workers-types；pnpm check:workers-build；git diff --check。workers-build 脚本是 wrangler deploy --dry-run，不发布。按需逐项执行，不把独立命令通过称为完整 build:vinext 发布流水线。
+- 定向 Lint：pnpm exec eslint src/components/tarot-cards src/lib/tarot-cards 'src/app/(en)/tarot-cards/page.tsx' 'src/app/(zh)/zh/tarot-cards/page.tsx' src/app/tarot-cards-routes.test.tsx src/components/armor-creator/circular-testimonials.tsx src/components/armor-creator/circular-testimonials.test.tsx src/app/site-routes.test.tsx src/app/sitemap.ts src/app/sitemap.test.ts src/lib/content-site-navigation.ts src/lib/content-site-navigation.test.ts。
+- UI：先确认已运行预览属于当前 main 或在空闲端口启动 pnpm exec next dev --hostname 127.0.0.1 --port <空闲端口>。使用本地 ego-browser 检查 EN/ZH ×1440/375，单牌初次/重新发牌先牌背、有入场效果、点击才翻；牌阵预览/更换/发牌/全部翻开、正逆位详情、共用牌堆/不足提示、洗牌和使用说明；两次发牌之间不能自动展示正面。检查八问 FAQ、CTA 回工作台、所有交互手型及局部表格滚动不造成整页溢出。
+- 案例与共享回归：每组四张全部切换，左/右/左布局、大图完整显示与 object-contain；/family-tree-creator、/zh/family-tree-creator 的 landscape/p-3 及 /weapon-creator、/zh/weapon-creator 的默认 portrait/p-3 均保留。导航中 Tarot、Family Tree、Solar System、Periodic Table EN/ZH项同时存在，sitemap 含两种语言及 reciprocal alternates。
+- 历史验收证据：/tmp/tarot-merge-tests.log、tarot-merge-typecheck.log、tarot-merge-lint.log、tarot-merge-build.log、tarot-merge-workers-types.log、tarot-merge-workers-build.log；浏览器脚本/回执为 /tmp/tarot-merge-browser-density.mjs/.log/.json 和 /tmp/tarot-merge-browser-ui.mjs/.log/.json。这些脚本硬编码旧 TaskSpace35 与旧端口40117，不可原样运行；下一班须按新目标调整会话和当前服务，并保留密度范围与原口径。
+- 合并/清理证据：/tmp/tarot-merge-before.json、tarot-merge-candidate.json、tarot-feature-commit.log、tarot-integration-commit.log、tarot-main-fast-forward.log、tarot-final-merge-result.json、tarot-worktree-removal.log、tarot-worktrees-before-removal.txt。独立审核为 /tmp/tarot-merge-compat-review.md、tarot-merge-routes-review.md；preview 根因及真实 probe 在 /tmp/tarot-merge-preview-diagnosis.md/.log。
+- 本次交接旧字节/文件哈希快照在 /tmp/tarot-offhand-20261007/（WORKLOG.before.md、baseline.json）。写入后核对标题下旧记录字节完整、其它11,331个tracked文件不变、暂存区为空及HEAD不变；这只是交接文件完整性检查，不是产品测试重跑。
+
 ## 交接单 · 2026-10-07 09:00 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
