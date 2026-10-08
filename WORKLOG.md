@@ -1,5 +1,108 @@
 # WORKLOG
 
+## 交接单 · 2026-10-08 20:14 Asia/Shanghai +0800 · Codex（Grok 为受监督写入者）
+
+### 本次目标
+
+把本轮已核对的 Constellation Map Creator（星座地图创建器）状态写进主仓 `WORKLOG.md` 顶部。只追加这一段。不改产品代码，不提交，不 push，不部署，不重跑测试、类型检查、lint 或构建，不开浏览器。
+
+### 已完成
+
+- 仓库 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`，HEAD `437d65c5d92459b9994ca10beafd7a71fa11394a`（说明 `1`，2026-10-08 19:51:27 +0800）。这次 offhand 没有创建该提交。它在历法整合 `92203311f946295ded141dcc4b48f12f210b231d` 之后。`git merge-base --is-ancestor` 确认功能提交 `759fae2e86c05866edaa4a9aa2288fd28f952eac` 是星座合并 `3360cbb2a5e50805b3bab8b3bb72905aea4a95d9` 的祖先，该合并是历法整合的祖先，历法整合是当前 HEAD 的祖先。分支 `星座` 仍指向 `3360cbb2a5e50805b3bab8b3bb72905aea4a95d9`。
+- 写入前 `git status --porcelain` 只有 ` M WORKLOG.md`，暂存区为空，没有未跟踪文件。按 offhand 规则，`WORKLOG.md` 不提交，本段保持未存档。当时 `git status -sb` 显示 `main...origin/main [ahead 26]`。本次没有 push。
+- `/Users/wusir/Desktop/开发项目集合/星座` 本次不存在，`git worktree list` 里也没有这条路径。历史 `cleanup-state.json` 记录 `orca worktree rm` 退出 0，分支校验曾退出 128，随后 `git update-ref refs/heads/星座 3360cbb2a5e50805b3bab8b3bb72905aea4a95d9` 退出 0。本次只读到的 ref 就是这个值。`/tmp/constellation-local-merge-20261008-run_7cd3e3155c5b/review-report.md` 开头写过可删分支，和最终保留决定冲突；以清理回执和当前 ref 为准。历史报告没有改。
+- 从 `3360cbb2` 到当前 HEAD，`git diff --quiet` 对 `src/lib/constellation-map-creator`、`src/components/constellation-map-creator`、两条页面路由和 `public/constellation-map-creator` 退出 0。英文路由 `/constellation-map-creator`，中文路由 `/zh/constellation-map-creator`，都渲染 `ConstellationMapCreatorPageView`。
+- 领域代码在 `src/lib/constellation-map-creator/`，本次数到 19 个文件，包括 `catalog.ts`、`copy.ts`、`showcase-copy.ts`、`state.ts`、`validation.ts`、`saves.ts`、`project-file.ts`、`images.ts`、`types.ts`。界面在 `src/components/constellation-map-creator/`，本次数到 16 个文件，包括 `ConstellationMapCreatorPageView.tsx`、`ConstellationMapCreatorHeading.tsx`、`ConstellationMapCreatorWorkbench.tsx`、`ConstellationMapCreatorCanvas.tsx`、`ConstellationMapCreatorShowcase.tsx`，以及素材、设置、存档、导出面板和案例大图对话框。
+- 目录常量是 61 个主题乘 image、plain、line，共 183 项。`asset-manifest.json` 的 assets 数组也是 183，另有独立 star。本次只数目录：三类 svg 各 61，加上 `star.svg`，共 184 个文件。没有逐个重算素材 SHA。默认地图 900×600，项目 `schemaVersion` 为 1，浏览器存档 5 槽。`images.ts` 写明正角度按顺时针旋转。
+- 旋转把手在 `ConstellationMapCreatorCanvas.tsx`：圆形，视觉半径 8 CSS px，离选框 8 CSS px，点击热区 44 CSS px，连线止于圆边。中英文提示都写拖动圆形把手旋转，拖动和缩放开关关掉后仍可旋转。当前该文件 SHA-256 仍是 `03cda12c268b1ed7d3d2e1166b6ba2daa1fff4e7901ea79589dd6dc5876a50d1`，与最终复核锁定值相同。上述边缘旋转后缩放的历史修复最终 3 项通过，本次未重跑；不能因源码保留 Fail Fast 抛错分支就判断旧缺陷存在，浏览器手感由用户验收。
+- 公开案例图 12 张，位于 `public/constellation-map-creator/showcase/`，`showcase-copy.ts` 里也有 12 处 `.webp`。`ConstellationMapCreatorShowcase.tsx` 把 `previewImagesClickable={true}` 传给 `CircularTestimonials`，点击后打开 `ConstellationShowcaseImageDialog`。这个布尔是公开可选参数，默认 false，非布尔会抛出收到的值。当前这两个共享文件相对 `92203311` 的 diff 退出 0，相对 `3360cbb2` 已经不同：历法合并留下了可选的 `imageAspectRatio` 和 `imageTextSpacing`。不要按 scope 旧建议删除这两个文件，也不要退回合并前的字节。
+- 标题本次读到的仍是原文。英文 SEO `Constellation Map Creator | Build Fantasy Star Maps`，可见 h1 使用 `copy.heading`：`Constellation Map Creator`。中文 SEO `星座地图创建器｜创建幻想星空地图`，可见 h1：`星座地图创建器`。比较表中英各两行：素材准备，专用星图操作。FAQ 中英各 5 项。星座源码里没有登录或付费句子。
+- 关键词没有本次重数。`copy.ts` SHA-256 是 `52456d76062fb4dd5df1bb728dc3420c5ba10f086c1654e2662ca957c375d131`，`showcase-copy.ts` SHA-256 是 `8c960f9d307c9e8cdf033ebce690e113e2b62b5569fd3dda65af6c9d6fa74ce0`，都与 `/tmp/constellation-rotation-20261007-run_4c21ad4dac32/verify-copy-protection.json` 记录的源码哈希相同。因此沿用该文件已算过的英文 `Constellation Map Creator` 31/1388 = 2.23342939481268%，中文 `星座地图创建器` 31/1430 = 2.1678321678321675%。标题不改。
+- 桌面 `/Users/wusir/Desktop/星座` 仍在，inode `135695968`。顶层 16 项：`00-案例总览.jpg`、`01` 到 `12` 的 png、目录 `可编辑项目`、`案例清单.json`、`案例说明.md`。本次没有重算其中每个文件的哈希。`/Users/wusir/Desktop/constellation-map-redesign.excalidraw` 仍在，509050 字节，SHA-256 `fc0dc7b2f60c128046638e8c47e9003aeeefb8b208674aecb0360e7d63a17296`。都没有删除。
+- 2026-10-08 20:11:22 +0800 只读看到端口：40001 由 node PID 1700 监听，cwd 是主仓，命令是 `next-server (v16.3.3)`，ps 启动时间 Thu Oct 8 19:58:18 2026。40007 由 node PID 2867 监听 `127.0.0.1:40007`，cwd 是 `/Users/wusir/Desktop/开发项目集合/城堡`，命令是 `vinext start`，ps 启动时间 Thu Oct 8 07:57:01 2026。不能把 40007 当成星座预览。本次没有启动、重启或停止服务。
+- 下面都是历史证据，不是本次重跑。目录是 `/tmp/constellation-local-merge-20261008-run_7cd3e3155c5b/`。合并树 `3360cbb2`：相关 Vitest 16 个文件、234 passed、退出 0；相关 ESLint 和 `pnpm typecheck` 退出 0；`pnpm exec vinext build` 退出 0；`pnpm check:workers-build` 的 dry-run 退出 0。`pnpm build` 退出 1，失败点是未改的 `src/app/api/coat-export/route.ts` 导入 `cloudflare:workers`。当前 HEAD 上该文件 blob 仍是 `5da6292a60777519add56cbff329e571b1eb449d`，`next.config.ts` blob 仍是 `0e4946703179d4b23d315d31cbad65605b154923`。历法整合后的共享 carousel 聚焦测试是 `pnpm exec vitest run src/components/armor-creator/circular-testimonials.test.tsx`，stdout 为 54 passed，退出 0，针对 `92203311`。当前这两个文件与 `92203311` 无 diff，但本次没有重跑。浏览器验收没有做。
+
+### 做到一半
+
+无待续的星座代码。浏览器验收由用户做，本次没有执行。本段交接单未存档。没有线上发布。
+
+### 下一步
+
+下一班输入 `$pickup` 后，先只读刷新 HEAD、`git status` 和分支 `星座`，再按用户的新需求对齐。不要自动改产品、提交、push、部署或重跑整库门禁。不要把 40007 当星座服务，不要覆盖共享 carousel，不要改受保护的中英文标题。
+
+### 踩过的坑
+
+- `review-report.md` 开头写了准许删除分支 `星座`。同文件后面和清理回执改为保留。`orca worktree rm` 曾让 ref 暂时消失，随后 `git update-ref` 恢复到 `3360cbb2`。不要按报告开头那句去删分支，也不要改那份历史报告。
+- scope 报告曾要求不要提交两个 circular-testimonials 文件，并保持当时 main 的原字节。最终合并保留了公开的 `previewImagesClickable`。历法合并又加上可选的 `imageAspectRatio` 和 `imageTextSpacing`。当前文件等于 `92203311`，不等于 `3360cbb2`。不要按旧建议删文件或覆盖回去。
+- 默认 `pnpm build` 的失败是既有 coat-export 导入 `cloudflare:workers`。不要把它当成星座回归去改。Workers 的 vinext build 和 dry-run 是另一条历史通过记录。
+- 旧星座预览端口 40007 现在属于城堡的 vinext。主仓 next-server 在 40001。
+- 旋转后贴边缩放的旧问题，以 `/tmp/constellation-rotation-20261007-run_4c21ad4dac32/final-review-public.stdout` 和 `.exit` 为准：3 项通过、0 失败、退出 0，覆盖原点图案 1° 指针、原点 20×20 星 1° 键盘和左边缘 90° 外拖，没有 `onInteractionError`。当前画布 SHA 与该复核锁定值相同，这是同一份字节上的历史结果；本次没有重跑。浏览器手感仍由用户验收。
+- `437d65c5` 的说明是 `1`，收录的是当时的 WORKLOG 和城堡 output。那不是这次 offhand 的提交。
+
+### 怎么验证
+
+本次一条都没有跑。下一班若要验证，在主仓执行，并先看用户是否授权：
+
+- `pnpm typecheck`，脚本是 `next typegen && tsc --noEmit`。
+- `pnpm exec eslint src/lib/constellation-map-creator src/components/constellation-map-creator`。本次没有运行，也不要把它说成全仓 `pnpm lint`。
+- `pnpm exec vitest run src/lib/constellation-map-creator src/components/constellation-map-creator src/components/armor-creator/circular-testimonials.test.tsx`。本次没有运行。历史 234 项属于合并树 `3360cbb2` 的那 16 个文件；历史 54 项属于 `92203311` 上单独的 carousel 测试。不要把它们说成这条命令的本次结果。
+- `pnpm exec vinext build`，以及 `pnpm check:workers-build`。后者只做 dry-run，不要跑 `deploy:workers`。
+- `pnpm build`。历史结果是退出 1，失败在 coat-export。除非那条路由已经另有改动，不能把默认 Next 构建说成通过。
+- 用户用浏览器看 `/constellation-map-creator` 和 `/zh/constellation-map-creator`：h1 标题、三类素材和星星、拖动与缩放开关、圆形旋转把手、五个存档槽、项目文件、PNG 导出、12 张案例大图、比较表两行、FAQ。主仓页面若仍由 40001 提供，用该服务。不要打开 40007 当星座页。
+
+## 交接单 · 2026-10-08 19:58 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+在唯一「历法」工作树中，参考 Roll for Fantasy 的 Calendar Creator，实现中英文奇幻世界历法工具；按用户反馈简化设置、月份浏览、日期编辑、案例展示与页面内容，统一关键词并达到用户指定的正文关键词密度 2%–3%。上一轮已按授权提交、合并本地 main 并删除该工作树。本次执行 offhand：只核对现状并追加交接记录，保留旧记录和其他文件，不修改产品、不提交、不 push、不部署。
+
+### 已完成
+
+- 仓库根目录 `/Users/wusir/Desktop/开发项目集合/token-maker-app`；本次写入前为 `main`，HEAD `437d65c5d92459b9994ca10beafd7a71fa11394a`，工作区和暂存区均干净。历法功能提交 `fbe96cd737089e4c28c3a784de72a8f59bbfa2f5`，整合提交 `92203311f946295ded141dcc4b48f12f210b231d`；两者均为当前 HEAD 的祖先。后续 `437d65c5` 已包含既有 WORKLOG 和 output 文件，本次未创建该提交。
+- 用户确认采用“只追加交接单，不提交旧改动”。询问时存在的旧改动在确认后回读时已被后续提交收录；此次追加的交接单仍为**未存档**，不加入 Git 暂存区。当前 43 个 output 文件原样保留。
+- 本次逐一核对 153 个历法范围文件，其工作区内容与整合提交 `92203311` 一致。包括 `public/calendar-creator/`（89 个文件）、`src/components/calendar-creator/`（38 个文件）、`src/lib/calendar-creator/`（17 个文件）、EN/ZH 路由和路由测试，以及 sitemap、导航和共享 carousel 文件。
+- 两条页面路由为 `/calendar-creator` 与 `/zh/calendar-creator`。领域函数、校验、图标、存档与文案集中在 `src/lib/calendar-creator/`；界面集中在 `src/components/calendar-creator/`；路由使用共同的 `CalendarCreatorPageView.tsx`。模块使用公开导出，保持高内聚、低耦合、单一职责、KISS、Fail Fast、YAGNI 和精确命名。
+- 设置支持年份、月份数量、各月天数与名称、每周天数与名称、年初星期、最多三组可选月亮周期及每日灾害概率。默认 2000 年、4 个月、每月 30 天、每周 3 天，共 120 天。
+- 每个日期支持一个手动图标和笔记，并可叠加最多三个月相及一个灾害自动图标。支持日期多选、批量替换手动图标、撤销最近一次单个或批量手动图标修改。此撤销不覆盖所有编辑操作。
+- 屏幕日历只展示当前月份，使用上/下月和月份选择切换；日期格按内容调整高度。全年打印视图独立保留所有月份、星期、自动图层、手动图标和笔记，隐藏编辑控件。
+- 返回设置使用 `CornerUpLeft` 图标，放在工具标题旁；有可访问名称，按钮不显示文字。设置草稿编辑保留当前历法，确认重新生成后才应用；换年和加载存档的未保存修改处理支持先保存。创建设置的存档入口移到创建按钮旁，内部独立滚动栏已移除。
+- 四个浏览器本地存档槽位，键为 `tokenmaker.calendar-creator.saves`，版本 1。首次选择槽位，后续保存更新绑定槽位；包含历法规则、年份、自动图层、手动图标和笔记。没有云同步、原生 PNG 导出或自动闰年功能。
+- 页面内容顺序：Hero → 工具 → What Is → 案例 → 功能介绍 → 工具对比 → How It Works → CTA → FAQ。三个案例组，每组四张，共十二张，布局左图右文／左文右图／左图右文；FAQ 共十二项。比较表采用六行简洁的操作优势说明，用户要求移除的旧说明模块、时间线锚文本和竞品脚注未重新添加。
+- 案例图片位于 `public/calendar-creator/examples/calendar-01.webp` 至 `calendar-12.webp`，均为高清 WebP，宽 2782 px，高 1426/1668/1910 px。三层图片均可点击打开对应大图，关闭或 Esc 后恢复触发按钮焦点；不自动轮播。英文文案说明案例截图使用中文内容。未把桌面图片目录的存在当作本次已验证事实。
+- 75 个竞品 PNG 图标已本地化到 `public/calendar-creator/rollforfantasy/`；来源及资源 URL、尺寸、字节数、SHA 记录在 `SOURCE.md` 与 `asset-manifest.json`。参考网址为 https://rollforfantasy.com/tools/calendar-creator.php 。未宣称素材获得开放许可或作者授权。
+- 共享 `src/components/armor-creator/circular-testimonials.tsx` 保留 main 的 `imageShape`、`imageSize`、`imageActionLabel`、`previewImagesClickable`、`onImageClick(testimonial, trigger)` 契约，并保留历法使用的 `imageAspectRatio` 与 `imageTextSpacing`。历法包装层将 `openImageLabel` 传给公开的 `imageActionLabel`，没有保留重复的共享别名。案例比例 1.67，桌面图片文字间距 96 px、移动端 48 px，其他消费者默认布局保留。
+- 已确认的英文 SEO 标题：`Free Fantasy Calendar Generator | Create Your World’s Calendar`。中文标题：`免费奇幻历法生成器 | 在线创建你的世界历法`。英文描述：`Create a time system for your fantasy world. Customize months, weekdays and moon cycles, mark important dates, and add notes.`。中文描述：`为你的奇幻世界建立独特的时间体系。自定义月份、星期和月亮周期，标记重要日期、记录故事事件。`。描述不再提保存和打印；Hero 不显示标题中的竖线分隔符。
+- 统一关键词：英文 `Fantasy Calendar Generator`，中文 `奇幻历法生成器`。上一轮最终统计 EN 34/1337 = 2.5430%，ZH 40/1456 = 2.7473%。按完整短语次数除以正文词数，正文使用 `Intl.Segmenter` 的 word/isWordLike 计数；包含 Hero、全部下方读者文案、十二个案例和十二个 FAQ 各一次，排除导航、页脚、编辑器、metadata/JSON-LD、alt/aria、隐藏装饰与未渲染字段。轮播只显示三项不能据此漏计其余案例。
+- **历史验证，非本次重跑**：整合候选版本 67 个测试文件、545 个测试通过；`pnpm typecheck`、整合范围 ESLint 和 `pnpm exec vinext build` 均退出 0。合并前历法范围 23 个文件、220 个测试通过，范围 ESLint 有两条原生 img 警告、零错误。不能将这些说成全仓测试、Cloudflare 运行验证或线上部署验证。
+- **历史浏览器验证，非本次重跑**：ego-browser TaskSpace 32 验证 EN/ZH、1440×900 与 375×812；无页面横向溢出，案例交替布局及间距正确，三层图片打开对应资源并恢复焦点，创建历法后只有一个可见月份。TaskSpace 26/32 均已结束；后续浏览器工作需新建 TaskSpace。
+- 删除历法工作树的既有日志返回 `ok: true`、`removed: true`，当时目录、Git 注册和 Orca 注册均已核对移除。本次再次确认 `/Users/wusir/Desktop/开发项目集合/历法` 不存在，Git worktree 列表也没有历法。没有删除其他工作树。本次 40106 无监听；40001 的 node PID 92459 仍在监听，没有重启或停止服务。
+
+### 做到一半
+
+无待完成的历法代码任务。此次 offhand 仅追加本文，保持未提交。线上发布、推送、Cloudflare 运行验证及新功能均不在已确认范围；不应在接班时自动执行。桌面案例图片交付路径、旧 Excalidraw 文件的当前状态本次未核对，不能据此声明存在或删除。
+
+### 下一步
+
+无自动续做任务。下一班先执行 `$pickup`，核对实时 HEAD、工作区及用户的新要求；旧工作树已删除，禁止继续使用其中的路径。若需要继续改产品，先对齐具体范围，保留用户已确认的中英文标题、描述、页面布局与功能边界。
+
+### 踩过的坑
+
+- 合并时 sitemap、导航及共享 carousel 共六处冲突已处理，保留 main 中卷轴、家族树、星座、太阳系、元素周期表、塔罗等既有入口。后续不要用历法旧版本覆盖共享组件或其他工具路由。
+- `127.0.0.1:40001` 首次浏览器加载曾记录资源 403 和未水合状态；后来资源回读为 200，使用 `localhost:40001` 验证通过。未证明其原因，不能写成已修复的根因；不用为历史异常擅自改配置或重启服务。
+- ego 的无名称 `role:dialog` 定位语法不可用，使用 CSS `[role="dialog"]` 或带名称的 role。侧层图片的中心可能被前层覆盖，应在真实可见侧边点击，不能把工具的中心点击拦截直接认定为产品缺陷。平滑滚动后应等待实际位置再读取边界。
+- 旧合并暂存区检查有来自 main 星座文件的四条既有 EOF 空行警告；历法相对 main 的范围 diff 检查通过。不要为了消除旧警告修改其他工具。Vitest 日志中的 `Window.scrollTo` 未实现提示未导致 545 个测试失败。
+- 路径含中文时，普通 Git 输出会转义。文件清单和哈希核对使用 `-z`，避免漏掉文件。历史证据的 HEAD 为 92203311，本次实际 HEAD 为 437d65c5，不得将历史报告当作当前状态。
+
+### 怎么验证
+
+本次 offhand 仅回读 Git、源码与历史日志并检查文件哈希，不重新执行产品测试、构建或浏览器。
+
+- 当前状态：在项目根目录运行 `git status --short`、`git log -3 --oneline`、`git merge-base --is-ancestor 92203311 HEAD`、`git worktree list`。写完后应只有本次 `WORKLOG.md` 未暂存改动；确认历法工作树不存在。交接前原文件备份与本次保护文件哈希在 `/tmp/calendar-offhand-20261008/`，不应提交这些临时证据。
+- 历史日志：`/tmp/calendar-merge-20261008/integration-tests.log`、`integration-typecheck.log`、`integration-eslint.log`、`integration-build.log`、`worktree-removal.json`、`completion-report.json`。历史浏览器原始状态和截图为同目录下 `browser-zh-desktop.json`、`browser-zh-mobile.json`、`browser-en.json`、`zh-desktop-showcase.png`、`zh-mobile-calendar.png`、`en-mobile-image.png`。SEO 最终统计在 `/tmp/calendar-seo-completion-report.json` 与 `/tmp/calendar-seo-primary-verified-metrics.json`；这些临时文件可能随系统清理失效。
+- 需要新验证时，先检查 `package.json` scripts，再从 main 运行 `pnpm exec vitest run src/lib/calendar-creator src/components/calendar-creator src/app/calendar-creator-routes.test.tsx src/app/sitemap.test.ts src/lib/content-site-navigation.test.ts src/components/armor-creator/circular-testimonials.test.tsx src/components/family-tree src/components/periodic-table-creator src/components/scroll-creator src/components/solar-system-creator src/components/tarot-cards src/components/constellation-map-creator`；随后按变更范围运行 `pnpm typecheck`、ESLint 和 `pnpm exec vinext build`。这些是后续可运行命令，不表示本次已执行。
+- 当前保留的主仓预览入口：`http://localhost:40001/zh/calendar-creator` 与 `http://localhost:40001/calendar-creator`。用本地 ego-browser 新 TaskSpace，在桌面与手机分别创建默认历法，验证 120 天、单月展示、上/下月和跳月、内容自适应格子、单日笔记、一个手动图标、自动月相/灾害叠加、多选批量图标、最近一次图标撤销、返回设置与重新生成、存档保存/读取及未保存修改处理；再逐组切换全部十二案例、点击三层图片并 Esc 关闭，展开全部十二 FAQ。
+- 打印需单独检查打印视图或浏览器打印预览，确认所有月份、星期、图标和笔记及隐藏编辑按钮；源码测试或普通页面截图不能单独证明原生打印结果。40106 是已结束的工作树预览，不能继续将其作为可用验收地址，也不要为本文启动新服务。
+
 ## 交接单 · 2026-10-07 13:24 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
