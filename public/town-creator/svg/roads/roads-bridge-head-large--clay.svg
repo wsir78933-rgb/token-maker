@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img">
+    <title>Large Bridgehead</title><defs>
+      <pattern id="roof" width="16" height="12" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="12" fill="#b97858" stroke="none" stroke-width="0"/><path d="M-4 2 Q0 8 4 2 Q8 8 12 2 Q16 8 20 2 M-4 8 Q0 14 4 8 Q8 14 12 8 Q16 14 20 8" fill="none" stroke="#91573e" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"/><line x1="0" y1="0.7" x2="16" y2="0.7" stroke="#d49b74" stroke-width="0.7" stroke-linecap="round"/>
+      </pattern>
+      <pattern id="wall" width="16" height="10" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="10" fill="#d6b48a" stroke="none" stroke-width="0"/>
+        <path d="M0 5 H16 M8 0 V5 M3 5 V10 M13 5 V10" fill="none" stroke="#91573e" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+      </pattern>
+      <pattern id="timber" width="16" height="8" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="8" fill="#a08058" stroke="none" stroke-width="0"/>
+        <path d="M0 4 H16 M0 7 Q8 5 16 7" fill="none" stroke="#6d573d" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </pattern>
+      <pattern id="stoneground" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="16" fill="#b1b0a0" stroke="none" stroke-width="0"/>
+        <path d="M0 8 H16 M8 0 V8 M3 8 V16 M13 8 V16" fill="none" stroke="#8c8e7b" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </pattern>
+      <pattern id="soil" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="16" fill="#bfa57b" stroke="none" stroke-width="0"/>
+        <path d="M2 4 l3 -1 M10 11 l3 1 M1 14 h2" fill="none" stroke="#9c835e" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+      </pattern>
+      <pattern id="sandground" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="16" fill="#ddc894" stroke="none" stroke-width="0"/>
+        <path d="M0 5 Q4 3 8 5 T16 5 M0 13 Q4 11 8 13 T16 13" fill="none" stroke="#bfa56d" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+      </pattern>
+      <pattern id="water" width="32" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="32" height="16" fill="#85aeb0" stroke="none" stroke-width="0"/>
+        <path d="M-8 4 Q-4 2 0 4 T8 4 T16 4 T24 4 T32 4 T40 4 M-8 12 Q-4 10 0 12 T8 12 T16 12 T24 12 T32 12 T40 12" fill="none" stroke="#bfd0bd" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+      </pattern>
+    </defs>
+    <g stroke-linejoin="round" stroke-linecap="round"><rect x="0" y="48" width="128" height="32" fill="url(#wall)" stroke="none" stroke-width="0"/><rect x="32.0" y="36" width="8" height="56" fill="url(#roof)" stroke="#514b3b" stroke-width="1.0"/><rect x="88.0" y="36" width="8" height="56" fill="url(#roof)" stroke="#514b3b" stroke-width="1.0"/><line x1="0" y1="50" x2="32.0" y2="50" stroke="#d49b74" stroke-width="0.7" stroke-linecap="round" opacity="0.7"/><line x1="96.0" y1="50" x2="128" y2="50" stroke="#d49b74" stroke-width="0.7" stroke-linecap="round" opacity="0.7"/></g></svg>

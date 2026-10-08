@@ -17,6 +17,7 @@ const topbarModel = {
     { href: '/armor-creator', title: 'Armor Creator' },
     { href: '/army-formation-creator', title: 'Army Formation Creator' },
     { href: '/scroll-creator', title: 'Scroll Creator' },
+    { href: '/town-creator', title: 'Town Creator' },
   ],
   featureMenuLabel: 'Blog',
   featureMenuHref: '/blog',
@@ -176,7 +177,7 @@ describe('ContentSiteTopbar', () => {
     expect(siteNavItem.getAttribute('data-open')).toBe('true');
   });
 
-  it('renders all four free tools with their existing paths', () => {
+  it('renders the free tools with their existing paths', () => {
     renderContentSiteTopbar();
 
     expect(screen.getByRole('menuitem', { name: 'Token Maker' }).getAttribute('href')).toBe('/');
@@ -189,6 +190,9 @@ describe('ContentSiteTopbar', () => {
     );
     expect(screen.getByRole('menuitem', { name: 'Scroll Creator' }).getAttribute('href')).toBe(
       '/scroll-creator',
+    );
+    expect(screen.getByRole('menuitem', { name: 'Town Creator' }).getAttribute('href')).toBe(
+      '/town-creator',
     );
   });
 

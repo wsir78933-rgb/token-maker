@@ -68,6 +68,7 @@ describe('content site topbar model', () => {
       { href: '/periodic-table-creator', title: 'Periodic Table Creator' },
       { href: '/tarot-cards', title: getTarotCopy('en').navigationTitle },
       { href: '/scroll-creator', title: 'Scroll Creator' },
+      { href: '/town-creator', title: 'Town Creator' },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -114,6 +115,7 @@ describe('content site topbar model', () => {
       { href: '/zh/periodic-table-creator', title: '元素周期表制作器' },
       { href: '/zh/tarot-cards', title: getTarotCopy('zh').navigationTitle },
       { href: '/zh/scroll-creator', title: '卷轴制作器' },
+      { href: '/zh/town-creator', title: '城镇创建器' },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -210,6 +212,10 @@ describe('content site topbar model', () => {
       '/zh/scroll-creator/saved',
     );
     const scrollCreatorSibling = readTopbar('en', '/scroll-creator-extra', '/zh');
+    const townCreator = readTopbar('en', '/town-creator', '/zh/town-creator');
+    const chineseTownCreator = readTopbar('zh', '/zh/town-creator', '/town-creator');
+    const townCreatorNested = readTopbar('en', '/town-creator/saved', '/zh/town-creator/saved');
+    const townCreatorSibling = readTopbar('en', '/town-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
     expect(chineseEditor.freeToolsMenuIsActive).toBe(true);
@@ -250,6 +256,10 @@ describe('content site topbar model', () => {
     expect(scrollCreator.freeToolsMenuIsActive).toBe(true);
     expect(scrollCreatorNested.freeToolsMenuIsActive).toBe(true);
     expect(scrollCreatorSibling.freeToolsMenuIsActive).toBe(false);
+    expect(townCreator.freeToolsMenuIsActive).toBe(true);
+    expect(chineseTownCreator.freeToolsMenuIsActive).toBe(true);
+    expect(townCreatorNested.freeToolsMenuIsActive).toBe(true);
+    expect(townCreatorSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
   });

@@ -1,0 +1,9 @@
+.editorSection {
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  section.editorSection[data-in-view='false'] {
+    visibility: hidden;
+  }
+}

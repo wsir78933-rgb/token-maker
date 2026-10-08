@@ -1,0 +1,4 @@
+.caseStudies [data-part='testimonial-image-frame'] img {
+  /* Town map previews must remain fully visible inside the landscape frame. */
+  object-fit: contain !important;
+}

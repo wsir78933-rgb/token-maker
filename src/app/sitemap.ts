@@ -25,6 +25,7 @@ const FAMILY_TREE_CREATOR_LAST_MODIFIED = '2026-10-06';
 const SOLAR_SYSTEM_CREATOR_LAST_MODIFIED = '2026-10-06';
 const PERIODIC_TABLE_CREATOR_LAST_MODIFIED = '2026-10-06';
 const TAROT_CARDS_LAST_MODIFIED = '2026-10-06';
+const TOWN_CREATOR_LAST_MODIFIED = '2026-10-07';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
 const TEMPLATE_LAST_MODIFIED = '2026-05-06';
 
@@ -115,6 +116,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/emblem-creator',
     '/language-generator',
     '/scroll-creator',
+    '/town-creator',
     '/family-tree-creator',
     '/solar-system-creator',
     '/periodic-table-creator',
@@ -144,6 +146,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(LANGUAGE_GENERATOR_LAST_MODIFIED)
             : path === '/scroll-creator'
             ? new Date(SCROLL_CREATOR_LAST_MODIFIED)
+            : path === '/town-creator'
+            ? new Date(TOWN_CREATOR_LAST_MODIFIED)
             : path === '/family-tree-creator'
             ? new Date(FAMILY_TREE_CREATOR_LAST_MODIFIED)
             : path === '/solar-system-creator'

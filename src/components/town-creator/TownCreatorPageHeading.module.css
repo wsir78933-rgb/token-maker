@@ -1,0 +1,149 @@
+.hero {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 1rem 6rem;
+  color: var(--foreground);
+  text-align: center;
+}
+
+.inner {
+  display: flex;
+  width: 100%;
+  max-width: 56rem;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.heading {
+  margin: 0 0 1.5rem;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.emphasis {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: normal;
+  margin-bottom: 2rem;
+}
+
+.zh .emphasis {
+  white-space: nowrap;
+  font-size: clamp(1.75rem, 10vw, 3rem);
+  line-height: 1.25;
+}
+
+.underline {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  margin-top: -0.3125rem;
+  pointer-events: none;
+}
+
+.description {
+  max-width: 42rem;
+  margin: 0 0 2.25rem;
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  line-height: 1.375;
+  text-wrap: pretty;
+}
+
+.action {
+  display: inline-flex;
+  min-height: 4.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 2rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  cursor: pointer;
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 3px;
+}
+
+@keyframes town-creator-hero-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade {
+  animation: town-creator-hero-fade-in-up 0.6s ease-out both;
+}
+
+.delayedDescription {
+  animation-delay: 0.2s;
+}
+
+.delayedAction {
+  animation-delay: 0.4s;
+}
+
+@media (min-width: 640px) {
+  .heading {
+    font-size: 3rem;
+  }
+
+  .emphasis,
+  .zh .emphasis {
+    font-size: 3.75rem;
+    line-height: 1;
+    margin-bottom: 3rem;
+  }
+
+  .hero {
+    padding-top: 10rem;
+    padding-bottom: 8rem;
+  }
+
+  .description {
+    font-size: 1.125rem;
+    line-height: 1.375;
+  }
+}
+
+@media (min-width: 768px) {
+  .heading {
+    font-size: 3.75rem;
+  }
+
+  .emphasis,
+  .zh .emphasis {
+    font-size: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade {
+    animation: none;
+  }
+}

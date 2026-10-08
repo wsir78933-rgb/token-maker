@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img">
+    <title>Library</title><defs>
+      <pattern id="roof" width="16" height="12" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="12" fill="#889493" stroke="none" stroke-width="0"/><path d="M0 6 H16 M0 12 H16 M8 0 V6 M3 6 V12 M13 6 V12" fill="none" stroke="#637573" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/><line x1="0" y1="1" x2="16" y2="1" stroke="#b3bfba" stroke-width="0.7" stroke-linecap="round"/>
+      </pattern>
+      <pattern id="wall" width="16" height="10" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="10" fill="#b8c0b3" stroke="none" stroke-width="0"/>
+        <path d="M0 5 H16 M8 0 V5 M3 5 V10 M13 5 V10" fill="none" stroke="#637573" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+      </pattern>
+      <pattern id="timber" width="16" height="8" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="8" fill="#a08058" stroke="none" stroke-width="0"/>
+        <path d="M0 4 H16 M0 7 Q8 5 16 7" fill="none" stroke="#6d573d" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </pattern>
+      <pattern id="stoneground" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="16" fill="#b1b0a0" stroke="none" stroke-width="0"/>
+        <path d="M0 8 H16 M8 0 V8 M3 8 V16 M13 8 V16" fill="none" stroke="#8c8e7b" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </pattern>
+      <pattern id="soil" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="16" fill="#bfa57b" stroke="none" stroke-width="0"/>
+        <path d="M2 4 l3 -1 M10 11 l3 1 M1 14 h2" fill="none" stroke="#9c835e" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+      </pattern>
+      <pattern id="sandground" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="16" fill="#ddc894" stroke="none" stroke-width="0"/>
+        <path d="M0 5 Q4 3 8 5 T16 5 M0 13 Q4 11 8 13 T16 13" fill="none" stroke="#bfa56d" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+      </pattern>
+      <pattern id="water" width="32" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="32" height="16" fill="#85aeb0" stroke="none" stroke-width="0"/>
+        <path d="M-8 4 Q-4 2 0 4 T8 4 T16 4 T24 4 T32 4 T40 4 M-8 12 Q-4 10 0 12 T8 12 T16 12 T24 12 T32 12 T40 12" fill="none" stroke="#bfd0bd" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+      </pattern>
+    </defs>
+    <g stroke-linejoin="round" stroke-linecap="round"><rect x="17" y="25" width="94" height="58" fill="url(#wall)" stroke="#514b3b" stroke-width="1.35" rx="1"/><rect x="19" y="27" width="90" height="54" fill="url(#roof)" stroke="#514b3b" stroke-width="1.5" rx="0.8"/><line x1="19" y1="27" x2="32.5" y2="54.0" stroke="#514b3b" stroke-width="1.1" stroke-linecap="round"/><line x1="19" y1="81" x2="32.5" y2="54.0" stroke="#514b3b" stroke-width="1.1" stroke-linecap="round"/><line x1="109" y1="27" x2="95.5" y2="54.0" stroke="#514b3b" stroke-width="1.1" stroke-linecap="round"/><line x1="109" y1="81" x2="95.5" y2="54.0" stroke="#514b3b" stroke-width="1.1" stroke-linecap="round"/><line x1="32.5" y1="54.0" x2="95.5" y2="54.0" stroke="#514b3b" stroke-width="2.5" stroke-linecap="round"/><rect x="81.1" y="35.64" width="7" height="8" fill="url(#wall)" stroke="#514b3b" stroke-width="1.0"/><rect x="82.6" y="37.14" width="4" height="5" fill="#645d4d" stroke="#514b3b" stroke-width="0.7"/><rect x="17" y="77" width="32" height="29" fill="url(#wall)" stroke="#514b3b" stroke-width="1.35" rx="1"/><rect x="19" y="79" width="28" height="25" fill="url(#roof)" stroke="#514b3b" stroke-width="1.5" rx="0.8"/><rect x="20" y="80" width="26" height="11.5" fill="#fff" stroke="none" stroke-width="0" opacity="0.1"/><line x1="19" y1="91.5" x2="47" y2="91.5" stroke="#514b3b" stroke-width="2.8" stroke-linecap="round"/><line x1="21" y1="90.0" x2="45" y2="90.0" stroke="#ead7ad" stroke-width="0.65" stroke-linecap="round" opacity="0.55"/><rect x="45" y="77" width="38" height="29" fill="url(#wall)" stroke="#514b3b" stroke-width="1.35" rx="1"/><rect x="47" y="79" width="34" height="25" fill="url(#roof)" stroke="#514b3b" stroke-width="1.5" rx="0.8"/><rect x="48" y="80" width="32" height="11.5" fill="#fff" stroke="none" stroke-width="0" opacity="0.1"/><line x1="47" y1="91.5" x2="81" y2="91.5" stroke="#514b3b" stroke-width="2.8" stroke-linecap="round"/><line x1="49" y1="90.0" x2="79" y2="90.0" stroke="#ead7ad" stroke-width="0.65" stroke-linecap="round" opacity="0.55"/><rect x="79" y="77" width="32" height="29" fill="url(#wall)" stroke="#514b3b" stroke-width="1.35" rx="1"/><rect x="81" y="79" width="28" height="25" fill="url(#roof)" stroke="#514b3b" stroke-width="1.5" rx="0.8"/><rect x="82" y="80" width="26" height="11.5" fill="#fff" stroke="none" stroke-width="0" opacity="0.1"/><line x1="81" y1="91.5" x2="109" y2="91.5" stroke="#514b3b" stroke-width="2.8" stroke-linecap="round"/><line x1="83" y1="90.0" x2="107" y2="90.0" stroke="#ead7ad" stroke-width="0.65" stroke-linecap="round" opacity="0.55"/><line x1="27" y1="53" x2="101" y2="53" stroke="#514b3b" stroke-width="1.0" stroke-linecap="round"/><line x1="27" y1="68" x2="101" y2="68" stroke="#514b3b" stroke-width="0.8" stroke-linecap="round"/></g></svg>

@@ -7,6 +7,7 @@ import { getPeriodicTableCopy } from '@/lib/periodic-table-creator/copy';
 import { getScrollCreatorCopy } from '@/lib/scroll-creator/copy';
 import { getSolarSystemCopy } from '@/lib/solar-system-creator/copy';
 import { getTarotCopy } from '@/lib/tarot-cards/copy';
+import { getTownCreatorCopy } from '@/lib/town-creator/copy';
 import { getWeaponCreatorCopy } from '@/lib/weapon-creator/copy';
 import { getBlogCategories, getBlogCategoryPath, type BlogCategoryCopy } from '@/lib/blog-content';
 import { getHomeCopy, getNavLabels, type NavLabels } from '@/lib/site-content';
@@ -22,6 +23,7 @@ const PERIODIC_TABLE_CREATOR_PATH = '/periodic-table-creator';
 const SCROLL_CREATOR_PATH = '/scroll-creator';
 const SOLAR_SYSTEM_CREATOR_PATH = '/solar-system-creator';
 const TAROT_CARDS_PATH = '/tarot-cards';
+const TOWN_CREATOR_PATH = '/town-creator';
 const WEAPON_CREATOR_PATH = '/weapon-creator';
 const FREE_TOOLS_PATHS = [
   '/',
@@ -37,6 +39,7 @@ const FREE_TOOLS_PATHS = [
   PERIODIC_TABLE_CREATOR_PATH,
   TAROT_CARDS_PATH,
   SCROLL_CREATOR_PATH,
+  TOWN_CREATOR_PATH,
 ] as const;
 
 const FREE_TOOLS_MENU_COPY = {
@@ -238,6 +241,11 @@ function buildContentSiteFreeToolFeatures(
       locale,
       SCROLL_CREATOR_PATH,
       getScrollCreatorCopy(locale).navTitle,
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
+      TOWN_CREATOR_PATH,
+      getTownCreatorCopy(locale).navTitle,
     ),
   ];
 }

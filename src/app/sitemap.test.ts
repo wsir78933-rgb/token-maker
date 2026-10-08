@@ -74,6 +74,25 @@ describe('blog sitemap entries', () => {
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 
+  test('includes bilingual town creator routes with alternates', () => {
+    const englishEntry = findSitemapEntry('https://www.tokenmaker.one/town-creator');
+    const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/town-creator');
+    const expectedAlternates = {
+      'x-default': 'https://www.tokenmaker.one/town-creator',
+      'en-US': 'https://www.tokenmaker.one/town-creator',
+      'zh-CN': 'https://www.tokenmaker.one/zh/town-creator',
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-10-07'));
+    expect(englishEntry.changeFrequency).toBe('weekly');
+    expect(englishEntry.priority).toBe(0.8);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-10-07'));
+    expect(chineseEntry.changeFrequency).toBe('weekly');
+    expect(chineseEntry.priority).toBe(0.8);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes bilingual dnd kobold routes with alternates', () => {
     const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_KOBOLD_SLUG}`);
     const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_KOBOLD_SLUG}`);

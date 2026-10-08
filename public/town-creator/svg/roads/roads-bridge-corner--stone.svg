@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img">
+    <title>Bridge Corner</title><defs>
+      <pattern id="roof" width="16" height="12" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="12" fill="#889493" stroke="none" stroke-width="0"/><path d="M0 6 H16 M0 12 H16 M8 0 V6 M3 6 V12 M13 6 V12" fill="none" stroke="#637573" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/><line x1="0" y1="1" x2="16" y2="1" stroke="#b3bfba" stroke-width="0.7" stroke-linecap="round"/>
+      </pattern>
+      <pattern id="wall" width="16" height="10" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="10" fill="#b8c0b3" stroke="none" stroke-width="0"/>
+        <path d="M0 5 H16 M8 0 V5 M3 5 V10 M13 5 V10" fill="none" stroke="#637573" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+      </pattern>
+      <pattern id="timber" width="16" height="8" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="8" fill="#a08058" stroke="none" stroke-width="0"/>
+        <path d="M0 4 H16 M0 7 Q8 5 16 7" fill="none" stroke="#6d573d" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </pattern>
+      <pattern id="stoneground" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="16" fill="#b1b0a0" stroke="none" stroke-width="0"/>
+        <path d="M0 8 H16 M8 0 V8 M3 8 V16 M13 8 V16" fill="none" stroke="#8c8e7b" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </pattern>
+      <pattern id="soil" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="16" fill="#bfa57b" stroke="none" stroke-width="0"/>
+        <path d="M2 4 l3 -1 M10 11 l3 1 M1 14 h2" fill="none" stroke="#9c835e" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+      </pattern>
+      <pattern id="sandground" width="16" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="16" height="16" fill="#ddc894" stroke="none" stroke-width="0"/>
+        <path d="M0 5 Q4 3 8 5 T16 5 M0 13 Q4 11 8 13 T16 13" fill="none" stroke="#bfa56d" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+      </pattern>
+      <pattern id="water" width="32" height="16" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="32" height="16" fill="#85aeb0" stroke="none" stroke-width="0"/>
+        <path d="M-8 4 Q-4 2 0 4 T8 4 T16 4 T24 4 T32 4 T40 4 M-8 12 Q-4 10 0 12 T8 12 T16 12 T24 12 T32 12 T40 12" fill="none" stroke="#bfd0bd" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+      </pattern>
+    </defs>
+    <g stroke-linejoin="round" stroke-linecap="round"><path d="M0 64 A64 64 0 0 0 64 0" fill="none" stroke="url(#wall)" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/><path d="M0 50 A50 50 0 0 0 50 0" fill="none" stroke="#b3bfba" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/><path d="M0 78 A78 78 0 0 0 78 0" fill="none" stroke="#637573" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.68"/><line x1="9.979761159252455" y1="46.951084835222666" x2="16.632935265420755" y2="78.25180805870444" stroke="#637573" stroke-width="0.8" stroke-linecap="round" opacity="0.72"/><line x1="24.000000000000007" y1="41.569219381653056" x2="40.00000000000001" y2="69.28203230275508" stroke="#637573" stroke-width="0.8" stroke-linecap="round" opacity="0.72"/><line x1="33.941125496954285" y1="33.94112549695428" x2="56.568542494923804" y2="56.5685424949238" stroke="#637573" stroke-width="0.8" stroke-linecap="round" opacity="0.72"/><line x1="41.569219381653056" y1="23.999999999999996" x2="69.2820323027551" y2="39.99999999999999" stroke="#637573" stroke-width="0.8" stroke-linecap="round" opacity="0.72"/><line x1="46.95108483522267" y1="9.979761159252448" x2="78.25180805870446" y2="16.63293526542075" stroke="#637573" stroke-width="0.8" stroke-linecap="round" opacity="0.72"/></g></svg>

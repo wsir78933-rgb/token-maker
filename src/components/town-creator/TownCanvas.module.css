@@ -1,0 +1,155 @@
+.canvas {
+  flex: 0 0 auto;
+  box-sizing: content-box;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid rgba(81, 75, 59, 0.18);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #e8dfd1;
+}
+
+.viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background:
+    linear-gradient(45deg, rgba(81, 75, 59, 0.035) 25%, transparent 25%, transparent 75%, rgba(81, 75, 59, 0.035) 75%),
+    linear-gradient(45deg, rgba(81, 75, 59, 0.035) 25%, transparent 25%, transparent 75%, rgba(81, 75, 59, 0.035) 75%);
+  background-position: 0 0, 8px 8px;
+  background-size: 16px 16px;
+}
+
+.stageFrame {
+  position: absolute;
+  inset: 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+.stage {
+  position: relative;
+  flex: 0 0 auto;
+  --town-display-scale: 1;
+  --town-display-inverse-scale: 1;
+  transform-origin: 0 0;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+
+.stage:focus-visible {
+  box-shadow: 0 0 0 3px rgba(159, 119, 80, 0.45);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.scene :global(svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.scene :global([data-town-object-id]) {
+  cursor: grab;
+}
+
+.scene :global([data-town-object-id]:active) {
+  cursor: grabbing;
+}
+
+.selection {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #8c6b45;
+  outline: 1px dashed rgba(255, 252, 246, 0.95);
+  outline-offset: -4px;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.selectionEnabled {
+  border-color: #754b2b;
+}
+
+.selectionDisabled {
+  border-style: dashed;
+  opacity: 0.78;
+}
+
+.handle {
+  position: absolute;
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: -22px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: nwse-resize;
+  transform: scale(var(--town-display-inverse-scale, 1));
+}
+
+.handle::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 2px solid #754b2b;
+  border-radius: 2px;
+  background: #fffaf2;
+}
+
+.handle:focus-visible {
+  outline: 2px solid #2f6f72;
+  outline-offset: 1px;
+}
+
+.selectionDisabled .handle {
+  pointer-events: none;
+  cursor: default;
+}
+
+.handle-nw,
+.handle-se {
+  cursor: nwse-resize;
+}
+
+.handle-ne,
+.handle-sw {
+  cursor: nesw-resize;
+}
+
+.handle-n,
+.handle-s {
+  cursor: ns-resize;
+}
+
+.handle-e,
+.handle-w {
+  cursor: ew-resize;
+}
+
+@media (max-width: 720px) {
+  .canvas {
+    border-radius: 12px;
+  }
+
+  .stageFrame {
+    inset: 16px;
+  }
+}
