@@ -1,0 +1,121 @@
+.showcaseSection {
+  width: 100%;
+  padding: clamp(3.5rem, 8vw, 7rem) 1.25rem;
+  border-block: 1px solid var(--site-border-soft);
+  background: color-mix(in oklab, var(--site-panel-deep) 45%, transparent);
+  color: var(--site-ink);
+}
+
+.showcaseInner {
+  width: min(100%, 64rem);
+  margin: 0 auto;
+}
+
+.showcaseHeader {
+  max-width: 48rem;
+}
+
+.showcaseTitle {
+  margin: 0;
+  color: var(--site-ink-strong);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.showcaseDescription {
+  max-width: 44rem;
+  margin: 1rem 0 0;
+  color: var(--site-ink);
+  font-size: 1rem;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.showcaseGroups {
+  display: grid;
+  gap: clamp(3rem, 7vw, 5.5rem);
+  margin-top: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.showcaseGroup {
+  min-width: 0;
+  padding: clamp(1.25rem, 3vw, 2rem) 0;
+  border-top: 1px solid var(--site-border-soft);
+}
+
+.showcaseGroupHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.showcaseGroupTitle {
+  margin: 0;
+  color: var(--site-ink-strong);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.showcaseCarousel {
+  min-width: 0;
+}
+
+.lightboxDialog {
+  width: min(72rem, calc(100vw - 2rem));
+  max-width: min(72rem, calc(100vw - 2rem));
+  max-height: 92svh;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: var(--site-panel);
+  color: var(--site-ink-strong);
+}
+
+.lightboxTitle {
+  padding-right: 3rem;
+  color: var(--site-ink-strong);
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.lightboxFrame {
+  position: relative;
+  width: 100%;
+  max-height: calc(92svh - 7rem);
+  margin-top: 1.25rem;
+  overflow: hidden;
+  aspect-ratio: 2782 / 1668;
+  border: 1px solid var(--site-border-soft);
+  background: var(--site-panel-deep);
+}
+
+.lightboxImage {
+  object-fit: contain;
+}
+
+@media (max-width: 760px) {
+  .showcaseSection {
+    padding-inline: 1rem;
+  }
+
+  .showcaseGroupHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .lightboxDialog {
+    width: calc(100vw - 1rem);
+    max-width: calc(100vw - 1rem);
+    padding: 1rem;
+  }
+
+  .lightboxFrame {
+    max-height: calc(92svh - 6rem);
+    margin-top: 1rem;
+  }
+}

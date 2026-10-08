@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { getBlogCategories } from '@/lib/blog-content';
+import { getCalendarCreatorCopy } from '@/lib/calendar-creator/copy';
 import {
   assertContentSiteTopbarModel,
   getContentSiteTopbarModel,
@@ -62,6 +63,7 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/calendar-creator', title: getCalendarCreatorCopy('en').navigationTitle },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -103,6 +105,7 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/calendar-creator', title: getCalendarCreatorCopy('zh').navigationTitle },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -152,6 +155,10 @@ describe('content site topbar model', () => {
     );
     const languageGeneratorSibling = readTopbar('en', '/language-generator-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
+    const calendar = readTopbar('en', '/calendar-creator', '/zh/calendar-creator');
+    const chineseCalendar = readTopbar('zh', '/zh/calendar-creator', '/calendar-creator');
+    const calendarNested = readTopbar('en', '/calendar-creator/saved', '/zh/calendar-creator/saved');
+    const calendarSibling = readTopbar('en', '/calendar-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
     expect(chineseEditor.freeToolsMenuIsActive).toBe(true);
@@ -173,6 +180,10 @@ describe('content site topbar model', () => {
     expect(languageGeneratorNested.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
+    expect(calendar.freeToolsMenuIsActive).toBe(true);
+    expect(chineseCalendar.freeToolsMenuIsActive).toBe(true);
+    expect(calendarNested.freeToolsMenuIsActive).toBe(true);
+    expect(calendarSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
   });

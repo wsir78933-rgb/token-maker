@@ -95,6 +95,7 @@ type ImageLayerRole = keyof typeof IMAGE_LAYER_ROLE_STYLES;
 
 const PREVIOUS_LABEL = 'Previous armor case';
 const NEXT_LABEL = 'Next armor case';
+const OPEN_IMAGE_LABEL = 'Open image';
 
 function renderedCarousel(testimonials: readonly CircularTestimonial[] = TESTIMONIALS) {
   return render(
@@ -238,7 +239,10 @@ describe('CircularTestimonials', () => {
     expect(nextButton.getAttribute('aria-label')).toBe(NEXT_LABEL);
     expect(carousel.getAttribute('aria-label')).toBe('Armor cases');
     expect(previousButton.className).toContain('focus-visible:outline');
-    expect(carousel.querySelector('[data-part="layout"]')?.className).toContain('md:flex-row');
+    const layout = carousel.querySelector('[data-part="layout"]');
+    expect(layout?.className).toContain('gap-8 md:gap-10');
+    expect(layout?.className).toContain('md:flex-row');
+    expect(carousel.querySelectorAll('[data-part="active-testimonial-image"] button, [data-part="testimonial-image-layer"] button')).toHaveLength(0);
     expect(activeQuoteText(carousel)).toBe('First armor case quote.');
 
     fireEvent.click(nextButton);
@@ -249,6 +253,146 @@ describe('CircularTestimonials', () => {
 
     fireEvent.click(previousButton);
     await waitFor(() => expect(activeQuoteText(carousel)).toBe('Third armor case quote.'));
+  });
+
+  it('supports relaxed image and text spacing without changing the layout direction', () => {
+    const { container } = render(
+      <CircularTestimonials
+        testimonials={TESTIMONIALS}
+        ariaLabel="Relaxed armor cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+        autoplay={false}
+        imageTextSpacing="relaxed"
+      />,
+    );
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    const layout = carousel.querySelector('[data-part="layout"]');
+    expect(layout?.className).toContain('gap-12 md:gap-24');
+    expect(layout?.className).toContain('flex-col md:flex-row');
+  });
+
+  it('rejects an invalid image and text spacing value with the received value', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid image text spacing carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageTextSpacing={'wide' as never}
+        />,
+      ),
+    ).toThrow(
+      'CircularTestimonials imageTextSpacing must be "default" or "relaxed" or undefined. Received "wide".',
+    );
+  });
+
+  it('requires an image click handler and label to be provided together', () => {
+    const onImageClick = vi.fn();
+
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Missing image label carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          onImageClick={onImageClick}
+        />,
+      ),
+    ).toThrow(/onImageClick and openImageLabel must be provided together/);
+
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Missing image handler carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          openImageLabel={OPEN_IMAGE_LABEL}
+        />,
+      ),
+    ).toThrow(/onImageClick and openImageLabel must be provided together.*onImageClick=undefined/);
+  });
+
+  it('provides accessible image buttons for visible layers and pauses autoplay', async () => {
+    vi.useFakeTimers();
+    const setIntervalSpy = vi.spyOn(window, 'setInterval');
+    const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
+    const onImageClick = vi.fn();
+
+    try {
+      const { container, unmount } = render(
+        <CircularTestimonials
+          testimonials={IMAGE_POSITION_TESTIMONIALS}
+          ariaLabel="Openable armor cases"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          onImageClick={onImageClick}
+          openImageLabel={OPEN_IMAGE_LABEL}
+        />,
+      );
+      const [carousel] = carouselRegions(container);
+      if (!carousel) {
+        throw new Error('CircularTestimonials test expected one carousel region.');
+      }
+
+      const activeImageButton = carousel.querySelector<HTMLButtonElement>('[data-index="0"] button');
+      const previousImageButton = carousel.querySelector<HTMLButtonElement>('[data-index="3"] button');
+      const hiddenImageButton = carousel.querySelector<HTMLButtonElement>('[data-index="2"] button');
+      if (!activeImageButton || !previousImageButton || !hiddenImageButton) {
+        throw new Error('CircularTestimonials test expected image buttons for visible and hidden layers.');
+      }
+
+      expect(activeImageButton.tagName).toBe('BUTTON');
+      expect(activeImageButton.type).toBe('button');
+      expect(activeImageButton.getAttribute('aria-label')).toBe(`${OPEN_IMAGE_LABEL}: First character`);
+      expect(previousImageButton.getAttribute('aria-label')).toBe(`${OPEN_IMAGE_LABEL}: Fourth character`);
+      expect(activeImageButton.tabIndex).toBe(0);
+      expect(previousImageButton.tabIndex).toBe(0);
+      expect(hiddenImageButton.disabled).toBe(true);
+      expect(hiddenImageButton.tabIndex).toBe(-1);
+      expect(hiddenImageButton.getAttribute('aria-hidden')).toBe('true');
+      expect(within(carousel).queryByRole('button', { name: `${OPEN_IMAGE_LABEL}: Third character` })).toBeNull();
+
+      fireEvent.click(previousImageButton);
+      expect(onImageClick).toHaveBeenCalledWith(
+        expect.objectContaining({ src: IMAGE_POSITION_TESTIMONIALS[3]?.src }),
+        previousImageButton,
+      );
+
+      fireEvent.click(activeImageButton);
+      expect(onImageClick).toHaveBeenCalledWith(
+        expect.objectContaining({ src: IMAGE_POSITION_TESTIMONIALS[0]?.src }),
+        activeImageButton,
+      );
+
+      fireEvent.click(hiddenImageButton);
+      expect(onImageClick).toHaveBeenCalledTimes(2);
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5000);
+      });
+      expect(activeQuoteText(carousel)).toBe('First armor case quote.');
+      expect(setIntervalSpy.mock.calls.some(([, intervalMilliseconds]) => intervalMilliseconds === 5000)).toBe(true);
+      expect(clearIntervalSpy).toHaveBeenCalled();
+
+      unmount();
+    } finally {
+      cleanup();
+      vi.clearAllTimers();
+      setIntervalSpy.mockRestore();
+      clearIntervalSpy.mockRestore();
+      vi.useRealTimers();
+    }
   });
 
   it.each([
@@ -423,6 +567,53 @@ describe('CircularTestimonials', () => {
     );
     expect(within(carousel).getByRole('button', { name: PREVIOUS_LABEL })).toBeTruthy();
     expect(within(carousel).getByRole('button', { name: NEXT_LABEL })).toBeTruthy();
+  });
+
+  it('默认保留肖像图框并支持横向比例完整显示图片', () => {
+    const imageAspectRatio = 2782 / 1668;
+    const { container } = render(
+      <>
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Portrait armor cases"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+        />
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Landscape calendar cases"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          clipImageStack={false}
+          imageAspectRatio={imageAspectRatio}
+        />
+      </>,
+    );
+    const [portraitCarousel, landscapeCarousel] = carouselRegions(container);
+    if (!portraitCarousel || !landscapeCarousel) {
+      throw new Error('CircularTestimonials test expected portrait and landscape carousel regions.');
+    }
+
+    const portraitImageLayer = testimonialImageLayer(portraitCarousel, 0);
+    expect(portraitImageLayer.className).toContain('h-[min(18rem,72cqw)]');
+    expect(portraitImageLayer.className).toContain('w-[min(15rem,58cqw)]');
+    expect(portraitImageLayer.style.aspectRatio).toBe('');
+    expect(within(portraitCarousel).getByRole('img', { name: 'First character' }).style.objectFit).toBe('');
+
+    const landscapeImageLayer = testimonialImageLayer(landscapeCarousel, 0);
+    expect(landscapeImageLayer.className).toContain('h-auto');
+    expect(landscapeImageLayer.className).toContain('w-[min(28rem,78cqw)]');
+    expect(landscapeCarousel.querySelector('[data-part="image-stage"]')?.getAttribute('style')).toContain(
+      'min-height',
+    );
+    expect(within(landscapeCarousel).getByRole('img', { name: 'First character' }).className).toContain(
+      'object-contain',
+    );
+    expect(within(landscapeCarousel).getByRole('img', { name: 'First character' }).style.objectFit).toBe(
+      'contain',
+    );
   });
 
   it('支持左右交替图文位置，且两个实例的切换状态互不影响', async () => {
@@ -663,6 +854,47 @@ describe('CircularTestimonials', () => {
         />,
       ),
     ).toThrow('CircularTestimonials clipImageStack must be a boolean. Received "false".');
+  });
+
+  it.each([
+    [0, '0'],
+    [-1, '-1'],
+    [Number.POSITIVE_INFINITY, 'Infinity'],
+    [Number.NaN, 'NaN'],
+    ['1', '"1"'],
+    [null, 'null'],
+  ] as const)('拒绝非法 imageAspectRatio %s 并报告收到的值', (invalidValue, receivedValue) => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid image ratio carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageAspectRatio={invalidValue as never}
+        />,
+      ),
+    ).toThrow(
+      `CircularTestimonials imageAspectRatio must be a positive finite number that produces a finite image frame height at 448px or undefined. Received ${receivedValue}.`,
+    );
+  });
+
+  it('拒绝最小正比例导致的无限图框高度并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Unbounded image ratio carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageAspectRatio={Number.MIN_VALUE}
+        />,
+      ),
+    ).toThrow(
+      'CircularTestimonials imageAspectRatio must be a positive finite number that produces a finite image frame height at 448px or undefined. Received 5e-324.',
+    );
   });
 
   it('保留英文空格、对中文分词并支持中英混合文案自然换行', () => {

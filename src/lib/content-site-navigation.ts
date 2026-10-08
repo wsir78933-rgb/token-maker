@@ -1,4 +1,5 @@
 import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
+import { getCalendarCreatorCopy } from '@/lib/calendar-creator/copy';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
@@ -9,6 +10,7 @@ import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } fr
 
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
+const CALENDAR_CREATOR_PATH = '/calendar-creator';
 const EMBLEM_CREATOR_PATH = '/emblem-creator';
 const LANGUAGE_GENERATOR_PATH = '/language-generator';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
@@ -22,6 +24,7 @@ const FREE_TOOLS_PATHS = [
   ARMY_FORMATION_CREATOR_PATH,
   EMBLEM_CREATOR_PATH,
   LANGUAGE_GENERATOR_PATH,
+  CALENDAR_CREATOR_PATH,
 ] as const;
 
 const FREE_TOOLS_MENU_COPY = {
@@ -202,6 +205,11 @@ function buildContentSiteFreeToolFeatures(
       locale,
       LANGUAGE_GENERATOR_PATH,
       getLanguageGeneratorCopy(locale).navigationTitle,
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
+      CALENDAR_CREATOR_PATH,
+      getCalendarCreatorCopy(locale).navigationTitle,
     ),
   ];
 }
