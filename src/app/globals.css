@@ -3083,6 +3083,12 @@
   cursor: text;
 }
 
+.tarot-cards-page :is(button, a[href], [role='button'], [role='tab'], [role='menuitem']):not(:disabled):not([aria-disabled='true']),
+[data-tarot-help-dialog] :is(button, a[href], [role='button'], [role='tab'], [role='menuitem']):not(:disabled):not([aria-disabled='true']),
+[data-tarot-details-mobile-dialog] :is(button, a[href], [role='button'], [role='tab'], [role='menuitem']):not(:disabled):not([aria-disabled='true']) {
+  cursor: pointer;
+}
+
 .emblem-creator-page [aria-busy='true'],
 .emblem-creator-page [inert],
 .emblem-creator-page [inert] button:not(:disabled),
@@ -3170,5 +3176,28 @@
 
   .coat-maker-seo-content .coat-maker-seo-comparison-competitor-cell {
     background: transparent;
+  }
+}
+
+@layer base {
+  .family-tree-creator-page :where(
+    button,
+    a[href],
+    select,
+    input[type='file']
+  ):not(:disabled):not([aria-disabled='true']):not([aria-disabled='true'] *):not([data-disabled]):not([data-disabled] *):not([inert]):not([inert] *):not([aria-busy='true']):not([aria-busy='true'] *) {
+    cursor: pointer;
+  }
+
+  .family-tree-creator-page :where(
+    label[for]:has(+ input[type='file']:not(:disabled):not([aria-disabled='true']):not([data-disabled]):not([inert]):not([aria-busy='true']))
+  ):not(:disabled):not([aria-disabled='true']):not([aria-disabled='true'] *):not([data-disabled]):not([data-disabled] *):not([inert]):not([inert] *):not([aria-busy='true']):not([aria-busy='true'] *) {
+    cursor: pointer;
+  }
+
+  .family-tree-creator-page :where(
+    input[type='file']
+  ):not(:disabled):not([aria-disabled='true']):not([aria-disabled='true'] *):not([data-disabled]):not([data-disabled] *):not([inert]):not([inert] *):not([aria-busy='true']):not([aria-busy='true'] *)::file-selector-button {
+    cursor: pointer;
   }
 }

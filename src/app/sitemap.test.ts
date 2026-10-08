@@ -55,6 +55,25 @@ function findSitemapEntry(url: string) {
 }
 
 describe('blog sitemap entries', () => {
+  test('includes bilingual scroll creator routes with alternates', () => {
+    const englishEntry = findSitemapEntry('https://www.tokenmaker.one/scroll-creator');
+    const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/scroll-creator');
+    const expectedAlternates = {
+      'x-default': 'https://www.tokenmaker.one/scroll-creator',
+      'en-US': 'https://www.tokenmaker.one/scroll-creator',
+      'zh-CN': 'https://www.tokenmaker.one/zh/scroll-creator',
+    };
+
+    expect(englishEntry.lastModified).toEqual(new Date('2026-10-06'));
+    expect(englishEntry.changeFrequency).toBe('weekly');
+    expect(englishEntry.priority).toBe(0.8);
+    expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
+    expect(chineseEntry.lastModified).toEqual(new Date('2026-10-06'));
+    expect(chineseEntry.changeFrequency).toBe('weekly');
+    expect(chineseEntry.priority).toBe(0.8);
+    expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
   test('includes bilingual dnd kobold routes with alternates', () => {
     const englishEntry = findSitemapEntry(`https://www.tokenmaker.one/blog/${DND_KOBOLD_SLUG}`);
     const chineseEntry = findSitemapEntry(`https://www.tokenmaker.one/zh/blog/${DND_KOBOLD_SLUG}`);
@@ -1043,10 +1062,10 @@ describe('language generator sitemap entries', () => {
   });
 });
 
-describe('calendar creator sitemap entries', () => {
+describe('family tree creator sitemap entries', () => {
   test('includes exactly one entry per language with reciprocal alternates', () => {
-    const englishUrl = 'https://www.tokenmaker.one/calendar-creator';
-    const chineseUrl = 'https://www.tokenmaker.one/zh/calendar-creator';
+    const englishUrl = 'https://www.tokenmaker.one/family-tree-creator';
+    const chineseUrl = 'https://www.tokenmaker.one/zh/family-tree-creator';
     const expectedAlternates = {
       'x-default': englishUrl,
       'en-US': englishUrl,
@@ -1057,6 +1076,69 @@ describe('calendar creator sitemap entries', () => {
       expect(sitemap().filter((entry) => entry.url === url)).toHaveLength(1);
       const entry = findSitemapEntry(url);
       expect(entry.lastModified).toEqual(new Date('2026-10-06'));
+      expect(entry.changeFrequency).toBe('weekly');
+      expect(entry.priority).toBe(0.8);
+      expect(entry.alternates?.languages).toEqual(expectedAlternates);
+    }
+  });
+});
+
+describe('periodic table creator sitemap entries', () => {
+  test('includes exactly one entry per language with reciprocal alternates', () => {
+    const englishUrl = 'https://www.tokenmaker.one/periodic-table-creator';
+    const chineseUrl = 'https://www.tokenmaker.one/zh/periodic-table-creator';
+    const expectedAlternates = {
+      'x-default': englishUrl,
+      'en-US': englishUrl,
+      'zh-CN': chineseUrl,
+    };
+
+    for (const url of [englishUrl, chineseUrl]) {
+      expect(sitemap().filter((entry) => entry.url === url)).toHaveLength(1);
+      const entry = findSitemapEntry(url);
+      expect(entry.lastModified).toEqual(new Date('2026-10-06'));
+      expect(entry.changeFrequency).toBe('weekly');
+      expect(entry.priority).toBe(0.8);
+      expect(entry.alternates?.languages).toEqual(expectedAlternates);
+    }
+  });
+});
+
+describe('tarot cards sitemap entries', () => {
+  test('includes exactly one entry per language with reciprocal alternates', () => {
+    const englishUrl = 'https://www.tokenmaker.one/tarot-cards';
+    const chineseUrl = 'https://www.tokenmaker.one/zh/tarot-cards';
+    const expectedAlternates = {
+      'x-default': englishUrl,
+      'en-US': englishUrl,
+      'zh-CN': chineseUrl,
+    };
+
+    for (const url of [englishUrl, chineseUrl]) {
+      expect(sitemap().filter((entry) => entry.url === url)).toHaveLength(1);
+      const entry = findSitemapEntry(url);
+      expect(entry.lastModified).toEqual(new Date('2026-10-06'));
+      expect(entry.changeFrequency).toBe('weekly');
+      expect(entry.priority).toBe(0.8);
+      expect(entry.alternates?.languages).toEqual(expectedAlternates);
+    }
+  });
+});
+
+describe('constellation map creator sitemap entries', () => {
+  test('includes exactly one entry per language with reciprocal alternates', () => {
+    const englishUrl = 'https://www.tokenmaker.one/constellation-map-creator';
+    const chineseUrl = 'https://www.tokenmaker.one/zh/constellation-map-creator';
+    const expectedAlternates = {
+      'x-default': englishUrl,
+      'en-US': englishUrl,
+      'zh-CN': chineseUrl,
+    };
+
+    for (const url of [englishUrl, chineseUrl]) {
+      expect(sitemap().filter((entry) => entry.url === url)).toHaveLength(1);
+      const entry = findSitemapEntry(url);
+      expect(entry.lastModified).toEqual(new Date('2026-10-07'));
       expect(entry.changeFrequency).toBe('weekly');
       expect(entry.priority).toBe(0.8);
       expect(entry.alternates?.languages).toEqual(expectedAlternates);
@@ -1113,5 +1195,47 @@ describe('army formation creator sitemap entries', () => {
     expect(chineseArmorEntry.changeFrequency).toBe('weekly');
     expect(chineseArmorEntry.priority).toBe(0.8);
     expect(chineseArmorEntry.alternates?.languages).toEqual(armorAlternates);
+  });
+});
+
+describe('solar system creator sitemap entries', () => {
+  test('includes exactly one entry per language with reciprocal alternates', () => {
+    const englishUrl = 'https://www.tokenmaker.one/solar-system-creator';
+    const chineseUrl = 'https://www.tokenmaker.one/zh/solar-system-creator';
+    const expectedAlternates = {
+      'x-default': englishUrl,
+      'en-US': englishUrl,
+      'zh-CN': chineseUrl,
+    };
+
+    for (const url of [englishUrl, chineseUrl]) {
+      expect(sitemap().filter((entry) => entry.url === url)).toHaveLength(1);
+      const entry = findSitemapEntry(url);
+      expect(entry.lastModified).toEqual(new Date('2026-10-06'));
+      expect(entry.changeFrequency).toBe('weekly');
+      expect(entry.priority).toBe(0.8);
+      expect(entry.alternates?.languages).toEqual(expectedAlternates);
+    }
+  });
+});
+
+describe('calendar creator sitemap entries', () => {
+  test('includes exactly one entry per language with reciprocal alternates', () => {
+    const englishUrl = 'https://www.tokenmaker.one/calendar-creator';
+    const chineseUrl = 'https://www.tokenmaker.one/zh/calendar-creator';
+    const expectedAlternates = {
+      'x-default': englishUrl,
+      'en-US': englishUrl,
+      'zh-CN': chineseUrl,
+    };
+
+    for (const url of [englishUrl, chineseUrl]) {
+      expect(sitemap().filter((entry) => entry.url === url)).toHaveLength(1);
+      const entry = findSitemapEntry(url);
+      expect(entry.lastModified).toEqual(new Date('2026-10-06'));
+      expect(entry.changeFrequency).toBe('weekly');
+      expect(entry.priority).toBe(0.8);
+      expect(entry.alternates?.languages).toEqual(expectedAlternates);
+    }
   });
 });

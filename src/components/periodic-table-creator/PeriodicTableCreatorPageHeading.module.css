@@ -1,0 +1,170 @@
+.hero {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 1rem 6rem;
+  color: var(--foreground);
+  text-align: center;
+}
+
+.content {
+  display: flex;
+  width: 100%;
+  max-width: 56rem;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.title {
+  max-width: 100%;
+  margin: 0 0 1.5rem;
+  overflow-wrap: break-word;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.05em;
+}
+
+.emphasisWrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 2rem;
+}
+
+.emphasis {
+  display: inline;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  color: var(--foreground);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 3rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.zhEmphasis {
+  font-size: clamp(1.75rem, 10vw, 3rem);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.underline {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: auto;
+  margin-top: -5px;
+  pointer-events: none;
+}
+
+.description {
+  max-width: 42rem;
+  margin: 0 auto 2.25rem;
+  color: var(--muted-foreground);
+  font-size: 16px;
+  line-height: 1.375;
+}
+
+.button {
+  display: inline-flex;
+  height: 72px;
+  min-height: 72px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border: 0;
+  border-radius: 10px;
+  padding: 24px 32px;
+  color: var(--background);
+  background: var(--foreground);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  transition: none;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 3px;
+}
+
+.fade {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+.delayedDescription {
+  animation-delay: 0.2s;
+}
+
+.delayedButton {
+  animation-delay: 0.4s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 48px;
+  }
+
+  .emphasis {
+    font-size: 60px;
+  }
+
+  .description {
+    font-size: 18px;
+  }
+
+  .emphasisWrap {
+    margin-bottom: 3rem;
+  }
+
+  .zhEmphasis {
+    line-height: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-top: 10rem;
+    padding-bottom: 8rem;
+  }
+
+  .title {
+    font-size: 60px;
+  }
+
+  .emphasis {
+    font-size: 72px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade {
+    animation: none;
+  }
+
+  .button {
+    transition: none;
+  }
+}

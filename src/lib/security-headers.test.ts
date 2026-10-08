@@ -4,15 +4,13 @@ import nextConfig from '../../next.config';
 
 describe('security headers', () => {
   it('provides a static CSP for cacheable public routes without a request nonce', async () => {
-    if (typeof nextConfig.headers !== 'function') {
-      throw new Error('nextConfig.headers must be a function to define security headers');
-    }
+    const response = await unstable_getResponseFromNextConfig({
+      url: 'https://www.tokenmaker.one/about',
+      nextConfig,
+    });
+    const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
 
-    const routeHeaders = await nextConfig.headers();
-    const configuredHeaders = Object.fromEntries(
-      routeHeaders.flatMap((routeHeader) => routeHeader.headers.map((header) => [header.key, header.value]))
-    );
-    const contentSecurityPolicy = configuredHeaders['Content-Security-Policy'];
+    expect(contentSecurityPolicy).toBeTruthy();
 
     expect(contentSecurityPolicy).toContain("default-src 'self'");
     expect(contentSecurityPolicy).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:");
@@ -22,6 +20,40 @@ describe('security headers', () => {
     expect(contentSecurityPolicy).toContain('frame-src https:');
     expect(contentSecurityPolicy).not.toContain("'nonce-");
     expect(contentSecurityPolicy).not.toContain("'strict-dynamic'");
+  });
+
+  it('allows Google Fonts only on both scroll creator locales', async () => {
+    const scrollCreatorUrls = [
+      'https://www.tokenmaker.one/scroll-creator',
+      'https://www.tokenmaker.one/zh/scroll-creator',
+    ];
+
+    for (const url of scrollCreatorUrls) {
+      const response = await unstable_getResponseFromNextConfig({ url, nextConfig });
+      const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
+
+      expect(contentSecurityPolicy).toContain("style-src 'self' 'unsafe-inline' https://fonts.googleapis.com");
+      expect(contentSecurityPolicy).toContain("font-src 'self' https://fonts.gstatic.com");
+      expect(contentSecurityPolicy).toContain("connect-src 'self' https:");
+      expect(contentSecurityPolicy).not.toContain("'nonce-");
+    }
+  });
+
+  it('excludes scroll creator routes from the general static CSP matcher', async () => {
+    if (typeof nextConfig.headers !== 'function') {
+      throw new Error('nextConfig.headers must be a function to define security headers');
+    }
+
+    const routeHeaders = await nextConfig.headers();
+    const contentSecurityPolicySources = routeHeaders
+      .filter((routeHeader) => routeHeader.headers.some((header) => header.key === 'Content-Security-Policy'))
+      .map((routeHeader) => routeHeader.source);
+    const generalStaticCspSource = contentSecurityPolicySources.find((source) => source.includes('(?!api'));
+
+    expect(generalStaticCspSource).toBeDefined();
+    expect(generalStaticCspSource).toContain('scroll-creator(?:/|$)');
+    expect(contentSecurityPolicySources).toContain('/scroll-creator');
+    expect(contentSecurityPolicySources).toContain('/zh/scroll-creator');
   });
 
   it('leaves nonce-protected routes exclusively under proxy CSP ownership', async () => {

@@ -1,0 +1,27 @@
+.pageShell {
+  background-attachment: scroll;
+  background-size: auto;
+}
+
+.pageShell :global(button:not(:disabled)),
+.pageShell :global(a[href]),
+.pageShell :global(select:not(:disabled)),
+.pageShell :global(input[type='checkbox']:not(:disabled)),
+.pageShell :global(label:has(input[type='checkbox']:not(:disabled))) {
+  cursor: pointer;
+}
+
+.pageShell :global(input[type='text']),
+.pageShell :global(input[type='url']),
+.pageShell :global(input[type='number']),
+.pageShell :global(textarea) {
+  cursor: text;
+}
+
+.pageShell :global(button:disabled),
+.pageShell :global(select:disabled),
+.pageShell :global(input:disabled),
+.pageShell :global(textarea:disabled),
+.pageShell :global(label:has(input:disabled)) {
+  cursor: not-allowed;
+}

@@ -1,0 +1,58 @@
+.page {
+  min-width: 0;
+}
+
+/* The body marker keeps portal content scoped to this route while covering dialogs and menus. */
+:global(body):has(.page) :is(
+  button,
+  a[href],
+  summary,
+  input,
+  textarea,
+  select,
+  label,
+  [role='button'],
+  [role='tab'],
+  [role='menuitem']
+) {
+  cursor: pointer;
+}
+
+:global(body):has(.page) :is(
+  button,
+  a[href],
+  summary,
+  input,
+  textarea,
+  select,
+  label,
+  [role='button'],
+  [role='tab'],
+  [role='menuitem']
+):is(
+  :disabled,
+  [aria-disabled='true'],
+  [data-disabled],
+  [inert],
+  [aria-disabled='true'] *,
+  [data-disabled] *,
+  [inert] *
+) {
+  cursor: not-allowed;
+}
+
+:global(body):has(.page) label:has(:disabled),
+:global(body):has(.page) label:has([aria-disabled='true']),
+:global(body):has(.page) label:has([data-disabled]),
+:global(body):has(.page) label:has([inert]) {
+  cursor: not-allowed;
+}
+
+:global(body):has(.page) :global([data-slot='dialog-backdrop']),
+:global(body):has(.page) :global([data-slot='dialog-viewport']) {
+  cursor: pointer;
+}
+
+:global(body):has(.page) :global([data-slot='dialog-content']) {
+  cursor: auto;
+}

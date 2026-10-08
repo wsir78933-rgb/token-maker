@@ -16,6 +16,7 @@ const topbarModel = {
     { href: '/coat-of-arms-maker', title: 'Coat of Arms Maker' },
     { href: '/armor-creator', title: 'Armor Creator' },
     { href: '/army-formation-creator', title: 'Army Formation Creator' },
+    { href: '/scroll-creator', title: 'Scroll Creator' },
   ],
   featureMenuLabel: 'Blog',
   featureMenuHref: '/blog',
@@ -186,6 +187,9 @@ describe('ContentSiteTopbar', () => {
     expect(screen.getByRole('menuitem', { name: 'Army Formation Creator' }).getAttribute('href')).toBe(
       '/army-formation-creator',
     );
+    expect(screen.getByRole('menuitem', { name: 'Scroll Creator' }).getAttribute('href')).toBe(
+      '/scroll-creator',
+    );
   });
 
   it('names the Free tools menu', () => {
@@ -278,6 +282,9 @@ describe('ContentSiteTopbar', () => {
     );
     expect(within(freeToolsItem).getByRole('link', { name: 'Army Formation Creator' }).getAttribute('href')).toBe(
       '/army-formation-creator',
+    );
+    expect(within(freeToolsItem).getByRole('link', { name: 'Scroll Creator' }).getAttribute('href')).toBe(
+      '/scroll-creator',
     );
   });
 

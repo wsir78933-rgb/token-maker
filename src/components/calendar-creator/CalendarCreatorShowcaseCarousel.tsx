@@ -134,7 +134,8 @@ export function CalendarCreatorShowcaseCarousel({
         imageTextSpacing="relaxed"
         clipImageStack={false}
         onImageClick={handleImageClick}
-        openImageLabel={openImageLabel}
+        imageActionLabel={openImageLabel}
+        previewImagesClickable={true}
       />
       <CalendarCreatorShowcaseImageDialog
         testimonial={selectedTestimonial}
