@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { getBlogCategories } from '@/lib/blog-content';
+import { getCalendarCreatorCopy } from '@/lib/calendar-creator/copy';
 import { getTarotCopy } from '@/lib/tarot-cards/copy';
 import {
   assertContentSiteTopbarModel,
@@ -63,7 +64,9 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/calendar-creator', title: getCalendarCreatorCopy('en').navigationTitle },
       { href: '/family-tree-creator', title: 'Family Tree Creator' },
+      { href: '/constellation-map-creator', title: 'Constellation Map Creator' },
       { href: '/solar-system-creator', title: 'Solar System Creator' },
       { href: '/periodic-table-creator', title: 'Periodic Table Creator' },
       { href: '/tarot-cards', title: getTarotCopy('en').navigationTitle },
@@ -110,7 +113,9 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/calendar-creator', title: getCalendarCreatorCopy('zh').navigationTitle },
       { href: '/zh/family-tree-creator', title: '人物家谱制作器' },
+      { href: '/zh/constellation-map-creator', title: '星座地图创建器' },
       { href: '/zh/solar-system-creator', title: '太阳系创建器' },
       { href: '/zh/periodic-table-creator', title: '元素周期表制作器' },
       { href: '/zh/tarot-cards', title: getTarotCopy('zh').navigationTitle },
@@ -172,6 +177,26 @@ describe('content site topbar model', () => {
       '/zh/family-tree-creator/saved',
     );
     const familyTreeSibling = readTopbar('en', '/family-tree-creator-extra', '/zh');
+    const constellationMapCreator = readTopbar(
+      'en',
+      '/constellation-map-creator',
+      '/zh/constellation-map-creator',
+    );
+    const chineseConstellationMapCreator = readTopbar(
+      'zh',
+      '/zh/constellation-map-creator',
+      '/constellation-map-creator',
+    );
+    const constellationMapCreatorNested = readTopbar(
+      'en',
+      '/constellation-map-creator/saved',
+      '/zh/constellation-map-creator/saved',
+    );
+    const constellationMapCreatorSibling = readTopbar(
+      'en',
+      '/constellation-map-creator-extra',
+      '/zh',
+    );
     const solarSystemCreator = readTopbar('en', '/solar-system-creator', '/zh/solar-system-creator');
     const chineseSolarSystemCreator = readTopbar(
       'zh',
@@ -205,6 +230,10 @@ describe('content site topbar model', () => {
     const tarotCardsNested = readTopbar('en', '/tarot-cards/saved', '/zh/tarot-cards/saved');
     const tarotCardsSibling = readTopbar('en', '/tarot-cards-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
+    const calendar = readTopbar('en', '/calendar-creator', '/zh/calendar-creator');
+    const chineseCalendar = readTopbar('zh', '/zh/calendar-creator', '/calendar-creator');
+    const calendarNested = readTopbar('en', '/calendar-creator/saved', '/zh/calendar-creator/saved');
+    const calendarSibling = readTopbar('en', '/calendar-creator-extra', '/zh');
     const scrollCreator = readTopbar('en', '/scroll-creator', '/zh/scroll-creator');
     const scrollCreatorNested = readTopbar(
       'en',
@@ -240,6 +269,10 @@ describe('content site topbar model', () => {
     expect(chineseFamilyTree.freeToolsMenuIsActive).toBe(true);
     expect(familyTreeNested.freeToolsMenuIsActive).toBe(true);
     expect(familyTreeSibling.freeToolsMenuIsActive).toBe(false);
+    expect(constellationMapCreator.freeToolsMenuIsActive).toBe(true);
+    expect(chineseConstellationMapCreator.freeToolsMenuIsActive).toBe(true);
+    expect(constellationMapCreatorNested.freeToolsMenuIsActive).toBe(true);
+    expect(constellationMapCreatorSibling.freeToolsMenuIsActive).toBe(false);
     expect(solarSystemCreator.freeToolsMenuIsActive).toBe(true);
     expect(chineseSolarSystemCreator.freeToolsMenuIsActive).toBe(true);
     expect(solarSystemCreatorNested.freeToolsMenuIsActive).toBe(true);
@@ -253,6 +286,10 @@ describe('content site topbar model', () => {
     expect(tarotCardsNested.freeToolsMenuIsActive).toBe(true);
     expect(tarotCardsSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
+    expect(calendar.freeToolsMenuIsActive).toBe(true);
+    expect(chineseCalendar.freeToolsMenuIsActive).toBe(true);
+    expect(calendarNested.freeToolsMenuIsActive).toBe(true);
+    expect(calendarSibling.freeToolsMenuIsActive).toBe(false);
     expect(scrollCreator.freeToolsMenuIsActive).toBe(true);
     expect(scrollCreatorNested.freeToolsMenuIsActive).toBe(true);
     expect(scrollCreatorSibling.freeToolsMenuIsActive).toBe(false);

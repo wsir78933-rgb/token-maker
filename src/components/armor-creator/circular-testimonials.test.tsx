@@ -95,6 +95,7 @@ type ImageLayerRole = keyof typeof IMAGE_LAYER_ROLE_STYLES;
 
 const PREVIOUS_LABEL = 'Previous armor case';
 const NEXT_LABEL = 'Next armor case';
+const IMAGE_ACTION_LABEL = 'Open armor case';
 
 function renderedCarousel(testimonials: readonly CircularTestimonial[] = TESTIMONIALS) {
   return render(
@@ -544,6 +545,18 @@ describe('CircularTestimonials', () => {
     );
   });
 
+  it('默认不为图片增加按钮并保留隐藏预览层语义', () => {
+    const { container } = renderedCarousel(IMAGE_POSITION_TESTIMONIALS);
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    const imageStage = carousel.querySelector('[data-part="image-stage"]');
+    expect(imageStage?.querySelectorAll('button')).toHaveLength(0);
+    expect(testimonialImageLayer(carousel, 1).getAttribute('aria-hidden')).toBe('true');
+  });
+
   it('只让当前图片成为可访问的打开按钮，并将当前项和触发按钮传给回调', async () => {
     const onImageClick = vi.fn();
     const { container } = render(
@@ -587,6 +600,134 @@ describe('CircularTestimonials', () => {
     fireEvent.click(secondImageButton);
     expect(onImageClick.mock.calls[1]?.[0]).toEqual(TESTIMONIALS[1]);
     expect(onImageClick.mock.calls[1]?.[1]).toBe(secondImageButton);
+  });
+
+  it('通过公开图片回调提供中心和可见预览图按钮，并携带准确素材与触发元素', () => {
+    const onImageClick = vi.fn();
+    const { container } = render(
+      <CircularTestimonials
+        testimonials={IMAGE_POSITION_TESTIMONIALS}
+        ariaLabel="Clickable armor cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+        autoplay={false}
+        onImageClick={onImageClick}
+        imageActionLabel={IMAGE_ACTION_LABEL}
+        previewImagesClickable={true}
+      />,
+    );
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    const imageStage = carousel.querySelector<HTMLElement>('[data-part="image-stage"]');
+    if (!imageStage) {
+      throw new Error('CircularTestimonials test expected an image stage.');
+    }
+
+    const activeButton = within(imageStage).getByRole('button', {
+      name: `${IMAGE_ACTION_LABEL}: First character`,
+    });
+    const nextPreviewButton = within(imageStage).getByRole('button', {
+      name: `${IMAGE_ACTION_LABEL}: Second character`,
+    });
+    const previousPreviewButton = within(imageStage).getByRole('button', {
+      name: `${IMAGE_ACTION_LABEL}: Fourth character`,
+    });
+
+    expect(activeButton.tabIndex).toBe(0);
+    expect(nextPreviewButton.tabIndex).toBe(-1);
+    expect(previousPreviewButton.tabIndex).toBe(-1);
+    expect(activeButton.closest('[aria-hidden="true"]')).toBeNull();
+    expect(nextPreviewButton.closest('[aria-hidden="true"]')).toBeNull();
+    expect(previousPreviewButton.closest('[aria-hidden="true"]')).toBeNull();
+    expect(testimonialImageLayer(carousel, 2).querySelector('button')).toBeNull();
+    expect(within(carousel).getByRole('img', { name: 'First character' }).className).toContain(
+      'object-contain',
+    );
+    expect(activeButton.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(nextPreviewButton.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(previousPreviewButton.getAttribute('aria-haspopup')).toBe('dialog');
+
+    fireEvent.click(activeButton);
+    fireEvent.click(nextPreviewButton);
+    fireEvent.click(previousPreviewButton);
+
+    expect(onImageClick).toHaveBeenCalledTimes(3);
+    const expectedImageClicks = [
+      [activeButton, 'First character', '/armor-creator/cases/first.png'],
+      [nextPreviewButton, 'Second character', '/armor-creator/cases/second.png'],
+      [previousPreviewButton, 'Fourth character', '/armor-creator/cases/fourth.png'],
+    ] as const;
+    expectedImageClicks.forEach(([triggerElement, name, src], clickIndex) => {
+      const callbackArguments = onImageClick.mock.calls[clickIndex];
+      expect(callbackArguments?.[0]).toMatchObject({ name, src });
+      expect(callbackArguments?.[1]).toBe(triggerElement);
+    });
+  });
+
+  it('中心图片可获得键盘焦点，点击后只暂停当前轮播自动播放', async () => {
+    vi.useFakeTimers();
+    const setIntervalSpy = vi.spyOn(window, 'setInterval');
+    const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
+    const onImageClick = vi.fn();
+
+    try {
+      const { container } = render(
+        <>
+          <CircularTestimonials
+            testimonials={TESTIMONIALS}
+            ariaLabel="Clickable autoplay armor cases"
+            previousLabel={PREVIOUS_LABEL}
+            nextLabel={NEXT_LABEL}
+            onImageClick={onImageClick}
+            imageActionLabel={IMAGE_ACTION_LABEL}
+            previewImagesClickable={true}
+          />
+          <CircularTestimonials
+            testimonials={TESTIMONIALS}
+            ariaLabel="Independent autoplay armor cases"
+            previousLabel="Previous independent case"
+            nextLabel="Next independent case"
+          />
+        </>,
+      );
+      const [clickableCarousel, independentCarousel] = carouselRegions(container);
+      if (!clickableCarousel || !independentCarousel) {
+        throw new Error('CircularTestimonials test expected two carousel regions.');
+      }
+
+      const clickableImageButton = within(clickableCarousel).getByRole('button', {
+        name: `${IMAGE_ACTION_LABEL}: First character`,
+      });
+      clickableImageButton.focus();
+      expect(document.activeElement).toBe(clickableImageButton);
+      expect(clickableImageButton.tabIndex).toBe(0);
+
+      const intervalIds = setIntervalSpy.mock.results.map((result) => result.value);
+      if (intervalIds.length !== 2 || intervalIds[0] === undefined || intervalIds[1] === undefined) {
+        throw new Error('CircularTestimonials test expected one autoplay interval per instance.');
+      }
+
+      fireEvent.click(clickableImageButton);
+      expect(onImageClick).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5000);
+      });
+
+      expect(activeQuoteText(clickableCarousel)).toBe('First armor case quote.');
+      expect(activeQuoteText(independentCarousel)).toBe('Second armor case quote.');
+      expect(clearIntervalSpy).toHaveBeenCalledWith(intervalIds[0]);
+      expect(clearIntervalSpy).not.toHaveBeenCalledWith(intervalIds[1]);
+    } finally {
+      cleanup();
+      vi.clearAllTimers();
+      setIntervalSpy.mockRestore();
+      clearIntervalSpy.mockRestore();
+      vi.useRealTimers();
+    }
   });
 
   it('点击当前图片后停止自动播放', async () => {
@@ -871,6 +1012,71 @@ describe('CircularTestimonials', () => {
     ).toThrow('CircularTestimonials imageSize must be "default" or "large". Received "wide".');
   });
 
+  it('拒绝非布尔 previewImagesClickable 并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid preview click carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          previewImagesClickable={'yes' as never}
+        />,
+      ),
+    ).toThrow(
+      'CircularTestimonials previewImagesClickable must be a boolean. Received "yes".',
+    );
+  });
+
+  it('imageSize large 保留塔罗大图尺寸，默认尺寸仍是卷轴使用的原图框', () => {
+    const { container: largeContainer } = render(
+      <CircularTestimonials
+        testimonials={TESTIMONIALS}
+        ariaLabel="Large tarot sized cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+        autoplay={false}
+        imageSize="large"
+      />,
+    );
+    const [largeCarousel] = carouselRegions(largeContainer);
+    if (!largeCarousel) {
+      throw new Error('CircularTestimonials test expected one large image carousel region.');
+    }
+
+    const largeLayer = testimonialImageLayer(largeCarousel, 0);
+    expect(largeLayer.className).toContain('h-[min(27rem,112.5cqw)]');
+    expect(largeLayer.querySelector('img')?.className).toContain('p-1');
+    expect(largeCarousel.querySelectorAll('button[aria-haspopup="dialog"]')).toHaveLength(0);
+
+    cleanup();
+
+    const onImageClick = vi.fn();
+    const { container: defaultContainer } = render(
+      <CircularTestimonials
+        testimonials={TESTIMONIALS}
+        ariaLabel="Default scroll sized cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+        autoplay={false}
+        clipImageStack={false}
+        imageActionLabel="Open image"
+        onImageClick={onImageClick}
+      />,
+    );
+    const [defaultCarousel] = carouselRegions(defaultContainer);
+    if (!defaultCarousel) {
+      throw new Error('CircularTestimonials test expected one default image carousel region.');
+    }
+
+    const defaultLayer = testimonialImageLayer(defaultCarousel, 0);
+    expect(defaultLayer.className).toContain('h-[min(18rem,72cqw)]');
+    expect(defaultLayer.querySelector('img')?.className).toContain('p-3');
+    expect(defaultCarousel.querySelectorAll('button[aria-haspopup="dialog"]')).toHaveLength(1);
+    expect(testimonialImageLayer(defaultCarousel, 1).querySelector('button')).toBeNull();
+  });
+
   it('拒绝不支持的 imageShape 并报告收到的值', () => {
     expect(() =>
       render(
@@ -1110,4 +1316,131 @@ describe('CircularTestimonials', () => {
 
     expect(imageFrame?.style.backgroundColor).toBe('rgb(244, 238, 229)');
   });
+  it('supports relaxed image and text spacing without changing the layout direction', () => {
+    const { container } = render(
+      <CircularTestimonials
+        testimonials={TESTIMONIALS}
+        ariaLabel="Relaxed armor cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+        autoplay={false}
+        imageTextSpacing="relaxed"
+      />,
+    );
+    const [carousel] = carouselRegions(container);
+    if (!carousel) {
+      throw new Error('CircularTestimonials test expected one carousel region.');
+    }
+
+    const layout = carousel.querySelector('[data-part="layout"]');
+    expect(layout?.className).toContain('gap-12 md:gap-24');
+    expect(layout?.className).toContain('flex-col md:flex-row');
+  });
+
+  it('rejects an invalid image and text spacing value with the received value', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid image text spacing carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageTextSpacing={'wide' as never}
+        />,
+      ),
+    ).toThrow(
+      'CircularTestimonials imageTextSpacing must be "default" or "relaxed" or undefined. Received "wide".',
+    );
+  });
+
+  it('默认保留肖像图框并支持横向比例完整显示图片', () => {
+    const imageAspectRatio = 2782 / 1668;
+    const { container } = render(
+      <>
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Portrait armor cases"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+        />
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Landscape calendar cases"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          clipImageStack={false}
+          imageAspectRatio={imageAspectRatio}
+        />
+      </>,
+    );
+    const [portraitCarousel, landscapeCarousel] = carouselRegions(container);
+    if (!portraitCarousel || !landscapeCarousel) {
+      throw new Error('CircularTestimonials test expected portrait and landscape carousel regions.');
+    }
+
+    const portraitImageLayer = testimonialImageLayer(portraitCarousel, 0);
+    expect(portraitImageLayer.className).toContain('h-[min(18rem,72cqw)]');
+    expect(portraitImageLayer.className).toContain('w-[min(15rem,58cqw)]');
+    expect(portraitImageLayer.style.aspectRatio).toBe('');
+    expect(within(portraitCarousel).getByRole('img', { name: 'First character' }).style.objectFit).toBe('');
+
+    const landscapeImageLayer = testimonialImageLayer(landscapeCarousel, 0);
+    expect(landscapeImageLayer.className).toContain('h-auto');
+    expect(landscapeImageLayer.className).toContain('w-[min(28rem,78cqw)]');
+    expect(landscapeCarousel.querySelector('[data-part="image-stage"]')?.getAttribute('style')).toContain(
+      'min-height',
+    );
+    expect(within(landscapeCarousel).getByRole('img', { name: 'First character' }).className).toContain(
+      'object-contain',
+    );
+    expect(within(landscapeCarousel).getByRole('img', { name: 'First character' }).style.objectFit).toBe(
+      'contain',
+    );
+  });
+
+  it.each([
+    [0, '0'],
+    [-1, '-1'],
+    [Number.POSITIVE_INFINITY, 'Infinity'],
+    [Number.NaN, 'NaN'],
+    ['1', '"1"'],
+    [null, 'null'],
+  ] as const)('拒绝非法 imageAspectRatio %s 并报告收到的值', (invalidValue, receivedValue) => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid image ratio carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageAspectRatio={invalidValue as never}
+        />,
+      ),
+    ).toThrow(
+      `CircularTestimonials imageAspectRatio must be a positive finite number that produces a finite image frame height at 448px or undefined. Received ${receivedValue}.`,
+    );
+  });
+
+  it('拒绝最小正比例导致的无限图框高度并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Unbounded image ratio carousel"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          imageAspectRatio={Number.MIN_VALUE}
+        />,
+      ),
+    ).toThrow(
+      'CircularTestimonials imageAspectRatio must be a positive finite number that produces a finite image frame height at 448px or undefined. Received 5e-324.',
+    );
+  });
+
+
 });

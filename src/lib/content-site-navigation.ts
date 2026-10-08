@@ -1,4 +1,6 @@
 import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
+import { getCalendarCreatorCopy } from '@/lib/calendar-creator/copy';
+import { getConstellationMapCopy } from '@/lib/constellation-map-creator/copy';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { getFamilyTreeCopy } from '@/lib/family-tree/copy';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
@@ -15,8 +17,10 @@ import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } fr
 
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
+const CALENDAR_CREATOR_PATH = '/calendar-creator';
 const EMBLEM_CREATOR_PATH = '/emblem-creator';
 const FAMILY_TREE_CREATOR_PATH = '/family-tree-creator';
+const CONSTELLATION_MAP_CREATOR_PATH = '/constellation-map-creator';
 const LANGUAGE_GENERATOR_PATH = '/language-generator';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
 const PERIODIC_TABLE_CREATOR_PATH = '/periodic-table-creator';
@@ -34,7 +38,9 @@ const FREE_TOOLS_PATHS = [
   ARMY_FORMATION_CREATOR_PATH,
   EMBLEM_CREATOR_PATH,
   LANGUAGE_GENERATOR_PATH,
+  CALENDAR_CREATOR_PATH,
   FAMILY_TREE_CREATOR_PATH,
+  CONSTELLATION_MAP_CREATOR_PATH,
   SOLAR_SYSTEM_CREATOR_PATH,
   PERIODIC_TABLE_CREATOR_PATH,
   TAROT_CARDS_PATH,
@@ -223,8 +229,18 @@ function buildContentSiteFreeToolFeatures(
     ),
     buildContentSiteFreeToolFeature(
       locale,
+      CALENDAR_CREATOR_PATH,
+      getCalendarCreatorCopy(locale).navigationTitle,
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
       FAMILY_TREE_CREATOR_PATH,
       readFamilyTreeNavigationName(locale),
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
+      CONSTELLATION_MAP_CREATOR_PATH,
+      getConstellationMapCopy(locale).navigationTitle,
     ),
     buildContentSiteFreeToolFeature(
       locale,

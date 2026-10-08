@@ -12,6 +12,7 @@ import {
   UsersRound,
 } from 'lucide-react';
 
+import { HomeTokenFaqAccordion } from '@/components/site/HomeTokenFaqAccordion';
 import {
   getHomeSeoContentCopy,
   type HomeSeoLinkTarget,
@@ -215,37 +216,16 @@ export function HomeTokenGuide({ locale }: { locale: SiteLocale }) {
 }
 
 export function HomeTokenFaq({ locale }: { locale: SiteLocale }) {
-  const copy = getHomeSeoContentCopy(locale).faq;
+  const faqCopy = getHomeSeoContentCopy(locale).faq;
 
   return (
-    <section data-testid="home-token-faq" className="site-content-section bg-black/15">
-      <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8 lg:py-20">
-        <SectionEyebrow>{copy.eyebrow}</SectionEyebrow>
-        <SectionHeading>{copy.title}</SectionHeading>
-        <p className="mt-5 max-w-3xl text-sm leading-7 text-stone-300 sm:text-base sm:leading-8">
-          {copy.introduction}
-        </p>
-
-        <div className="mt-9 grid gap-4 lg:grid-cols-2">
-          {copy.items.map((faqItem, faqIndex) => (
-            <article
-              key={faqItem.question}
-              className={`rounded-[24px] border border-white/10 bg-black/20 p-6 ${
-                faqIndex === copy.items.length - 1 ? 'lg:col-span-2' : ''
-              }`}
-            >
-              <h3 className="text-base font-semibold leading-7 text-stone-50 sm:text-lg">
-                {faqItem.question}
-              </h3>
-              <p className="mt-3 text-sm leading-7 text-stone-300">{faqItem.answer}</p>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-7">
-          <InlineContentLink href={getHomeSeoLinkHref(locale, 'faq')} label={copy.linkLabel} />
-        </div>
-      </div>
-    </section>
+    <HomeTokenFaqAccordion
+      eyebrow={faqCopy.eyebrow}
+      title={faqCopy.title}
+      description={faqCopy.introduction}
+      items={faqCopy.items}
+      faqHref={getHomeSeoLinkHref(locale, 'faq')}
+      faqLinkLabel={faqCopy.linkLabel}
+    />
   );
 }

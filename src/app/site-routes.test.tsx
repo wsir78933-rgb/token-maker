@@ -150,11 +150,19 @@ describe('localized homepage routes', () => {
     editableContent.append(guide.cloneNode(true), faq.cloneNode(true));
     const visibleWords = getVisibleEnglishWords(editableContent);
 
-    expect(getExactWordCount(visibleWords, 'maker')).toBeGreaterThanOrEqual(21);
-    expect(getExactWordCount(visibleWords, 'maker')).toBeLessThanOrEqual(22);
-    expect(getExactWordCount(visibleWords, 'stamp')).toBeGreaterThanOrEqual(36);
-    expect(getExactWordCount(visibleWords, 'stamp')).toBeLessThanOrEqual(37);
+    expect(getExactWordCount(visibleWords, 'maker')).toBe(15);
+    expect(getExactWordCount(visibleWords, 'stamp')).toBe(27);
     expect(getExactWordCount(visibleWords, 'stmap')).toBe(0);
+
+    const hiddenAnswers = faq.querySelectorAll('[hidden]');
+    if (hiddenAnswers.length !== 5) {
+      throw new Error(
+        `SSR English homepage FAQ should keep five hidden answers in the markup. Received ${hiddenAnswers.length}.`,
+      );
+    }
+    expect(hiddenAnswers[0]?.textContent).toContain(
+      'Token stamp describes a browser-based maker workflow for character tokens.',
+    );
   });
 
   it.each([
@@ -499,6 +507,7 @@ describe('coat maker routes', () => {
         { label: 'Emblem Creator', href: '/emblem-creator' },
         { label: 'Language Generator', href: '/language-generator' },
         { label: 'Family Tree Creator', href: '/family-tree-creator' },
+        { label: 'Constellation Map Creator', href: '/constellation-map-creator' },
         { label: 'Solar System Creator', href: '/solar-system-creator' },
         { label: 'Periodic Table Creator', href: '/periodic-table-creator' },
         { label: 'Tarot Cards', href: '/tarot-cards' },
@@ -527,6 +536,7 @@ describe('coat maker routes', () => {
         { label: '徽标制作工具', href: '/zh/emblem-creator' },
         { label: '语言生成器', href: '/zh/language-generator' },
         { label: '人物家谱制作器', href: '/zh/family-tree-creator' },
+        { label: '星座地图创建器', href: '/zh/constellation-map-creator' },
         { label: '太阳系创建器', href: '/zh/solar-system-creator' },
         { label: '元素周期表制作器', href: '/zh/periodic-table-creator' },
         { label: '塔罗牌工具', href: '/zh/tarot-cards' },

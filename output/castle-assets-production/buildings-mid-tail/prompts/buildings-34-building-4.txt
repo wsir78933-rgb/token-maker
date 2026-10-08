@@ -1,0 +1,14 @@
+Use case: stylized-concept
+Asset type: castle creator isolated building component
+Primary request: Edit the provided color 1 base asset for buildings-34-building-4. Change only the color palette to the specified color variant while preserving the exact building geometry, silhouette, masonry or timber layout, doors, windows, damage, proportions, front elevation, and transparent margins.
+Input image: local color 1 edit target for buildings-34; it is the authoritative geometry reference.
+Scene/backdrop: actual transparent background only.
+Subject: Low two-bay stone hall body with two equal arched wooden doors, a narrow slit window above each, a central stone pier, heavy corner blocks, and a plain flat roof-ready top edge; no roof.
+Style/medium: mature colored hand-painted 2D fantasy illustration with confident charcoal-brown pen outlines, quiet gouache/watercolor fills, broad economical brush marks, moderate detail; match the approved sample02 style.
+Composition/framing: strict straight-on front elevation, one fully visible isolated building component, no perspective or visible top surface, retain the original framing and safety margin.
+Lighting/mood: controlled upper-left illustrative shading only; preserve the source lighting pattern and linework.
+Color palette: Deep charcoal-blue gray stone; medium warm brown wood where present; readable lighter edge accents and dark charcoal-brown seams with strong contrast.
+Materials/textures: preserve the source masonry, wood grain, seams, cracks, glazing, and decorative details; recolor through the image generation edit only.
+Constraints: change only palette and material colors; keep every structural pixel relationship and transparent boundary intact; maintain a small transparent safety margin on every side.
+Avoid: roof, battlements, extra floors, altered windows or doors, extra objects, ground, trees, sky, cast shadow, glow, opaque background, colored fringe, text, logo, watermark, checkerboard, collage, asset sheet, isometric or side view.
+

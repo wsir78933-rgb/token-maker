@@ -18,6 +18,8 @@ The site has English pages at root-level URLs and Simplified Chinese pages under
 - [奇幻卷轴制作器](https://www.tokenmaker.one/zh/scroll-creator): 选择羊皮纸、设置文字和字体、添加图片、本地保存并打印奇幻卷轴或信件。
 - [Periodic table creator](https://www.tokenmaker.one/periodic-table-creator): Create editable real or fantasy element tables with custom text, layouts, colors, borders, images, local saves, and offline HTML downloads.
 - [元素周期表制作器](https://www.tokenmaker.one/zh/periodic-table-creator): 创建可编辑的真实或幻想元素周期表，自定义文字、布局、颜色、边框和图片，支持本地保存及离线 HTML 下载。
+- [Constellation map creator](https://www.tokenmaker.one/constellation-map-creator): Create fictional star and constellation maps with 183 original assets, backgrounds, local saves, project files, and PNG export.
+- [星座地图创建器](https://www.tokenmaker.one/zh/constellation-map-creator): 使用 183 项原创星座素材创建虚构星空地图，设置背景，保存本地项目并导出 PNG 图片。
 - [Armor creator](https://www.tokenmaker.one/armor-creator): Assemble armor in the browser and download an image.
 - [Armor creator Chinese](https://www.tokenmaker.one/zh/armor-creator): 在浏览器里搭配护甲并下载图片。
 - [Outfit creator](https://www.tokenmaker.one/outfit-creator): Mix clothing layers in the browser, save four looks, and download a PNG.

@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { getHomeSeoContentCopy } from './home-seo-copy';
 import { HomeHero, HomeSeoContent } from './HomeSeoContent';
 
 describe('HomeSeoContent', () => {
@@ -138,6 +139,72 @@ describe('HomeSeoContent', () => {
     expect(guideAndFaqText).toMatch(/\btoken stamp\b/i);
     expect(screen.getByRole('heading', { level: 3, name: /what is a token stamp/i })).toBeDefined();
     expect(document.querySelector('script[type="application/ld+json"]')).toBeNull();
+  });
+
+  it.each([
+    { locale: 'en' as const, faqHref: '/faq' },
+    { locale: 'zh' as const, faqHref: '/zh/faq' },
+  ])('keeps $locale homepage FAQ answers collapsed until one question is opened', ({ locale, faqHref }) => {
+    const faqCopy = getHomeSeoContentCopy(locale).faq;
+    render(<HomeSeoContent locale={locale} />);
+
+    const faq = screen.getByTestId('home-token-faq');
+    const questionButtons = within(faq).getAllByRole('button');
+    const answerRegions = within(faq).getAllByRole('region', { hidden: true });
+
+    expect(questionButtons).toHaveLength(faqCopy.items.length);
+    expect(answerRegions).toHaveLength(faqCopy.items.length);
+    expect(within(faq).getByRole('link').getAttribute('href')).toBe(faqHref);
+
+    faqCopy.items.forEach((faqItem, itemIndex) => {
+      const questionButton = questionButtons[itemIndex];
+      const answerRegion = answerRegions[itemIndex];
+
+      if (questionButton === undefined || answerRegion === undefined) {
+        throw new Error(
+          `Homepage FAQ item ${itemIndex} is missing a button or answer region. Received ${questionButtons.length} buttons and ${answerRegions.length} regions.`,
+        );
+      }
+
+      expect(questionButton.textContent).toContain(faqItem.question);
+      expect(questionButton.getAttribute('aria-expanded')).toBe('false');
+      expect(questionButton.getAttribute('aria-controls')).toBe(answerRegion.id);
+      expect(answerRegion.hidden).toBe(true);
+      expect(answerRegion.getAttribute('aria-labelledby')).toBe(questionButton.id);
+      expect(answerRegion.textContent).toContain(faqItem.answer);
+    });
+
+    const firstQuestionButton = questionButtons[0];
+    const secondQuestionButton = questionButtons[1];
+    const firstAnswerRegion = answerRegions[0];
+    const secondAnswerRegion = answerRegions[1];
+
+    if (
+      firstQuestionButton === undefined ||
+      secondQuestionButton === undefined ||
+      firstAnswerRegion === undefined ||
+      secondAnswerRegion === undefined
+    ) {
+      throw new Error(
+        `Homepage FAQ needs two items to verify single-open behavior. Received ${questionButtons.length} buttons.`,
+      );
+    }
+
+    fireEvent.click(firstQuestionButton);
+    expect(firstQuestionButton.getAttribute('aria-expanded')).toBe('true');
+    expect(firstAnswerRegion.hidden).toBe(false);
+    expect(secondQuestionButton.getAttribute('aria-expanded')).toBe('false');
+    expect(secondAnswerRegion.hidden).toBe(true);
+
+    fireEvent.click(secondQuestionButton);
+    expect(firstQuestionButton.getAttribute('aria-expanded')).toBe('false');
+    expect(firstAnswerRegion.hidden).toBe(true);
+    expect(secondQuestionButton.getAttribute('aria-expanded')).toBe('true');
+    expect(secondAnswerRegion.hidden).toBe(false);
+
+    fireEvent.click(secondQuestionButton);
+    expect(secondQuestionButton.getAttribute('aria-expanded')).toBe('false');
+    expect(secondAnswerRegion.hidden).toBe(true);
   });
 });
 

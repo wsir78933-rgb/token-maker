@@ -145,6 +145,7 @@ export function ContentSiteTopbar({
               featureMenuIsActive={model.freeToolsMenuIsActive}
               featureMenuAccessibleName={model.freeToolsMenuAccessibleName}
               features={model.freeTools}
+              freeToolsPanelClassName="site-nav-dropdown__panel--free-tools"
             />
             <ContentSiteTopbarPlainLinks links={model.links} />
             <ContentSiteTopbarFeatureMenu

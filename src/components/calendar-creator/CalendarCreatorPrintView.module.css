@@ -1,0 +1,214 @@
+.printView {
+  display: none;
+}
+
+.documentHeader,
+.monthHeader,
+.dayHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.documentHeader h1,
+.documentHeader p,
+.monthHeader h2,
+.monthHeader span,
+.dayTitle,
+.dayWeekday,
+.dayOfYear,
+.emptyMonth,
+.note {
+  margin: 0;
+}
+
+.documentHeader {
+  padding-block: 0 1rem;
+  border-bottom: 1px solid #b0b0b0;
+}
+
+.documentHeader h1 {
+  font-size: 1.55rem;
+}
+
+.documentHeader p,
+.monthHeader span,
+.dayWeekday,
+.dayOfYear,
+.emptyMonth {
+  color: #505050;
+  font-size: 0.78rem;
+}
+
+.month {
+  margin-top: 1.25rem;
+  break-inside: auto;
+}
+
+.monthHeader {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid #777;
+  break-after: avoid;
+}
+
+.monthHeader h2 {
+  font-size: 1.1rem;
+}
+
+.weekdayRow,
+.weekRow {
+  display: grid;
+  grid-template-columns: repeat(var(--calendar-week-length), minmax(0, 1fr));
+}
+
+.weekdayRow {
+  border-bottom: 1px solid #999;
+  break-after: avoid;
+}
+
+.weekdayCell {
+  min-width: 0;
+  padding: 0.3rem;
+  color: #303030;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.monthRows {
+  display: grid;
+}
+
+.weekRow {
+  border-bottom: 1px solid #c7c7c7;
+  break-inside: auto;
+}
+
+.weekRow:last-child {
+  border-bottom: 0;
+}
+
+.emptyCell {
+  min-height: 4.5rem;
+  border-right: 1px solid #d1d1d1;
+}
+
+.day {
+  min-width: 0;
+  min-height: 4.5rem;
+  padding: 0.35rem;
+  border-right: 1px solid #d1d1d1;
+  break-inside: auto;
+}
+
+.day:last-child {
+  border-right: 0;
+}
+
+.dayHeader {
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+}
+
+.dayTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  break-inside: auto;
+}
+
+.dayTableHead {
+  display: table-header-group;
+}
+
+.dayTableHead th {
+  padding: 0;
+  font-weight: 400;
+  text-align: left;
+  vertical-align: top;
+}
+
+.dayTableBody {
+  display: table-row-group;
+}
+
+.dayBodyCell {
+  padding: 0;
+  vertical-align: top;
+  overflow: visible;
+}
+
+.dayTitle {
+  color: #111;
+  font-size: 0.83rem;
+}
+
+.dayOfYear {
+  margin-left: auto;
+  font-size: 0.68rem;
+}
+
+.continuationMarker {
+  color: #505050;
+  font-size: 0.68rem;
+}
+
+.iconLayers {
+  display: flex;
+  min-height: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.18rem;
+  margin-top: 0.25rem;
+}
+
+.icon {
+  display: block;
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.note {
+  margin-top: 0.35rem;
+  color: #111;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.emptyMonth {
+  padding-block: 0.75rem;
+}
+
+@media print {
+  .printView {
+    display: block !important;
+    width: 100%;
+    color: #111;
+    background: #fff;
+  }
+
+  :global([data-calendar-screen-only]) {
+    display: none !important;
+  }
+
+  .month,
+  .day,
+  .dayTable,
+  .dayTableHead,
+  .dayTableBody,
+  .note {
+    overflow: visible;
+  }
+
+  .note {
+    max-height: none;
+    break-inside: auto;
+  }
+}
