@@ -1,5 +1,64 @@
 # WORKLOG
 
+## 交接单 · 2026-10-08 22:07 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+实现中英文奇幻城镇地图工具，使用七类素材；按用户反馈调整素材视口、地图显示、复制后的选择、重叠跨图层选择、键盘删除、操作提示、Hero 和十二个案例展示，并把正文主关键词密度调整到 2%–3%。上一轮已按用户授权提交、合并本地 main、删除唯一「城镇」工作树。本次 offhand 只核对现状并追加本交接单，不改产品、不提交、不 push、不部署。
+
+### 已完成
+
+- 主仓 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`，HEAD `e737cfefa0b8c57dd851a62c08898fefd918cf46`。城镇功能提交 `2a6f5b104f3d59a8e7b460f2d28f799bb226fa90`；整合提交为当前 HEAD。分支 `城镇` 仍指向当前 HEAD；写交接单前工作区、暂存区和未跟踪文件均为空。本文保持**未存档**，不得把 WORKLOG.md 加入提交。
+- 上一轮先提交城镇，再在城镇分支三方合并最新 main `47d721569696c9c59056cc1d4812492a2e3bca84`，无冲突；main 随后 fast-forward 到已验证的整合提交。相对旧 main 为 1518 个新增文件、5 个共享文件修改，未删除文件。本次重新核对 1518 个新增文件 SHA-256，全部仍与已验证的工作树相同；合并树为 `00f2d5be1d2157979641b48623abf5b0bd5ed986`。
+- 共享文件是 `src/app/sitemap.ts`、`src/app/sitemap.test.ts`、`src/lib/content-site-navigation.ts`、`src/lib/content-site-navigation.test.ts`、`src/components/site/ContentSiteTopbar.test.tsx`。保留 main 已有的 Calendar Creator、Constellation Map Creator 和导航改动，再加入 Town；没有整文件覆盖旧版。独立只读审核与 root 的实际 diff/哈希核对均通过。
+- 路由 `/town-creator`、`/zh/town-creator` 使用同一个 `TownCreatorPageView`。界面位于 `src/components/town-creator/`，领域逻辑、存档、渲染、导出、目录和文案位于 `src/lib/town-creator/`，素材与案例位于 `public/town-creator/`。它是手动组合城镇地图的工具，不是自动生成城镇布局或背景故事的工具。
+- manifest 当前有 192 个基础素材、486 种外观、7 类：建筑 40、城防 15、配件 28、道路 26、地面 22、预制屋 24、自然 37。四种材质为木材、石材、陶土、砂岩；只有支持材质的新对象受选择影响，已有对象保留材质，固定素材保持中性外观。素材来源与使用说明见 `public/town-creator/LICENSE.md`、`manifest.json`。
+- 工具支持三个图层、对象拖动/尺寸/旋转/复制/删除、背景和地图尺寸、五个浏览器本地存档槽、项目文件与 PNG 导出。默认地图 1200×800，保留旧项目 1200×635 兼容。存档键为 `tokenmaker.town-creator.slots`。地图统一比例适应视口，不能为消除显示余白擅自修改已有项目的真实尺寸和对象坐标。
+- 操作规则：点击最上方可见对象并切换到其所属图层；复制目标独立于编辑图层。Delete/Backspace 删除选中对象，输入控件和输入法输入期间不触发。添加、复制、删除成功不显示绿色提示条；错误和背景加载状态仍有反馈，不要把这些也静默移除。
+- 页面包含 Hero、编辑器、What Is、案例、功能介绍、How It Works、工具对比、CTA、FAQ。案例共 12 张，位于 `public/town-creator/cases/`，分三组，每组四张；使用共享 CircularTestimonials，桌面左图右文／左文右图／左图右文，不自动轮播。不要覆盖共享组件已有的可选公开参数，其他工具也在使用它。
+- 可见 H1 已去掉竖线：英文 `Fantasy Town Generator Create Town Maps Online`，中文 `奇幻城镇生成器在线创建城镇地图`。元标题保留：英文 `Fantasy Town Generator | Create Town Maps Online`，中文 `奇幻城镇生成器｜在线创建城镇地图`。元描述和 Hero 描述未在关键词密度任务中更改；不重新加入用户拒绝的“图层编辑、项目保存和 PNG 导出”营销尾句。
+- 关键词为英文 `Fantasy Town Generator`、中文 `奇幻城镇生成器`。上一轮实际浏览器统计 EN 32/1337 = 2.39%，ZH 33/1474 = 2.24%。公式为完整短语次数／正文词数，英文短语出现一次只计一次；Intl.Segmenter(locale, word) 只计 isWordLike，中文按词不按字。包含 Hero、下方读者文案、12 个案例、8 个 FAQ 问答；排除导航、页脚、编辑器、metadata/alt/aria/sr-only/SVG。从逐张实际读取文案计算的 64 种活动轮播组合及 FAQ 折叠口径均在 2%–3%；不是做了 64 次独立原生交互。本次只回读证据，不重新测密度。
+- 当前 `copy.ts` SHA-256：`14f32392b2b7f8d1ee500b47d589867f44963c0ace19c7bcf4133a20bb284d9c`；`case-studies.ts`：`6d50204d0d725b42bdae76681fde21ce4898b397be3f5a29814c136121d1152d`。关键词任务只改这两份文案字符串，页面标题、元标题、布局、素材和编辑逻辑保持原值。
+- **上一轮验证，非本次 offhand 重跑**：城镇整合 main 前 19 个测试文件、272 个测试通过；整合后 21 个测试文件、340 个测试通过。相关 ESLint、`pnpm typecheck`、`pnpm exec vinext build` 均退出 0。未跑全仓测试、标准 `pnpm build`、Workers dry-run 或线上验证。main 与已测试的整合工作树树哈希一致，不能把它写成在 main 又运行了一遍门禁。
+- **上一轮浏览器，非本次 offhand 重跑**：本地 ego-browser TaskSpace 62 验证中英文导航同时保留 Town/Calendar/Constellation、三组案例切换、图片加载、FAQ、英文建筑添加→复制到中层→点击重叠对象→Delete→重新选中下层对象，并确认没有操作反馈条。1440×1000 英文编辑器和 375×1000 中文案例截图已实际查看；手机无横向溢出、箭头 44×44、文案完整。TaskSpace 62 已结束。关键词验收的 TaskSpace 57 也已结束，不能继续操作已结束空间。
+- `/Users/wusir/Desktop/开发项目集合/城镇` 已从 Git 注册和磁盘移除，分支保留；本次只读再次确认不存在。清理只停止城镇 40013 的旧预览 PID 90755/90733 和整合预览 PID 44668/44642，没有清理其他服务。本次 40013 无监听。其他工作树 map maker、城堡、人口生成保留；未 push、未部署。
+- 桌面 `/Users/wusir/Desktop/陈镇` 当前存在，含 `00-案例总览.png`、`案例PNG`（12 张 PNG）、`可编辑项目`目录及 `案例说明与调研.md`。没有逐个重新解析可编辑项目。用户原先提到的 `/Users/wusir/Desktop/城镇.excalidraw` 当前不存在；本次未查明它此前是否被移动或删除，未执行恢复。
+- 验证证据在 `/tmp/town-merge-verification/`：tests/typecheck/lint/build 日志、`browser-check.json`、两张截图、feature-hashes.json、main-merge.log、cleanup-result.txt。关键词证据在 `/tmp/town-keyword-density/`：source-check.json、browser-check.json 和截图。清理前已将被忽略的本地 `.wrangler` 状态备份到 `/tmp/town-merge-verification/local-worker-state.tar.gz`，逐文件比对 22 个文件一致。临时目录可能以后被清理，不作为产品资源提交。
+
+### 做到一半
+
+无待续的城镇代码或合并任务。本交接单未存档。推送、部署、删除分支、恢复旧 Excalidraw 文件都不在本次范围。
+
+### 下一步
+
+无自动续做任务。下一班输入 `$pickup` 后，先只读刷新 HEAD、git status、分支和服务状态，再按用户的新要求对齐。城镇工作树已删除，后续不能继续使用其路径；不要自动新建工作树、重跑测试、启动服务、推送或部署。继续修改时保留已确认的中英文标题、密度口径和手动组合能力边界。
+
+### 踩过的坑
+
+- 城镇分支最初基于旧 main，导航和 sitemap 不能整文件复制覆盖到当前 main，否则会丢失日历和星座入口。使用三方合并，并相对最新 main 核对精确允许范围。
+- 检查整合暂存区时，`git diff --cached --check` 相对旧城镇 HEAD 读到了 main 既有的城堡输出与星座文件 EOF 空行；相对当前 main 的 `git diff --cached --check main` 通过。这些已有文件未修改，不要顺手修复。
+- ego 不接受没有 name 的 `loc=role:application`；合并验收改用实际 DOM 的 `loc=css:[role="application"]` 后继续通过。这是定位脚本错误，不是应用缺陷。关键词验收里 FAQ 的一次 pointer 拦截也未复现为应用缺陷，最终用原生 focus+Enter 完成验收。
+- `pnpm dev` 会先执行 free-port.mjs 释放 40001，不能为验收随手运行。原 40013 预览来自已删除工作树，现已停止；不要把旧 URL 可用当成当前事实。
+- 构建、局部测试和浏览器证据必须分开；这轮没有证明全仓测试、标准 Next 构建、Cloudflare 运行或线上发布通过。
+
+### 怎么验证
+
+本次 offhand 未执行以下产品验证，只回读现状、源码哈希和上一轮证据。下一班需要验证时，在主仓按授权范围执行：
+
+```bash
+git status --short
+git log -3 --oneline
+git merge-base --is-ancestor 2a6f5b10 main
+git rev-parse main 城镇
+git worktree list
+pnpm exec vitest run src/lib/town-creator src/components/town-creator src/app/town-creator-routes.test.tsx src/app/sitemap.test.ts src/lib/content-site-navigation.test.ts src/components/site/ContentSiteTopbar.test.tsx src/components/armor-creator/circular-testimonials.test.tsx src/components/site/HomeSeoContent.test.tsx src/app/site-routes.test.tsx
+pnpm typecheck
+pnpm exec eslint src/lib/town-creator src/components/town-creator 'src/app/(en)/town-creator/page.tsx' 'src/app/(zh)/zh/town-creator/page.tsx' src/app/town-creator-routes.test.tsx src/app/sitemap.ts src/app/sitemap.test.ts src/lib/content-site-navigation.ts src/lib/content-site-navigation.test.ts src/components/site/ContentSiteTopbar.test.tsx
+pnpm exec vinext build
+```
+
+浏览器先核对实际服务 PID/cwd；若需启动指定端口预览，先确认端口空闲和用户授权，使用 `pnpm exec vinext start --hostname 127.0.0.1 --port <确认空闲的端口>`，不要默认释放 40001。分别打开 `/town-creator`、`/zh/town-creator`：检查 Hero 无竖线而元标题仍有分隔符、免费工具导航、素材库视口、地图统一比例、复制及重叠对象选择、跨层切换、Delete/Backspace 与输入保护、无成功提示条、三组案例、FAQ；保存槽、项目文件和 PNG 导出是额外验证路径，本轮合并浏览器未重新逐一验收。写交接单后应仅有 WORKLOG.md 未暂存改动，main HEAD、城镇分支和其他文件保持不变。
+
 ## 交接单 · 2026-10-08 20:14 Asia/Shanghai +0800 · Codex（Grok 为受监督写入者）
 
 ### 本次目标
