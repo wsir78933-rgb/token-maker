@@ -25,6 +25,7 @@ const CALENDAR_CREATOR_LAST_MODIFIED = '2026-10-06';
 const SCROLL_CREATOR_LAST_MODIFIED = '2026-10-06';
 const FAMILY_TREE_CREATOR_LAST_MODIFIED = '2026-10-06';
 const CONSTELLATION_MAP_CREATOR_LAST_MODIFIED = '2026-10-07';
+const MAP_MAKER_LAST_MODIFIED = '2026-10-08';
 const SOLAR_SYSTEM_CREATOR_LAST_MODIFIED = '2026-10-06';
 const PERIODIC_TABLE_CREATOR_LAST_MODIFIED = '2026-10-06';
 const TAROT_CARDS_LAST_MODIFIED = '2026-10-06';
@@ -126,6 +127,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/town-creator',
     '/family-tree-creator',
     '/constellation-map-creator',
+    '/map-maker',
     '/solar-system-creator',
     '/periodic-table-creator',
     '/tarot-cards',
@@ -166,6 +168,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(FAMILY_TREE_CREATOR_LAST_MODIFIED)
             : path === '/constellation-map-creator'
             ? new Date(CONSTELLATION_MAP_CREATOR_LAST_MODIFIED)
+            : path === '/map-maker'
+            ? new Date(MAP_MAKER_LAST_MODIFIED)
             : path === '/solar-system-creator'
             ? new Date(SOLAR_SYSTEM_CREATOR_LAST_MODIFIED)
             : path === '/periodic-table-creator'

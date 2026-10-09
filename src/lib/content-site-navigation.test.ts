@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { getBlogCategories } from '@/lib/blog-content';
 import { getCalendarCreatorCopy } from '@/lib/calendar-creator/copy';
+import { getMapMakerCopy } from '@/lib/map-maker/copy';
 import { getTarotCopy } from '@/lib/tarot-cards/copy';
 import {
   assertContentSiteTopbarModel,
@@ -68,6 +69,7 @@ describe('content site topbar model', () => {
       { href: '/calendar-creator', title: getCalendarCreatorCopy('en').navigationTitle },
       { href: '/family-tree-creator', title: 'Family Tree Creator' },
       { href: '/constellation-map-creator', title: 'Constellation Map Creator' },
+      { href: '/map-maker', title: getMapMakerCopy('en').navigationTitle },
       { href: '/solar-system-creator', title: 'Solar System Creator' },
       { href: '/periodic-table-creator', title: 'Periodic Table Creator' },
       { href: '/tarot-cards', title: getTarotCopy('en').navigationTitle },
@@ -118,6 +120,7 @@ describe('content site topbar model', () => {
       { href: '/zh/calendar-creator', title: getCalendarCreatorCopy('zh').navigationTitle },
       { href: '/zh/family-tree-creator', title: '人物家谱制作器' },
       { href: '/zh/constellation-map-creator', title: '星座地图创建器' },
+      { href: '/zh/map-maker', title: getMapMakerCopy('zh').navigationTitle },
       { href: '/zh/solar-system-creator', title: '太阳系创建器' },
       { href: '/zh/periodic-table-creator', title: '元素周期表制作器' },
       { href: '/zh/tarot-cards', title: getTarotCopy('zh').navigationTitle },
@@ -357,6 +360,27 @@ describe('content site topbar model', () => {
     expect(sibling.freeToolsMenuIsActive).toBe(false);
   });
 
+  it.each([
+    { locale: 'en' as const, prefix: '', otherPrefix: '/zh' },
+    { locale: 'zh' as const, prefix: '/zh', otherPrefix: '' },
+  ])('activates the map maker boundary and preserves the $locale language switch', ({
+    locale,
+    prefix,
+    otherPrefix,
+  }) => {
+    const switchedPath = `${otherPrefix}/map-maker`;
+    const current = readTopbar(locale, `${prefix}/map-maker?view=hex#canvas`, switchedPath);
+    const nested = readTopbar(locale, `${prefix}/map-maker/saved`, switchedPath);
+    const sibling = readTopbar(locale, `${prefix}/map-maker-extra`, '/zh');
+
+    expect(current.freeToolsMenuIsActive).toBe(true);
+    expect(current.featureMenuIsActive).toBe(false);
+    expect(current.links.every((link) => !link.isActive)).toBe(true);
+    expect(current.localeSwitch.href).toBe(switchedPath);
+    expect(nested.freeToolsMenuIsActive).toBe(true);
+    expect(sibling.freeToolsMenuIsActive).toBe(false);
+  });
+
   it('activates only Dice Roller or Contact among the remaining plain links', () => {
     const dice = readTopbar('en', '/dice-roller-dnd', '/zh/dice-roller-dnd');
     const contact = readTopbar('zh', '/zh/contact/forms', '/contact/forms');
@@ -381,7 +405,7 @@ describe('content site topbar model', () => {
 
     expect(model.freeToolsMenuHref).toBe(href);
     expect(model.freeToolsMenuIsActive).toBe(true);
-    expect(model.freeTools).toHaveLength(17);
+    expect(model.freeTools).toHaveLength(18);
     expect(model.freeTools.some((feature) => feature.href === href)).toBe(false);
     expect(model.freeTools[0]).toMatchObject({ href: locale === 'en' ? '/' : '/zh' });
   });
