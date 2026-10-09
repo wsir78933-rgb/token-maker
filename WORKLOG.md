@@ -1,5 +1,122 @@
 # WORKLOG
 
+## 交接单 · 2026-10-09 20:11 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+交接城堡设计工具：完整竞品功能清点、简化编辑操作、中英文页面与 SEO、全量 WebP 素材、12 个案例、正文关键词密度、提交合并与唯一城堡工作树清理，以及后续图片加载核查。用户明确回复「继续 不存档」；本次只在主仓 WORKLOG.md 顶部追加交接单，保留全部旧条目，保持**未存档**，不修改产品代码、不提交、不 push、不部署。
+
+### 已完成
+
+- 当前主仓 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`，HEAD `c67fbc251000fe3be1a4e68aaebc3e93f33226bb`。城堡功能提交 `8c41effb0aeffb3bea0efc44b8d21e9be21fd30b`，合并提交为当前 HEAD，parents 为 `c3afaa438c4011fefb27f873cfa0e811d3fcea84` 和 8c41effb。分支 `城堡` 保留且指向功能提交；本次 ancestry 检查退出 0。写入前只有 ` M WORKLOG.md`：这是已存在的工具集合页交接记录，暂存区及未跟踪文件为空，不覆盖或提交这些旧记录。
+- 英文 `/castle-creator`、中文 `/zh/castle-creator`，路由位于 `src/app/(en)/castle-creator/page.tsx`、`src/app/(zh)/zh/castle-creator/page.tsx`，共同渲染 `src/components/castle-creator/CastleCreatorPageView.tsx`。领域模块在 `src/lib/castle-creator/`，UI 在 `src/components/castle-creator/`。本工具是在 2D 画布手动拼搭城堡外观，不是自动生成世界观或 3D 模型。
+- 功能提交共 1577 文件：1533 WebP、21 个 Castle 组件文件、15 个 Castle 库文件、3 个路由/路由测试文件，以及 5 个共享导航/sitemap 文件。合并冲突仅发生在 `src/app/site-routes.test.tsx`、`src/app/sitemap.test.ts`、`src/app/sitemap.ts`、`src/lib/content-site-navigation.test.ts`、`src/lib/content-site-navigation.ts`。解决后保留 main 全部旧工具与相对顺序，只加入城堡入口/测试；免费工具导航数量从 16 改为 17，`freeToolsMenuHref` 保留 `/tools` 与 `/zh/tools`。共享 `src/components/armor-creator/circular-testimonials.tsx` 与合并前 main 字节完全相同，不能拿旧分支的组件去覆盖它。
+- 目录 366 个基础零件：城墙 94、城垛 70、塔顶 24、建筑 67、建筑屋顶 84、城门 18，加门件 9。城墙、城垛、塔顶、建筑、城门有 4 种配色；建筑屋顶有 5 种配色；门件保持原色。全配色为 1521 张 WebP，另有 12 张案例，共 1533 张，均为仓库 `public/castle-creator/` 内真实文件，没有指向桌面的符号链接；页面运行不依赖桌面目录或旧 worktree/output 路径。
+- 编辑器保留三个图层及可见性、移动、缩放、复制、删除、置顶、5px 网格吸附、背景颜色/HTTP(S) 图片 URL、自动或自定义画布、五个浏览器本地存档槽、JSON 项目导入/导出和 PNG 下载。默认宽度 0 表示按视口自动确定宽度，高度 635；默认白底、下层、关闭吸附、允许缩放。存档键前缀 `tokenmaker.castle-creator.save-slot`，槽编号 1–5。下载作品仍是 PNG，不能把素材的 WebP 格式误写成作品导出格式。
+- 已按用户反馈修正分类文字和数量呈现：按钮显示分类名，数量放在 title/无障碍标签；按当前分类只显示适用配色，不再同时展示两套会引起误解的配色；素材库内部滚动而不是把全部素材撑成一长列，侧栏空间随画布利用。拖动图片本体负责移动；选中后外侧独立缩放点或「大小」滑杆负责缩放。缩放热区避让全部可见素材，无安全位置时放画布下方；边缘拉伸方向与光标匹配，原生移动实测没有改变素材尺寸。
+- 页面顺序：Hero → 编辑器 → What Is → 案例 → 功能介绍 → How It Works → 工具对比 → CTA → FAQ。可见 Hero 去掉竖线，CTA 在 FAQ 上方；FAQ 中英各 10 条。12 个案例分三组、每组 4 张，桌面左图右文／左文右图／左图右文，使用公开 CircularTestimonials 参数，关闭自动轮播。Castle section 局部覆盖 `object-fit: contain`，完整展示案例图，不改共享或全局样式。
+- 关键词：英文 `Castle Creator`，中文 `城堡设计工具`。SEO 标题英文 `Free Castle Creator – Build Fantasy Castles Online`，中文 `免费城堡设计工具｜在线创建奇幻城堡`；可见 H1 英文 `Free Castle Creator Design Fantasy Castles Online`，中文 `免费在线城堡设计工具 制作奇幻城堡`。中文导航仍是 `城堡拼搭`，不是漏改 SEO。密度验收时默认 EN 26/1048 = 2.480916%，ZH 27/1138 = 2.372583%；每语言三组活动案例的 64 种组合计算范围 EN 2.443609%–2.509653%、ZH 2.339688%–2.412869%，均在用户要求的 2%–3%。
+- 密度口径：完整关键词短语出现一次只算一次，EN 不区分大小写；分母用 `Intl.Segmenter(locale, {granularity:'word'})` 的 `isWordLike`，ZH 按词不按字。读取八个营销正文 section（Hero、What Is、案例、功能、How It Works、比较、CTA、FAQ），包含折叠 FAQ 答案及比较表无障碍 caption；排除编辑器、导航、页脚、metadata/alt/aria 标签及 SVG 等。每个语言原生切换并读取 12 个案例状态，然后计算 64 组合；不是做了 64 次独立原生交互，也不是把 12 段轮播文案同时堆入可见正文分母。
+- **合并阶段已执行，非本次 offhand 重跑**：同一最终源码的 15 个指定 Vitest 文件、254/254 tests 通过；Castle 与 5 个共享文件的 ESLint、`pnpm typecheck`（`next typegen && tsc --noEmit`）、`pnpm exec vinext build` 均确认退出 0。根代理读取实际输出并核验独有 1572 文件 SHA-256、暂存区精确 1577 路径及共享文件实际 diff，独立只读 reviewer 同样通过。本次只回读 `/tmp/castle-main-tests.log`、`castle-main-typecheck.log`、`castle-main-lint.log`、`castle-main-build.log` 和合并审核 JSON；不声称本次重新跑了测试、全仓测试、标准 Next 构建、Workers dry-run 或线上发布。
+- **合并阶段浏览器验收，非本次 offhand 重跑**：本地 ego-browser TaskSpace 88 已完成并关闭。验证 EN/ZH 营销文案、各 12 个案例原生状态、各 64 组合密度、390px 手机无横向溢出、FAQ；编辑器 EN/ZH 添加→复制→删除→JSON 下载，英文实际鼠标拖动尺寸不变并下载 PNG。PNG 实际 726×635、20039 字节、2146 个非白像素，SHA-256 `beac809543bf924aabaf292e1160a2c68520bf526c36c66c0a6fc74626771d38`。证据 `/tmp/castle-main-browser-acceptance.json`、`castle-main-editor-download-acceptance.json`、`castle-main-download-artifact-check.json` 及相应截图/日志。原生存档槽、导入与所有设置没有在这轮合并验收中全量重测，不以组件测试替代这些浏览器路径。
+- **后续图片核查已执行，非本次 offhand 重跑**：浏览器 TaskSpace 4 在主仓 40037 页面逐张 GET 并用浏览器 `createImageBitmap` 解码 1533 个文件；全部 HTTP 200、Content-Type `image/webp`、RIFF/WEBP 文件头正确、解码尺寸为正，失败 0，总响应文件字节 81920860。原生切换六个分类检查 141/141 当时可见缩略图均加载，12 个案例状态实际显示且 `object-fit: contain`；缩略图和案例使用 lazy loading。TaskSpace 4 已结束，不可继续操作旧空间。原始证据 `/tmp/castle-images-http-decode.json`、`castle-images-ui-check.json`、`castle-images-runtime-browser.log`、`castle-images-ui-browser.log`、`castle-images-library.png`、`castle-images-examples.png`。这是本地加载验证，不是线上部署或网络测速承诺。
+- `/Users/wusir/Desktop/开发项目集合/城堡` 已正常从磁盘及 Git worktree 注册移除，分支保留。清理先停止 Castle 40033–40036，再发现并逐个核对 cwd/命令属于该 worktree 的旧预览：40002–40010、40021、40030–40032；只向已核实 Castle 进程发送 SIGTERM。主仓 40001/40037 保留，其余 main、map maker、公告、人口生成工作树保留。清理回执 `/tmp/castle-preview-cleanup.json`、`castle-extra-preview-cleanup.json`、`castle-final-integration.json`；本次重新确认 Castle 路径不存在且 ancestry 正确，没有重跑删除。
+- 本次再次确认预览 40037 的 PID 83323、cwd 是主仓，命令 `vinext start --hostname 127.0.0.1 --port 40037`；40001 PID 1700 是主仓 next-server，未重启。可访问 `http://localhost:40037/castle-creator`、`http://localhost:40037/zh/castle-creator`。PID 是核查时快照，后续操作前必须重新查，不能凭本交接直接 kill。不要运行 `pnpm dev` 随意释放 40001。
+- 未提交制作记录已从旧 worktree/output 原子移到桌面 `/Users/wusir/Desktop/城堡制作记录`，3476 文件、122166682 字节；迁移前后逐文件 SHA-256 相同，清理前再次核对。桌面 `/Users/wusir/Desktop/城堡` 当前含 1521 WebP 及 PNG/SVG 原图、制作凭证；`/Users/wusir/Desktop/城堡案例` 当前含 12 WebP 及 PNG、可编辑 JSON 工程。后续已把这两目录的 1533 个 WebP 与仓库按内容哈希逐一比对，全部存在且一致。用户只询问桌面素材能否删除，本会话没有删除这些桌面交付；若用户以后要删「城堡」，网站不受影响，但需注意源图/记录备份，案例 JSON 不能由展示图片替代。三个桌面目录本次均确认仍存在。
+- 本次使用内置子代理处理互斥实现和最多两路只读复核，由 root 检查真实日志、哈希和浏览器结果后收尾；没有使用 Orca 编排，没有创建第二个 Castle 工作树。编码约束继续保持高内聚/低耦合、单一职责、主函数调度、公开函数/类型/命令通信、KISS、Fail Fast（异常指出具体值且不吞未知异常）、YAGNI、精确命名。没有 push 或部署。临时 `/tmp` 证据可能被系统清理，不是产品资源，也不提交。
+
+### 做到一半
+
+无待续的 Castle 产品实现、合并或工作树清理任务。本交接单与已存在的 WORKLOG 改动均**未存档**。桌面交付删除、推送、部署、删除城堡分支都未执行，也不是本次 offhand 的范围。范围外只读观察：当前 `src/lib/tool-directory.ts` 没有 Castle 条目，`/tools` 固定目录和顶部免费工具菜单不是同一个数据来源；本次不自动给集合页添加 Castle，不把这条观察写成已经修复。
+
+### 下一步
+
+无自动续做任务。下一班输入 `$pickup` 后先只读刷新 HEAD、git status、WORKLOG、分支和服务归属，再按用户新要求对齐。不能继续进入已删除的「城堡」路径，也不要自动新建工作树、恢复旧服务器、改集合目录、删除桌面备份、重跑全部门禁、提交交接记录、push 或部署。继续修改 Castle 时保持 EN/ZH 一致、已确认的标题与密度口径、六分类配色规则、外侧缩放点操作和三组案例布局。
+
+### 踩过的坑
+
+- Castle 基于较早 main，共享导航和 sitemap 用整文件 ours/theirs 会丢失后来加入的工具；必须保留 main 更新，仅组合 Castle 的实际增量。共享 CircularTestimonials 还有其他工具需要的公开可选参数，不要按用户最早粘贴的旧版本覆盖它。
+- 用户先说去掉冗余文字，最终明确要求分类按钮显示名称、数量只在悬浮时展示。不要再退回只显示 94、70 或截断名称的按钮。配色是针对适用分类的新零件，不能暗示两套配色同时作用于任意分类或已经放入画布的零件。
+- 拖动素材本体不得触发缩放；缩放热区不能覆盖其他可见素材。移动、缩放、选中和叠放顺序是独立行为，不要为选中素材自动置顶。
+- JSON 导出成功会自动关闭工程对话框。验收脚本曾在导出后再点 Close，产生找不到元素的脚本失败；随后按真实状态恢复同一 TaskSpace 并完成下载，这是测试流程问题，不是工具导出失败。不要为恢复自动化错误创建第二个浏览器空间。
+- 历史旧预览很多且都引用被删除的 worktree；旧端口/PID、旧截图、静态代码和 worker 口头自报不能当作当前运行证明。先核对 listener PID/cwd、源码与响应哈希。40037 是主仓新预览，40001 属于用户原服务器，不主动重启。
+- 桌面 `城堡案例/使用说明.md` 的「网站范围」段仍是较早交付时的描述；后续 12 张 WebP 已加入网站，不能用这段旧文字否定当前仓库与实际 HTTP/浏览器证据。本次没有顺手更新桌面说明。
+- 分母含所有折叠 FAQ 答案及比较表 caption；更换统计范围或把中文词数改为汉字数会改变密度。案例 64 组合是从各活动状态读出的文案计算，不能说成 64 次原生交互。
+- 相关单测、类型检查、Vinext 构建、浏览器、下载文件与线上部署各自是独立证据。本次 offhand 只回读历史证据和当前 Git/文件/进程状态，没有新运行产品测试或浏览器，不以历史 PASS 宣称线上通过。不提交 WORKLOG.md，也不覆盖原有其他工具交接。
+
+### 怎么验证
+
+以下是下一班获准验证时的具体步骤，本次 offhand 没有执行这些产品命令；测试数量在后续改动后可能变化。
+
+```bash
+git status --short
+git log -3 --oneline
+git rev-parse main 城堡
+git merge-base --is-ancestor 城堡 main
+git worktree list
+pnpm exec vitest run src/lib/castle-creator src/components/castle-creator src/app/castle-creator-routes.test.tsx src/lib/content-site-navigation.test.ts src/app/site-routes.test.tsx src/app/sitemap.test.ts src/components/armor-creator/circular-testimonials.test.tsx
+pnpm typecheck
+pnpm exec eslint src/lib/castle-creator src/components/castle-creator 'src/app/(en)/castle-creator/page.tsx' 'src/app/(zh)/zh/castle-creator/page.tsx' src/app/castle-creator-routes.test.tsx src/lib/content-site-navigation.ts src/lib/content-site-navigation.test.ts src/app/site-routes.test.tsx src/app/sitemap.ts src/app/sitemap.test.ts
+pnpm exec vinext build
+```
+
+先只读核查 40037 listener PID/cwd，服务不存在时先对齐启动范围与空闲端口，不要直接运行会释放 40001 的 `pnpm dev`。本地 ego-browser 创建本次目标的新空间（不要复用已结束的 88 或 4），访问中英文 URL：看 Hero 没有竖线，CTA 在 FAQ 前，10 个 FAQ 和三组案例；原生切换六分类及配色，确认名称/悬浮数量、只有适用配色、图像实际加载和侧栏内部滚动；加零件→拖动本体检查只移动→用外侧缩放点/大小滑杆调整→复制/删除/置顶→切换三个图层；下载 JSON 和 PNG，回读文件和尺寸。若要覆盖完整功能，另做五存档槽、刷新恢复、JSON 导入、损坏输入、背景/画布设置验收，不以这轮 254 项单测替代原生浏览器证明。手机再检查页面无横向溢出与素材库滚动。密度重测沿用 `/tmp/castle-main-browser.mjs` 的原有口径，但其中旧 TaskSpace/服务须重新核实，不能原样重跑已经完成的空间；图片全量请求/解码脚本也是测试证据，不是产品源码。
+
+交接单写入验收：旧 WORKLOG 正文完整保留，只有 WORKLOG.md 未暂存改动；main HEAD、城堡 ref、暂存区和其他文件不变。用户已明确「不存档」，不要追加 commit。
+
+## 交接单 · 2026-10-09 18:48 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+交接本次中英文工具集合页面：以 Pollo 的居中作品展示为参考，结合 Token Maker 自身风格；保留动态作品展示、工具搜索和卡片入口，不做分类。功能已按用户授权提交、合并到本地 main，并删除唯一「集合页面」工作树。本次 offhand 只追加本交接单，不修改产品代码、不提交、不 push、不部署。
+
+### 已完成
+
+- 当前仓库 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`，HEAD `c67fbc251000fe3be1a4e68aaebc3e93f33226bb`，本地状态 `main...origin/main [ahead 3]`；写交接单前工作区、暂存区和未跟踪文件均为空。WORKLOG.md 是已跟踪文件，本交接单保持**未存档**，不得加入提交。
+- 本轮集合页面提交为 `c3afaa438c4011fefb27f873cfa0e811d3fcea84`（`Add bilingual tools directory`），parent 为 `c484534a40b9892fc7b31b07088b157edba585a6`，包含 23 个授权文件，先提交再 fast-forward 合并到 main。分支 `集合页面` 仍指向 c3afaa4；本次 `git merge-base --is-ancestor 集合页面 main` 退出 0。
+- 交接时 main 已有后续城堡合并：当前 HEAD 的 parents 为 c3afaa4 与 `8c41effb0aeffb3bea0efc44b8d21e9be21fd30b`，说明为 `merge: integrate bilingual castle creator`。本次没有创建、修改或撤销这些后续提交。
+- 路由 `/tools` 与 `/zh/tools` 分别位于 `src/app/(en)/tools/page.tsx`、`src/app/(zh)/zh/tools/page.tsx`，共同渲染 `src/components/site/views/ToolDirectoryPageView.tsx`。双语 metadata 位于 `src/lib/tool-directory-metadata.ts`；共享导航和 sitemap 均保留集合页入口。
+- 工具目录与双语名称/说明位于 `src/lib/tool-directory.ts`，通过公开 `getToolDirectoryItems(locale)` 提供内容，目前固定 17 项。界面位于 `src/components/site/tools-directory/`：ToolDirectoryGrid 与 ToolDirectoryHero 及各自 CSS 和测试。没有分类标签；搜索匹配工具名称和说明，空结果有双语提示。卡片是完整链接，手机两列、768px 起三列、1024px 起四列。
+- Hero 使用本站 Token、纹章和武器案例，共五张作品卡片，上方居中叠放，下方标题和描述，保留本站暗色/金色风格。自动轮换间隔 5000ms，CSS 过渡 700ms；手机隐藏两侧外层卡片并移出 tab 顺序。鼠标/笔悬停、键盘焦点进入、reduced motion、页面隐藏或展示区离屏会暂停自动轮换。用户拒绝的独立暂停/播放按钮已移除，当前 Hero JSX 中没有 button。
+- 已按用户反馈把塔罗牌卡片改为英文 `Tarot Cards`、中文 `塔罗牌工具`，不再称作 Tarot Card Creator。最后一次窄修改仅将英文日历标签改为 `Fantasy Calendar Generator`、中文服装标签改为 `服装搭配工具`；其他名称、描述、预览 alt 和布局没有顺手统一。当前目录源码 SHA-256 为 `5e79d1cd5706e2dff5044847a2af53dd1297cf4d50522b4ffcb7a062893a68d1`。
+- 本次回读 `accepted-source.sha256`：23 项中 18 项仍与集合页面验收版本一致；5 项共享文件因后续城堡合并不再匹配，分别是 `src/app/site-routes.test.tsx`、`src/app/sitemap.test.ts`、`src/app/sitemap.ts`、`src/lib/content-site-navigation.test.ts`、`src/lib/content-site-navigation.ts`。实际 Git diff 显示新增城堡路由/导航及对应断言，没有回退集合入口。不要把当前 manifest 检查退出 1 当作集合专属文件被改坏，也不能写成当前 23/23 全部匹配。
+- **上一轮合并后验证，非本次 offhand 重跑**：在 main=c3afaa4 时，12 个指定 Vitest 文件共 186/186 tests 通过；manifest 中 21 个 TS/TSX 文件 ESLint 无诊断、退出 0；正式 `pnpm typecheck`（`next typegen && tsc --noEmit`）退出 0。已回读三项原始日志和 exit-code 文件。本次没有重跑产品测试、类型检查、lint、构建或浏览器，也未验证最新城堡整合 HEAD 的运行效果。
+- **上一轮清理及本次新核查**：`/Users/wusir/Desktop/开发项目集合/集合页面` 路径不存在，Git worktree 注册也已移除；40189 本次 `lsof` 无监听、退出 1。上一轮只对身份已核实的 Next dev 父进程发送 SIGTERM，再执行不带 --force 的正常 `git worktree remove`；分支与代码保留在 main 中。本次注册表共 4 项：主仓、map maker、公告、人口生成；只回读，没有调整其他工作树或服务。
+- 原始证据在 `/tmp/集合页面-合并验收/`：`accepted-source.sha256`、`evidence.md`、`main-independent-acceptance.md`、三项 `main-independent-*` 验证日志/退出码，以及 `cleanup-execution.md`。这些临时证据可能被系统清理，不是产品资源，不提交。最终去掉按钮及两处名称修正后的原生浏览器交互未在本次重验，不能以源码和单测代替浏览器证明。
+
+### 做到一半
+
+无待续的集合页面代码、合并或工作树清理任务。本交接单未存档。当前目录仍是本轮批准的 17 项，不含后来并入 main 的 `castle-creator`；是否把新工具加入集合页属于后续需求，本次没有扩展。用户最后明确要求只改两处名称、其他不要动，其余名称/描述不在本次修正范围。
+
+### 下一步
+
+无自动续做任务。下一班输入 `$pickup` 后先只读刷新 HEAD、git status、WORKLOG.md、分支和服务归属，再按用户的新要求对齐；不要把 c3afaa4 当作当前 HEAD，也不要自动加入城堡、统一其他名称、重跑门禁、创建工作树、启动服务、push 或部署。若获准继续修改，同步检查 EN/ZH，保留无分类和无独立暂停按钮的已确认设计。编码 Task spec 仍需明确高内聚、低耦合、单一职责、多步主函数仅调度、公开函数/类型/命令通信、KISS、Fail Fast（错误含具体异常值且不吞未知异常）、YAGNI 和精确命名；本会话使用内置子代理而非 Orca 编排。
+
+### 踩过的坑
+
+- 工具集合的营销名称不能冒充工具实际能力：塔罗牌是抽牌/牌阵工具，不是自定义插画卡牌制作器。用户要求窄修改时只修改被确认的目录标签，不要全局替换历史 alt 或扩展到其余文案。
+- 旧验收证据绑定 c3afaa4，后续城堡整合改过共享导航/sitemap 和测试。回读证据与在当前 main 重跑必须分开；禁止为了让旧 hash manifest 全绿而覆盖新共享文件。
+- `pnpm dev` 会先释放 40001，不能为验证随手运行。40189 是已停止、工作树已删除的历史预览，不能继续将它当作可用链接；历史 PID 也不能直接复用去 kill。用户既有浏览器空间不属于本次可随意操作的验收空间。
+- 上一轮 worktree remove 首轮等待没有保留可恢复的最终退出码；没有重跑删除或猜报 exit 0。删除结果由独立回读的目录不存在、Git 注册消失、main/ref/hash 保留等后置状态确认，记录在 cleanup-execution.md。
+- 局部测试、完整测试、构建、原生浏览器与线上状态是不同证据；本交接不声称全量测试、最新 main 构建、浏览器或部署通过。不把 WORKLOG.md 加入 Git 提交。
+
+### 怎么验证
+
+本次 offhand 只做 Git/文件/日志/端口的只读核查和交接单写入。下面产品验证命令是后续获得授权时可运行的步骤，不表示本次已经运行；在最新 main 上测试数量可能随其他功能变化，不能强行要求还是 186 项。
+
+```bash
+git status --short
+git log -3 --oneline
+git rev-parse main 集合页面
+git merge-base --is-ancestor 集合页面 main
+git worktree list
+pnpm exec vitest run src/lib/tool-directory.test.ts src/lib/tool-directory-metadata.test.ts src/components/site/tools-directory/ToolDirectoryGrid.test.tsx src/components/site/tools-directory/ToolDirectoryHero.test.tsx src/app/tools-routes.test.tsx src/app/site-routes.test.tsx src/app/army-formation-creator-routes.test.tsx src/app/calendar-creator-routes.test.tsx src/app/language-generator-routes.test.tsx src/app/sitemap.test.ts src/components/site/ContentSiteTopbar.test.tsx src/lib/content-site-navigation.test.ts
+pnpm typecheck
+pnpm exec eslint 'src/app/(en)/tools/page.tsx' 'src/app/(zh)/zh/tools/page.tsx' src/app/tools-routes.test.tsx src/components/site/tools-directory/*.tsx src/components/site/views/ToolDirectoryPageView.tsx src/lib/tool-directory*.ts src/app/sitemap.ts src/app/sitemap.test.ts src/lib/content-site-navigation.ts src/lib/content-site-navigation.test.ts src/components/site/ContentSiteTopbar.test.tsx src/app/site-routes.test.tsx src/app/army-formation-creator-routes.test.tsx src/app/calendar-creator-routes.test.tsx src/app/language-generator-routes.test.tsx
+```
+
+需要浏览器重验时，先确认服务实际 PID/cwd、空闲端口及用户授权，使用独立本地 ego-browser 空间。分别访问 `/tools`、`/zh/tools`：桌面/手机检查 17 项卡片、四列/两列与无横向溢出；按工具名/用途搜索并检查空结果，清空恢复；检查 Tarot Cards/塔罗牌工具、Fantasy Calendar Generator、服装搭配工具；点击卡片和 Hero 作品进入对应语言的正确工具。鼠标移出作品展示后等待超过五秒观察卡片位置变化，悬停/Tab 焦点进入后确认停止，检查 reduced motion 与页面隐藏/离屏暂停，无独立暂停按钮。源码/组件单测不能替代这些原生行为验证。交接单写完后应只有 WORKLOG.md 未暂存改动，HEAD/分支和旧交接记录保持不变。
+
 ## 交接单 · 2026-10-08 22:07 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
