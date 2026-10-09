@@ -59,7 +59,7 @@ describe('army formation creator routes', () => {
 
     const topbar = readSiteTopbar();
     const freeToolsLink = within(topbar).getByRole('link', { name: 'Free tools' });
-    expect(freeToolsLink.getAttribute('href')).toBe('/');
+    expect(freeToolsLink.getAttribute('href')).toBe('/tools');
     const freeToolsNavItem = freeToolsLink.closest('.site-nav-item');
     if (!(freeToolsNavItem instanceof HTMLElement)) {
       throw new Error('Free tools link is not inside .site-nav-item');
@@ -109,7 +109,7 @@ describe('army formation creator routes', () => {
 
     const topbar = readSiteTopbar();
     const freeToolsLink = within(topbar).getByRole('link', { name: '免费工具' });
-    expect(freeToolsLink.getAttribute('href')).toBe('/zh');
+    expect(freeToolsLink.getAttribute('href')).toBe('/zh/tools');
     const freeToolsNavItem = freeToolsLink.closest('.site-nav-item');
     if (!(freeToolsNavItem instanceof HTMLElement)) {
       throw new Error('免费工具链接不在 .site-nav-item 内');

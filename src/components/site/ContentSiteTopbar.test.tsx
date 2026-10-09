@@ -8,7 +8,7 @@ import { ContentSiteTopbar } from './ContentSiteTopbar';
 const topbarModel = {
   navigationLabel: 'Primary',
   freeToolsMenuLabel: 'Free tools',
-  freeToolsMenuHref: '/',
+  freeToolsMenuHref: '/tools',
   freeToolsMenuIsActive: true,
   freeToolsMenuAccessibleName: 'Free tools',
   freeTools: [
@@ -139,7 +139,7 @@ describe('ContentSiteTopbar', () => {
 
     const freeToolsLink = screen.getByRole('link', { name: 'Free tools' });
     const blogLink = screen.getByRole('link', { name: 'Blog' });
-    expect(freeToolsLink.getAttribute('href')).toBe('/');
+    expect(freeToolsLink.getAttribute('href')).toBe('/tools');
     expect(freeToolsLink.getAttribute('aria-haspopup')).toBe('menu');
     expect(blogLink.getAttribute('href')).toBe('/blog');
     expect(blogLink.getAttribute('aria-haspopup')).toBe('menu');
@@ -268,7 +268,7 @@ describe('ContentSiteTopbar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Open navigation' }));
 
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByRole('link', { name: 'Free tools' }).getAttribute('href')).toBe('/');
+    expect(within(dialog).getByRole('link', { name: 'Free tools' }).getAttribute('href')).toBe('/tools');
     const freeToolsAccordion = within(dialog).getByRole('button', { name: 'Free tools' });
     expect(freeToolsAccordion).toBeDefined();
     fireEvent.click(freeToolsAccordion);

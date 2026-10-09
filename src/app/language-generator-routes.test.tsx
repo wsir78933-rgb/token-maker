@@ -317,7 +317,7 @@ describe('language generator routes', () => {
     expect(firstAnswerRegion.hidden).toBe(true);
 
     const freeToolsLink = within(topbar).getByRole('link', { name: navigationMenuLabel });
-    expect(freeToolsLink.getAttribute('href')).toBe(locale === 'zh' ? '/zh' : '/');
+    expect(freeToolsLink.getAttribute('href')).toBe(locale === 'zh' ? '/zh/tools' : '/tools');
     expect(within(topbar).getByRole('link', { name: switchLabel }).getAttribute('href')).toBe(switchedPath);
 
     const freeToolsMenuItem = freeToolsLink.closest('.site-nav-item');

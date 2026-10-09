@@ -29,8 +29,10 @@ const SOLAR_SYSTEM_CREATOR_PATH = '/solar-system-creator';
 const TAROT_CARDS_PATH = '/tarot-cards';
 const TOWN_CREATOR_PATH = '/town-creator';
 const WEAPON_CREATOR_PATH = '/weapon-creator';
+const TOOL_DIRECTORY_PATH = '/tools';
 const FREE_TOOLS_PATHS = [
   '/',
+  TOOL_DIRECTORY_PATH,
   '/coat-of-arms-maker',
   '/armor-creator',
   OUTFIT_CREATOR_PATH,
@@ -192,7 +194,7 @@ function buildContentSiteFreeToolsMenu(
 
   return {
     freeToolsMenuLabel: menuCopy.label,
-    freeToolsMenuHref: getLocalizedPath(locale, '/'),
+    freeToolsMenuHref: getLocalizedPath(locale, TOOL_DIRECTORY_PATH),
     freeToolsMenuIsActive: isFreeToolsSectionPath(normalizedCurrentPath),
     freeToolsMenuAccessibleName: menuCopy.accessibleName,
   };

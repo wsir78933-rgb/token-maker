@@ -496,7 +496,7 @@ describe('coat maker routes', () => {
       exportLabel: 'Export',
       removedArtworkLinkLabel: 'User Artwork',
       freeToolsMenuLabel: 'Free tools',
-      freeToolsMenuHref: '/',
+      freeToolsMenuHref: '/tools',
       freeToolMenuItems: [
         { label: 'Token Maker', href: '/' },
         { label: 'Coat of Arms Maker', href: '/coat-of-arms-maker' },
@@ -525,7 +525,7 @@ describe('coat maker routes', () => {
       exportLabel: '导出',
       removedArtworkLinkLabel: '用户作品',
       freeToolsMenuLabel: '免费工具',
-      freeToolsMenuHref: '/zh',
+      freeToolsMenuHref: '/zh/tools',
       freeToolMenuItems: [
         { label: '令牌制作器', href: '/zh' },
         { label: '纹章制作器', href: '/zh/coat-of-arms-maker' },

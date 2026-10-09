@@ -997,6 +997,27 @@ describe('blog sitemap entries', () => {
   });
 });
 
+describe('tool directory sitemap entries', () => {
+  test('includes exactly one entry per language with reciprocal alternates', () => {
+    const englishUrl = 'https://www.tokenmaker.one/tools';
+    const chineseUrl = 'https://www.tokenmaker.one/zh/tools';
+    const expectedAlternates = {
+      'x-default': englishUrl,
+      'en-US': englishUrl,
+      'zh-CN': chineseUrl,
+    };
+
+    for (const url of [englishUrl, chineseUrl]) {
+      expect(sitemap().filter((entry) => entry.url === url)).toHaveLength(1);
+      const entry = findSitemapEntry(url);
+      expect(entry.lastModified).toEqual(new Date('2026-10-08'));
+      expect(entry.changeFrequency).toBe('weekly');
+      expect(entry.priority).toBe(0.8);
+      expect(entry.alternates?.languages).toEqual(expectedAlternates);
+    }
+  });
+});
+
 describe('emblem creator sitemap entries', () => {
   test('includes exactly one entry per language with reciprocal alternates', () => {
     const englishUrl = 'https://www.tokenmaker.one/emblem-creator';

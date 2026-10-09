@@ -52,7 +52,7 @@ describe('content site topbar model', () => {
     const model = readTopbar('en', '/privacy', '/zh/passed-through');
 
     expect(model.freeToolsMenuLabel).toBe('Free tools');
-    expect(model.freeToolsMenuHref).toBe('/');
+    expect(model.freeToolsMenuHref).toBe('/tools');
     expect(model.freeToolsMenuAccessibleName).toBe('Free tools');
     expect(model.freeToolsMenuIsActive).toBe(false);
     expect(model.freeTools).toEqual([
@@ -101,7 +101,7 @@ describe('content site topbar model', () => {
     const model = readTopbar('zh', '/zh/privacy', '/passed-through');
 
     expect(model.freeToolsMenuLabel).toBe('免费工具');
-    expect(model.freeToolsMenuHref).toBe('/zh');
+    expect(model.freeToolsMenuHref).toBe('/zh/tools');
     expect(model.freeToolsMenuAccessibleName).toBe('免费工具');
     expect(model.freeToolsMenuIsActive).toBe(false);
     expect(model.freeTools).toEqual([
@@ -353,6 +353,23 @@ describe('content site topbar model', () => {
     expect(contact.links.map((link) => link.isActive)).toEqual([false, true]);
     expect(diceSibling.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(contactSibling.links.map((link) => link.isActive)).toEqual([false, false]);
+  });
+
+  it.each([
+    { locale: 'en' as const, path: '/tools', href: '/tools' },
+    { locale: 'zh' as const, path: '/zh/tools', href: '/zh/tools' },
+  ])('routes the $locale Free tools heading to the directory without adding a menu item', ({
+    locale,
+    path,
+    href,
+  }) => {
+    const model = readTopbar(locale, path, locale === 'en' ? '/zh/tools' : '/tools');
+
+    expect(model.freeToolsMenuHref).toBe(href);
+    expect(model.freeToolsMenuIsActive).toBe(true);
+    expect(model.freeTools).toHaveLength(16);
+    expect(model.freeTools.some((feature) => feature.href === href)).toBe(false);
+    expect(model.freeTools[0]).toMatchObject({ href: locale === 'en' ? '/' : '/zh' });
   });
 
   it('activates the blog menu, not plain links, for blog paths', () => {

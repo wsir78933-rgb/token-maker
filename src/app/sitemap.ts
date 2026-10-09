@@ -30,6 +30,7 @@ const TAROT_CARDS_LAST_MODIFIED = '2026-10-06';
 const TOWN_CREATOR_LAST_MODIFIED = '2026-10-07';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
 const TEMPLATE_LAST_MODIFIED = '2026-05-06';
+const TOOL_DIRECTORY_LAST_MODIFIED = '2026-10-08';
 
 function pickLatestIsoDate(
   values: Array<string | undefined>,
@@ -105,6 +106,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
   const staticPaths = [
     '/',
+    '/tools',
     '/faq',
     '/privacy',
     '/about',
@@ -136,7 +138,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       return {
         url: `${siteUrl}${getLocalizedPath(locale, path)}`,
         lastModified:
-          path === '/dice-roller-dnd'
+          path === '/tools'
+            ? new Date(TOOL_DIRECTORY_LAST_MODIFIED)
+            : path === '/dice-roller-dnd'
             ? new Date(DICE_ROLLER_LAST_MODIFIED)
             : path === '/coat-of-arms-maker'
             ? new Date(COAT_MAKER_LAST_MODIFIED)

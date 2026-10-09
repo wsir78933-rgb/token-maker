@@ -1,0 +1,293 @@
+.hero {
+  background: var(--site-hero-bg);
+  border-bottom: 1px solid var(--site-border-soft);
+}
+
+.inner {
+  display: flex;
+  width: min(100%, 1344px);
+  flex-direction: column;
+  align-items: center;
+  margin-inline: auto;
+  padding: 64px 32px 56px;
+}
+
+.stage {
+  --card-width: clamp(220px, 27vw, 384px);
+  position: relative;
+  width: min(100%, 920px);
+  height: 260px;
+  isolation: isolate;
+}
+
+.artworkList {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.frame {
+  --slot-x: 0;
+  --slot-y: 0;
+  --slot-angle: 0deg;
+  --slot-scale: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: var(--card-width);
+  height: calc(var(--card-width) * 0.5625);
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--site-border-strong);
+  border-radius: 8px;
+  background: var(--background);
+  box-shadow: var(--site-shadow);
+  transform: translate(
+      calc(-50% + var(--card-width) * var(--slot-x)),
+      calc(-50% + var(--card-width) * var(--slot-y))
+    )
+    rotate(var(--slot-angle)) scale(var(--slot-scale));
+  transition:
+    transform 700ms cubic-bezier(0, 0, 0.2, 1),
+    opacity 700ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.frame[data-position='0'] {
+  --slot-x: -0.8;
+  --slot-y: 0.07;
+  --slot-angle: -6deg;
+  --slot-scale: 0.68;
+  z-index: 1;
+}
+
+.frame[data-position='1'] {
+  --slot-x: -0.43;
+  --slot-y: 0.035;
+  --slot-angle: -5deg;
+  --slot-scale: 0.84;
+  z-index: 2;
+}
+
+.frame[data-position='2'] {
+  z-index: 3;
+}
+
+.frame[data-position='3'] {
+  --slot-x: 0.43;
+  --slot-y: 0.035;
+  --slot-angle: 5deg;
+  --slot-scale: 0.84;
+  z-index: 2;
+}
+
+.frame[data-position='4'] {
+  --slot-x: 0.8;
+  --slot-y: 0.07;
+  --slot-angle: 6deg;
+  --slot-scale: 0.68;
+  z-index: 1;
+}
+
+.frame[data-returning='true'] {
+  z-index: 0;
+  animation: wrap-return 700ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.artworkLink {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.artworkLink:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: -4px;
+}
+
+.artworkImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tokenFrame .artworkImage {
+  object-fit: cover;
+}
+
+.heraldryFrame .artworkImage {
+  padding: 8px;
+}
+
+.weaponFrame {
+  background: #fffaf3;
+}
+
+.weaponFrame .artworkImage {
+  transform: rotate(-62deg) scale(1.65);
+}
+
+.frame[data-position='0'] .artworkImage,
+.frame[data-position='4'] .artworkImage {
+  opacity: 0.68;
+}
+
+.frame[data-position='1'] .artworkImage,
+.frame[data-position='3'] .artworkImage {
+  opacity: 0.86;
+}
+
+.copy {
+  width: 100%;
+  max-width: 1040px;
+  min-width: 0;
+  margin-top: 32px;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--site-accent-strong);
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.title {
+  margin: 16px 0 0;
+  color: var(--foreground);
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 60px;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.title span,
+.description span {
+  display: inline;
+}
+
+.description {
+  max-width: 960px;
+  margin: 16px auto 0;
+  color: var(--site-ink);
+  font-size: 17px;
+  line-height: 28px;
+}
+
+.stage[data-motion-paused='true'] .frame {
+  transition: none;
+  animation: none;
+}
+
+@keyframes wrap-return {
+  0% {
+    transform: translate(
+        calc(-50% + var(--card-width) * -0.8),
+        calc(-50% + var(--card-width) * 0.07)
+      )
+      rotate(-6deg) scale(0.68);
+    opacity: 1;
+  }
+
+  20% {
+    transform: translate(
+        calc(-50% + var(--card-width) * -0.8),
+        calc(-50% + var(--card-width) * 0.07)
+      )
+      rotate(-6deg) scale(0.68);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translate(
+        calc(-50% + var(--card-width) * 0.8),
+        calc(-50% + var(--card-width) * 0.07)
+      )
+      rotate(6deg) scale(0.68);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translate(
+        calc(-50% + var(--card-width) * 0.8),
+        calc(-50% + var(--card-width) * 0.07)
+      )
+      rotate(6deg) scale(0.68);
+    opacity: 1;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+  .title {
+    font-size: 40px;
+    line-height: 52px;
+  }
+}
+
+@media (max-width: 767px) {
+  .inner {
+    padding: 40px 24px;
+  }
+
+  .stage {
+    --card-width: min(216px, calc((100vw - 48px) * 0.65));
+    height: 180px;
+    overflow: hidden;
+  }
+
+  .copy {
+    margin-top: 28px;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .title span,
+  .description span {
+    display: block;
+  }
+
+  .description {
+    font-size: 14px;
+    line-height: 24px;
+  }
+
+  .frame[data-position='0'],
+  .frame[data-position='4'] {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .frame[data-position='1'] {
+    --slot-x: -0.36;
+    --slot-y: 0.045;
+    --slot-scale: 0.74;
+  }
+
+  .frame[data-position='3'] {
+    --slot-x: 0.36;
+    --slot-y: 0.045;
+    --slot-scale: 0.74;
+  }
+
+  .heraldryFrame .artworkImage {
+    padding: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame {
+    scroll-behavior: auto;
+    transition: none;
+    animation: none;
+  }
+}

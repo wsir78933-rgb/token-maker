@@ -302,7 +302,7 @@ describe('calendar creator localized routes', () => {
     );
 
     const freeToolsLink = within(topbar).getByRole('link', { name: navigationMenuLabel });
-    expect(freeToolsLink.getAttribute('href')).toBe(locale === 'zh' ? '/zh' : '/');
+    expect(freeToolsLink.getAttribute('href')).toBe(locale === 'zh' ? '/zh/tools' : '/tools');
     const freeToolsMenu = within(topbar).getByRole('menu', { name: navigationMenuLabel });
     expect(
       within(freeToolsMenu).getByRole('menuitem', { name: copy.navigationTitle }).getAttribute('href'),
