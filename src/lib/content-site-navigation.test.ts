@@ -62,6 +62,7 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/castle-creator', title: 'Castle Creator' },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -103,6 +104,7 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/castle-creator', title: '城堡拼搭' },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },
@@ -152,6 +154,14 @@ describe('content site topbar model', () => {
     );
     const languageGeneratorSibling = readTopbar('en', '/language-generator-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
+    const castleCreator = readTopbar('en', '/castle-creator', '/zh/castle-creator');
+    const chineseCastleCreator = readTopbar('zh', '/zh/castle-creator', '/castle-creator');
+    const castleCreatorNested = readTopbar(
+      'en',
+      '/castle-creator/saved',
+      '/zh/castle-creator/saved',
+    );
+    const castleCreatorSibling = readTopbar('en', '/castle-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
     expect(chineseEditor.freeToolsMenuIsActive).toBe(true);
@@ -173,6 +183,10 @@ describe('content site topbar model', () => {
     expect(languageGeneratorNested.freeToolsMenuIsActive).toBe(true);
     expect(languageGeneratorSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
+    expect(castleCreator.freeToolsMenuIsActive).toBe(true);
+    expect(chineseCastleCreator.freeToolsMenuIsActive).toBe(true);
+    expect(castleCreatorNested.freeToolsMenuIsActive).toBe(true);
+    expect(castleCreatorSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
   });
