@@ -1,6 +1,8 @@
 import { getArmyFormationCreatorCopy } from '@/lib/army-formation/copy';
 import { getCalendarCreatorCopy } from '@/lib/calendar-creator/copy';
 import { getConstellationMapCopy } from '@/lib/constellation-map-creator/copy';
+import { getCastleCreatorCopy } from '@/lib/castle-creator/copy';
+import { CASTLE_CREATOR_PATH } from '@/lib/castle-creator/constants';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { getFamilyTreeCopy } from '@/lib/family-tree/copy';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
@@ -18,6 +20,7 @@ import { getLocalizedPath, isSiteLocale, stripLocalePrefix, type SiteLocale } fr
 const EDITOR_WORKSPACE_HASH = '#editor-workspace';
 const ARMY_FORMATION_CREATOR_PATH = '/army-formation-creator';
 const CALENDAR_CREATOR_PATH = '/calendar-creator';
+const CASTLE_CREATOR_TOOL_PATH = CASTLE_CREATOR_PATH;
 const EMBLEM_CREATOR_PATH = '/emblem-creator';
 const FAMILY_TREE_CREATOR_PATH = '/family-tree-creator';
 const CONSTELLATION_MAP_CREATOR_PATH = '/constellation-map-creator';
@@ -40,6 +43,7 @@ const FREE_TOOLS_PATHS = [
   ARMY_FORMATION_CREATOR_PATH,
   EMBLEM_CREATOR_PATH,
   LANGUAGE_GENERATOR_PATH,
+  CASTLE_CREATOR_TOOL_PATH,
   CALENDAR_CREATOR_PATH,
   FAMILY_TREE_CREATOR_PATH,
   CONSTELLATION_MAP_CREATOR_PATH,
@@ -231,6 +235,11 @@ function buildContentSiteFreeToolFeatures(
     ),
     buildContentSiteFreeToolFeature(
       locale,
+      CASTLE_CREATOR_TOOL_PATH,
+      readCastleCreatorNavigationName(locale),
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
       CALENDAR_CREATOR_PATH,
       getCalendarCreatorCopy(locale).navigationTitle,
     ),
@@ -380,6 +389,17 @@ function readSolarSystemCreatorNavigationName(locale: SiteLocale): string {
   if (typeof navigationName !== 'string' || navigationName.trim() === '') {
     throw new Error(
       `Solar system creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
+    );
+  }
+
+  return navigationName;
+}
+
+function readCastleCreatorNavigationName(locale: SiteLocale): string {
+  const navigationName = getCastleCreatorCopy(locale).navigationName;
+  if (navigationName.trim() === '') {
+    throw new Error(
+      `Castle creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
     );
   }
 

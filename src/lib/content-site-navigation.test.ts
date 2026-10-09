@@ -64,6 +64,7 @@ describe('content site topbar model', () => {
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
       { href: '/language-generator', title: 'Language Generator' },
+      { href: '/castle-creator', title: 'Castle Creator' },
       { href: '/calendar-creator', title: getCalendarCreatorCopy('en').navigationTitle },
       { href: '/family-tree-creator', title: 'Family Tree Creator' },
       { href: '/constellation-map-creator', title: 'Constellation Map Creator' },
@@ -113,6 +114,7 @@ describe('content site topbar model', () => {
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
       { href: '/zh/language-generator', title: '语言生成器' },
+      { href: '/zh/castle-creator', title: '城堡拼搭' },
       { href: '/zh/calendar-creator', title: getCalendarCreatorCopy('zh').navigationTitle },
       { href: '/zh/family-tree-creator', title: '人物家谱制作器' },
       { href: '/zh/constellation-map-creator', title: '星座地图创建器' },
@@ -245,6 +247,14 @@ describe('content site topbar model', () => {
     const chineseTownCreator = readTopbar('zh', '/zh/town-creator', '/town-creator');
     const townCreatorNested = readTopbar('en', '/town-creator/saved', '/zh/town-creator/saved');
     const townCreatorSibling = readTopbar('en', '/town-creator-extra', '/zh');
+    const castleCreator = readTopbar('en', '/castle-creator', '/zh/castle-creator');
+    const chineseCastleCreator = readTopbar('zh', '/zh/castle-creator', '/castle-creator');
+    const castleCreatorNested = readTopbar(
+      'en',
+      '/castle-creator/saved',
+      '/zh/castle-creator/saved',
+    );
+    const castleCreatorSibling = readTopbar('en', '/castle-creator-extra', '/zh');
 
     expect(editor.freeToolsMenuIsActive).toBe(true);
     expect(chineseEditor.freeToolsMenuIsActive).toBe(true);
@@ -297,6 +307,10 @@ describe('content site topbar model', () => {
     expect(chineseTownCreator.freeToolsMenuIsActive).toBe(true);
     expect(townCreatorNested.freeToolsMenuIsActive).toBe(true);
     expect(townCreatorSibling.freeToolsMenuIsActive).toBe(false);
+    expect(castleCreator.freeToolsMenuIsActive).toBe(true);
+    expect(chineseCastleCreator.freeToolsMenuIsActive).toBe(true);
+    expect(castleCreatorNested.freeToolsMenuIsActive).toBe(true);
+    expect(castleCreatorSibling.freeToolsMenuIsActive).toBe(false);
     expect(editor.links.map((link) => link.isActive)).toEqual([false, false]);
     expect(coat.links.map((link) => link.isActive)).toEqual([false, false]);
   });
@@ -367,7 +381,7 @@ describe('content site topbar model', () => {
 
     expect(model.freeToolsMenuHref).toBe(href);
     expect(model.freeToolsMenuIsActive).toBe(true);
-    expect(model.freeTools).toHaveLength(16);
+    expect(model.freeTools).toHaveLength(17);
     expect(model.freeTools.some((feature) => feature.href === href)).toBe(false);
     expect(model.freeTools[0]).toMatchObject({ href: locale === 'en' ? '/' : '/zh' });
   });

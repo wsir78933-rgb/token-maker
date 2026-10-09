@@ -1123,6 +1123,27 @@ describe('family tree creator sitemap entries', () => {
   });
 });
 
+describe('castle creator sitemap entries', () => {
+  test('includes exactly one entry per language with reciprocal alternates', () => {
+    const englishUrl = 'https://www.tokenmaker.one/castle-creator';
+    const chineseUrl = 'https://www.tokenmaker.one/zh/castle-creator';
+    const expectedAlternates = {
+      'x-default': englishUrl,
+      'en-US': englishUrl,
+      'zh-CN': chineseUrl,
+    };
+
+    for (const url of [englishUrl, chineseUrl]) {
+      expect(sitemap().filter((entry) => entry.url === url)).toHaveLength(1);
+      const entry = findSitemapEntry(url);
+      expect(entry.lastModified).toEqual(new Date('2026-10-06'));
+      expect(entry.changeFrequency).toBe('weekly');
+      expect(entry.priority).toBe(0.8);
+      expect(entry.alternates?.languages).toEqual(expectedAlternates);
+    }
+  });
+});
+
 describe('periodic table creator sitemap entries', () => {
   test('includes exactly one entry per language with reciprocal alternates', () => {
     const englishUrl = 'https://www.tokenmaker.one/periodic-table-creator';

@@ -20,6 +20,7 @@ const EMBLEM_CREATOR_LAST_MODIFIED = '2026-10-03';
 const OUTFIT_CREATOR_LAST_MODIFIED = '2026-10-04';
 const WEAPON_CREATOR_LAST_MODIFIED = '2026-10-05';
 const LANGUAGE_GENERATOR_LAST_MODIFIED = '2026-10-05';
+const CASTLE_CREATOR_LAST_MODIFIED = '2026-10-06';
 const CALENDAR_CREATOR_LAST_MODIFIED = '2026-10-06';
 const SCROLL_CREATOR_LAST_MODIFIED = '2026-10-06';
 const FAMILY_TREE_CREATOR_LAST_MODIFIED = '2026-10-06';
@@ -119,6 +120,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/army-formation-creator/backgrounds',
     '/emblem-creator',
     '/language-generator',
+    '/castle-creator',
     '/calendar-creator',
     '/scroll-creator',
     '/town-creator',
@@ -152,6 +154,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(WEAPON_CREATOR_LAST_MODIFIED)
             : path === '/language-generator'
             ? new Date(LANGUAGE_GENERATOR_LAST_MODIFIED)
+            : path === '/castle-creator'
+            ? new Date(CASTLE_CREATOR_LAST_MODIFIED)
             : path === '/calendar-creator'
             ? new Date(CALENDAR_CREATOR_LAST_MODIFIED)
             : path === '/scroll-creator'
