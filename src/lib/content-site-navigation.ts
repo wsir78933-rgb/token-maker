@@ -4,6 +4,7 @@ import { getConstellationMapCopy } from '@/lib/constellation-map-creator/copy';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { getFamilyTreeCopy } from '@/lib/family-tree/copy';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
+import { getMapMakerCopy } from '@/lib/map-maker/copy';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
 import { getPeriodicTableCopy } from '@/lib/periodic-table-creator/copy';
 import { getScrollCreatorCopy } from '@/lib/scroll-creator/copy';
@@ -21,6 +22,7 @@ const EMBLEM_CREATOR_PATH = '/emblem-creator';
 const FAMILY_TREE_CREATOR_PATH = '/family-tree-creator';
 const CONSTELLATION_MAP_CREATOR_PATH = '/constellation-map-creator';
 const LANGUAGE_GENERATOR_PATH = '/language-generator';
+const MAP_MAKER_PATH = '/map-maker';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
 const PERIODIC_TABLE_CREATOR_PATH = '/periodic-table-creator';
 const SCROLL_CREATOR_PATH = '/scroll-creator';
@@ -39,6 +41,7 @@ const FREE_TOOLS_PATHS = [
   CALENDAR_CREATOR_PATH,
   FAMILY_TREE_CREATOR_PATH,
   CONSTELLATION_MAP_CREATOR_PATH,
+  MAP_MAKER_PATH,
   SOLAR_SYSTEM_CREATOR_PATH,
   PERIODIC_TABLE_CREATOR_PATH,
   TAROT_CARDS_PATH,
@@ -239,6 +242,7 @@ function buildContentSiteFreeToolFeatures(
       CONSTELLATION_MAP_CREATOR_PATH,
       getConstellationMapCopy(locale).navigationTitle,
     ),
+    buildContentSiteFreeToolFeature(locale, MAP_MAKER_PATH, getMapMakerCopy(locale).navigationTitle),
     buildContentSiteFreeToolFeature(
       locale,
       SOLAR_SYSTEM_CREATOR_PATH,
