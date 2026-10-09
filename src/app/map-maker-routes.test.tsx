@@ -266,7 +266,7 @@ describe('map maker localized routes', () => {
     expect(firstFaqAnswer.hidden).toBe(true);
 
     const freeToolsNavigation = within(primaryNavigation).getByRole('link', { name: navigationMenuLabel });
-    expect(freeToolsNavigation.getAttribute('href')).toBe(locale === 'zh' ? '/zh' : '/');
+    expect(freeToolsNavigation.getAttribute('href')).toBe(locale === 'zh' ? '/zh/tools' : '/tools');
     const freeToolsMenu = within(primaryNavigation).getByRole('menu', { name: navigationMenuLabel });
     expect(within(freeToolsMenu).getByRole('menuitem', { name: copy.navigationTitle }).getAttribute('href')).toBe(
       path,
