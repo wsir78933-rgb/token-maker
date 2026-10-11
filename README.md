@@ -67,14 +67,29 @@ R2 setup requirements:
 
 ## Vinext / Cloudflare Workers release checks
 
-`dev`, `build`, and `start` remain Next.js commands for local development. The
-Cloudflare production build uses Vinext:
+`dev` remains the Next.js development command, and `dev:vinext` remains the
+existing Vinext development entry. The default `build` command runs the full
+Vinext build and release-check chain below. The default `start` command serves
+that build locally through Wrangler's Cloudflare Workers preview:
 
 ```bash
 pnpm run check:vinext
 pnpm run dev:vinext
 pnpm run build:vinext
 ```
+
+To build and preview locally, run these commands in order:
+
+```bash
+pnpm build
+pnpm start
+```
+
+`pnpm build` reuses `pnpm run build:vinext`, including all six gates below.
+`pnpm start` reuses `pnpm run preview:workers` and serves the generated
+`dist/server/wrangler.json` locally with Wrangler. Port `40001` must be free
+before starting the preview. These commands do not upload the Worker to
+Cloudflare.
 
 `pnpm run build:vinext` executes these gates sequentially and stops at the first
 nonzero exit:

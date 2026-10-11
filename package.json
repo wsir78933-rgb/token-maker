@@ -6,8 +6,8 @@
   "packageManager": "pnpm@10.22.0",
   "scripts": {
     "dev": "node scripts/free-port.mjs 40001 && next dev --port 40001",
-    "build": "next build",
-    "start": "next start --port 40001",
+    "build": "pnpm build:vinext",
+    "start": "pnpm preview:workers",
     "dev:vinext": "vinext dev --port 40001",
     "build:vinext": "pnpm lint && pnpm typecheck && pnpm test && pnpm check:workers-types && vinext build && pnpm check:workers-build",
     "check:vinext": "vinext check",
