@@ -430,10 +430,10 @@
 }
 
 @media print {
-  :global(html:has(body.scrollCreatorPrintActive)),
-  :global(html:has(body [data-scroll-workbench])),
-  :global(body.scrollCreatorPrintActive),
-  :global(body:has([data-scroll-workbench])) {
+  :global(html:has(body.scrollCreatorPrintActive)):has(.workbench),
+  :global(html:has(body [data-scroll-workbench])):has(.workbench),
+  :global(body.scrollCreatorPrintActive):has(.workbench),
+  :global(body:has([data-scroll-workbench])):has(.workbench) {
     background: #fff !important;
     background-image: none !important;
     color: #000 !important;
@@ -464,30 +464,30 @@
     box-shadow: none;
   }
 
-  :global(body.scrollCreatorPrintActive) > *,
-  :global(body:has([data-scroll-workbench])) > * {
+  :global(body.scrollCreatorPrintActive):has(.workbench) > *,
+  :global(body:has([data-scroll-workbench])):has(.workbench) > * {
     visibility: hidden !important;
   }
 
-  :global(body.scrollCreatorPrintActive) *:not(html):not(body):has([data-scroll-print-surface]),
-  :global(body:has([data-scroll-workbench])) *:not(html):not(body):has([data-scroll-print-surface]) {
+  :global(body.scrollCreatorPrintActive):has(.workbench) *:not(html):not(body):has([data-scroll-print-surface]),
+  :global(body:has([data-scroll-workbench])):has(.workbench) *:not(html):not(body):has([data-scroll-print-surface]) {
     display: contents !important;
   }
 
-  :global(body.scrollCreatorPrintActive) *:has([data-scroll-print-surface]) > :not([data-scroll-print-surface]):not(:has([data-scroll-print-surface])),
-  :global(body:has([data-scroll-workbench])) *:has([data-scroll-print-surface]) > :not([data-scroll-print-surface]):not(:has([data-scroll-print-surface])) {
+  :global(body.scrollCreatorPrintActive):has(.workbench) *:has([data-scroll-print-surface]) > :not([data-scroll-print-surface]):not(:has([data-scroll-print-surface])),
+  :global(body:has([data-scroll-workbench])):has(.workbench) *:has([data-scroll-print-surface]) > :not([data-scroll-print-surface]):not(:has([data-scroll-print-surface])) {
     display: none !important;
   }
 
-  :global(body.scrollCreatorPrintActive) [data-scroll-print-surface],
-  :global(body.scrollCreatorPrintActive) [data-scroll-print-surface] *,
-  :global(body:has([data-scroll-workbench])) [data-scroll-print-surface],
-  :global(body:has([data-scroll-workbench])) [data-scroll-print-surface] * {
+  :global(body.scrollCreatorPrintActive):has(.workbench) [data-scroll-print-surface],
+  :global(body.scrollCreatorPrintActive):has(.workbench) [data-scroll-print-surface] *,
+  :global(body:has([data-scroll-workbench])):has(.workbench) [data-scroll-print-surface],
+  :global(body:has([data-scroll-workbench])):has(.workbench) [data-scroll-print-surface] * {
     visibility: visible !important;
   }
 
-  :global(body.scrollCreatorPrintActive) [data-scroll-print-surface],
-  :global(body:has([data-scroll-workbench])) [data-scroll-print-surface] {
+  :global(body.scrollCreatorPrintActive):has(.workbench) [data-scroll-print-surface],
+  :global(body:has([data-scroll-workbench])):has(.workbench) [data-scroll-print-surface] {
     display: block !important;
     min-height: 0;
     flex: none;

@@ -439,6 +439,7 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
     } catch (fontFailure: unknown) {
       if (fontFailure instanceof NoticeBoardFontError) {
         showKnownOperationFailure(fontFailure);
+        return;
       } else {
         throw fontFailure;
       }

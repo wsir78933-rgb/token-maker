@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { DeferredEditorLayout } from '@/components/layout/DeferredEditorLayout';
 import { HomeWorkGallerySection } from '@/components/site/HomeWorkGallerySection';
 import { EditorShowcaseSection } from '@/components/site/HomeShowcase';
+import { HomeToolShowcaseSection } from '@/components/site/HomeToolShowcaseSection';
 import { HomeHero, HomeSeoContent } from '@/components/site/HomeSeoContent';
 import { StructuredData } from '@/components/site/StructuredData';
 import { absoluteUrl, getHomeCopy, getSiteConfig, getSiteUrl } from '@/lib/site-content';
@@ -69,6 +70,7 @@ export default function ChineseHomePage() {
       <main lang="zh-CN" className="site-shell site-shell--home min-h-screen">
         <HomeHero locale="zh" />
         <DeferredEditorLayout />
+        <HomeToolShowcaseSection locale="zh" />
         <EditorShowcaseSection locale="zh" />
         <HomeWorkGallerySection locale="zh" />
         <HomeSeoContent locale="zh" />
