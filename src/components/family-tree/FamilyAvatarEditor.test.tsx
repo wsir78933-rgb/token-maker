@@ -327,20 +327,41 @@ describe('FamilyAvatarEditor', () => {
     expect(opacities).toContain('0.4');
   });
 
-  it('uses the no-hair fallback and wrinkle thumbnail opacity', () => {
+  it('uses the no-hair fallback and readable extra thumbnails', () => {
     renderEditor();
     fireEvent.click(screen.getByRole('tab', { name: COPY.categoryNames.hair }));
     const noHairButton = screen.getByRole('button', { name: 'No hair' });
     expect(noHairButton.querySelector('span[aria-hidden="true"]')?.textContent).toBe('∅');
 
     fireEvent.click(screen.getByRole('tab', { name: COPY.categoryNames.extras }));
-    const faceWrinkleImage = document.querySelector(
-      '[data-family-tree-avatar-choice="old1"] img',
+    const faceWrinkleThumbnail = document.querySelector<HTMLSpanElement>(
+      '[data-family-tree-avatar-choice="old1"] span[aria-hidden="true"]',
     );
-    const eyeWrinkleImage = document.querySelector(
-      '[data-family-tree-avatar-choice="eyesp1"] img',
+    const eyeWrinkleThumbnail = document.querySelector<HTMLSpanElement>(
+      '[data-family-tree-avatar-choice="eyesp1"] span[aria-hidden="true"]',
     );
-    expect((faceWrinkleImage as HTMLImageElement | null)?.style.opacity).toBe('0.4');
-    expect((eyeWrinkleImage as HTMLImageElement | null)?.style.opacity).toBe('0.4');
+    const wrinkleThumbnailCases = [
+      {
+        thumbnail: faceWrinkleThumbnail,
+        sourceName: 'old1.png',
+      },
+      {
+        thumbnail: eyeWrinkleThumbnail,
+        sourceName: 'eyesp1.png',
+      },
+    ] as const;
+
+    for (const thumbnailCase of wrinkleThumbnailCases) {
+      expect(thumbnailCase.thumbnail).not.toBeNull();
+      expect(thumbnailCase.thumbnail?.className).toContain('choiceImageCrop');
+      expect(thumbnailCase.thumbnail?.className).toContain('choiceWrinkleThumbnail');
+      expect(thumbnailCase.thumbnail?.style.backgroundImage).toContain(
+        thumbnailCase.sourceName,
+      );
+      expect(
+        Number.parseFloat(thumbnailCase.thumbnail?.style.backgroundSize ?? '0'),
+      ).toBeGreaterThan(100);
+      expect(thumbnailCase.thumbnail?.style.opacity).toBe('');
+    }
   });
 });
