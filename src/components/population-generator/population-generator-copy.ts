@@ -150,7 +150,7 @@ const englishCopy: PopulationGeneratorCopy = {
   helpAgriculture:
     'Agriculture in the population generator starts collapsed. Save, TXT export, and full print still include all six agriculture fields. Search and hide-zero only change which rows are shown.',
   helpProfessions:
-    'Each profession row in the population generator has one count. For your world, that count can mean how many people do the job or how many institutions there are. Those counts do not have to add up to the population. Farmers in the agriculture section are the people farming in this settlement. On a phone, all 170 rows scroll with the page. Search, the zero filter, and the column labels stick while the profession section is on screen. On a desktop, the profession list scrolls inside its own area.',
+    'Each profession row in the population generator has one count. For your world, that count can mean how many people do the job or how many institutions there are. Those counts do not have to add up to the population. Farmers in the agriculture section are the people farming in this settlement. On a phone, the profession list scrolls inside a height-limited area, with search, the zero filter, and column labels at the top; all 170 rows remain accessible. On a desktop, the profession list scrolls inside its own area.',
   helpSlots:
     'The population generator keeps five browser slots that store the full result on this device. An empty slot cannot be loaded. Saving over a used slot asks first. Close the file menu without choosing an action and the result stays as it is.',
   helpRange: (eraLabel, detail) => `${eraLabel}: ${detail}.`,
@@ -282,7 +282,7 @@ const chineseCopy: PopulationGeneratorCopy = {
   helpAgriculture:
     '人口生成器里的农业默认折叠。保存、导出 TXT 和完整打印仍包含全部 6 项。搜索和隐藏零数量只改变列表显示。',
   helpProfessions:
-    '人口生成器里每个职业只有一行、一个数量。按你的世界设定，这个数量可以理解为从业人数或机构数，加总后不必等于总人口。农业里的农民人数是这个聚落本地的务农人数。手机上 170 条随页面滚动。搜索、零数量筛选和列标题在职业区里吸顶，离开该区域后松开。桌面列表在区域内滚动。',
+    '人口生成器里每个职业只有一行、一个数量。按你的世界设定，这个数量可以理解为从业人数或机构数，加总后不必等于总人口。农业里的农民人数是这个聚落本地的务农人数。手机上，职业列表在限高区域内滚动，搜索、零数量筛选和列标题保持在列表顶部，170 条职业仍可全部访问。桌面列表在区域内滚动。',
   helpSlots:
     '人口生成器在这个浏览器里有 5 个槽位，保存完整结果。空槽位不能读取。覆盖已有槽位前会先确认。关掉文件菜单而不选择操作，结果保持不变。',
   helpRange: (eraLabel, detail) => `${eraLabel}：${detail}。`,
