@@ -416,32 +416,6 @@ export function TarotWorkbench({ locale }: TarotWorkbenchProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2" aria-label={copy.pageTitle}>
-          <button
-            type="button"
-            onClick={handleDeal}
-            data-testid="tarot-deal-button"
-            className="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--site-accent-strong)] px-4 text-sm font-semibold text-stone-950 transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
-          >
-            {dealLabel}
-          </button>
-          {activeReading !== null && (
-            <>
-              <button
-                type="button"
-                onClick={handleRevealAll}
-                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[var(--site-border-strong)] bg-[var(--site-panel)] px-4 text-sm font-medium text-stone-100 transition hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
-              >
-                {copy.actions.revealAll}
-              </button>
-            </>
-          )}
-          <button
-            type="button"
-            onClick={handleShuffle}
-            className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[var(--site-border-strong)] bg-[var(--site-panel)] px-4 text-sm font-medium text-stone-100 transition hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
-          >
-            {copy.actions.shuffle}
-          </button>
           <div className="flex min-h-10 items-center gap-3 rounded-lg border border-[var(--site-border-soft)] bg-[var(--site-panel)] px-3 text-xs text-stone-300">
             <span>
               {copy.labels.remaining}{' '}
@@ -548,10 +522,37 @@ export function TarotWorkbench({ locale }: TarotWorkbenchProps) {
             )}
           </section>
 
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={handleDeal}
+              data-testid="tarot-deal-button"
+              className="inline-flex min-h-10 w-full items-center justify-center rounded-lg bg-[var(--site-accent-strong)] px-4 text-sm font-semibold text-stone-950 transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
+            >
+              {dealLabel}
+            </button>
+            {activeReading !== null && (
+              <button
+                type="button"
+                onClick={handleRevealAll}
+                className="inline-flex min-h-10 w-full items-center justify-center rounded-lg border border-[var(--site-border-strong)] bg-[var(--site-panel)] px-4 text-sm font-medium text-stone-100 transition hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
+              >
+                {copy.actions.revealAll}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleShuffle}
+              className="inline-flex min-h-10 w-full items-center justify-center rounded-lg border border-[var(--site-border-strong)] bg-[var(--site-panel)] px-4 text-sm font-medium text-stone-100 transition hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
+            >
+              {copy.actions.shuffle}
+            </button>
+          </div>
+
           <button
             type="button"
             onClick={() => setHelpOpen(true)}
-            className="mt-auto inline-flex min-h-10 items-center justify-center rounded-lg border border-[var(--site-border-soft)] px-3 text-sm font-medium text-stone-300 transition hover:border-[var(--site-border-strong)] hover:bg-[var(--site-panel)] hover:text-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
+            className="mt-auto inline-flex min-h-10 w-full items-center justify-center rounded-lg border border-[var(--site-border-soft)] px-3 text-sm font-medium text-stone-300 transition hover:border-[var(--site-border-strong)] hover:bg-[var(--site-panel)] hover:text-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
           >
             {copy.actions.help}
           </button>
