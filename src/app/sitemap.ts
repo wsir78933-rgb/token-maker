@@ -29,6 +29,7 @@ const CONSTELLATION_MAP_CREATOR_LAST_MODIFIED = '2026-10-07';
 const MAP_MAKER_LAST_MODIFIED = '2026-10-08';
 const SOLAR_SYSTEM_CREATOR_LAST_MODIFIED = '2026-10-06';
 const PERIODIC_TABLE_CREATOR_LAST_MODIFIED = '2026-10-06';
+const POPULATION_GENERATOR_LAST_MODIFIED = '2026-10-07';
 const TAROT_CARDS_LAST_MODIFIED = '2026-10-06';
 const TOWN_CREATOR_LAST_MODIFIED = '2026-10-07';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
@@ -132,6 +133,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/map-maker',
     '/solar-system-creator',
     '/periodic-table-creator',
+    '/population-generator',
     '/tarot-cards',
     '/coat-of-arms-maker',
     '/contact',
@@ -178,6 +180,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(SOLAR_SYSTEM_CREATOR_LAST_MODIFIED)
             : path === '/periodic-table-creator'
             ? new Date(PERIODIC_TABLE_CREATOR_LAST_MODIFIED)
+            : path === '/population-generator'
+            ? new Date(POPULATION_GENERATOR_LAST_MODIFIED)
             : path === '/tarot-cards'
             ? new Date(TAROT_CARDS_LAST_MODIFIED)
             : path === '/contact'

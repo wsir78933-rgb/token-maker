@@ -10,6 +10,7 @@ import { getMapMakerCopy } from '@/lib/map-maker/copy';
 import { getNoticeBoardCreatorLandingCopy } from '@/lib/notice-board-creator/landing-copy';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
 import { getPeriodicTableCopy } from '@/lib/periodic-table-creator/copy';
+import { getPopulationPageCopy } from '@/lib/population-generator/page-copy';
 import { getScrollCreatorCopy } from '@/lib/scroll-creator/copy';
 import { getSolarSystemCopy } from '@/lib/solar-system-creator/copy';
 import { getTarotCopy } from '@/lib/tarot-cards/copy';
@@ -31,6 +32,7 @@ const MAP_MAKER_PATH = '/map-maker';
 const NOTICE_BOARD_CREATOR_PATH = '/notice-board-creator';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
 const PERIODIC_TABLE_CREATOR_PATH = '/periodic-table-creator';
+const POPULATION_GENERATOR_PATH = '/population-generator';
 const SCROLL_CREATOR_PATH = '/scroll-creator';
 const SOLAR_SYSTEM_CREATOR_PATH = '/solar-system-creator';
 const TAROT_CARDS_PATH = '/tarot-cards';
@@ -58,6 +60,7 @@ const FREE_TOOLS_PATHS = [
   TAROT_CARDS_PATH,
   SCROLL_CREATOR_PATH,
   TOWN_CREATOR_PATH,
+  POPULATION_GENERATOR_PATH,
 ] as const;
 
 const FREE_TOOLS_MENU_COPY = {
@@ -285,6 +288,11 @@ function buildContentSiteFreeToolFeatures(
       locale,
       TOWN_CREATOR_PATH,
       getTownCreatorCopy(locale).navTitle,
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
+      POPULATION_GENERATOR_PATH,
+      getPopulationPageCopy(locale).navigationTitle,
     ),
   ];
 }
