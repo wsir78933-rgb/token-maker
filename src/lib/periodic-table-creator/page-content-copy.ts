@@ -34,6 +34,12 @@ export type PeriodicTablePageContentCopy = {
   features: {
     title: string;
     description: string;
+    sources: {
+      label: string;
+      iupacLabel: string;
+      latestReleaseLabel: string;
+      pubchemLabel: string;
+    };
     items: readonly PeriodicTableFeature[];
   };
   comparison: {
@@ -80,6 +86,12 @@ const englishPeriodicTablePageContentCopy: PeriodicTablePageContentCopy = {
     title: 'Periodic Table Creator features',
     description:
       'Use Periodic Table Creator to shape a classification table for a TRPG/D&D campaign, a fantasy or science-fiction setting, a novel, or an indie game in one focused browser workspace.',
+    sources: {
+      label: 'Sources for the real periodic table template',
+      iupacLabel: 'IUPAC periodic table',
+      latestReleaseLabel: 'Latest release listed:',
+      pubchemLabel: 'PubChem periodic table',
+    },
     items: [
       {
         icon: 'layout',
@@ -251,6 +263,12 @@ const chinesePeriodicTablePageContentCopy: PeriodicTablePageContentCopy = {
     title: '元素周期表制作器的功能',
     description:
       '在一个专注的浏览器工作区中，使用元素周期表制作器为 TRPG/D&D 战役、奇幻或科幻设定、小说和独立游戏塑造自己的分类表。',
+    sources: {
+      label: '真实元素周期表模板参考来源',
+      iupacLabel: 'IUPAC 元素周期表',
+      latestReleaseLabel: '页面列出的最新版本：',
+      pubchemLabel: 'PubChem 元素周期表',
+    },
     items: [
       {
         icon: 'layout',

@@ -29,9 +29,9 @@ const copyByLocale = {
         description: 'Roll d20s, damage dice, and stat rolls with the built-in DnD dice tray.',
       },
       {
-        href: '/',
-        label: 'Compare token formats',
-        description: 'Use the template hub when the real question is circle, square, hex, or transparent.',
+        href: '/templates/square-token-maker',
+        label: 'Open the square token guide',
+        description: 'See square crops, transparent PNG exports, and sizes for common VTT use.',
       },
       {
         href: '/privacy',
@@ -42,28 +42,28 @@ const copyByLocale = {
     questionActions: [
       {
         href: '/',
-        label: 'Test it in the editor',
-        description: 'The fastest way to understand fit is to try one real portrait.',
+        label: 'Start with a real portrait',
+        description: 'See how cropping, masks, borders, and PNG export work together in the editor.',
+      },
+      {
+        href: '/',
+        label: 'Check the tabletop workflow',
+        description: 'Make a PNG token for Roll20, Foundry VTT, Owlbear, or a similar tabletop.',
+      },
+      {
+        href: '/templates/square-token-maker',
+        label: 'See transparent PNG export guidance',
+        description: 'The square token guide explains transparent PNG use and recommended VTT sizes.',
+      },
+      {
+        href: '/',
+        label: 'Try masks and borders in the editor',
+        description: 'Adjust a circular, square, or polygon mask and choose a border style.',
       },
       {
         href: '/privacy',
-        label: 'Open the privacy note',
-        description: 'See the short policy version of the local-first promise.',
-      },
-      {
-        href: '/',
-        label: 'Compare template directions',
-        description: 'Pick a starting format before you spend time tuning borders and export choices.',
-      },
-      {
-        href: '/',
-        label: 'Browse shape-first templates',
-        description: 'Choose the right format before spending time on border styling.',
-      },
-      {
-        href: '/',
-        label: 'Start with one real export',
-        description: 'Export one token in the editor first, then decide whether the file actually needs to be larger.',
+        label: 'Read the privacy note',
+        description: 'Check what stays in your browser during standard cropping and PNG export.',
       },
     ],
     supportCardEyebrow: 'What you will find here',
@@ -88,9 +88,9 @@ const copyByLocale = {
         description: '用内置骰盘直接掷 d20、伤害骰和属性骰。',
       },
       {
-        href: '/',
-        label: '比较不同 Token 格式',
-        description: '如果你真正卡的是圆形、方形、六边形还是透明背景，就直接去模板页。',
+        href: '/templates/square-token-maker',
+        label: '查看方形 Token 指南',
+        description: '了解方形裁切、透明 PNG 导出，以及常见 VTT 工作流的尺寸建议。',
       },
       {
         href: '/privacy',
@@ -101,28 +101,28 @@ const copyByLocale = {
     questionActions: [
       {
         href: '/',
-        label: '直接进编辑器试一张',
-        description: '判断适不适合，最快的方法不是继续看文案，而是试一张真实头像。',
+        label: '用真实头像开始制作',
+        description: '在编辑器里试试裁切、遮罩、边框和 PNG 导出如何配合。',
+      },
+      {
+        href: '/',
+        label: '查看桌面平台工作流',
+        description: '制作 PNG Token，再用于 Roll20、Foundry VTT、Owlbear 等桌面平台。',
+      },
+      {
+        href: '/templates/square-token-maker',
+        label: '查看透明 PNG 导出说明',
+        description: '方形 Token 指南介绍透明 PNG 用法和常见 VTT 尺寸建议。',
+      },
+      {
+        href: '/',
+        label: '在编辑器里试试遮罩和边框',
+        description: '调整圆形、方形或多边形遮罩，再选择边框样式。',
       },
       {
         href: '/privacy',
-        label: '打开隐私页',
-        description: '需要确认本地优先边界时，隐私页会更直接。',
-      },
-      {
-        href: '/',
-        label: '先去模板页定路线',
-        description: '在继续调边框和导出之前，先把格式方向选对。',
-      },
-      {
-        href: '/',
-        label: '去模板页选格式',
-        description: '先把形状和边框路线确定下来，再去做细节调整。',
-      },
-      {
-        href: '/',
-        label: '先导出一张真实样例',
-        description: '先试一张真实 token，再判断 512 是否已经够用。',
+        label: '阅读隐私说明',
+        description: '了解普通裁切和 PNG 导出时，图片会不会离开浏览器。',
       },
     ],
     supportCardEyebrow: '这页包含什么',
@@ -269,8 +269,14 @@ export function FaqDocPageView({ locale }: { locale: SiteLocale }) {
                     const item = model.items[index];
                     const action = questionActions[index];
 
-                    if (!item || !action) {
-                      return null;
+                    if (!item) {
+                      throw new Error(
+                        `FAQ group "${group.id}" references missing item index ${index} for locale "${locale}".`
+                      );
+                    }
+
+                    if (!action) {
+                      throw new Error(`Missing next action at index ${index} for locale "${locale}".`);
                     }
 
                     return (

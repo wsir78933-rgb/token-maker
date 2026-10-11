@@ -1,7 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDefaultProject } from './assets';
+import { applyProjectCommand } from './commands';
+import {
+  clearLocalUploadBlobMemoryForTests,
+  deleteLocalUploadBlob,
+  putLocalUploadBlob,
+} from './local-upload-blobs';
 import {
   type CoatExportQuality,
+  createCoatBatchProjectSnapshot,
   exportCoatBatch,
   exportCoatJpeg,
   exportCoatPdf,
@@ -42,6 +49,7 @@ vi.mock('jspdf', () => ({
 }));
 
 afterEach(() => {
+  clearLocalUploadBlobMemoryForTests();
   vi.unstubAllGlobals();
   jsPdfInstances.length = 0;
 });
@@ -221,6 +229,88 @@ describe('coat export helpers', () => {
 
     expect(zipBlob.size).toBeGreaterThan(0);
     expect(Object.keys(zip.files).sort()).toEqual(['Same Arms-2.png', 'Same Arms.png']);
+  });
+
+  it('applies selected dimensions and transparent backgrounds to every batch PNG', async () => {
+    const createdCanvases: Array<{ width: number; height: number }> = [];
+    const svgBlobs: Blob[] = [];
+    installCanvasBrowser({
+      onCanvasCreated: (canvas) => createdCanvases.push(canvas),
+      onObjectUrlBlob: (blob) => svgBlobs.push(blob),
+    });
+    const defaultProject = createDefaultProject('en');
+    const portraitProject = {
+      ...createDefaultProject('en'),
+      canvas: { width: 1080, height: 1920 },
+    };
+    const defaultBackground = defaultProject.layers.find((layer) => layer.type === 'background');
+    const portraitBackground = portraitProject.layers.find((layer) => layer.type === 'background');
+    if (!defaultBackground || !portraitBackground) throw new Error('Expected batch project background layers');
+
+    const zipBlob = await exportCoatBatch(
+      [defaultProject, portraitProject],
+      1024,
+      { transparentBackground: true },
+    );
+
+    expect(zipBlob.size).toBeGreaterThan(0);
+    expect(createdCanvases.map(({ width, height }) => ({ width, height }))).toEqual([
+      { width: 1024, height: 614 },
+      { width: 576, height: 1024 },
+    ]);
+    for (const [index, svgBlob] of svgBlobs.entries()) {
+      const background = index === 0 ? defaultBackground : portraitBackground;
+      const svg = await svgBlob.text();
+      expect(svg).not.toContain(`data-layer-id="${background.id}"`);
+      expect(svg).not.toContain('#F5E6A1');
+    }
+  });
+
+  it('freezes indexed-db uploads into a deep batch snapshot', async () => {
+    const uploadBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j6mQAAAAASUVORK5CYII=';
+    const uploadBytes = Uint8Array.from(atob(uploadBase64), (character) => character.charCodeAt(0));
+    vi.stubGlobal(
+      'FileReader',
+      class BatchSnapshotFileReader {
+        result: string | null = null;
+        error: Error | null = null;
+        onload: (() => void) | null = null;
+        onerror: (() => void) | null = null;
+
+        readAsDataURL() {
+          this.result = `data:image/png;base64,${uploadBase64}`;
+          this.onload?.();
+        }
+      },
+    );
+    const uploadId = 'queued-local-upload';
+    await putLocalUploadBlob({
+      uploadId,
+      mimeType: 'image/png',
+      fileName: 'queued.png',
+      blob: new Blob([uploadBytes], { type: 'image/png' }),
+    });
+    const project = applyProjectCommand(createDefaultProject('en'), {
+      type: 'add-local-upload-images',
+      uploads: [{ id: uploadId, mimeType: 'image/png', encoding: 'indexed-db', byteLength: uploadBytes.byteLength }],
+    });
+    const snapshot = createCoatBatchProjectSnapshot(project);
+    const originalProjectName = snapshot.name;
+    const originalCanvasWidth = snapshot.canvas.width;
+    project.canvas.width = originalCanvasWidth + 200;
+    project.name = 'Changed after queueing';
+
+    await deleteLocalUploadBlob(uploadId);
+    const svgBlobs: Blob[] = [];
+    installCanvasBrowser({ onObjectUrlBlob: (blob) => svgBlobs.push(blob) });
+    await exportCoatPng(snapshot, 512);
+
+    expect(snapshot.name).toBe(originalProjectName);
+    expect(snapshot.canvas.width).toBe(originalCanvasWidth);
+    expect(snapshot.uploads).toEqual([
+      { id: uploadId, mimeType: 'image/png', encoding: 'base64', data: uploadBase64 },
+    ]);
+    expect(await svgBlobs[0]?.text()).toContain(`data:image/png;base64,${uploadBase64}`);
   });
 
   it('rejects an empty batch before creating a ZIP', async () => {

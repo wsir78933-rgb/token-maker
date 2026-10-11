@@ -1909,8 +1909,10 @@ describe('CoatOfArmsMaker', () => {
     expect(screen.getByRole('button', { name: 'Download PNG' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Share' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Print' })).toBeDefined();
+    expect(screen.getByText('Batch PNG ZIP queue')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Add current design to batch' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Download queued PNG ZIP' })).toHaveProperty('disabled', true);
     expect(screen.queryByRole('button', { name: 'Copy image' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'Export batch ZIP' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Export PNG' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Export JPG' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Export PDF' })).toBeNull();

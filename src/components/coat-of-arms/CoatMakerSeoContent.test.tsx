@@ -187,6 +187,10 @@ describe('CoatMakerSeoContent', () => {
       within(comparisonSection).queryByText(copy.comparisonLead),
       `Missing ${locale} comparison lead: ${copy.comparisonLead}`,
     ).not.toBeNull();
+    expect(
+      within(comparisonSection).queryByText(copy.comparisonEvidenceNote),
+      `Missing ${locale} comparison evidence note: ${copy.comparisonEvidenceNote}`,
+    ).not.toBeNull();
 
     const comparisonTable = within(comparisonSection).queryByRole('table');
 
@@ -258,6 +262,9 @@ describe('CoatMakerSeoContent', () => {
         comparisonRow.cellText,
         `Expected exactly 3 ${locale} cells for comparison row: ${comparisonRow.rowLabel}`,
       ).toHaveLength(3);
+      expect(comparisonRow.cellSources).toHaveLength(3);
+      expect(comparisonRow.cellSources[0]).toEqual([]);
+      expect(comparisonRow.cellSources.slice(1).every((cellSources) => cellSources.length > 0)).toBe(true);
 
       const visibleComparisonRow = visibleComparisonRows[rowIndex];
       const visibleRowLabel = visibleComparisonRow?.querySelector<HTMLTableCellElement>('th[scope="row"]');
@@ -274,16 +281,40 @@ describe('CoatMakerSeoContent', () => {
         `Expected exactly 3 visible ${locale} cells for comparison row: ${comparisonRow.rowLabel}`,
       ).toHaveLength(3);
       for (const [cellIndex, cellText] of comparisonRow.cellText.entries()) {
+        const visibleComparisonCell = visibleComparisonCells[cellIndex];
+
         expect(
           cellText.trim(),
           `Missing ${locale} comparison string: comparisonRows[${rowIndex}].cellText[${cellIndex}]`,
         ).not.toBe('');
         expect(
-          visibleComparisonCells[cellIndex]?.textContent?.trim(),
+          visibleComparisonCell?.querySelector('p')?.textContent?.trim(),
           `Missing visible ${locale} comparison cell string: ${cellText}`,
         ).toBe(cellText);
       }
     }
+
+    const expectedComparisonSources = copy.comparisonRows.flatMap((comparisonRow) =>
+      comparisonRow.cellSources.slice(1).flat(),
+    );
+    const visibleComparisonSourceLinks = within(comparisonTable).getAllByRole('link');
+
+    expect(copy.comparisonSourceCheckedLabel.trim()).not.toHaveLength(0);
+    expect(visibleComparisonSourceLinks).toHaveLength(expectedComparisonSources.length);
+    for (const [sourceIndex, comparisonSource] of expectedComparisonSources.entries()) {
+      const visibleSourceLink = visibleComparisonSourceLinks[sourceIndex];
+
+      expect(visibleSourceLink?.getAttribute('href')).toBe(comparisonSource.href);
+      expect(visibleSourceLink?.textContent).toContain(comparisonSource.label);
+      expect(visibleSourceLink?.textContent).toContain(comparisonSource.checkedOn);
+      expect(visibleSourceLink?.textContent).toContain(copy.comparisonSourceCheckedLabel);
+      expect(visibleSourceLink?.getAttribute('target')).toBe('_blank');
+      expect(visibleSourceLink?.getAttribute('rel')).toContain('noreferrer');
+      expect(comparisonSource.href).toMatch(/^https:\/\/(coamaker\.com\/docs\/|rollforfantasy\.com\/tools\/)/u);
+    }
+    expect(copy.comparisonRows.some((comparisonRow) => (
+      comparisonRow.cellText.some((cellText) => /live test|实测/iu.test(cellText))
+    ))).toBe(false);
 
     expect(copy).not.toHaveProperty('overviewParagraphs');
     expect(copy).not.toHaveProperty('featuresIntro');
@@ -632,14 +663,14 @@ describe('CoatMakerSeoContent', () => {
       locale: 'en' as const,
       heading: 'Why choose our coat of arms maker',
       readerCopy:
-        'Start creating in Coat of Arms Maker without an account or paid plan. Add your own images for free, finish an original coat of arms in the browser, and export PNG, JPEG, or PDF; print and batch export are available when you need them.',
+        'Start creating in Coat of Arms Maker without an account or paid plan. Add your own images for free, finish an original coat of arms in the browser, and export PNG, JPEG, or PDF; print locally or queue multiple design snapshots to download their PNGs together as a ZIP.',
       authorNarration: /rows below|other makers/i,
     },
     {
       locale: 'zh' as const,
       heading: '为什么选择我们的纹章制作器',
       readerCopy:
-        '无需账号或付费方案，即可使用纹章制作器开始制作。你可以免费加入自己的图片，在浏览器中完成原创纹章，并导出 PNG、JPEG 或 PDF；需要时也能打印或批量导出。',
+        '无需账号或付费方案，即可使用纹章制作器开始制作。你可以免费加入自己的图片，在浏览器中完成原创纹章，并导出 PNG、JPEG 或 PDF；也能本地打印，或将多个设计快照加入队列，一次下载为 PNG ZIP。',
       authorNarration: /下面几行|另外两家|逐项摆开比/,
     },
   ])('renders the $locale comparison introduction for readers without author-facing narration', ({
@@ -705,7 +736,7 @@ describe('CoatMakerSeoContent', () => {
     expect(within(ctaSection).getByRole('link', { name: ctaLabel }).getAttribute('href')).toBe(
       '#coat-editor-workspace',
     );
-    expect(within(contentRoot).getAllByRole('link')).toHaveLength(1);
+    expect(within(ctaSection).getAllByRole('link')).toHaveLength(1);
   });
 
   it.each([
@@ -856,6 +887,27 @@ describe('CoatMakerSeoContent', () => {
 
     expect(copy.webApplicationFeatureNames).toHaveLength(3);
     expect(copy.webApplicationFeatureNames.every((featureName) => featureName.trim().length > 0)).toBe(true);
+  });
+
+  it.each(['en', 'zh'] as const)('describes the working batch PNG queue in $locale copy', (locale) => {
+    const copy = getCoatMakerSeoCopy(locale);
+    const exportComparison = copy.comparisonRows.find((row) => row.rowLabel === (locale === 'en' ? 'Export' : '导出'));
+    const exportFaq = copy.faqItems.find((item) => item.question === (locale === 'en' ? 'Which image formats can I export?' : '可以导出哪些格式？'));
+    const featureDescription = copy.webApplicationFeatureNames[2];
+
+    expect(exportComparison).toBeDefined();
+    expect(exportFaq).toBeDefined();
+    if (locale === 'en') {
+      expect(copy.comparisonLead).toMatch(/queue multiple design snapshots.*PNG.*ZIP/i);
+      expect(exportComparison?.cellText[0]).toMatch(/add each design snapshot.*remove unwanted items.*queued PNGs as one ZIP/i);
+      expect(exportFaq?.answer).toMatch(/export queue.*selected size and transparent-background setting/i);
+      expect(featureDescription).toMatch(/queue.*PNG snapshots.*ZIP/i);
+    } else {
+      expect(copy.comparisonLead).toMatch(/设计快照加入队列.*PNG ZIP/);
+      expect(exportComparison?.cellText[0]).toMatch(/设计快照加入导出队列.*移除不需要的项目.*PNG.*ZIP/);
+      expect(exportFaq?.answer).toMatch(/加入队列.*移除不需要的项目.*所选尺寸和透明背景/);
+      expect(featureDescription).toMatch(/多个 PNG 设计快照.*ZIP.*队列/);
+    }
   });
 
   it.each(['en', 'zh'] as const)('renders the localized three-group showcase with isolated carousels for $locale', async (locale) => {

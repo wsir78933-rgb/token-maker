@@ -22,6 +22,13 @@ export type NoticeBoardCreatorHowToUseStepCopy = {
 export type NoticeBoardCreatorComparisonCellCopy = {
   status: 'supported' | 'unsupported' | 'limited';
   label: string;
+  source?: NoticeBoardCreatorComparisonSource;
+};
+
+export type NoticeBoardCreatorComparisonSource = {
+  href: string;
+  label: string;
+  checkedOn: string;
 };
 
 export type NoticeBoardCreatorComparisonRowCopy = {
@@ -67,6 +74,7 @@ export type NoticeBoardCreatorLandingCopy = {
   comparisonDescription: string;
   comparisonTableLabel: string;
   comparisonDimensionHeading: string;
+  comparisonSourceCheckedLabel: string;
   noticeBoardCreatorHeading: string;
   rollForFantasyHeading: string;
   helpWantedHeading: string;
@@ -78,6 +86,30 @@ export type NoticeBoardCreatorLandingCopy = {
   faqTitle: string;
   faqDescription: string;
   faqItems: readonly NoticeBoardCreatorFaqItemCopy[];
+};
+
+const englishRollForFantasyNoticeBoardSource: NoticeBoardCreatorComparisonSource = {
+  href: 'https://rollforfantasy.com/tools/notice-board-creator.php',
+  label: 'RollForFantasy official instructions',
+  checkedOn: '2026-10-11',
+};
+
+const englishHelpWantedSource: NoticeBoardCreatorComparisonSource = {
+  href: 'https://www.fairway3games.com/projects/help-wanted/',
+  label: 'Help Wanted! official project page',
+  checkedOn: '2026-10-11',
+};
+
+const chineseRollForFantasyNoticeBoardSource: NoticeBoardCreatorComparisonSource = {
+  href: 'https://rollforfantasy.com/tools/notice-board-creator.php',
+  label: 'RollForFantasy 官方说明',
+  checkedOn: '2026-10-11',
+};
+
+const chineseHelpWantedSource: NoticeBoardCreatorComparisonSource = {
+  href: 'https://www.fairway3games.com/projects/help-wanted/',
+  label: 'Help Wanted! 官方项目页',
+  checkedOn: '2026-10-11',
 };
 
 const englishNoticeBoardCreatorLandingCopy: NoticeBoardCreatorLandingCopy = {
@@ -155,36 +187,69 @@ const englishNoticeBoardCreatorLandingCopy: NoticeBoardCreatorLandingCopy = {
   ],
   comparisonTitle: 'Notice Board Creator vs. RollForFantasy vs. Help Wanted!',
   comparisonDescription:
-    'Fewer editing steps, precise layout controls, and font settings that stay with your project.',
+    'Open each official link to check text/resize requirements, documented movement, font setup, and job replacement. These are vendor-page notes, not hands-on tests; checked 2026-10-11.',
   comparisonTableLabel: 'Three-way fantasy notice board tool comparison',
   comparisonDimensionHeading: 'Feature',
+  comparisonSourceCheckedLabel: 'Checked',
   noticeBoardCreatorHeading: 'Notice Board Creator',
   rollForFantasyHeading: 'RollForFantasy',
   helpWantedHeading: 'Help Wanted!',
   comparisonRows: [
     {
-      dimension: 'Edit without disabling resize',
-      noticeBoardCreator: { status: 'supported', label: 'Supported' },
-      rollForFantasy: { status: 'limited', label: 'Disable resize first' },
-      helpWanted: { status: 'unsupported', label: 'No notice text editor' },
+      dimension: 'Edit or replace notice text',
+      noticeBoardCreator: { status: 'supported', label: 'Edit text with resize enabled' },
+      rollForFantasy: {
+        status: 'limited',
+        label: 'Toggle resize off before adding text',
+        source: englishRollForFantasyNoticeBoardSource,
+      },
+      helpWanted: {
+        status: 'limited',
+        label: 'Generate a board and replace one notice',
+        source: englishHelpWantedSource,
+      },
     },
     {
-      dimension: 'Keyboard move & resize',
-      noticeBoardCreator: { status: 'supported', label: 'Supported' },
-      rollForFantasy: { status: 'unsupported', label: 'No keyboard layout controls' },
-      helpWanted: { status: 'unsupported', label: 'No manual layout controls' },
+      dimension: 'Move and resize notices',
+      noticeBoardCreator: { status: 'supported', label: 'Drag or use keyboard controls' },
+      rollForFantasy: {
+        status: 'supported',
+        label: 'Official instructions describe dragging and resizing',
+        source: englishRollForFantasyNoticeBoardSource,
+      },
+      helpWanted: {
+        status: 'limited',
+        label: 'Manual move and resize controls are not described on this project page.',
+        source: englishHelpWantedSource,
+      },
     },
     {
-      dimension: 'Custom font settings in TXT',
-      noticeBoardCreator: { status: 'supported', label: 'Supported' },
-      rollForFantasy: { status: 'limited', label: 'Re-add font links' },
-      helpWanted: { status: 'unsupported', label: 'No custom-font settings' },
+      dimension: 'Add a custom font',
+      noticeBoardCreator: { status: 'supported', label: 'Add Google Fonts to a project' },
+      rollForFantasy: {
+        status: 'supported',
+        label: 'Add a Google Fonts link and family',
+        source: englishRollForFantasyNoticeBoardSource,
+      },
+      helpWanted: {
+        status: 'limited',
+        label: 'Custom font controls are not described on this page',
+        source: englishHelpWantedSource,
+      },
     },
     {
-      dimension: 'English & Chinese editor',
-      noticeBoardCreator: { status: 'supported', label: 'Supported' },
-      rollForFantasy: { status: 'limited', label: 'English UI' },
-      helpWanted: { status: 'limited', label: 'English UI' },
+      dimension: 'Public product page language',
+      noticeBoardCreator: { status: 'supported', label: 'English and Chinese pages' },
+      rollForFantasy: {
+        status: 'limited',
+        label: 'Official tool instructions are in English',
+        source: englishRollForFantasyNoticeBoardSource,
+      },
+      helpWanted: {
+        status: 'limited',
+        label: 'Official project page is in English',
+        source: englishHelpWantedSource,
+      },
     },
   ],
   callToActionTitle: 'Put your next quest on the board',
@@ -289,36 +354,69 @@ const chineseNoticeBoardCreatorLandingCopy: NoticeBoardCreatorLandingCopy = {
   ],
   comparisonTitle: '奇幻任务公告板 vs. RollForFantasy vs. Help Wanted!',
   comparisonDescription:
-    '少切换操作，更精细地排版，让字体配置随项目一起保留。',
+    '可打开官方链接核对文字与缩放要求、移动方式、字体设置和任务替换说明。以下为官方页面记载，并非实际交互测试；核验日期：2026-10-11。',
   comparisonTableLabel: '三款奇幻任务公告板工具对比',
   comparisonDimensionHeading: '对比功能',
+  comparisonSourceCheckedLabel: '核验日期',
   noticeBoardCreatorHeading: '奇幻任务公告板',
   rollForFantasyHeading: 'RollForFantasy',
   helpWantedHeading: 'Help Wanted!',
   comparisonRows: [
     {
-      dimension: '编辑无需关闭缩放',
-      noticeBoardCreator: { status: 'supported', label: '支持' },
-      rollForFantasy: { status: 'limited', label: '需先关闭缩放' },
-      helpWanted: { status: 'unsupported', label: '无公告正文编辑入口' },
+      dimension: '编辑或替换公告文字',
+      noticeBoardCreator: { status: 'supported', label: '缩放开启时仍可编辑文字' },
+      rollForFantasy: {
+        status: 'limited',
+        label: '添加文字前需关闭缩放',
+        source: chineseRollForFantasyNoticeBoardSource,
+      },
+      helpWanted: {
+        status: 'limited',
+        label: '生成公告板并单独替换一条任务',
+        source: chineseHelpWantedSource,
+      },
     },
     {
-      dimension: '键盘移动与缩放',
-      noticeBoardCreator: { status: 'supported', label: '支持' },
-      rollForFantasy: { status: 'unsupported', label: '无键盘排版控件' },
-      helpWanted: { status: 'unsupported', label: '无手动排版控件' },
+      dimension: '移动与缩放公告',
+      noticeBoardCreator: { status: 'supported', label: '拖动或使用键盘控件' },
+      rollForFantasy: {
+        status: 'supported',
+        label: '官方说明记录了拖动与缩放',
+        source: chineseRollForFantasyNoticeBoardSource,
+      },
+      helpWanted: {
+        status: 'limited',
+        label: '项目页未介绍手动移动或缩放控件。',
+        source: chineseHelpWantedSource,
+      },
     },
     {
-      dimension: 'TXT 恢复自定义字体配置',
-      noticeBoardCreator: { status: 'supported', label: '支持' },
-      rollForFantasy: { status: 'limited', label: '需重加字体链接' },
-      helpWanted: { status: 'unsupported', label: '无自定义字体设置' },
+      dimension: '添加自定义字体',
+      noticeBoardCreator: { status: 'supported', label: '可将 Google Fonts 加入项目' },
+      rollForFantasy: {
+        status: 'supported',
+        label: '添加 Google Fonts 链接和字体族名称',
+        source: chineseRollForFantasyNoticeBoardSource,
+      },
+      helpWanted: {
+        status: 'limited',
+        label: '官方页面未介绍自定义字体控件',
+        source: chineseHelpWantedSource,
+      },
     },
     {
-      dimension: '中英文编辑界面',
-      noticeBoardCreator: { status: 'supported', label: '支持' },
-      rollForFantasy: { status: 'limited', label: '英文界面' },
-      helpWanted: { status: 'limited', label: '英文界面' },
+      dimension: '公开产品页语言',
+      noticeBoardCreator: { status: 'supported', label: '提供中英文页面' },
+      rollForFantasy: {
+        status: 'limited',
+        label: '官方工具说明为英文',
+        source: chineseRollForFantasyNoticeBoardSource,
+      },
+      helpWanted: {
+        status: 'limited',
+        label: '官方项目页为英文',
+        source: chineseHelpWantedSource,
+      },
     },
   ],
   callToActionTitle: '把下一场冒险贴上公告板',

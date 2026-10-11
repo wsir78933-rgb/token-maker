@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 're
 import { ChevronDown, Download, Printer, Share2 } from 'lucide-react';
 import {
   coatJpegEncoderQualityByLevel,
+  createCoatBatchProjectSnapshot,
+  exportCoatBatch,
   exportCoatJpeg,
   exportCoatPdf,
   exportCoatPng,
@@ -29,6 +31,11 @@ import { getCoatWorkbenchCopy } from './workbench-copy';
 const exportMenuId = 'coat-local-export-options';
 const coatExportQualitySliderStops = ['low', 'medium', 'high', 'ultra'] as const;
 type CoatExportFileType = 'png' | 'jpeg' | 'pdf';
+
+interface CoatBatchQueueItem {
+  id: number;
+  project: CoatProject;
+}
 
 interface ExportMenuProps {
   locale: CoatLocale;
@@ -186,8 +193,12 @@ export function ExportMenu({ locale, menuId, project }: ExportMenuProps) {
   );
   const [fileType, setFileType] = useState<CoatExportFileType>('png');
   const [transparentBackground, setTransparentBackground] = useState(false);
+  const [batchQueue, setBatchQueue] = useState<CoatBatchQueueItem[]>([]);
+  const [isBatchExporting, setIsBatchExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
+  const batchExportLockRef = useRef(false);
+  const nextBatchQueueItemIdRef = useRef(0);
   const menuContainerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const fileTypeSelectRef = useRef<HTMLSelectElement>(null);
@@ -294,6 +305,55 @@ export function ExportMenu({ locale, menuId, project }: ExportMenuProps) {
     printCoatScene(project, size, getCoatExportRenderOptions(transparentBackground));
   };
 
+  const addCurrentProjectToBatch = () => {
+    try {
+      const projectSnapshot = createCoatBatchProjectSnapshot(project);
+      const queueItem: CoatBatchQueueItem = {
+        id: nextBatchQueueItemIdRef.current,
+        project: projectSnapshot,
+      };
+      nextBatchQueueItemIdRef.current += 1;
+      setBatchQueue((currentQueue) => [...currentQueue, queueItem]);
+      setError(null);
+      setStatus(copy.batchItemAdded);
+    } catch (caught) {
+      setStatus(null);
+      setError(copy.exportOperationFailed(getErrorMessage(caught)));
+    }
+  };
+
+  const removeBatchQueueItem = (queueItemId: number) => {
+    setBatchQueue((currentQueue) => currentQueue.filter((queueItem) => queueItem.id !== queueItemId));
+    setError(null);
+    setStatus(copy.batchItemRemoved);
+  };
+
+  const downloadBatchQueueLocally = async () => {
+    if (batchQueue.length === 0 || batchExportLockRef.current) return;
+
+    batchExportLockRef.current = true;
+    setIsBatchExporting(true);
+    try {
+      setError(null);
+      setStatus(copy.batchPreparing);
+      const { size } = readLatestExportPreferences();
+      const queuedProjects = batchQueue.map((queueItem) => queueItem.project);
+      const zipBlob = await exportCoatBatch(
+        queuedProjects,
+        size,
+        getCoatExportRenderOptions(transparentBackground),
+      );
+      downloadCoatBlob(zipBlob, `${baseName}-${size}-batch.zip`);
+      setStatus(copy.batchExported);
+    } catch (caught) {
+      setStatus(null);
+      setError(copy.exportOperationFailed(getErrorMessage(caught)));
+    } finally {
+      batchExportLockRef.current = false;
+      setIsBatchExporting(false);
+    }
+  };
+
   return (
     <div ref={menuContainerRef} className="relative">
       <Button
@@ -358,6 +418,36 @@ export function ExportMenu({ locale, menuId, project }: ExportMenuProps) {
           type="button"
           onClick={() => void downloadSelectedExportLocally()}
         ><Download aria-hidden="true" /><span>{copy.downloadExport(fileType)}</span></Button>
+        <div className="coat-workbench-export-batch" aria-busy={isBatchExporting}>
+          <h3>{copy.batchQueue}</h3>
+          <p>{copy.batchQueueStatus(batchQueue.length)}</p>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isBatchExporting}
+            onClick={addCurrentProjectToBatch}
+          ><span>{copy.addBatchItem}</span></Button>
+          {batchQueue.length === 0 ? <p>{copy.batchQueueEmpty}</p> : <ol aria-label={copy.batchQueue}>
+            {batchQueue.map((queueItem, index) => (
+              <li key={queueItem.id}>
+                <span>{index + 1}. {queueItem.project.name}</span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isBatchExporting}
+                  aria-label={copy.removeBatchItem(queueItem.project.name)}
+                  onClick={() => removeBatchQueueItem(queueItem.id)}
+                >{copy.removeBatchItem(queueItem.project.name)}</Button>
+              </li>
+            ))}
+          </ol>}
+          <Button
+            type="button"
+            variant="outline"
+            disabled={batchQueue.length === 0 || isBatchExporting}
+            onClick={() => void downloadBatchQueueLocally()}
+          ><Download aria-hidden="true" /><span>{copy.exportBatch}</span></Button>
+        </div>
         <div className="coat-workbench-export-secondary">
           <Button type="button" variant="outline" onClick={() => void runExport(shareSelectedPng, copy.imageShared)}><Share2 aria-hidden="true" /><span>{copy.exportShare}</span></Button>
           <Button type="button" variant="outline" onClick={() => void runExport(printSelectedScene, copy.printOpened)}><Printer aria-hidden="true" /><span>{copy.exportPrint}</span></Button>

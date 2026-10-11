@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 
 import {
+  BLOG_POSTS_PER_PAGE,
   buildBlogPostFaqStructuredData,
   buildBlogPostStructuredData,
   createBlogPostMetadata,
@@ -10,6 +11,8 @@ import {
   getBlogPostPath,
   getBlogPosts,
   getBlogPostsForPage,
+  getFeaturedBlogPost,
+  getRelatedBlogPosts,
 } from '@/lib/blog-content';
 
 const DND_BLESS_SLUG = 'dnd-bless';
@@ -68,6 +71,45 @@ const FIRST_BLOG_PAGE_SLUGS = [
   DND_DRUID_SLUG,
 ];
 const SECOND_BLOG_PAGE_START_SLUGS = [DND_BACKGROUNDS_SLUG, DND_CLASSES_COMPARISON_SLUG];
+
+describe('blog archive and greenhouse recommendations', () => {
+  test.each(['en', 'zh'] as const)(
+    'keeps every published $locale post reachable exactly once with the displayed feature outside the archive',
+    (locale) => {
+      const displayedFeaturedPost = getFeaturedBlogPost(locale);
+      if (!displayedFeaturedPost) {
+        throw new Error(`Expected a displayed featured post for locale=${locale}.`);
+      }
+
+      const expectedArchiveSlugs = getBlogPosts(locale)
+        .filter((post) => post.slug !== displayedFeaturedPost.slug)
+        .map((post) => post.slug);
+      const publishedSlugs = getBlogPosts(locale).map((post) => post.slug);
+      const archivePageSlugs = Array.from({ length: getBlogPageCount(locale) }, (_, pageIndex) =>
+        getBlogPostsForPage(locale, pageIndex + 1),
+      ).flatMap((posts) => posts.map((post) => post.slug));
+      const allHubPostSlugs = [displayedFeaturedPost.slug, ...archivePageSlugs];
+
+      expect(archivePageSlugs).toEqual(expectedArchiveSlugs);
+      expect(new Set(archivePageSlugs).size).toBe(expectedArchiveSlugs.length);
+      expect(allHubPostSlugs.sort()).toEqual(publishedSlugs.sort());
+      expect(new Set(allHubPostSlugs).size).toBe(publishedSlugs.length);
+      expect(archivePageSlugs).toContain('dnd-schools-of-magic');
+      expect(archivePageSlugs).not.toContain(displayedFeaturedPost.slug);
+      expect(getBlogPageCount(locale)).toBe(
+        Math.ceil(expectedArchiveSlugs.length / BLOG_POSTS_PER_PAGE),
+      );
+    },
+  );
+
+  test.each(['en', 'zh'] as const)(
+    'does not fill missing greenhouse recommendations for $locale while preserving other article fallback',
+    (locale) => {
+      expect(getRelatedBlogPosts(locale, 'greenhouse-stardew', 4)).toEqual([]);
+      expect(getRelatedBlogPosts(locale, 'dnd-meaning', 4)).toHaveLength(4);
+    },
+  );
+});
 
 describe('published blog body voice', () => {
   test('does not use author-facing search-intent or content-planning narration', () => {
@@ -1545,12 +1587,6 @@ describe('dnd death knight blog post', () => {
     '第六位',
   ];
 
-  function countableNodeText(bodyHtml: string) {
-    return [...bodyHtml.matchAll(/<(p|li|td|th)\b[^>]*>([\s\S]*?)<\/\1>/gi)].map((match) =>
-      match[2].replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim(),
-    );
-  }
-
   test('publishes the canonical bilingual catalog-row body without the old encounter skeleton', () => {
     const englishPost = getBlogPost('en', DND_DEATH_KNIGHT_SLUG);
     const chinesePost = getBlogPost('zh', DND_DEATH_KNIGHT_SLUG);
@@ -1572,60 +1608,51 @@ describe('dnd death knight blog post', () => {
     ]);
     expect(englishPost?.coverImage).toBe('/blog/covers/en/dnd-death-knight-guide.webp');
 
-    const englishParagraphs = [...(englishPost?.bodyHtml?.matchAll(/<p>([\s\S]*?)<\/p>/g) ?? [])].map(
-      (match) => match[1],
-    );
-    expect(englishParagraphs).toHaveLength(36);
-    expect(englishPost?.bodyHtml).toContain('<h2');
-    expect(englishPost?.bodyHtml).toContain('<table');
-    expect(englishPost?.bodyHtml).not.toContain('<iframe');
-    expect(englishPost?.bodyHtml).toContain('Tonight’s map needs one Death Knight object');
-    expect(englishPost?.bodyHtml).toContain(
-      'Those rows are monster catalog entries. They are not a Player’s Handbook class.',
-    );
-    expect(englishPost?.bodyHtml).toContain(
-      'content that was previously labeled “2024” is now labeled “5.5e”',
-    );
-    expect(englishPost?.bodyHtml).toContain('Complete official stat blocks stay out of this article.');
-    expect(englishPost?.bodyHtml).toContain(
-      'The public catalog listing does not show Armor Class, Hit Points, or a full action list.',
-    );
-    expect(englishPost?.bodyHtml).toContain(
-      'The System Reference Document v5.2.1 landing page on D&amp;D Beyond does not mention Death Knight.',
-    );
-    expect(englishPost?.bodyHtml).toContain('That post does not name Death Knight.');
-    expect(englishPost?.bodyHtml).toContain(
-      'If the table still uses Monster Manual (2014), keep the Legacy Death Knight catalog row',
-    );
-    expect(englishPost?.bodyHtml).toContain(
-      'Unearthed Arcana: Villainous Options presents Path of the Death Knight as a selection of playtest feats',
-    );
-    expect(englishPost?.bodyHtml).toContain(
-      'Death Knight Initiate is a Path of the Death Knight feat with prerequisite Level 4+',
-    );
-    expect(englishPost?.bodyHtml).toContain('Give the undead a job that can end');
-    expect(englishPost?.bodyHtml).toContain('Token Maker is a browser VTT token maker');
-    expect(englishPost?.bodyHtml).toContain(
-      'Ordinary PNG downloads are generated locally in the browser.',
-    );
-    expect(englishPost?.bodyHtml).toContain(
-      'Anyone with the public share link can view the generated token image.',
-    );
-    expect(englishPost?.bodyHtml).toContain(
-      'There is no Death Knight class in the Player’s Handbook.',
-    );
-    expect(englishPost?.bodyHtml).toContain(
-      'That silhouette is catalog identity, not a replacement stat block.',
-    );
-    expect(englishPost?.bodyHtml).not.toContain('/api/share');
-    expect(englishPost?.bodyHtml).not.toContain('2/Day Each');
-    expect(englishPost?.bodyHtml).not.toContain('source path mm-2024');
-    expect(englishPost?.bodyHtml).not.toContain('roll20.net/compendium');
-    expect(englishPost?.bodyHtml).not.toContain('companion video');
-    const englishQualifyingWords = countableNodeText(englishPost?.bodyHtml ?? '')
-      .join(' ')
-      .match(/[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)?/g);
-    expect(englishQualifyingWords?.length ?? 0).toBeGreaterThanOrEqual(2000);
+    const englishBodyHtml = englishPost?.bodyHtml ?? '';
+    const englishSectionHeadings = [
+      'Choose one object before the first token',
+      'Read the three public monster listings as three identities',
+      'Stop at public identity when the combat block is closed',
+      'Treat the playtest path as a character track, not a monster row',
+      'Build a commander fight the table can actually finish',
+      'Make tokens the map can tell apart',
+      'Keep local downloads and public share links on different rails',
+      'Refuse the mix-ups that waste round one',
+    ];
+    for (const sectionHeading of englishSectionHeadings) {
+      expect(englishBodyHtml).toContain(`>${sectionHeading}</h2>`);
+    }
+    expect(englishBodyHtml).toContain('<table>');
+    expect(englishBodyHtml).not.toContain('<iframe');
+    for (const sourceUrl of [
+      'https://www.dndbeyond.com/monsters?filter-search=&amp;filter-type=16&amp;page=3',
+      'https://www.dndbeyond.com/sources/dnd/mm-2024',
+      'https://marketplace.dndbeyond.com/category/monster-manual',
+      'https://www.dndbeyond.com/posts/1913-updates-in-the-monster-manual-2025',
+      'https://www.dndbeyond.com/posts/1875-updating-your-campaign-to-the-5-5e-d-d-rules',
+      'https://media.dndbeyond.com/compendium-images/ua/villainous-options/VRQr4YbETAgmpWRj/UA2026-VillainousOptions.pdf',
+      'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes',
+      'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes',
+    ]) {
+      expect(englishBodyHtml).toContain(`href="${sourceUrl}"`);
+    }
+    for (const rulesClaim of [
+      'current Monster Manual (2025; 5.5e)',
+      'Monster Manual (2014; 5e)',
+      'Legacy Death Knight',
+      'Death Knight Aspirant',
+      'Challenge 17',
+      'Challenge 11',
+      'Medium or Small',
+      'Path of the Death Knight as a playtest feat path',
+      'Death Knight Initiate requires level 4+',
+      'Weapon Mastery feature',
+      'Death Knight Ascension at level 12 or higher',
+      'experimental playtest material',
+      'not officially part of the game',
+    ]) {
+      expect(englishBodyHtml).toContain(rulesClaim);
+    }
 
     expect(chinesePost?.slug).toBe(DND_DEATH_KNIGHT_SLUG);
     expect(chinesePost?.title).toBe(chineseLockedTitle);
@@ -1644,40 +1671,51 @@ describe('dnd death knight blog post', () => {
     ]);
     expect(chinesePost?.coverImage).toBe('/blog/covers/en/dnd-death-knight-guide.webp');
 
-    const chineseParagraphs = [...(chinesePost?.bodyHtml?.matchAll(/<p>([\s\S]*?)<\/p>/g) ?? [])].map(
-      (match) => match[1],
-    );
-    expect(chineseParagraphs).toHaveLength(33);
-    expect(chinesePost?.bodyHtml).toContain('<h2');
-    expect(chinesePost?.bodyHtml).toContain('<table');
-    expect(chinesePost?.bodyHtml).not.toContain('<iframe');
-    expect(chinesePost?.bodyHtml).toContain('开团前先锁版本，再布置能打完的亡灵指挥官遭遇。');
-    expect(chinesePost?.bodyHtml).toContain(
-      '三条都是官方目录上的怪物身份，不是玩家手册里的职业。',
-    );
-    expect(chinesePost?.bodyHtml).toContain('不要把三条合成一只怪物。');
-    expect(chinesePost?.bodyHtml).toContain(
-      '名称、来源书、挑战等级、类型、体型、阵营和栖息地是同一行的版本识别组合',
-    );
-    expect(chinesePost?.bodyHtml).toContain(
-      '系统参考文档 v5.2.1 落地页正文没有出现 Death Knight。',
-    );
-    expect(chinesePost?.bodyHtml).toContain(
-      '把 Path of the Death Knight 写成一组试玩专长，不是玩家手册职业。',
-    );
-    expect(chinesePost?.bodyHtml).toContain('把战场分成三个能认出来的职责');
-    expect(chinesePost?.bodyHtml).toContain('普通 PNG 下载在浏览器本地生成。');
-    expect(chinesePost?.bodyHtml).toContain(
-      '中文检索词「死亡骑士」也不是 Wizards of the Coast 或 D&amp;D Beyond 写在目录上的官方中文译名',
-    );
-    expect(chinesePost?.bodyHtml).toContain('玩家手册里没有死亡骑士职业');
-    expect(chinesePost?.bodyHtml).not.toContain('/api/share');
-    expect(chinesePost?.bodyHtml).not.toContain('mm-2024');
-    expect(chinesePost?.bodyHtml).not.toMatch(/（[^）]*[A-Za-z][^）]*）/);
-    const chineseQualifyingHan = countableNodeText(chinesePost?.bodyHtml ?? '')
-      .join('')
-      .match(/[\u4e00-\u9fff]/g);
-    expect(chineseQualifyingHan?.length ?? 0).toBeGreaterThanOrEqual(2000);
+    const chineseBodyHtml = chinesePost?.bodyHtml ?? '';
+    const chineseSectionHeadings = [
+      '先锁书，再画战场',
+      '三条目录身份，不要跨行拼接',
+      '公开身份够用，未解锁数值不要补',
+      '人物试玩路径和怪物目录分开走',
+      '布置一场能打完的亡灵指挥官遭遇',
+      '用 Token Maker 把三种职责分开',
+      '本地下载和公开分享走两条路',
+      '开场前先挡掉这些混用',
+    ];
+    for (const sectionHeading of chineseSectionHeadings) {
+      expect(chineseBodyHtml).toContain(`>${sectionHeading}</h2>`);
+    }
+    expect(chineseBodyHtml).toContain('<table>');
+    expect(chineseBodyHtml).not.toContain('<iframe');
+    for (const sourceUrl of [
+      'https://www.dndbeyond.com/monsters?filter-search=&amp;filter-type=16&amp;page=3',
+      'https://www.dndbeyond.com/sources/dnd/mm-2024',
+      'https://marketplace.dndbeyond.com/category/monster-manual',
+      'https://www.dndbeyond.com/posts/1913-updates-in-the-monster-manual-2025',
+      'https://www.dndbeyond.com/posts/1875-updating-your-campaign-to-the-5-5e-d-d-rules',
+      'https://media.dndbeyond.com/compendium-images/ua/villainous-options/VRQr4YbETAgmpWRj/UA2026-VillainousOptions.pdf',
+      'https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes',
+      'https://www.dndbeyond.com/sources/dnd/br-2024/character-classes',
+    ]) {
+      expect(chineseBodyHtml).toContain(`href="${sourceUrl}"`);
+    }
+    for (const rulesClaim of [
+      'Monster Manual (5.5e)',
+      'Monster Manual (2014; 5e)',
+      'Legacy',
+      'Death Knight Aspirant',
+      '挑战等级 17',
+      '挑战等级 11',
+      'Medium or Small',
+      'Path of the Death Knight 专长路径',
+      '4 级或以上',
+      'Weapon Mastery',
+      '12 级或更高',
+      '试验性试玩',
+      '尚未正式加入游戏',
+    ]) {
+      expect(chineseBodyHtml).toContain(rulesClaim);
+    }
 
     for (const post of [englishPost, chinesePost]) {
       for (const phrase of [

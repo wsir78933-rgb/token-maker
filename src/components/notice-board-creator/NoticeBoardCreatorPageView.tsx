@@ -73,9 +73,11 @@ function NoticeBoardCreatorHowToUse({
 
 function NoticeBoardCreatorComparisonCell({
   cellCopy,
+  sourceCheckedLabel,
   isHighlighted = false,
 }: {
   cellCopy: NoticeBoardCreatorComparisonCellCopy;
+  sourceCheckedLabel: string;
   isHighlighted?: boolean;
 }) {
   const standardCellClassName =
@@ -83,11 +85,22 @@ function NoticeBoardCreatorComparisonCell({
   const cellClassName = isHighlighted
     ? `${standardCellClassName} border-x border-[var(--site-border-soft)] bg-[var(--site-accent-bg)] text-[var(--site-accent-strong)]`
     : standardCellClassName;
+  const comparisonSourceLink = cellCopy.source ? (
+    <a
+      href={cellCopy.source.href}
+      target="_blank"
+      rel="noreferrer"
+      className="mt-2 block text-xs font-normal leading-4 text-[var(--site-ink-soft)] underline underline-offset-2 hover:text-[var(--site-ink)]"
+    >
+      {cellCopy.source.label} · {sourceCheckedLabel} {cellCopy.source.checkedOn}
+    </a>
+  ) : null;
 
   if (cellCopy.status === 'limited') {
     return (
       <td data-comparison-status={cellCopy.status} className={cellClassName}>
-        {cellCopy.label}
+        <span>{cellCopy.label}</span>
+        {comparisonSourceLink}
       </td>
     );
   }
@@ -102,7 +115,8 @@ function NoticeBoardCreatorComparisonCell({
   return (
     <td data-comparison-status={cellCopy.status} className={cellClassName}>
       {statusIcon}
-      <span className="sr-only">{cellCopy.label}</span>
+      <span className="mt-1 block text-xs leading-4">{cellCopy.label}</span>
+      {comparisonSourceLink}
     </td>
   );
 }
@@ -137,7 +151,7 @@ function NoticeBoardCreatorComparison({
         role="region"
         tabIndex={0}
       >
-        <table className="w-full table-fixed border-collapse text-left">
+        <table className="w-full min-w-[760px] table-fixed border-collapse text-left">
           <caption className="sr-only">{pageCopy.comparisonTitle}</caption>
           <colgroup>
             <col className="w-[40%] sm:w-[28%]" />
@@ -188,10 +202,17 @@ function NoticeBoardCreatorComparison({
                 </th>
                 <NoticeBoardCreatorComparisonCell
                   cellCopy={rowCopy.noticeBoardCreator}
+                  sourceCheckedLabel={pageCopy.comparisonSourceCheckedLabel}
                   isHighlighted
                 />
-                <NoticeBoardCreatorComparisonCell cellCopy={rowCopy.rollForFantasy} />
-                <NoticeBoardCreatorComparisonCell cellCopy={rowCopy.helpWanted} />
+                <NoticeBoardCreatorComparisonCell
+                  cellCopy={rowCopy.rollForFantasy}
+                  sourceCheckedLabel={pageCopy.comparisonSourceCheckedLabel}
+                />
+                <NoticeBoardCreatorComparisonCell
+                  cellCopy={rowCopy.helpWanted}
+                  sourceCheckedLabel={pageCopy.comparisonSourceCheckedLabel}
+                />
               </tr>
             ))}
           </tbody>

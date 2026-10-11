@@ -139,6 +139,7 @@ export function BlogDetailPageView({
   const placeholderCopy = getBlogPlaceholderCopy(locale);
   const currentPath = `/blog/${slug}`;
   const isPlaceholder = !post.bodyHtml;
+  const isStardewGreenhousePost = post.slug === 'greenhouse-stardew';
   const coverSources = post.coverImage ? getBlogCoverImageSources(post.coverImage) : null;
   const coverSizes = '(min-width: 1024px) 50vw, 100vw';
   const articleHeadings = post.headings ?? [];
@@ -190,7 +191,13 @@ export function BlogDetailPageView({
               ]}
             />
 
-            <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_280px] xl:grid-cols-[minmax(0,1.24fr)_300px]">
+            <div
+              className={`mt-8 grid gap-8 ${
+                isStardewGreenhousePost
+                  ? ''
+                  : 'lg:grid-cols-[minmax(0,1.2fr)_280px] xl:grid-cols-[minmax(0,1.24fr)_300px]'
+              }`}
+            >
               <div className="space-y-6">
                 <p className="text-xs uppercase tracking-[0.34em] text-[#d7b46a]">
                   {isPlaceholder ? copy.placeholderEyebrow : copy.eyebrow}
@@ -248,46 +255,48 @@ export function BlogDetailPageView({
                 ) : null}
               </div>
 
-              <aside className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-5">
-                <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.actionCard}</p>
-                <div className="mt-4 space-y-3">
-                  <div className="rounded-[24px] border border-white/8 bg-black/20 px-4 py-3.5">
-                    <h2 className="text-base font-medium text-stone-50">{placeholderCopy.ctaTitle}</h2>
-                    <p className="mt-2 text-sm leading-7 text-stone-300">{placeholderCopy.ctaBody}</p>
-                  </div>
-                  {isPlaceholder ? (
-                    <div className="rounded-[24px] border border-white/8 bg-white/[0.03] px-4 py-3.5">
-                      <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.sourceHint}</p>
-                      <p className="mt-3 font-mono text-sm text-stone-200">{copy.sourcePath}</p>
+              {!isStardewGreenhousePost ? (
+                <aside className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-5">
+                  <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.actionCard}</p>
+                  <div className="mt-4 space-y-3">
+                    <div className="rounded-[24px] border border-white/8 bg-black/20 px-4 py-3.5">
+                      <h2 className="text-base font-medium text-stone-50">{placeholderCopy.ctaTitle}</h2>
+                      <p className="mt-2 text-sm leading-7 text-stone-300">{placeholderCopy.ctaBody}</p>
                     </div>
-                  ) : null}
-                  <div className="space-y-2.5 pt-0.5">
-                    <EditorLaunchButton
-                      href={`${getLocalizedPath(locale, '/')}#editor-workspace`}
-                      className="site-cta-primary w-full justify-center"
-                    >
-                      {copy.editor}
-                      <ArrowRight className="h-4 w-4" />
-                    </EditorLaunchButton>
-                    <Link
-                      href={getLocalizedPath(locale, '/dice-roller-dnd')}
-                      prefetch={false}
-                      className="site-cta-secondary w-full justify-center"
-                    >
-                      <Dice5 className="h-4 w-4" />
-                      {copy.diceRoller}
-                    </Link>
-                    <Link
-                      href={getLocalizedPath(locale, '/coat-of-arms-maker')}
-                      prefetch={false}
-                      className="site-cta-secondary w-full justify-center"
-                    >
-                      <Shield className="h-4 w-4" />
-                      {copy.coatMaker}
-                    </Link>
+                    {isPlaceholder ? (
+                      <div className="rounded-[24px] border border-white/8 bg-white/[0.03] px-4 py-3.5">
+                        <p className="text-xs uppercase tracking-[0.24em] text-stone-500">{copy.sourceHint}</p>
+                        <p className="mt-3 font-mono text-sm text-stone-200">{copy.sourcePath}</p>
+                      </div>
+                    ) : null}
+                    <div className="space-y-2.5 pt-0.5">
+                      <EditorLaunchButton
+                        href={`${getLocalizedPath(locale, '/')}#editor-workspace`}
+                        className="site-cta-primary w-full justify-center"
+                      >
+                        {copy.editor}
+                        <ArrowRight className="h-4 w-4" />
+                      </EditorLaunchButton>
+                      <Link
+                        href={getLocalizedPath(locale, '/dice-roller-dnd')}
+                        prefetch={false}
+                        className="site-cta-secondary w-full justify-center"
+                      >
+                        <Dice5 className="h-4 w-4" />
+                        {copy.diceRoller}
+                      </Link>
+                      <Link
+                        href={getLocalizedPath(locale, '/coat-of-arms-maker')}
+                        prefetch={false}
+                        className="site-cta-secondary w-full justify-center"
+                      >
+                        <Shield className="h-4 w-4" />
+                        {copy.coatMaker}
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </aside>
+                </aside>
+              ) : null}
             </div>
           </div>
         </section>
@@ -325,7 +334,7 @@ export function BlogDetailPageView({
               )}
             </article>
 
-            {!isPlaceholder ? (
+            {!isPlaceholder && !isStardewGreenhousePost ? (
               <section className="site-surface-card site-surface-card--warm rounded-[34px] px-5 py-6 sm:px-6 sm:py-7">
                 <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
                   <div className="min-w-0 max-w-xl space-y-2.5">

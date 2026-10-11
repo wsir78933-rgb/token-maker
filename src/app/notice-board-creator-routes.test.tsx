@@ -159,6 +159,7 @@ describe('notice board creator routes', () => {
       name: copy.comparisonTableLabel,
     });
     expect(comparisonRegion.getAttribute('tabindex')).toBe('0');
+    expect(within(comparisonSection).getByText(copy.comparisonDescription)).toBeTruthy();
 
     const comparisonHeaders = within(comparisonSection).getAllByRole('columnheader');
     expect(comparisonHeaders.map((header) => header.textContent?.trim())).toEqual([
@@ -202,12 +203,30 @@ describe('notice board creator routes', () => {
         expect(renderedCell.getAttribute('data-comparison-status')).toBe(expectedCellCopy.status);
         if (expectedCellCopy.status === 'limited') {
           expect(renderedCell.querySelector('svg')).toBeNull();
-          expect(renderedCell.textContent?.trim()).toBe(expectedCellCopy.label);
+          expect(renderedCell.firstElementChild?.textContent?.trim()).toBe(expectedCellCopy.label);
+        } else {
+          expect(renderedCell.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+          expect(renderedCell.querySelector('span')?.textContent).toBe(expectedCellCopy.label);
+        }
+
+        if (cellIndex === 0) {
+          expect(expectedCellCopy.source).toBeUndefined();
+          expect(renderedCell.querySelector('a')).toBeNull();
           continue;
         }
 
-        expect(renderedCell.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
-        expect(renderedCell.querySelector('.sr-only')?.textContent).toBe(expectedCellCopy.label);
+        const comparisonSource = expectedCellCopy.source;
+        const sourceLink = renderedCell.querySelector('a');
+        if (comparisonSource === undefined || sourceLink === null) {
+          throw new Error(`Missing comparison source link for cell ${cellIndex} in row ${rowIndex} (${JSON.stringify(locale)}).`);
+        }
+
+        expect(sourceLink.getAttribute('href')).toBe(comparisonSource.href);
+        expect(sourceLink.textContent).toContain(comparisonSource.label);
+        expect(sourceLink.textContent).toContain(copy.comparisonSourceCheckedLabel);
+        expect(sourceLink.textContent).toContain(comparisonSource.checkedOn);
+        expect(sourceLink.getAttribute('target')).toBe('_blank');
+        expect(sourceLink.getAttribute('rel')).toContain('noreferrer');
       }
     }
 

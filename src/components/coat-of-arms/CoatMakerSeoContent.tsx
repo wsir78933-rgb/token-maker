@@ -177,10 +177,16 @@ function renderComparisonTable(copy: CoatMakerSeoCopy) {
             </th>
             {comparisonRow.cellText.map((cellText, cellIndex) => {
               const comparisonColumnLabel = copy.comparisonColumns[cellIndex];
+              const cellSources = comparisonRow.cellSources[cellIndex];
 
               if (comparisonColumnLabel === undefined) {
                 throw new Error(
                   `Missing Coat Maker SEO comparison column at cellIndex ${cellIndex} for row: ${comparisonRow.rowLabel}`,
+                );
+              }
+              if (cellSources === undefined) {
+                throw new Error(
+                  `Missing Coat Maker SEO comparison sources at cellIndex ${cellIndex} for row: ${comparisonRow.rowLabel}`,
                 );
               }
 
@@ -193,7 +199,23 @@ function renderComparisonTable(copy: CoatMakerSeoCopy) {
                       : 'px-4 py-4 align-top text-stone-300'
                   }
                 >
-                  {cellText}
+                  <p>{cellText}</p>
+                  {cellSources.length > 0 ? (
+                    <ul className="mt-3 flex flex-col gap-1 text-xs leading-5 text-stone-400">
+                      {cellSources.map((comparisonSource) => (
+                        <li key={comparisonSource.href}>
+                          <a
+                            href={comparisonSource.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="underline decoration-white/30 underline-offset-2 hover:text-stone-200"
+                          >
+                            {comparisonSource.label} · {copy.comparisonSourceCheckedLabel} {comparisonSource.checkedOn}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </td>
               );
             })}
@@ -221,6 +243,9 @@ function renderComparisonSection(copy: CoatMakerSeoCopy) {
         </h2>
         <p className="max-w-3xl text-sm leading-7 text-stone-300 text-pretty sm:text-base">
           {copy.comparisonLead}
+        </p>
+        <p className="max-w-3xl text-xs leading-5 text-stone-400 text-pretty">
+          {copy.comparisonEvidenceNote}
         </p>
       </div>
 

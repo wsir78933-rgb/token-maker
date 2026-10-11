@@ -76,21 +76,21 @@ const faqDocModels: Record<SiteLocale, FaqDocModel> = {
     groups: [
       {
         id: 'fit',
-        title: 'Start here',
-        description: 'Confirm what the editor is for and whether the tabletop workflow matches your use case.',
-        itemIndexes: [0, 2],
-      },
-      {
-        id: 'control',
-        title: 'Control and style',
-        description: 'Know what stays local and how far you can push masks, borders, and campaign-specific styling.',
-        itemIndexes: [1, 3],
+        title: 'Workflow and compatibility',
+        description: 'See what the tool makes and whether its PNG exports fit common VTT platforms.',
+        itemIndexes: [0, 1],
       },
       {
         id: 'export',
-        title: 'Export call',
-        description: 'Pick a first-pass resolution without overbuilding every token.',
-        itemIndexes: [4],
+        title: 'Transparent PNG exports',
+        description: 'Learn how transparent PNG tokens fit maps, sheets, and token libraries before exporting.',
+        itemIndexes: [2],
+      },
+      {
+        id: 'control',
+        title: 'Styles and image handling',
+        description: 'Review the shape, border, and tint controls alongside the browser-based image workflow.',
+        itemIndexes: [3, 4],
       },
     ],
     signals: [
@@ -118,21 +118,21 @@ const faqDocModels: Record<SiteLocale, FaqDocModel> = {
     groups: [
       {
         id: 'fit',
-        title: '先确认适不适合',
-        description: '先判断这个编辑器主要解决什么问题，以及你的桌面工作流是否匹配。',
-        itemIndexes: [0, 2],
-      },
-      {
-        id: 'control',
-        title: '控制边界与样式空间',
-        description: '弄清默认本地处理边界，以及形状、边框和遮罩能扩展到什么程度。',
-        itemIndexes: [1, 3],
+        title: '工作流与平台兼容',
+        description: '了解工具能制作什么，以及导出的 PNG 是否适用于常见 VTT 平台。',
+        itemIndexes: [0, 1],
       },
       {
         id: 'export',
-        title: '导出怎么拍板',
-        description: '先选出一个够用的分辨率，不要一开始就把每张 token 都做得过重。',
-        itemIndexes: [4],
+        title: '透明 PNG 导出',
+        description: '了解透明 PNG Token 如何用于地图、角色卡和素材库，再开始导出。',
+        itemIndexes: [2],
+      },
+      {
+        id: 'control',
+        title: '样式与图片处理',
+        description: '了解形状、边框和颜色控制，以及图片在浏览器中的处理方式。',
+        itemIndexes: [3, 4],
       },
     ],
     signals: [

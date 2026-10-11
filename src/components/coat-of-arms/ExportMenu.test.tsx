@@ -23,6 +23,7 @@ vi.mock('@/lib/coat-of-arms/export', async (importOriginal) => {
     exportCoatPng: vi.fn(async () => new Blob(['png'], { type: 'image/png' })),
     exportCoatJpeg: vi.fn(async () => new Blob(['jpg'], { type: 'image/jpeg' })),
     exportCoatPdf: vi.fn(async () => new Blob(['pdf'], { type: 'application/pdf' })),
+    exportCoatBatch: vi.fn(async () => new Blob(['zip'], { type: 'application/zip' })),
     printCoatScene: vi.fn(),
   };
 });
@@ -34,6 +35,8 @@ describe('ExportMenu', () => {
   beforeEach(() => {
     window.localStorage.clear();
     mocks.uploadCoatExportToCloud.mockReset();
+    vi.mocked(exportModule.exportCoatBatch).mockReset();
+    vi.mocked(exportModule.exportCoatBatch).mockResolvedValue(new Blob(['zip'], { type: 'application/zip' }));
   });
 
   afterEach(() => {
@@ -89,6 +92,109 @@ describe('ExportMenu', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
 
     expect(screen.getByRole('button', { name: 'Download PNG' })).toBeDefined();
+  });
+
+  it('shows the Chinese batch queue, disables an empty ZIP download, and keeps queued items when the menu closes', () => {
+    render(<>
+      <button type="button">页面外</button>
+      <ExportMenu locale="zh" project={createDefaultProject('zh')} />
+    </>);
+
+    const exportTrigger = screen.getByRole('button', { name: '导出' });
+    fireEvent.click(exportTrigger);
+    expect(screen.getByText('批量 PNG ZIP 队列')).toBeDefined();
+    expect(screen.getByText('至少加入一个设计后，才能创建批量 PNG ZIP。')).toBeDefined();
+    expect(screen.getByRole('button', { name: '下载队列 PNG ZIP' })).toHaveProperty('disabled', true);
+
+    fireEvent.click(screen.getByRole('button', { name: '将当前设计加入队列' }));
+    fireEvent.click(screen.getByRole('button', { name: '页面外' }));
+    expect(screen.queryByRole('region', { name: '本地导出选项' })).toBeNull();
+
+    fireEvent.click(exportTrigger);
+    expect(screen.getByText('已加入 1 个设计到 PNG ZIP 队列。')).toBeDefined();
+    expect(screen.getByRole('button', { name: '下载队列 PNG ZIP' })).toHaveProperty('disabled', false);
+  });
+
+  it('exports deep snapshots at the selected size and transparency and ignores repeated ZIP clicks', async () => {
+    const downloadClicks = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: vi.fn(() => 'blob:coat-batch-export'),
+    });
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      value: vi.fn(),
+    });
+    let resolveZip: ((blob: Blob) => void) | undefined;
+    const pendingZip = new Promise<Blob>((resolve) => { resolveZip = resolve; });
+    vi.mocked(exportModule.exportCoatBatch).mockReturnValueOnce(pendingZip);
+    const firstProject = { ...createDefaultProject('en'), name: 'First design' };
+    const originalFirstCanvasWidth = firstProject.canvas.width;
+    const { rerender } = render(<ExportMenu locale="en" project={firstProject} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.change(screen.getByLabelText('Quality'), { target: { value: '0' } });
+    fireEvent.click(screen.getByLabelText('Transparent background'));
+    fireEvent.click(screen.getByRole('button', { name: 'Add current design to batch' }));
+    firstProject.canvas.width += 200;
+    firstProject.name = 'Changed after queueing';
+
+    const secondProject = { ...createDefaultProject('en'), name: 'Second design' };
+    rerender(<ExportMenu locale="en" project={secondProject} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Add current design to batch' }));
+    expect(screen.getByText('1. First design')).toBeDefined();
+    expect(screen.getByText('2. Second design')).toBeDefined();
+
+    const zipDownloadButton = screen.getByRole('button', { name: 'Download queued PNG ZIP' });
+    fireEvent.click(zipDownloadButton);
+    fireEvent.click(zipDownloadButton);
+    expect(vi.mocked(exportModule.exportCoatBatch)).toHaveBeenCalledTimes(1);
+    const firstCall = vi.mocked(exportModule.exportCoatBatch).mock.calls[0];
+    const queuedProjects = firstCall?.[0];
+    expect(firstCall?.[1]).toBe(256);
+    expect(firstCall?.[2]).toEqual({ transparentBackground: true });
+    expect(queuedProjects).toHaveLength(2);
+    expect(queuedProjects?.[0]).not.toBe(firstProject);
+    expect(queuedProjects?.[0]).toMatchObject({
+      name: 'First design',
+      canvas: { width: originalFirstCanvasWidth },
+    });
+    expect(queuedProjects?.[1]?.name).toBe('Second design');
+    expect(zipDownloadButton).toHaveProperty('disabled', true);
+
+    resolveZip?.(new Blob(['zip'], { type: 'application/zip' }));
+    expect(await screen.findByText('Batch PNG ZIP downloaded locally.')).toBeDefined();
+    expect(downloadClicks).toHaveBeenCalledTimes(1);
+    downloadClicks.mockRestore();
+  });
+
+  it('removes individual designs and reports batch export failures', async () => {
+    const downloadClicks = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: vi.fn(() => 'blob:coat-export'),
+    });
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      value: vi.fn(),
+    });
+    const firstProject = { ...createDefaultProject('en'), name: 'Remove me' };
+    const secondProject = { ...createDefaultProject('en'), name: 'Keep me' };
+    const { rerender } = render(<ExportMenu locale="en" project={firstProject} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add current design to batch' }));
+    rerender(<ExportMenu locale="en" project={secondProject} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Add current design to batch' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Remove me from batch' }));
+    expect(screen.queryByText('1. Remove me')).toBeNull();
+    expect(screen.getByText('1. Keep me')).toBeDefined();
+
+    vi.mocked(exportModule.exportCoatBatch).mockRejectedValueOnce(new Error('ZIP generation failed'));
+    fireEvent.click(screen.getByRole('button', { name: 'Download queued PNG ZIP' }));
+    expect((await screen.findByRole('alert')).textContent).toBe('Export failed: ZIP generation failed');
+    expect(downloadClicks).not.toHaveBeenCalled();
+    downloadClicks.mockRestore();
   });
 
   it('keeps caller-owned controls and section IDs unique when two menus are open', () => {

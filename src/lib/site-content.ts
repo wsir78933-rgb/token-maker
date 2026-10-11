@@ -983,7 +983,7 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
     metadataTitle:
       'dice roller dnd | Fast d20, d6, d8, d10, d12 and d100 roller online',
     metadataDescription:
-      'Roll d20, d6, d8, d10, d12, and d100 online with an animated DnD dice tray, fast presets, roll breakdowns, local history, and practical FAQ notes.',
+      'Roll DnD dice online: d4, d6, d8, d10, d12, d20, or d100. Build a mixed pool of up to 15 dice, add an integer modifier, view and copy roll details, and keep up to 20 results for the current page session.',
     eyebrow: 'dice roller dnd',
     title: 'dice roller dnd',
     description:
@@ -1374,7 +1374,7 @@ export const diceRollerPageCopyByLocale: Record<SiteLocale, DiceRollerPageCopy> 
   zh: {
     metadataTitle: 'dice roller dnd | 在线 d20、d6、d8、d10、d12 与 d100 掷骰页',
     metadataDescription:
-      'dice roller dnd 独立页面接入 Token Maker，内含动态随机骰子托盘、表达式输入、常见 DnD 预设、结果分解、日志与 FAQ 内容。',
+      '使用 DnD 在线掷骰器投掷 d4、d6、d8、d10、d12、d20 和 d100，组合最多 15 颗骰子的混合骰池，添加整数加值，查看并复制明细；当前页面会话最多保留 20 条记录。',
     eyebrow: 'dice roller dnd',
     title: 'dice roller dnd',
     description:

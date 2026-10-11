@@ -13,6 +13,7 @@ import type {
   PeriodicTableFeatureIcon,
   PeriodicTablePageContentCopy,
 } from '@/lib/periodic-table-creator/page-content-copy';
+import { PERIODIC_ELEMENT_SOURCES } from '@/lib/periodic-table-creator/elements';
 import { cn } from '@/lib/utils';
 
 const PERIODIC_TABLE_FEATURE_ICONS: Record<PeriodicTableFeatureIcon, LucideIcon> = {
@@ -32,12 +33,31 @@ function requireFeatureItems(items: readonly PeriodicTableFeature[]): readonly P
   return items;
 }
 
+function requireTemplateFeature(items: readonly PeriodicTableFeature[]): PeriodicTableFeature {
+  const templateFeatures = items.filter((feature) => feature.icon === 'templates');
+
+  if (templateFeatures.length !== 1) {
+    throw new Error(
+      `Periodic table feature grid requires one template feature for source links. Received ${templateFeatures.length} template features.`,
+    );
+  }
+
+  const templateFeature = templateFeatures[0];
+
+  if (!templateFeature) {
+    throw new Error('Periodic table feature grid lost its template feature after validation.');
+  }
+
+  return templateFeature;
+}
+
 export function PeriodicTableCreatorFeatureGrid({
   copy,
 }: {
   copy: PeriodicTablePageContentCopy['features'];
 }) {
   const featureItems = requireFeatureItems(copy.items);
+  const templateFeature = requireTemplateFeature(featureItems);
 
   return (
     <section
@@ -84,6 +104,36 @@ export function PeriodicTableCreatorFeatureGrid({
                 <p className="mt-2 text-sm leading-relaxed text-stone-300">
                   {feature.description}
                 </p>
+                {feature === templateFeature ? (
+                  <div className="mt-4 border-t border-white/10 pt-4 text-sm leading-6 text-stone-400">
+                    <p>{copy.sources.label}</p>
+                    <ul className="mt-2 space-y-1">
+                      <li>
+                        <a
+                          href={PERIODIC_ELEMENT_SOURCES.iupac.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-medium text-[#f1d492] underline underline-offset-4 hover:text-[#f7dfab] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+                        >
+                          {copy.sources.iupacLabel}
+                        </a>
+                        <span className="ml-1">
+                          ({copy.sources.latestReleaseLabel} {PERIODIC_ELEMENT_SOURCES.iupac.latestListedReleaseDate})
+                        </span>
+                      </li>
+                      <li>
+                        <a
+                          href={PERIODIC_ELEMENT_SOURCES.pubchem.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-medium text-[#f1d492] underline underline-offset-4 hover:text-[#f7dfab] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+                        >
+                          {copy.sources.pubchemLabel}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                ) : null}
               </article>
             </li>
           );

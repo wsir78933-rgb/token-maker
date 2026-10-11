@@ -95,6 +95,11 @@ describe('ArmorCreatorPageHeading', () => {
 
   it('中文标题把护甲放在下划线里，并且不在护甲和造型之间加空格', () => {
     const heading = renderedHeading('zh');
+    const heroSection = heading.closest('section');
+
+    if (!heroSection) {
+      throw new Error(`Chinese hero heading "${heading.textContent}" is not inside a section.`);
+    }
 
     expect(heading.textContent).toBe('免费护甲搭配工具：为 RPG 角色、NPC 与奇幻世界提供灵感');
     expect(heading.querySelector('span span')?.textContent).toBe('护甲搭配工具');
@@ -104,7 +109,9 @@ describe('ArmorCreatorPageHeading', () => {
         '这是一款免费护甲搭配工具，为 RPG/TTRPG 角色、战役 NPC 和奇幻世界设定提供护甲造型灵感。你可以组合不同护甲部件、预览角色造型。',
       ),
     ).toBeTruthy();
-    expect(screen.getByRole('link', { name: 'Try for Free' }).getAttribute('href')).toBe('#armor-creator-editor');
+    expect(within(heroSection).getByRole('link', { name: '开始搭配' }).getAttribute('href')).toBe(
+      '#armor-creator-editor',
+    );
   });
 });
 
@@ -122,6 +129,17 @@ describe('ArmorCreatorPageView', () => {
       level: 2,
       name: '如何使用护甲搭配工具？',
     });
+    const heroSection = heading.closest('section');
+    const howToUseSection = howToUseHeading.closest('section');
+
+    if (!heroSection) {
+      throw new Error(`Chinese hero heading "${heading.textContent}" is not inside a section.`);
+    }
+
+    if (!howToUseSection) {
+      throw new Error(`How to Use heading "${howToUseHeading.textContent}" is not inside a section.`);
+    }
+
     const faqHeading = screen.getByRole('heading', {
       level: 2,
       name: '护甲搭配工具常见问题',
@@ -130,8 +148,8 @@ describe('ArmorCreatorPageView', () => {
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(heading.textContent).toBe('免费护甲搭配工具：为 RPG 角色、NPC 与奇幻世界提供灵感');
     const editor = document.getElementById('armor-creator-editor');
-    const action = screen.getByRole('link', { name: 'Try for Free' });
-    const howToUseAction = screen.getByRole('link', { name: '开始搭配' });
+    const action = within(heroSection).getByRole('link', { name: '开始搭配' });
+    const howToUseAction = within(howToUseSection).getByRole('link', { name: '开始搭配' });
     const faqQuestion = screen.getByRole('button', {
       name: '护甲搭配工具可以免费使用吗？',
     });
@@ -155,6 +173,10 @@ describe('ArmorCreatorPageView', () => {
     expect(action.compareDocumentPosition(editor as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
+    expect(action.getAttribute('href')).toBe('#armor-creator-editor');
+    expect(
+      (editor as Node).compareDocumentPosition(howToUseAction) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(
       screen.getByText(
         getArmorCreatorCopy('zh').whatIsDescription,

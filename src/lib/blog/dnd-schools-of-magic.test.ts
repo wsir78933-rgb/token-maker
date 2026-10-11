@@ -295,7 +295,7 @@ describe('dnd schools of magic blog post', () => {
         { length: getBlogPageCount(locale) },
         (_, pageIndex) => getBlogPostsForPage(locale, pageIndex + 1),
       ).flatMap((posts) => posts.map((post) => post.slug));
-      expect(regularPostSlugs).not.toContain(DND_SCHOOLS_OF_MAGIC_SLUG);
+      expect(regularPostSlugs).toContain(DND_SCHOOLS_OF_MAGIC_SLUG);
     }
   });
 

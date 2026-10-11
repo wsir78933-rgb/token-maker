@@ -1,4 +1,6 @@
 import { renderCoatSceneSvg } from './scene-svg';
+import { requireLocalUploadDataUrl } from './local-upload-blobs';
+import { assertCoatProject } from './commands';
 import type { CoatProject } from './types';
 
 export const COAT_EXPORT_SIZES = [256, 512, 1024, 2048] as const;
@@ -62,6 +64,27 @@ export function projectForCoatExport(project: CoatProject, options?: CoatExportR
   assertCoatExportRenderOptions(options);
   if (options.transparentBackground !== true) return project;
   return hideBackgroundLayersForExport(project);
+}
+
+/** Copies a queued project and embeds browser-local uploads so later removal cannot break its export. */
+export function createCoatBatchProjectSnapshot(project: CoatProject): CoatProject {
+  assertCoatProject(project);
+  const snapshot = JSON.parse(JSON.stringify(project)) as CoatProject;
+  snapshot.uploads = snapshot.uploads.map((upload) => {
+    if (upload.encoding === 'base64') return upload;
+
+    const expectedPrefix = `data:${upload.mimeType};base64,`;
+    const dataUrl = requireLocalUploadDataUrl(upload.id);
+    if (!dataUrl.startsWith(expectedPrefix)) {
+      throw new Error(`Invalid local upload data URL for ${upload.id}; expected prefix ${expectedPrefix}`);
+    }
+    const uploadBase64 = dataUrl.slice(expectedPrefix.length);
+    if (uploadBase64.length === 0) {
+      throw new Error(`Invalid local upload data URL for ${upload.id}; base64 data is empty`);
+    }
+    return { id: upload.id, mimeType: upload.mimeType, encoding: 'base64', data: uploadBase64 };
+  });
+  return snapshot;
 }
 
 export async function exportCoatPng(
@@ -132,8 +155,13 @@ export async function exportCoatPdf(
   }
 }
 
-export async function exportCoatBatch(projects: CoatProject[], size: number): Promise<Blob> {
+export async function exportCoatBatch(
+  projects: CoatProject[],
+  size: number,
+  options?: CoatExportRenderOptions,
+): Promise<Blob> {
   assertExportSize(size);
+  assertCoatExportRenderOptions(options);
   if (!Array.isArray(projects) || projects.length === 0) {
     throw new Error(`Invalid coat export projects: ${String(projects)}`);
   }
@@ -142,7 +170,7 @@ export async function exportCoatBatch(projects: CoatProject[], size: number): Pr
   const zip = new JSZip();
   const usedNames = new Set<string>();
   for (const [index, project] of projects.entries()) {
-    const png = await exportCoatPng(project, size);
+    const png = await exportCoatPng(project, size, options);
     const fileName = getUniqueProjectFileName(project.name, index, usedNames);
     zip.file(fileName, await png.arrayBuffer());
   }
