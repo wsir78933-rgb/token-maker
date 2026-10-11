@@ -466,8 +466,18 @@ describe('coat maker routes', () => {
     expect(structuredDataScripts).toHaveLength(1);
     expect(metadata.title).toEqual({ absolute: metadataTitle });
     expect(metadata.description).toBe(schemaDescription);
-    expect(metadata.openGraph).toMatchObject({ title: metadataTitle, description: schemaDescription });
-    expect(metadata.openGraph).not.toHaveProperty('images');
+    expect(metadata.openGraph).toMatchObject({
+      title: metadataTitle,
+      description: schemaDescription,
+      images: [
+        {
+          url: 'https://www.tokenmaker.one/coat-of-arms-maker/hero/tool-made/ivory/crimson-lion.webp',
+          width: 1120,
+          height: 1400,
+          alt: metadataTitle,
+        },
+      ],
+    });
     expect(structuredData).toMatchObject({
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
@@ -486,8 +496,10 @@ describe('coat maker routes', () => {
       card: 'summary',
       title: twitterTitle,
       description: twitterDescription,
+      images: [
+        'https://www.tokenmaker.one/coat-of-arms-maker/hero/tool-made/ivory/crimson-lion.webp',
+      ],
     });
-    expect(metadata.twitter).not.toHaveProperty('images');
   });
 
   it.each([

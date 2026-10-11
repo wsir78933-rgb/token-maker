@@ -7,7 +7,7 @@ import { buildCoatMakerWebApplicationStructuredData } from '@/components/coat-of
 import { SiteFooter } from '@/components/site/SiteFooter';
 import { StructuredData } from '@/components/site/StructuredData';
 import { getCoatMakerSeoCopy } from '@/components/coat-of-arms/coat-maker-seo-copy';
-import { getSiteConfig, getSiteUrl } from '@/lib/site-content';
+import { absoluteUrl, getSiteConfig, getSiteUrl } from '@/lib/site-content';
 import { getLanguageAlternates, getLocalizedPath } from '@/lib/site-locale';
 
 const locale = 'en';
@@ -15,6 +15,7 @@ const path = '/coat-of-arms-maker';
 const localizedPath = getLocalizedPath(locale, path);
 const siteConfig = getSiteConfig(locale);
 const seoCopy = getCoatMakerSeoCopy(locale);
+const socialImageUrl = absoluteUrl('/coat-of-arms-maker/hero/tool-made/ivory/crimson-lion.webp');
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -33,11 +34,20 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     type: 'website',
     locale: 'en_US',
+    images: [
+      {
+        url: socialImageUrl,
+        width: 1120,
+        height: 1400,
+        alt: seoCopy.metadataTitle,
+      },
+    ],
   },
   twitter: {
     card: 'summary',
     title: seoCopy.metadataTitle,
     description: seoCopy.metadataDescription,
+    images: [socialImageUrl],
   },
 };
 
