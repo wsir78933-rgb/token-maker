@@ -13,7 +13,7 @@ const staticPublicContentSecurityPolicyHeader = {
     "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https:; frame-src https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
 };
 
-const scrollCreatorContentSecurityPolicyHeader = {
+const googleFontContentSecurityPolicyHeader = {
   key: 'Content-Security-Policy',
   value:
     "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:; frame-src https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
@@ -35,16 +35,24 @@ const nextConfig: NextConfig = {
       { source: '/(.*)', headers: securityHeaders },
       {
         source:
-          '/((?!api(?:/|$)|_next(?:/|$)|share(?:/|$)|zh/share(?:/|$)|coat-of-arms-maker(?:/|$)|zh/coat-of-arms-maker(?:/|$)|scroll-creator(?:/|$)|zh/scroll-creator(?:/|$)|(?:.*\\/)?opengraph-image(?:/|$)|.*\\.(?:avif|bmp|css|gif|ico|jpe?g|js|map|mjs|otf|png|svg|ttf|txt|webmanifest|webp|woff2?|xml)$).*)',
+          '/((?!api(?:/|$)|_next(?:/|$)|share(?:/|$)|zh/share(?:/|$)|coat-of-arms-maker(?:/|$)|zh/coat-of-arms-maker(?:/|$)|scroll-creator(?:/|$)|zh/scroll-creator(?:/|$)|notice-board-creator(?:/|$)|zh/notice-board-creator(?:/|$)|(?:.*\\/)?opengraph-image(?:/|$)|.*\\.(?:avif|bmp|css|gif|ico|jpe?g|js|map|mjs|otf|png|svg|ttf|txt|webmanifest|webp|woff2?|xml)$).*)',
         headers: [staticPublicContentSecurityPolicyHeader],
       },
       {
         source: '/scroll-creator',
-        headers: [scrollCreatorContentSecurityPolicyHeader],
+        headers: [googleFontContentSecurityPolicyHeader],
       },
       {
         source: '/zh/scroll-creator',
-        headers: [scrollCreatorContentSecurityPolicyHeader],
+        headers: [googleFontContentSecurityPolicyHeader],
+      },
+      {
+        source: '/notice-board-creator',
+        headers: [googleFontContentSecurityPolicyHeader],
+      },
+      {
+        source: '/zh/notice-board-creator',
+        headers: [googleFontContentSecurityPolicyHeader],
       },
     ];
   },

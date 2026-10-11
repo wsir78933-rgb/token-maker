@@ -39,6 +39,22 @@ describe('security headers', () => {
     }
   });
 
+  it('allows Google Fonts only on both notice board locales', async () => {
+    const noticeBoardUrls = [
+      'https://www.tokenmaker.one/notice-board-creator',
+      'https://www.tokenmaker.one/zh/notice-board-creator',
+    ];
+
+    for (const url of noticeBoardUrls) {
+      const response = await unstable_getResponseFromNextConfig({ url, nextConfig });
+      const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
+
+      expect(contentSecurityPolicy).toContain("style-src 'self' 'unsafe-inline' https://fonts.googleapis.com");
+      expect(contentSecurityPolicy).toContain("font-src 'self' https://fonts.gstatic.com");
+      expect(contentSecurityPolicy).not.toContain("'nonce-");
+    }
+  });
+
   it('excludes scroll creator routes from the general static CSP matcher', async () => {
     if (typeof nextConfig.headers !== 'function') {
       throw new Error('nextConfig.headers must be a function to define security headers');
@@ -54,6 +70,33 @@ describe('security headers', () => {
     expect(generalStaticCspSource).toContain('scroll-creator(?:/|$)');
     expect(contentSecurityPolicySources).toContain('/scroll-creator');
     expect(contentSecurityPolicySources).toContain('/zh/scroll-creator');
+  });
+
+  it('keeps notice board font access isolated from general public routes', async () => {
+    if (typeof nextConfig.headers !== 'function') {
+      throw new Error('nextConfig.headers must be a function to define security headers');
+    }
+
+    const routeHeaders = await nextConfig.headers();
+    const contentSecurityPolicySources = routeHeaders
+      .filter((routeHeader) => routeHeader.headers.some((header) => header.key === 'Content-Security-Policy'))
+      .map((routeHeader) => routeHeader.source);
+    const generalStaticCspSource = contentSecurityPolicySources.find((source) => source.includes('(?!api'));
+
+    expect(generalStaticCspSource).toBeDefined();
+    expect(generalStaticCspSource).toContain('notice-board-creator(?:/|$)');
+    expect(contentSecurityPolicySources).toContain('/notice-board-creator');
+    expect(contentSecurityPolicySources).toContain('/zh/notice-board-creator');
+
+    const generalPageResponse = await unstable_getResponseFromNextConfig({
+      url: 'https://www.tokenmaker.one/about',
+      nextConfig,
+    });
+    const generalPageContentSecurityPolicy = generalPageResponse.headers.get('Content-Security-Policy');
+
+    expect(generalPageContentSecurityPolicy).toContain("style-src 'self' 'unsafe-inline'");
+    expect(generalPageContentSecurityPolicy).not.toContain('https://fonts.googleapis.com');
+    expect(generalPageContentSecurityPolicy).not.toContain('https://fonts.gstatic.com');
   });
 
   it('leaves nonce-protected routes exclusively under proxy CSP ownership', async () => {

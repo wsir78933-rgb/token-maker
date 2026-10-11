@@ -63,6 +63,7 @@ export type CircularTestimonialsProps = {
   imageSize?: CircularTestimonialsImageSize;
   imageShape?: 'portrait' | 'landscape';
   clipImageStack?: boolean;
+  showImageFrame?: boolean;
 };
 
 type CircularTestimonialImageProps = {
@@ -72,6 +73,7 @@ type CircularTestimonialImageProps = {
   imagePaddingClassName: string;
   backgroundColor: string;
   containImage: boolean;
+  showImageFrame: boolean;
 };
 
 type CircularTestimonialImagePosition = 'center' | 'left' | 'right' | 'hidden';
@@ -297,6 +299,16 @@ function requireCircularTestimonialsClipImageStack(clipImageStack: unknown): boo
 
   throw new Error(
     `CircularTestimonials clipImageStack must be a boolean. Received ${describeCircularTestimonialsValue(clipImageStack)}.`,
+  );
+}
+
+function requireCircularTestimonialsShowImageFrame(showImageFrame: unknown): boolean {
+  if (typeof showImageFrame === 'boolean') {
+    return showImageFrame;
+  }
+
+  throw new Error(
+    `CircularTestimonials showImageFrame must be a boolean. Received ${describeCircularTestimonialsValue(showImageFrame)}.`,
   );
 }
 
@@ -530,12 +542,13 @@ function CircularTestimonialImage({
   imagePaddingClassName,
   backgroundColor,
   containImage,
+  showImageFrame,
 }: CircularTestimonialImageProps) {
   return (
     <div
       data-part="testimonial-image-frame"
-      className={`relative overflow-hidden rounded-2xl border border-[#d7b46a]/30 bg-[#f4eee5] shadow-[0_18px_44px_rgba(0,0,0,0.36)] ${frameClassName}`}
-      style={{ backgroundColor }}
+      className={`relative overflow-hidden rounded-2xl ${showImageFrame ? 'border border-[#d7b46a]/30 bg-[#f4eee5]' : ''} shadow-[0_18px_44px_rgba(0,0,0,0.36)] ${frameClassName}`}
+      style={showImageFrame ? { backgroundColor } : undefined}
     >
       <Image
         src={src}
@@ -543,7 +556,7 @@ function CircularTestimonialImage({
         fill
         sizes="(max-width: 640px) 75vw, 18rem"
         unoptimized
-        className={`object-contain ${imagePaddingClassName}`}
+        className={`object-contain ${showImageFrame ? imagePaddingClassName : 'p-0'}`}
         style={containImage ? { objectFit: 'contain' } : undefined}
       />
     </div>
@@ -557,6 +570,7 @@ function CircularTestimonialImageButton({
   imagePaddingClassName,
   imageAlt,
   containImage,
+  showImageFrame,
   tabIndex,
   onImageClick,
 }: {
@@ -566,6 +580,7 @@ function CircularTestimonialImageButton({
   imagePaddingClassName: string;
   imageAlt: string;
   containImage: boolean;
+  showImageFrame: boolean;
   tabIndex: 0 | -1;
   onImageClick: (testimonial: CircularTestimonial, trigger: HTMLButtonElement) => void;
 }) {
@@ -577,10 +592,10 @@ function CircularTestimonialImageButton({
     <button
       aria-haspopup="dialog"
       aria-label={`${actionLabel}: ${testimonial.name}`}
-      className="relative block h-full w-full cursor-zoom-in overflow-hidden rounded-2xl border border-[#d7b46a]/30 bg-[#f4eee5] p-0 shadow-[0_18px_44px_rgba(0,0,0,0.36)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d7b46a]"
+      className={`relative block h-full w-full cursor-zoom-in overflow-hidden rounded-2xl ${showImageFrame ? 'border border-[#d7b46a]/30 bg-[#f4eee5]' : ''} p-0 shadow-[0_18px_44px_rgba(0,0,0,0.36)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d7b46a]`}
       data-part="testimonial-image-frame"
       onClick={handleImageClick}
-      style={{ backgroundColor }}
+      style={showImageFrame ? { backgroundColor } : undefined}
       tabIndex={tabIndex}
       type="button"
     >
@@ -590,7 +605,7 @@ function CircularTestimonialImageButton({
         fill
         sizes="(max-width: 640px) 75vw, 18rem"
         unoptimized
-        className={`object-contain ${imagePaddingClassName}`}
+        className={`object-contain ${showImageFrame ? imagePaddingClassName : 'p-0'}`}
         style={containImage ? { objectFit: 'contain' } : undefined}
       />
     </button>
@@ -734,6 +749,7 @@ export function CircularTestimonials({
   imageSize = 'default',
   imageShape = 'portrait',
   clipImageStack = true,
+  showImageFrame = true,
 }: CircularTestimonialsProps) {
   const validatedTestimonials = requireCircularTestimonials(testimonials);
   const validatedAriaLabel = requireCircularTestimonialsLabel(ariaLabel, 'ariaLabel');
@@ -757,6 +773,7 @@ export function CircularTestimonials({
   const validatedImageShape = requireCircularTestimonialsImageShape(imageShape);
   requireCircularTestimonialsImageCombination(validatedImageShape, validatedImageSize);
   const validatedClipImageStack = requireCircularTestimonialsClipImageStack(clipImageStack);
+  const validatedShowImageFrame = requireCircularTestimonialsShowImageFrame(showImageFrame);
   const resolvedColors = { ...DEFAULT_CIRCULAR_TESTIMONIAL_COLORS, ...validatedColors };
   const resolvedFontSizes = { ...DEFAULT_CIRCULAR_TESTIMONIAL_FONT_SIZES, ...validatedFontSizes };
   const prefersReducedMotion = useCircularTestimonialsReducedMotion();
@@ -955,6 +972,7 @@ export function CircularTestimonials({
                     imagePaddingClassName={imagePaddingClassName}
                     imageAlt={isActive ? (testimonial.alt ?? testimonial.name) : ''}
                     containImage={validatedImageAspectRatio !== undefined}
+                    showImageFrame={validatedShowImageFrame}
                     tabIndex={isActive ? 0 : -1}
                     onImageClick={handleActiveImageClick}
                   />
@@ -966,6 +984,7 @@ export function CircularTestimonials({
                     frameClassName="h-full w-full"
                     containImage={validatedImageAspectRatio !== undefined}
                     imagePaddingClassName={imagePaddingClassName}
+                    showImageFrame={validatedShowImageFrame}
                   />
                 )}
               </div>
