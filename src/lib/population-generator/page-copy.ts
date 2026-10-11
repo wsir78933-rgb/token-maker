@@ -160,7 +160,7 @@ const englishPopulationGeneratorPageCopy: PopulationGeneratorPageCopy = {
     paragraphs: [
       'You can edit the settlement name, every field label, each occupation name, and every count on its own. Each occupation row has one count. For your world, that one count can mean how many people do the job, how many institutions there are, or how many people take part in the related work. Those counts are reference figures for the settlement, and they do not have to add up to the population. Changing the population does not recalculate the other fields.',
       'Households are a count. Area is shown in square kilometres (km²) and square miles (mi²), each to three decimal places. Counts must be whole numbers, zero or greater. Area may include a decimal, and it must be zero or greater and finite. An edit that is not a valid number shows a clear error.',
-      'Search occupation names and Hide zero counts only change which rows are on screen. On a wide screen the occupation list scrolls inside its own panel. On a phone the page scrolls through all 170 occupations. Search, Hide zero counts, and the column headings stay at the top of that list while it moves.',
+      'Search occupation names and Hide zero counts only change which rows are on screen. On a wide screen the occupation list scrolls inside its own panel. On a phone the occupation list scrolls inside a height-limited area, with Search, Hide zero counts, and the column headings at the top; all 170 occupations remain accessible.',
     ],
     agricultureLead:
       'Agriculture details start folded. Cultivated farmland is shown in acres. Saving, loading, exporting, and printing keep all six figures while the section is folded.',
@@ -276,7 +276,7 @@ const englishPopulationGeneratorPageCopy: PopulationGeneratorPageCopy = {
       {
         question: 'What do search and Hide zero counts change?',
         answer:
-          'They change only which rows are on screen in the population generator. The settlement still has all 170 occupations. Export and print include hidden rows, including zero counts. On a wide screen the list scrolls inside its panel. On a phone the page scrolls through the full list. Search, Hide zero counts, and the column headings stay at the top of that list.',
+          'They change only which rows are on screen in the population generator. The settlement still has all 170 occupations. Export and print include hidden rows, including zero counts. On a wide screen the list scrolls inside its panel. On a phone the list scrolls inside a height-limited area, with Search, Hide zero counts, and the column headings at the top; all 170 occupations remain accessible.',
       },
       {
         question: 'Where do the five saves stay?',
@@ -327,7 +327,7 @@ const chinesePopulationGeneratorPageCopy: PopulationGeneratorPageCopy = {
     paragraphs: [
       '聚落名称、所有字段标签、职业名称和每一项数值都可以单独修改。每个职业只有一行、一个数量。按你的世界设定，这一个数量可以表示从业人数、机构数或相关业务参与者。这些数量是聚落设定的参考，加总后不必等于总人口。修改总人口不会自动重算其他数值。',
       '住户数是一个整数。聚落面积同时给出平方千米（km²）和平方英里（mi²），都显示到小数点后三位。数量必须是大于或等于零的整数。面积可以带小数，但必须是大于或等于零的有限数字。无效编辑会显示清楚的错误。',
-      '搜索职业名称和隐藏零数量只改变屏幕上看到的行。宽屏时职业列表在自己的区域里滚动。手机上整页滚动，一百七十条都会出现。搜索、隐藏零数量和列标题会停在这个列表的顶部。',
+      '搜索职业名称和隐藏零数量只改变屏幕上看到的行。宽屏时职业列表在自己的区域里滚动。手机上职业列表在限高区域内滚动，搜索、隐藏零数量和列标题保持在列表顶部，170 条职业仍可全部访问。',
     ],
     agricultureLead:
       '农业明细默认折叠。种植农田用英亩表示。保存、读取、导出和打印都会保留这六项，即使这一区是折叠的。',
@@ -435,7 +435,7 @@ const chinesePopulationGeneratorPageCopy: PopulationGeneratorPageCopy = {
       {
         question: '搜索和隐藏零数量会改掉职业吗？',
         answer:
-          '在人口生成器里，它们只改变屏幕上显示的行。聚落里仍有全部 170 条。导出和打印包含被挡住的行，也包括零值。宽屏时列表在自己的区域里滚动。手机上整页滚动完整列表。搜索、隐藏零数量和列标题停在这个列表顶部。',
+          '在人口生成器里，它们只改变屏幕上显示的行。聚落里仍有全部 170 条。导出和打印包含被挡住的行，也包括零值。宽屏时列表在自己的区域里滚动。手机上列表在限高区域内滚动，搜索、隐藏零数量和列标题保持在列表顶部，170 条职业仍可全部访问。',
       },
       {
         question: '五个保存槽位放在哪里？',

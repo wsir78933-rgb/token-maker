@@ -24,7 +24,7 @@
 
 .layout {
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
   min-width: 0;
 }
 
@@ -71,13 +71,15 @@
 
 .choiceField {
   min-width: 0;
-  margin: 0.85rem 0 0;
-  padding: 0;
+  margin: 1rem 0 0;
+  padding: 0.75rem 0 0;
   border: 0;
+  border-top: 1px solid var(--site-border-soft);
 }
 
 .choiceField legend {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.55rem;
+  padding: 0;
   color: var(--site-ink-strong);
   font-size: 0.95rem;
   font-weight: 650;
@@ -133,25 +135,30 @@
 
 .rangeBlock {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-top: 0.9rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--site-border-soft);
 }
 
 .rangeValue {
   margin: 0.15rem 0 0;
   color: var(--site-ink-strong);
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .primaryButton {
+  width: 100%;
+  min-height: 3rem;
   border: 1px solid var(--site-accent-strong);
   background: var(--site-accent-bg);
   color: var(--site-accent-strong);
-  padding: 0.45rem 0.8rem;
-  font-weight: 700;
+  padding: 0.55rem 0.8rem;
+  font-weight: 750;
 }
 
 .quietButton,
@@ -203,6 +210,7 @@
   background: var(--site-panel-strong);
   color: var(--site-ink-strong);
   padding: 0.45rem 0.65rem;
+  line-height: 1.3;
 }
 
 .textInput[aria-invalid='true'] {
@@ -250,7 +258,60 @@
 .statCard {
   min-width: 0;
   display: grid;
-  gap: 0.4rem;
+  gap: 0.35rem;
+}
+
+.settlementName {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  min-width: 0;
+  margin-top: 0.9rem;
+}
+
+.settlementName > .labeledControl:first-child .textInput {
+  border-color: var(--site-border-strong);
+  background: var(--site-accent-bg);
+  color: var(--site-ink-strong);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.settlementName > .labeledControl:last-child .textInput {
+  min-height: 3.5rem;
+  border-color: var(--site-border-strong);
+  padding-inline: 0.8rem;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.statCard > .labeledControl:first-child .textInput,
+.areaGrid .labeledControl:first-child .textInput {
+  min-height: 2.75rem;
+  background: color-mix(in oklab, var(--site-panel-deep) 55%, var(--site-panel-strong));
+  color: var(--site-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.statCard > .labeledControl:last-child .textInput,
+.areaGrid .labeledControl:last-child .textInput {
+  min-height: 3rem;
+  color: var(--site-ink-strong);
+  font-size: 1.25rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.agricultureGrid .statCard > .labeledControl:last-child .textInput {
+  font-size: 1rem;
+}
+
+.professionRow > .labeledControl:last-child .textInput {
+  text-align: right;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
 }
 
 .actionRow {
@@ -262,16 +323,21 @@
 }
 
 .actionRow > .quietButton {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
-  padding-inline: 0.45rem;
+  padding-inline: 0.65rem;
+  overflow-wrap: anywhere;
 }
 
 .fileMenu {
   position: relative;
   flex: 0 1 auto;
-  min-width: 0;
+  min-width: 2.75rem;
   margin-left: auto;
+}
+
+.fileMenu > .quietButton {
+  min-width: 2.75rem;
 }
 
 .desktopMenuLabel {
@@ -291,7 +357,7 @@
   padding: 0.4rem;
   border: 1px solid var(--site-border-soft);
   border-radius: 0.8rem;
-  background: var(--site-card-plain-top);
+  background: linear-gradient(var(--site-card-plain-top), var(--site-card-plain-top)), var(--background);
   box-shadow: var(--site-card-shadow);
 }
 
@@ -326,20 +392,27 @@
 }
 
 .agricultureGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .professionScroll {
   min-width: 0;
   margin-top: 0.75rem;
+  max-height: min(36rem, 65vh);
+  max-height: min(36rem, 65svh);
+  overflow: auto;
+  border: 1px solid var(--site-border-soft);
+  border-radius: 0.8rem;
+  background: color-mix(in oklab, var(--site-panel) 76%, var(--site-panel-deep));
 }
 
 .professionSticky {
   position: sticky;
   top: 0;
   z-index: 2;
-  background: var(--background);
-  padding-bottom: 0.35rem;
+  padding: 0.4rem 0.4rem 0.45rem;
+  border-bottom: 1px solid var(--site-border-soft);
+  background: linear-gradient(var(--site-panel-strong), var(--site-panel-strong)), var(--background);
 }
 
 .professionTools {
@@ -358,8 +431,14 @@
   align-items: center;
   gap: 0.35rem;
   min-height: 2.75rem;
+  min-width: 0;
   color: var(--site-ink-strong);
   font-size: 0.875rem;
+}
+
+.checkLabel span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .checkLabel input {
@@ -371,6 +450,7 @@
 .visibleCount {
   grid-column: 2;
   justify-self: end;
+  font-variant-numeric: tabular-nums;
 }
 
 .professionHeader,
@@ -383,6 +463,7 @@
 
 .professionHeader {
   margin-top: 0.35rem;
+  padding: 0.25rem 0.4rem;
   color: var(--site-ink-soft);
   font-size: 0.8125rem;
   font-weight: 700;
@@ -395,11 +476,12 @@
 .professionRows {
   display: grid;
   gap: 0.45rem;
+  padding: 0.45rem 0.4rem 0.4rem;
 }
 
 .professionRow {
   min-width: 0;
-  padding-top: 0.2rem;
+  align-items: center;
 }
 
 .emptyProfessions {
@@ -505,12 +587,11 @@
 
 @media (min-width: 1024px) {
   .layout {
-    grid-template-columns: minmax(15rem, 18.5rem) minmax(0, 1fr);
+    grid-template-columns: minmax(14rem, 17.5rem) minmax(0, 1fr);
     grid-template-areas:
       'settings overview'
-      'settings professions'
-      'help help';
-    gap: 1.25rem;
+      'settings professions';
+    gap: 1.125rem;
     align-items: start;
   }
 
@@ -530,21 +611,8 @@
     grid-area: professions;
   }
 
-  .help {
-    grid-area: help;
-  }
-
   .eraGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .rangeBlock {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .primaryButton {
-    width: 100%;
   }
 
   .confirmActions {
@@ -603,9 +671,23 @@
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 640px) {
+  .settlementName {
+    grid-template-columns: minmax(9rem, 0.38fr) minmax(0, 1fr);
+  }
+
   .agricultureGrid {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .professionTools {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .searchField {
+    grid-column: 1 / -1;
   }
 }
 

@@ -29,22 +29,24 @@ export function PopulationGeneratorOverview({
         </h2>
         <p className={styles.editHint}>{copy.editHint}</p>
       </div>
-      <PopulationTextControl
-        id={`${baseId}-name-label`}
-        label={copy.nameLabelField}
-        value={session.textValue({ kind: 'name-label' })}
-        onChange={(nextText) => {
-          session.changeText({ kind: 'name-label' }, nextText);
-        }}
-      />
-      <PopulationTextControl
-        id={`${baseId}-name`}
-        label={copy.nameValueField}
-        value={session.textValue({ kind: 'name' })}
-        onChange={(nextText) => {
-          session.changeText({ kind: 'name' }, nextText);
-        }}
-      />
+      <div className={styles.settlementName}>
+        <PopulationTextControl
+          id={`${baseId}-name-label`}
+          label={copy.nameLabelField}
+          value={session.textValue({ kind: 'name-label' })}
+          onChange={(nextText) => {
+            session.changeText({ kind: 'name-label' }, nextText);
+          }}
+        />
+        <PopulationTextControl
+          id={`${baseId}-name`}
+          label={copy.nameValueField}
+          value={session.textValue({ kind: 'name' })}
+          onChange={(nextText) => {
+            session.changeText({ kind: 'name' }, nextText);
+          }}
+        />
+      </div>
       <div className={styles.statGrid}>
         {SPLIT_STATS.map((stat) => (
           <div key={stat} className={styles.statCard}>
