@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { getBlogCategories } from '@/lib/blog-content';
+import { getPopulationPageCopy } from '@/lib/population-generator/page-copy';
 import { getTarotCopy } from '@/lib/tarot-cards/copy';
 import {
   assertContentSiteTopbarModel,
@@ -68,6 +69,7 @@ describe('content site topbar model', () => {
       { href: '/periodic-table-creator', title: 'Periodic Table Creator' },
       { href: '/tarot-cards', title: getTarotCopy('en').navigationTitle },
       { href: '/scroll-creator', title: 'Scroll Creator' },
+      { href: '/population-generator', title: getPopulationPageCopy('en').navigationTitle },
     ]);
     expect(model.links).toEqual([
       { href: '/dice-roller-dnd', label: 'Dice Roller', isActive: false },
@@ -114,6 +116,7 @@ describe('content site topbar model', () => {
       { href: '/zh/periodic-table-creator', title: '元素周期表制作器' },
       { href: '/zh/tarot-cards', title: getTarotCopy('zh').navigationTitle },
       { href: '/zh/scroll-creator', title: '卷轴制作器' },
+      { href: '/zh/population-generator', title: getPopulationPageCopy('zh').navigationTitle },
     ]);
     expect(model.links).toEqual([
       { href: '/zh/dice-roller-dnd', label: '骰子', isActive: false },

@@ -24,6 +24,7 @@ const SCROLL_CREATOR_LAST_MODIFIED = '2026-10-06';
 const FAMILY_TREE_CREATOR_LAST_MODIFIED = '2026-10-06';
 const SOLAR_SYSTEM_CREATOR_LAST_MODIFIED = '2026-10-06';
 const PERIODIC_TABLE_CREATOR_LAST_MODIFIED = '2026-10-06';
+const POPULATION_GENERATOR_LAST_MODIFIED = '2026-10-07';
 const TAROT_CARDS_LAST_MODIFIED = '2026-10-06';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
 const TEMPLATE_LAST_MODIFIED = '2026-05-06';
@@ -118,6 +119,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/family-tree-creator',
     '/solar-system-creator',
     '/periodic-table-creator',
+    '/population-generator',
     '/tarot-cards',
     '/coat-of-arms-maker',
     '/contact',
@@ -150,6 +152,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(SOLAR_SYSTEM_CREATOR_LAST_MODIFIED)
             : path === '/periodic-table-creator'
             ? new Date(PERIODIC_TABLE_CREATOR_LAST_MODIFIED)
+            : path === '/population-generator'
+            ? new Date(POPULATION_GENERATOR_LAST_MODIFIED)
             : path === '/tarot-cards'
             ? new Date(TAROT_CARDS_LAST_MODIFIED)
             : path === '/contact'

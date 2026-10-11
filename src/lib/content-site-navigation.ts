@@ -4,6 +4,7 @@ import { getFamilyTreeCopy } from '@/lib/family-tree/copy';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
 import { getPeriodicTableCopy } from '@/lib/periodic-table-creator/copy';
+import { getPopulationPageCopy } from '@/lib/population-generator/page-copy';
 import { getScrollCreatorCopy } from '@/lib/scroll-creator/copy';
 import { getSolarSystemCopy } from '@/lib/solar-system-creator/copy';
 import { getTarotCopy } from '@/lib/tarot-cards/copy';
@@ -19,6 +20,7 @@ const FAMILY_TREE_CREATOR_PATH = '/family-tree-creator';
 const LANGUAGE_GENERATOR_PATH = '/language-generator';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
 const PERIODIC_TABLE_CREATOR_PATH = '/periodic-table-creator';
+const POPULATION_GENERATOR_PATH = '/population-generator';
 const SCROLL_CREATOR_PATH = '/scroll-creator';
 const SOLAR_SYSTEM_CREATOR_PATH = '/solar-system-creator';
 const TAROT_CARDS_PATH = '/tarot-cards';
@@ -35,6 +37,7 @@ const FREE_TOOLS_PATHS = [
   FAMILY_TREE_CREATOR_PATH,
   SOLAR_SYSTEM_CREATOR_PATH,
   PERIODIC_TABLE_CREATOR_PATH,
+  POPULATION_GENERATOR_PATH,
   TAROT_CARDS_PATH,
   SCROLL_CREATOR_PATH,
 ] as const;
@@ -238,6 +241,11 @@ function buildContentSiteFreeToolFeatures(
       locale,
       SCROLL_CREATOR_PATH,
       getScrollCreatorCopy(locale).navTitle,
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
+      POPULATION_GENERATOR_PATH,
+      getPopulationPageCopy(locale).navigationTitle,
     ),
   ];
 }
