@@ -1,5 +1,55 @@
 # WORKLOG
 
+## 交接单 · 2026-10-11 23:35 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+- 交接 `/Users/wusir/Desktop/技术 seo 审查.md` 对应的技术 SEO 修复和剩余诊断。用户要求 Map 示例图使用 WebP，暂不使用懒加载；确认 Leo 为真实作者；最新明确拒绝结束 AdSense。本次 offhand 只核对状态并写交接，不继续产品实现或账号操作。
+
+### 已完成
+
+- 主仓 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`，当前 HEAD `0c690799b2492e9f70cbd50bc5d38cc4a4e9930d`。交班前工作区、暂存区、未跟踪文件均为空。该提交包含本轮 14 个 SEO 文件改动；逐文件 SHA-256 与验收时一致。它在执行 offhand 前已出现，本次 offhand 没有创建提交、push 或部署。新交接单保持未存档，不暂存或提交 WORKLOG.md。
+- 当前源码已含前阶段修复：T01 背景素材库的双语 canonical/OG URL/社交标题描述对应本页；T02 纹章页使用现有 Crimson Lion WebP 社交图；T03 五类双语支持页使用 absolute title，避免模板重复品牌。这些属于 metadata，不增加工具内分享按钮。
+- T04/T05 已按用户范围使用静态 WebP 和响应式尺寸：Map 的 12 张案例以 640/1024/1536w 的 srcSet 加 sizes 渲染，放大预览使用完整 WebP；博客封面由 `src/lib/blog/cover-sources.ts` 提供按原图宽度生成的 640/960/1280/1920w 候选。生成入口为 `scripts/generate-map-maker-example-images.mjs`、`scripts/generate-blog-cover-images.mjs`。Map 没有新增 loading="lazy"；不能据此声称首访 12 图请求已消失、线上 LCP 已达标或全站图片优化器已配置。
+- T07 `src/app/sitemap.ts` 已省略首页、博客首页/分页、分类聚合页不可靠的 lastModified；文章页仍读自身 updatedAt，其他独立页面日期仍保留。没有用全部文章或其他支持页最大日期推高这些聚合 URL 的日期。
+- T06 共享 `BLOG_AUTHOR = { '@type': 'Person', name: 'Leo' }`，由 `src/lib/blog/index.ts` 输出 Article author，`src/lib/blog-content.ts` 导出，`BlogDetailPageView.tsx` 显示 By Leo / 作者：Leo。Token Maker publisher 和原有 About 链接保留。没有编造个人主页、履历或逐篇作者字段；这不代表内容报告 C07 的完整作者资料已补齐。
+- T06 双语模板 VideoObject 接入 `page.video.uploadDate`；`src/lib/site-content.ts` 两种语言均为 `2020-06-17T06:15:05-07:00`，取自真实 YouTube 视频 `https://www.youtube.com/watch?v=hjE_N0wTHOc` 的官方 metadata/player microformat。对应页面为 `/templates/square-token-maker` 和 `/zh/templates/square-token-maker`。
+- T08 `TownCreatorWorkbench.tsx` 工具栏标题从 H1 改为 H2，对应 `.module.css` 只改选择器、样式声明不变；页面 Hero H1 保留。T02 两个 maker 路由的 twitter.card 改为 summary_large_image，原有图、标题、描述保留。
+- 本轮 14 个文件为：`src/lib/blog/index.ts`、`src/lib/blog-content.ts`、`src/lib/blog/index.test.ts`、`src/lib/site-content.ts`；`src/components/site/views/BlogDetailPageView.tsx` 与其测试、`TemplatePageView.tsx` 与其测试；`src/components/town-creator/TownCreatorWorkbench.tsx`、同名 CSS 和测试；`src/app/(maker-en)/coat-of-arms-maker/page.tsx`、`src/app/(maker-zh)/zh/coat-of-arms-maker/page.tsx`、`src/app/site-routes.test.tsx`。
+- **修复阶段验证，非本次 offhand 重跑：** pnpm lint、pnpm typecheck、pnpm check:workers-types、pnpm exec vinext build、pnpm check:workers-build 均 exit 0；lint 为 0 errors/10 warnings，build 有 chunk/plugin 耗时提示。第一次全量 Vitest exit 1，两个未改文件的 5000ms 超时；对应两文件单独重测 exit 0、20 tests passed；同命令全量重跑 exit 0、436 files passed、3940 tests passed/1 skipped（总 3941），172.44s。没有放宽超时配置；未确认首次超时原因。Workers check 是 deploy dry-run，不是实际部署。
+- **修复阶段浏览器/HTTP 验收，非本次 offhand 重跑：** ego-browser 在本地新生产构建覆盖 EN/ZH Blog、Town、方形模板、纹章四类页面 × 桌面/手机，共 16 次，均单一页面 H1、无横向溢出；博客署名、视频日期、Town H2、Twitter 大图字段对应源码。最终 HTML 另核对 136 个文章页（EN 68/ZH 68），全为 HTTP 200、恰好一个 Article、Person Leo 与可见署名一致。未测试社交平台实际抓取预览。
+- 原始证据目录 `/tmp/token-maker-remaining-seo-MKzzZn/`，含 `verification-summary.json`、`*-result.json` 和日志、`native-acceptance.json`/PNG、`all-blog-author-html.json`、trace/CPU profile 与 `cold-repeat-1.json`/`cold-repeat-2.json`。summary 的 head 是修复开始时的 c60dc7a7；本次已核对当前提交的 14 个源文件哈希一致，不能把历史回读说成 offhand 重跑。只读证据复核为 `offhand-evidence-review.txt`；写前旧 WORKLOG 完整字节快照和守卫在该目录 `offhand/`。
+- 修复阶段自有 40021 Workers preview 已 Ctrl-C 退出（130）；本次只读再次核实 40021 无监听。没有停止其他端口。采集时使用 Ego TaskSpace 70、p1 为 AdSense、p2 最后 about:blank；CPU/viewport 已复位，空间当时未 finish。本次 offhand 没有重新查看浏览器状态，下一班使用前先核实该空间是否仍存在。
+
+### 做到一半
+
+- **T09 广告 CLS 未修复。用户已经明确拒绝结束 AdSense，实验和账号设置保持原状。** 曾只读看到本站正在运行 Ad intents 实验，设置页提示要先停止实验才能编辑；未点 Keep original/Apply variation/Apply to site、未修改排除区域。不能把结束实验、关闭 AdSense 或写账号设置当作已授权下一步，不要重复要求用户结束实验。
+- **T10 手机 INP 未修复。** 已采集素材选择、编辑设置、导出等实际动作的 EventTiming/trace。一次冷导出点击 processing 为 367.751ms，样本热点落在 `src/lib/renderer/pipeline.ts` 的 buildImageBorderMask；之后固定 390×844、DPR2、CPU4、前台条件下两轮 fresh-document 冷/热对照，冷 processing 为 51.5/63.3ms，热为 18.3/20.5ms，PNG 预览均 1024×1024。click EventTiming 总 duration 仍为 1976–2000ms，含约 2 秒的呈现延迟；尚无稳定应用源码归因。不能用较短 click processing 宣称 INP 达标，也不能把整个 CPU profile 总耗时归给同一次 click；未改导出或 flood-fill 代码。
+- 本次没有回写桌面的审查报告，其末尾“项目代码仍暂停／尚未实施”属于旧状态。判断实施情况应核对本交接、当前源码和 Git，而非沿用该旧结论。新 WORKLOG 交接未存档；无其他本次新产品改动。
+
+### 下一步
+
+- 下一班输入 `$pickup`，先只读刷新 HEAD、git status、WORKLOG、证据目录和服务/浏览器归属，再按用户新授权继续；不要自动 commit、push、deploy 或新增依赖。
+- T09 如用户仍希望减少广告导致的位移，先只读评估能保留当前广告实验和广告服务的处理路径，明确事实、范围和验收后再对齐。当前没有已经验证的替代补丁；不得擅自关闭广告、停止实验、写 AdSense 设置或硬编码一个通用广告高度。
+- T10 如继续诊断，使用同设备/网络/缓存/观察时长记录手机关键动作；同时保留 performance.timeOrigin、EventTiming、trace、viewport/前台状态，把 CPU 处理、输入等待和呈现延迟分别关联到源码。只修复稳定核实的慢路径；改后对同动作重复测量，再观察生产 CrUX p75。原报告手机首页 URL INP 260ms、Origin 235ms 是历史 28 天指标，不能因为本地测量变化立即记为通过。
+- Map 继续遵守“WebP、暂不懒加载”；Leo 资料只采用用户确认的真实姓名，不补虚构介绍、URL 或评价。前阶段已存在的代码不自动重做。
+
+### 踩过的坑
+
+- 浏览器等待超时不等于页面故障：Town 工作台有 content-visibility，手机需点击 Start creating / 开始创建后再检查工具栏 H2。误访问 `/square-token-maker` 的 404 是采集路径错误，真实路径有 `/templates/`。
+- Ego 新 CLI 进程/导航/原生窗口激活后，不能假设 CDP emulation 或新文档 observer 注入仍保持。应在同一次脚本里设置并逐步断言 390×844、DPR2、可见/焦点状态。一次前台采集实际为 1500×785，不能用于手机结论；一次 trace 有效但末尾 observer 数据导出失败，保留为采集不完整，不包装成完整 PASS。
+- 367.751ms 冷样本没有在两轮干净导航中稳定重现；后续独立 CPU profile 缺少同一 timeOrigin/raw trace 对齐信息，不能推断某 71ms mask 样本一定在点击处理还是异步任务。约 2 秒的呈现延迟也没有完成源码归因。
+- Article author 是 Person Leo，publisher 仍是 Token Maker，两者不可混用。Video uploadDate 是真实视频首次发布时间，不是当前日期或站点修改日期。
+- 不用 pnpm dev 重开预览：当前脚本会先释放 40001，可能停止其他已有服务。/tmp 证据可能被系统清理；历史测试、HTTP 和截图都不能替代新的线上部署/实测证据。
+
+### 怎么验证
+
+- 本次 offhand 只读 Git、源码、日志/JSON、文件哈希和 40021 监听，写 WORKLOG 后做字节保留与范围核查；没有重跑产品 lint/typecheck/test/build 或浏览器验收。
+- 上轮命令与原始结果：`pnpm lint` → lint-result.json/log；`pnpm typecheck` → typecheck-result.json/log；`pnpm check:workers-types` → workers-types-result.json/log；`pnpm exec vitest run --maxWorkers=2` → full-test.log（初次失败）及 full-test-retry-result.json/log（通过）；`pnpm exec vinext build` → production-build-result.json/log；`pnpm check:workers-build` → workers-dry-run-result.json/log。两超时文件重测命令为 `pnpm exec vitest run src/components/calendar-creator/CalendarCreatorReturnFlow.test.tsx src/components/language-generator/LanguageGeneratorWorkbench.test.tsx --maxWorkers=2`。
+- 若新一轮验证已获授权，按项目 scripts 执行 lint、typecheck、对应 Vitest、Workers types、Vinext build 和 Workers dry-run；开始本地服务前先确认目标端口空闲，可使用 `WORKERS_PREVIEW_PORT=40021 pnpm preview:workers`，不要释放已有其他端口。
+- 本地 ego-browser 的 EN/ZH 检查路径为 `/blog/dnd-meaning`、`/town-creator`、`/templates/square-token-maker`、`/coat-of-arms-maker` 及对应 `/zh/` 路由；桌面 1440×1000 DPR1，手机 390×844 DPR2。确认 By Leo/作者：Leo 与 JSON-LD 一致，视频日期准确，Town 启动工作台后只有 Hero H1/工具栏 H2，纹章 twitter:card 为 summary_large_image、图片可读、无页面横向溢出。
+- T09 新验收必须覆盖广告真实加载后的完整位移过程，并遵守保留实验的拒绝边界；T10 需冷/热对照 trace 与同动作改前改后证据，不能仅看处理函数耗时。旧的 16 次验收和 136 个 Article 的数据分别在 native-acceptance.json、all-blog-author-html.json。
+
 ## 交接单 · 2026-10-11 20:38 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
