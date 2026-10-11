@@ -25,7 +25,6 @@ export interface MapMakerPropertiesPanelProps {
   onDeleteSelectedElements(): void;
   onDeleteSelectedLabels(): void;
   onClearAllLabels(): void;
-  onSettingsChange(settings: Partial<MapMakerProjectSettings>): void;
 }
 
 function renderCustomImageControls(props: MapMakerPropertiesPanelProps, isDisabled: boolean) {
@@ -138,7 +137,6 @@ function renderLabelProperties(props: MapMakerPropertiesPanelProps) {
 export function MapMakerPropertiesPanel(props: MapMakerPropertiesPanelProps) {
   const headingId = useId();
   const { copy } = props;
-  const viewCopy = copy.view;
   let targetProperties: ReactNode;
   if (props.editTarget === 'base') targetProperties = renderBaseProperties(props);
   else if (props.editTarget === 'layer-1' || props.editTarget === 'layer-2') targetProperties = renderElementProperties(props);
@@ -150,36 +148,6 @@ export function MapMakerPropertiesPanel(props: MapMakerPropertiesPanelProps) {
         <h3 id={headingId} className={styles.panelTitle}>{copy.properties.title}</h3>
       </header>
       <div className={styles.contentStack}>{targetProperties}</div>
-      <hr className={styles.sectionDivider} />
-      <h4 className={styles.subsectionTitle}>{viewCopy.title}</h4>
-      <div className={styles.toggleGrid}>
-        <label className={styles.toggleRow}>
-          <span>{viewCopy.squareGrid}</span>
-          <input type="checkbox" checked={props.settings.squareGridVisible} onChange={(event) => props.onSettingsChange({ squareGridVisible: event.currentTarget.checked })} />
-        </label>
-        <label className={styles.toggleRow}>
-          <span>{viewCopy.hexGrid}</span>
-          <input type="checkbox" checked={props.settings.hexGridVisible} onChange={(event) => props.onSettingsChange({ hexGridVisible: event.currentTarget.checked })} />
-        </label>
-        <label className={styles.fieldLabel}>
-          <span>{viewCopy.hexSize}</span>
-          <input
-            className={styles.input}
-            type="number"
-            min={1}
-            max={15}
-            step={0.1}
-            value={props.settings.hexSizePercent}
-            disabled={!props.settings.hexGridVisible}
-            onChange={(event) => props.onSettingsChange({ hexSizePercent: Number(event.currentTarget.value) })}
-          />
-          <span className={styles.mutedText}>{viewCopy.hexRange}</span>
-        </label>
-        <label className={styles.toggleRow}>
-          <span>{viewCopy.elementSnap}</span>
-          <input type="checkbox" checked={props.settings.snapToGrid} onChange={(event) => props.onSettingsChange({ snapToGrid: event.currentTarget.checked })} />
-        </label>
-      </div>
     </section>
   );
 }

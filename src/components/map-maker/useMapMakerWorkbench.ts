@@ -3,7 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 
 import {
+  MAP_MAKER_DEFAULT_ROWS,
+  MAP_MAKER_MAX_COLUMNS,
   MAP_MAKER_MAX_PROJECT_BYTES,
+  MAP_MAKER_MIN_COLUMNS,
   MAP_MAKER_TILE_SIZE,
   addMapMakerElement,
   addMapMakerLabel,
@@ -274,7 +277,9 @@ export function useMapMakerWorkbench(copy: MapMakerWorkspaceCopy) {
   const [actionStatus, setActionStatus] = useState<string | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
+  const initialProjectRef = useRef(project);
   const projectRef = useRef(project);
+  const defaultMapColumnsInitializedRef = useRef(false);
   const previewImageUrlRef = useRef<string | null>(null);
   const exportGenerationRef = useRef(0);
 
@@ -402,6 +407,25 @@ export function useMapMakerWorkbench(copy: MapMakerWorkspaceCopy) {
 
   function handleApplySize(columns: number, rows: number): void {
     if (runProjectChange((currentProject) => resizeMapMakerProject(currentProject, columns, rows))) clearSelection();
+  }
+
+  function initializeDefaultMapColumns(columns: number): void {
+    if (!Number.isInteger(columns) || columns < MAP_MAKER_MIN_COLUMNS || columns > MAP_MAKER_MAX_COLUMNS) {
+      throw new RangeError(`Map Maker default columns must be an integer from ${MAP_MAKER_MIN_COLUMNS} to ${MAP_MAKER_MAX_COLUMNS}. Received ${String(columns)}.`);
+    }
+    if (defaultMapColumnsInitializedRef.current) return;
+
+    const currentProject = projectRef.current;
+    if (currentProject !== initialProjectRef.current) {
+      defaultMapColumnsInitializedRef.current = true;
+      return;
+    }
+
+    if (columns !== currentProject.columns) {
+      commitProject(resizeMapMakerProject(currentProject, columns, MAP_MAKER_DEFAULT_ROWS));
+      clearSelection();
+    }
+    defaultMapColumnsInitializedRef.current = true;
   }
 
   function handleResetMap(): void {
@@ -687,6 +711,7 @@ export function useMapMakerWorkbench(copy: MapMakerWorkspaceCopy) {
     handleChangeSettings,
     handleRandomGenerate,
     handleApplySize,
+    initializeDefaultMapColumns,
     handleResetMap,
     handleClearLayer,
     handleClearLabels,

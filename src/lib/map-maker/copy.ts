@@ -79,6 +79,8 @@ export type MapMakerWorkspaceCopy = {
   };
   readonly layers: {
     readonly title: string;
+    readonly collapsePanel: string;
+    readonly expandPanel: string;
     readonly editHint: string;
     readonly baseMap: string;
     readonly elementLayerOne: string;
@@ -426,6 +428,8 @@ const englishCopy: MapMakerCopy = {
     },
     layers: {
       title: 'Edit target and visibility',
+      collapsePanel: 'Collapse sidebar',
+      expandPanel: 'Expand sidebar',
       editHint: 'Choose an edit target without hiding other content.',
       baseMap: 'Base map',
       elementLayerOne: 'Element layer 1',
@@ -620,6 +624,8 @@ const chineseCopy: MapMakerCopy = {
     },
     layers: {
       title: '编辑对象与显隐',
+      collapsePanel: '收起侧栏',
+      expandPanel: '展开侧栏',
       editHint: '切换编辑目标时无需隐藏其他内容。',
       baseMap: '底图',
       elementLayerOne: '元素层 1',

@@ -1,12 +1,15 @@
 'use client';
 
-import { useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
 
+import { MAP_MAKER_MAX_COLUMNS, MAP_MAKER_MIN_COLUMNS, MAP_MAKER_TILE_SIZE } from '@/lib/map-maker';
 import type { MapMakerWorkspaceCopy } from '@/lib/map-maker/copy';
 
 import { MapMakerAssetPalette } from './MapMakerAssetPalette';
 import { MapMakerCanvas } from './MapMakerCanvas';
+import { MapMakerCanvasViewport } from './MapMakerCanvasViewport';
 import { MapMakerExportDialog } from './MapMakerExportDialog';
+import { MapMakerGridSettingsPanel } from './MapMakerGridSettingsPanel';
 import { MapMakerHelpDialog } from './MapMakerHelpDialog';
 import { MapMakerLayerPanel, type MapMakerEditTarget } from './MapMakerLayerPanel';
 import { MapMakerPropertiesPanel } from './MapMakerPropertiesPanel';
@@ -19,15 +22,68 @@ import styles from './MapMakerWorkbench.module.css';
 type MobilePane = 'materials' | 'layers' | 'properties' | 'more' | null;
 type ResizeSide = 'left' | 'right';
 type PanelResizeGesture = { side: ResizeSide; pointerId: number; startX: number; startWidth: number };
+type InspectorFocusTarget = 'collapse' | 'expand' | null;
 
 const PANEL_WIDTH_MIN = 220;
 const PANEL_WIDTH_MAX = 420;
+const INSPECTOR_COLLAPSED_RAIL_WIDTH = 64;
 
 function clampPanelWidth(width: number): number {
   if (!Number.isFinite(width)) {
     throw new Error(`Map Maker panel width must be finite. Received ${String(width)}.`);
   }
   return Math.max(PANEL_WIDTH_MIN, Math.min(PANEL_WIDTH_MAX, width));
+}
+
+function parseComputedPaddingPixels(paddingName: 'paddingLeft' | 'paddingRight', paddingText: string): number {
+  const pixelMatch = /^(\d+(?:\.\d+)?|\.\d+)px$/.exec(paddingText);
+  if (pixelMatch === null) {
+    throw new Error(`Map Maker canvas viewport ${paddingName} must be a non-negative pixel value. Received ${JSON.stringify(paddingText)}.`);
+  }
+  const paddingPixels = Number(pixelMatch[1]);
+  if (!Number.isFinite(paddingPixels)) {
+    throw new Error(`Map Maker canvas viewport ${paddingName} must be finite. Received ${JSON.stringify(paddingText)}.`);
+  }
+  return paddingPixels;
+}
+
+function getCanvasViewportContentWidth(canvasViewport: HTMLDivElement): number {
+  const viewportClientWidth = canvasViewport.clientWidth;
+  if (!Number.isFinite(viewportClientWidth) || viewportClientWidth <= 0) {
+    throw new Error(`Map Maker canvas viewport clientWidth must be a positive finite number. Received ${String(viewportClientWidth)}.`);
+  }
+
+  const viewportComputedStyle = window.getComputedStyle(canvasViewport);
+  const leftPaddingPixels = parseComputedPaddingPixels('paddingLeft', viewportComputedStyle.paddingLeft);
+  const rightPaddingPixels = parseComputedPaddingPixels('paddingRight', viewportComputedStyle.paddingRight);
+  const viewportContentWidth = viewportClientWidth - leftPaddingPixels - rightPaddingPixels;
+  if (!Number.isFinite(viewportContentWidth) || viewportContentWidth <= 0) {
+    throw new Error(
+      `Map Maker canvas viewport content width must be a positive finite number. Received clientWidth=${String(viewportClientWidth)}, paddingLeft=${JSON.stringify(viewportComputedStyle.paddingLeft)}, paddingRight=${JSON.stringify(viewportComputedStyle.paddingRight)}, contentWidth=${String(viewportContentWidth)}.`,
+    );
+  }
+
+  return viewportContentWidth;
+}
+
+function getInspectorAsideWidth(inspectorAside: HTMLElement): number {
+  const inspectorAsideWidth = inspectorAside.getBoundingClientRect().width;
+  if (!Number.isFinite(inspectorAsideWidth) || inspectorAsideWidth < 0) {
+    throw new Error(`Map Maker inspector aside width must be a non-negative finite number. Received ${String(inspectorAsideWidth)}.`);
+  }
+  return inspectorAsideWidth;
+}
+
+function getInitialMapColumnCount(canvasViewportContentWidth: number, inspectorAsideWidth: number): number {
+  const additionalCollapsedSpace = Math.max(0, inspectorAsideWidth - INSPECTOR_COLLAPSED_RAIL_WIDTH);
+  const collapsedViewportContentWidth = canvasViewportContentWidth + additionalCollapsedSpace;
+  if (!Number.isFinite(collapsedViewportContentWidth) || collapsedViewportContentWidth <= 0) {
+    throw new Error(
+      `Map Maker collapsed canvas content width must be a positive finite number. Received viewportContentWidth=${String(canvasViewportContentWidth)}, inspectorAsideWidth=${String(inspectorAsideWidth)}, railWidth=${String(INSPECTOR_COLLAPSED_RAIL_WIDTH)}, result=${String(collapsedViewportContentWidth)}.`,
+    );
+  }
+  const measuredColumnCount = Math.floor(collapsedViewportContentWidth / MAP_MAKER_TILE_SIZE);
+  return Math.max(MAP_MAKER_MIN_COLUMNS, Math.min(MAP_MAKER_MAX_COLUMNS, measuredColumnCount));
 }
 
 function getSelectedLabelText(project: ReturnType<typeof useMapMakerWorkbench>['project'], selectedLabelIds: readonly string[]): string {
@@ -41,6 +97,8 @@ function getSelectedLabelText(project: ReturnType<typeof useMapMakerWorkbench>['
 
 export function MapMakerWorkbench({ copy }: { copy: MapMakerWorkspaceCopy }) {
   const state = useMapMakerWorkbench(copy);
+  const initializeDefaultMapColumns = state.initializeDefaultMapColumns;
+  const inspectorPanelContentId = `map-maker-inspector-${useId()}`;
   const [sizeDialogOpen, setSizeDialogOpen] = useState(false);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
@@ -49,7 +107,43 @@ export function MapMakerWorkbench({ copy }: { copy: MapMakerWorkspaceCopy }) {
   const [editingLabelId, setEditingLabelId] = useState<string | null>(null);
   const [leftPanelWidth, setLeftPanelWidth] = useState(280);
   const [rightPanelWidth, setRightPanelWidth] = useState(280);
+  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
   const panelResizeRef = useRef<PanelResizeGesture | null>(null);
+  const collapseInspectorButtonRef = useRef<HTMLButtonElement | null>(null);
+  const expandInspectorButtonRef = useRef<HTMLButtonElement | null>(null);
+  const inspectorFocusTargetRef = useRef<InspectorFocusTarget>(null);
+  const canvasViewportRef = useRef<HTMLDivElement | null>(null);
+  const inspectorAsideRef = useRef<HTMLElement | null>(null);
+  const mapColumnsInitializedRef = useRef(false);
+
+  useEffect(() => {
+    if (mapColumnsInitializedRef.current) return;
+    const canvasViewport = canvasViewportRef.current;
+    if (canvasViewport === null) {
+      throw new Error('Map Maker canvas viewport was not mounted before initial column measurement.');
+    }
+    const inspectorAside = inspectorAsideRef.current;
+    if (inspectorAside === null) {
+      throw new Error('Map Maker inspector aside was not mounted before initial column measurement.');
+    }
+    const canvasViewportContentWidth = getCanvasViewportContentWidth(canvasViewport);
+    const inspectorAsideWidth = getInspectorAsideWidth(inspectorAside);
+    const initialColumnCount = getInitialMapColumnCount(canvasViewportContentWidth, inspectorAsideWidth);
+    initializeDefaultMapColumns(initialColumnCount);
+    mapColumnsInitializedRef.current = true;
+  }, [initializeDefaultMapColumns]);
+
+  useEffect(() => {
+    const focusTarget = inspectorFocusTargetRef.current;
+    if (focusTarget === null) return;
+    inspectorFocusTargetRef.current = null;
+
+    const focusButton = focusTarget === 'collapse' ? collapseInspectorButtonRef.current : expandInspectorButtonRef.current;
+    if (focusButton === null) {
+      throw new Error(`Map Maker inspector ${focusTarget} control was not mounted after collapsed=${String(rightPanelCollapsed)}.`);
+    }
+    focusButton.focus();
+  }, [rightPanelCollapsed]);
 
   const selectedLabelText = getSelectedLabelText(state.project, state.selectedLabelIds);
   const canTransformBase = state.editTarget === 'base' && state.selectedCells.length > 0;
@@ -128,6 +222,16 @@ export function MapMakerWorkbench({ copy }: { copy: MapMakerWorkspaceCopy }) {
     setMobilePane((currentPane) => currentPane === pane ? null : pane);
   }
 
+  function handleCollapseInspector(): void {
+    inspectorFocusTargetRef.current = 'expand';
+    setRightPanelCollapsed(true);
+  }
+
+  function handleExpandInspector(): void {
+    inspectorFocusTargetRef.current = 'collapse';
+    setRightPanelCollapsed(false);
+  }
+
   function renderPanelResizeHandle(side: ResizeSide): ReactNode {
     const width = side === 'left' ? leftPanelWidth : rightPanelWidth;
     const label = side === 'left' ? copy.materials.title : copy.layers.title;
@@ -150,32 +254,54 @@ export function MapMakerWorkbench({ copy }: { copy: MapMakerWorkspaceCopy }) {
     );
   }
 
-  const assetPalette = (
-    <MapMakerAssetPalette
-      copy={copy}
-      editTarget={state.editTarget}
-      targetLayer={state.targetLayer}
-      onEditTargetChange={handleEditTargetChange}
-      onTargetLayerChange={state.setTargetLayer}
-      onReplaceSelectedTiles={state.handleReplaceSelectedTiles}
-      onPlaceElement={state.handlePlaceElement}
-      onImageLoadError={state.handleImageLoadError}
-    />
-  );
-  const layerPanel = (
+  function renderAssetPalette(coastlineSelectId: string): ReactNode {
+    return (
+      <MapMakerAssetPalette
+        coastlineSelectId={coastlineSelectId}
+        copy={copy}
+        editTarget={state.editTarget}
+        targetLayer={state.targetLayer}
+        onEditTargetChange={handleEditTargetChange}
+        onTargetLayerChange={state.setTargetLayer}
+        onReplaceSelectedTiles={state.handleReplaceSelectedTiles}
+        onPlaceElement={state.handlePlaceElement}
+        onImageLoadError={state.handleImageLoadError}
+      />
+    );
+  }
+  const layerPanelProps = {
+    copy,
+    editTarget: state.editTarget,
+    elementsVisible: state.project.settings.elementsVisible,
+    labelsVisible: state.project.settings.labelsVisible,
+    selectedBaseTileCount: state.selectedCells.length,
+    selectedElementCount: state.selectedElementIds.length,
+    selectedLabelCount: state.selectedLabelIds.length,
+    onEditTargetChange: handleEditTargetChange,
+    onElementsVisibilityChange: (visible: boolean) => state.handleChangeSettings({ elementsVisible: visible }),
+    onLabelsVisibilityChange: (visible: boolean) => state.handleChangeSettings({ labelsVisible: visible }),
+    onClearLayerOne: () => state.handleClearLayer(1),
+    onClearLayerTwo: () => state.handleClearLayer(2),
+  };
+  const layerPanel = <MapMakerLayerPanel {...layerPanelProps} />;
+  const desktopLayerPanel = (
     <MapMakerLayerPanel
-      copy={copy}
-      editTarget={state.editTarget}
-      elementsVisible={state.project.settings.elementsVisible}
-      labelsVisible={state.project.settings.labelsVisible}
-      selectedBaseTileCount={state.selectedCells.length}
-      selectedElementCount={state.selectedElementIds.length}
-      selectedLabelCount={state.selectedLabelIds.length}
-      onEditTargetChange={handleEditTargetChange}
-      onElementsVisibilityChange={(visible) => state.handleChangeSettings({ elementsVisible: visible })}
-      onLabelsVisibilityChange={(visible) => state.handleChangeSettings({ labelsVisible: visible })}
-      onClearLayerOne={() => state.handleClearLayer(1)}
-      onClearLayerTwo={() => state.handleClearLayer(2)}
+      {...layerPanelProps}
+      collapseControl={(
+        <button
+          ref={collapseInspectorButtonRef}
+          type="button"
+          className={`${styles.iconButton} ${styles.inspectorToggleButton}`}
+          aria-label={copy.layers.collapsePanel}
+          aria-expanded={!rightPanelCollapsed}
+          aria-controls={inspectorPanelContentId}
+          title={copy.layers.collapsePanel}
+          onClick={handleCollapseInspector}
+        >
+          <span className={styles.inspectorToggleArrow} aria-hidden="true">›</span>
+          <span className={styles.inspectorToggleLabel}>{copy.layers.collapsePanel}</span>
+        </button>
+      )}
     />
   );
   const propertiesPanel = (
@@ -202,9 +328,20 @@ export function MapMakerWorkbench({ copy }: { copy: MapMakerWorkspaceCopy }) {
       onDeleteSelectedElements={state.handleDeleteSelectedElements}
       onDeleteSelectedLabels={state.handleDeleteSelectedLabels}
       onClearAllLabels={state.handleClearLabels}
+    />
+  );
+  const gridSettingsPanel = (
+    <MapMakerGridSettingsPanel
+      copy={copy}
+      settings={state.project.settings}
       onSettingsChange={state.handleChangeSettings}
     />
   );
+  const canvasFeedback = (state.actionError !== null || state.actionStatus !== null) ? (
+    <p className={`${styles.feedback} ${state.actionError !== null ? styles.error : ''}`} role={state.actionError !== null ? 'alert' : 'status'} aria-live="polite">
+      {state.actionError !== null ? `${copy.common.errorLabel}: ${state.actionError}` : state.actionStatus}
+    </p>
+  ) : null;
 
   return (
     <div className={styles.workbench}>
@@ -212,26 +349,20 @@ export function MapMakerWorkbench({ copy }: { copy: MapMakerWorkspaceCopy }) {
         copy={copy}
         columns={state.project.columns}
         rows={state.project.rows}
-        onRandomGenerate={state.handleRandomGenerate}
-        onOpenSize={() => setSizeDialogOpen(true)}
-        onOpenReset={() => setSizeDialogOpen(true)}
-        onOpenSave={() => setSaveDialogOpen(true)}
-        onOpenExport={() => state.setExportOpen(true)}
         onOpenHelp={() => setHelpDialogOpen(true)}
       />
 
-      {(state.actionError !== null || state.actionStatus !== null) ? (
-        <p className={`${styles.feedback} ${state.actionError !== null ? styles.error : ''}`} role={state.actionError !== null ? 'alert' : 'status'} aria-live="polite">
-          {state.actionError !== null ? `${copy.common.errorLabel}: ${state.actionError}` : state.actionStatus}
-        </p>
-      ) : null}
-
       <div
-        className={styles.screenWorkspace}
-        style={{ '--left-panel-width': `${leftPanelWidth}px`, '--right-panel-width': `${rightPanelWidth}px` } as CSSProperties}
+        className={`${styles.screenWorkspace} ${rightPanelCollapsed ? styles.inspectorCollapsedWorkspace : ''}`}
+        style={{
+          '--left-panel-width': `${leftPanelWidth}px`,
+          '--right-panel-width': `${rightPanelWidth}px`,
+          '--inspector-collapsed-rail-width': `${INSPECTOR_COLLAPSED_RAIL_WIDTH}px`,
+        } as CSSProperties}
       >
-        <aside className={`${styles.panel} ${styles.assetPanel}`} aria-label={copy.materials.title}>
-          {assetPalette}
+        <aside className={`${styles.panel} ${styles.assetPanel}`} aria-label={`${copy.materials.title}, ${copy.view.title}`}>
+          {renderAssetPalette('map-maker-desktop-coastline-select')}
+          {gridSettingsPanel}
           {renderPanelResizeHandle('left')}
         </aside>
 
@@ -268,7 +399,12 @@ export function MapMakerWorkbench({ copy }: { copy: MapMakerWorkspaceCopy }) {
             ) : null}
           </div>
           <p className={styles.canvasHint}>{state.editTarget === 'base' ? copy.canvas.baseTileHint : state.editTarget === 'labels' ? copy.canvas.labelEditHint : copy.canvas.elementDragHint}</p>
-          <div className={styles.canvasViewport}>
+          <MapMakerCanvasViewport
+            columns={state.project.columns}
+            rows={state.project.rows}
+            viewportRef={canvasViewportRef}
+            feedback={canvasFeedback}
+          >
             <MapMakerCanvas
               copy={copy}
               project={state.project}
@@ -291,14 +427,41 @@ export function MapMakerWorkbench({ copy }: { copy: MapMakerWorkspaceCopy }) {
               onCancelLabelEdit={handleCancelLabelEdit}
               onImageLoadError={state.handleImageLoadError}
             />
-          </div>
+          </MapMakerCanvasViewport>
         </section>
 
-        <aside className={`${styles.panel} ${styles.inspectorPanel}`} aria-label={`${copy.layers.title}, ${copy.properties.title}`}>
-          {layerPanel}
-          <hr className={styles.sectionDivider} />
-          {propertiesPanel}
-          {renderPanelResizeHandle('right')}
+        <aside ref={inspectorAsideRef} className={`${styles.panel} ${styles.inspectorPanel} ${rightPanelCollapsed ? styles.inspectorPanelCollapsed : ''}`} aria-label={`${copy.layers.title}, ${copy.properties.title}`}>
+          <div id={inspectorPanelContentId} hidden={rightPanelCollapsed}>
+            {desktopLayerPanel}
+            <hr className={styles.sectionDivider} />
+            {propertiesPanel}
+            <hr className={styles.sectionDivider} />
+            <div className={styles.buttonRow} data-testid="map-maker-project-actions">
+              <button type="button" className={styles.secondaryButton} onClick={state.handleRandomGenerate}>{copy.actions.randomGenerate}</button>
+              <button type="button" className={styles.secondaryButton} onClick={() => setSizeDialogOpen(true)}>{copy.actions.mapSize}</button>
+              <button type="button" className={styles.secondaryButton} onClick={() => setSizeDialogOpen(true)}>{copy.actions.resetAndClear}</button>
+              <button type="button" className={styles.secondaryButton} onClick={() => setSaveDialogOpen(true)}>{copy.actions.saveAndLoad}</button>
+              <button type="button" className={styles.primaryButton} onClick={() => state.setExportOpen(true)}>{copy.actions.exportImage}</button>
+            </div>
+            {renderPanelResizeHandle('right')}
+          </div>
+          {rightPanelCollapsed ? (
+            <div className={styles.inspectorCollapsedRail}>
+              <button
+                ref={expandInspectorButtonRef}
+                type="button"
+                className={`${styles.iconButton} ${styles.inspectorToggleButton} ${styles.inspectorExpandButton}`}
+                aria-label={copy.layers.expandPanel}
+                aria-expanded={!rightPanelCollapsed}
+                aria-controls={inspectorPanelContentId}
+                title={copy.layers.expandPanel}
+                onClick={handleExpandInspector}
+              >
+                <span className={styles.inspectorToggleArrow} aria-hidden="true">‹</span>
+                <span className={styles.inspectorToggleLabel}>{copy.layers.expandPanel}</span>
+              </button>
+            </div>
+          ) : null}
         </aside>
       </div>
 
@@ -322,9 +485,14 @@ export function MapMakerWorkbench({ copy }: { copy: MapMakerWorkspaceCopy }) {
             <button type="button" className={styles.secondaryButton} onClick={() => setMobilePane(null)}>{copy.common.close}</button>
           </header>
           <div className={styles.mobileSheetBody}>
-            <div className={styles.mobilePaneContent} hidden={mobilePane !== 'materials'}>{assetPalette}</div>
+            <div className={styles.mobilePaneContent} hidden={mobilePane !== 'materials'}>
+              {renderAssetPalette('map-maker-mobile-coastline-select')}
+            </div>
             <div className={styles.mobilePaneContent} hidden={mobilePane !== 'layers'}>{layerPanel}</div>
-            <div className={styles.mobilePaneContent} hidden={mobilePane !== 'properties'}>{propertiesPanel}</div>
+            <div className={styles.mobilePaneContent} hidden={mobilePane !== 'properties'}>
+              {propertiesPanel}
+              {gridSettingsPanel}
+            </div>
             <div className={styles.mobilePaneContent} hidden={mobilePane !== 'more'}>
               <div className={styles.mobileActions}>
                 <button type="button" className={styles.secondaryButton} onClick={state.handleRandomGenerate}>{copy.actions.randomGenerate}</button>

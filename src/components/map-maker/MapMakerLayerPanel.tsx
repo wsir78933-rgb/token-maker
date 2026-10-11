@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 import type { MapMakerWorkspaceCopy } from '@/lib/map-maker/copy';
 
 import styles from './MapMakerWorkbench.module.css';
@@ -7,6 +7,7 @@ export type MapMakerEditTarget = 'base' | 'layer-1' | 'layer-2' | 'labels';
 
 export interface MapMakerLayerPanelProps {
   copy: MapMakerWorkspaceCopy;
+  collapseControl?: ReactNode;
   editTarget: MapMakerEditTarget;
   elementsVisible: boolean;
   labelsVisible: boolean;
@@ -51,6 +52,7 @@ export function MapMakerLayerPanel(props: MapMakerLayerPanelProps) {
     <section aria-labelledby={headingId} className={styles.panelSection}>
       <header className={styles.panelHeader}>
         <h3 id={headingId} className={styles.panelTitle}>{layerCopy.title}</h3>
+        {props.collapseControl}
       </header>
       <p className={styles.panelHint}>{layerCopy.editHint}</p>
       <div className={styles.layerChoices} role="group" aria-label={layerCopy.title}>
