@@ -51,7 +51,7 @@
   line-height: 1.35;
 }
 
-.fileActions,
+.headerActions,
 .canvasToolbar {
   display: flex;
   min-width: 0;
@@ -60,8 +60,23 @@
   gap: 0.5rem;
 }
 
-.fileActions {
+.headerActions {
   justify-content: flex-end;
+}
+
+.canvasToolbar > .dangerButton:last-child {
+  margin-left: auto;
+}
+
+.footerActions {
+  display: flex;
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+.footerActions .secondaryButton {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .secondaryButton,
@@ -298,12 +313,8 @@
     flex-direction: column;
   }
 
-  .fileActions {
-    justify-content: stretch;
-  }
-
-  .fileActions .secondaryButton {
-    flex: 1 1 0;
+  .headerActions {
+    justify-content: flex-end;
   }
 
   .screenWorkspace {

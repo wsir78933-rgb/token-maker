@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useState, type FormEvent } from 'react';
+import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react';
 
 import {
   CONSTELLATION_MAX_DIMENSION,
@@ -20,7 +20,7 @@ export interface ConstellationSettingsPanelProps {
   onTransparentBaseChange(transparent: boolean): void;
   onApplyBackgroundImage(url: string): Promise<void>;
   onRemoveBackgroundImage(): void;
-  onClearObjects(): void;
+  footerActions?: ReactNode;
 }
 
 function parseDimension(rawValue: string, label: string): number {
@@ -64,7 +64,7 @@ export function ConstellationSettingsPanel({
   onTransparentBaseChange,
   onApplyBackgroundImage,
   onRemoveBackgroundImage,
-  onClearObjects,
+  footerActions,
 }: ConstellationSettingsPanelProps) {
   const headingId = useId();
   const [widthDraft, setWidthDraft] = useState(String(width));
@@ -130,9 +130,8 @@ export function ConstellationSettingsPanel({
 
       <div className="flex flex-col gap-2">
         <h3 className="text-xs font-semibold text-[var(--site-ink-strong)]">{copy.backgroundColor}</h3>
-        <div className="grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-2">
+        <div className="grid grid-cols-[3rem_minmax(0,1fr)] items-center gap-2">
           <input aria-label={copy.backgroundColor} type="color" value={/^#[0-9a-f]{6}$/i.test(colorDraft) ? colorDraft : '#000000'} onChange={(event) => { setColorDraft(event.target.value); }} className="h-11 w-12 cursor-pointer rounded-md border border-[var(--site-border-soft)] bg-transparent p-1" />
-          <input aria-label={copy.backgroundColor} value={colorDraft} onChange={(event) => setColorDraft(event.target.value)} type="text" className="min-h-11 min-w-0 rounded-md border border-[var(--site-border-soft)] bg-[var(--site-panel)] px-2 py-2 text-sm" />
           <button type="button" disabled={busy} onClick={applyColor} className="min-h-11 rounded-md border border-[var(--site-border-soft)] px-3 py-2 text-sm hover:border-[var(--site-accent-strong)] disabled:cursor-not-allowed disabled:opacity-50">{copy.applyColor}</button>
         </div>
         <label className="flex min-h-11 items-center gap-2 text-sm">
@@ -159,10 +158,11 @@ export function ConstellationSettingsPanel({
         ) : null}
       </form>
 
-      <div className="mt-auto flex flex-col gap-2 border-t border-[var(--site-border-soft)] pt-3">
-        <button type="button" disabled={busy} onClick={onClearObjects} className="min-h-11 rounded-md border border-[var(--destructive)] px-3 py-2 text-sm text-[var(--destructive)] disabled:cursor-not-allowed disabled:opacity-50">{copy.clearObjects}</button>
-        <p className="text-xs leading-5 text-[var(--site-ink-soft)]">{copy.clearHint}</p>
-      </div>
+      {footerActions !== undefined && footerActions !== null ? (
+        <div className="mt-auto flex flex-col gap-2 border-t border-[var(--site-border-soft)] pt-3">
+          {footerActions}
+        </div>
+      ) : null}
       {error !== null ? <p role="alert" className="break-words text-xs text-[var(--destructive)]">{copy.errorLabel}: {error}</p> : null}
     </section>
   );
