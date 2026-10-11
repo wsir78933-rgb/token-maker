@@ -427,4 +427,3 @@ describe('CastleSelectedPieceLayers', () => {
     expect(onParentKeyDown).toHaveBeenCalledTimes(2);
   });
 });
-

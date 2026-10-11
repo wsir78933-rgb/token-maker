@@ -441,4 +441,3 @@ function releasePieceLayerPointerCapture(interaction: PieceLayerInteraction) {
     interaction.button.releasePointerCapture(interaction.pointerId);
   }
 }
-
