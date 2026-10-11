@@ -1,5 +1,129 @@
 # WORKLOG
 
+## 交接单 · 2026-10-11 11:27 Asia/Shanghai +0800 · Grok CLI（Codex 协调）
+
+### 本次目标
+
+核对人口生成器已经合入本地 main 的现状，并把这份交接单置顶写入 `WORKLOG.md`。不改产品代码，不提交交接单。
+
+### 已完成
+
+- 主仓是 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`。本次刷新 HEAD 为 `4b040fe87e5467c56a73341c83d304552211863d`，比 `origin/main`（`c484534a40b9892fc7b31b07088b157edba585a6`）超前 13、落后 0。功能提交 `57445418ae153e6ce1aa126937d7e8cd876eedbb` 含 49 个路径（46 个新文件，加上 sitemap、导航、导航测试）。本地合并提交是 `237a6a4376ff193ef268eb1207b0ccbd840157c7`。随后 `4b040fe8` 只把导航测试里的免费工具数量从 19 改成 20。没有 push、fetch 或部署。`57445418` 仍是当前 main 的祖先，本地分支 `人口生成` 指向这一个提交。
+- 写交接前工作区只有 ` M WORKLOG.md`。SHA-256 为 `f160ec2e06dc7e7b3007089baf45b3907a3c881d31a4276443668f6314195cac`，456781 字节。暂存区为空。`/Users/wusir/orca/workspaces/token-maker-app/人口生成` 不存在。`git worktree list` 只有主仓和首页。没有重建人口生成工作树。
+- 英文页面是 `/population-generator`，中文页面是 `/zh/population-generator`。源码顺序是 Hero、工作台、What Is、6 项功能、4 步 How to Use、Help、8 条 FAQ、CTA。What Is 一段写清是什么、能做什么、用在哪、适合谁。页面没有对比模块。旧标题「给谁用」「聚落怎样生成」「每个规模会抽到的人口」以及结果、文件那两段长说明不再渲染；路由测试要求这些 heading 不出现。Help 一直显示，内容是说明、规则、范围表和两张说明卡。FAQ 用按钮逐条展开。
+- 领域代码在 `src/lib/population-generator/`，组件在 `src/components/population-generator/`，双语路由在 `src/app/(en)/population-generator/page.tsx` 和 `src/app/(zh)/zh/population-generator/page.tsx`。目录是 170 项职业、3 个时代。预设 14 个：中世纪 4 种规模，现代和未来各 5 种。中世纪没有大都市，范围表里该格显示为不提供。可改字段是名称、总人口、住户、面积、6 项农业数字、职业名和数量。职业列表可以搜索，也可以隐藏数量为 0 的行。本地「保存 / 读取」是 5 个槽位。导出 TXT 写成可再导入的 HTML；文本以 `<` 开头时按 HTML 解析，否则按 JSON 解析，因此本工具以前导出的 JSON 文本仍能读。打印会输出统计、农业和 170 条职业。这是代码和文案支持的范围。这轮原生验收没有重测保存、读取、导入、导出、打印。
+- 关键词英文是完整短语 `Population Generator`，不区分大小写；中文是 `人口生成器`。计数范围是 Hero、What Is、功能、How to Use、Help、全部 8 条 FAQ 和 CTA。导航、页脚、工作台随机结果、隐藏内容、另一套响应式表，以及 meta、script、style、SVG 都不计入。分母使用 `Intl.Segmenter` 的 `isWordLike`，数词计入。这不是把生成结果里的 170 行职业算进密度。回读结果：英文桌面 30/1327 = 2.2607385%，英文手机 30/1344 = 2.2321429%，中文桌面 30/1322 = 2.2692890%，中文手机 30/1339 = 2.2404780%。
+- **合并阶段验证，非本次 offhand 重跑。** 15 个文件、204 个测试通过，退出记录是 `vitest_after_exit=0`。ESLint 退出记录是 `eslint_after_exit=0`，日志为 0 字节；完整 argv 没有留在日志里，记为 UNVERIFIED。`pnpm typecheck` 的脚本是 `next typegen && tsc --noEmit`，退出 0。完整 `pnpm build` 的脚本是 `next build`，退出 1。失败点是收集 `/api/coat-export` 时找不到模块 `cloudflare:workers`，位置在 `src/app/api/coat-export/route.ts` 第 2 行。该 API 文件没有改。不能把完整构建写成通过，也没有重跑基线构建。
+- **合并后原生验收，非本次 offhand 重跑。** 地址是主仓 `http://localhost:40001`。英文和中文各看了 1440×900 与 375×812。Help、范围表、8 条 FAQ、CTA 都在；四组都逐条点开了 FAQ；页面没有横向溢出。英文和中文都做了时代与规模、生成、只改一次名称、再次生成后取消替换。取消前后 353 个输入的状态哈希相同。两次生成的总人口是 4261 和 3340。localStorage 前后一致，记为 PASS。sessionStorage 同页是否保持为 UNVERIFIED，因为前一次采样在 p1、后一次在 p2。用户接管的 Ego TaskSpace 31 的 p1，以及 Codex 终端 `term_2129e30d-9693-418c-8ed3-42121749310a`，这次没有继续操作。
+- 清理使用 `orca worktree rm` 删除了人口生成工作树，没有使用 force，也没有使用 run-hooks。只停止了 40011 的进程组 21223。本次刷新：40011 没有监听；40001 的 PID 是 28945，工作目录是主仓；40020 的 PID 是 32607，工作目录是首页工作树。70 字节的 wrangler 配置备份在 `/tmp/popgen-merge-20261011-cleanup/preserved/wrangler-deploy-config.json`。正文没有读，也没有打印。
+
+### 做到一半
+
+没有还要自动续做的人口生成器功能。完整构建 FAIL，以及 sessionStorage 同页 UNVERIFIED，是验证边界。它们不授权下一班去修构建或补采存储。交接单仍然不提交。push、部署、重建工作树和重新打开 40011 都不在已完成范围内。
+
+### 下一步
+
+下一班输入 `$pickup`。先只读刷新 main HEAD、git status、WORKLOG、分支和服务归属，再等用户给出新的范围。不要提交 `WORKLOG.md`。`/tmp` 里的证据可能被清掉。要开浏览器时使用新的任务空间，不要复用已经交给用户的 Space 31 p1。页面用主仓的 `http://localhost:40001/population-generator` 和 `http://localhost:40001/zh/population-generator`。
+
+### 踩过的坑
+
+- 导航和 main 冲突时，不能整文件使用 ours 或 theirs。当时保留了原来的工具，把人口生成器放在城镇创建器后面，并且只把测试数量从 19 改成 20。sitemap 当时是自动合并的。
+- `pnpm dev` 会先执行 `node scripts/free-port.mjs 40001`。它向占用 40001 的进程发 SIGTERM，两秒后仍占用就发 SIGKILL。主仓服务正在 40001。不要为了打开页面运行 `pnpm dev`。
+- 40011 已经结束。查看主仓用 40001。40020 是首页工作树，不要停止它。
+- 用户原有的本地数据要留下。验收时 localStorage 没有被改掉。工作树里的 wrangler 配置只保留那份 70 字节备份，不要打印正文，也不要写回仓库。
+- 密度按指定正文区计算。不要把生成结果里的 170 行职业算进去，也不要把隐藏的另一套响应式表算进可见正文。
+
+### 怎么验证
+
+这次 offhand 只核对状态并写交接单，没有重跑产品测试、构建或浏览器。
+
+本次实际执行的只读命令是 `git rev-parse --show-toplevel`、`git status --porcelain=v1 -uall`、`git diff --cached --name-only`、`git log -3 --oneline`、`git rev-list --left-right --count origin/main...HEAD`、`git worktree list`、`git show-ref --heads`、`git merge-base --is-ancestor 57445418ae153e6ce1aa126937d7e8cd876eedbb HEAD`，以及 `lsof -nP -iTCP:40001 -sTCP:LISTEN`、`lsof -nP -iTCP:40020 -sTCP:LISTEN`、`lsof -nP -iTCP:40011 -sTCP:LISTEN`。写完后对照旧正文字节，并确认 status 仍只有 ` M WORKLOG.md`。
+
+合并阶段的相关测试不是全仓测试，也不是这次重跑。Vitest 日志没有保存完整 shell argv。日志打印并通过的 15 个文件是：
+
+```text
+src/lib/population-generator/catalog.test.ts
+src/lib/population-generator/generate.test.ts
+src/lib/population-generator/slots.test.ts
+src/lib/population-generator/validate.test.ts
+src/components/population-generator/population-known-errors.test.ts
+src/lib/population-generator/presets.test.ts
+src/components/population-generator/population-generator-copy.test.ts
+src/app/sitemap.test.ts
+src/lib/content-site-navigation.test.ts
+src/lib/population-generator/text-format.test.ts
+src/components/population-generator/use-population-generator.import.test.tsx
+src/components/population-generator/PopulationGeneratorWorkbench.import.test.tsx
+src/components/site/ContentSiteTopbar.test.tsx
+src/app/population-generator-routes.test.tsx
+src/app/site-routes.test.tsx
+```
+
+结果是 15 个文件、204 个测试通过。`/tmp/popgen-merge-20261011-commit-merge/raw/vitest-after-length.exit` 的内容是 `vitest_after_exit=0`。改数量之前的同组测试退出 1，原因是英文和中文 freeTools 长度期望 19、实际 20。ESLint 的完整 argv 为 UNVERIFIED；退出记录是 `eslint_after_exit=0`。类型检查以日志为准：`pnpm typecheck`，脚本 `next typegen && tsc --noEmit`，退出 0。完整构建以日志为准：`pnpm build`，脚本 `next build`，退出 1。相关测试通过不能代替这次完整构建。
+
+界面沿用当时的主仓地址。桌面用 1440×900，手机用 375×812。查看 Hero、工作台、What Is、功能、使用步骤、Help 静态卡和范围表，逐条点开 8 个 FAQ，再看 CTA。当时确认没有横向溢出，页面也没有对比模块。时代、规模、生成、改名称和取消替换当时已经通过。保存、读取、导入、导出和打印当时没有走原生路径。
+
+证据目录是 `/tmp/popgen-merge-20261011-commit-merge/`、`/tmp/popgen-merge-20261011-main-acceptance/` 和 `/tmp/popgen-merge-20261011-cleanup/`。这些目录可能被系统清理。交接单不提交。
+
+## 交接单 · 2026-10-11 10:18 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+交接奇幻任务公告板制作工具：竞品参考、中英文编辑器与落地页、12 张案例、突出真实优势的三方工具对比、正文关键词密度，以及提交合并到本地 main 和删除唯一「公告」工作树的结果。本次 offhand 仅核对现状并置顶交接单，不开始产品改动。
+
+### 已完成
+
+- 主仓是 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`。功能提交为 `92ffec038f06cac62397ad63d77d6c5844a70602`，合并提交及本次核查 HEAD 为 `2053a899877f347cd92d96b6e2786a23b41d9e92`；parents 为独立 WORKLOG 提交 `2f6c9f79e382a1f323463085934da70fe2897476` 和功能提交。已实际核对功能 ancestry、71 条合并路径和合并前后树内容；保留 main 原有 Map Maker、Castle、工具目录导航及独立提交，没有 push 或部署。写交接前工作区、暂存区和未跟踪文件均为空。
+- 英文 `/notice-board-creator`、中文 `/zh/notice-board-creator` 均已合入。路由在 `src/app/(en)/notice-board-creator/page.tsx` 与 `src/app/(zh)/zh/notice-board-creator/page.tsx`；页面和编辑组件在 `src/components/notice-board-creator/`，领域、存档、字体和双语文案在 `src/lib/notice-board-creator/`，资源在 `public/notice-board-creator/`。共享 CircularTestimonials 增量保留其他工具原有公开参数，未新增依赖。
+- 页面顺序是 Hero → 编辑器 → What Is → 案例 → 功能 → How It Works → 对比 → CTA → FAQ。What Is 已按「是什么、功能是什么、用在哪、适合谁」同步中英文；目标用户是 GM/DM、跑团玩家和奇幻世界观创作者。
+- 编辑器采用桌面纸张库／公告画布／选中公告编辑区的三列流程，手机用纸张与编辑面板。实现 12 种纸张、公告文字与六项格式控制、8 种内置字体、自定义 Google Fonts、拖动与等比缩放独立开关、方向键及 +/- 精调、多选格式编辑、板宽设置、4 个浏览器存档槽、JSON 内容的 TXT 项目导入导出和浏览器打印。产品没有一键 PNG 导出；TXT 不能导入 RollForFantasy 的旧 HTML 项目文件；案例文案描述手动编排，不应写成自动生成冒险。
+- 12 张展示案例使用竞品制作的英文原图，仓库中为 `public/notice-board-creator/cases/` 下 12 张 WebP。What Is 下方三组、每组 4 张，桌面左图右文／左文右图／左图右文；使用 CircularTestimonials，关闭自动轮播，`showImageFrame=false`、`clipImageStack=false`，案例外层未加卡片边框容器。用户要求去除的「案例图片由 RollForFantasy 制作（英文原图）」说明没有保留在案例区。
+- 对比对象最终为 RollForFantasy 与 Help Wanted!，加本工具共三列产品；标题采用 `Notice Board Creator vs. RollForFantasy vs. Help Wanted!` / `奇幻任务公告板 vs. RollForFantasy vs. Help Wanted!`。保留四项有差异的角度：编辑无需关闭缩放、键盘移动与缩放、TXT 恢复自定义字体配置、中英文编辑界面。使用支持勾选、缺失叉号、受限短文字，本工具列高亮。不要退回大段流程介绍或把各家都有的通用功能作为独有优势。此处交接当前已落地文案，不表示本次重新研究了竞品现状。
+- 关键词为 EN `Notice Board Creator`、ZH `奇幻任务公告板制作器`。密度阶段原生读取全文后，EN 35/1319 = 2.6535%，ZH 32/1579 = 2.0266%，符合当时要求的 2%–3%。口径是完整短语一次计一次、EN 不区分大小写，分母使用 Intl.Segmenter 的 isWordLike，中文按词而非按字；包括所有 12 段轮播案例和 5 个展开 FAQ 答案，排除编辑器、导航、页脚、sr-only、aria-hidden、metadata/alt 等。这是全文汇总密度，不是默认只显示三段案例时的同屏文案密度。本次 offhand 只回读 `/tmp/notice-board-density-after.json`、`notice-board-density-count-review.log` 与采集脚本，没有重新计算浏览器密度。Ego Node/ICU 与系统 Node/ICU 分词曾各差 1 词，必须沿用记录口径，不能把两个结果混写。
+- **合并阶段验证，非本次 offhand 重跑**：17 个指定 Vitest 文件、257 项测试通过；43 个合并范围 TS/TSX 加 4 个相关测试文件的 ESLint、`next typegen`、`tsc --noEmit` 均退出 0。中英文公告板两路 `next build --webpack --debug-build-paths` 退出 0；它是限定路由构建，不是全站构建。真实日志是 `/tmp/notice-board-postmerge-summary.log`、`notice-board-postmerge-vitest.log`、`notice-board-postmerge-eslint.log`、`notice-board-postmerge-typegen.log`、`notice-board-postmerge-tsc.log`、`notice-board-postmerge-route-build.log`。本次实际回读了测试计数和构建路由输出。
+- **合并阶段原生浏览器验收，非本次 offhand 重跑**：本地 ego-browser 在 main 的 EN/ZH × 1440/375px 四种组合中，实际从 Hero 进入编辑器、添加纸张、填写公告并确认画布文字、切换案例、点击打开 FAQ 后用空格关闭；均无页面横向溢出，三组／12 张案例、5 个 FAQ、12 个比较状态单元格齐全。证据 `/tmp/notice-board-main-native-qa.json`、`notice-board-main-browser-qa-accepted.mjs`；截图 `/tmp/notice-board-main-zh-desktop-editor.png`、`notice-board-main-zh-mobile-case-stable.png`。这轮未全量重测存档槽、导入、自定义字体、全部设置及打印输出，不用组件测试替代这些原生路径。验收未保存临时公告，最终导航回中文页面。TaskSpace 10 已 finish，保留 p1 给用户查看，不能继续操作该已结束任务空间。
+- `/Users/wusir/Desktop/开发项目集合/公告` 已从磁盘和 Git worktree registry 正常删除；其 40012 预览父子进程已按实际 cwd/命令核对后停止。本次再次核实目录不存在、40012 无监听。`公告` 分支仍保留并指向功能提交；人口生成、首页工作树均保留。
+- `/Users/wusir/Desktop/公告竞品` 的 41 个文件仍在，本次重新对照 `/tmp/notice-board-desktop-assets-before.json` 逐文件 SHA-256 一致。合并／清理回执 `/tmp/notice-board-local-merge-receipt.json` 已回读。本次核实 40001 listener PID 28945 的 cwd 是主仓，未重启服务；可访问 `http://localhost:40001/notice-board-creator` 与 `http://localhost:40001/zh/notice-board-creator`。PID 和端口只代表核查时状态，后续操作前须刷新归属。
+- 本次使用内置子代理，并由 root 读取真实输出和回执验收，没有使用 Orca 编排。继续遵守高内聚、低耦合、单一职责、公开函数／类型／命令通信、KISS、Fail Fast、YAGNI、精确命名和 EN/ZH 同步维护；本交接单保持未存档，不提交 WORKLOG.md。
+
+### 做到一半
+
+无待续的公告板产品实现、合并或工作树清理。本交接记录未存档。线上部署、push、删除公告分支以及全量原生功能重测均不是本次已完成事项。
+
+### 下一步
+
+本次范围没有自动续做任务。下一班输入 `$pickup`，先只读刷新 main HEAD、git status、WORKLOG、分支和服务归属，再按用户新要求对齐；不要进入已删除的公告工作树、自动恢复 40012、删除桌面素材或提交交接记录。若继续改文案，保持中英文和关键词统计口径一致；`/tmp` 证据可能被系统清理，需重新验证时使用新的有效浏览器任务空间和当前主仓 URL。
+
+### 踩过的坑
+
+- 旧公告分支与 main 导航有差异。真实冲突仅在 `src/lib/content-site-navigation.ts` 与 `.test.ts`；手动组合后保留 Map Maker、Castle、`/tools` / `/zh/tools` 和公告入口，目录测试数量从 18 改为 19。不要用整文件 ours/theirs 覆盖。合并期间出现独立 WORKLOG 提交，已保留其历史与旧记录。
+- 用户反复明确案例不要白色图片框和卡片容器；三组交替图文和四项简洁差异对比是当前设计约束，不能随意加回容器、署名说明或冗长比较文案。
+- 浏览器采集曾遇到 href locator 不匹配、编辑器未进入视口时手机操作条不可见，以及 Next 开发问题徽标覆盖按钮。最终脚本按真实 DOM、视口状态和默认打开的纸张面板验收；这些是自动化采集观察，不是产品失败。案例逐词动画还未结束时截图会显示模糊文字，应等待 opacity/filter 稳定后截图。
+- 用户此前给出的 `/Users/wusir/Desktop/奇幻任务公告板-布局重设计.excalidraw` 本次核查不存在；没有恢复、删除或重制该文件。若后续任务需要原线框，先定位现存文件，不假定旧路径仍可用。
+- 本交接单的测试、构建、密度和浏览器 PASS 来自各自明确阶段；本次只做状态核对和文档写入，不把旧日志当作此次重跑，也不据此声称线上发布通过。
+
+### 怎么验证
+
+以下命令供下一班需要验证时使用，本次 offhand 未重新运行产品测试或构建。先只读检查仓库和服务，避免直接运行带释放端口行为的 `pnpm dev`：
+
+```sh
+git status --short
+git log -3 --oneline
+git rev-parse main 公告
+git merge-base --is-ancestor 公告 main
+git worktree list
+lsof -nP -iTCP:40001 -sTCP:LISTEN
+lsof -nP -iTCP:40012 -sTCP:LISTEN
+pnpm exec vitest run src/lib/notice-board-creator/*.test.ts src/components/notice-board-creator/*.test.tsx src/app/notice-board-creator-routes.test.tsx src/components/armor-creator/circular-testimonials.test.tsx src/lib/content-site-navigation.test.ts src/app/sitemap.test.ts src/lib/security-headers.test.ts src/components/site/ContentSiteTopbar.test.tsx src/app/castle-creator-routes.test.tsx src/app/map-maker-routes.test.tsx src/app/tools-routes.test.tsx
+pnpm exec eslint src/lib/notice-board-creator src/components/notice-board-creator 'src/app/(en)/notice-board-creator/page.tsx' 'src/app/(zh)/zh/notice-board-creator/page.tsx' src/app/notice-board-creator-routes.test.tsx src/components/armor-creator/circular-testimonials.tsx src/components/armor-creator/circular-testimonials.test.tsx src/lib/content-site-navigation.ts src/lib/content-site-navigation.test.ts src/app/sitemap.ts src/app/sitemap.test.ts src/lib/security-headers.test.ts next.config.ts
+pnpm typecheck
+pnpm exec next build --webpack --debug-build-paths 'src/app/(en)/notice-board-creator/page.tsx,src/app/(zh)/zh/notice-board-creator/page.tsx'
+```
+
+原生浏览器优先本地 ego-browser，在中英文 URL 的桌面／手机宽度下点击开始制作、添加纸张、编辑文字、切换案例、操作 FAQ，确认三组案例和四项勾叉对比、页面无横向溢出。需要扩大覆盖时另验多选格式、拖动与缩放、4 存档槽、TXT 下载回读与导入、字体和打印。密度复核须沿用 `/tmp/notice-board-density-final-browser.mjs` 的全文提取规则，同时替换已结束 TaskSpace 6 和已关闭 40012 URL，不能原样运行旧脚本。
+
+本次交接写入验收：只应出现 ` M WORKLOG.md`；暂存区保持为空，main／公告 ref 不变，旧 WORKLOG 条目逐字节保留。交接单未存档。
+
 ## 交接单 · 2026-10-10 08:05 Asia/Shanghai · Codex CLI
 
 ### 本次目标
