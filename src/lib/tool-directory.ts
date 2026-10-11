@@ -1,4 +1,5 @@
 import { getLanguageGeneratorPageCopy } from '@/lib/language-generator/page-copy';
+import { generatePopulation, getPopulationPresets } from '@/lib/population-generator';
 import { getLocalizedPath, isSiteLocale, type SiteLocale } from '@/lib/site-locale';
 
 export type ToolDirectoryImagePreview = {
@@ -44,7 +45,11 @@ type ToolDirectoryToolId =
   | 'periodic-table-creator'
   | 'tarot-cards'
   | 'scroll-creator'
-  | 'town-creator';
+  | 'town-creator'
+  | 'castle-creator'
+  | 'map-maker'
+  | 'notice-board-creator'
+  | 'population-generator';
 
 type ToolDirectoryImageDefinition = Omit<ToolDirectoryImagePreview, 'type' | 'alt'> & {
   type: 'image';
@@ -53,7 +58,8 @@ type ToolDirectoryImageDefinition = Omit<ToolDirectoryImagePreview, 'type' | 'al
 
 type ToolDirectoryPreviewDefinition =
   | ToolDirectoryImageDefinition
-  | { type: 'language-example' };
+  | { type: 'language-example' }
+  | { type: 'population-example' };
 
 type ToolDirectoryDefinition = {
   id: ToolDirectoryToolId;
@@ -296,6 +302,53 @@ const toolDirectoryDefinitions: readonly ToolDirectoryDefinition[] = [
       },
     },
   },
+  {
+    id: 'castle-creator',
+    path: '/castle-creator',
+    preview: {
+      type: 'image',
+      src: '/castle-creator/examples/royal-main-keep.webp',
+      fit: 'contain',
+      surface: 'light',
+      altByLocale: {
+        en: 'A large layered keep with four symmetrical guard towers',
+        zh: '中央多层主堡与四座对称守塔组成的王室主堡',
+      },
+    },
+  },
+  {
+    id: 'map-maker',
+    path: '/map-maker',
+    preview: {
+      type: 'image',
+      src: '/map-maker/examples/01-greenvale-frontier.png',
+      fit: 'contain',
+      surface: 'light',
+      altByLocale: {
+        en: 'Fantasy frontier map with a winding river, forests, fields, a village, and an old tower ruin',
+        zh: '奇幻边境地图上有蜿蜒河流、林地、田野、村庄与旧塔遗迹',
+      },
+    },
+  },
+  {
+    id: 'notice-board-creator',
+    path: '/notice-board-creator',
+    preview: {
+      type: 'image',
+      src: '/notice-board-creator/cases/01-tavern-jobs.webp',
+      fit: 'contain',
+      surface: 'dark',
+      altByLocale: {
+        en: 'Four English tavern notices for a midnight cellar knock, ferry-watch soup, a harvest fiddler, and a gathering',
+        zh: '四则英文酒馆告示：午夜地下室敲门、渡口送汤、丰收宴乐师招募和炉边聚餐',
+      },
+    },
+  },
+  {
+    id: 'population-generator',
+    path: '/population-generator',
+    preview: { type: 'population-example' },
+  },
 ];
 
 const toolDirectoryCopyByLocale: Record<SiteLocale, Record<ToolDirectoryToolId, ToolDirectoryLocalizedCopy>> = {
@@ -368,6 +421,22 @@ const toolDirectoryCopyByLocale: Record<SiteLocale, Record<ToolDirectoryToolId, 
       name: 'Fantasy Town Creator',
       description: 'Arrange buildings and scenery to create a town map for your world.',
     },
+    'castle-creator': {
+      name: 'Castle Creator',
+      description: 'Arrange modular castle parts on a canvas to create and export a fantasy castle.',
+    },
+    'map-maker': {
+      name: 'Fantasy World Map Maker',
+      description: 'Shape coastlines, place landmarks, and label locations on an editable fantasy map.',
+    },
+    'notice-board-creator': {
+      name: 'Fantasy Notice Board Creator',
+      description: 'Arrange quest notices on parchment boards, style their text, and save or print campaign boards.',
+    },
+    'population-generator': {
+      name: 'Population Generator',
+      description: 'Generate a settlement’s population, households, farmland, livestock, and occupations from era and size presets.',
+    },
   },
   zh: {
     'token-maker': {
@@ -438,6 +507,22 @@ const toolDirectoryCopyByLocale: Record<SiteLocale, Record<ToolDirectoryToolId, 
       name: '奇幻城镇制作器',
       description: '摆放建筑与场景，为你的世界制作城镇地图。',
     },
+    'castle-creator': {
+      name: '城堡制作器',
+      description: '在画布上组合模块化城堡素材，创作并导出奇幻城堡。',
+    },
+    'map-maker': {
+      name: '奇幻世界地图制作器',
+      description: '塑造海岸线、摆放地标并标注地点，制作可编辑的奇幻地图。',
+    },
+    'notice-board-creator': {
+      name: '奇幻任务公告板制作器',
+      description: '在羊皮纸公告板上排布任务告示、调整文字样式，并保存或打印跑团公告板。',
+    },
+    'population-generator': {
+      name: '人口生成器',
+      description: '根据时代与规模预设生成聚落人口、住户、农田、牲畜和职业分布。',
+    },
   },
 };
 
@@ -470,12 +555,46 @@ function getLanguageGeneratorTextPreview(locale: SiteLocale): ToolDirectoryTextP
   };
 }
 
+function getPopulationGeneratorTextPreview(locale: SiteLocale): ToolDirectoryTextPreview {
+  const medievalVillagePreset = getPopulationPresets('medieval').find(
+    (preset) => preset.size === 'village',
+  );
+
+  if (!medievalVillagePreset) {
+    throw new Error('Population Generator example preset "medieval village" was not found.');
+  }
+
+  const generatedSettlement = generatePopulation({
+    era: medievalVillagePreset.era,
+    size: medievalVillagePreset.size,
+    locale,
+    random: () => 0.5,
+  });
+  const populationRange = `${medievalVillagePreset.min.toLocaleString(locale)}–${medievalVillagePreset.max.toLocaleString(locale)}`;
+  const generatedPopulation = generatedSettlement.population.value.toLocaleString(locale);
+  const generatedHouseholds = generatedSettlement.households.value.toLocaleString(locale);
+
+  return {
+    type: 'text',
+    sourceLabel: locale === 'zh' ? '中世纪村庄' : 'Medieval village',
+    source: locale === 'zh'
+      ? `${populationRange} 人`
+      : `${populationRange} residents`,
+    resultLabel: locale === 'zh' ? '人口 / 住户' : 'People / households',
+    result: `${generatedPopulation} / ${generatedHouseholds}`,
+  };
+}
+
 function getToolDirectoryPreview(
   definition: ToolDirectoryDefinition,
   locale: SiteLocale,
 ): ToolDirectoryPreview {
   if (definition.preview.type === 'language-example') {
     return getLanguageGeneratorTextPreview(locale);
+  }
+
+  if (definition.preview.type === 'population-example') {
+    return getPopulationGeneratorTextPreview(locale);
   }
 
   return {

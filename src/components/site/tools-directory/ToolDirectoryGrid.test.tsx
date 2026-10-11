@@ -18,18 +18,18 @@ afterEach(() => {
 });
 
 describe('ToolDirectoryGrid', () => {
-  it('renders all 17 tools as full-card links with real art and a text output preview', () => {
+  it('renders all 21 tools as full-card links with real art and a text output preview', () => {
     render(<ToolDirectoryGrid locale="en" />);
 
     const toolList = screen.getByTestId('tool-directory-grid');
     const toolCards = within(toolList).getAllByRole('link');
 
-    expect(toolCards).toHaveLength(17);
-    expect(screen.getAllByRole('img')).toHaveLength(16);
+    expect(toolCards).toHaveLength(21);
+    expect(screen.getAllByRole('img')).toHaveLength(19);
     expect(screen.getByText('the gate opens at dawn')).toBeTruthy();
     expect(screen.getByText('klo sako avort ak bavr')).toBeTruthy();
     expect(toolCards[0]?.getAttribute('href')).toBe('/#editor-workspace');
-    expect(toolCards.at(-1)?.getAttribute('href')).toBe('/town-creator');
+    expect(toolCards.at(-1)?.getAttribute('href')).toBe('/population-generator');
   });
 
   it('searches the current English names and descriptions without case or outer-space sensitivity', () => {
@@ -45,7 +45,11 @@ describe('ToolDirectoryGrid', () => {
     expect(filteredToolCards[0]?.getAttribute('href')).toBe('/dice-roller-dnd');
 
     fireEvent.change(searchInput, { target: { value: '   ' } });
-    expect(within(screen.getByTestId('tool-directory-grid')).getAllByRole('link')).toHaveLength(17);
+    expect(within(screen.getByTestId('tool-directory-grid')).getAllByRole('link')).toHaveLength(21);
+
+    fireEvent.change(searchInput, { target: { value: 'missing tool' } });
+    expect(screen.queryByTestId('tool-directory-grid')).toBeNull();
+    expect(screen.getByRole('status').textContent).toContain('No tools match “missing tool”');
   });
 
   it('searches localized Chinese text and presents a clear no-results state', () => {

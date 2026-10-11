@@ -14,7 +14,7 @@ describe('localized tool directory routes', () => {
   it.each([
     { localeLabel: 'English', PageComponent: EnglishToolDirectoryPage, hubLabel: 'Free tools', directoryHref: '/tools' },
     { localeLabel: 'Chinese', PageComponent: ChineseToolDirectoryPage, hubLabel: '免费工具', directoryHref: '/zh/tools' },
-  ])('renders the shared directory shell and all 17 tools in $localeLabel', ({
+  ])('renders the shared directory shell and all 21 tools in $localeLabel', ({
     PageComponent,
     hubLabel,
     directoryHref,
@@ -29,7 +29,7 @@ describe('localized tool directory routes', () => {
 
     const toolDirectoryList = screen.getByTestId('tool-directory-grid');
     const toolLinks = within(toolDirectoryList).getAllByRole('link');
-    expect(toolLinks).toHaveLength(17);
+    expect(toolLinks).toHaveLength(21);
 
     const toolHrefs = toolLinks.map((toolLink) => toolLink.getAttribute('href'));
     if (toolHrefs.some((href) => href === null)) {
@@ -38,8 +38,20 @@ describe('localized tool directory routes', () => {
 
     if (directoryHref === '/zh/tools') {
       expect(toolHrefs.every((href) => href !== null && /^\/zh(?:\/|#|$)/.test(href))).toBe(true);
+      expect(toolHrefs.slice(-4)).toEqual([
+        '/zh/castle-creator',
+        '/zh/map-maker',
+        '/zh/notice-board-creator',
+        '/zh/population-generator',
+      ]);
     } else {
       expect(toolHrefs.every((href) => !href?.startsWith('/zh/'))).toBe(true);
+      expect(toolHrefs.slice(-4)).toEqual([
+        '/castle-creator',
+        '/map-maker',
+        '/notice-board-creator',
+        '/population-generator',
+      ]);
     }
   });
 });

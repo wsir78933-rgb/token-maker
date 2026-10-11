@@ -26,6 +26,10 @@ const expectedToolIds = [
   'tarot-cards',
   'scroll-creator',
   'town-creator',
+  'castle-creator',
+  'map-maker',
+  'notice-board-creator',
+  'population-generator',
 ];
 
 const expectedToolPaths = [
@@ -46,16 +50,20 @@ const expectedToolPaths = [
   '/tarot-cards',
   '/scroll-creator',
   '/town-creator',
+  '/castle-creator',
+  '/map-maker',
+  '/notice-board-creator',
+  '/population-generator',
 ];
 
 describe('tool directory catalog', () => {
   it.each([
     { locale: 'en' as const, localizedHomeHref: '/#editor-workspace' },
     { locale: 'zh' as const, localizedHomeHref: '/zh#editor-workspace' },
-  ])('returns the approved 17 tools in order for $locale', ({ locale, localizedHomeHref }) => {
+  ])('returns the approved 21 tools in order for $locale', ({ locale, localizedHomeHref }) => {
     const toolItems = getToolDirectoryItems(locale);
 
-    expect(toolItems).toHaveLength(17);
+    expect(toolItems).toHaveLength(21);
     expect(toolItems.map((toolItem) => toolItem.id)).toEqual(expectedToolIds);
     expect(toolItems.map((toolItem) => toolItem.href)).toEqual(
       expectedToolPaths.map((path) => {
@@ -69,7 +77,7 @@ describe('tool directory catalog', () => {
     expect(toolItems[0]?.href).toBe(localizedHomeHref);
     expect(toolItems[1]?.href).toBe(locale === 'en' ? '/dice-roller-dnd' : '/zh/dice-roller-dnd');
     expect(toolItems[2]?.href).toBe(locale === 'en' ? '/coat-of-arms-maker' : '/zh/coat-of-arms-maker');
-    expect(toolItems.at(-1)?.href).toBe(locale === 'en' ? '/town-creator' : '/zh/town-creator');
+    expect(toolItems.at(-1)?.href).toBe(locale === 'en' ? '/population-generator' : '/zh/population-generator');
 
     for (const toolItem of toolItems) {
       expect(toolItem.name.trim(), `${locale} name for ${toolItem.id}`).not.toBe('');
