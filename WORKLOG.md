@@ -1,5 +1,45 @@
 # WORKLOG
 
+## 交接单 · 2026-10-10 08:05 Asia/Shanghai · Codex CLI
+
+### 本次目标
+
+提交 Map Maker 功能，合并到本地 `main`，完成验收后删除唯一的 `map maker` Git 工作树；保留桌面案例素材、其他工作树和并行期间出现的独立提交。
+
+### 已完成
+
+- Map Maker 功能提交为 `77bcb08869333c37d6550df1b2db64bb54df0a0d`；合并提交为 `3dc42f955ddd44b2db33e224da0c49f6d7dd7c96`。最终 `main` HEAD 为 `41b2a20c5d7f927fc371dcc2a548662c3f50c905`，包含一项工具目录导航测试修正。功能分支 `map-maker` 保留。
+- 删除了 `/Users/wusir/Desktop/开发项目集合/map maker` 工作树及其预览进程。最后确认该目录不在磁盘或 Git worktree registry 中。公告、人口生成、首页工作树均保留；其他本地预览未停止。
+- 桌面交付目录 `/Users/wusir/Desktop/map maker` 的 29 个文件哈希一致，12 张案例图片和工程文件都保留。
+- 英文 `/map-maker` 与中文 `/zh/map-maker` 页面已合入。原生浏览器在中英文、1440px 和 375px 四种组合下验收：三组案例与 12 张地图正常加载；FAQ 可打开并用空格关闭；案例可打开为 2240 × 1260 预览，点图保持打开，点旁边空白关闭；正文无横向溢出，浏览器存档槽未变。
+- 本地 `main` 验证：Vitest 19 个文件、183 项通过；`pnpm typecheck` 通过；定向 ESLint 0 错误、1 条 `@next/next/no-img-element` 警告；`pnpm exec vinext build` 通过。构建时和最终之间只有路由测试断言变化，生产源码未变。验证记录位于 `/tmp/map-maker-local-merge-20261010/`，构建日志位于 `/tmp/map-maker-main-merge-20261010/main-vinext-build.log`。
+- 开始写本交接单前，主仓 `main` 工作区干净，HEAD 为 `41b2a20c`，相对 `origin/main` ahead 7。执行期间出现独立提交 `7ab16596 Update WORKLOG.md`，没有将其混入 Map Maker 合并，也没有重写这段历史。
+
+### 做到一半
+
+无。本次 Map Maker 合并和工作树清理均已完成。
+
+### 下一步
+
+没有本次范围内的待办。Map Maker 页面可从主仓本地预览 `http://localhost:40001/map-maker` 与 `http://localhost:40001/zh/map-maker` 查看。本交接单保持未存档，不要提交 `WORKLOG.md`。
+
+### 踩过的坑
+
+Next 开发服务器会拦截从 `127.0.0.1` 加载的开发脚本，导致页面有 SSR 内容但客户端交互未启动。使用 `localhost` 访问即可；没有修改 Next 配置。合并后工具目录测试还需从旧的 `/` 导航断言改为当前 `/tools` 与 `/zh/tools`。
+
+### 怎么验证
+
+在仓库根目录运行：
+
+```sh
+pnpm exec vitest run src/lib/map-maker src/components/map-maker src/app/map-maker-routes.test.tsx src/app/sitemap.test.ts src/lib/content-site-navigation.test.ts src/components/site/ContentSiteTopbar.test.tsx src/lib/tool-directory.test.ts src/lib/tool-directory-metadata.test.ts src/components/site/tools-directory/ToolDirectoryGrid.test.tsx src/components/site/tools-directory/ToolDirectoryHero.test.tsx
+pnpm typecheck
+pnpm exec eslint src/lib/map-maker src/components/map-maker 'src/app/(en)/map-maker/page.tsx' 'src/app/(zh)/zh/map-maker/page.tsx' src/app/map-maker-routes.test.tsx src/app/sitemap.ts src/app/sitemap.test.ts src/lib/content-site-navigation.ts src/lib/content-site-navigation.test.ts
+pnpm exec vinext build
+```
+
+浏览器验收须使用 `http://localhost:40001/map-maker` 和 `http://localhost:40001/zh/map-maker`；检查桌面与手机宽度下的 FAQ、案例预览开关、素材加载和页面横向溢出。
+
 ## 交接单 · 2026-10-09 20:11 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
