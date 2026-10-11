@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { Select } from '@base-ui/react/select';
 import { useId, useMemo, useState, type KeyboardEvent, type ReactNode } from 'react';
 
 import { getMapMakerAssetSrc, getMapMakerAssets } from '@/lib/map-maker';
@@ -13,12 +14,14 @@ import type {
 import { getMapMakerAssetDisplayName, type MapMakerWorkspaceCopy } from '@/lib/map-maker/copy';
 
 import type { MapMakerEditTarget } from './MapMakerLayerPanel';
+import coastlineSelectStyles from './MapMakerCoastlineSelect.module.css';
 import styles from './MapMakerWorkbench.module.css';
 
 type PaletteTab = 'tiles' | 'elements';
 type PlacementMode = 'replace-base' | 'free-place';
 
 export interface MapMakerAssetPaletteProps {
+  coastlineSelectId: string;
   copy: MapMakerWorkspaceCopy;
   editTarget: MapMakerEditTarget;
   targetLayer: MapMakerElementLayer;
@@ -56,6 +59,14 @@ function coastlineGroupLabel(
   copy: MapMakerWorkspaceCopy,
 ): string {
   return `${copy.materials.tileShapes[group.shape]} · ${copy.materials.tileDirections[group.direction]}`;
+}
+
+function getValidCoastlineGroup(receivedCoastlineGroup: unknown): MapMakerCoastlineGroup {
+  const group = COASTLINE_GROUPS.find((candidate) => candidate.id === receivedCoastlineGroup);
+  if (group === undefined) {
+    throw new Error(`Map maker coastline group value is not recognized: ${JSON.stringify(receivedCoastlineGroup)}.`);
+  }
+  return group.id;
 }
 
 function getRequiredAsset(assets: readonly MapMakerAsset[], assetId: string): MapMakerAsset {
@@ -180,18 +191,60 @@ function renderAssetButtons(items: readonly MapMakerAsset[], categoryLabel: stri
       <div id={`${panelId}-panel`} role="tabpanel" aria-labelledby={`${panelId}-${activeTab}-tab`} className={styles.paletteContent}>
         {activeTab === 'tiles' ? (
           <>
-            <label className={styles.fieldLabel}>
-              <span>{props.copy.materials.tileShapes.convex} / {props.copy.materials.tileShapes.concave} / {props.copy.materials.tileShapes.side}</span>
-              <select
-                className={styles.select}
-                value={coastlineGroup}
-                onChange={(event) => setCoastlineGroup(event.currentTarget.value as MapMakerCoastlineGroup)}
-              >
-                {COASTLINE_GROUPS.map((group) => (
-                  <option key={group.id} value={group.id}>{coastlineGroupLabel(group, props.copy)}</option>
-                ))}
-              </select>
-            </label>
+            <Select.Root<MapMakerCoastlineGroup>
+              id={props.coastlineSelectId}
+              value={coastlineGroup}
+              items={COASTLINE_GROUPS.map((group) => ({
+                value: group.id,
+                label: coastlineGroupLabel(group, props.copy),
+              }))}
+              modal={false}
+              onValueChange={(selectedCoastlineGroup) => setCoastlineGroup(getValidCoastlineGroup(selectedCoastlineGroup))}
+            >
+              <div className={styles.fieldLabel}>
+                <Select.Label className={coastlineSelectStyles.label}>
+                  {props.copy.materials.tileShapes.convex} / {props.copy.materials.tileShapes.concave} / {props.copy.materials.tileShapes.side}
+                </Select.Label>
+                <Select.Trigger className={coastlineSelectStyles.trigger}>
+                  <Select.Value />
+                  <Select.Icon className={coastlineSelectStyles.triggerIcon}>
+                    <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16" fill="none">
+                      <path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </Select.Icon>
+                </Select.Trigger>
+              </div>
+              <Select.Portal>
+                <Select.Positioner
+                  className={coastlineSelectStyles.positioner}
+                  side="bottom"
+                  align="start"
+                  sideOffset={4}
+                  alignItemWithTrigger={false}
+                  collisionAvoidance={{ side: 'flip', align: 'shift', fallbackAxisSide: 'none' }}
+                >
+                  <Select.Popup className={coastlineSelectStyles.popup}>
+                    <Select.List className={coastlineSelectStyles.list}>
+                      {COASTLINE_GROUPS.map((group) => {
+                        const label = coastlineGroupLabel(group, props.copy);
+                        return (
+                          <Select.Item key={group.id} value={group.id} label={label} className={coastlineSelectStyles.item}>
+                            <span className={coastlineSelectStyles.checkSlot}>
+                              <Select.ItemIndicator className={coastlineSelectStyles.itemIndicator}>
+                                <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16" fill="none">
+                                  <path d="m2.5 8.5 4 4 7-9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              </Select.ItemIndicator>
+                            </span>
+                            <Select.ItemText>{label}</Select.ItemText>
+                          </Select.Item>
+                        );
+                      })}
+                    </Select.List>
+                  </Select.Popup>
+                </Select.Positioner>
+              </Select.Portal>
+            </Select.Root>
             <div className={styles.quickMaterials}>
               <button type="button" className={styles.quickMaterialButton} title={landAsset.name} onClick={() => handleAssetClick(landAsset.id)}>
                 <Image src={getMapMakerAssetSrc(landAsset.id, 'preview')} alt="" width={landAsset.width} height={landAsset.height} unoptimized className={styles.quickMaterialImage} onError={() => props.onImageLoadError(getMapMakerAssetSrc(landAsset.id, 'preview'))} />
