@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight, Dice5 } from 'lucide-react';
 
@@ -23,6 +22,7 @@ import {
 import { getNavLabels } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
+import { getBlogCoverImageSources } from '@/lib/blog/cover-sources';
 
 export type BlogPostItem = ReturnType<typeof getBlogPosts>[number];
 
@@ -128,15 +128,21 @@ function PostCover({
   sizes: string;
 }) {
   if (post.coverImage) {
+    const coverSources = getBlogCoverImageSources(post.coverImage);
+
     return (
       <div className={`relative overflow-hidden ${className}`}>
-        <Image
-          src={post.coverImage}
+        {/* eslint-disable-next-line @next/next/no-img-element -- Static WebP srcSet avoids the image passthrough endpoint. */}
+        <img
+          src={coverSources.src}
+          srcSet={coverSources.srcSet}
           alt={post.coverAlt ?? post.title}
-          fill
+          width={coverSources.width}
+          height={coverSources.height}
           loading={loading}
           sizes={sizes}
-          className={`object-cover ${imageClassName}`}
+          decoding="async"
+          className={`absolute inset-0 h-full w-full object-cover ${imageClassName}`}
         />
       </div>
     );

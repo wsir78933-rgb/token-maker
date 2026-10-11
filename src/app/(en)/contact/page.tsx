@@ -13,7 +13,9 @@ const description =
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
-  title,
+  title: {
+    absolute: title,
+  },
   description,
   alternates: {
     canonical: '/contact',

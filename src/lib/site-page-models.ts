@@ -378,14 +378,16 @@ export function createCollectionMetadata(locale: SiteLocale, page: StaticSupport
 
   return {
     metadataBase: new URL(getSiteUrl()),
-    title: copy.title,
+    title: {
+      absolute: copy.title,
+    },
     description: copy.description,
     alternates: {
       canonical: path,
       languages: getLanguageAlternates(basePath),
     },
     openGraph: {
-      title: `${copy.title} | ${siteConfig.name}`,
+      title: copy.title,
       description: copy.description,
       url: absoluteUrl(path),
       siteName: siteConfig.name,
@@ -402,7 +404,7 @@ export function createCollectionMetadata(locale: SiteLocale, page: StaticSupport
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${copy.title} | ${siteConfig.name}`,
+      title: copy.title,
       description: copy.description,
       images: [getSeoImageUrl(locale, seoImageKind)],
     },

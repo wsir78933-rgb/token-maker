@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Dice5, FileText, Shield } from 'lucide-react';
+import { preload } from 'react-dom';
 
 import { EditorLaunchButton } from '@/components/site/EditorLaunchButton';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
@@ -20,7 +20,7 @@ import {
 import { getSiteUiCopy } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
-import { getBlogCoverDimensions } from '@/lib/blog/cover-dimensions';
+import { getBlogCoverImageSources } from '@/lib/blog/cover-sources';
 
 const copyByLocale = {
   en: {
@@ -136,6 +136,8 @@ export function BlogDetailPageView({
   const placeholderCopy = getBlogPlaceholderCopy(locale);
   const currentPath = `/blog/${slug}`;
   const isPlaceholder = !post.bodyHtml;
+  const coverSources = post.coverImage ? getBlogCoverImageSources(post.coverImage) : null;
+  const coverSizes = '(min-width: 1024px) 50vw, 100vw';
   const articleHeadings = post.headings ?? [];
   const hasArticleHeadings = articleHeadings.length > 0;
   const relatedPosts = getRelatedBlogPosts(locale, slug, 4);
@@ -144,6 +146,14 @@ export function BlogDetailPageView({
     ? getBlogPostPath(switchLocale, slug)
     : getLocalizedPath(switchLocale, '/blog');
   const faqStructuredData = buildBlogPostFaqStructuredData(locale, slug);
+
+  if (coverSources) {
+    preload(coverSources.src, {
+      as: 'image',
+      imageSrcSet: coverSources.srcSet,
+      imageSizes: coverSizes,
+    });
+  }
 
   return (
     <>
@@ -214,23 +224,20 @@ export function BlogDetailPageView({
                   </span>
                 </div>
 
-                {post.coverImage ? (
+                {coverSources ? (
                   <div className="relative overflow-hidden rounded-[34px] border border-white/10 bg-black/25">
-                    {(() => {
-                      const coverDimensions = getBlogCoverDimensions(post.coverImage);
-
-                      return (
-                        <Image
-                          src={post.coverImage}
-                          alt={post.coverAlt ?? post.title}
-                          width={coverDimensions.width}
-                          height={coverDimensions.height}
-                          preload
-                          sizes="(min-width: 1024px) 50vw, 100vw"
-                          className="h-auto w-full object-cover"
-                        />
-                      );
-                    })()}
+                    {/* eslint-disable-next-line @next/next/no-img-element -- Static WebP srcSet avoids the image passthrough endpoint. */}
+                    <img
+                      src={coverSources.src}
+                      srcSet={coverSources.srcSet}
+                      alt={post.coverAlt ?? post.title}
+                      width={coverSources.width}
+                      height={coverSources.height}
+                      loading="eager"
+                      decoding="async"
+                      sizes={coverSizes}
+                      className="h-auto w-full object-cover"
+                    />
                   </div>
                 ) : null}
               </div>

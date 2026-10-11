@@ -12,7 +12,9 @@ const description = '向 Token Maker 反馈 bug、工作流问题、缺少的 to
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
-  title,
+  title: {
+    absolute: title,
+  },
   description,
   alternates: {
     canonical: '/zh/contact',

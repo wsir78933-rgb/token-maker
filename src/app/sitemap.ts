@@ -5,15 +5,12 @@ import {
   getBlogCategoryPageCount,
   getBlogCategoryPagePath,
   getBlogPageCount,
-  getBlogPostsByCategory,
   getBlogPosts,
 } from '@/lib/blog-content';
 import { getSiteUrl, getTemplatePages } from '@/lib/site-content';
 import { getStaticPageLastModified, type StaticSupportPage } from '@/lib/site-page-models';
-import { LOCALES, getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
+import { LOCALES, getLocalizedPath } from '@/lib/site-locale';
 
-const DEFAULT_LAST_MODIFIED = '2026-03-12';
-const HOME_LAST_MODIFIED = '2026-05-06';
 const DICE_ROLLER_LAST_MODIFIED = '2026-03-30';
 const COAT_MAKER_LAST_MODIFIED = '2026-07-28';
 const EMBLEM_CREATOR_LAST_MODIFIED = '2026-10-03';
@@ -35,29 +32,6 @@ const TOWN_CREATOR_LAST_MODIFIED = '2026-10-07';
 const CONTACT_LAST_MODIFIED = '2026-05-02';
 const TEMPLATE_LAST_MODIFIED = '2026-05-06';
 const TOOL_DIRECTORY_LAST_MODIFIED = '2026-10-08';
-
-function pickLatestIsoDate(
-  values: Array<string | undefined>,
-  fallback = DEFAULT_LAST_MODIFIED,
-) {
-  const normalizedValues = values.filter(
-    (value): value is string => typeof value === 'string' && value.length > 0,
-  );
-
-  return normalizedValues.reduce((latest, value) => {
-    return new Date(value).getTime() > new Date(latest).getTime() ? value : latest;
-  }, fallback);
-}
-
-function getHomepageLastModified(locale: SiteLocale) {
-  return pickLatestIsoDate([
-    HOME_LAST_MODIFIED,
-    getStaticPageLastModified(locale, 'faq'),
-    getStaticPageLastModified(locale, 'privacy'),
-    getStaticPageLastModified(locale, 'about'),
-    getStaticPageLastModified(locale, 'changelog'),
-  ]);
-}
 
 function buildAlternates(path: string, siteUrl: string) {
   return {
@@ -87,7 +61,6 @@ function getBlogCategorySitemapRoutes(siteUrl: string): MetadataRoute.Sitemap {
   return LOCALES.flatMap((locale) =>
     categorySlugs.flatMap((categorySlug) => {
       const totalPages = getBlogCategoryPageCount(locale, categorySlug);
-      const categoryPosts = getBlogPostsByCategory(locale, categorySlug);
 
       return Array.from({ length: totalPages }, (_, index) => {
         const pageNumber = index + 1;
@@ -96,7 +69,6 @@ function getBlogCategorySitemapRoutes(siteUrl: string): MetadataRoute.Sitemap {
 
         return {
           url: `${siteUrl}${localizedPath}`,
-          lastModified: new Date(pickLatestIsoDate(categoryPosts.map((post) => post.updatedAt))),
           changeFrequency: 'weekly' as const,
           priority: pageNumber === 1 ? 0.65 : 0.55,
           alternates: buildAlternates(canonicalPath, siteUrl),
@@ -188,7 +160,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(CONTACT_LAST_MODIFIED)
             : supportPage
             ? new Date(getStaticPageLastModified(locale, supportPage))
-            : new Date(getHomepageLastModified(locale)),
+            : undefined,
         changeFrequency:
           path === '/'
             ? 'weekly'
@@ -225,9 +197,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
           return {
             url: `${siteUrl}${getLocalizedPath(locale, path)}`,
-            lastModified: new Date(
-              pickLatestIsoDate(getBlogPosts(locale).map((post) => post.updatedAt)),
-            ),
             changeFrequency: 'weekly' as const,
             priority: pageNumber === 1 ? 0.75 : 0.55,
             alternates: buildAlternates(path, siteUrl),

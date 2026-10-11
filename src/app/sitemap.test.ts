@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
 import sitemap from '@/app/sitemap';
+import { getBlogPageCount } from '@/lib/blog-content';
 
 const DND_BLESS_SLUG = 'dnd-bless';
 const DND_THUNDERCLAP_SLUG = 'dnd-thunderclap';
@@ -765,7 +766,7 @@ describe('blog sitemap entries', () => {
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 
-  test('keeps the fifth blog hub page current after publishing dnd-campaigns', () => {
+  test('omits last modified and preserves other fields for the fifth blog hub page', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/5');
     const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/5');
 
@@ -775,18 +776,18 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/5',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-09-26'));
+    expect(englishEntry.lastModified).toBeUndefined();
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-26'));
+    expect(chineseEntry.lastModified).toBeUndefined();
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
   });
 
-  test('keeps the sixth blog hub page current after publishing dnd-campaigns', () => {
+  test('omits last modified and preserves other fields for the sixth blog hub page', () => {
     const englishEntry = findSitemapEntry('https://www.tokenmaker.one/blog/page/6');
     const chineseEntry = findSitemapEntry('https://www.tokenmaker.one/zh/blog/page/6');
 
@@ -796,15 +797,26 @@ describe('blog sitemap entries', () => {
       'zh-CN': 'https://www.tokenmaker.one/zh/blog/page/6',
     };
 
-    expect(englishEntry.lastModified).toEqual(new Date('2026-09-26'));
+    expect(englishEntry.lastModified).toBeUndefined();
     expect(englishEntry.changeFrequency).toBe('weekly');
     expect(englishEntry.priority).toBe(0.55);
     expect(englishEntry.alternates?.languages).toEqual(expectedAlternates);
 
-    expect(chineseEntry.lastModified).toEqual(new Date('2026-09-26'));
+    expect(chineseEntry.lastModified).toBeUndefined();
     expect(chineseEntry.changeFrequency).toBe('weekly');
     expect(chineseEntry.priority).toBe(0.55);
     expect(chineseEntry.alternates?.languages).toEqual(expectedAlternates);
+  });
+
+  test('omits last modified from every blog hub page', () => {
+    const blogHubEntries = sitemap().filter((entry) =>
+      /^\/(?:zh\/)?blog(?:\/page\/\d+)?$/.test(new URL(entry.url).pathname),
+    );
+
+    expect(blogHubEntries).toHaveLength(getBlogPageCount('en') + getBlogPageCount('zh'));
+    for (const entry of blogHubEntries) {
+      expect(entry.lastModified).toBeUndefined();
+    }
   });
 
   test('includes bilingual dnd thunderclap blog routes with alternates', () => {
@@ -1254,6 +1266,12 @@ describe('army formation creator sitemap entries', () => {
     const chineseArmyEntry = findSitemapEntry('https://www.tokenmaker.one/zh/army-formation-creator');
     const englishArmorEntry = findSitemapEntry('https://www.tokenmaker.one/armor-creator');
     const chineseArmorEntry = findSitemapEntry('https://www.tokenmaker.one/zh/armor-creator');
+    const englishBackgroundsEntry = findSitemapEntry(
+      'https://www.tokenmaker.one/army-formation-creator/backgrounds',
+    );
+    const chineseBackgroundsEntry = findSitemapEntry(
+      'https://www.tokenmaker.one/zh/army-formation-creator/backgrounds',
+    );
     const armyAlternates = {
       'x-default': 'https://www.tokenmaker.one/army-formation-creator',
       'en-US': 'https://www.tokenmaker.one/army-formation-creator',
@@ -1268,15 +1286,28 @@ describe('army formation creator sitemap entries', () => {
     expect(englishArmyEntry.changeFrequency).toBe('weekly');
     expect(englishArmyEntry.priority).toBe(0.8);
     expect(englishArmyEntry.alternates?.languages).toEqual(armyAlternates);
+    expect(englishArmyEntry.lastModified).toBeUndefined();
     expect(chineseArmyEntry.changeFrequency).toBe('weekly');
     expect(chineseArmyEntry.priority).toBe(0.8);
     expect(chineseArmyEntry.alternates?.languages).toEqual(armyAlternates);
+    expect(chineseArmyEntry.lastModified).toBeUndefined();
     expect(englishArmorEntry.changeFrequency).toBe('weekly');
     expect(englishArmorEntry.priority).toBe(0.8);
     expect(englishArmorEntry.alternates?.languages).toEqual(armorAlternates);
+    expect(englishArmorEntry.lastModified).toBeUndefined();
     expect(chineseArmorEntry.changeFrequency).toBe('weekly');
     expect(chineseArmorEntry.priority).toBe(0.8);
     expect(chineseArmorEntry.alternates?.languages).toEqual(armorAlternates);
+    expect(chineseArmorEntry.lastModified).toBeUndefined();
+    expect(englishBackgroundsEntry.lastModified).toBeUndefined();
+    expect(chineseBackgroundsEntry.lastModified).toBeUndefined();
+  });
+});
+
+describe('homepage sitemap entries', () => {
+  test('omits last modified without an independent update date', () => {
+    expect(findSitemapEntry('https://www.tokenmaker.one/').lastModified).toBeUndefined();
+    expect(findSitemapEntry('https://www.tokenmaker.one/zh').lastModified).toBeUndefined();
   });
 });
 

@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import sharp from 'sharp';
 
 import { MapMakerShowcase } from '@/components/map-maker/MapMakerShowcase';
 import { getMapMakerPageCopy } from '@/lib/map-maker/page-copy';
@@ -28,21 +29,22 @@ const EXPECTED_GROUP_IDS = [
 const EXPECTED_IMAGE_POSITIONS = ['left', 'right', 'left'] as const;
 
 const EXPECTED_IMAGE_SOURCES = [
-  '/map-maker/examples/01-greenvale-frontier.png',
-  '/map-maker/examples/03-crownpeak-pass.png',
-  '/map-maker/examples/05-ancient-temple.png',
-  '/map-maker/examples/06-desert-oasis.png',
-  '/map-maker/examples/04-twin-fort-bay.png',
-  '/map-maker/examples/07-corsair-isles.png',
-  '/map-maker/examples/08-wreckers-coast.png',
-  '/map-maker/examples/09-leviathan-strait.png',
-  '/map-maker/examples/02-world-tree-sanctuary.png',
-  '/map-maker/examples/10-silverbay-kingdom.png',
-  '/map-maker/examples/11-sea-of-crowns.png',
-  '/map-maker/examples/12-two-continents.png',
+  '/map-maker/examples/01-greenvale-frontier.webp',
+  '/map-maker/examples/03-crownpeak-pass.webp',
+  '/map-maker/examples/05-ancient-temple.webp',
+  '/map-maker/examples/06-desert-oasis.webp',
+  '/map-maker/examples/04-twin-fort-bay.webp',
+  '/map-maker/examples/07-corsair-isles.webp',
+  '/map-maker/examples/08-wreckers-coast.webp',
+  '/map-maker/examples/09-leviathan-strait.webp',
+  '/map-maker/examples/02-world-tree-sanctuary.webp',
+  '/map-maker/examples/10-silverbay-kingdom.webp',
+  '/map-maker/examples/11-sea-of-crowns.webp',
+  '/map-maker/examples/12-two-continents.webp',
 ] as const;
 
-const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const EXPECTED_CAROUSEL_SIZES =
+  '(min-width: 936px) 376px, (min-width: 768px) calc(50vw - 92px), calc(100vw - 104px)';
 
 beforeEach(() => {
   vi.stubGlobal(
@@ -65,32 +67,18 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-function requireValidMapMakerPng(sourcePath: string): void {
-  if (!/^\/map-maker\/examples\/[^/]+\.png$/.test(sourcePath)) {
+async function requireValidMapMakerWebp(sourcePath: string, expectedWidth: number): Promise<void> {
+  if (!/^\/map-maker\/examples\/(?:(?:640|1024|1536)\/)?[^/]+\.webp$/.test(sourcePath)) {
     throw new Error(`Map maker showcase image path is invalid. Received ${JSON.stringify(sourcePath)}.`);
   }
 
   const imagePath = resolve(process.cwd(), 'public', sourcePath.slice(1));
-  const imageBytes = readFileSync(imagePath);
-  const receivedSignature = imageBytes.subarray(0, PNG_SIGNATURE.length);
-  if (!receivedSignature.equals(PNG_SIGNATURE)) {
-    throw new Error(
-      `Map maker showcase image ${JSON.stringify(sourcePath)} has an invalid PNG signature. Received ${receivedSignature.toString('hex')}.`,
-    );
-  }
+  const metadata = await sharp(readFileSync(imagePath)).metadata();
+  const expectedHeight = Math.round((expectedWidth * 9) / 16);
 
-  const receivedHeader = imageBytes.toString('ascii', 12, 16);
-  if (imageBytes.length < 24 || receivedHeader !== 'IHDR') {
+  if (metadata.format !== 'webp' || metadata.width !== expectedWidth || metadata.height !== expectedHeight) {
     throw new Error(
-      `Map maker showcase image ${JSON.stringify(sourcePath)} has an invalid PNG IHDR. Received length=${imageBytes.length}, chunk=${JSON.stringify(receivedHeader)}.`,
-    );
-  }
-
-  const width = imageBytes.readUInt32BE(16);
-  const height = imageBytes.readUInt32BE(20);
-  if (width === 0 || height === 0) {
-    throw new Error(
-      `Map maker showcase image ${JSON.stringify(sourcePath)} has invalid dimensions. Received ${width}x${height}.`,
+      `Map maker showcase image ${JSON.stringify(sourcePath)} must be ${expectedWidth}x${expectedHeight} WebP. Received format=${JSON.stringify(metadata.format)}, dimensions=${metadata.width}x${metadata.height}.`,
     );
   }
 }
@@ -105,7 +93,7 @@ function requireMapMakerCarousel(groupElement: HTMLElement, groupId: string): HT
 }
 
 describe('MapMakerShowcase', () => {
-  it('keeps the approved bilingual group and image order with twelve valid local PNGs', () => {
+  it('keeps the approved bilingual group and image order with twelve valid responsive WebP image sets', async () => {
     const localizedCopies = (['en', 'zh'] as const).map((locale) => ({
       locale,
       showcase: getMapMakerPageCopy(locale).showcase,
@@ -117,6 +105,15 @@ describe('MapMakerShowcase', () => {
     const chineseSources = localizedCopies[1]?.showcase.groups.flatMap((group) =>
       group.cases.map((mapCase) => mapCase.src),
     );
+    const imageSourceFields = (locale: 'en' | 'zh') =>
+      localizedCopies.find((copy) => copy.locale === locale)?.showcase.groups.flatMap((group) =>
+        group.cases.map(({ src, carouselSrc, carouselSrcSet, carouselSizes }) => ({
+          src,
+          carouselSrc,
+          carouselSrcSet,
+          carouselSizes,
+        })),
+      );
     if (englishSources === undefined || chineseSources === undefined) {
       throw new Error('Map maker showcase test expected English and Chinese copy.');
     }
@@ -124,6 +121,33 @@ describe('MapMakerShowcase', () => {
     expect(englishSources).toEqual(EXPECTED_IMAGE_SOURCES);
     expect(chineseSources).toEqual(englishSources);
     expect(new Set(englishSources).size).toBe(12);
+    expect(imageSourceFields('zh')).toEqual(imageSourceFields('en'));
+
+    const englishCases = localizedCopies[0]?.showcase.groups.flatMap((group) => group.cases);
+    if (englishCases === undefined) {
+      throw new Error('Map maker showcase test expected English map cases.');
+    }
+
+    for (const mapCase of englishCases) {
+      const imageName = mapCase.src.split('/').at(-1);
+      if (imageName === undefined) {
+        throw new Error(`Map maker showcase source has no filename: ${JSON.stringify(mapCase.src)}.`);
+      }
+
+      expect(mapCase.carouselSrc).toBe(`/map-maker/examples/640/${imageName}`);
+      expect(mapCase.carouselSrcSet).toBe(
+        [640, 1024, 1536]
+          .map((width) => `/map-maker/examples/${width}/${imageName} ${width}w`)
+          .join(', '),
+      );
+      expect(mapCase.carouselSizes).toBe(EXPECTED_CAROUSEL_SIZES);
+
+      await requireValidMapMakerWebp(mapCase.src, 2240);
+      await requireValidMapMakerWebp(mapCase.carouselSrc, 640);
+      for (const width of [1024, 1536]) {
+        await requireValidMapMakerWebp(`/map-maker/examples/${width}/${imageName}`, width);
+      }
+    }
 
     localizedCopies.forEach(({ locale, showcase }) => {
       expect(showcase.groups.map((group) => group.id)).toEqual(EXPECTED_GROUP_IDS);
@@ -136,7 +160,6 @@ describe('MapMakerShowcase', () => {
             `Map maker showcase case must have a name and image description for ${JSON.stringify(locale)}. Received name=${JSON.stringify(mapCase.name)}, alt=${JSON.stringify(mapCase.alt)}.`,
           );
         }
-        requireValidMapMakerPng(mapCase.src);
       });
     });
   });
@@ -165,11 +188,20 @@ describe('MapMakerShowcase', () => {
         expect(within(groupElement).getByRole('heading', { level: 3, name: groupCopy.title })).toBeTruthy();
         const carousel = requireMapMakerCarousel(groupElement, groupCopy.id);
         expect(carousel.getAttribute('aria-roledescription')).toBe('carousel');
-        const renderedImageSources = Array.from(
-          carousel.querySelectorAll<HTMLImageElement>('img'),
-          (image) => image.getAttribute('src'),
+        const renderedImages = Array.from(carousel.querySelectorAll<HTMLImageElement>('img'));
+        expect(renderedImages.map((image) => image.getAttribute('src'))).toEqual(
+          groupCopy.cases.map((mapCase) => mapCase.carouselSrc),
         );
-        expect(renderedImageSources).toEqual(groupCopy.cases.map((mapCase) => mapCase.src));
+        renderedImages.forEach((image, imageIndex) => {
+          const mapCase = groupCopy.cases[imageIndex];
+          if (mapCase === undefined) {
+            throw new Error(`Map maker showcase rendered an unexpected image at index ${imageIndex}.`);
+          }
+
+          expect(image.getAttribute('srcset')).toBe(mapCase.carouselSrcSet);
+          expect(image.getAttribute('sizes')).toBe(mapCase.carouselSizes);
+          expect(image.getAttribute('loading')).toBeNull();
+        });
 
         const firstCase = groupCopy.cases[0];
         if (firstCase === undefined) {

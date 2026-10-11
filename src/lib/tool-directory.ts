@@ -321,7 +321,7 @@ const toolDirectoryDefinitions: readonly ToolDirectoryDefinition[] = [
     path: '/map-maker',
     preview: {
       type: 'image',
-      src: '/map-maker/examples/01-greenvale-frontier.png',
+      src: '/map-maker/examples/01-greenvale-frontier.webp',
       fit: 'contain',
       surface: 'light',
       altByLocale: {

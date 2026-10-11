@@ -113,4 +113,35 @@ describe('blog pagination heroes', () => {
       expect(heroSlugs).toHaveLength(finalPage);
     },
   );
+
+  it.each(paginationHeroCases)(
+    'uses direct responsive WebP sources and keeps existing image loading for $locale',
+    ({ locale }) => {
+      const { container } = render(<BlogHubPageView locale={locale} page={1} />);
+      const featuredImage = container.querySelector<HTMLImageElement>(
+        '[data-blog-featured-article] img',
+      );
+      const articleImages = Array.from(
+        container.querySelectorAll<HTMLImageElement>(
+          'a.site-surface-card:not([data-blog-featured-article]) img',
+        ),
+      );
+
+      if (!featuredImage || articleImages.length === 0) {
+        throw new Error(`Expected featured and regular article images for locale=${locale}.`);
+      }
+
+      expect(featuredImage.getAttribute('loading')).toBe('eager');
+      expect(featuredImage.getAttribute('sizes')).toBe('(min-width: 1024px) 34vw, 100vw');
+      expect(articleImages.every((image) => image.getAttribute('loading') === 'lazy')).toBe(true);
+      expect(
+        [featuredImage, ...articleImages].every(
+          (image) =>
+            !image.getAttribute('src')?.includes('/_next/image') &&
+            image.getAttribute('srcset')?.includes('/blog/covers/responsive/') &&
+            image.getAttribute('srcset')?.includes('.webp'),
+        ),
+      ).toBe(true);
+    },
+  );
 });

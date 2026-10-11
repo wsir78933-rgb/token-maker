@@ -291,7 +291,7 @@ describe('trust page routes', () => {
     },
   ])('exports metadata and renders the H1 for $routeLabel', ({ PageComponent, metadata, canonical, title, h1 }) => {
     expect(metadata.alternates?.canonical).toBe(canonical);
-    expect(metadata.title).toBe(title);
+    expect(metadata.title).toEqual({ absolute: title });
 
     render(<PageComponent />);
 

@@ -16,6 +16,9 @@ export type CircularTestimonial = {
   name: string;
   designation: string;
   src: string;
+  carouselSrc?: string;
+  carouselSrcSet?: string;
+  carouselSizes?: string;
   alt?: string;
 };
 
@@ -100,6 +103,16 @@ function validateTestimonialItem(item: unknown, testimonialIndex: number): void 
 
   if (testimonial.alt !== undefined) {
     requireNonEmptyString(testimonial.alt, `testimonials[${testimonialIndex}].alt`);
+  }
+
+  if (
+    testimonial.carouselSrc !== undefined ||
+    testimonial.carouselSrcSet !== undefined ||
+    testimonial.carouselSizes !== undefined
+  ) {
+    requireNonEmptyString(testimonial.carouselSrc, `testimonials[${testimonialIndex}].carouselSrc`);
+    requireNonEmptyString(testimonial.carouselSrcSet, `testimonials[${testimonialIndex}].carouselSrcSet`);
+    requireNonEmptyString(testimonial.carouselSizes, `testimonials[${testimonialIndex}].carouselSizes`);
   }
 }
 
@@ -406,7 +419,9 @@ export function CircularTestimonials({
 
             const imageElement = (
               <img
-                src={testimonial.src}
+                src={testimonial.carouselSrc ?? testimonial.src}
+                srcSet={testimonial.carouselSrcSet}
+                sizes={testimonial.carouselSizes}
                 alt={isVisibleImage ? testimonial.alt ?? testimonial.name : ''}
                 className="absolute inset-0 h-full w-full rounded-3xl object-cover shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
                 data-index={index}

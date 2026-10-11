@@ -12,12 +12,6 @@ import type { BlogCategorySlug } from '@/lib/blog-content';
 
 const SITE_URL = 'https://www.tokenmaker.one';
 const CATEGORY_PRIORITY = 0.65;
-const EXPECTED_CATEGORY_LAST_MODIFIED: Record<BlogCategorySlug, string> = {
-  characters: '2026-09-20',
-  monsters: '2026-09-16',
-  spells: '2026-09-26',
-  'rules-and-prep': '2026-09-24',
-};
 
 function getSitemapEntry(url: string) {
   const matchingEntries = sitemap().filter((entry) => entry.url === url);
@@ -58,8 +52,8 @@ describe('blog category sitemap entries', () => {
           const localizedPath = getBlogCategoryPagePath(locale, categorySlug, page);
           const entry = getSitemapEntry(`${SITE_URL}${localizedPath}`);
 
+          expect(entry.lastModified).toBeUndefined();
           expect(entry).toMatchObject({
-            lastModified: new Date(EXPECTED_CATEGORY_LAST_MODIFIED[categorySlug]),
             changeFrequency: 'weekly',
             priority: page === 1 ? CATEGORY_PRIORITY : 0.55,
             alternates: { languages: getExpectedLanguageAlternates(categorySlug, page) },

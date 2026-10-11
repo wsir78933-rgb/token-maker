@@ -125,12 +125,14 @@ describe('static site support pages', () => {
     expect(sitemapEntry.alternates?.languages).toEqual(languages);
   });
 
-  it('updates homepage last modified when visible support links change', () => {
+  it('omits homepage last modified without an independent update date', () => {
     const englishHomepage = sitemap().find((entry) => entry.url === 'https://www.tokenmaker.one/');
     const chineseHomepage = sitemap().find((entry) => entry.url === 'https://www.tokenmaker.one/zh');
 
-    expect(englishHomepage?.lastModified).toEqual(new Date('2026-09-15'));
-    expect(chineseHomepage?.lastModified).toEqual(new Date('2026-09-15'));
+    expect(englishHomepage).toBeDefined();
+    expect(chineseHomepage).toBeDefined();
+    expect(englishHomepage?.lastModified).toBeUndefined();
+    expect(chineseHomepage?.lastModified).toBeUndefined();
   });
 
   it.each([
@@ -176,7 +178,9 @@ describe('static site support pages', () => {
       const metadata = createCollectionMetadata(locale, page);
       const metadataOpenGraph = getCollectionMetadataOpenGraph(metadata);
 
-      expect(metadata.title).toBe(title);
+      expect(metadata.title).toEqual({ absolute: title });
+      expect(metadata.openGraph).toMatchObject({ title });
+      expect(metadata.twitter).toMatchObject({ title });
       expect(metadata.alternates?.canonical).toBe(canonical);
       expect(metadata.alternates?.languages).toEqual({
         'x-default': `/${page}`,

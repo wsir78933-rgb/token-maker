@@ -129,3 +129,35 @@ describe('BlogDetailPageView editorial metadata', () => {
     },
   );
 });
+
+describe('BlogDetailPageView cover delivery', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it.each(localeCases)('uses a responsive static WebP cover for $locale', (testCase) => {
+    const { container } = render(<BlogDetailPageView locale={testCase.locale} slug="dnd-meaning" />);
+    const cover = container.querySelector<HTMLImageElement>(
+      'img[srcset*="dnd-meaning-guide"]',
+    );
+
+    if (!cover) {
+      throw new Error(`Expected a cover image for locale=${testCase.locale}.`);
+    }
+
+    expect(cover.getAttribute('src')).toBe('/blog/covers/responsive/en/dnd-meaning-guide-1280w.webp');
+    expect(cover.getAttribute('srcset')).toContain(
+      '/blog/covers/responsive/en/dnd-meaning-guide-1920w.webp 1920w',
+    );
+    expect(cover.getAttribute('srcset')).toContain('/blog/covers/en/dnd-meaning-guide.webp 2770w');
+    expect(cover.getAttribute('src')).not.toContain('/_next/image');
+    expect(cover.getAttribute('sizes')).toBe('(min-width: 1024px) 50vw, 100vw');
+    expect(cover.getAttribute('loading')).toBe('eager');
+    expect(cover.getAttribute('width')).toBe('2770');
+    expect(cover.getAttribute('height')).toBe('1504');
+
+    const preloadLink = document.head.querySelector<HTMLLinkElement>('link[rel="preload"][as="image"]');
+    expect(preloadLink?.getAttribute('imagesrcset')).toBe(cover.getAttribute('srcset'));
+    expect(preloadLink?.getAttribute('imagesizes')).toBe(cover.getAttribute('sizes'));
+  });
+});
