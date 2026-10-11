@@ -28,6 +28,7 @@ export type NoticeBoardCanvasProps = {
   dragEnabled: boolean;
   resizeEnabled: boolean;
   onSelectNotice: (noticeId: string, toggleSelection: boolean) => void;
+  onDoubleClickNotice: (noticeId: string) => void;
   onMoveNotice: (noticeId: string, deltaX: number, deltaY: number) => void;
   onResizeNotice: (
     noticeId: string,
@@ -45,6 +46,7 @@ export function NoticeBoardCanvas({
   dragEnabled,
   resizeEnabled,
   onSelectNotice,
+  onDoubleClickNotice,
   onMoveNotice,
   onResizeNotice,
 }: NoticeBoardCanvasProps) {
@@ -309,6 +311,7 @@ export function NoticeBoardCanvas({
                       aria-label={copy.selectedNoticeLabel(index + 1)}
                       aria-pressed={isSelected}
                       onClick={() => onSelectNotice(notice.id, multiSelectEnabled)}
+                      onDoubleClick={() => onDoubleClickNotice(notice.id)}
                       onKeyDown={(event) => handleNoticeKeyDown(event, notice.id)}
                       onPointerDown={(event) => startGesture(event, notice.id, 'move')}
                       onPointerMove={continueGesture}
@@ -316,7 +319,7 @@ export function NoticeBoardCanvas({
                       onPointerCancel={endGesture}
                     >
                       <span className={styles.noticeContent} style={noticeTextStyle}>
-                        {notice.text || copy.selectedNoticeLabel(index + 1)}
+                        {notice.text}
                       </span>
                     </button>
                     {isSelected && !multiSelectEnabled && resizeEnabled ? (

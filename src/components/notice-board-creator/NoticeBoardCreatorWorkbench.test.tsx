@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, createEvent, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { NoticeBoardCreatorWorkbench } from '@/components/notice-board-creator/NoticeBoardCreatorWorkbench';
@@ -153,7 +153,102 @@ function getApplyFormattingButton(copy: NoticeBoardEditorCopy): HTMLButtonElemen
   return applyButton;
 }
 
+function dispatchFocusedKeyDown(
+  focusedElement: HTMLElement,
+  keyEventOptions: {
+    key: string;
+    ctrlKey?: boolean;
+    metaKey?: boolean;
+    altKey?: boolean;
+    shiftKey?: boolean;
+    isComposing?: boolean;
+    keyCode?: number;
+  },
+): boolean {
+  if (document.activeElement !== focusedElement) {
+    const actualFocusedElement = document.activeElement;
+    const actualFocusDescription = actualFocusedElement instanceof HTMLElement
+      ? actualFocusedElement.tagName
+      : String(actualFocusedElement);
+    throw new Error(
+      `Cannot dispatch ${JSON.stringify(keyEventOptions.key)}: expected focus on ${focusedElement.tagName}, received ${actualFocusDescription}.`,
+    );
+  }
+
+  return fireEvent.keyDown(focusedElement, keyEventOptions);
+}
+
+function getNoticeCardElement(noticeButton: HTMLElement): HTMLDivElement {
+  const noticeCardElement = noticeButton.closest('[data-notice-id]');
+  if (!(noticeCardElement instanceof HTMLDivElement)) {
+    throw new Error(
+      `Notice button ${JSON.stringify(noticeButton.getAttribute('aria-label'))} is not inside a notice card.`,
+    );
+  }
+  return noticeCardElement;
+}
+
+function getNoticeBoardWorkbenchElement(container: HTMLElement): HTMLDivElement {
+  const workbenchElement = container.querySelector('[data-notice-board-workbench]');
+  if (!(workbenchElement instanceof HTMLDivElement)) {
+    throw new Error('Notice board workbench root is missing from the rendered editor.');
+  }
+  return workbenchElement;
+}
+
 let isolatedNoticeBoardStorage: IsolatedNoticeBoardStorage;
+
+const noticeDeletionScenarios = [
+  {
+    locale: 'en' as const,
+    addPaperLabels: ['Add paper 01', 'Add paper 02'] as const,
+    selectedNoticeLabel: 'Notice 1',
+    remainingNoticeLabel: 'Notice 2',
+  },
+  {
+    locale: 'zh' as const,
+    addPaperLabels: ['添加纸张 01', '添加纸张 02'] as const,
+    selectedNoticeLabel: '公告 1',
+    remainingNoticeLabel: '公告 2',
+  },
+];
+
+const singleNoticeDeletionCases = noticeDeletionScenarios.flatMap((scenario) =>
+  (['Delete', 'Backspace'] as const).map((key) => ({ ...scenario, key })),
+);
+
+const guardedNoticeDeletionCases: readonly {
+  modifierLabel: string;
+  key: 'Delete' | 'Backspace';
+  ctrlKey?: boolean;
+  metaKey?: boolean;
+  altKey?: boolean;
+  shiftKey?: boolean;
+  isComposing?: boolean;
+  keyCode?: number;
+}[] = [
+  { modifierLabel: 'IME composition', key: 'Delete', isComposing: true },
+  { modifierLabel: 'IME keyCode 229', key: 'Delete', keyCode: 229 },
+  { modifierLabel: 'Control', key: 'Delete', ctrlKey: true },
+  { modifierLabel: 'Meta', key: 'Backspace', metaKey: true },
+  { modifierLabel: 'Alt', key: 'Delete', altKey: true },
+  { modifierLabel: 'Shift', key: 'Delete', shiftKey: true },
+];
+
+const noticeDoubleClickEditingScenarios = [
+  {
+    locale: 'en' as const,
+    addPaperLabels: ['Add paper 01', 'Add paper 02'] as const,
+    firstNoticeLabel: 'Notice 1',
+    secondNoticeLabel: 'Notice 2',
+  },
+  {
+    locale: 'zh' as const,
+    addPaperLabels: ['添加纸张 01', '添加纸张 02'] as const,
+    firstNoticeLabel: '公告 1',
+    secondNoticeLabel: '公告 2',
+  },
+];
 
 beforeEach(() => {
   isolatedNoticeBoardStorage = createIsolatedNoticeBoardStorage();
@@ -225,9 +320,234 @@ describe('NoticeBoardCreatorWorkbench', () => {
     expect(secondTextEditor.value).toBe('');
     expect(document.activeElement).toBe(secondTextEditor);
 
+    firstNoticeButton.focus();
     fireEvent.click(firstNoticeButton);
     expect(firstNoticeButton.getAttribute('aria-pressed')).toBe('true');
-    expect(document.activeElement).toBe(screen.getByRole('textbox', { name: noticeTextLabel }));
+    expect(document.activeElement).toBe(firstNoticeButton);
+  });
+
+  it.each(noticeDoubleClickEditingScenarios)(
+    'opens text editing on double-click and keeps click and delete behavior for $locale',
+    ({ locale, addPaperLabels, firstNoticeLabel, secondNoticeLabel }) => {
+      const copy = getNoticeBoardEditorCopy(locale);
+      render(<NoticeBoardCreatorWorkbench locale={locale} />);
+      for (const addPaperLabel of addPaperLabels) {
+        fireEvent.click(screen.getByRole('button', { name: addPaperLabel }));
+      }
+
+      const firstNoticeButton = screen.getByRole('button', { name: firstNoticeLabel });
+      const secondNoticeButton = screen.getByRole('button', { name: secondNoticeLabel });
+      firstNoticeButton.focus();
+      fireEvent.click(firstNoticeButton);
+      expect(firstNoticeButton.getAttribute('aria-pressed')).toBe('true');
+      expect(document.activeElement).toBe(firstNoticeButton);
+
+      fireEvent.click(firstNoticeButton);
+      expect(document.activeElement).toBe(firstNoticeButton);
+      fireEvent.doubleClick(firstNoticeButton);
+
+      const noticeTextEditor = screen.getByRole('textbox', { name: copy.noticeText }) as HTMLTextAreaElement;
+      expect(document.activeElement).toBe(noticeTextEditor);
+      fireEvent.change(noticeTextEditor, { target: { value: 'Updated notice text.' } });
+      expect(noticeTextEditor.value).toBe('Updated notice text.');
+      expect(getNoticeContentElement(firstNoticeButton).textContent).toBe('Updated notice text.');
+
+      const fontSizeInput = screen.getByRole('spinbutton', { name: copy.fontSize }) as HTMLInputElement;
+      fontSizeInput.focus();
+      fireEvent.change(fontSizeInput, { target: { value: '32' } });
+      expect(fontSizeInput.value).toBe('32');
+      expect(getNoticeContentElement(firstNoticeButton).style.fontSize).toBe('20px');
+
+      firstNoticeButton.focus();
+      fireEvent.doubleClick(firstNoticeButton);
+      const repeatedNoticeTextEditor = screen.getByRole('textbox', { name: copy.noticeText });
+      expect(document.activeElement).toBe(repeatedNoticeTextEditor);
+      expect(screen.getByRole('spinbutton', { name: copy.fontSize })).toHaveProperty('value', '32');
+      expect(getNoticeContentElement(firstNoticeButton).style.fontSize).toBe('20px');
+
+      for (const key of ['Delete', 'Backspace'] as const) {
+        expect(dispatchFocusedKeyDown(repeatedNoticeTextEditor, { key })).toBe(true);
+        expect(firstNoticeButton.isConnected).toBe(true);
+      }
+
+      secondNoticeButton.focus();
+      fireEvent.click(secondNoticeButton);
+      expect(secondNoticeButton.getAttribute('aria-pressed')).toBe('true');
+      expect(firstNoticeButton.getAttribute('aria-pressed')).toBe('false');
+      expect(document.activeElement).toBe(secondNoticeButton);
+
+      expect(dispatchFocusedKeyDown(secondNoticeButton, { key: 'Delete' })).toBe(false);
+      expect(secondNoticeButton.isConnected).toBe(false);
+      expect(firstNoticeButton.isConnected).toBe(true);
+    },
+  );
+
+  it('keeps multi-select editing behavior on double-click', () => {
+    const copy = getNoticeBoardEditorCopy('en');
+    render(<NoticeBoardCreatorWorkbench locale="en" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Add paper 01' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add paper 02' }));
+    const multiSelectButton = screen.getByRole('button', { name: copy.multiSelect });
+    fireEvent.click(multiSelectButton);
+
+    const firstNoticeButton = screen.getByRole('button', { name: 'Notice 1' });
+    firstNoticeButton.focus();
+    fireEvent.click(firstNoticeButton);
+    expect(firstNoticeButton.getAttribute('aria-pressed')).toBe('true');
+    expect(multiSelectButton.getAttribute('aria-pressed')).toBe('true');
+
+    fireEvent.doubleClick(firstNoticeButton);
+    expect(firstNoticeButton.getAttribute('aria-pressed')).toBe('true');
+    expect(multiSelectButton.getAttribute('aria-pressed')).toBe('true');
+    expect(screen.queryByRole('textbox', { name: copy.noticeText })).toBeNull();
+    expect(document.activeElement).toBe(firstNoticeButton);
+  });
+
+  it.each(singleNoticeDeletionCases)(
+    'deletes only the focused single selection with $key in $locale',
+    ({ locale, addPaperLabels, selectedNoticeLabel, remainingNoticeLabel, key }) => {
+      const { container } = render(<NoticeBoardCreatorWorkbench locale={locale} />);
+      for (const addPaperLabel of addPaperLabels) {
+        fireEvent.click(screen.getByRole('button', { name: addPaperLabel }));
+      }
+
+      const selectedNoticeButton = screen.getByRole('button', { name: selectedNoticeLabel });
+      const remainingNoticeButton = screen.getByRole('button', { name: remainingNoticeLabel });
+      selectedNoticeButton.focus();
+      fireEvent.click(selectedNoticeButton);
+      expect(selectedNoticeButton.getAttribute('aria-pressed')).toBe('true');
+      expect(document.activeElement).toBe(selectedNoticeButton);
+      expect(dispatchFocusedKeyDown(selectedNoticeButton, { key })).toBe(false);
+
+      expect(selectedNoticeButton.isConnected).toBe(false);
+      expect(remainingNoticeButton.isConnected).toBe(true);
+      expect(remainingNoticeButton.getAttribute('aria-pressed')).toBe('false');
+      expect(document.activeElement).toBe(getNoticeBoardWorkbenchElement(container));
+    },
+  );
+
+  it('deletes only selected notices in multi-select and leaves focus on the workbench', () => {
+    const { container } = render(<NoticeBoardCreatorWorkbench locale="en" />);
+    for (const addPaperLabel of ['Add paper 01', 'Add paper 02', 'Add paper 03']) {
+      fireEvent.click(screen.getByRole('button', { name: addPaperLabel }));
+    }
+    fireEvent.click(screen.getByRole('button', { name: 'Multi' }));
+
+    const firstNoticeButton = screen.getByRole('button', { name: 'Notice 1' });
+    const unselectedNoticeButton = screen.getByRole('button', { name: 'Notice 2' });
+    const thirdNoticeButton = screen.getByRole('button', { name: 'Notice 3' });
+    firstNoticeButton.focus();
+    fireEvent.click(firstNoticeButton);
+    expect(firstNoticeButton.getAttribute('aria-pressed')).toBe('true');
+    expect(unselectedNoticeButton.getAttribute('aria-pressed')).toBe('false');
+    expect(thirdNoticeButton.getAttribute('aria-pressed')).toBe('true');
+    expect(document.activeElement).toBe(firstNoticeButton);
+    expect(dispatchFocusedKeyDown(firstNoticeButton, { key: 'Backspace' })).toBe(false);
+
+    expect(firstNoticeButton.isConnected).toBe(false);
+    expect(thirdNoticeButton.isConnected).toBe(false);
+    expect(unselectedNoticeButton.isConnected).toBe(true);
+    expect(unselectedNoticeButton.getAttribute('aria-pressed')).toBe('false');
+    expect(screen.getByRole('button', { name: 'Multi' }).getAttribute('aria-pressed')).toBe('false');
+    expect(document.activeElement).toBe(getNoticeBoardWorkbenchElement(container));
+  });
+
+  it.each(['Delete', 'Backspace'] as const)(
+    'does nothing when %s is pressed with no selected notices',
+    (key) => {
+      const { container } = render(<NoticeBoardCreatorWorkbench locale="en" />);
+      const workbenchElement = getNoticeBoardWorkbenchElement(container);
+      workbenchElement.focus();
+
+      expect(document.activeElement).toBe(workbenchElement);
+      expect(dispatchFocusedKeyDown(workbenchElement, { key })).toBe(true);
+      expect(container.querySelector('[data-notice-id]')).toBeNull();
+      expect(document.activeElement).toBe(workbenchElement);
+    },
+  );
+
+  it.each(guardedNoticeDeletionCases)(
+    'does not delete when $modifierLabel is active',
+    (keyEventCase) => {
+      render(<NoticeBoardCreatorWorkbench locale="en" />);
+      fireEvent.click(screen.getByRole('button', { name: 'Add paper 01' }));
+      const noticeButton = screen.getByRole('button', { name: 'Notice 1' });
+      noticeButton.focus();
+      const { modifierLabel, ...keyEventOptions } = keyEventCase;
+
+      expect(
+        dispatchFocusedKeyDown(noticeButton, keyEventOptions),
+        `Expected ${JSON.stringify(modifierLabel)} keydown not to be canceled.`,
+      ).toBe(true);
+      expect(noticeButton.isConnected).toBe(true);
+      expect(noticeButton.getAttribute('aria-pressed')).toBe('true');
+    },
+  );
+
+  it('does not intercept deletion keys in text controls, selects, or an open dialog', () => {
+    const copy = getNoticeBoardEditorCopy('en');
+    render(<NoticeBoardCreatorWorkbench locale="en" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Add paper 01' }));
+    const noticeButton = screen.getByRole('button', { name: 'Notice 1' });
+
+    const noticeTextEditor = screen.getByRole('textbox', { name: copy.noticeText }) as HTMLTextAreaElement;
+    fireEvent.change(noticeTextEditor, { target: { value: 'A notice to keep.' } });
+    noticeTextEditor.focus();
+    expect(dispatchFocusedKeyDown(noticeTextEditor, { key: 'Backspace' })).toBe(true);
+    expect(noticeButton.isConnected).toBe(true);
+
+    const fontFamilySelect = screen.getByLabelText(copy.fontFamily) as HTMLSelectElement;
+    fontFamilySelect.focus();
+    expect(dispatchFocusedKeyDown(fontFamilySelect, { key: 'Delete' })).toBe(true);
+    expect(noticeButton.isConnected).toBe(true);
+
+    const fontSizeInput = screen.getByRole('spinbutton', { name: copy.fontSize }) as HTMLInputElement;
+    fontSizeInput.focus();
+    expect(dispatchFocusedKeyDown(fontSizeInput, { key: 'Backspace' })).toBe(true);
+    expect(noticeButton.isConnected).toBe(true);
+
+    fireEvent.click(screen.getByRole('button', { name: copy.help }));
+    const helpDialog = screen.getByRole('dialog');
+    const closeHelpButton = within(helpDialog).getByRole('button', { name: copy.close });
+    closeHelpButton.focus();
+    expect(dispatchFocusedKeyDown(closeHelpButton, { key: 'Delete' })).toBe(true);
+    expect(noticeButton.isConnected).toBe(true);
+  });
+
+  it('does not delete the selected notice when an earlier key handler canceled the event', () => {
+    render(<NoticeBoardCreatorWorkbench locale="en" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Add paper 01' }));
+    const noticeButton = screen.getByRole('button', { name: 'Notice 1' });
+    noticeButton.focus();
+    const canceledDeleteEvent = createEvent.keyDown(noticeButton, { key: 'Delete' });
+    canceledDeleteEvent.preventDefault();
+
+    expect(fireEvent(noticeButton, canceledDeleteEvent)).toBe(false);
+    expect(noticeButton.isConnected).toBe(true);
+    expect(noticeButton.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it.each([
+    { locale: 'en' as const, addPaperLabel: 'Add paper 01', noticeLabel: 'Notice 1' },
+    { locale: 'zh' as const, addPaperLabel: '添加纸张 01', noticeLabel: '公告 1' },
+  ])('keeps arrow movement and +/- resizing for $locale', ({ locale, addPaperLabel, noticeLabel }) => {
+    render(<NoticeBoardCreatorWorkbench locale={locale} />);
+    fireEvent.click(screen.getByRole('button', { name: addPaperLabel }));
+    const noticeButton = screen.getByRole('button', { name: noticeLabel });
+    const noticeCardElement = getNoticeCardElement(noticeButton);
+    noticeButton.focus();
+
+    dispatchFocusedKeyDown(noticeButton, { key: 'ArrowRight' });
+    dispatchFocusedKeyDown(noticeButton, { key: 'ArrowDown' });
+    expect({ left: noticeCardElement.style.left, top: noticeCardElement.style.top }).toEqual({
+      left: '5px',
+      top: '5px',
+    });
+
+    dispatchFocusedKeyDown(noticeButton, { key: '+' });
+    expect(noticeCardElement.style.width).toBe('210px');
+    dispatchFocusedKeyDown(noticeButton, { key: '-' });
+    expect(noticeCardElement.style.width).toBe('200px');
   });
 
   it.each([

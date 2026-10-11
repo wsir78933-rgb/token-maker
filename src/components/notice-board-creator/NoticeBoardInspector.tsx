@@ -14,6 +14,8 @@ export type NoticeBoardInspectorProps = {
   project: NoticeBoardProject;
   selectedNotices: readonly BoardNotice[];
   multiSelectEnabled: boolean;
+  focusNoticeTextOnSelection: boolean;
+  noticeTextFocusRequestId: number;
   onClosePanel: () => void;
   onNoticeTextChange: (noticeId: string, text: string) => void;
   onApplyFormatting: (style: NoticeTextStyle) => void;
@@ -25,6 +27,8 @@ export function NoticeBoardInspector({
   project,
   selectedNotices,
   multiSelectEnabled,
+  focusNoticeTextOnSelection,
+  noticeTextFocusRequestId,
   onClosePanel,
   onNoticeTextChange,
   onApplyFormatting,
@@ -34,6 +38,7 @@ export function NoticeBoardInspector({
   const noticeTextRef = useRef<HTMLTextAreaElement>(null);
   const firstSelectedNotice = selectedNotices[0] ?? null;
   const firstSelectedNoticeId = firstSelectedNotice?.id ?? null;
+  const hasSingleSelectedNotice = selectedNotices.length === 1;
   const controlsDisabled = firstSelectedNotice === null;
   const [styleDraft, setStyleDraft] = useState<NoticeTextStyle | null>(
     () => firstSelectedNotice?.style ?? null,
@@ -47,10 +52,30 @@ export function NoticeBoardInspector({
   }))];
 
   useEffect(() => {
-    if (!multiSelectEnabled && firstSelectedNoticeId !== null) {
-      noticeTextRef.current?.focus();
+    if (
+      noticeTextFocusRequestId === 0 ||
+      !focusNoticeTextOnSelection ||
+      multiSelectEnabled ||
+      !hasSingleSelectedNotice ||
+      firstSelectedNoticeId === null
+    ) {
+      return;
     }
-  }, [firstSelectedNoticeId, multiSelectEnabled]);
+
+    const noticeTextArea = noticeTextRef.current;
+    if (noticeTextArea === null) {
+      throw new Error(
+        `Cannot focus notice text for selected notice id ${JSON.stringify(firstSelectedNoticeId)} because the textarea ref is null.`,
+      );
+    }
+    noticeTextArea.focus({ preventScroll: true });
+  }, [
+    firstSelectedNoticeId,
+    focusNoticeTextOnSelection,
+    hasSingleSelectedNotice,
+    multiSelectEnabled,
+    noticeTextFocusRequestId,
+  ]);
 
   function updateStyleDraft(stylePatch: Partial<NoticeTextStyle>): void {
     if (styleDraft === null) {
@@ -112,7 +137,7 @@ export function NoticeBoardInspector({
             ref={noticeTextRef}
             value={firstSelectedNotice.text}
             maxLength={NOTICE_BOARD_MAX_NOTICE_TEXT_LENGTH}
-            autoFocus
+            autoFocus={focusNoticeTextOnSelection}
             onChange={(event) => onNoticeTextChange(firstSelectedNotice.id, event.currentTarget.value)}
           />
         </div>

@@ -15,7 +15,7 @@ describe('notice board catalog', () => {
     expect(NOTICE_PAPER_ASSETS.map((paper) => paper.src)).toEqual(
       Array.from(
         { length: 12 },
-        (_, index) => `/notice-board-creator/papers/paper-${String(index + 1).padStart(2, '0')}.svg`,
+        (_, index) => `/notice-board-creator/papers/paper-${String(index + 1).padStart(2, '0')}.png`,
       ),
     );
   });

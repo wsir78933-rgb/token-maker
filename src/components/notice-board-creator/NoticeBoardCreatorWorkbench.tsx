@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 
 import type { SiteLocale } from '@/lib/site-locale';
 import {
@@ -51,6 +51,38 @@ import styles from './NoticeBoardCreatorWorkbench.module.css';
 type NoticeBoardDialogName = 'settings' | 'files' | 'fonts' | 'help' | null;
 type NoticeBoardMobilePanel = 'papers' | 'edit' | null;
 
+function isEditableShortcutTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  if (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement ||
+    (target instanceof HTMLElement && target.isContentEditable)
+  ) {
+    return true;
+  }
+
+  const contentEditableAncestor = target.closest('[contenteditable]');
+  if (contentEditableAncestor === null) return false;
+  const contentEditableValue = contentEditableAncestor.getAttribute('contenteditable');
+  return contentEditableValue !== null && contentEditableValue.toLowerCase() !== 'false';
+}
+
+function isNoticeDeleteShortcut(
+  event: KeyboardEvent<HTMLDivElement>,
+  dialogIsOpen: boolean,
+): boolean {
+  const isDeleteKey = event.key === 'Delete' || event.key === 'Backspace';
+  const hasShortcutModifier = event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
+  return !event.defaultPrevented &&
+    isDeleteKey &&
+    !hasShortcutModifier &&
+    !event.nativeEvent.isComposing &&
+    event.nativeEvent.keyCode !== 229 && // IME boundary only; regular key matching still uses event.key.
+    !dialogIsOpen &&
+    !isEditableShortcutTarget(event.target);
+}
+
 export type NoticeBoardCreatorWorkbenchProps = {
   locale: SiteLocale;
 };
@@ -64,6 +96,9 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
   const noticeSequenceRef = useRef(1);
   const [selectedNoticeIds, setSelectedNoticeIds] = useState<string[]>([]);
   const [multiSelectEnabled, setMultiSelectEnabled] = useState(false);
+  const [focusNoticeTextOnSelection, setFocusNoticeTextOnSelection] = useState(false);
+  const [noticeTextFocusRequestId, setNoticeTextFocusRequestId] = useState(0);
+  const [workbenchFocusRequestId, setWorkbenchFocusRequestId] = useState(0);
   const [dragEnabled, setDragEnabled] = useState(true);
   const [resizeEnabled, setResizeEnabled] = useState(true);
   const [activeDialog, setActiveDialog] = useState<NoticeBoardDialogName>(null);
@@ -132,6 +167,15 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
     };
   }, []);
 
+  useEffect(() => {
+    if (workbenchFocusRequestId === 0) return;
+    const workbenchElement = workbenchRef.current;
+    if (workbenchElement === null) {
+      throw new Error('Cannot restore notice board editor focus because the workbench element is null.');
+    }
+    workbenchElement.focus({ preventScroll: true });
+  }, [workbenchFocusRequestId]);
+
   const selectedNotices = project.notices.filter((notice) => selectedNoticeIds.includes(notice.id));
   const inspectorDraftKey = `${multiSelectEnabled ? 'multi' : 'single'}:${inspectorDraftRevision}:${selectedNoticeIds.join(',')}`;
 
@@ -194,6 +238,7 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
     commitProject({ ...currentProject, notices: [...currentProject.notices, newNotice] });
     setSelectedNoticeIds([newNotice.id]);
     setMultiSelectEnabled(false);
+    setFocusNoticeTextOnSelection(true);
     setMobilePanel('edit');
   }
 
@@ -202,6 +247,7 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
     if (!noticeExists) {
       throw new Error(`Cannot select unknown notice id ${JSON.stringify(noticeId)}.`);
     }
+    setFocusNoticeTextOnSelection(false);
     setSelectedNoticeIds((selectedIds) => {
       if (!toggleSelection) return [noticeId];
       if (selectedIds.includes(noticeId)) {
@@ -212,14 +258,60 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
     setMobilePanel('edit');
   }
 
+  function handleNoticeDoubleClick(noticeId: string): void {
+    const noticeExists = projectRef.current.notices.some((notice) => notice.id === noticeId);
+    if (!noticeExists) {
+      throw new Error(`Cannot focus text for unknown notice id ${JSON.stringify(noticeId)}.`);
+    }
+    if (multiSelectEnabled) return;
+
+    setSelectedNoticeIds((selectedIds) => (
+      selectedIds.length === 1 && selectedIds[0] === noticeId ? selectedIds : [noticeId]
+    ));
+    setFocusNoticeTextOnSelection(true);
+    setNoticeTextFocusRequestId((requestId) => requestId + 1);
+    setMobilePanel('edit');
+  }
+
   function toggleMultiSelect(): void {
     if (multiSelectEnabled) {
       setMultiSelectEnabled(false);
       setSelectedNoticeIds((selectedIds) => selectedIds.slice(0, 1));
+      setFocusNoticeTextOnSelection(true);
     } else {
       setMultiSelectEnabled(true);
+      setFocusNoticeTextOnSelection(false);
     }
     setMobilePanel('edit');
+  }
+
+  function deleteSelectedNotices(): boolean {
+    if (selectedNoticeIds.length === 0) return false;
+    const currentProject = projectRef.current;
+    const existingNoticeIds = new Set(currentProject.notices.map((notice) => notice.id));
+    const missingSelectedIds = selectedNoticeIds.filter((noticeId) => !existingNoticeIds.has(noticeId));
+    if (missingSelectedIds.length > 0) {
+      throw new Error(`Cannot delete missing notice ids ${JSON.stringify(missingSelectedIds)}.`);
+    }
+
+    const selectedIdSet = new Set(selectedNoticeIds);
+    const remainingNotices = currentProject.notices.filter((notice) => !selectedIdSet.has(notice.id));
+    if (remainingNotices.length === currentProject.notices.length) {
+      throw new Error(`Cannot delete selected notice ids ${JSON.stringify(selectedNoticeIds)}; no matching notices were removed.`);
+    }
+    commitProject({ ...currentProject, notices: remainingNotices });
+    setSelectedNoticeIds([]);
+    setMultiSelectEnabled(false);
+    setFocusNoticeTextOnSelection(false);
+    return true;
+  }
+
+  function handleWorkbenchKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    if (!isNoticeDeleteShortcut(event, activeDialog !== null) || selectedNoticeIds.length === 0) return;
+    event.preventDefault();
+    if (deleteSelectedNotices()) {
+      setWorkbenchFocusRequestId((requestId) => requestId + 1);
+    }
   }
 
   function updateNoticeText(noticeId: string, text: string): void {
@@ -354,6 +446,7 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
     commitProject(loadedProject);
     setSelectedNoticeIds(loadedProject.notices[0] === undefined ? [] : [loadedProject.notices[0].id]);
     setMultiSelectEnabled(false);
+    setFocusNoticeTextOnSelection(loadedProject.notices.length > 0);
     setInspectorDraftRevision((revision) => revision + 1);
     setMobilePanel(loadedProject.notices.length === 0 ? null : 'edit');
     setOperationStatus(successMessage);
@@ -502,6 +595,8 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
     <div
       ref={workbenchRef}
       className={styles.workbench}
+      tabIndex={-1}
+      onKeyDown={handleWorkbenchKeyDown}
       data-notice-board-editor
       data-notice-board-workbench
       data-notice-board-locale={locale}
@@ -566,6 +661,7 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
             dragEnabled={dragEnabled}
             resizeEnabled={resizeEnabled}
             onSelectNotice={selectNotice}
+            onDoubleClickNotice={handleNoticeDoubleClick}
             onMoveNotice={moveNotice}
             onResizeNotice={resizeNotice}
           />
@@ -577,6 +673,8 @@ export function NoticeBoardCreatorWorkbench({ locale }: NoticeBoardCreatorWorkbe
             project={project}
             selectedNotices={selectedNotices}
             multiSelectEnabled={multiSelectEnabled}
+            focusNoticeTextOnSelection={focusNoticeTextOnSelection}
+            noticeTextFocusRequestId={noticeTextFocusRequestId}
             onClosePanel={() => setMobilePanel(null)}
             onNoticeTextChange={updateNoticeText}
             onApplyFormatting={applySelectedNoticeStyle}
