@@ -87,9 +87,25 @@ pnpm start
 
 `pnpm build` reuses `pnpm run build:vinext`, including all six gates below.
 `pnpm start` reuses `pnpm run preview:workers` and serves the generated
-`dist/server/wrangler.json` locally with Wrangler. Port `40001` must be free
-before starting the preview. These commands do not upload the Worker to
-Cloudflare.
+`dist/server/wrangler.json` locally with Wrangler. The preview defaults to
+`127.0.0.1:40001`; keep that port free or choose another local port with:
+
+```bash
+WORKERS_PREVIEW_PORT=40002 pnpm start
+```
+
+If unset or empty, `WORKERS_PREVIEW_PORT` uses `40001`; otherwise it must be a
+decimal integer from `0` through `65535`, and invalid input is reported with
+its original value before Wrangler starts.
+
+Use `WORKERS_PREVIEW_PORT` instead of appending another `--port` option to
+`pnpm start`; the preview command already sets that option. Local Workers
+preview watches file changes by polling, with a 1,000 ms interval for non-binary
+files and the default 300 ms interval for binary files. Polling can use more CPU
+and detect file changes later than native file watching. This behavior applies
+only to the local Workers preview; it does not change `pnpm dev`, `pnpm build`,
+or Cloudflare deploy/upload commands. These local commands do not upload the
+Worker to Cloudflare.
 
 `pnpm run build:vinext` executes these gates sequentially and stops at the first
 nonzero exit:
@@ -151,7 +167,8 @@ Playwright starts `pnpm preview:workers`, which serves the just-built
 bindings disabled. It refuses to reuse an existing server, so an unrelated
 Next.js server cannot satisfy this check. For local browser verification after
 building, run `pnpm test:e2e` with Chromium installed, or use
-`pnpm preview:workers` for manual browser checks; port 40001 must be free.
+`pnpm preview:workers` for manual browser checks. CI uses the default port;
+local manual runs can use `WORKERS_PREVIEW_PORT` as described above.
 
 Cloudflare Builds does not run coverage or browser E2E in this configuration.
 Its documented build image does not guarantee an installed browser, so no

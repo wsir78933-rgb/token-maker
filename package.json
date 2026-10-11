@@ -14,7 +14,7 @@
     "types:workers": "CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false wrangler types --config wrangler.jsonc --include-runtime=false",
     "check:workers-types": "CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false wrangler types --config wrangler.jsonc --include-runtime=false --check",
     "check:workers-build": "wrangler deploy --dry-run --config dist/server/wrangler.json",
-    "preview:workers": "wrangler dev --config dist/server/wrangler.json --local --ip 127.0.0.1 --port 40001 --inspector-port 0 --types false",
+    "preview:workers": "node scripts/check-workers-preview-port.mjs && CHOKIDAR_USEPOLLING=1 CHOKIDAR_INTERVAL=1000 wrangler dev --config dist/server/wrangler.json --local --ip 127.0.0.1 --port=\"${WORKERS_PREVIEW_PORT:-40001}\" --inspector-port 0 --types false",
     "deploy:workers": "pnpm build:vinext && wrangler deploy --config dist/server/wrangler.json",
     "upload:workers-preview": "pnpm build:vinext && wrangler versions upload --config dist/server/wrangler.json",
     "lint": "eslint",

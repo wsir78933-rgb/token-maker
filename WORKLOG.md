@@ -1,5 +1,113 @@
 # WORKLOG
 
+## 交接单 · 2026-10-11 20:38 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+- 记录本地 Wrangler Workers 预览的 `spawn EBADF` 修复、端口校验和 EN/ZH `/tools` 验收，交给下一班；本次只读留存证据并写未存档交接，不继续实现。
+
+### 已完成
+
+- 主仓为 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`，HEAD `6ecd7899c63589d549e7e6736f43342fcf87b705`。原 WORKLOG 首页交接的 +49 行会原样保留。
+- 本次预览修复对应 `README.md`、`package.json` 和新增 `scripts/check-workers-preview-port.mjs`；README 说明复用六阶段 `pnpm build`，并让 `pnpm start` 运行本地 Workers preview。
+- 默认 `build`/`start` 入口已存在于当前 HEAD；本轮没有创建这些入口，也没有提交 HEAD `6ecd7899` 或更早的 `7a4fe5a6`。
+- `preview:workers` 先执行端口校验，再运行 `CHOKIDAR_USEPOLLING=1 CHOKIDAR_INTERVAL=1000 wrangler dev --config dist/server/wrangler.json --local --ip 127.0.0.1 --port="${WORKERS_PREVIEW_PORT:-40001}" --inspector-port 0 --types false`。
+- `WORKERS_PREVIEW_PORT` 未设置或为空时使用 `40001`；显式值必须是十进制整数 `0..65535`。非法值会在 Wrangler 启动前报出原值。`WORKERS_PREVIEW_PORT=40002 pnpm start` 是端口覆盖方式，不要再追加 `--port`。
+- 四个非法输入 `not-a-port`、`65536`、`-1`、`40 002` 均使 `pnpm start` exit 1，并在 Wrangler 启动前报出原值；相应日志在 `final-entry-invalid-*`。
+- 本地预览轮询普通（非二进制）文件间隔 1000ms，二进制文件沿用 300ms 默认值。它可能增加 CPU 并延后文件变更检测；不代表最大检测延迟保证，也不影响 `dev`、build 或 deploy/upload。
+- `/tmp/token-maker-workers-preview-fix-20261011/final-full-build.meta` 记录 `pnpm build` exit 0；日志记录 lint 0 errors/10 warnings、435 个测试文件 3925 passed/1 skipped、Workers types、Vinext build 和 Wrangler deploy dry-run 通过。它不证明已部署，也不证明原始 `next build` 已修复。
+- `final-start.meta` 与 `final-start-get.txt` 记录 `WORKERS_PREVIEW_PORT=40002 pnpm start` 后 EN `/tools` 和 ZH `/zh/tools` GET 均为 200。验收后 Ctrl-C exit 130；`final-start-stop.txt` 记录自有进程退出、40002 释放，原 40001 Next 服务保留。
+- 四份 native 目录 JSON/PNG 覆盖 EN/ZH 桌面和 390×844 手机：每次 21 张卡（19 图、2 文本），19 张图均解码；本地化 Population 搜索命中 1 张，清空恢复 21 张；500/90 预览完整且无横向溢出。
+- EN/ZH 原生卡片点击分别到对应 population 路由，目标 H1 与源码一致。EN 有错误的精确 H1 等待条件，但同页 URL 和 H1 读回成功；这属于采集器 OBS。Space 44 已关闭，勿复用。
+- `/api/share`、`/api/contact` 的只读 GET 返回 405，不是 500；它不证明 POST 业务成功。Runtime/Log/console 错误覆盖仍为 UNVERIFIED；手机同 visit 的 DPR 记录 1/2 不一致，保留 OBS。
+- 本次 offhand 只重读已留存日志和 JSON/PNG，没有重跑 build、test、lint、浏览器或服务验收；`/tmp` 证据可能被清理。
+
+### 做到一半
+
+- 无待续实现。README/package 预览改动、端口校验脚本和本交接均未存档、未暂存；没有 commit、push 或 deploy。
+- 本轮没有依赖升级、lockfile 改动或系统 `ulimit` 调整。
+- 写入前的 WORKLOG 完整字节快照、README/package/checker 哈希守卫及新旧块比对记录在 `/tmp/token-maker-workers-preview-fix-20261011/offhand/`。
+
+### 下一步
+
+- 下一班先输入 `$pickup`，刷新 HEAD、git status、端口监听与进程 cwd，再按新需求决定是否验收；不要自动扩展实现。
+- 写前约 20:37 +0800 核查：40001 由主仓 `next-server` PID 58744 监听，cwd 为主仓；40002 无监听。需要本地 Workers 预览时，先确认 40002 仍空闲，再运行 `pnpm build`，随后 `WORKERS_PREVIEW_PORT=40002 pnpm start`。
+- 不要用 `pnpm dev` 检查预览，它会释放 40001。预览后按需检查 EN `/tools`、ZH `/zh/tools`、搜索/清空和 population 卡片路由；新建原生浏览器空间，不复用已关闭的 Space 44。
+
+### 踩过的坑
+
+- 普通 Wrangler 本地预览曾出现 `spawn EBADF`；已验证的本地缓解是只给 Workers preview 启用轮询。上游 engine 根因未完全定位，不要把缓解写成根因结论。
+- 端口 `0` 只通过输入校验，未实际验证 Wrangler 自动选端口；默认 40001 也没有在本轮启动，因为原 Next 服务需要保留。
+- 浏览器 `/api/*` GET 的 405 是只读方法探测，不代表创建/分享 POST 已验收；Runtime/Log 未证明开启，空事件数组不能说业务错误为零。
+- 移动端截图宽度为 390 CSS px，但两次预览可见性导出记录的 DPR 与目录导出不同；目录布局仍无溢出，DPR 差异原因未验证。
+
+### 怎么验证
+
+- 已留存证据：`final-full-build.meta/log`、`final-start.meta/get/stop`、`final-entry-invalid-*`、`native-independent-review.txt`、`native/command-audit.md`、目录 JSON/PNG 与 `native/taskspace-finish.json`。以上是历史结果；本次 offhand 没有重跑。
+- 若用户要求新一轮预览验收，按顺序执行以下命令；开始前确认 40002 空闲：
+
+```bash
+git status --short
+git rev-parse HEAD
+lsof -nP -iTCP:40001 -sTCP:LISTEN
+lsof -nP -iTCP:40002 -sTCP:LISTEN
+pnpm build
+WORKERS_PREVIEW_PORT=40002 pnpm start
+curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:40002/tools
+curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:40002/zh/tools
+```
+
+- 原生浏览器按 EN/ZH 检查 21 卡、19 图解码、搜索 1 项后清空回 21、500/90 预览、卡片路由和响应式无横溢；退出预览后确认 40002 释放。需要验证端口拒绝时运行 `WORKERS_PREVIEW_PORT=not-a-port pnpm start`，应 exit 1 且不启动 Wrangler。
+
+## 交接单 · 2026-10-11 18:42 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+接手中断会话 `01a120cc-78f4-7ef0-a7b5-b1d5cab0ab7b` 的首页工具案例任务，完成 EN/ZH 页面、验证、提交并合入本地 main；按后续授权删除「首页」工作树。本轮 offhand 核对现状并置顶写入交接单，保留旧记录，交接单不提交。
+
+### 已完成
+
+- 主仓 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，当前分支 `main`，HEAD `6ecd7899c63589d549e7e6736f43342fcf87b705`。首页功能提交 `455a8625e89a496615d6bc34c35cf099dc1ff992`，本地合并提交 `f30e0fbe1b4606278c609396bbdffc94d17f5df5`，父提交为 `7a4fe5a6a08a51fe8bf0e85379fbf6738e8fb838` 和首页功能提交；本轮 ancestry 检查退出 0。随后出现的 `6ecd7899` 仅修改 README.md、package.json，内容与清理前已有改动逐文件哈希一致，已保留。写本交接单前工作区、暂存区和未跟踪文件均为空。WORKLOG.md 当前受 Git 跟踪，不能沿用旧交接中“全局忽略”的描述。
+- 首页 `/`、`/zh` 已在编辑器下方接入共同的 `HomeToolShowcaseSection`，展示 10 个工具：纹章、护甲、武器、徽标、城堡、公告板、军队阵型、世界地图、星座地图、人物家谱。左右按钮每次按五张卡片的实际间距滚动，末尾下一页入口切换为 View，跳转对应语言的 `/tools` 或 `/zh/tools`；手机支持原生横向触摸滑动。图片点击打开预览，工具名称进入对应工具，EN/ZH 内容与入口同步。
+- 核心文件：`src/components/site/HomeToolShowcaseSection.tsx`、同名 `.module.css`、`src/lib/home-tool-showcase.ts`、`src/app/(en)/page.tsx`、`src/app/(zh)/zh/page.tsx`；新增七张图片位于 `public/home-tool-showcase/`，另三张复用已有素材。预览采用原生 dialog，主题背景不透明，关闭按钮、Escape、遮罩关闭均恢复焦点和页面滚动。合并净改动 14 个文件，还包含卷轴 CSS Modules 打印选择器的局部修复，以及公告板已知字体错误处理后的 `return`；没有在此次合并中覆盖 main 的 CSP 配置、工具目录或共享 CircularTestimonials。
+- **合并阶段验证，非本轮 offhand 重跑**：定向五文件 ESLint、`pnpm typecheck`、九个指定 Vitest 文件（182/182 tests）和 `pnpm exec vinext build` 五阶段构建均退出 0。本轮回读四份命令 JSON、实际日志并核对 SHA-256；原始日志为 `/tmp/home-showcase-pickup-20261011/main-eslint.log`、`main-typecheck.log`、`main-tests.log`、`main-vinext-build.log`。构建有大 chunk、插件耗时及路由分类提示。未运行完整单测套件、完整 `pnpm build:vinext` 流水线或 Playwright 套件；没有 push 或部署。
+- **合并阶段原生浏览器验收，非本轮 offhand 重跑**：本地 ego-browser 验证 EN/ZH × 1440×900 / 375×812 四种组合，各 12 项，共 48 项通过；包括十案例、前后滚动、末尾 View、手机滑动、预览不透明背景、关闭与焦点恢复、无页面横向溢出。另有 20 个工具链接和两个 View 链接通过，共 70 项；两语言工具目录均显示 21 项工具。补充手机预览尺寸两项通过：预览宽 335px，大于缩略图宽 258px。七份原生回执均已回读且哈希一致，证据索引 `/tmp/home-showcase-pickup-20261011/final-report.json`，最终说明 `FINAL.md`，截图 `main-final-showcase.png`、`main-zh-mobile-final-preview.png`。TaskSpace 39 已 finish，保留 p1 给用户查看，不继续操作已结束空间。
+- 「首页」工作树 `/Users/wusir/orca/workspaces/token-maker-app/首页` 已从磁盘、Git 和 Orca 登记移除；目前只剩 main 工作树。本地「首页」分支保留，仍指向 `455a8625`。清理前已确认该工作树干净、提交已合入 main，node_modules 是指向主仓依赖的符号链接；共享依赖保留。两个遗留终端已关闭，核实属于该工作树的 40020 预览进程组已 SIGTERM；本轮再次核实 40020/40022 无监听。清理回执 `/tmp/home-showcase-cleanup-rm.json`、`home-showcase-cleanup-stop.json`、`home-showcase-cleanup-postcheck.json`。
+- 本轮再次核实主仓预览 40023 由 PID 60008 监听，cwd 是主仓，命令为 `vinext start --hostname localhost --port 40023`；服务保留。可查看 `http://localhost:40023/` 和 `http://localhost:40023/zh`。本轮仅回读证据、源码、Git、文件哈希和进程状态，没有重跑产品测试、构建或浏览器交互。
+
+### 做到一半
+
+无待续的首页实现、合并或工作树清理任务。本交接单写入后保持**未存档**，不加入暂存区，不提交。
+
+### 下一步
+
+无本次范围内自动续做任务。下一班输入 `$pickup`，先刷新主仓 HEAD、git status、WORKLOG 和服务归属，再根据用户新要求继续。现有首页预览使用 40023；「首页」工作树已删除，后续不要依赖旧工作树路径。需要扩大测试范围、推送或部署时另按用户授权执行。
+
+### 踩过的坑
+
+- 初次预览弹窗背景会透出下层标题，最终在首页模块 CSS 使用不透明的 `var(--popover)` 修复；不要回退半透明背景。末页 View 替换下一页按钮时要保持键盘焦点，预览关闭需恢复触发按钮焦点与原 body overflow。
+- 卷轴全局打印选择器未带本地 class 会阻塞 CSS Modules 构建，已增加 `:has(.workbench)` 限定；公告板已知字体错误分支缺少 return 会阻塞类型检查，已作最小修复。合并时 next.config.ts 与公告板文件出现冲突，最终保留 main 配置及公告板的单行修复。
+- 原浏览器空间 26 在分支验收后消失；用户选择 A 后才创建主仓验收空间 39，已完成并保留 p1。旧截图、HTTP 200、静态检查和本轮历史回读都不能替代新一轮原生验收。
+- 当前 Orca 删除返回包含 `removed: true`、`removing: true`，后续才完成目录和分支清理；必须读回磁盘、Git、Orca 与分支终态。此次删除完成后保留了原首页分支。清理期间 main 新出现 README/package.json 提交，已用提交差异和原有文件哈希确认保留，不能强行回退 HEAD。
+- PID/端口是核查时快照，停止任何服务前应重新核实 cwd 和命令。`pnpm dev` 当前会先运行 free-port.mjs 释放 40001，不要用它重启现有 40023 预览。
+
+### 怎么验证
+
+以下为下一班需要验证时可执行的命令；本轮 offhand 没有重新运行产品验证：
+
+```bash
+git status --short
+git log -3 --oneline
+git merge-base --is-ancestor 455a8625e89a496615d6bc34c35cf099dc1ff992 main
+git worktree list
+pnpm exec eslint src/components/site/HomeToolShowcaseSection.tsx src/lib/home-tool-showcase.ts 'src/app/(en)/page.tsx' 'src/app/(zh)/zh/page.tsx' src/components/notice-board-creator/NoticeBoardCreatorWorkbench.tsx
+pnpm typecheck
+pnpm exec vitest run src/app/site-routes.test.tsx src/components/site/HomeWorkGallerySection.test.tsx src/components/armor-creator/circular-testimonials.test.tsx src/components/scroll-creator/ScrollCreatorWorkbench.test.tsx src/lib/security-headers.test.ts src/components/notice-board-creator/NoticeBoardCreatorWorkbench.test.tsx src/app/tools-routes.test.tsx src/components/site/tools-directory/ToolDirectoryGrid.test.tsx src/lib/tool-directory.test.ts
+pnpm exec vinext build
+```
+
+使用本地 ego-browser 打开主仓 EN/ZH 首页，分别在 1440×900、375×812 核对十个案例、前后滚动、末尾 View、手机触摸滑动、工具跳转、预览关闭按钮/Escape/遮罩、焦点和滚动恢复；确认手机预览大于缩略图且页面无横向溢出。View 应进入对应语言工具目录。需要新浏览器验收时使用新的有效任务空间，保留本次历史回执。
+
 ## 交接单 · 2026-10-11 11:27 Asia/Shanghai +0800 · Grok CLI（Codex 协调）
 
 ### 本次目标
