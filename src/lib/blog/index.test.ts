@@ -148,6 +148,10 @@ describe('blog article metadata publisher and dates', () => {
     expect(englishDatedStructuredData).toMatchObject({
       datePublished: '2026-08-12',
       dateModified: '2026-08-12',
+      author: {
+        '@type': 'Person',
+        name: 'Leo',
+      },
       publisher: {
         '@type': 'Organization',
         name: 'Token Maker',
@@ -157,14 +161,18 @@ describe('blog article metadata publisher and dates', () => {
     expect(chineseDatedStructuredData).toMatchObject({
       datePublished: '2026-08-12',
       dateModified: '2026-08-12',
+      author: {
+        '@type': 'Person',
+        name: 'Leo',
+      },
       publisher: {
         '@type': 'Organization',
         name: 'Token Maker',
         url: 'https://www.tokenmaker.one/zh/about',
       },
     });
-    expect(englishDatedStructuredData).not.toHaveProperty('author');
-    expect(chineseDatedStructuredData).not.toHaveProperty('author');
+    expect(englishDatedStructuredData).not.toHaveProperty('author.url');
+    expect(chineseDatedStructuredData).not.toHaveProperty('author.url');
 
     const englishUndatedMetadata = createBlogPostMetadata('en', DND_BARD_SPELLS_SLUG);
     const chineseUndatedMetadata = createBlogPostMetadata('zh', DND_BARD_SPELLS_SLUG);

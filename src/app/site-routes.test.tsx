@@ -493,7 +493,7 @@ describe('coat maker routes', () => {
     expect(routeStructuredDataTypes).not.toContain('HowTo');
     expect(routeStructuredDataTypes).not.toContain('FAQPage');
     expect(metadata.twitter).toMatchObject({
-      card: 'summary',
+      card: 'summary_large_image',
       title: twitterTitle,
       description: twitterDescription,
       images: [

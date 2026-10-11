@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: seoCopy.metadataTitle,
     description: seoCopy.metadataDescription,
     images: [socialImageUrl],

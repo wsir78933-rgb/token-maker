@@ -38,6 +38,7 @@ export interface TemplatePageData {
   platforms: StaticPageSection[];
   video: {
     videoId: string;
+    uploadDate: string;
     title: string;
     description: string;
     thumbnailAlt: string;
@@ -218,6 +219,7 @@ export const templatePages: TemplatePageData[] = [
     ],
     video: {
       videoId: 'hjE_N0wTHOc',
+      uploadDate: '2020-06-17T06:15:05-07:00',
       title: 'How do I Make Tokens for My Online Dungeons and Dragons Game?',
       description:
         'A practical companion video for users who want to understand the broader online D&D token workflow before exporting square VTT tokens.',
@@ -552,6 +554,7 @@ export const templatePagesZh: TemplatePageData[] = [
     ],
     video: {
       videoId: 'hjE_N0wTHOc',
+      uploadDate: '2020-06-17T06:15:05-07:00',
       title: 'How do I Make Tokens for My Online Dungeons and Dragons Game?',
       description:
         '这段视频适合作为补充参考，帮助用户理解线上 D&D Token 的整体制作思路，再回到页面里制作方形 VTT Token。',

@@ -8,6 +8,7 @@ import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { RichTextHtml } from '@/components/site/RichTextHtml';
 import { StructuredData } from '@/components/site/StructuredData';
 import {
+  BLOG_AUTHOR,
   buildBlogPostFaqStructuredData,
   buildBlogPostStructuredData,
   formatBlogUpdatedAt,
@@ -29,6 +30,7 @@ const copyByLocale = {
     blog: 'Blog',
     liveLabel: 'Published Article',
     publishedBy: 'Published and maintained by Token Maker',
+    authorByline: (name: string) => `By ${name}`,
     publishedLabel: 'Published',
     updatedLabel: 'Updated',
     placeholderLabel: 'Draft Article',
@@ -58,6 +60,7 @@ const copyByLocale = {
     blog: '博客',
     liveLabel: '正式文章',
     publishedBy: '由 Token Maker 发布与维护',
+    authorByline: (name: string) => `作者：${name}`,
     publishedLabel: '发布于',
     updatedLabel: '更新于',
     placeholderLabel: '草稿文章',
@@ -210,6 +213,9 @@ export function BlogDetailPageView({
                   >
                     {copy.publishedBy}
                   </Link>
+                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
+                    {copy.authorByline(BLOG_AUTHOR.name)}
+                  </span>
                   {post.publishedAt ? (
                     <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
                       {copy.publishedLabel}{' '}

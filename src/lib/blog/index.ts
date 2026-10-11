@@ -28,6 +28,10 @@ export type { BlogCategoryCopy } from './categories';
 
 export const BLOG_POSTS_PER_PAGE = 10;
 export const BLOG_PLACEHOLDER_MODE = false;
+export const BLOG_AUTHOR = {
+  '@type': 'Person',
+  name: 'Leo',
+} as const;
 
 // Re-export registry — the article data lives in registry.ts
 import { postsByLocale, blogHubCopyByLocale, placeholderCopyByLocale } from './registry';
@@ -316,6 +320,7 @@ export function buildBlogPostStructuredData(locale: SiteLocale, slug: string) {
     '@type': 'Article',
     headline: post.seoTitle ?? post.title,
     description: post.metaDescription ?? post.excerpt,
+    author: BLOG_AUTHOR,
     dateModified: post.updatedAt,
     ...(post.publishedAt ? { datePublished: post.publishedAt } : {}),
     publisher: {

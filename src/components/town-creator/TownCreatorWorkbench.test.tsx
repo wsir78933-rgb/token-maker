@@ -259,6 +259,16 @@ describe('TownCreatorWorkbench', () => {
     expect(canvasState.props?.document.activeLayer).toBe('lower');
   });
 
+  it.each([
+    { locale: 'en' as const, heading: 'Town Creator' },
+    { locale: 'zh' as const, heading: '城镇创建器' },
+  ])('uses a level-two workbench heading for $locale', ({ locale, heading }) => {
+    render(<TownCreatorWorkbench locale={locale} />);
+
+    expect(screen.getByRole('heading', { level: 2, name: heading })).toBeTruthy();
+    expect(screen.queryByRole('heading', { level: 1 })).toBeNull();
+  });
+
   it('keeps material on existing objects when a new material is selected', () => {
     render(<TownCreatorWorkbench locale="en" />);
 

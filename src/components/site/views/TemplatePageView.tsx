@@ -116,6 +116,7 @@ export function TemplatePageView({
       {
         '@type': 'VideoObject',
         name: page.video.title,
+        uploadDate: page.video.uploadDate,
         description: page.video.description,
         thumbnailUrl: `https://i.ytimg.com/vi/${page.video.videoId}/hqdefault.jpg`,
         embedUrl: `https://www.youtube-nocookie.com/embed/${page.video.videoId}`,

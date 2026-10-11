@@ -550,7 +550,7 @@ export function TownCreatorWorkbench({ locale }: TownCreatorWorkbenchProps) {
       <header className={styles.toolbar}>
         <div className={styles.brandBlock}>
           <p className={styles.eyebrow}>{copy.eyebrow}</p>
-          <h1>{copy.product}</h1>
+          <h2>{copy.product}</h2>
         </div>
         <div className={styles.toolbarStats} aria-label={copy.canvasSize}>
           <span>{document.width} × {document.height}</span>

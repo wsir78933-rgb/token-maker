@@ -42,4 +42,17 @@ describe('TemplatePageView', () => {
       '支持 Roll20 与 Foundry VTT 工作流',
     ]);
   });
+
+  it.each([
+    { locale: 'en' as const, scriptId: 'template-en-square-token-maker-jsonld' },
+    { locale: 'zh' as const, scriptId: 'template-zh-square-token-maker-jsonld' },
+  ])('renders the verified YouTube upload date in $locale VideoObject JSON-LD', (testCase) => {
+    render(<TemplatePageView locale={testCase.locale} slug="square-token-maker" />);
+
+    const videoObject = getStructuredDataGraph(testCase.scriptId).find(
+      (graphItem) => graphItem['@type'] === 'VideoObject',
+    );
+
+    expect(videoObject?.uploadDate).toBe('2020-06-17T06:15:05-07:00');
+  });
 });

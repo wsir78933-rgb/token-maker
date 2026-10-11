@@ -35,6 +35,7 @@ const editorialMetadataCases = [
     locale: 'en' as const,
     slug: 'dnd-meaning',
     byline: 'Published and maintained by Token Maker',
+    authorByline: 'By Leo',
     aboutHref: '/about',
     publishedLabel: 'Published',
     updatedLabel: 'Updated',
@@ -44,6 +45,7 @@ const editorialMetadataCases = [
     locale: 'zh' as const,
     slug: 'dnd-meaning',
     byline: '由 Token Maker 发布与维护',
+    authorByline: '作者：Leo',
     aboutHref: '/zh/about',
     publishedLabel: '发布于',
     updatedLabel: '更新于',
@@ -53,6 +55,7 @@ const editorialMetadataCases = [
     locale: 'en' as const,
     slug: 'dnd-classes-explained',
     byline: 'Published and maintained by Token Maker',
+    authorByline: 'By Leo',
     aboutHref: '/about',
     publishedLabel: 'Published',
     updatedLabel: 'Updated',
@@ -62,6 +65,7 @@ const editorialMetadataCases = [
     locale: 'zh' as const,
     slug: 'dnd-classes-explained',
     byline: '由 Token Maker 发布与维护',
+    authorByline: '作者：Leo',
     aboutHref: '/zh/about',
     publishedLabel: '发布于',
     updatedLabel: '更新于',
@@ -108,12 +112,14 @@ describe('BlogDetailPageView editorial metadata', () => {
   });
 
   it.each(editorialMetadataCases)(
-    'renders the localized Token Maker byline and date semantics for $locale $slug',
+    'renders localized publisher and author bylines with date semantics for $locale $slug',
     (testCase) => {
       const { container } = render(<BlogDetailPageView locale={testCase.locale} slug={testCase.slug} />);
 
-      const bylineLink = screen.getByRole('link', { name: testCase.byline });
-      expect(bylineLink.getAttribute('href')).toBe(testCase.aboutHref);
+      const publisherBylineLink = screen.getByRole('link', { name: testCase.byline });
+      expect(publisherBylineLink.getAttribute('href')).toBe(testCase.aboutHref);
+      const authorByline = screen.getByText(testCase.authorByline);
+      expect(authorByline.closest('a')).toBeNull();
 
       const renderedTimes = Array.from(container.querySelectorAll('time'));
       expect(renderedTimes.map((timeElement) => timeElement.getAttribute('datetime'))).toEqual(
