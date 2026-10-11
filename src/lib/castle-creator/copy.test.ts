@@ -50,6 +50,18 @@ describe('getCastleCreatorCopy', () => {
       center: '从底部中点调整选中组件大小',
       end: '用外侧缩放点调整选中组件大小',
     });
+    expect(englishCopy.settings.pieceLayerDragHint).toBe('Hold, then drag to a layer');
+    expect(chineseCopy.settings.pieceLayerDragHint).toBe('长按拖到目标图层');
+    expect(englishCopy.settings.pieceLayerDragHint).not.toMatch(/keyboard|↑|↓/i);
+    expect(chineseCopy.settings.pieceLayerDragHint).not.toMatch(/键盘|↑|↓/);
+    expect(englishCopy.settings.pieceLayerEmptyHint).not.toHaveLength(0);
+    expect(chineseCopy.settings.pieceLayerEmptyHint).not.toHaveLength(0);
+    expect(englishCopy.settings.pieceLayerDragLabel('wall')).toBe('Move wall between layers');
+    expect(chineseCopy.settings.pieceLayerDragLabel('城墙')).toBe('拖动城墙切换图层');
+    expect(englishCopy.settings.pieceLayerStatus('wall', 'Upper layer')).toBe('wall is on Upper layer.');
+    expect(chineseCopy.settings.pieceLayerStatus('城墙', '上层')).toBe('选中的城墙当前位于上层。');
+    expect(englishCopy.settings.hiddenLayerHint).not.toHaveLength(0);
+    expect(chineseCopy.settings.hiddenLayerHint).not.toHaveLength(0);
   });
 
   it('keeps category totals and dynamic labels aligned with the wireframe contract', () => {

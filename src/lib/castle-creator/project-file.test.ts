@@ -5,6 +5,7 @@ import {
   parseCastleProjectFile,
   serializeCastleProject,
 } from '@/lib/castle-creator/project-file';
+import { moveCastlePieceToLayer } from '@/lib/castle-creator/project';
 import type { CastleProject } from '@/lib/castle-creator/types';
 
 function createProject(): CastleProject {
@@ -32,6 +33,26 @@ describe('castle project files', () => {
 
     expect(parseCastleProjectFile(serializedProject)).toEqual(project);
     expect(serializedProject).not.toContain('selection');
+  });
+
+  it('round trips a piece after moving it to a different layer', () => {
+    const project: CastleProject = {
+      ...createProject(),
+      pieces: [{
+        id: 'wall-1',
+        assetId: 'walls-1',
+        layerId: 'middle',
+        x: 12,
+        y: 34,
+        width: 25,
+        height: 48,
+        buildingColor: 2,
+        roofColor: 5,
+      }],
+    };
+    const movedProject = moveCastlePieceToLayer(project, 'wall-1', 'upper');
+
+    expect(parseCastleProjectFile(serializeCastleProject(movedProject))).toEqual(movedProject);
   });
 
   it('rejects malformed JSON and save-record wrappers with a concrete reason', () => {

@@ -165,6 +165,23 @@ export function moveCastlePiece(
   return { ...validatedProject, pieces };
 }
 
+export function moveCastlePieceToLayer(
+  project: CastleProject,
+  pieceId: string,
+  layerId: CastleLayerId,
+): CastleProject {
+  const validatedProject = validateCastleProject(project);
+  const pieceIndex = requireCastlePieceIndex(validatedProject, pieceId);
+  const validatedLayerId = requireCastleLayerId(layerId, 'Castle layer id');
+  const pieces = validatedProject.pieces.map((piece, index) => (
+    index === pieceIndex
+      ? { ...piece, layerId: validatedLayerId }
+      : piece
+  ));
+
+  return { ...validatedProject, pieces };
+}
+
 export function resizeCastlePiece(
   project: CastleProject,
   pieceId: string,

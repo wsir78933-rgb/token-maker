@@ -31,6 +31,7 @@ import {
   createCastleProject,
   deleteCastlePiece,
   moveCastlePiece,
+  moveCastlePieceToLayer,
   resizeCastlePiece,
   setCastleActiveLayer,
   setCastleCanvasSettings,
@@ -377,14 +378,7 @@ export function CastleCreatorWorkbench({ locale }: { locale: SiteLocale }) {
       const currentProject = projectRef.current;
       const pieceId = createCastlePieceId(asset.id, pieceSequenceRef.current);
       pieceSequenceRef.current += 1;
-      const currentCanvasSize = resolveCastleCanvasSize(
-        currentProject.canvas,
-        automaticCanvasWidthRef.current,
-      );
-      const position: CastlePoint = {
-        x: Math.max(0, (currentCanvasSize.width - asset.width) / 2),
-        y: Math.max(0, (currentCanvasSize.height - asset.height) / 2),
-      };
+      const position: CastlePoint = { x: 0, y: 0 };
       const nextProject = addCastlePiece(currentProject, asset, pieceId, position);
       applyProjectChange(nextProject);
       setSelectedPieceId(pieceId);
@@ -396,6 +390,11 @@ export function CastleCreatorWorkbench({ locale }: { locale: SiteLocale }) {
   function handleMovePiece(pieceId: string, position: CastlePoint) {
     if (busy) return;
     applyProjectOperation((currentProject) => moveCastlePiece(currentProject, pieceId, position));
+  }
+
+  function handleMovePieceToLayer(pieceId: string, layerId: CastleLayerId) {
+    if (busy || selectedPieceId !== pieceId) return;
+    applyProjectOperation((currentProject) => moveCastlePieceToLayer(currentProject, pieceId, layerId));
   }
 
   function handleResizePiece(pieceId: string, width: number) {
@@ -789,6 +788,9 @@ export function CastleCreatorWorkbench({ locale }: { locale: SiteLocale }) {
               {mobileTab === 'settings' ? (
                 <CastleSettingsPanel
                   locale={locale}
+                  selectedPiece={selectedPiece ?? null}
+                  onMovePieceToLayer={handleMovePieceToLayer}
+                  disabled={busy}
                   onActiveLayerChange={(layerId: CastleLayerId) => applyProjectChange(setCastleActiveLayer(projectRef.current, layerId))}
                   onCanvasSettingsChange={(settings) => applyProjectChange(setCastleCanvasSettings(projectRef.current, settings))}
                   onClearAll={handleClearAll}
@@ -806,6 +808,9 @@ export function CastleCreatorWorkbench({ locale }: { locale: SiteLocale }) {
             <PieceActions disabled={busy} locale={locale} onBringToFront={handleBringPieceToFront} onCopy={handleCopyPiece} onDelete={handleDeletePiece} onResizePiece={handleResizePiece} project={project} selectedPieceId={selectedPieceId} />
             <CastleSettingsPanel
               locale={locale}
+              selectedPiece={selectedPiece ?? null}
+              onMovePieceToLayer={handleMovePieceToLayer}
+              disabled={busy}
               onActiveLayerChange={(layerId: CastleLayerId) => applyProjectChange(setCastleActiveLayer(projectRef.current, layerId))}
               onCanvasSettingsChange={(settings) => applyProjectChange(setCastleCanvasSettings(projectRef.current, settings))}
               onClearAll={handleClearAll}

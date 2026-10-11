@@ -1,11 +1,16 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { useState } from 'react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { listCastleAssets } from '@/lib/castle-creator/catalog';
 import { getCastleCreatorCopy } from '@/lib/castle-creator/copy';
-import type { CastleProject } from '@/lib/castle-creator/types';
+import type { CastlePiece, CastleProject } from '@/lib/castle-creator/types';
 import { CastleSettingsPanel } from './CastleSettingsPanel';
+
+const firstWallAsset = listCastleAssets('walls')[0];
+if (!firstWallAsset) throw new Error('Castle settings test requires the first wall asset.');
 
 function createProject(overrides: Partial<CastleProject> = {}): CastleProject {
   return {
@@ -26,9 +31,167 @@ function createProject(overrides: Partial<CastleProject> = {}): CastleProject {
   };
 }
 
+function createSelectedPiece(): CastlePiece {
+  return {
+    id: 'selected-piece-1',
+    assetId: firstWallAsset.id,
+    layerId: 'lower',
+    buildingColor: 2,
+    roofColor: 3,
+    x: 18,
+    y: 29,
+    width: firstWallAsset.width,
+    height: firstWallAsset.height,
+  };
+}
+
+function createPointerEvent(eventType: string, pointerId: number, clientX: number, clientY: number): Event {
+  const event = new Event(eventType, { bubbles: true, cancelable: true });
+  Object.defineProperties(event, {
+    button: { value: 0 },
+    clientX: { value: clientX },
+    clientY: { value: clientY },
+    isPrimary: { value: true },
+    pointerId: { value: pointerId },
+    pointerType: { value: 'mouse' },
+  });
+  return event;
+}
+
+function CastleSettingsPanelMoveHarness({
+  initialPiece,
+  onMovePieceToLayer,
+}: {
+  initialPiece: CastlePiece;
+  onMovePieceToLayer: (pieceId: string, layerId: CastlePiece['layerId']) => void;
+}) {
+  const [selectedPiece, setSelectedPiece] = useState(initialPiece);
+  const [project, setProject] = useState(() => createProject({ pieces: [initialPiece] }));
+
+  const movePieceToLayer = (pieceId: string, layerId: CastlePiece['layerId']) => {
+    if (selectedPiece.id !== pieceId) {
+      throw new Error(`Unexpected selected Castle piece id. Received ${JSON.stringify(pieceId)}.`);
+    }
+
+    const movedPiece = { ...selectedPiece, layerId };
+    onMovePieceToLayer(pieceId, layerId);
+    setSelectedPiece(movedPiece);
+    setProject((currentProject) => ({
+      ...currentProject,
+      pieces: currentProject.pieces.map((piece) => (piece.id === pieceId ? movedPiece : piece)),
+    }));
+  };
+
+  return (
+    <CastleSettingsPanel
+      locale="en"
+      selectedPiece={selectedPiece}
+      onMovePieceToLayer={movePieceToLayer}
+      onActiveLayerChange={vi.fn()}
+      onCanvasSettingsChange={vi.fn()}
+      onClearAll={vi.fn()}
+      onClearLayer={vi.fn()}
+      onLayerVisibilityChange={vi.fn()}
+      project={project}
+    />
+  );
+}
+
 describe('CastleSettingsPanel', () => {
   afterEach(() => {
     cleanup();
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+    Reflect.deleteProperty(document, 'elementFromPoint');
+  });
+
+  it('keeps a long-press drag active across panel rerenders and moves only the selected piece', () => {
+    vi.useFakeTimers();
+    const copy = getCastleCreatorCopy('en');
+    const selectedPiece = createSelectedPiece();
+    const onMovePieceToLayer = vi.fn();
+    render(
+      <CastleSettingsPanelMoveHarness
+        initialPiece={selectedPiece}
+        onMovePieceToLayer={onMovePieceToLayer}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: copy.settings.layersHeading }));
+
+    const layerList = screen.getByRole('list', { name: copy.settings.layersHeading });
+    const sourceLayer = layerList.querySelector('[data-castle-layer-target="lower"]');
+    const targetLayer = layerList.querySelector('[data-castle-layer-target="middle"]');
+    if (!(sourceLayer instanceof HTMLElement) || !(targetLayer instanceof HTMLElement)) {
+      throw new Error('Castle settings test requires lower and middle layer rows.');
+    }
+    const thumbnail = within(sourceLayer).getByRole('button', {
+      name: copy.settings.pieceLayerDragLabel(
+        copy.library.assetImageAlt(firstWallAsset.category, firstWallAsset.number),
+      ),
+    });
+    expect(thumbnail.closest('[data-castle-layer-target="lower"]')).toBe(sourceLayer);
+
+    Object.defineProperty(document, 'elementFromPoint', {
+      configurable: true,
+      value: () => targetLayer,
+    });
+
+    act(() => {
+      thumbnail.dispatchEvent(createPointerEvent('pointerdown', 77, 16, 20));
+      vi.advanceTimersByTime(300);
+    });
+    expect(document.querySelector('[data-castle-piece-drag-preview="true"]')).not.toBeNull();
+
+    act(() => {
+      window.dispatchEvent(createPointerEvent('pointermove', 77, 60, 120));
+    });
+    expect(targetLayer.className).toContain('ring-2');
+
+    act(() => {
+      window.dispatchEvent(createPointerEvent('pointerup', 77, 60, 120));
+    });
+
+    expect(onMovePieceToLayer).toHaveBeenCalledExactlyOnceWith('selected-piece-1', 'middle');
+    const movedThumbnail = screen.getByRole('button', { name: copy.settings.pieceLayerDragLabel(
+      copy.library.assetImageAlt(firstWallAsset.category, firstWallAsset.number),
+    ) });
+    expect(movedThumbnail.closest('[data-castle-layer-target="middle"]')).not.toBeNull();
+    expect(sourceLayer.querySelector('[data-castle-selected-piece-card="true"]')).toBeNull();
+    expect(screen.getByRole('status').textContent).toContain(copy.editor.layerLabels.middle);
+  });
+
+  it.each(['en', 'zh'] as const)('shows the selected-piece drag hint in %s and describes the thumbnail', (locale) => {
+    const copy = getCastleCreatorCopy(locale);
+    const selectedPiece = createSelectedPiece();
+    render(
+      <CastleSettingsPanel
+        locale={locale}
+        selectedPiece={selectedPiece}
+        onMovePieceToLayer={vi.fn()}
+        onActiveLayerChange={vi.fn()}
+        onCanvasSettingsChange={vi.fn()}
+        onClearAll={vi.fn()}
+        onClearLayer={vi.fn()}
+        onLayerVisibilityChange={vi.fn()}
+        project={createProject({ pieces: [selectedPiece] })}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: copy.settings.layersHeading }));
+
+    const visibleDragHint = screen.getByText(copy.settings.pieceLayerDragHint, { selector: 'p' });
+    expect(visibleDragHint.className).toContain('text-xs');
+    expect(visibleDragHint.className).toContain('whitespace-nowrap');
+    expect(visibleDragHint.textContent).not.toMatch(/keyboard|键盘|↑|↓/i);
+    const thumbnail = screen.getByRole('button', {
+      name: copy.settings.pieceLayerDragLabel(
+        copy.library.assetImageAlt(firstWallAsset.category, firstWallAsset.number),
+      ),
+    });
+    const describedByIds = thumbnail.getAttribute('aria-describedby')?.split(/\s+/) ?? [];
+    const describedTexts = describedByIds.map((descriptionId) => (
+      document.getElementById(descriptionId)?.textContent ?? ''
+    ));
+    expect(describedTexts).toContain(copy.settings.pieceLayerDragHint);
   });
 
   it('keeps layers and canvas settings independently collapsed and expandable', () => {
@@ -39,6 +202,8 @@ describe('CastleSettingsPanel', () => {
     render(
       <CastleSettingsPanel
         locale="en"
+        selectedPiece={null}
+        onMovePieceToLayer={vi.fn()}
         onActiveLayerChange={onActiveLayerChange}
         onCanvasSettingsChange={vi.fn()}
         onClearAll={vi.fn()}
@@ -51,14 +216,17 @@ describe('CastleSettingsPanel', () => {
     const settingsScrollSurface = screen.getByRole('region', { name: copy.settings.panelHeading });
     expect(settingsScrollSurface.getAttribute('data-castle-settings-scroll')).toBe('true');
     expect(settingsScrollSurface.className).toContain('h-[244px]');
-    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(screen.queryByRole('list')).toBeNull();
     expect(screen.queryByLabelText(copy.settings.canvasWidthLabel)).toBeNull();
 
     const layersToggle = screen.getByRole('button', { name: copy.settings.layersHeading });
     const canvasToggle = screen.getByRole('button', { name: copy.settings.canvasHeading });
     fireEvent.click(layersToggle);
 
-    expect(screen.getByRole('listbox', { name: copy.settings.layersHeading })).toBeDefined();
+    const layers = screen.getByRole('list', { name: copy.settings.layersHeading });
+    expect(layers.querySelectorAll(':scope > li')).toHaveLength(3);
+    expect(screen.getByRole('button', { name: copy.editor.activeLayerLabel('lower') }).getAttribute('aria-pressed'))
+      .toBe('true');
     expect(screen.queryByLabelText(copy.settings.canvasWidthLabel)).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: copy.editor.activeLayerLabel('middle') }));
     fireEvent.click(screen.getByRole('checkbox', { name: `${copy.settings.layerVisibilityLabel}: ${copy.editor.layerLabels.middle}` }));
@@ -69,10 +237,10 @@ describe('CastleSettingsPanel', () => {
     expect(onClearLayer).toHaveBeenCalledWith('upper');
 
     fireEvent.click(layersToggle);
-    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(screen.queryByRole('list')).toBeNull();
     fireEvent.click(canvasToggle);
     expect(screen.getByLabelText(copy.settings.canvasWidthLabel)).toBeDefined();
-    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(screen.queryByRole('list')).toBeNull();
     fireEvent.click(canvasToggle);
     expect(screen.queryByLabelText(copy.settings.canvasWidthLabel)).toBeNull();
   });
@@ -83,6 +251,8 @@ describe('CastleSettingsPanel', () => {
     render(
       <CastleSettingsPanel
         locale="zh"
+        selectedPiece={null}
+        onMovePieceToLayer={vi.fn()}
         onActiveLayerChange={vi.fn()}
         onCanvasSettingsChange={onCanvasSettingsChange}
         onClearAll={vi.fn()}
@@ -124,6 +294,8 @@ describe('CastleSettingsPanel', () => {
     render(
       <CastleSettingsPanel
         locale="en"
+        selectedPiece={null}
+        onMovePieceToLayer={vi.fn()}
         onActiveLayerChange={vi.fn()}
         onCanvasSettingsChange={onCanvasSettingsChange}
         onClearAll={vi.fn()}
@@ -149,6 +321,8 @@ describe('CastleSettingsPanel', () => {
     const { rerender } = render(
       <CastleSettingsPanel
         locale="en"
+        selectedPiece={null}
+        onMovePieceToLayer={vi.fn()}
         onActiveLayerChange={vi.fn()}
         onCanvasSettingsChange={vi.fn()}
         onClearAll={vi.fn()}
@@ -170,6 +344,8 @@ describe('CastleSettingsPanel', () => {
     rerender(
       <CastleSettingsPanel
         locale="en"
+        selectedPiece={null}
+        onMovePieceToLayer={vi.fn()}
         onActiveLayerChange={vi.fn()}
         onCanvasSettingsChange={vi.fn()}
         onClearAll={vi.fn()}
@@ -196,6 +372,8 @@ describe('CastleSettingsPanel', () => {
       <>
         <CastleSettingsPanel
           locale="en"
+          selectedPiece={null}
+          onMovePieceToLayer={vi.fn()}
           onActiveLayerChange={vi.fn()}
           onCanvasSettingsChange={vi.fn()}
           onClearAll={vi.fn()}
@@ -205,6 +383,8 @@ describe('CastleSettingsPanel', () => {
         />
         <CastleSettingsPanel
           locale="en"
+          selectedPiece={null}
+          onMovePieceToLayer={vi.fn()}
           onActiveLayerChange={vi.fn()}
           onCanvasSettingsChange={vi.fn()}
           onClearAll={vi.fn()}
