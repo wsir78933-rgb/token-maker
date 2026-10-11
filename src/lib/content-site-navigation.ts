@@ -4,6 +4,7 @@ import { getConstellationMapCopy } from '@/lib/constellation-map-creator/copy';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import { getFamilyTreeCopy } from '@/lib/family-tree/copy';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
+import { getNoticeBoardCreatorLandingCopy } from '@/lib/notice-board-creator/landing-copy';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
 import { getPeriodicTableCopy } from '@/lib/periodic-table-creator/copy';
 import { getScrollCreatorCopy } from '@/lib/scroll-creator/copy';
@@ -22,6 +23,7 @@ const EMBLEM_CREATOR_PATH = '/emblem-creator';
 const FAMILY_TREE_CREATOR_PATH = '/family-tree-creator';
 const CONSTELLATION_MAP_CREATOR_PATH = '/constellation-map-creator';
 const LANGUAGE_GENERATOR_PATH = '/language-generator';
+const NOTICE_BOARD_CREATOR_PATH = '/notice-board-creator';
 const OUTFIT_CREATOR_PATH = '/outfit-creator';
 const PERIODIC_TABLE_CREATOR_PATH = '/periodic-table-creator';
 const SCROLL_CREATOR_PATH = '/scroll-creator';
@@ -34,6 +36,7 @@ const FREE_TOOLS_PATHS = [
   '/coat-of-arms-maker',
   '/armor-creator',
   OUTFIT_CREATOR_PATH,
+  NOTICE_BOARD_CREATOR_PATH,
   WEAPON_CREATOR_PATH,
   ARMY_FORMATION_CREATOR_PATH,
   EMBLEM_CREATOR_PATH,
@@ -213,6 +216,11 @@ function buildContentSiteFreeToolFeatures(
     ),
     buildContentSiteFreeToolFeature(
       locale,
+      NOTICE_BOARD_CREATOR_PATH,
+      readNoticeBoardCreatorNavigationName(locale),
+    ),
+    buildContentSiteFreeToolFeature(
+      locale,
       WEAPON_CREATOR_PATH,
       readWeaponCreatorNavigationName(locale),
     ),
@@ -345,6 +353,17 @@ function readOutfitCreatorNavigationName(locale: SiteLocale): string {
   if (navigationName.trim() === '') {
     throw new Error(
       `Outfit creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
+    );
+  }
+
+  return navigationName;
+}
+
+function readNoticeBoardCreatorNavigationName(locale: SiteLocale): string {
+  const navigationName = getNoticeBoardCreatorLandingCopy(locale).navigationName;
+  if (navigationName.trim() === '') {
+    throw new Error(
+      `Notice board creator navigation name must be a non-empty string. Received ${JSON.stringify(navigationName)}.`,
     );
   }
 

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="347" height="500" viewBox="0 0 347 500" role="img" aria-label="Original fantasy notice paper, style 11: rune marks">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e5dfce"/>
+      <stop offset=".54" stop-color="#e5dfce"/>
+      <stop offset="1" stop-color="#b9b29f"/>
+    </linearGradient>
+    <linearGradient id="fold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff3d4"/><stop offset="1" stop-color="#b9b29f"/></linearGradient>
+    <linearGradient id="roll" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#464843"/><stop offset=".48" stop-color="#e5dfce"/><stop offset="1" stop-color="#b9b29f"/></linearGradient>
+    <radialGradient id="seal"><stop stop-color="#b3574a"/><stop offset=".75" stop-color="#8c3036"/><stop offset="1" stop-color="#4a2924"/></radialGradient>
+    <filter id="lift" x="-.12" y="-.08" width="1.24" height="1.2"><feGaussianBlur stdDeviation="5"/></filter>
+    <clipPath id="paper-shape"><path d="M29 12 L318 12 L328 25 L322 476 L311 488 L26 484 L18 471 L22 28 Z"/></clipPath>
+  </defs>
+  <path d="M29 12 L318 12 L328 25 L322 476 L311 488 L26 484 L18 471 L22 28 Z" transform="translate(2 5)" fill="#464843" opacity=".35" filter="url(#lift)"/>
+  <path d="M29 12 L318 12 L328 25 L322 476 L311 488 L26 484 L18 471 L22 28 Z" fill="url(#paper)" stroke="#464843" stroke-width="2"/>
+  <g clip-path="url(#paper-shape)">
+    <path d="M28 52 C76 35 118 55 166 43 S257 36 320 55 M28 469 C91 450 127 474 181 460 S265 462 320 447" fill="none" stroke="#b9b29f" stroke-width="13" opacity=".11"/>
+    <circle cx="174" cy="61" r="0.8" fill="#67665d" opacity="0.17"/><circle cx="109" cy="68" r="1.45" fill="#67665d" opacity="0.12"/><circle cx="112" cy="230" r="0.55" fill="#67665d" opacity="0.17"/><circle cx="54" cy="182" r="0.8" fill="#67665d" opacity="0.17"/><circle cx="144" cy="169" r="1.45" fill="#67665d" opacity="0.21"/><circle cx="269" cy="133" r="0.55" fill="#67665d" opacity="0.12"/><circle cx="73" cy="444" r="0.8" fill="#67665d" opacity="0.12"/><circle cx="232" cy="67" r="0.55" fill="#67665d" opacity="0.12"/><circle cx="127" cy="281" r="0.55" fill="#67665d" opacity="0.21"/><circle cx="202" cy="228" r="0.55" fill="#67665d" opacity="0.12"/><circle cx="217" cy="389" r="1.1" fill="#67665d" opacity="0.17"/><circle cx="71" cy="408" r="1.45" fill="#67665d" opacity="0.17"/><circle cx="123" cy="103" r="0.55" fill="#67665d" opacity="0.21"/><circle cx="44" cy="220" r="0.8" fill="#67665d" opacity="0.21"/><circle cx="280" cy="384" r="1.45" fill="#67665d" opacity="0.21"/><circle cx="77" cy="160" r="0.8" fill="#67665d" opacity="0.12"/><circle cx="69" cy="106" r="1.45" fill="#67665d" opacity="0.12"/><circle cx="111" cy="100" r="0.55" fill="#67665d" opacity="0.17"/><circle cx="287" cy="389" r="1.45" fill="#67665d" opacity="0.12"/><circle cx="279" cy="289" r="0.55" fill="#67665d" opacity="0.21"/><circle cx="57" cy="301" r="0.55" fill="#67665d" opacity="0.12"/><circle cx="214" cy="421" r="0.8" fill="#67665d" opacity="0.21"/><circle cx="42" cy="407" r="1.1" fill="#67665d" opacity="0.21"/><circle cx="149" cy="297" r="1.45" fill="#67665d" opacity="0.21"/><circle cx="281" cy="356" r="0.55" fill="#67665d" opacity="0.12"/><circle cx="264" cy="334" r="0.8" fill="#67665d" opacity="0.17"/><circle cx="109" cy="144" r="0.55" fill="#67665d" opacity="0.17"/><circle cx="149" cy="65" r="1.1" fill="#67665d" opacity="0.17"/><circle cx="179" cy="280" r="0.55" fill="#67665d" opacity="0.21"/><circle cx="110" cy="231" r="1.1" fill="#67665d" opacity="0.17"/><circle cx="47" cy="91" r="0.8" fill="#67665d" opacity="0.21"/><circle cx="42" cy="142" r="0.8" fill="#67665d" opacity="0.17"/><circle cx="288" cy="450" r="0.55" fill="#67665d" opacity="0.12"/><circle cx="287" cy="91" r="1.45" fill="#67665d" opacity="0.12"/><circle cx="80" cy="341" r="0.8" fill="#67665d" opacity="0.17"/><circle cx="287" cy="420" r="0.55" fill="#67665d" opacity="0.12"/><circle cx="140" cy="337" r="0.55" fill="#67665d" opacity="0.12"/><circle cx="137" cy="88" r="1.45" fill="#67665d" opacity="0.17"/><circle cx="95" cy="62" r="0.55" fill="#67665d" opacity="0.21"/><circle cx="250" cy="332" r="1.1" fill="#67665d" opacity="0.12"/><circle cx="249" cy="270" r="0.55" fill="#67665d" opacity="0.21"/><circle cx="95" cy="423" r="1.45" fill="#67665d" opacity="0.21"/>
+  </g>
+  <g fill="none" stroke="#67665d" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".78" color="#67665d">
+    <path d="M49 50 L55 38 L61 50 L73 56 L61 62 L55 74 L49 62 L37 56 Z M292 444 L297 433 L302 444 L313 449 L302 454 L297 465 L292 454 L281 449 Z"/>
+  </g>
+  <path d="M49 92 Q173 85 298 92 M49 408 Q173 415 298 408" fill="none" stroke="#67665d" stroke-width=".75" opacity=".19"/>
+</svg>

@@ -580,6 +580,8 @@ describe('CircularTestimonials', () => {
     });
     expect(firstImageButton.getAttribute('aria-haspopup')).toBe('dialog');
     expect(firstImageButton.getAttribute('data-part')).toBe('testimonial-image-frame');
+    expect(firstImageButton.className).toContain('border border-[#d7b46a]/30 bg-[#f4eee5]');
+    expect(firstImageButton.querySelector('img')?.className).toContain('p-3');
     expect(firstImageButton.querySelector('div')).toBeNull();
     expect(carousel.querySelectorAll('button[aria-haspopup="dialog"]')).toHaveLength(1);
     expect(testimonialImageLayer(carousel, 1).querySelector('button')).toBeNull();
@@ -1313,8 +1315,92 @@ describe('CircularTestimonials', () => {
   it('默认保留原图片框背景色', () => {
     const { container } = renderedCarousel();
     const imageFrame = container.querySelector<HTMLElement>('[data-part="testimonial-image-frame"]');
+    const image = container.querySelector<HTMLImageElement>('[data-part="active-testimonial-image"] img');
 
     expect(imageFrame?.style.backgroundColor).toBe('rgb(244, 238, 229)');
+    expect(imageFrame?.className).toContain('border border-[#d7b46a]/30 bg-[#f4eee5]');
+    expect(image?.className).toContain('p-3');
+  });
+
+  it('关闭图片框时普通图片和按钮图片均去除背景、边框与内边距', () => {
+    const { container: plainImageContainer } = render(
+      <CircularTestimonials
+        testimonials={TESTIMONIALS}
+        ariaLabel="Unframed armor cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+        autoplay={false}
+        showImageFrame={false}
+      />,
+    );
+    const plainImageFrame = plainImageContainer.querySelector<HTMLElement>(
+      '[data-part="testimonial-image-frame"]',
+    );
+    const plainImage = plainImageContainer.querySelector<HTMLImageElement>(
+      '[data-part="active-testimonial-image"] img',
+    );
+    if (!plainImageFrame || !plainImage) {
+      throw new Error('CircularTestimonials test expected an unframed image and its layout wrapper.');
+    }
+
+    expect(plainImageFrame.className).toContain('relative');
+    expect(plainImageFrame.className).toContain('rounded-2xl');
+    expect(plainImageFrame.className).toContain('shadow-[0_18px_44px_rgba(0,0,0,0.36)]');
+    expect(plainImageFrame.className).not.toContain('border');
+    expect(plainImageFrame.className).not.toContain('bg-[#f4eee5]');
+    expect(plainImageFrame.style.backgroundColor).toBe('');
+    expect(plainImage.className).toContain('p-0');
+    expect(plainImage.className).not.toMatch(/(?:^|\s)p-[13](?:\s|$)/);
+
+    cleanup();
+
+    const { container: buttonImageContainer } = render(
+      <CircularTestimonials
+        testimonials={TESTIMONIALS}
+        ariaLabel="Unframed clickable armor cases"
+        previousLabel={PREVIOUS_LABEL}
+        nextLabel={NEXT_LABEL}
+        autoplay={false}
+        onImageClick={vi.fn()}
+        imageActionLabel={IMAGE_ACTION_LABEL}
+        showImageFrame={false}
+      />,
+    );
+    const [buttonImageCarousel] = carouselRegions(buttonImageContainer);
+    if (!buttonImageCarousel) {
+      throw new Error('CircularTestimonials test expected one unframed button carousel.');
+    }
+    const buttonImage = within(buttonImageCarousel).getByRole('button', {
+      name: `${IMAGE_ACTION_LABEL}: First character`,
+    });
+    const buttonImageElement = buttonImage.querySelector<HTMLImageElement>('img');
+    if (!buttonImageElement) {
+      throw new Error('CircularTestimonials test expected an image inside the unframed image button.');
+    }
+
+    expect(buttonImage.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(buttonImage.className).toContain('rounded-2xl');
+    expect(buttonImage.className).toContain('shadow-[0_18px_44px_rgba(0,0,0,0.36)]');
+    expect(buttonImage.className).not.toContain('border');
+    expect(buttonImage.className).not.toContain('bg-[#f4eee5]');
+    expect(buttonImage.style.backgroundColor).toBe('');
+    expect(buttonImageElement.className).toContain('p-0');
+    expect(buttonImageElement.className).not.toMatch(/(?:^|\s)p-[13](?:\s|$)/);
+  });
+
+  it('拒绝非布尔 showImageFrame 并报告收到的值', () => {
+    expect(() =>
+      render(
+        <CircularTestimonials
+          testimonials={TESTIMONIALS}
+          ariaLabel="Invalid image frame setting"
+          previousLabel={PREVIOUS_LABEL}
+          nextLabel={NEXT_LABEL}
+          autoplay={false}
+          showImageFrame={'false' as never}
+        />,
+      ),
+    ).toThrow('CircularTestimonials showImageFrame must be a boolean. Received "false".');
   });
   it('supports relaxed image and text spacing without changing the layout direction', () => {
     const { container } = render(

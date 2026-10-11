@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { getBlogCategories } from '@/lib/blog-content';
 import { getCalendarCreatorCopy } from '@/lib/calendar-creator/copy';
+import { getNoticeBoardCreatorLandingCopy } from '@/lib/notice-board-creator/landing-copy';
 import { getTarotCopy } from '@/lib/tarot-cards/copy';
 import {
   assertContentSiteTopbarModel,
@@ -60,6 +61,7 @@ describe('content site topbar model', () => {
       { href: '/coat-of-arms-maker', title: 'Coat of Arms Maker' },
       { href: '/armor-creator', title: 'Armor Creator' },
       { href: '/outfit-creator', title: 'Outfit Creator' },
+      { href: '/notice-board-creator', title: getNoticeBoardCreatorLandingCopy('en').navigationName },
       { href: '/weapon-creator', title: 'Weapon Creator' },
       { href: '/army-formation-creator', title: 'Army Formation Creator' },
       { href: '/emblem-creator', title: 'Emblem Creator' },
@@ -109,6 +111,10 @@ describe('content site topbar model', () => {
       { href: '/zh/coat-of-arms-maker', title: '纹章制作器' },
       { href: '/zh/armor-creator', title: '护甲制作器' },
       { href: '/zh/outfit-creator', title: '服装搭配工具' },
+      {
+        href: '/zh/notice-board-creator',
+        title: getNoticeBoardCreatorLandingCopy('zh').navigationName,
+      },
       { href: '/zh/weapon-creator', title: '武器制作器' },
       { href: '/zh/army-formation-creator', title: '军队阵型制作器' },
       { href: '/zh/emblem-creator', title: '徽标制作工具' },
@@ -230,6 +236,18 @@ describe('content site topbar model', () => {
     const tarotCardsNested = readTopbar('en', '/tarot-cards/saved', '/zh/tarot-cards/saved');
     const tarotCardsSibling = readTopbar('en', '/tarot-cards-extra', '/zh');
     const outfitSibling = readTopbar('en', '/outfit-creator-extra', '/zh');
+    const noticeBoardCreator = readTopbar('en', '/notice-board-creator', '/zh/notice-board-creator');
+    const chineseNoticeBoardCreator = readTopbar(
+      'zh',
+      '/zh/notice-board-creator',
+      '/notice-board-creator',
+    );
+    const noticeBoardCreatorNested = readTopbar(
+      'en',
+      '/notice-board-creator/saved',
+      '/zh/notice-board-creator/saved',
+    );
+    const noticeBoardCreatorSibling = readTopbar('en', '/notice-board-creator-extra', '/zh');
     const calendar = readTopbar('en', '/calendar-creator', '/zh/calendar-creator');
     const chineseCalendar = readTopbar('zh', '/zh/calendar-creator', '/calendar-creator');
     const calendarNested = readTopbar('en', '/calendar-creator/saved', '/zh/calendar-creator/saved');
@@ -286,6 +304,10 @@ describe('content site topbar model', () => {
     expect(tarotCardsNested.freeToolsMenuIsActive).toBe(true);
     expect(tarotCardsSibling.freeToolsMenuIsActive).toBe(false);
     expect(outfitSibling.freeToolsMenuIsActive).toBe(false);
+    expect(noticeBoardCreator.freeToolsMenuIsActive).toBe(true);
+    expect(chineseNoticeBoardCreator.freeToolsMenuIsActive).toBe(true);
+    expect(noticeBoardCreatorNested.freeToolsMenuIsActive).toBe(true);
+    expect(noticeBoardCreatorSibling.freeToolsMenuIsActive).toBe(false);
     expect(calendar.freeToolsMenuIsActive).toBe(true);
     expect(chineseCalendar.freeToolsMenuIsActive).toBe(true);
     expect(calendarNested.freeToolsMenuIsActive).toBe(true);

@@ -18,6 +18,7 @@ const DICE_ROLLER_LAST_MODIFIED = '2026-03-30';
 const COAT_MAKER_LAST_MODIFIED = '2026-07-28';
 const EMBLEM_CREATOR_LAST_MODIFIED = '2026-10-03';
 const OUTFIT_CREATOR_LAST_MODIFIED = '2026-10-04';
+const NOTICE_BOARD_CREATOR_LAST_MODIFIED = '2026-10-08';
 const WEAPON_CREATOR_LAST_MODIFIED = '2026-10-05';
 const LANGUAGE_GENERATOR_LAST_MODIFIED = '2026-10-05';
 const CALENDAR_CREATOR_LAST_MODIFIED = '2026-10-06';
@@ -112,6 +113,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/dice-roller-dnd',
     '/armor-creator',
     '/outfit-creator',
+    '/notice-board-creator',
     '/weapon-creator',
     '/army-formation-creator',
     '/army-formation-creator/backgrounds',
@@ -144,6 +146,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? new Date(EMBLEM_CREATOR_LAST_MODIFIED)
             : path === '/outfit-creator'
             ? new Date(OUTFIT_CREATOR_LAST_MODIFIED)
+            : path === '/notice-board-creator'
+            ? new Date(NOTICE_BOARD_CREATOR_LAST_MODIFIED)
             : path === '/weapon-creator'
             ? new Date(WEAPON_CREATOR_LAST_MODIFIED)
             : path === '/language-generator'
