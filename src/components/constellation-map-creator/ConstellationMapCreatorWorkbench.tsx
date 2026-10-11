@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useEffectEvent,
   useRef,
   useState,
   type KeyboardEvent,
@@ -129,6 +130,14 @@ function nextPanelIndex(panel: MobilePanel, key: string): number | null {
   return null;
 }
 
+function isEditableKeyboardTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  const editableTarget = target.closest('input, textarea, select, [role="textbox"], [contenteditable]');
+  if (editableTarget === null) return false;
+  if (editableTarget.matches('input, textarea, select, [role="textbox"]')) return true;
+  return editableTarget instanceof HTMLElement && editableTarget.isContentEditable;
+}
+
 export function ConstellationMapCreatorWorkbench({ locale }: ConstellationMapCreatorWorkbenchProps) {
   const copy: ConstellationWorkspaceCopy = getConstellationMapCopy(locale).workspace;
   const [project, setProject] = useState<ConstellationProject>(() => createDefaultConstellationProject());
@@ -181,6 +190,26 @@ export function ConstellationMapCreatorWorkbench({ locale }: ConstellationMapCre
     mobilePanelRef.current?.querySelector<HTMLElement>('[data-constellation-panel-close="true"]')?.focus();
     return undefined;
   }, [mobilePanel]);
+
+  const handleDeleteShortcut = useEffectEvent((event: globalThis.KeyboardEvent): void => {
+    if (event.defaultPrevented || event.repeat) return;
+    if (busy || selectedObjectId === null || mobilePanel !== null || filesDialogOpen || exportDialogOpen || helpDialogOpen) return;
+    if (isEditableKeyboardTarget(event.target)) return;
+    if (event.isComposing || event.keyCode === 229) return;
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    if (event.key !== 'Delete' && event.key !== 'Backspace') return;
+    event.preventDefault();
+    handleDeleteSelected();
+  });
+
+  useEffect(() => {
+    function handleWindowKeyDown(event: globalThis.KeyboardEvent): void {
+      handleDeleteShortcut(event);
+    }
+
+    window.addEventListener('keydown', handleWindowKeyDown);
+    return () => window.removeEventListener('keydown', handleWindowKeyDown);
+  }, []);
 
   function invalidateGeneratedOutputs(): void {
     exportGenerationRef.current += 1;
@@ -540,7 +569,7 @@ export function ConstellationMapCreatorWorkbench({ locale }: ConstellationMapCre
     if (mobilePanel === 'assets') {
       content = <ConstellationAssetPanel locale={locale} copy={copy} category={activeCategory} onCategoryChange={setActiveCategory} onAddConstellation={handleAddConstellation} />;
     } else if (mobilePanel === 'settings') {
-      content = <ConstellationSettingsPanel copy={copy} width={project.width} height={project.height} background={project.background} backgroundSizeMismatch={project.background.imageWidth !== null && project.background.imageHeight !== null && (project.background.imageWidth !== project.width || project.background.imageHeight !== project.height)} busy={busy} onSizeChange={handleSizeChange} onColorChange={handleColorChange} onTransparentBaseChange={handleTransparentBaseChange} onApplyBackgroundImage={handleApplyBackgroundImage} onRemoveBackgroundImage={handleRemoveBackgroundImage} onClearObjects={handleClearObjects} />;
+      content = <ConstellationSettingsPanel copy={copy} width={project.width} height={project.height} background={project.background} backgroundSizeMismatch={project.background.imageWidth !== null && project.background.imageHeight !== null && (project.background.imageWidth !== project.width || project.background.imageHeight !== project.height)} busy={busy} onSizeChange={handleSizeChange} onColorChange={handleColorChange} onTransparentBaseChange={handleTransparentBaseChange} onApplyBackgroundImage={handleApplyBackgroundImage} onRemoveBackgroundImage={handleRemoveBackgroundImage} />;
     } else if (mobilePanel === 'files') {
       content = renderFiles();
     } else {
@@ -574,9 +603,7 @@ export function ConstellationMapCreatorWorkbench({ locale }: ConstellationMapCre
             <p className={styles.eyebrow}>{copy.workspaceTitle}</p>
             <h2 className={styles.headerTitle}>{copy.canvasLabel}</h2>
           </div>
-          <div className={styles.fileActions}>
-            <button type="button" className={styles.secondaryButton} onClick={() => setFilesDialogOpen(true)} disabled={busy}>{copy.filesTitle}</button>
-            <button type="button" className={styles.secondaryButton} onClick={() => setExportDialogOpen(true)} disabled={busy}>{copy.exportTitle}</button>
+          <div className={styles.headerActions}>
             <button type="button" className={styles.secondaryButton} onClick={() => setHelpDialogOpen(true)} disabled={busy}>{copy.help}</button>
           </div>
         </div>
@@ -592,10 +619,11 @@ export function ConstellationMapCreatorWorkbench({ locale }: ConstellationMapCre
         <section className={styles.canvasPanel} aria-label={copy.canvasLabel}>
           <div className={styles.canvasToolbar}>
             <button type="button" className={styles.secondaryButton} disabled={busy} onClick={handleAddStar}>{copy.addStar}</button>
-            <button type="button" className={styles.dangerButton} disabled={busy || selectedObjectId === null} onClick={handleDeleteSelected}>{copy.deleteSelected}</button>
+            <button type="button" aria-keyshortcuts="Delete Backspace" className={styles.dangerButton} disabled={busy || selectedObjectId === null} onClick={handleDeleteSelected}>{copy.deleteSelected}</button>
             <label className={styles.toggleLabel}><input type="checkbox" checked={draggingEnabled} disabled={busy} onChange={(event) => setDraggingEnabled(event.currentTarget.checked)} /><span>{copy.dragging}</span></label>
             <label className={styles.toggleLabel}><input type="checkbox" checked={resizingEnabled} disabled={busy} onChange={(event) => setResizingEnabled(event.currentTarget.checked)} /><span>{copy.resizing}</span></label>
             <span className={styles.selectedCount}>{replaceCount(copy.selectedCount, selectedCount)}</span>
+            <button type="button" className={styles.dangerButton} title={copy.clearHint} disabled={busy} onClick={handleClearObjects}>{copy.clearObjects}</button>
           </div>
           <div className={styles.canvasViewport} style={{ aspectRatio: `${String(project.width)} / ${String(project.height)}` }}>
             <ConstellationMapCreatorCanvas
@@ -616,7 +644,12 @@ export function ConstellationMapCreatorWorkbench({ locale }: ConstellationMapCre
         </section>
 
         <aside className={`${styles.sidePanel} ${styles.rightPanel}`} aria-label={copy.settingsTitle}>
-          <ConstellationSettingsPanel copy={copy} width={project.width} height={project.height} background={project.background} backgroundSizeMismatch={backgroundSizeMismatch} busy={busy} onSizeChange={handleSizeChange} onColorChange={handleColorChange} onTransparentBaseChange={handleTransparentBaseChange} onApplyBackgroundImage={handleApplyBackgroundImage} onRemoveBackgroundImage={handleRemoveBackgroundImage} onClearObjects={handleClearObjects} />
+          <ConstellationSettingsPanel copy={copy} width={project.width} height={project.height} background={project.background} backgroundSizeMismatch={backgroundSizeMismatch} busy={busy} onSizeChange={handleSizeChange} onColorChange={handleColorChange} onTransparentBaseChange={handleTransparentBaseChange} onApplyBackgroundImage={handleApplyBackgroundImage} onRemoveBackgroundImage={handleRemoveBackgroundImage} footerActions={(
+            <div className={styles.footerActions}>
+              <button type="button" className={styles.secondaryButton} onClick={() => setFilesDialogOpen(true)} disabled={busy}>{copy.filesTitle}</button>
+              <button type="button" className={styles.secondaryButton} onClick={() => setExportDialogOpen(true)} disabled={busy}>{copy.exportTitle}</button>
+            </div>
+          )} />
         </aside>
       </div>
 
