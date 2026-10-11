@@ -430,7 +430,7 @@ describe('content site topbar model', () => {
 
     expect(model.freeToolsMenuHref).toBe(href);
     expect(model.freeToolsMenuIsActive).toBe(true);
-    expect(model.freeTools).toHaveLength(19);
+    expect(model.freeTools).toHaveLength(20);
     expect(model.freeTools.some((feature) => feature.href === href)).toBe(false);
     expect(model.freeTools[0]).toMatchObject({ href: locale === 'en' ? '/' : '/zh' });
   });
