@@ -9,6 +9,7 @@ import {
   createCastleProject,
   deleteCastlePiece,
   moveCastlePiece,
+  moveCastlePieceToLayer,
   resizeCastlePiece,
   setCastleActiveLayer,
   setCastleCanvasSettings,
@@ -189,6 +190,61 @@ describe('castle piece operations', () => {
     const snappedProject = { ...unsnappedProject, snapEnabled: true };
     const movedWithSnap = moveCastlePiece(snappedProject, 'wall-1', { x: 12, y: -13 });
     expect(movedWithSnap.pieces[0]).toMatchObject({ x: 10, y: -15 });
+  });
+
+  it('moves only the selected piece to another layer and preserves project state and piece order', () => {
+    const project = createProject({
+      pieces: [
+        createPiece('lower-wall', 'lower', { x: 5, y: 15 }),
+        createPiece('selected-tower', 'middle', {
+          assetId: 'gates-1',
+          x: 35,
+          y: 45,
+          width: 200,
+          height: 140,
+          buildingColor: 4,
+          roofColor: 5,
+        }),
+        createPiece('upper-roof', 'upper', { x: 65, y: 75 }),
+      ],
+      activeLayer: 'upper',
+      visibleLayers: { lower: true, middle: false, upper: true },
+      canvas: {
+        width: 1200,
+        height: 700,
+        backgroundColor: '#abcdef',
+        backgroundImageUrl: 'https://example.test/castle.png',
+      },
+      palette: { building: 3, roof: 4 },
+      snapEnabled: true,
+      resizeEnabled: false,
+    });
+    const originalProject = validateCastleProject(project);
+
+    const movedProject = moveCastlePieceToLayer(project, 'selected-tower', 'lower');
+
+    expect(movedProject).toEqual({
+      ...originalProject,
+      pieces: originalProject.pieces.map((piece) => (
+        piece.id === 'selected-tower' ? { ...piece, layerId: 'lower' } : piece
+      )),
+    });
+    expect(movedProject.pieces.map((piece) => piece.id)).toEqual([
+      'lower-wall',
+      'selected-tower',
+      'upper-roof',
+    ]);
+    expect(movedProject.activeLayer).toBe('upper');
+    expect(movedProject.visibleLayers).toEqual({ lower: true, middle: false, upper: true });
+    expect(project.pieces[1]?.layerId).toBe('middle');
+  });
+
+  it('keeps the piece unchanged when moving it to its current layer and rejects missing targets', () => {
+    const project = createProject({ pieces: [createPiece('selected-wall', 'middle')] });
+
+    expect(moveCastlePieceToLayer(project, 'selected-wall', 'middle')).toEqual(project);
+    expect(() => moveCastlePieceToLayer(project, 'missing-wall', 'upper')).toThrow('"missing-wall"');
+    expect(() => moveCastlePieceToLayer(project, 'selected-wall', 'side' as never)).toThrow('"side"');
   });
 
   it('resizes proportionally and rejects resizing when the toggle is disabled', () => {

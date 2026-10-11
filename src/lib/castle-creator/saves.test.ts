@@ -6,6 +6,7 @@ import {
   writeCastleSaveSlot,
   type CastleSaveStorage,
 } from '@/lib/castle-creator/saves';
+import { moveCastlePieceToLayer } from '@/lib/castle-creator/project';
 import type { CastleProject } from '@/lib/castle-creator/types';
 
 function createProject(): CastleProject {
@@ -54,6 +55,29 @@ describe('castle saves', () => {
     expect(readCastleSaveSlot(storage, 5)).toEqual(fifthRecord);
     expect(readCastleSaveSlot(storage, 2)).toBeNull();
     expect(storage.getItem('tokenmaker.unrelated')).toBe('preserve');
+  });
+
+  it('persists the selected piece layer change through a save slot', () => {
+    const storage = createMemoryStorage();
+    const project: CastleProject = {
+      ...createProject(),
+      pieces: [{
+        id: 'wall-1',
+        assetId: 'walls-1',
+        layerId: 'middle',
+        x: 12,
+        y: 34,
+        width: 25,
+        height: 48,
+        buildingColor: 2,
+        roofColor: 5,
+      }],
+    };
+    const movedProject = moveCastlePieceToLayer(project, 'wall-1', 'upper');
+
+    writeCastleSaveSlot(storage, 2, movedProject);
+
+    expect(readCastleSaveSlot(storage, 2)?.project).toEqual(movedProject);
   });
 
   it('rejects invalid slot numbers and corrupted JSON instead of treating them as empty', () => {

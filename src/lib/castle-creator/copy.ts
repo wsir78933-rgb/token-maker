@@ -176,6 +176,11 @@ export type CastleCreatorSettingsCopy = {
   readonly clearAllConfirmDescription: string;
   readonly canvasCoordinatesHint: string;
   readonly scrollHint: string;
+  readonly pieceLayerDragHint: string;
+  readonly pieceLayerEmptyHint: string;
+  readonly pieceLayerDragLabel: (pieceLabel: string) => string;
+  readonly pieceLayerStatus: (pieceLabel: string, layerLabel: string) => string;
+  readonly hiddenLayerHint: string;
 };
 
 export type CastleCreatorSavesCopy = {
@@ -512,7 +517,7 @@ const englishCastleCreatorCopy: CastleCreatorCopy = {
     panelHint: 'Background, size, and clear controls are in the expanded settings.',
     layersHeading: 'Layers · 3',
     layerVisibilityLabel: 'Show layer',
-    clearLayerLabel: 'Clear active layer',
+    clearLayerLabel: 'Clear',
     canvasHeading: 'Canvas settings',
     backgroundImageUrlLabel: 'Background image URL',
     backgroundImageApplyLabel: 'Apply',
@@ -527,6 +532,11 @@ const englishCastleCreatorCopy: CastleCreatorCopy = {
     clearAllConfirmDescription: 'Clear every part from the castle?',
     canvasCoordinatesHint: 'Canvas coordinates stay stable when the browser resizes.',
     scrollHint: 'Scroll this settings panel while keeping the canvas visible.',
+    pieceLayerDragHint: 'Hold, then drag to a layer',
+    pieceLayerEmptyHint: 'Select a part on the canvas to move it between layers.',
+    pieceLayerDragLabel: (pieceLabel) => `Move ${pieceLabel} between layers`,
+    pieceLayerStatus: (pieceLabel, layerLabel) => `${pieceLabel} is on ${layerLabel}.`,
+    hiddenLayerHint: 'This layer is hidden. The part will stay hidden after moving.',
   },
   saves: {
     dialogTitle: 'Browser saves and project files',
@@ -836,6 +846,11 @@ const chineseCastleCreatorCopy: CastleCreatorCopy = {
     clearAllConfirmDescription: '要清空城堡中的全部零件吗？',
     canvasCoordinatesHint: '浏览器尺寸变化时，画布坐标保持稳定。',
     scrollHint: '设置面板内滚动，同时保留画布可见。',
+    pieceLayerDragHint: '长按拖到目标图层',
+    pieceLayerEmptyHint: '请先在画布上选中一个零件，再调整它的图层。',
+    pieceLayerDragLabel: (pieceLabel) => `拖动${pieceLabel}切换图层`,
+    pieceLayerStatus: (pieceLabel, layerLabel) => `选中的${pieceLabel}当前位于${layerLabel}。`,
+    hiddenLayerHint: '此图层已隐藏。移动到这里的零件仍会隐藏。',
   },
   saves: {
     dialogTitle: '浏览器存档与工程文件',

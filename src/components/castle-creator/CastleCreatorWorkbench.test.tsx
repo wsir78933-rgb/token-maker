@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { castleSaveStorageKey, readCastleSaveSlot } from '@/lib/castle-creator/saves';
 import { serializeCastleProject } from '@/lib/castle-creator/project-file';
 import { createCastleProject } from '@/lib/castle-creator/project';
-import type { CastleProject } from '@/lib/castle-creator/types';
+import type { CastleLayerId, CastlePiece, CastleProject } from '@/lib/castle-creator/types';
 import { CastleCreatorWorkbench } from './CastleCreatorWorkbench';
 
 vi.mock('@/lib/castle-creator/catalog', () => ({
@@ -34,12 +34,24 @@ vi.mock('./CastleAssetPalette', () => ({
 }));
 
 vi.mock('./CastleCanvas', () => ({
-  CastleCanvas: ({ project, selectedPieceId, onResizePiece }: {
+  CastleCanvas: ({ project, selectedPieceId, onResizePiece, onSelectPiece }: {
     project: CastleProject;
     selectedPieceId: string | null;
     onResizePiece(pieceId: string, width: number): void;
+    onSelectPiece(pieceId: string): void;
   }) => (
     <div role="application" aria-label="Castle preview" data-castle-test-canvas>
+      {project.pieces.map((piece) => (
+        <button
+          key={piece.id}
+          type="button"
+          data-castle-test-select-piece={piece.id}
+          onClick={() => onSelectPiece(piece.id)}
+        >
+          Select {piece.id}
+        </button>
+      ))}
+      <output data-castle-test-canvas-selection>{selectedPieceId ?? ''}</output>
       {selectedPieceId && project.resizeEnabled ? (
         <button type="button" onClick={() => onResizePiece(selectedPieceId, 1200)}>Resize test piece</button>
       ) : null}
@@ -48,9 +60,47 @@ vi.mock('./CastleCanvas', () => ({
 }));
 
 vi.mock('./CastleSettingsPanel', () => ({
-  CastleSettingsPanel: ({ onClearAll }: { onClearAll: () => void }) => (
-    <button type="button" onClick={onClearAll}>Clear all test</button>
-  ),
+  CastleSettingsPanel: ({
+    onClearAll,
+    onActiveLayerChange,
+    onLayerVisibilityChange,
+    onMovePieceToLayer,
+    project,
+    selectedPiece,
+  }: {
+    onClearAll: () => void;
+    onActiveLayerChange(layerId: CastleLayerId): void;
+    onLayerVisibilityChange(layerId: CastleLayerId, visible: boolean): void;
+    onMovePieceToLayer(pieceId: string, layerId: CastleLayerId): void;
+    project: CastleProject;
+    selectedPiece: CastlePiece | null;
+  }) => {
+    const otherPiece = project.pieces.find((piece) => piece.id !== selectedPiece?.id);
+    return (
+      <div>
+        <button type="button" data-castle-test-active-middle onClick={() => onActiveLayerChange('middle')}>Set middle active</button>
+        <button type="button" data-castle-test-hide-upper onClick={() => onLayerVisibilityChange('upper', false)}>Hide upper layer</button>
+        <button
+          type="button"
+          data-castle-test-move-selected-upper
+          disabled={!selectedPiece}
+          onClick={() => { if (selectedPiece) onMovePieceToLayer(selectedPiece.id, 'upper'); }}
+        >
+          Move selected part to upper
+        </button>
+        <button
+          type="button"
+          data-castle-test-move-other-upper
+          disabled={!otherPiece}
+          onClick={() => { if (otherPiece) onMovePieceToLayer(otherPiece.id, 'upper'); }}
+        >
+          Move other part to upper
+        </button>
+        <output data-castle-test-settings-selection>{selectedPiece?.id ?? ''}</output>
+        <button type="button" onClick={onClearAll}>Clear all test</button>
+      </div>
+    );
+  },
 }));
 
 afterEach(() => {
@@ -60,6 +110,50 @@ afterEach(() => {
 });
 
 describe('CastleCreatorWorkbench', () => {
+  it('moves only the currently selected piece to a layer and saves the changed layer', async () => {
+    const { container } = render(<CastleCreatorWorkbench locale="en" />);
+    const addAssetButton = container.querySelector('[data-castle-test-add]') as HTMLButtonElement;
+    fireEvent.click(addAssetButton);
+    fireEvent.click(addAssetButton);
+
+    const canvasPieceButtons = container.querySelectorAll<HTMLButtonElement>('[data-castle-test-select-piece]');
+    expect(canvasPieceButtons).toHaveLength(2);
+    const firstPieceId = canvasPieceButtons[0].dataset.castleTestSelectPiece;
+    const secondPieceId = canvasPieceButtons[1].dataset.castleTestSelectPiece;
+    if (!firstPieceId || !secondPieceId) throw new Error('Castle test pieces are missing their IDs.');
+
+    fireEvent.click(container.querySelector('[data-castle-test-active-middle]') as HTMLButtonElement);
+    fireEvent.click(container.querySelector('[data-castle-test-hide-upper]') as HTMLButtonElement);
+    fireEvent.click(container.querySelector('[data-castle-action="quick-save"]') as HTMLButtonElement);
+    const firstSlot = document.body.querySelector('[data-castle-save-slot="1"]');
+    if (!(firstSlot instanceof HTMLElement)) throw new Error('First castle save slot is missing.');
+    fireEvent.click(firstSlot.querySelector('button') as HTMLButtonElement);
+    await waitFor(() => expect(document.body.querySelector('[data-castle-dialog="saves"]')).toBeNull());
+
+    fireEvent.click(container.querySelector(`[data-castle-test-select-piece="${firstPieceId}"]`) as HTMLButtonElement);
+    fireEvent.click(container.querySelector(`[data-castle-test-select-piece="${secondPieceId}"]`) as HTMLButtonElement);
+    expect(container.querySelector('[data-castle-test-settings-selection]')?.textContent).toBe(secondPieceId);
+
+    fireEvent.click(container.querySelector('[data-castle-test-move-other-upper]') as HTMLButtonElement);
+    expect(container.querySelector('[data-castle-status-row]')?.textContent).toContain('Slot 1 · Saved');
+    expect(readCastleSaveSlot(window.localStorage, 1)?.project.pieces.map((piece) => piece.layerId)).toEqual(['lower', 'lower']);
+
+    fireEvent.click(container.querySelector('[data-castle-test-move-selected-upper]') as HTMLButtonElement);
+    expect(container.querySelector('[data-castle-status-row]')?.textContent).toContain('Not saved');
+    expect(container.querySelector('[data-castle-test-canvas-selection]')?.textContent).toBe(secondPieceId);
+    expect(container.querySelector('[data-castle-test-settings-selection]')?.textContent).toBe(secondPieceId);
+
+    fireEvent.click(container.querySelector('[data-castle-action="quick-save"]') as HTMLButtonElement);
+    await waitFor(() => {
+      const savedProject = readCastleSaveSlot(window.localStorage, 1)?.project;
+      expect(savedProject?.pieces).toHaveLength(2);
+      expect(savedProject?.pieces.find((piece) => piece.id === firstPieceId)?.layerId).toBe('lower');
+      expect(savedProject?.pieces.find((piece) => piece.id === secondPieceId)?.layerId).toBe('upper');
+      expect(savedProject?.activeLayer).toBe('middle');
+      expect(savedProject?.visibleLayers).toEqual({ lower: true, middle: true, upper: false });
+    });
+  });
+
   it.each([
     { locale: 'en' as const, sizeLabel: 'Size', resizeToggle: 'Allow resizing: On' },
     { locale: 'zh' as const, sizeLabel: '大小', resizeToggle: '允许缩放: 开' },
@@ -79,8 +173,8 @@ describe('CastleCreatorWorkbench', () => {
     expect(readCastleSaveSlot(window.localStorage, 1)?.project.pieces[0]).toMatchObject({
       width: 300,
       height: 150,
-      x: 400,
-      y: 267.5,
+      x: 0,
+      y: 0,
       layerId: 'lower',
       buildingColor: 1,
       roofColor: 1,

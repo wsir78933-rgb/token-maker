@@ -5,6 +5,7 @@ import {
   renderCastleProject,
   resolveCastleCanvasSize,
 } from '@/lib/castle-creator/render';
+import { moveCastlePieceToLayer } from '@/lib/castle-creator/project';
 import type { CastleImageLoader } from '@/lib/castle-creator/render';
 import type { CastleProject } from '@/lib/castle-creator/types';
 
@@ -212,6 +213,44 @@ describe('castle rendering', () => {
       [10, 20, 50, 60],
       [15, 25, 55, 65],
       [30, 40, 70, 80],
+    ]);
+  });
+
+  it('draws a piece above lower-layer pieces after it changes layers', async () => {
+    createRecordingCanvas();
+    const project = createProject();
+    project.pieces = [
+      {
+        id: 'selected-wall',
+        assetId: 'walls-1',
+        layerId: 'lower',
+        x: 10,
+        y: 20,
+        width: 50,
+        height: 60,
+        buildingColor: 2,
+        roofColor: 3,
+      },
+      {
+        id: 'middle-tower',
+        assetId: 'walls-2',
+        layerId: 'middle',
+        x: 30,
+        y: 40,
+        width: 70,
+        height: 80,
+        buildingColor: 4,
+        roofColor: 5,
+      },
+    ];
+    const movedProject = moveCastlePieceToLayer(project, 'selected-wall', 'upper');
+    const imageLoader = createImageLoader();
+
+    await renderCastleProject(movedProject, { width: 400, height: 300 }, imageLoader);
+
+    expect(imageLoader.sourceUrls).toEqual([
+      '/castle/walls-2-building4-roof5.svg',
+      '/castle/walls-1-building2-roof3.svg',
     ]);
   });
 

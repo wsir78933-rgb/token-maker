@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 
+import { CastleSelectedPieceLayers } from '@/components/castle-creator/CastleSelectedPieceLayers';
 import { getCastleCreatorCopy } from '@/lib/castle-creator/copy';
 import { CASTLE_LAYER_IDS } from '@/lib/castle-creator/types';
 import type {
   CastleCanvasSettings,
   CastleLayerId,
+  CastlePiece,
   CastleProject,
 } from '@/lib/castle-creator/types';
 import type { SiteLocale } from '@/lib/site-locale';
@@ -14,20 +16,26 @@ import type { SiteLocale } from '@/lib/site-locale';
 export interface CastleSettingsPanelProps {
   locale: SiteLocale;
   project: CastleProject;
+  selectedPiece: CastlePiece | null;
   onActiveLayerChange: (layerId: CastleLayerId) => void;
   onLayerVisibilityChange: (layerId: CastleLayerId, visible: boolean) => void;
   onClearLayer: (layerId: CastleLayerId) => void;
   onCanvasSettingsChange: (settings: CastleCanvasSettings) => void;
+  onMovePieceToLayer: (pieceId: string, layerId: CastleLayerId) => void;
+  disabled?: boolean;
   onClearAll: () => void;
 }
 
 export function CastleSettingsPanel({
   locale,
   project,
+  selectedPiece,
   onActiveLayerChange,
   onLayerVisibilityChange,
   onClearLayer,
   onCanvasSettingsChange,
+  onMovePieceToLayer,
+  disabled = false,
   onClearAll,
 }: CastleSettingsPanelProps) {
   const copy = getCastleCreatorCopy(locale);
@@ -56,14 +64,15 @@ export function CastleSettingsPanel({
     };
   }, [project.canvas.backgroundColor, project.canvas.backgroundImageUrl, project.canvas.height, project.canvas.width]);
 
-  const runCallback = (callback: () => void) => {
+  const runCallback = (callback: () => void): boolean => {
     setErrorMessage(null);
     try {
       callback();
+      return true;
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
-        return;
+        return false;
       }
       throw error;
     }
@@ -130,7 +139,13 @@ export function CastleSettingsPanel({
             <p className="mt-1 text-xs leading-5 text-stone-500">{copy.settings.scrollHint}</p>
             <LayerControls
               copy={copy}
+              locale={locale}
               project={project}
+              selectedPiece={selectedPiece}
+              disabled={disabled}
+              onMovePieceToLayer={(pieceId, layerId) => (
+                runCallback(() => onMovePieceToLayer(pieceId, layerId))
+              )}
               onActiveLayerChange={(layerId) => runCallback(() => onActiveLayerChange(layerId))}
               onLayerVisibilityChange={(layerId, visible) => (
                 runCallback(() => onLayerVisibilityChange(layerId, visible))
@@ -208,66 +223,134 @@ function SectionToggle({
 
 function LayerControls({
   copy,
+  locale,
   project,
+  selectedPiece,
+  disabled,
+  onMovePieceToLayer,
   onActiveLayerChange,
   onLayerVisibilityChange,
   onClearLayer,
 }: {
   copy: ReturnType<typeof getCastleCreatorCopy>;
+  locale: SiteLocale;
   project: CastleProject;
+  selectedPiece: CastlePiece | null;
+  disabled: boolean;
+  onMovePieceToLayer: (pieceId: string, layerId: CastleLayerId) => boolean;
   onActiveLayerChange: (layerId: CastleLayerId) => void;
   onLayerVisibilityChange: (layerId: CastleLayerId, visible: boolean) => void;
   onClearLayer: (layerId: CastleLayerId) => void;
 }) {
+  const [dragTarget, setDragTarget] = useState<{
+    pieceId: string;
+    sourceLayer: CastleLayerId;
+    targetLayer: CastleLayerId;
+  } | null>(null);
+  const dragTargetLayer = !disabled
+    && selectedPiece
+    && dragTarget?.pieceId === selectedPiece.id
+    && dragTarget.sourceLayer === selectedPiece.layerId
+    ? dragTarget.targetLayer
+    : null;
+  const selectedPieceId = selectedPiece?.id;
+  const selectedPieceLayerId = selectedPiece?.layerId;
+
+  const updatePieceLayerDropTarget = useCallback((targetLayer: CastleLayerId | null) => {
+    if (!targetLayer || !selectedPieceId || !selectedPieceLayerId || disabled) {
+      setDragTarget(null);
+      return;
+    }
+
+    setDragTarget({
+      pieceId: selectedPieceId,
+      sourceLayer: selectedPieceLayerId,
+      targetLayer,
+    });
+  }, [disabled, selectedPieceId, selectedPieceLayerId]);
+
+  const moveSelectedPieceToLayer = useCallback((pieceId: string, targetLayer: CastleLayerId) => {
+    if (selectedPieceId !== pieceId || selectedPieceLayerId === targetLayer) return false;
+    return onMovePieceToLayer(pieceId, targetLayer);
+  }, [onMovePieceToLayer, selectedPieceId, selectedPieceLayerId]);
+
   return (
     <fieldset>
       <legend className="text-sm font-semibold text-stone-50">{copy.settings.layersHeading}</legend>
-      <div className="mt-2 space-y-1" role="listbox" aria-label={copy.settings.layersHeading}>
+      <ul aria-label={copy.settings.layersHeading} className="mt-2 space-y-1">
         {CASTLE_LAYER_IDS.map((layerId) => {
           const isActive = project.activeLayer === layerId;
           const isVisible = project.visibleLayers[layerId];
           const layerLabel = copy.editor.layerLabels[layerId];
           return (
-            <div
-              aria-selected={isActive}
+            <li
               className={[
-                'flex min-h-11 items-center gap-2 rounded-md border px-2',
-                isActive ? 'border-stone-200 bg-white/[0.1]' : 'border-white/10 bg-white/[0.03]',
+                'rounded-md transition-colors',
+                dragTargetLayer === layerId ? 'ring-2 ring-amber-200/80' : '',
               ].join(' ')}
+              data-castle-layer-target={layerId}
               key={layerId}
-              role="option"
             >
-              <button
-                aria-label={copy.editor.activeLayerLabel(layerId)}
-                className="min-h-11 min-w-0 flex-1 truncate text-left text-sm text-stone-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-200"
-                type="button"
-                onClick={() => onActiveLayerChange(layerId)}
+              <div
+                className={[
+                  'flex min-h-11 items-center gap-1 rounded-md border px-1',
+                  isActive ? 'border-stone-200 bg-white/[0.1]' : 'border-white/10 bg-white/[0.03]',
+                ].join(' ')}
               >
-                {layerLabel}
-              </button>
-              <label className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1 text-xs text-stone-400">
-                <span className="sr-only">{copy.settings.layerVisibilityLabel}: {layerLabel}</span>
-                <input
-                  aria-label={`${copy.settings.layerVisibilityLabel}: ${layerLabel}`}
-                  checked={isVisible}
-                  className="size-4 accent-stone-100"
-                  type="checkbox"
-                  onChange={(event) => onLayerVisibilityChange(layerId, event.currentTarget.checked)}
-                />
-                <span aria-hidden="true">{isVisible ? '◉' : '○'}</span>
-              </label>
-              <button
-                aria-label={`${copy.settings.clearLayerLabel}: ${layerLabel}`}
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-2 text-xs text-stone-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-200 hover:bg-white/[0.08]"
-                type="button"
-                onClick={() => onClearLayer(layerId)}
-              >
-                {copy.settings.clearLayerLabel}
-              </button>
-            </div>
+                <button
+                  aria-label={copy.editor.activeLayerLabel(layerId)}
+                  aria-pressed={isActive}
+                  className="min-h-11 min-w-0 flex-1 truncate text-left text-sm text-stone-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-200"
+                  type="button"
+                  onClick={() => onActiveLayerChange(layerId)}
+                >
+                  {layerLabel}
+                </button>
+                {selectedPiece?.layerId === layerId ? (
+                  <CastleSelectedPieceLayers
+                    key={`${selectedPiece.id}:${selectedPiece.layerId}:${disabled ? 'disabled' : 'enabled'}`}
+                    disabled={disabled}
+                    locale={locale}
+                    onDragTargetLayerChange={updatePieceLayerDropTarget}
+                    onMovePieceToLayer={moveSelectedPieceToLayer}
+                    selectedPiece={selectedPiece}
+                    visibleLayers={project.visibleLayers}
+                  />
+                ) : null}
+                <label className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1 text-xs text-stone-400">
+                  <span className="sr-only">{copy.settings.layerVisibilityLabel}: {layerLabel}</span>
+                  <input
+                    aria-label={`${copy.settings.layerVisibilityLabel}: ${layerLabel}`}
+                    checked={isVisible}
+                    className="size-4 accent-stone-100"
+                    type="checkbox"
+                    onChange={(event) => onLayerVisibilityChange(layerId, event.currentTarget.checked)}
+                  />
+                  <span aria-hidden="true">{isVisible ? '◉' : '○'}</span>
+                </label>
+                <button
+                  aria-label={`${copy.settings.clearLayerLabel}: ${layerLabel}`}
+                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-2 text-xs text-stone-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-200 hover:bg-white/[0.08]"
+                  type="button"
+                  onClick={() => onClearLayer(layerId)}
+                >
+                  {copy.settings.clearLayerLabel}
+                </button>
+              </div>
+              {!isVisible ? (
+                <p className="mt-0.5 px-2 text-[10px] leading-4 text-amber-100/80">
+                  {copy.settings.hiddenLayerHint}
+                </p>
+              ) : null}
+            </li>
           );
         })}
-      </div>
+      </ul>
+      {selectedPiece ? (
+        <p className="mt-1 whitespace-nowrap text-xs leading-5 text-stone-400">{copy.settings.pieceLayerDragHint}</p>
+      ) : (
+        <p className="mt-2 text-xs leading-5 text-stone-400">{copy.settings.pieceLayerEmptyHint}</p>
+      )}
     </fieldset>
   );
 }
