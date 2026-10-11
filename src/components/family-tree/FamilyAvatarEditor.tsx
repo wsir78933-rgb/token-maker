@@ -304,6 +304,103 @@ function choiceFallbackSymbol(
 
 type ChoiceThumbnailCrop = Pick<CSSProperties, 'backgroundPosition' | 'backgroundSize'>;
 
+type ScarThumbnailAlphaBounds = readonly [
+  left: number,
+  top: number,
+  rightExclusive: number,
+  bottomExclusive: number,
+];
+
+// Half-open alpha bounds measured from the 250×250 scar source PNGs.
+const SCAR_THUMBNAIL_ALPHA_BOUNDS: Readonly<
+  Record<string, ScarThumbnailAlphaBounds>
+> = {
+  scar1: [124, 120, 134, 180],
+  scar2: [178, 123, 183, 173],
+  scar3: [93, 169, 109, 208],
+  scar4: [109, 160, 146, 181],
+  scar5: [164, 150, 171, 174],
+  scar6: [168, 177, 183, 209],
+  scar7: [142, 209, 146, 230],
+  scar8: [136, 101, 154, 123],
+  scar9: [111, 124, 117, 148],
+  scar10: [114, 194, 126, 220],
+  scar11: [148, 198, 154, 212],
+  scar12: [72, 184, 95, 206],
+  scar13: [132, 177, 140, 202],
+  scar14: [61, 224, 82, 247],
+  scar15: [66, 215, 98, 248],
+  scar16: [168, 98, 187, 121],
+  scar17: [168, 125, 173, 144],
+  scar18: [136, 122, 143, 147],
+  scar19: [109, 214, 128, 231],
+  scar20: [170, 172, 178, 197],
+  scar21: [153, 217, 157, 230],
+  scar22: [93, 156, 106, 185],
+  scar23: [83, 171, 98, 199],
+  scar24: [135, 108, 150, 136],
+  scar25: [147, 163, 152, 186],
+  scar26: [120, 181, 133, 217],
+  scar27: [160, 104, 166, 125],
+  scar28: [152, 133, 165, 147],
+  scar29: [159, 197, 164, 220],
+  scar30: [169, 161, 191, 173],
+};
+
+const SCAR_THUMBNAIL_SOURCE_SIZE_PX = 250;
+const SCAR_THUMBNAIL_BOX_SIZE_PX = 44;
+const SCAR_THUMBNAIL_TARGET_LONG_EDGE_PX = 32;
+
+function scarThumbnailCrop(choice: FamilyTreeAvatarChoice): ChoiceThumbnailCrop {
+  const alphaBounds = SCAR_THUMBNAIL_ALPHA_BOUNDS[choice.id];
+  if (alphaBounds === undefined) {
+    throw new Error(
+      `Family tree scar thumbnail bounds are missing for choice ${JSON.stringify(choice.id)}.`,
+    );
+  }
+
+  const [left, top, rightExclusive, bottomExclusive] = alphaBounds;
+  if (
+    left < 0 ||
+    top < 0 ||
+    rightExclusive <= left ||
+    bottomExclusive <= top ||
+    rightExclusive > SCAR_THUMBNAIL_SOURCE_SIZE_PX ||
+    bottomExclusive > SCAR_THUMBNAIL_SOURCE_SIZE_PX
+  ) {
+    throw new Error(
+      `Family tree scar thumbnail bounds for choice ${JSON.stringify(choice.id)} must fit the ${SCAR_THUMBNAIL_SOURCE_SIZE_PX}px source, received ${formatReceivedValue(alphaBounds)}.`,
+    );
+  }
+
+  const alphaWidthPx = rightExclusive - left;
+  const alphaHeightPx = bottomExclusive - top;
+  const alphaLongEdgePx = Math.max(alphaWidthPx, alphaHeightPx);
+  const cropSizePx =
+    (alphaLongEdgePx * SCAR_THUMBNAIL_BOX_SIZE_PX) /
+    SCAR_THUMBNAIL_TARGET_LONG_EDGE_PX;
+  if (cropSizePx >= SCAR_THUMBNAIL_SOURCE_SIZE_PX) {
+    throw new Error(
+      `Family tree scar thumbnail crop for choice ${JSON.stringify(choice.id)} must be smaller than the source, received ${cropSizePx}px.`,
+    );
+  }
+
+  const maxCropPositionPx = SCAR_THUMBNAIL_SOURCE_SIZE_PX - cropSizePx;
+  const cropLeftPx = Math.min(
+    Math.max((left + rightExclusive - cropSizePx) / 2, 0),
+    maxCropPositionPx,
+  );
+  const cropTopPx = Math.min(
+    Math.max((top + bottomExclusive - cropSizePx) / 2, 0),
+    maxCropPositionPx,
+  );
+
+  return {
+    backgroundSize: `${((SCAR_THUMBNAIL_SOURCE_SIZE_PX / cropSizePx) * 100).toFixed(2)}%`,
+    backgroundPosition: `${((cropLeftPx / maxCropPositionPx) * 100).toFixed(2)}% ${((cropTopPx / maxCropPositionPx) * 100).toFixed(2)}%`,
+  };
+}
+
 function choiceThumbnailCrop(
   choice: FamilyTreeAvatarChoice,
 ): ChoiceThumbnailCrop | null {
@@ -323,15 +420,34 @@ function choiceThumbnailCrop(
     return { backgroundSize: '464%', backgroundPosition: '60% 93%' };
   }
 
+  if (choice.category === 'extras' && choice.group === 'faceWrinkles') {
+    return { backgroundSize: '200%', backgroundPosition: '66% 75%' };
+  }
+
+  if (choice.category === 'extras' && choice.group === 'eyeWrinkles') {
+    return { backgroundSize: '250%', backgroundPosition: '66% 66%' };
+  }
+
+  if (choice.category === 'extras' && choice.group === 'scars') {
+    return scarThumbnailCrop(choice);
+  }
+
   return null;
 }
 
-function choiceThumbnailOpacity(choice: FamilyTreeAvatarChoice): number | undefined {
-  if (choice.group === 'faceWrinkles' || choice.group === 'eyeWrinkles') {
-    return 0.4;
+function choiceThumbnailClassName(choice: FamilyTreeAvatarChoice): string {
+  if (
+    choice.category === 'extras' &&
+    (choice.group === 'faceWrinkles' || choice.group === 'eyeWrinkles')
+  ) {
+    return `${styles.choiceImageCrop} ${styles.choiceWrinkleThumbnail}`;
   }
 
-  return undefined;
+  if (choice.category === 'extras' && choice.group === 'scars') {
+    return `${styles.choiceImageCrop} ${styles.choiceScarThumbnail}`;
+  }
+
+  return styles.choiceImageCrop;
 }
 
 function categoryColorKey(
@@ -684,7 +800,6 @@ export function FamilyAvatarEditor({
                         choice.id,
                       );
                       const thumbnailCrop = choiceThumbnailCrop(choice);
-                      const thumbnailOpacity = choiceThumbnailOpacity(choice);
                       const selected = familyTreeAvatarChoiceSelected(
                         draft.avatar,
                         choice.id,
@@ -713,15 +828,10 @@ export function FamilyAvatarEditor({
                                 src={choiceImagePath}
                                 alt=""
                                 loading="lazy"
-                                style={
-                                  thumbnailOpacity === undefined
-                                    ? undefined
-                                    : { opacity: thumbnailOpacity }
-                                }
                               />
                             ) : (
                               <span
-                                className={styles.choiceImageCrop}
+                                className={choiceThumbnailClassName(choice)}
                                 aria-hidden="true"
                                 style={{
                                   ...thumbnailCrop,

@@ -329,6 +329,14 @@
   background-repeat: no-repeat;
 }
 
+.choiceWrinkleThumbnail {
+  background-color: #f7f4ef;
+}
+
+.choiceScarThumbnail {
+  background-color: #201e1c;
+}
+
 .choiceFallback {
   display: grid;
   place-items: center;
