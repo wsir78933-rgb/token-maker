@@ -31,6 +31,7 @@ function renderVocabulary(overrides: Partial<ComponentProps<typeof LanguageGener
     onWordChange: vi.fn(),
     onPresetChange: vi.fn(),
     onRandomize: vi.fn(),
+    onOpenStorage: vi.fn(),
     onApplyRules: vi.fn(),
     onCopy: vi.fn(),
   };

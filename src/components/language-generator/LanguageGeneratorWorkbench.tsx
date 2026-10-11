@@ -477,13 +477,15 @@ export function LanguageGeneratorWorkbench({ locale }: LanguageGeneratorWorkbenc
             </p>
             <p className="mt-1 text-sm leading-6 text-stone-300">{copy.translationHint}</p>
           </div>
-          <button
-            type="button"
-            onClick={handleOpenStorage}
-            className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg border border-[var(--site-border-strong)] bg-[var(--site-panel)] px-4 text-sm font-semibold text-stone-100 transition hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
-          >
-            {copy.storageButton}
-          </button>
+          {activeTab !== 'vocabulary' ? (
+            <button
+              type="button"
+              onClick={handleOpenStorage}
+              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg border border-[var(--site-border-strong)] bg-[var(--site-panel)] px-4 text-sm font-semibold text-stone-100 transition hover:border-[var(--site-accent-strong)] hover:bg-[var(--site-accent-bg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-accent-strong)]"
+            >
+              {copy.storageButton}
+            </button>
+          ) : null}
         </div>
 
         <div
@@ -541,6 +543,7 @@ export function LanguageGeneratorWorkbench({ locale }: LanguageGeneratorWorkbenc
             presetId={generatedState.presetId}
             onPresetChange={generatePresetForId}
             onRandomize={handleRandomize}
+            onOpenStorage={handleOpenStorage}
             onApplyRules={applyRulesToContent}
             onCopy={handleCopyVocabulary}
             copied={vocabularyCopied}
