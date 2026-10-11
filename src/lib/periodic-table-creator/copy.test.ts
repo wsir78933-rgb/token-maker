@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import type { SiteLocale } from '@/lib/site-locale';
 
 import { getPeriodicTableCopy } from './copy';
+import { PERIODIC_ELEMENT_SOURCES } from './elements';
+import { getPeriodicTablePageContentCopy } from './page-content-copy';
 import type { PeriodicTableCopy } from './copy-types';
 
 const EXPECTED_PERIODIC_TABLE_COPY_KEYS = [
@@ -159,5 +161,21 @@ describe('periodic table creator copy', () => {
 
   it('rejects an unsupported locale with its actual value', () => {
     expect(() => getPeriodicTableCopy('fr' as SiteLocale)).toThrow(/"fr"/);
+  });
+
+  it('provides bilingual source labels for the real template with only the listed IUPAC release date', () => {
+    const englishSources = getPeriodicTablePageContentCopy('en').features.sources;
+    const chineseSources = getPeriodicTablePageContentCopy('zh').features.sources;
+
+    expect(englishSources.label).toBe('Sources for the real periodic table template');
+    expect(englishSources.iupacLabel).toBe('IUPAC periodic table');
+    expect(englishSources.latestReleaseLabel).toBe('Latest release listed:');
+    expect(englishSources.pubchemLabel).toBe('PubChem periodic table');
+    expect(chineseSources.label).toBe('真实元素周期表模板参考来源');
+    expect(chineseSources.iupacLabel).toBe('IUPAC 元素周期表');
+    expect(chineseSources.latestReleaseLabel).toBe('页面列出的最新版本：');
+    expect(chineseSources.pubchemLabel).toBe('PubChem 元素周期表');
+    expect(PERIODIC_ELEMENT_SOURCES.iupac.latestListedReleaseDate).toBe('2022-05-04');
+    expect(PERIODIC_ELEMENT_SOURCES.pubchem.href).toBe('https://pubchem.ncbi.nlm.nih.gov/ptable/');
   });
 });

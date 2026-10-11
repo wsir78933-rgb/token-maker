@@ -100,7 +100,7 @@ const chineseStringFields = {
   heroTitleLead: '免费',
   heroTitleEmphasis: '护甲搭配工具',
   heroTitleTail: '：为 RPG 角色、NPC 与奇幻世界提供灵感',
-  heroAction: 'Try for Free',
+  heroAction: '开始搭配',
 } as const satisfies Record<(typeof STRING_FIELD_NAMES)[number], string>;
 
 function expectNonEmptyStringFields(
@@ -188,7 +188,7 @@ describe('getArmorCreatorCopy', () => {
       gap: '',
       description:
         '这是一款免费护甲搭配工具，为 RPG/TTRPG 角色、战役 NPC 和奇幻世界设定提供护甲造型灵感。你可以组合不同护甲部件、预览角色造型。',
-      action: 'Try for Free',
+      action: '开始搭配',
     });
   });
 

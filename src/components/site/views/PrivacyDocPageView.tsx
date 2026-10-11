@@ -11,6 +11,9 @@ import {
 } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 
+const GOOGLE_MY_AD_CENTER_HREF = 'https://myadcenter.google.com/';
+const DAA_WEBCHOICES_HREF = 'https://optout.aboutads.info/';
+
 const copyByLocale = {
   en: {
     editor: 'Editor',
@@ -21,6 +24,9 @@ const copyByLocale = {
     commitments: 'Current boundaries',
     sectionEyebrow: 'How data handling works',
     heroBadges: ['Local downloads', 'Public share links', 'Ad disclosures', 'Contact messages'],
+    googleAdvertisingSectionTitle: 'Google advertising cookies',
+    googleAdsSettingsLabel: 'Google Ads Settings',
+    aboutAdsLabel: 'aboutads.info',
   },
   zh: {
     editor: '编辑器',
@@ -31,8 +37,79 @@ const copyByLocale = {
     commitments: '当前边界',
     sectionEyebrow: '数据处理方式',
     heroBadges: ['本地下载', '公开分享链接', '广告披露', '联系消息'],
+    googleAdvertisingSectionTitle: 'Google 广告 Cookie',
+    googleAdsSettingsLabel: 'Google 广告设置',
+    aboutAdsLabel: 'aboutads.info',
   },
 } as const;
+
+type PrivacyDocCopy = (typeof copyByLocale)[SiteLocale];
+
+function renderGoogleAdvertisingPrivacyBody(sectionBody: string, copy: PrivacyDocCopy) {
+  const googleSettingsParts = sectionBody.split(copy.googleAdsSettingsLabel);
+
+  if (googleSettingsParts.length !== 2) {
+    throw new Error(
+      `Privacy section "${copy.googleAdvertisingSectionTitle}" must contain exactly one ${JSON.stringify(copy.googleAdsSettingsLabel)}. Received ${googleSettingsParts.length - 1} occurrences in ${JSON.stringify(sectionBody)}.`,
+    );
+  }
+
+  const textAfterGoogleSettings = googleSettingsParts[1];
+
+  if (textAfterGoogleSettings === undefined) {
+    throw new Error(
+      `Privacy section "${copy.googleAdvertisingSectionTitle}" is missing text after ${JSON.stringify(copy.googleAdsSettingsLabel)}. Received ${JSON.stringify(sectionBody)}.`,
+    );
+  }
+
+  const aboutAdsParts = textAfterGoogleSettings.split(copy.aboutAdsLabel);
+
+  if (aboutAdsParts.length !== 2) {
+    throw new Error(
+      `Privacy section "${copy.googleAdvertisingSectionTitle}" must contain exactly one ${JSON.stringify(copy.aboutAdsLabel)}. Received ${aboutAdsParts.length - 1} occurrences in ${JSON.stringify(sectionBody)}.`,
+    );
+  }
+
+  const textAfterAboutAds = aboutAdsParts[1];
+
+  if (textAfterAboutAds === undefined) {
+    throw new Error(
+      `Privacy section "${copy.googleAdvertisingSectionTitle}" is missing text after ${JSON.stringify(copy.aboutAdsLabel)}. Received ${JSON.stringify(sectionBody)}.`,
+    );
+  }
+
+  return (
+    <>
+      {googleSettingsParts[0]}
+      <a
+        href={GOOGLE_MY_AD_CENTER_HREF}
+        target="_blank"
+        rel="noreferrer"
+        className="font-medium text-[#f1d492] underline underline-offset-4 hover:text-[#f7dfab] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+      >
+        {copy.googleAdsSettingsLabel}
+      </a>
+      {aboutAdsParts[0]}
+      <a
+        href={DAA_WEBCHOICES_HREF}
+        target="_blank"
+        rel="noreferrer"
+        className="font-medium text-[#f1d492] underline underline-offset-4 hover:text-[#f7dfab] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+      >
+        {copy.aboutAdsLabel}
+      </a>
+      {textAfterAboutAds}
+    </>
+  );
+}
+
+function renderPrivacySectionBody(sectionTitle: string, sectionBody: string, copy: PrivacyDocCopy) {
+  if (sectionTitle === copy.googleAdvertisingSectionTitle) {
+    return renderGoogleAdvertisingPrivacyBody(sectionBody, copy);
+  }
+
+  return sectionBody;
+}
 
 export function PrivacyDocPageView({ locale }: { locale: SiteLocale }) {
   const copy = copyByLocale[locale];
@@ -119,7 +196,9 @@ export function PrivacyDocPageView({ locale }: { locale: SiteLocale }) {
                   </div>
                   <div>
                     <h2 className="text-2xl font-medium text-stone-50">{section.title}</h2>
-                    <p className="mt-4 text-sm leading-8 text-stone-300">{section.body}</p>
+                    <p className="mt-4 text-sm leading-8 text-stone-300">
+                      {renderPrivacySectionBody(section.title, section.body, copy)}
+                    </p>
                   </div>
                 </div>
               </article>

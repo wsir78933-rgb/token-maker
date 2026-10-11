@@ -14,6 +14,7 @@ const localeCases = [
     locale: 'en' as const,
     actionCardLabel: 'What to do next',
     bottomCtaHeading: 'Start building your adventure',
+    relatedHeading: 'Related articles',
     coatMakerLabel: 'Coat of Arms Maker',
     diceLabel: 'Dice Roller',
     expectedHref: '/coat-of-arms-maker',
@@ -23,6 +24,7 @@ const localeCases = [
     locale: 'zh' as const,
     actionCardLabel: '现在可以做什么',
     bottomCtaHeading: '开启你的下一次冒险',
+    relatedHeading: '相关文章',
     coatMakerLabel: '纹章制作器',
     diceLabel: '骰子工具',
     expectedHref: '/zh/coat-of-arms-maker',
@@ -99,6 +101,22 @@ describe('BlogDetailPageView CTA links', () => {
     expect(bottomCtaCoatMakerLink.getAttribute('href')).toBe(testCase.expectedHref);
     expect(actionCardDiceLink.getAttribute('href')).toBe(testCase.expectedDiceHref);
     expect(bottomCtaDiceLink.getAttribute('href')).toBe(testCase.expectedDiceHref);
+  });
+});
+
+describe('BlogDetailPageView greenhouse recommendations', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it.each(localeCases)('omits generic DnD recommendations for $locale greenhouse article', (testCase) => {
+    render(<BlogDetailPageView locale={testCase.locale} slug="greenhouse-stardew" />);
+
+    expect(screen.queryByText(testCase.actionCardLabel)).toBeNull();
+    expect(
+      screen.queryByRole('heading', { name: testCase.bottomCtaHeading, level: 2 }),
+    ).toBeNull();
+    expect(screen.queryByRole('heading', { name: testCase.relatedHeading, level: 2 })).toBeNull();
   });
 });
 

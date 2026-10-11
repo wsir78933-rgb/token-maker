@@ -44,6 +44,11 @@ export function getFeaturedBlogPost(locale: SiteLocale) {
   return getBlogPosts(locale).find((post) => post.featured) ?? getBlogPosts(locale)[0];
 }
 
+function getBlogPostsForPagination(locale: SiteLocale) {
+  const featuredPost = getFeaturedBlogPost(locale);
+  return getBlogPosts(locale).filter((post) => post.slug !== featuredPost?.slug);
+}
+
 export function getBlogPost(locale: SiteLocale, slug: string) {
   return getBlogPosts(locale).find((post) => post.slug === slug);
 }
@@ -123,6 +128,10 @@ export function getRelatedBlogPosts(locale: SiteLocale, slug: string, limit = 3)
     .map((relatedSlug) => candidatePosts.find((post) => post.slug === relatedSlug))
     .filter((post): post is BlogPost => Boolean(post));
 
+  if (currentPost.slug === 'greenhouse-stardew') {
+    return explicitMatches.slice(0, limit);
+  }
+
   const fallbackMatches = candidatePosts
     .filter((post) => !explicitMatches.includes(post))
     .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
@@ -131,12 +140,12 @@ export function getRelatedBlogPosts(locale: SiteLocale, slug: string, limit = 3)
 }
 
 export function getBlogPageCount(locale: SiteLocale) {
-  const regularPosts = getBlogPosts(locale).filter((post) => !post.featured);
+  const regularPosts = getBlogPostsForPagination(locale);
   return Math.max(1, Math.ceil(regularPosts.length / BLOG_POSTS_PER_PAGE));
 }
 
 export function getBlogPostsForPage(locale: SiteLocale, page: number) {
-  const regularPosts = getBlogPosts(locale).filter((post) => !post.featured);
+  const regularPosts = getBlogPostsForPagination(locale);
   const safePage = Math.max(1, page);
   const startIndex = (safePage - 1) * BLOG_POSTS_PER_PAGE;
   return regularPosts.slice(startIndex, startIndex + BLOG_POSTS_PER_PAGE);

@@ -21,18 +21,24 @@ export type PeriodicElement = {
 };
 
 /**
- * Names and standard atomic weights follow the IUPAC table dated 4 May 2022. PubChem's
- * machine-readable table is used as a second check for the symbols, names, and
- * displayed precision. Bracketed masses are the mass numbers of the longest
- * lived or best-characterized isotope where no standard atomic weight exists.
+ * Names and standard atomic weights use the IUPAC table release dated 4 May 2022.
+ * PubChem's periodic table is linked as a reference for element data and provenance;
+ * these links do not record a fresh element-by-element verification. Bracketed masses
+ * are the mass numbers of the longest-lived or best-characterized isotope where no
+ * standard atomic weight exists.
  *
  * Sources:
  * https://iupac.org/what-we-do/periodic-table-of-elements/
- * https://pubchem.ncbi.nlm.nih.gov/periodic-table/
+ * https://pubchem.ncbi.nlm.nih.gov/ptable/
  */
 export const PERIODIC_ELEMENT_SOURCES = {
-  iupac: 'https://iupac.org/what-we-do/periodic-table-of-elements/',
-  pubchem: 'https://pubchem.ncbi.nlm.nih.gov/periodic-table/',
+  iupac: {
+    href: 'https://iupac.org/what-we-do/periodic-table-of-elements/',
+    latestListedReleaseDate: '2022-05-04',
+  },
+  pubchem: {
+    href: 'https://pubchem.ncbi.nlm.nih.gov/ptable/',
+  },
 } as const;
 
 export const PERIODIC_ELEMENTS = [

@@ -375,7 +375,7 @@ describe('coat maker routes', () => {
       schemaFeatures: [
         'Shield styles and field patterns',
         'Charges, text, layers, and drawing tools',
-        'PNG, JPEG, PDF, and batch export options',
+        'PNG, JPEG, PDF, and a queue for downloading multiple PNG snapshots as a ZIP',
       ],
       schemaId: 'coat-maker-en-web-application-jsonld',
       twitterDescription:
@@ -394,7 +394,7 @@ describe('coat maker routes', () => {
       schemaFeatures: [
         '盾牌样式与底纹',
         '图形、文字、图层和绘图工具',
-        'PNG、JPEG、PDF 与批量导出选项',
+        'PNG、JPEG、PDF，以及将多个 PNG 设计快照打包为 ZIP 的队列',
       ],
       schemaId: 'coat-maker-zh-web-application-jsonld',
       twitterDescription: '在这款免费在线纹章制作器里自己画奇幻盾牌和公会徽章，再导出 PNG、JPEG 或 PDF。',

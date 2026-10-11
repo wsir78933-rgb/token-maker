@@ -42,6 +42,17 @@ describe('notice board creator landing copy', () => {
         expect(comparisonCell.status).toMatch(/^(supported|unsupported|limited)$/);
         expect(comparisonCell.label.trim()).not.toHaveLength(0);
       }
+      for (const comparisonCell of [row.rollForFantasy, row.helpWanted]) {
+        expect(comparisonCell.source?.href).toMatch(/^https:\/\//u);
+        expect(comparisonCell.source?.label.trim()).not.toHaveLength(0);
+        expect(comparisonCell.source?.checkedOn).toBe('2026-10-11');
+      }
+      expect(row.rollForFantasy.source?.href).toBe(
+        'https://rollforfantasy.com/tools/notice-board-creator.php',
+      );
+      expect(row.helpWanted.source?.href).toBe(
+        'https://www.fairway3games.com/projects/help-wanted/',
+      );
     }
     for (const item of copy.faqItems) {
       expect(item.question.trim()).not.toHaveLength(0);
@@ -58,10 +69,10 @@ describe('notice board creator landing copy', () => {
     );
     expect(chineseCopy.howToUseSteps).toHaveLength(englishCopy.howToUseSteps.length);
     expect(chineseCopy.comparisonRows.map((row) => row.dimension)).toEqual([
-      '编辑无需关闭缩放',
-      '键盘移动与缩放',
-      'TXT 恢复自定义字体配置',
-      '中英文编辑界面',
+      '编辑或替换公告文字',
+      '移动与缩放公告',
+      '添加自定义字体',
+      '公开产品页语言',
     ]);
     expect(englishCopy.comparisonRows).toHaveLength(chineseCopy.comparisonRows.length);
     expect(chineseCopy.faqItems).toHaveLength(englishCopy.faqItems.length);
@@ -80,10 +91,10 @@ describe('notice board creator landing copy', () => {
       '奇幻任务公告板 vs. RollForFantasy vs. Help Wanted!',
     );
     expect(englishCopy.comparisonDescription).toBe(
-      'Fewer editing steps, precise layout controls, and font settings that stay with your project.',
+      'Open each official link to check text/resize requirements, documented movement, font setup, and job replacement. These are vendor-page notes, not hands-on tests; checked 2026-10-11.',
     );
     expect(chineseCopy.comparisonDescription).toBe(
-      '少切换操作，更精细地排版，让字体配置随项目一起保留。',
+      '可打开官方链接核对文字与缩放要求、移动方式、字体设置和任务替换说明。以下为官方页面记载，并非实际交互测试；核验日期：2026-10-11。',
     );
     const englishComparisonStatusRows = englishCopy.comparisonRows.map((row) => [
       row.noticeBoardCreator.status,
@@ -97,16 +108,16 @@ describe('notice board creator landing copy', () => {
     ]);
 
     expect(englishCopy.comparisonRows.map((row) => row.dimension)).toEqual([
-      'Edit without disabling resize',
-      'Keyboard move & resize',
-      'Custom font settings in TXT',
-      'English & Chinese editor',
+      'Edit or replace notice text',
+      'Move and resize notices',
+      'Add a custom font',
+      'Public product page language',
     ]);
     expect(chineseComparisonStatusRows).toEqual(englishComparisonStatusRows);
     expect(englishComparisonStatusRows).toEqual([
-      ['supported', 'limited', 'unsupported'],
-      ['supported', 'unsupported', 'unsupported'],
-      ['supported', 'limited', 'unsupported'],
+      ['supported', 'limited', 'limited'],
+      ['supported', 'supported', 'limited'],
+      ['supported', 'supported', 'limited'],
       ['supported', 'limited', 'limited'],
     ]);
     expect(englishCopy.comparisonRows.map((row) => [
@@ -114,21 +125,23 @@ describe('notice board creator landing copy', () => {
       row.rollForFantasy.label,
       row.helpWanted.label,
     ])).toEqual([
-      ['Supported', 'Disable resize first', 'No notice text editor'],
-      ['Supported', 'No keyboard layout controls', 'No manual layout controls'],
-      ['Supported', 'Re-add font links', 'No custom-font settings'],
-      ['Supported', 'English UI', 'English UI'],
+      ['Edit text with resize enabled', 'Toggle resize off before adding text', 'Generate a board and replace one notice'],
+      ['Drag or use keyboard controls', 'Official instructions describe dragging and resizing', 'Manual move and resize controls are not described on this project page.'],
+      ['Add Google Fonts to a project', 'Add a Google Fonts link and family', 'Custom font controls are not described on this page'],
+      ['English and Chinese pages', 'Official tool instructions are in English', 'Official project page is in English'],
     ]);
     expect(chineseCopy.comparisonRows.map((row) => [
       row.noticeBoardCreator.label,
       row.rollForFantasy.label,
       row.helpWanted.label,
     ])).toEqual([
-      ['支持', '需先关闭缩放', '无公告正文编辑入口'],
-      ['支持', '无键盘排版控件', '无手动排版控件'],
-      ['支持', '需重加字体链接', '无自定义字体设置'],
-      ['支持', '英文界面', '英文界面'],
+      ['缩放开启时仍可编辑文字', '添加文字前需关闭缩放', '生成公告板并单独替换一条任务'],
+      ['拖动或使用键盘控件', '官方说明记录了拖动与缩放', '项目页未介绍手动移动或缩放控件。'],
+      ['可将 Google Fonts 加入项目', '添加 Google Fonts 链接和字体族名称', '官方页面未介绍自定义字体控件'],
+      ['提供中英文页面', '官方工具说明为英文', '官方项目页为英文'],
     ]);
+    expect(englishCopy.comparisonSourceCheckedLabel).toBe('Checked');
+    expect(chineseCopy.comparisonSourceCheckedLabel).toBe('核验日期');
   });
 
   it('rejects an unsupported locale with the received value', () => {

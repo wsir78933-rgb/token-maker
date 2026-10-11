@@ -194,6 +194,14 @@ export interface CoatWorkbenchCopy {
   exportPdf: string;
   print: string;
   exportBatch: string;
+  batchQueue: string;
+  batchQueueStatus: (count: number) => string;
+  batchQueueEmpty: string;
+  addBatchItem: string;
+  removeBatchItem: (projectName: string) => string;
+  batchItemAdded: string;
+  batchItemRemoved: string;
+  batchPreparing: string;
   pngExported: string;
   jpegExported: string;
   imageCopied: string;
@@ -771,8 +779,8 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
     exportFileType: 'File type', exportQuality: 'Quality', exportTransparentBackground: 'Transparent background',
     exportFileTypeNames: exportFileTypeNamesByLocale.en, downloadExport: (fileType) => formatDownloadExportLabel(fileType, 'en'),
     exportShare: 'Share', exportPrint: 'Print', exportPdf: 'Export PDF',
-    print: 'Print locally', exportBatch: 'Export batch ZIP', pngExported: 'PNG exported locally.', jpegExported: 'JPG exported locally.', imageCopied: 'Image copied to clipboard.', imageShared: 'Native share sheet opened.', pdfExported: 'PDF exported locally.',
-    printOpened: 'Print view opened locally.', batchExported: 'Batch ZIP exported locally.',
+    print: 'Print locally', exportBatch: 'Download queued PNG ZIP', batchQueue: 'Batch PNG ZIP queue', batchQueueStatus: (count) => `${count} ${count === 1 ? 'design' : 'designs'} queued for PNG ZIP.`, batchQueueEmpty: 'Add at least one design to create a batch PNG ZIP.', addBatchItem: 'Add current design to batch', removeBatchItem: (projectName) => `Remove ${projectName} from batch`, batchItemAdded: 'Design snapshot added to the batch queue.', batchItemRemoved: 'Design removed from the batch queue.', batchPreparing: 'Creating batch PNG ZIP…', pngExported: 'PNG exported locally.', jpegExported: 'JPG exported locally.', imageCopied: 'Image copied to clipboard.', imageShared: 'Native share sheet opened.', pdfExported: 'PDF exported locally.',
+    printOpened: 'Print view opened locally.', batchExported: 'Batch PNG ZIP downloaded locally.',
     exportOperationFailed: (message) => `Export failed: ${message}`,
     cloudExportSaved: 'Export saved.',
     cloudExportFailed: (message) => `Cloud save failed: ${message}`,
@@ -863,8 +871,8 @@ const workbenchCopyByLocale: Record<CoatLocale, CoatWorkbenchCopy> = {
     exportFileType: '文件类型', exportQuality: '质量', exportTransparentBackground: '透明背景',
     exportFileTypeNames: exportFileTypeNamesByLocale.zh, downloadExport: (fileType) => formatDownloadExportLabel(fileType, 'zh'),
     exportShare: '分享', exportPrint: '打印', exportPdf: '导出 PDF',
-    print: '本地打印', exportBatch: '导出批量 ZIP', pngExported: 'PNG 已导出到本地。', jpegExported: 'JPG 已导出到本地。', imageCopied: '图片已复制到剪贴板。', imageShared: '已打开系统分享面板。', pdfExported: 'PDF 已导出到本地。',
-    printOpened: '本地打印视图已打开。', batchExported: '批量 ZIP 已导出到本地。',
+    print: '本地打印', exportBatch: '下载队列 PNG ZIP', batchQueue: '批量 PNG ZIP 队列', batchQueueStatus: (count) => `已加入 ${count} 个设计到 PNG ZIP 队列。`, batchQueueEmpty: '至少加入一个设计后，才能创建批量 PNG ZIP。', addBatchItem: '将当前设计加入队列', removeBatchItem: (projectName) => `从队列移除 ${projectName}`, batchItemAdded: '设计快照已加入队列。', batchItemRemoved: '设计已从队列移除。', batchPreparing: '正在创建批量 PNG ZIP…', pngExported: 'PNG 已导出到本地。', jpegExported: 'JPG 已导出到本地。', imageCopied: '图片已复制到剪贴板。', imageShared: '已打开系统分享面板。', pdfExported: 'PDF 已导出到本地。',
+    printOpened: '本地打印视图已打开。', batchExported: '批量 PNG ZIP 已下载到本地。',
     exportOperationFailed: (message) => formatChineseFailure('导出失败', '请检查浏览器下载设置后重试', message),
     cloudExportSaved: '已保存。',
     cloudExportFailed: (message) => formatChineseFailure('云端保存失败', '请稍后重试', message),

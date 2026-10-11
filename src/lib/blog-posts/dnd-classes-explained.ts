@@ -14,6 +14,7 @@ export const dndClassesArticleHtml = String.raw`
 <p>New to tabletop RPGs? The major <strong>DND classes</strong> are the quickest clue to how Dungeons &amp; Dragons will feel once dice hit the table. Different class choices change your combat role, your decision-making speed, the kind of fantasy you bring to the party, and even how comfortable your first few sessions feel.</p>
 
 <p>The main <strong>DND classes</strong> become much easier to compare once you stop reading them as rulebook entries and start asking how they feel in play. Some give clean turns, some ask you to manage spells, and some are best when you already know the fantasy you want.</p>
+<p>This is a playstyle guide, not an official ranking of class difficulty. Features differ by edition, so check the official <a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes">2014 class rules (5e)</a> or <a href="https://www.dndbeyond.com/sources/dnd/br-2024/character-classes">2024 class rules (5.5e)</a> for the version your table uses.</p>
 
 <h2>What Are DND Classes?</h2>
 <p>In Dungeons &amp; Dragons, your class defines the way your character interacts with the game. New players spend so much time comparing <strong>DND classes</strong> because the choice shapes how you attack, how much magic you manage, how complex your turns feel, and what role you naturally fill inside a group.</p>
@@ -150,6 +151,7 @@ export const dndClassesArticleHtmlZh = String.raw`
 <p>刚接触桌面角色扮演游戏时，先搞懂 <strong>DND 职业</strong>，通常比硬啃一堆规则更快进入状态。不同的职业选择会直接影响你的战斗定位、每回合决策压力、角色幻想风格，甚至影响你第一次跑团时会不会觉得轻松顺手。</p>
 
 <p>主要的 <strong>DND 职业</strong> 放在规则书里看会有点像一堆名词，一到桌上差异就很明显：有的回合干净，有的要管法术，有的更适合已经知道自己想演什么的玩家。</p>
+<p>这是一份玩家视角的玩法比较，不是官方职业难度排名。不同版本的职业特性会有差异；请按桌上采用的规则查看<a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes">2014 职业规则（5e）</a>或<a href="https://www.dndbeyond.com/sources/dnd/br-2024/character-classes">2024 职业规则（5.5e）</a>。</p>
 
 <h2>什么是 DND 职业？</h2>
 <p>在《龙与地下城》里，职业决定了你的角色会如何参与游戏。很多新手会花很久比较不同的 <strong>DND 职业</strong>，因为职业会影响你怎么攻击、你要不要管理法术、你的回合会不会很复杂，以及你在队伍里自然承担什么位置。</p>

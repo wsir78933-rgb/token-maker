@@ -9,22 +9,27 @@ import {
   getBlogPagePath,
   getBlogPosts,
   getBlogPostsForPage,
+  getFeaturedBlogPost,
 } from './index';
 
 describe('blog pagination capacity', () => {
   it.each(['en', 'zh'] as const)(
-    'keeps all 66 regular $locale posts on seven pages in registry order',
+    'keeps all 67 regular $locale posts on seven pages in registry order',
     (locale) => {
       const pagePosts = [1, 2, 3, 4, 5, 6, 7].map((page) => getBlogPostsForPage(locale, page));
       const paginatedSlugs = pagePosts.flat().map((post) => post.slug);
+      const displayedFeaturedPost = getFeaturedBlogPost(locale);
+      if (!displayedFeaturedPost) {
+        throw new Error(`Expected a displayed featured post for locale=${locale}.`);
+      }
       const regularSlugs = getBlogPosts(locale)
-        .filter((post) => !post.featured)
+        .filter((post) => post.slug !== displayedFeaturedPost.slug)
         .map((post) => post.slug);
 
       expect(getBlogPageCount(locale)).toBe(7);
-      expect(pagePosts.map((posts) => posts.length)).toEqual([10, 10, 10, 10, 10, 10, 6]);
+      expect(pagePosts.map((posts) => posts.length)).toEqual([10, 10, 10, 10, 10, 10, 7]);
       expect(paginatedSlugs).toEqual(regularSlugs);
-      expect(new Set(paginatedSlugs).size).toBe(66);
+      expect(new Set(paginatedSlugs).size).toBe(67);
       expect(pagePosts[0][0]?.slug).toBe('dnd-halfling');
       expect(pagePosts[6].map((post) => post.slug)).toEqual([
         'dnd-druid-spells',
@@ -32,6 +37,7 @@ describe('blog pagination capacity', () => {
         'dnd-campaigns',
         'dnd-wizard-spells',
         'greenhouse-stardew',
+        'dnd-schools-of-magic',
         'dnd-warlock-spells',
       ]);
       expect(getBlogPostsForPage(locale, 8)).toEqual([]);

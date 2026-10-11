@@ -392,7 +392,7 @@ const chineseArmorCreatorCopy: ArmorCreatorCopy = {
   heroTitleLead: '免费',
   heroTitleEmphasis: '护甲搭配工具',
   heroTitleTail: '：为 RPG 角色、NPC 与奇幻世界提供灵感',
-  heroAction: 'Try for Free',
+  heroAction: '开始搭配',
   whatIsTitle: '什么是护甲搭配工具？',
   whatIsDescription:
     '护甲搭配工具是一款面向 RPG/TTRPG 玩家与 GM，以及奇幻角色和世界观创作者的在线视觉工具。你可以组合板甲、皮甲与布甲等部件，预览不同护甲造型，为角色设定、NPC 塑造和战役世界观创作获取灵感。在护甲搭配工具中，你还可以先在所选角色上查看这些组合，再调整最终造型。',

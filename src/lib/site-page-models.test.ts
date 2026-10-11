@@ -7,6 +7,7 @@ import {
   createCollectionMetadata,
   getAboutDocModel,
   getChangelogDocModel,
+  getFaqDocModel,
   getPrivacyDocModel,
   getStaticPageLastModified,
 } from '@/lib/site-page-models';
@@ -38,6 +39,39 @@ function getCollectionMetadataOpenGraph(metadata: Metadata) {
 }
 
 describe('static site support pages', () => {
+  it.each([
+    {
+      locale: 'en' as const,
+      expectedQuestions: [
+        'What is a DnD token maker?',
+        'Can I make Roll20 and Foundry VTT tokens here?',
+        'Can I export transparent PNG tokens?',
+        'Can I make circular, square, and token border styles?',
+        'Do my uploaded images leave the browser?',
+      ],
+    },
+    {
+      locale: 'zh' as const,
+      expectedQuestions: [
+        '什么是 DnD Token Maker？',
+        '可以制作 Roll20 和 Foundry VTT 的 Token 吗？',
+        '能导出透明 PNG Token 吗？',
+        '能做圆形、方形和带边框的 Token 吗？',
+        '上传的图片会离开浏览器吗？',
+      ],
+    },
+  ])('groups all five $locale FAQ questions by intent', ({ locale, expectedQuestions }) => {
+    const faqModel = getFaqDocModel(locale);
+    const groupedIndexes = faqModel.groups.flatMap((group) => group.itemIndexes);
+
+    expect(faqModel.items.map((item) => item.question)).toEqual(expectedQuestions);
+    expect(faqModel.groups.map((group) => group.itemIndexes)).toEqual([[0, 1], [2], [3, 4]]);
+    expect([...groupedIndexes].sort((first, second) => first - second)).toEqual([0, 1, 2, 3, 4]);
+    expect(faqModel.groups.every((group) => group.title.length > 0 && group.description.length > 0)).toBe(
+      true
+    );
+  });
+
   it('exposes About and Changelog copy for both locales', () => {
     const englishCopy = getCollectionPageCopy('en');
     const chineseCopy = getCollectionPageCopy('zh');
