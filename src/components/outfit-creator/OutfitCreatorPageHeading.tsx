@@ -6,7 +6,6 @@ import type { SiteLocale } from '@/lib/site-locale';
 import { getOutfitCreatorCopy } from '@/lib/outfit-creator/copy';
 import { OUTFIT_CREATOR_EDITOR_ID } from '@/lib/outfit-creator/constants';
 
-const OUTFIT_HERO_FADE_CLASS = 'outfit-creator-hero-fade';
 const OUTFIT_HERO_UNDERLINE_CLASS = 'outfit-creator-hero-underline';
 const OUTFIT_HERO_BUTTON_CLASS = 'outfit-creator-hero-button';
 const OUTFIT_HERO_BOUNCE_CLASS = 'is-bouncing';
@@ -51,18 +50,6 @@ function OutfitCreatorHeroStyles() {
         pointer-events: none;
       }
 
-      @keyframes outfit-creator-hero-fade-in-up {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      .${OUTFIT_HERO_FADE_CLASS} {
-        animation: outfit-creator-hero-fade-in-up 0.6s ease-out both;
-      }
-
-      .${OUTFIT_HERO_FADE_CLASS}.is-delayed-1 { animation-delay: 0.2s; }
-      .${OUTFIT_HERO_FADE_CLASS}.is-delayed-2 { animation-delay: 0.4s; }
-
       .${OUTFIT_HERO_BUTTON_CLASS} {
         transition: none;
       }
@@ -83,7 +70,6 @@ function OutfitCreatorHeroStyles() {
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .${OUTFIT_HERO_FADE_CLASS},
         .${OUTFIT_HERO_BUTTON_CLASS}.${OUTFIT_HERO_BOUNCE_CLASS} {
           animation: none;
         }
@@ -149,7 +135,7 @@ function OutfitCreatorHeroButton({ label }: { label: string }) {
     <button
       ref={buttonRef}
       type="button"
-      className={`${OUTFIT_HERO_BUTTON_CLASS} ${OUTFIT_HERO_FADE_CLASS} is-delayed-2 inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-foreground px-8 py-6 text-base font-medium text-background`}
+      className={`${OUTFIT_HERO_BUTTON_CLASS} inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-foreground px-8 py-6 text-base font-medium text-background`}
       onClick={handleClick}
     >
       {label}
@@ -170,7 +156,7 @@ export function OutfitCreatorPageHeading({ locale }: { locale: SiteLocale }) {
       <div className="mx-auto flex max-w-4xl flex-col items-center">
         <h1
           id="outfit-creator-heading"
-          className={`${OUTFIT_HERO_FADE_CLASS} mb-6 text-4xl font-bold leading-tight tracking-tighter sm:text-5xl md:text-6xl`}
+          className="mb-6 text-4xl font-bold leading-tight tracking-tighter sm:text-5xl md:text-6xl"
         >
           {heroTitleParts.lead}
           <span className={`relative inline-block ${locale === 'zh' ? 'mb-8 sm:mb-12' : ''}`}>
@@ -186,7 +172,7 @@ export function OutfitCreatorPageHeading({ locale }: { locale: SiteLocale }) {
 
         <p
           id="outfit-creator-hero-description"
-          className={`${OUTFIT_HERO_FADE_CLASS} is-delayed-1 mx-auto mb-9 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg`}
+          className="mx-auto mb-9 max-w-2xl text-base leading-snug text-muted-foreground sm:text-lg"
         >
           {copy.description}
         </p>
