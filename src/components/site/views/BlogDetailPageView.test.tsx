@@ -108,22 +108,6 @@ describe('BlogDetailPageView CTA links', () => {
   });
 });
 
-describe('BlogDetailPageView greenhouse recommendations', () => {
-  afterEach(() => {
-    cleanup();
-  });
-
-  it.each(localeCases)('omits generic DnD recommendations for $locale greenhouse article', (testCase) => {
-    render(<BlogDetailPageView locale={testCase.locale} slug="greenhouse-stardew" />);
-
-    expect(screen.queryByText(testCase.actionCardLabel)).toBeNull();
-    expect(
-      screen.queryByRole('heading', { name: testCase.bottomCtaHeading, level: 2 }),
-    ).toBeNull();
-    expect(screen.queryByRole('heading', { name: testCase.relatedHeading, level: 2 })).toBeNull();
-  });
-});
-
 describe('BlogDetailPageView editorial metadata', () => {
   afterEach(() => {
     cleanup();

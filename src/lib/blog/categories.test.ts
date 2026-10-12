@@ -2,7 +2,6 @@ import { describe, expect, test } from 'vitest';
 
 import {
   BLOG_CATEGORY_SLUGS,
-  UNCATEGORIZED_BLOG_POST_SLUG,
   assignBlogPostCategory,
   buildBlogCategoryBreadcrumbStructuredData,
   buildBlogCategoryCollectionStructuredData,
@@ -202,28 +201,22 @@ describe('blog category pagination metadata', () => {
 });
 
 describe('blog post category assignment', () => {
-  test('covers all 69 unique slugs, keeps en/zh aligned, and leaves greenhouse-stardew uncategorized', () => {
+  test('covers all 68 unique slugs and keeps en/zh categories aligned', () => {
     const englishSlugs = postsByLocale.en.map((post) => post.slug);
     const chineseSlugs = postsByLocale.zh.map((post) => post.slug);
 
-    expect(englishSlugs).toHaveLength(69);
-    expect(new Set(englishSlugs).size).toBe(69);
+    expect(englishSlugs).toHaveLength(68);
+    expect(new Set(englishSlugs).size).toBe(68);
     expect(chineseSlugs).toEqual(englishSlugs);
     expect(englishSlugs).toContain('dnd-schools-of-magic');
     expect(englishSlugs).toContain('dnd-warlock-spells');
     expect(englishSlugs).toContain('best-dnd-classes-for-small-parties');
-    expect(englishSlugs).toContain(UNCATEGORIZED_BLOG_POST_SLUG);
 
     for (let index = 0; index < englishSlugs.length; index += 1) {
       const englishPost = postsByLocale.en[index];
       const chinesePost = postsByLocale.zh[index];
       expect(chinesePost?.slug).toBe(englishPost?.slug);
       expect(chinesePost?.category).toBe(englishPost?.category);
-
-      if (englishPost?.slug === UNCATEGORIZED_BLOG_POST_SLUG) {
-        expect(englishPost.category).toBeUndefined();
-        continue;
-      }
 
       expect(englishPost?.category).toBeDefined();
       expect(EXPECTED_CATEGORY_SLUGS).toContain(englishPost?.category);
@@ -236,8 +229,6 @@ describe('blog post category assignment', () => {
     expect(getBlogPost('zh', 'dnd-schools-of-magic')?.category).toBe('spells');
     expect(getBlogPost('en', 'dnd-warlock-spells')?.category).toBe('spells');
     expect(getBlogPost('zh', 'dnd-warlock-spells')?.category).toBe('spells');
-    expect(getBlogPost('en', UNCATEGORIZED_BLOG_POST_SLUG)?.category).toBeUndefined();
-    expect(getBlogPost('zh', UNCATEGORIZED_BLOG_POST_SLUG)?.category).toBeUndefined();
   });
 
   test('returns published posts for a category in registry order and omits placeholders', () => {
@@ -249,7 +240,6 @@ describe('blog post category assignment', () => {
         .map((post) => post.slug),
     );
     expect(publishedMonsters.some((post) => post.placeholder)).toBe(false);
-    expect(publishedMonsters.some((post) => post.slug === UNCATEGORIZED_BLOG_POST_SLUG)).toBe(false);
 
     const englishCharacters = getBlogPostsByCategory('en', 'characters');
     const chineseCharacters = getBlogPostsByCategory('zh', 'characters');
@@ -295,14 +285,10 @@ describe('blog post category assignment', () => {
       'Unknown blog category slug: "token_vtt".',
     );
     expect(() => getBlogCategory('fr' as SiteLocale, 'spells')).toThrow('Unknown blog locale: "fr".');
-    expect(isBlogCategorySlug('greenhouse-stardew')).toBe(false);
     expect(isBlogCategorySlug('token-vtt')).toBe(false);
 
     expect(() => assignBlogPostCategory(minimalBlogPost('missing-slug-for-category'))).toThrow(
       'Blog post slug="missing-slug-for-category" is missing a required category.',
-    );
-    expect(() => assignBlogPostCategory(minimalBlogPost(UNCATEGORIZED_BLOG_POST_SLUG, 'spells'))).toThrow(
-      `Blog post slug="${UNCATEGORIZED_BLOG_POST_SLUG}" must remain uncategorized, received category="spells".`,
     );
     expect(() => assignBlogPostCategory(minimalBlogPost('dnd-fighter', 'spells'))).toThrow(
       'Blog post slug="dnd-fighter" has conflicting category="spells", mapped="characters".',
@@ -315,7 +301,6 @@ describe('existing blog queries after category assignment', () => {
     expect(getBlogPostPath('en', 'dnd-halfling')).toBe('/blog/dnd-halfling');
     expect(getBlogPostPath('zh', 'dnd-halfling')).toBe('/zh/blog/dnd-halfling');
     expect(getBlogPostPath('en', 'dnd-schools-of-magic')).toBe('/blog/dnd-schools-of-magic');
-    expect(getBlogPostPath('zh', 'greenhouse-stardew')).toBe('/zh/blog/greenhouse-stardew');
 
     expect(getBlogPost('en', 'dnd-halfling')?.slug).toBe('dnd-halfling');
     expect(getBlogPost('zh', 'dnd-kobold')?.slug).toBe('dnd-kobold');

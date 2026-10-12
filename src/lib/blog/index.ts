@@ -13,7 +13,6 @@ export type { BlogCategorySlug, BlogPost, BlogPostFaqItem, BlogPostHeading, Plac
 export { addHeadingAnchors } from './html-utils';
 export {
   BLOG_CATEGORY_SLUGS,
-  UNCATEGORIZED_BLOG_POST_SLUG,
   assignBlogPostCategory,
   buildBlogCategoryBreadcrumbStructuredData,
   buildBlogCategoryCollectionStructuredData,
@@ -131,10 +130,6 @@ export function getRelatedBlogPosts(locale: SiteLocale, slug: string, limit = 3)
   const explicitMatches = (currentPost.relatedSlugs ?? [])
     .map((relatedSlug) => candidatePosts.find((post) => post.slug === relatedSlug))
     .filter((post): post is BlogPost => Boolean(post));
-
-  if (currentPost.slug === 'greenhouse-stardew') {
-    return explicitMatches.slice(0, limit);
-  }
 
   const fallbackMatches = candidatePosts
     .filter((post) => !explicitMatches.includes(post))

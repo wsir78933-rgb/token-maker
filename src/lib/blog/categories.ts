@@ -15,8 +15,6 @@ export const BLOG_CATEGORY_SLUGS = [
   'rules-and-prep',
 ] as const satisfies readonly BlogCategorySlug[];
 
-export const UNCATEGORIZED_BLOG_POST_SLUG = 'greenhouse-stardew';
-
 export type BlogCategoryCopy = {
   slug: BlogCategorySlug;
   label: string;
@@ -203,16 +201,6 @@ export function getBlogCategoryPath(locale: SiteLocale, categorySlug: string): s
 }
 
 export function assignBlogPostCategory(post: BlogPost): BlogPost {
-  if (post.slug === UNCATEGORIZED_BLOG_POST_SLUG) {
-    if (post.category !== undefined) {
-      throw new Error(
-        `Blog post slug=${formatIllegalValue(post.slug)} must remain uncategorized, received category=${formatIllegalValue(post.category)}.`,
-      );
-    }
-
-    return post;
-  }
-
   const mappedCategory = BLOG_POST_CATEGORY_BY_SLUG[post.slug];
   if (mappedCategory === undefined) {
     throw new Error(`Blog post slug=${formatIllegalValue(post.slug)} is missing a required category.`);

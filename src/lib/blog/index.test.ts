@@ -72,7 +72,7 @@ const FIRST_BLOG_PAGE_SLUGS = [
 ];
 const SECOND_BLOG_PAGE_START_SLUGS = [DND_BACKGROUNDS_SLUG, DND_CLASSES_COMPARISON_SLUG];
 
-describe('blog archive and greenhouse recommendations', () => {
+describe('blog archive and recommendations', () => {
   test.each(['en', 'zh'] as const)(
     'keeps every published $locale post reachable exactly once with the displayed feature outside the archive',
     (locale) => {
@@ -103,9 +103,8 @@ describe('blog archive and greenhouse recommendations', () => {
   );
 
   test.each(['en', 'zh'] as const)(
-    'does not fill missing greenhouse recommendations for $locale while preserving other article fallback',
+    'preserves article recommendation fallback for $locale',
     (locale) => {
-      expect(getRelatedBlogPosts(locale, 'greenhouse-stardew', 4)).toEqual([]);
       expect(getRelatedBlogPosts(locale, 'dnd-meaning', 4)).toHaveLength(4);
     },
   );

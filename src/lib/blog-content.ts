@@ -3,7 +3,6 @@ export {
   BLOG_POSTS_PER_PAGE,
   BLOG_PLACEHOLDER_MODE,
   BLOG_CATEGORY_SLUGS,
-  UNCATEGORIZED_BLOG_POST_SLUG,
   getBlogPosts,
   getFeaturedBlogPost,
   getBlogPost,
