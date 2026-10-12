@@ -1,10 +1,28 @@
-import { describe, expect, it } from 'vitest';
-import { unstable_getResponseFromNextConfig } from 'next/experimental/testing/server';
+import { AsyncLocalStorage } from 'node:async_hooks';
+import { beforeAll, describe, expect, it } from 'vitest';
+import {
+  escapeHeaderSource,
+  isSafeRegex,
+  matchHeaders,
+  requestContextFromRequest,
+} from 'vinext/config/config-matchers';
 import nextConfig from '../../next.config';
+
+let getNextConfigResponse: typeof import('next/experimental/testing/server').unstable_getResponseFromNextConfig;
+
+beforeAll(async () => {
+  const runtimeGlobal = globalThis as typeof globalThis & {
+    AsyncLocalStorage?: typeof AsyncLocalStorage;
+  };
+  runtimeGlobal.AsyncLocalStorage ??= AsyncLocalStorage;
+  ({ unstable_getResponseFromNextConfig: getNextConfigResponse } = await import(
+    'next/experimental/testing/server'
+  ));
+});
 
 describe('security headers', () => {
   it('provides a static CSP for cacheable public routes without a request nonce', async () => {
-    const response = await unstable_getResponseFromNextConfig({
+    const response = await getNextConfigResponse({
       url: 'https://www.tokenmaker.one/about',
       nextConfig,
     });
@@ -22,6 +40,127 @@ describe('security headers', () => {
     expect(contentSecurityPolicy).not.toContain("'strict-dynamic'");
   });
 
+  it('matches the public CSP with both framework matchers while preserving route exclusions', async () => {
+    if (typeof nextConfig.headers !== 'function') {
+      throw new Error('nextConfig.headers must be a function to define security headers');
+    }
+
+    const routeHeaders = await nextConfig.headers();
+    const vinextHeaderRules = routeHeaders.map((routeHeader) => ({
+      source: routeHeader.source,
+      headers: routeHeader.headers.map((header) => ({ key: header.key, value: header.value })),
+    }));
+    const aboutResponse = await getNextConfigResponse({
+      url: 'https://www.tokenmaker.one/about',
+      nextConfig,
+    });
+    const staticContentSecurityPolicy = aboutResponse.headers.get('Content-Security-Policy');
+
+    if (staticContentSecurityPolicy === null) {
+      throw new Error('Expected /about to receive the configured static Content-Security-Policy');
+    }
+
+    const generalStaticCspRule = routeHeaders.find((routeHeader) =>
+      routeHeader.headers.some(
+        (header) =>
+          header.key === 'Content-Security-Policy' && header.value === staticContentSecurityPolicy
+      )
+    );
+
+    if (!generalStaticCspRule) {
+      throw new Error('Could not find the general static CSP rule matching /about');
+    }
+
+    const vinextMatcherPattern = `^${escapeHeaderSource(generalStaticCspRule.source)}$`;
+    expect(isSafeRegex(vinextMatcherPattern, 'i')).toBe(true);
+
+    const requestContext = requestContextFromRequest(new Request('https://www.tokenmaker.one/'));
+    const publicPaths = [
+      '/',
+      '/zh',
+      '/about',
+      '/zh/about',
+      '/coat-of-arms-maker',
+      '/zh/coat-of-arms-maker',
+      '/apiary',
+      '/sharex',
+      '/zh/sharex',
+      '/not-opengraph-image',
+      '/assets/image.avif/preview',
+    ];
+    const staticAssetExtensions = [
+      'avif',
+      'bmp',
+      'css',
+      'gif',
+      'ico',
+      'jpg',
+      'jpeg',
+      'js',
+      'map',
+      'mjs',
+      'otf',
+      'png',
+      'svg',
+      'ttf',
+      'txt',
+      'webmanifest',
+      'webp',
+      'woff',
+      'woff2',
+      'xml',
+    ];
+    const pathsWithoutGeneralStaticCsp = [
+      '/api',
+      '/api/share',
+      '/_next',
+      '/_next/static/chunk.js',
+      '/share',
+      '/share/token-id',
+      '/zh/share',
+      '/zh/share/token-id',
+      '/scroll-creator',
+      '/zh/scroll-creator',
+      '/notice-board-creator',
+      '/zh/notice-board-creator',
+      '/opengraph-image',
+      '/nested/opengraph-image',
+      '/nested/opengraph-image/variant',
+      ...staticAssetExtensions.map((extension) => `/assets/icon.${extension}`),
+      ...staticAssetExtensions.map((extension) => `/assets/icon.${extension.toUpperCase()}`),
+      '/nested/assets/icon.PNG',
+    ];
+
+    for (const pathname of publicPaths) {
+      const nextResponse = await getNextConfigResponse({
+        url: `https://www.tokenmaker.one${pathname}`,
+        nextConfig,
+      });
+      const nextContentSecurityPolicy = nextResponse.headers.get('Content-Security-Policy');
+      const vinextContentSecurityPolicy = matchHeaders(pathname, vinextHeaderRules, requestContext).find(
+        (header) => header.key === 'Content-Security-Policy'
+      )?.value;
+
+      expect(nextContentSecurityPolicy).toBe(staticContentSecurityPolicy);
+      expect(vinextContentSecurityPolicy).toBe(staticContentSecurityPolicy);
+    }
+
+    for (const pathname of pathsWithoutGeneralStaticCsp) {
+      const nextResponse = await getNextConfigResponse({
+        url: `https://www.tokenmaker.one${pathname}`,
+        nextConfig,
+      });
+      const nextContentSecurityPolicy = nextResponse.headers.get('Content-Security-Policy');
+      const vinextContentSecurityPolicy =
+        matchHeaders(pathname, vinextHeaderRules, requestContext).find(
+          (header) => header.key === 'Content-Security-Policy'
+        )?.value ?? null;
+
+      expect(vinextContentSecurityPolicy).toBe(nextContentSecurityPolicy);
+      expect(nextContentSecurityPolicy).not.toBe(staticContentSecurityPolicy);
+    }
+  });
+
   it('allows Google Fonts only on both scroll creator locales', async () => {
     const scrollCreatorUrls = [
       'https://www.tokenmaker.one/scroll-creator',
@@ -29,7 +168,7 @@ describe('security headers', () => {
     ];
 
     for (const url of scrollCreatorUrls) {
-      const response = await unstable_getResponseFromNextConfig({ url, nextConfig });
+      const response = await getNextConfigResponse({ url, nextConfig });
       const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
 
       expect(contentSecurityPolicy).toContain("style-src 'self' 'unsafe-inline' https://fonts.googleapis.com");
@@ -46,7 +185,7 @@ describe('security headers', () => {
     ];
 
     for (const url of noticeBoardUrls) {
-      const response = await unstable_getResponseFromNextConfig({ url, nextConfig });
+      const response = await getNextConfigResponse({ url, nextConfig });
       const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
 
       expect(contentSecurityPolicy).toContain("style-src 'self' 'unsafe-inline' https://fonts.googleapis.com");
@@ -67,7 +206,7 @@ describe('security headers', () => {
     const generalStaticCspSource = contentSecurityPolicySources.find((source) => source.includes('(?!api'));
 
     expect(generalStaticCspSource).toBeDefined();
-    expect(generalStaticCspSource).toContain('scroll-creator(?:/|$)');
+    expect(generalStaticCspSource).toContain('scroll-creator$|scroll-creator/');
     expect(contentSecurityPolicySources).toContain('/scroll-creator');
     expect(contentSecurityPolicySources).toContain('/zh/scroll-creator');
   });
@@ -84,11 +223,11 @@ describe('security headers', () => {
     const generalStaticCspSource = contentSecurityPolicySources.find((source) => source.includes('(?!api'));
 
     expect(generalStaticCspSource).toBeDefined();
-    expect(generalStaticCspSource).toContain('notice-board-creator(?:/|$)');
+    expect(generalStaticCspSource).toContain('notice-board-creator$|notice-board-creator/');
     expect(contentSecurityPolicySources).toContain('/notice-board-creator');
     expect(contentSecurityPolicySources).toContain('/zh/notice-board-creator');
 
-    const generalPageResponse = await unstable_getResponseFromNextConfig({
+    const generalPageResponse = await getNextConfigResponse({
       url: 'https://www.tokenmaker.one/about',
       nextConfig,
     });
@@ -113,14 +252,14 @@ describe('security headers', () => {
       'https://www.tokenmaker.one/zh/share/token-id',
     ];
 
-    const generalPageResponse = await unstable_getResponseFromNextConfig({
+    const generalPageResponse = await getNextConfigResponse({
       url: 'https://www.tokenmaker.one/about',
       nextConfig,
     });
     const fixedContentSecurityPolicy = generalPageResponse.headers.get('Content-Security-Policy');
 
     for (const url of cacheableUrls) {
-      const response = await unstable_getResponseFromNextConfig({ url, nextConfig });
+      const response = await getNextConfigResponse({ url, nextConfig });
       const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
 
       expect(contentSecurityPolicy).toContain("default-src 'self'");
@@ -131,7 +270,7 @@ describe('security headers', () => {
     }
 
     for (const url of nonceProtectedUrls) {
-      const response = await unstable_getResponseFromNextConfig({ url, nextConfig });
+      const response = await getNextConfigResponse({ url, nextConfig });
       expect(response.headers.get('Content-Security-Policy')).toBeNull();
     }
   });
@@ -146,7 +285,7 @@ describe('security headers', () => {
     ];
 
     for (const url of nonDocumentUrls) {
-      const response = await unstable_getResponseFromNextConfig({ url, nextConfig });
+      const response = await getNextConfigResponse({ url, nextConfig });
       expect(response.headers.get('Content-Security-Policy')).toBeNull();
     }
   });

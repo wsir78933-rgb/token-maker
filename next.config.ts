@@ -35,7 +35,8 @@ const nextConfig: NextConfig = {
       { source: '/(.*)', headers: securityHeaders },
       {
         source:
-          '/((?!api(?:/|$)|_next(?:/|$)|share(?:/|$)|zh/share(?:/|$)|scroll-creator(?:/|$)|zh/scroll-creator(?:/|$)|notice-board-creator(?:/|$)|zh/notice-board-creator(?:/|$)|(?:.*\\/)?opengraph-image(?:/|$)|.*\\.(?:avif|bmp|css|gif|ico|jpe?g|js|map|mjs|otf|png|svg|ttf|txt|webmanifest|webp|woff2?|xml)$).*)',
+          '/((?!api$|api/|_next$|_next/|share$|share/|zh/share$|zh/share/|scroll-creator$|scroll-creator/|zh/scroll-creator$|zh/scroll-creator/|notice-board-creator$|notice-board-creator/|zh/notice-board-creator$|zh/notice-board-creator/|.*\\/opengraph-image$|.*\\/opengraph-image/|opengraph-image$|opengraph-image/|' +
+          '.*\\.[aA][vV][iI][fF]$|.*\\.[bB][mM][pP]$|.*\\.[cC][sS][sS]$|.*\\.[gG][iI][fF]$|.*\\.[iI][cC][oO]$|.*\\.[jJ][pP][gG]$|.*\\.[jJ][pP][eE][gG]$|.*\\.[jJ][sS]$|.*\\.[mM][aA][pP]$|.*\\.[mM][jJ][sS]$|.*\\.[oO][tT][fF]$|.*\\.[pP][nN][gG]$|.*\\.[sS][vV][gG]$|.*\\.[tT][tT][fF]$|.*\\.[tT][xX][tT]$|.*\\.[wW][eE][bB][mM][aA][nN][iI][fF][eE][sS][tT]$|.*\\.[wW][eE][bB][pP]$|.*\\.[wW][oO][fF][fF]$|.*\\.[wW][oO][fF][fF]2$|.*\\.[xX][mM][lL]$)[\\s\\S]{0,})',
         headers: [staticPublicContentSecurityPolicyHeader],
       },
       {
