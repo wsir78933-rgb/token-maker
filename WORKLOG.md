@@ -1,5 +1,60 @@
 # WORKLOG
 
+## 交接单 · 2026-10-12 08:14 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+- 本次 offhand 只核对已完成的内容 SEO 任务证据并写交接，不继续实现产品。已完成范围为 C01-C03，以及 C04/C05/C06/C08/C11/C12/C13。
+
+### 已完成
+
+- C01：纹章编辑器新增当前编辑器会话内的批量队列，按所选尺寸和透明背景设置将多个设计导出为 PNG 并下载 ZIP；单个设计仍支持 PNG/JPEG/PDF。队列不写入持久化存储。
+- C01 实现/测试落点为 `src/components/coat-of-arms/ExportMenu.tsx`、`src/lib/coat-of-arms/export.ts` 及对应测试；最终浏览器 gate 只回读英中空队列与 ZIP 禁用状态，没有声称重新真实下载了 ZIP。
+- C02：仅更新骰子页 EN/ZH `metadataDescription`，与既有骰盘边界对齐：七种骰子、最多 15 颗混合骰、整数加值、查看并复制结果、当前页面会话最多保留 20 条记录。既有 FAQ 说明 4d6 去最低点需手动识别并相加，工具不会自动移除最低骰。
+- C03：`/faq` 与 `/zh/faq` 保留五个问题并按意图分组；编辑器/平台兼容/样式问题回到编辑器，尺寸问题去方形 Token 指南，图片处理问题去隐私页。方形指南 quick action 指向真实双语路由。
+- C03 对应 FAQ 双语视图和模型分别在 `src/components/site/views/FaqDocPageView.tsx`、`src/lib/site-page-models.ts`；EN/ZH 方形指南代表链接已在原生验收中点击到达目标页。
+- C04：博客分页只排除首页实际展示的主推文章；普通列表可达英中各 7 页、68 篇，第二篇主推文章出现在第 7 页。
+- C05：四篇 D&D 规则文章补双语官方来源，并区分 2014、2024/5.5e 与 UA 试玩规则及适用条件；未声称逐条点击全部引文。
+- C06：纹章/公告板竞品比较增加可点来源和核验日期，收窄无法从来源证实的功能结论；公告板手机表格在原容器横滚。
+- C08：隐藏温室文章中无关 D&D 推荐和正文通用 CTA；文章正文、目录及全站导航保留。
+- C11：周期表模板说明旁增加 IUPAC、PubChem 来源链接；仅 IUPAC 显示页面核实的 2022-05-04 版本日期；118 条元素记录未改。
+- C12：只将中文护甲页 hero 按钮改为“开始搭配”，原编辑器锚点不变；英文仍为 “Try for Free”。
+- C13：英中隐私页保留既有可见标签 `Google Ads Settings` / `Google 广告设置` 和 `aboutads.info`，分别链接至 Google My Ad Center 与 DAA WebChoices；没有扩写隐私声明或新增法律判断。
+- 页面/SEO 标题、FAQ 问题和比较表列标题受保护；C10 方形尺寸建议与 C15 导入/导出 FAQ 未改。C07/C09/C14 未扩展。
+- 独立合并源码审查未发现范围内阻塞；原 main 技术 SEO 改动、先行保存的 WORKLOG 与本次 41 个任务路径均已保留。
+- 功能提交 `ae8bcf98cadb9df02c0322cef1ce71cc82e00485` 已在 main 合并为 `66fdde14a466590dd07fb91c5382a0c9957fabda`；合并树与无冲突预演一致。
+- 仅创建过一个 `内容 seo` 工作树及 `content-seo` 本地分支；合并后已普通删除。未 push、部署、新增依赖或使用 Orca。
+- 合并后全局检查历史结果：typecheck、Vitest、lint、Workers types、vinext build、Workers dry-run 六条命令均退出 0；Vitest 439 文件、3964 passed、1 skipped；lint 0 errors/10 warnings。
+- 合并后 EGo 原生 6/6 gate PASS，覆盖 D&D 双语作者、温室页、纹章 metadata/来源、空批量队列、手机比较表横滚和 FAQ 代表链接；没有再次真实下载批量 ZIP。
+
+### 做到一半
+
+- 产品实现、验证、合并与工作树清理均已完成并归档；本交接块是新增记录，尚未存档或暂存，也未提交。
+
+### 下一步
+
+- 无待续实现。若需接手新工作，先读 `/tmp/tokenmaker-content-seo-round2.3egfado_/integration/finalization.md` 与原始证据；使用 `$pickup` 恢复本交接，不自动续做旧清单。
+- offhand 只在 `WORKLOG.md` 顶部新增本条；不重跑测试、构建或浏览器，不暂存或提交 WORKLOG。
+
+### 踩过的坑
+
+- `acceptance.md` 是较早的预合并记录，含旧 HEAD `c60dc7a`、3960 passed/12 lint warnings 及工作树未删状态；合并后事实以 `integration/finalization.md`、`integration/review/merge-review.md` 和 `integration/validation/` 原始输出为准。
+- main 在合并前另有用户 WORKLOG 变更并由 `0961fbe` 保存；把最终 main 与 `c60dc7a` 直接比较会把主线已有改动误算为本任务越界。合并树与预演一致，独立审查确认原 main 改动保留。
+- offhand 前核对的 WORKLOG 快照 SHA-256 为 `7366a0d592b796dd2878af3b1df6744219474d93f6531b0362723d0d63776564`；本条写入后只应有 WORKLOG 未暂存改动。
+- 合并验收有一条 `viewport width=1` 顶栏运行日志，正常尺寸页面未复现，未归因为本任务或修复；Greenhouse 的宽泛 D&D regex 会命中导航/隐藏链接，不能当 CTA 数量。
+- 清理脚本的 guard/路径错误已记录在 `/tmp/tokenmaker-content-seo-round2.3egfado_/integration/cleanup/attempt-errors.md`；均不是产品失败，实际普通删除命令和最后状态均已核实。
+
+### 怎么验证
+
+- 原始合并后命令与输出在 `/tmp/tokenmaker-content-seo-round2.3egfado_/integration/validation/`：`pnpm typecheck`、`pnpm exec vitest run --maxWorkers=2`、`pnpm lint`、`pnpm check:workers-types`、`pnpm exec vinext build`、`pnpm check:workers-build` 均 exit 0；Workers build 输出明确 `--dry-run: exiting now.`。
+- Vitest stderr 有 27 条 jsdom 未实现提示（导航、scrollTo、canvas）；lint 有 10 条警告；Wrangler 有代理环境提示；build 有路由静态分类、chunk 大小及插件耗时提示。它们记在原始日志，本次 offhand 未重跑。
+- 原生验收矩阵在 `/tmp/tokenmaker-content-seo-round2.3egfado_/integration/browser/final-browser-gates.json`；只代表其中六个合并后 gate，不覆盖 C01 实际 ZIP 下载、骰子页或所有来源逐条点击。自有 41140 预览已停止；40001 用户服务未动。
+- 任务期完整原生验收矩阵见 `/tmp/tokenmaker-content-seo-round2.3egfado_/browser/final-browser-gates.json`；来源台账入口为 `/tmp/tokenmaker-content-seo-round2.3egfado_/c05-sources.md`、`c06-sources.md`、`source-ledger.md`。合并后抽查矩阵另见 `/tmp/tokenmaker-content-seo-round2.3egfado_/integration/browser/final-browser-gates.json`，仅六个代表 gate，不替代任务期全矩阵或逐条引文点击。
+- C01-C03 手动复核：纹章页 `/coat-of-arms-maker` 与 `/zh/coat-of-arms-maker` → 打开导出菜单 → 加入至少两个设计 → 下载批量 ZIP；骰子页 `/dice-roller-dnd`、`/zh/dice-roller-dnd`；FAQ `/faq`、`/zh/faq`。合并后 gate 只回读空队列状态和部分 FAQ 代表链接，没有再次真实下载 ZIP。
+- 七项实现阶段 EN/ZH 手验路径：C04 `/blog/page/7`、`/zh/blog/page/7`；C05 `/blog/dnd-death-knight`、`/zh/blog/dnd-death-knight`；C06 `/coat-of-arms-maker`、`/zh/coat-of-arms-maker` 及 `/notice-board-creator`、`/zh/notice-board-creator`；C08 `/blog/greenhouse-stardew`、`/zh/blog/greenhouse-stardew`。
+- C11 `/periodic-table-creator`、`/zh/periodic-table-creator`；C12 `/armor-creator`、`/zh/armor-creator`；C13 `/privacy`、`/zh/privacy`。以上为实现验收阶段复核路径；合并后六个 gate 未覆盖 C01 实际 ZIP 下载、C02 骰子页或 C11/C12/C13。
+- .wrangler 运行数据删除前已归档并复验：`/tmp/tokenmaker-content-seo-round2.3egfado_/integration/content-seo-wrangler-state.tar.gz`，SHA-256 `033c3ea88c8e7c369afa6bcda4bdd52a1a0d5e60efa13a8a6f64e92c57a76b2c`。
+
 ## 交接单 · 2026-10-11 23:35 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
