@@ -120,31 +120,36 @@ describe('root layout route boundaries', () => {
     expect(getRequestNonce).not.toHaveBeenCalled();
   });
 
-  it('requests a nonce for each local Coat Maker document root and loads analytics without advertising', async () => {
+  it('loads analytics without a request nonce or advertising in both Coat Maker document roots', async () => {
     const EnglishCoatMakerRootLayout = (await import('./(maker-en)/layout')).default;
     const ChineseCoatMakerRootLayout = (await import('./(maker-zh)/layout')).default;
 
     expectAnalyticsScripts(
       await renderLayout(EnglishCoatMakerRootLayout),
-      ['microsoft-clarity', 'google-analytics'],
-      'layout-request-nonce'
+      ['microsoft-clarity', 'google-analytics']
     );
-    expect(getRequestNonce).toHaveBeenCalledTimes(1);
+    expect(getRequestNonce).not.toHaveBeenCalled();
     expectAnalyticsScripts(
       await renderLayout(ChineseCoatMakerRootLayout),
-      ['microsoft-clarity', 'google-analytics'],
-      'layout-request-nonce'
+      ['microsoft-clarity', 'google-analytics']
     );
-    expect(getRequestNonce).toHaveBeenCalledTimes(2);
+    expect(getRequestNonce).not.toHaveBeenCalled();
   });
 
-  it('fails fast when a local Coat Maker document root cannot read its nonce', async () => {
+  it('renders both Coat Maker document roots when no request nonce is available', async () => {
     const nonceError = new Error('getRequestNonce requires a non-empty CSP nonce; received value: null');
     vi.mocked(getRequestNonce).mockRejectedValueOnce(nonceError);
 
     const EnglishCoatMakerRootLayout = (await import('./(maker-en)/layout')).default;
+    const ChineseCoatMakerRootLayout = (await import('./(maker-zh)/layout')).default;
 
-    await expect(renderLayout(EnglishCoatMakerRootLayout)).rejects.toThrow(nonceError.message);
+    for (const rootLayout of [EnglishCoatMakerRootLayout, ChineseCoatMakerRootLayout]) {
+      const markup = await renderLayout(rootLayout);
+
+      expect(markup).toContain('<main>route content</main>');
+      expectAnalyticsScripts(markup, ['microsoft-clarity', 'google-analytics']);
+    }
+    expect(getRequestNonce).not.toHaveBeenCalled();
   });
 
   it('keeps public-share pages below the root layouts without AdSense', () => {

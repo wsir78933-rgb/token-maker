@@ -72,3 +72,31 @@ describe('share analytics events', () => {
     expectShareEventWithoutCapabilityOrPageLocation(gtag, 'share_page_cta_click');
   });
 });
+
+describe('tool directory analytics', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+    const analyticsWindow = window as AnalyticsWindow;
+    delete analyticsWindow.gtag;
+    delete analyticsWindow.__tokenMakerGtagConfigured;
+  });
+
+  it('emits tool_directory_click with the tool id, locale, href, and page strings', async () => {
+    const { gtag, trackToolDirectoryClick } = await loadProductionAnalytics();
+
+    trackToolDirectoryClick('dice-roller', 'en', '/dice-roller-dnd');
+
+    expect(gtag).toHaveBeenLastCalledWith(
+      'event',
+      'tool_directory_click',
+      expect.objectContaining({
+        tool_id: 'dice-roller',
+        locale: 'en',
+        tool_href: '/dice-roller-dnd',
+        page_location: expect.any(String),
+        page_title: expect.any(String),
+      }),
+    );
+  });
+});

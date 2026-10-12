@@ -105,17 +105,29 @@ describe('security headers', () => {
       'https://www.tokenmaker.one/zh',
       'https://www.tokenmaker.one/about',
       'https://www.tokenmaker.one/zh/about',
+      'https://www.tokenmaker.one/coat-of-arms-maker',
+      'https://www.tokenmaker.one/zh/coat-of-arms-maker',
     ];
     const nonceProtectedUrls = [
       'https://www.tokenmaker.one/share/token-id',
       'https://www.tokenmaker.one/zh/share/token-id',
-      'https://www.tokenmaker.one/coat-of-arms-maker',
-      'https://www.tokenmaker.one/zh/coat-of-arms-maker',
     ];
+
+    const generalPageResponse = await unstable_getResponseFromNextConfig({
+      url: 'https://www.tokenmaker.one/about',
+      nextConfig,
+    });
+    const fixedContentSecurityPolicy = generalPageResponse.headers.get('Content-Security-Policy');
 
     for (const url of cacheableUrls) {
       const response = await unstable_getResponseFromNextConfig({ url, nextConfig });
-      expect(response.headers.get('Content-Security-Policy')).toContain("default-src 'self'");
+      const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
+
+      expect(contentSecurityPolicy).toContain("default-src 'self'");
+      expect(contentSecurityPolicy).toBe(fixedContentSecurityPolicy);
+      expect(contentSecurityPolicy).not.toContain("'nonce-");
+      expect(contentSecurityPolicy).not.toContain("'strict-dynamic'");
+      expect(response.headers.get('x-nonce')).toBeNull();
     }
 
     for (const url of nonceProtectedUrls) {

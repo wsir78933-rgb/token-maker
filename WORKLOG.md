@@ -1,5 +1,57 @@
 # WORKLOG
 
+## 交接单 · 2026-10-12 21:10 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+- 核查项目 SSR 与 Outfit Creator 的 GSC Soft 404 通知；用户确认后，仅修改共享首屏组件，让中英文标题、介绍和按钮默认可见。本次 offhand 只写交接，不继续产品、部署或索引操作。
+
+### 已完成
+
+- SSR 源码审查清点 70 个页面文件、6 个布局；页面文件均没有 `use client` 指令，但页面内存在客户端组件。主 Token 编辑器在 `DeferredEditorLayout.tsx` 明确使用 `ssr: false`；Outfit Creator 首屏 HTML 包含标题、正文、控制项和 canvas，画布像素与交互由浏览器处理。不能把所有组件或每次请求都称为 SSR。
+- 生产脚本使用 Vinext，`vite.config.ts` 为 `vinext()`，没有启用 prerender，`next.config.ts` 没有 `output: export`。博客的 `generateStaticParams()` 不能单独证明当前生产构建采用 SSG；运行时存在缓存路径。
+- 使用本地 ego-browser 读取真实 GSC：Soft 404 报告只有 1 个受影响 URL，`https://www.tokenmaker.one/outfit-creator`。报告首次发现为 2026-10-10；汇总表最后抓取显示 10 月 7 日，但更详细的 URL Inspection 显示 2026-10-12 14:01:42 抓取、Googlebot smartphone、Page fetch Successful、允许抓取/索引，仍未收录，原因 Soft 404；canonical 指向自身。
+- 2026-10-12 20:28:04 的 GSC 实时测试显示 URL is available to Google、Page can be indexed、HTTP 200。控制台显示 No messages；6/105 资源未加载，列表均为第三方 Clarity/Bing、广告或 GA 资源，不能据此认定它们导致 Soft 404。
+- Google 实时测试的 412×1744 手机截图只有导航，导航下方首屏空白；Google 获取的 HTML 仍包含 H1、介绍和按钮，以及从 `opacity: 0` 开始的 CSS 淡入、600ms 动画与 200/400ms 延迟。首屏不可见现象已核实，Google Soft 404 的具体触发原因及动画的因果关系尚未最终证实。
+- 仅修改 `src/components/outfit-creator/OutfitCreatorPageHeading.tsx`：删除首屏淡入常量、keyframes、延迟和 H1/介绍/CTA 的相关 class。两语言共用此组件；布局、文案、下划线、按钮点击 bounce、平滑滚动及 reduced-motion 规则保留。单文件差异为 3 行新增、17 行删除，独立只读复核未发现范围漂移。
+- 修复阶段验证：lint exit 0，0 errors/10 warnings；typecheck exit 0。首轮 `pnpm run build:vinext` exit 1，停在测试阶段：439 文件中 4 failed/435 passed，3962 passed/4 failed/1 skipped。3 项为 5000ms 超时，1 项为纹章测试未等到 alert；均在本次未修改的文件中，失败原因未最终确认。
+- 随后 `pnpm exec vitest run --maxWorkers=4 --reporter=dot` exit 0：439 files passed、3966 tests passed、1 skipped，86.61s；没有修改测试或放宽超时。后续 Workers types、Vinext build 和 Workers dry-run 均 exit 0。不能把这些后续通过改写为首轮标准构建命令通过。
+- 修复阶段本地 ego-browser 复核 EN/ZH × 手机 412×915/桌面 1440×900 共 4 场景：三个首屏元素 opacity=1、visible、animationName=none 且在视口中；CTA 可滚动到编辑器，canvas 已绘制。另在 412×1744、禁用 JavaScript并暂停动画条件下核对中英文首屏可见，截图已回读。
+- 交班前刷新 Git：分支 main，HEAD `16087656995c20bed972c34c2cf61fb88e513193`，该提交只包含上述首屏单文件修复。修复已被纳入当前提交，工作区/暂存区/未跟踪清单均为空；本会话没有执行 commit、push 或 deploy，不能推断这个提交是否已由其他操作推送或部署。本交接块未存档，不暂存或提交 WORKLOG。
+- 交班前 40001 为主仓的 Next.js 16.3.3 服务，PID 56378，cwd 为本项目；没有停服务。验证期自有 Ego 本地页面已随 TaskSpace 23 的 finish 关闭，保留的用户 GSC 页面未关闭；本次 offhand 未重新读取浏览器状态，不假设下次页面标签或控制权仍相同。
+
+### 做到一半
+
+- 本地首屏修改与验证完成。修改后的线上版本、Google 实时截图及 Soft 404 是否解除尚未验证。
+- 本会话没有请求重新索引或点击 Validate Fix。交班时没有刷新线上部署状态，不能断言线上一定还是旧版本，也不能声称已修复收录。
+- 本次 WORKLOG 新交接未存档；无其他待续本地产品实现。
+
+### 下一步
+
+- 下一班输入 `$pickup`，先刷新 Git、共享组件和线上版本。通过普通 GET 检查线上 `/outfit-creator` 与 `/zh/outfit-creator` 是否仍有首屏 fade class/keyframes，再查看真实 GSC 实时手机截图。
+- 如果线上尚未包含修复，按用户已对齐的边界取得独立部署授权后再部署；不要从当前 commit 或本次 offhand 推导 push/deploy 授权。
+- 上线后确认 GSC 手机截图显示标题、介绍和按钮，核对 HTTP 200、自引用 canonical 与允许索引；请求重新索引、Validate Fix 等外部写操作需另行授权。随后观察新的抓取/索引记录，实时测试通过不等于已经收录或 Soft 404 解除。
+- 若首屏恢复后仍被判 Soft 404，先诊断实际 Google 抓取/渲染记录；超出该共享组件的改动须重新对齐范围。不要默认修改全站 SSR、画布、正文或广告设置。
+
+### 踩过的坑
+
+- SSR HTML 有正文不等于 Google 渲染截图中的正文可见；HTTP 200、允许索引和实时测试通过也不保证收录。
+- GSC 汇总报告与单 URL Inspection 的抓取日期不同，应分别记录，不能只沿用汇总表的 10 月 7 日。
+- 默认并发测试首轮失败，降低并发的全量重跑通过；这不足以独立证明首次失败的根因。保留标准命令失败与后续验证通过的不同状态。
+- 交班前 HEAD 已从修复时状态变化，首屏修改已提交；不要继续把它写成未提交代码。只把本次 WORKLOG 新记录标为未存档。
+- `/tmp` 图片可能被系统清理。代码检查、Next 开发服务器截图、Vinext 构建、打包 dry-run、线上 GSC 状态必须分开；不能用本地证据证明修复已上线。
+- `pnpm dev` 会先运行 free-port 脚本释放 40001；不要为接班验证直接重开它而停止用户现有服务。
+
+### 怎么验证
+
+- 本次 offhand 没有重跑产品测试、构建或浏览器验收；只读 Git、共享组件、现有图片与服务归属，写入后核对旧 WORKLOG 字节保留及单文件范围。
+- 修复阶段原始命令输出在本次会话工具记录，没有另外生成测试日志文件。复现命令：`pnpm run build:vinext`（本次首轮 exit 1）；`pnpm exec vitest run --maxWorkers=4 --reporter=dot`（本次 exit 0）；`pnpm check:workers-types`、`pnpm exec vinext build`、`pnpm check:workers-build`（本次均 exit 0，最后明确输出 `--dry-run: exiting now.`）。
+- 本地路径：`http://localhost:40001/outfit-creator` 与 `/zh/outfit-creator`。确认首屏标题/介绍/按钮直接可见，点击 Try for Free / 免费试用能到编辑器；禁用 JS 或暂停动画时首屏正文仍可见。
+- Google 原截图：`/tmp/tokenmaker-google-rendered-outfit.png`；GSC 实时测试面板截图：`/tmp/tokenmaker-gsc-outfit-live.png`。
+- 本地禁 JS/暂停动画截图：`/tmp/tokenmaker-outfit-en-nojs.png`、`/tmp/tokenmaker-outfit-zh-nojs.png`。
+- 本地正常交互截图：`/tmp/tokenmaker-outfit-en-mobile.png`、`/tmp/tokenmaker-outfit-zh-mobile.png`、`/tmp/tokenmaker-outfit-en-desktop.png`、`/tmp/tokenmaker-outfit-zh-desktop.png`。这些文件在 offhand 前已确认存在；修复阶段已回读禁 JS 两图、英文手机图与中文桌面图。
+- GSC 报告入口：`https://search.google.com/search-console/index/drilldown?resource_id=https%3A%2F%2Fwww.tokenmaker.one%2F&item_key=CAMYDiAC`；进入后仍应核对当前受影响 URL 与最新抓取时间，历史截图不能替代新的线上检查。
+
 ## 交接单 · 2026-10-12 08:14 Asia/Shanghai +0800 · Codex
 
 ### 本次目标

@@ -10,6 +10,14 @@ vi.mock('next/image', () => ({
   },
 }));
 
+const { trackToolDirectoryClick } = vi.hoisted(() => ({
+  trackToolDirectoryClick: vi.fn(),
+}));
+
+vi.mock('@/lib/analytics', () => ({
+  trackToolDirectoryClick,
+}));
+
 import { ToolDirectoryGrid } from './ToolDirectoryGrid';
 
 afterEach(() => {
@@ -80,5 +88,43 @@ describe('ToolDirectoryGrid', () => {
 
     expect(filteredToolCards).toHaveLength(1);
     expect(filteredToolCards[0]?.getAttribute('href')).toBe('/dice-roller-dnd');
+  });
+
+  it('reports an English dice roller card click with its directory id, locale, and href', () => {
+    trackToolDirectoryClick.mockClear();
+    render(<ToolDirectoryGrid locale="en" />);
+
+    const diceRollerCard = within(screen.getByTestId('tool-directory-grid'))
+      .getAllByRole('link')
+      .find((toolCard) => toolCard.getAttribute('href') === '/dice-roller-dnd');
+
+    if (!diceRollerCard) {
+      throw new Error('Tool card with href "/dice-roller-dnd" was not rendered.');
+    }
+
+    fireEvent.click(diceRollerCard);
+
+    expect(diceRollerCard.getAttribute('href')).toBe('/dice-roller-dnd');
+    expect(trackToolDirectoryClick).toHaveBeenCalledTimes(1);
+    expect(trackToolDirectoryClick).toHaveBeenCalledWith('dice-roller', 'en', '/dice-roller-dnd');
+  });
+
+  it('reports a Chinese town creator card click with its directory id, locale, and href', () => {
+    trackToolDirectoryClick.mockClear();
+    render(<ToolDirectoryGrid locale="zh" />);
+
+    const townCreatorCard = within(screen.getByTestId('tool-directory-grid'))
+      .getAllByRole('link')
+      .find((toolCard) => toolCard.getAttribute('href') === '/zh/town-creator');
+
+    if (!townCreatorCard) {
+      throw new Error('Tool card with href "/zh/town-creator" was not rendered.');
+    }
+
+    fireEvent.click(townCreatorCard);
+
+    expect(townCreatorCard.getAttribute('href')).toBe('/zh/town-creator');
+    expect(trackToolDirectoryClick).toHaveBeenCalledTimes(1);
+    expect(trackToolDirectoryClick).toHaveBeenCalledWith('town-creator', 'zh', '/zh/town-creator');
   });
 });

@@ -6,6 +6,7 @@ import { Search } from 'lucide-react';
 import { useId, useMemo, useState } from 'react';
 
 import styles from './ToolDirectoryGrid.module.css';
+import { trackToolDirectoryClick } from '@/lib/analytics';
 import { getToolDirectoryItems, type ToolDirectoryItem, type ToolDirectoryPreview } from '@/lib/tool-directory';
 import type { SiteLocale } from '@/lib/site-locale';
 
@@ -99,7 +100,11 @@ export function ToolDirectoryGrid({ locale }: { locale: SiteLocale }) {
           <ul className={styles.grid} data-testid="tool-directory-grid">
             {visibleToolItems.map((toolItem) => (
               <li className={styles.gridItem} key={toolItem.id}>
-                <Link className={styles.card} href={toolItem.href}>
+                <Link
+                  className={styles.card}
+                  href={toolItem.href}
+                  onClick={() => trackToolDirectoryClick(toolItem.id, locale, toolItem.href)}
+                >
                   <div className={`${styles.preview} ${getPreviewSurfaceClassName(toolItem.preview)}`}>
                     {toolItem.preview.type === 'text' ? (
                       <dl className={styles.textPreviewList}>

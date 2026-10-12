@@ -196,3 +196,12 @@ export function trackDiceRoll(diceExpression: string, diceCount: number, total: 
     ...getPageParams(),
   });
 }
+
+export function trackToolDirectoryClick(toolId: string, locale: string, toolHref: string): void {
+  trackGtagEvent('tool_directory_click', {
+    tool_id: toolId,
+    locale: locale,
+    tool_href: toolHref,
+    ...getPageParams(),
+  });
+}

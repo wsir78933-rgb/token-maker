@@ -33,40 +33,17 @@ function getContentSecurityPolicyDirective(
   return directive.split(' ').slice(1);
 }
 
-const COAT_MAKER_CONNECT_SOURCES = [
-  "'self'",
-  'https://www.google-analytics.com',
-  'https://*.google-analytics.com',
-  'https://analytics.google.com',
-  'https://www.googletagmanager.com',
-  'https://*.googletagmanager.com',
-  'https://www.clarity.ms',
-  'https://*.clarity.ms',
-  'https://c.bing.com',
-];
-
-const COAT_MAKER_IMAGE_SOURCES = [
-  "'self'",
-  'data:',
-  'blob:',
-  'https://www.google-analytics.com',
-  'https://www.googletagmanager.com',
-  'https://www.clarity.ms',
-  'https://*.clarity.ms',
-  'https://c.bing.com',
-];
-
 describe('proxy', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
     vi.resetModules();
   });
 
-  it('adds one fresh nonce to protected document requests and a matching strict CSP', async () => {
+  it('adds one fresh nonce to share document requests and a matching strict CSP', async () => {
     const { proxy } = await loadProxy();
 
-    const firstResponse = proxy(new NextRequest('https://www.tokenmaker.one/coat-of-arms-maker'));
-    const secondResponse = proxy(new NextRequest('https://www.tokenmaker.one/coat-of-arms-maker'));
+    const firstResponse = proxy(new NextRequest('https://www.tokenmaker.one/share/token-id'));
+    const secondResponse = proxy(new NextRequest('https://www.tokenmaker.one/share/token-id'));
     const firstNonce = firstResponse.headers.get('x-middleware-request-x-nonce');
     const firstContentSecurityPolicy = firstResponse.headers.get('Content-Security-Policy');
 
@@ -91,12 +68,13 @@ describe('proxy', () => {
       "'self'",
       "'unsafe-inline'",
     ]);
-    expect(getContentSecurityPolicyDirective(firstContentSecurityPolicy, 'img-src')).toEqual(
-      COAT_MAKER_IMAGE_SOURCES
-    );
-    expect(getContentSecurityPolicyDirective(firstContentSecurityPolicy, 'connect-src')).toEqual(
-      COAT_MAKER_CONNECT_SOURCES
-    );
+    expect(getContentSecurityPolicyDirective(firstContentSecurityPolicy, 'img-src')).toEqual([
+      "'self'",
+      'data:',
+      'blob:',
+      'https://r2.tokenmaker.one',
+    ]);
+    expect(getContentSecurityPolicyDirective(firstContentSecurityPolicy, 'connect-src')).toEqual(["'self'"]);
     expect(firstContentSecurityPolicy).toContain("frame-src 'none'");
     expect(firstContentSecurityPolicy).toContain("object-src 'none'");
     expect(firstContentSecurityPolicy).toContain("base-uri 'self'");
@@ -108,12 +86,12 @@ describe('proxy', () => {
     const productionProxy = (await loadProxy('production')).proxy;
     const productionResponses = [
       productionProxy(new NextRequest('https://www.tokenmaker.one/share/token-id')),
-      productionProxy(new NextRequest('https://www.tokenmaker.one/coat-of-arms-maker')),
+      productionProxy(new NextRequest('https://www.tokenmaker.one/zh/share/token-id')),
     ];
     const developmentProxy = (await loadProxy('development')).proxy;
     const developmentResponses = [
       developmentProxy(new NextRequest('https://www.tokenmaker.one/share/token-id')),
-      developmentProxy(new NextRequest('https://www.tokenmaker.one/coat-of-arms-maker')),
+      developmentProxy(new NextRequest('https://www.tokenmaker.one/zh/share/token-id')),
     ];
 
     for (const response of productionResponses) {
@@ -168,35 +146,16 @@ describe('proxy', () => {
     }
   });
 
-  it('allows Google Analytics and Microsoft Clarity beacons on coat maker documents', async () => {
-    const productionProxy = (await loadProxy('production')).proxy;
-    const developmentProxy = (await loadProxy('development')).proxy;
-    const coatMakerResponses = [
-      productionProxy(new NextRequest('https://www.tokenmaker.one/coat-of-arms-maker')),
-      productionProxy(new NextRequest('https://www.tokenmaker.one/zh/coat-of-arms-maker')),
-      developmentProxy(new NextRequest('https://www.tokenmaker.one/coat-of-arms-maker')),
-      developmentProxy(new NextRequest('https://www.tokenmaker.one/zh/coat-of-arms-maker')),
-    ];
+  it('fails fast with the concrete path when a non-share document reaches the nonce proxy', async () => {
+    for (const nodeEnvironment of ['production', 'development']) {
+      const { proxy } = await loadProxy(nodeEnvironment);
 
-    for (const response of coatMakerResponses) {
-      const contentSecurityPolicy = response.headers.get('Content-Security-Policy');
-      const nonce = response.headers.get('x-middleware-request-x-nonce');
-
-      expect(contentSecurityPolicy).toContain(`'nonce-${nonce}'`);
-      expect(contentSecurityPolicy).toContain("'strict-dynamic'");
-      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'img-src')).toEqual(
-        COAT_MAKER_IMAGE_SOURCES
-      );
-      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'connect-src')).toEqual(
-        COAT_MAKER_CONNECT_SOURCES
-      );
-      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'frame-src')).toEqual(["'none'"]);
-      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'object-src')).toEqual(["'none'"]);
-      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'connect-src')).not.toContain('https:');
-      expect(getContentSecurityPolicyDirective(contentSecurityPolicy, 'img-src')).not.toContain('https:');
-      expect(contentSecurityPolicy).not.toMatch(/adsense|doubleclick|cloudflareinsights|youtube|ytimg/i);
+      for (const pathname of ['/coat-of-arms-maker', '/zh/coat-of-arms-maker', '/about']) {
+        expect(() => proxy(new NextRequest(`https://www.tokenmaker.one${pathname}`))).toThrow(
+          `Unexpected protected document pathname: ${pathname}`
+        );
+      }
     }
-
   });
 
   it('matches only nonce-protected documents and skips cacheable content routes', async () => {
@@ -210,8 +169,8 @@ describe('proxy', () => {
     expect(shouldMatch('https://www.tokenmaker.one/zh/about')).toBe(false);
     expect(shouldMatch('https://www.tokenmaker.one/share/token-id')).toBe(true);
     expect(shouldMatch('https://www.tokenmaker.one/zh/share/token-id')).toBe(true);
-    expect(shouldMatch('https://www.tokenmaker.one/coat-of-arms-maker')).toBe(true);
-    expect(shouldMatch('https://www.tokenmaker.one/zh/coat-of-arms-maker')).toBe(true);
+    expect(shouldMatch('https://www.tokenmaker.one/coat-of-arms-maker')).toBe(false);
+    expect(shouldMatch('https://www.tokenmaker.one/zh/coat-of-arms-maker')).toBe(false);
     expect(shouldMatch('https://www.tokenmaker.one/api/share')).toBe(false);
     expect(shouldMatch('https://www.tokenmaker.one/_next/static/chunk.js')).toBe(false);
     expect(shouldMatch('https://www.tokenmaker.one/_next/image?url=%2Ftoken.png')).toBe(false);
@@ -225,7 +184,7 @@ describe('proxy', () => {
     expect(shouldMatch('https://www.tokenmaker.one/zh/opengraph-image')).toBe(false);
     expect(
       shouldMatch('https://www.tokenmaker.one/coat-of-arms-maker', { 'next-router-prefetch': '1' })
-    ).toBe(true);
-    expect(shouldMatch('https://www.tokenmaker.one/coat-of-arms-maker', { purpose: 'prefetch' })).toBe(true);
+    ).toBe(false);
+    expect(shouldMatch('https://www.tokenmaker.one/coat-of-arms-maker', { purpose: 'prefetch' })).toBe(false);
   });
 });

@@ -4,7 +4,6 @@ import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { MicrosoftClarity } from '@/components/analytics/MicrosoftClarity';
 import { I18nProvider } from '@/lib/i18n';
 import type { CoatLocale } from '@/lib/coat-of-arms/types';
-import { getRequestNonce } from '@/lib/security/request-nonce';
 import { getHtmlLang } from '@/lib/site-metadata';
 import { DEFAULT_THEME } from '@/lib/theme';
 
@@ -16,11 +15,9 @@ interface CoatMakerDocumentProps {
 /**
  * The local-only editor has a separate document boundary so advertising
  * scripts are never emitted for its routes. Google Analytics and Microsoft
- * Clarity still load, using the request nonce required by this document's CSP.
+ * Clarity still load under the fixed CSP shared by cacheable public pages.
  */
-export async function CoatMakerDocument({ children, locale }: CoatMakerDocumentProps) {
-  const nonce = await getRequestNonce();
-
+export function CoatMakerDocument({ children, locale }: CoatMakerDocumentProps) {
   return (
     <html
       lang={getHtmlLang(locale)}
@@ -29,9 +26,9 @@ export async function CoatMakerDocument({ children, locale }: CoatMakerDocumentP
       suppressHydrationWarning
     >
       <body className="antialiased">
-        <MicrosoftClarity nonce={nonce} />
+        <MicrosoftClarity />
         <Suspense fallback={null}>
-          <GoogleAnalytics nonce={nonce} />
+          <GoogleAnalytics />
         </Suspense>
         <I18nProvider locale={locale}>{children}</I18nProvider>
       </body>
