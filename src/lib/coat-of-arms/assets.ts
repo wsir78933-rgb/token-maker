@@ -58,7 +58,7 @@ const localCoatAssets: readonly CoatAsset[] = [
   {
     id: 'heater-shield',
     kind: 'shield',
-    name: { en: 'Heater shield', zh: '熨斗盾' },
+    name: { en: 'Heater shield', zh: '熨斗形盾' },
     svgPath: 'M50 2 L94 16 V58 C94 80 76 94 50 108 C24 94 6 80 6 58 V16 Z',
   },
   {

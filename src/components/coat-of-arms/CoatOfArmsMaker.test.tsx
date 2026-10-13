@@ -1713,7 +1713,7 @@ describe('CoatOfArmsMaker', () => {
   it('localizes every shield outline tree item with short Chinese labels', () => {
     renderWorkbench('zh');
 
-    for (const shieldName of ['盾', '熨斗', '法式', '旗帜', '圆', '菱形']) {
+    for (const shieldName of ['盾', '熨斗形盾', '法式', '旗帜', '圆', '菱形']) {
       expect(getDesktopToolTreeItem(shieldName)).toBeTruthy();
     }
   });

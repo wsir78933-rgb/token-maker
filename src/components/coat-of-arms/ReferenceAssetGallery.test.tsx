@@ -181,7 +181,7 @@ describe('ReferenceAssetGallery', () => {
         additionalEntries={[{
           id: 'heater-shield',
           name: 'Heater shield',
-          nameZh: '熨斗盾',
+          nameZh: '熨斗形盾',
           searchTerms: ['heater'],
           rasterSrc: '/coat-assets/materials/shields/heater.webp',
         }]}

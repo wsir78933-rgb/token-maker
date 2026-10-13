@@ -173,7 +173,7 @@ describe('CoatOfArmsPanels', () => {
     revealAllGalleryCards('zh');
 
     expect(screen.getByRole('heading', { name: '自定义盾形上传' })).toBeDefined();
-    expect(screen.getByRole('button', { name: '选择盾形：熨斗盾' })).toBeDefined();
+    expect(screen.getByRole('button', { name: '选择盾形：熨斗形盾' })).toBeDefined();
     expect(screen.getByRole('button', { name: getCoatWorkbenchCopy('zh').palettes.referenceGallery.cardAction('charge', 'Wolf Rampant') })).toBeDefined();
     expect(screen.getByRole('button', { name: '文字' })).toBeDefined();
     expect(screen.getByRole('button', { name: '弧形文字' })).toBeDefined();

@@ -167,10 +167,10 @@ const ARMOR_CREATOR_COMPARISON_COPY: Readonly<Partial<Record<SiteLocale, ArmorCr
     ],
   },
   zh: {
-    title: 'Armor Creator vs. Photoshop vs. Adobe Firefly',
+    title: '护甲搭配工具、Photoshop 与 Adobe Firefly 对比',
     tableLabel: '护甲造型工具对比表格',
     dimensionHeading: '对比项目',
-    armorCreatorHeading: 'Armor Creator',
+    armorCreatorHeading: '护甲搭配工具',
     photoshopHeading: 'Adobe Photoshop',
     fireflyHeading: 'Adobe Firefly',
     rows: [
