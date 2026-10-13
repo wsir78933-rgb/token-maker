@@ -1,5 +1,46 @@
 # WORKLOG
 
+## 交接单 · 2026-10-13 20:12 CST · Cursor CLI
+
+### 本次目标
+
+- 页脚「工具」列出工具目录里的 21 个工具，独占一整行并分成多列。了解、支持、版权、平台标签不动。
+- `/coat-of-arms-maker` 中英文对比模块：删掉标题下两段说明，删掉 CoaMaker 与 Roll for Fantasy 外链，保留表格里的对比句子。
+- 除首页外，每个工具页 FAQ 下方加 4 张推荐卡片。结构照参考页（居中标题、一行副标题、4 张卡片），颜色用本站深色。从工具目录当前工具的下一个开始取 4 个，到末尾再从头补，跳过自己。没有图片的用目录文字预览。不加首页，不加参考页里的「准备好了吗」按钮。
+
+### 已完成
+
+- 写交接时仓库根目录是 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`，`git status` 为工作区干净，且显示与 `origin/main` 一致。本会话没有执行 commit 或 push。
+- 页脚文件最后一次出现在提交 `43fc50f0`（2026-10-13 19:46:55 +0800，说明为 `1`）。推荐模块与纹章页 `CoatMakerSeoContent.tsx` 最后一次出现在提交 `f7193f49`（2026-10-13 20:11:42 +0800，说明为 `1`）。不推断是谁提交的。
+- 页脚中英文各 21 个工具链接，名称和地址来自 `getToolDirectoryLinks`。工具区块是 `lg:col-span-2`，链接网格为 `grid-cols-2`、`sm:grid-cols-3`、`lg:grid-cols-4`。工具链接直接使用目录给出的 `href`。
+- 纹章对比模块当前源码已无 `comparisonLead` 字段；测试断言对比区内没有 `coamaker.com` 链接。表格单元格句子仍在。
+- 推荐模块公开入口是 `getToolRecommendationSet`（`src/lib/tool-recommendations.ts`）和 `ToolRecommendationSection`（`src/components/site/ToolRecommendationSection.tsx`）。标题英文为 `More tools you may like`，中文为 `你可能还会用到这些工具`。已接到 20 个工具页的 FAQ 后面。首页页面文件没有引用该组件。`currentPath="/"` 会抛错，错误文本包含收到的路径。
+- 本会话在工作区变干净之前跑过：`pnpm exec vitest run` 覆盖推荐选择器、推荐组件，以及骰子、纹章、护甲、服装、武器、军队、语言、日历、星座、太阳系、周期表、塔罗、卷轴、城镇、城堡、地图、公告板、人口、纹章 SEO、首页 SEO 等测试，合计 24 个文件、138 项通过。交接时没有在干净工作区上重跑。
+- 本会话用 ego-browser TaskSpace 135 打开过本地 `http://localhost:40001`：`/dice-roller-dnd` 在 FAQ 后有 4 张卡片（纹章、护甲、服装、武器）；`/zh/coat-of-arms-maker` 为中文名和 `/zh/...` 地址；`/population-generator` 绕回 Token Maker、骰子、纹章、护甲；`/emblem-creator` 的语言生成器卡片没有 `img`，显示文字预览；`/` 没有推荐标题。交接时没有再打开浏览器，也没有确认 40001 是否仍在监听。
+
+### 做到一半
+
+- 无未完成的源码改动。本次新交接单写入 `WORKLOG.md` 后保持未存档，不提交该文件。
+- 人口生成器页上，推荐区块在 FAQ 和原有行动按钮之间。行动按钮没有删。
+- 20 个工具页里，浏览器只看了骰子、中文纹章、人口、徽章和首页。其余页面只靠测试渲染，没有逐页打开。
+
+### 下一步
+
+- 下一班输入 `$pickup`。先看 `git status` 和本交接单。没有新的开工口令时，不要改产品代码，不要 commit、push 或 deploy。
+- 若用户要看效果：本地若已有 `http://localhost:40001`，打开 `/dice-roller-dnd` 滚到 FAQ 下面。首页 `/` 不应出现「More tools you may like」。
+- 不要把推荐模块加到首页。`getToolRecommendationSet` 对 `/` 会抛错。
+
+### 踩过的坑
+
+- 页脚曾自己再用 path 拼一遍工具地址，和目录 `href` 可能以后分叉。已改成直接用 `getToolDirectoryLinks` 返回的 `href`。
+- 接入推荐组件时，页面改动和组件文件并行进行，第一轮 vitest 因解析不到 `@/components/site/ToolRecommendationSection` 失败。组件文件落地后重跑才通过。
+- 参考页文案和白底没有照搬。推荐标题是本站自己的句子。
+
+### 怎么验证
+
+- `pnpm exec vitest run src/lib/tool-recommendations.test.ts src/components/site/ToolRecommendationSection.test.tsx src/components/site/SiteFooter.test.tsx src/components/coat-of-arms/CoatMakerSeoContent.test.tsx`
+- 浏览器打开 `http://localhost:40001/dice-roller-dnd`，FAQ 下应有 4 张卡片；打开 `http://localhost:40001/`，不应有「More tools you may like」；打开 `http://localhost:40001/zh/coat-of-arms-maker`，对比表应没有 CoaMaker / Roll for Fantasy 外链，FAQ 下应有 4 张中文工具卡片。
+
 ## 交接单 · 2026-10-13 07:42 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
