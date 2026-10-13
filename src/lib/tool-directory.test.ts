@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { getLanguageGeneratorPageCopy } from '@/lib/language-generator/page-copy';
 import { getTarotCopy } from '@/lib/tarot-cards/copy';
-import { getToolDirectoryItems } from '@/lib/tool-directory';
+import { getToolDirectoryItems, getToolDirectoryLinks } from '@/lib/tool-directory';
 import type { SiteLocale } from '@/lib/site-locale';
 
 const expectedToolIds = [
@@ -74,6 +74,15 @@ describe('tool directory catalog', () => {
         return locale === 'en' ? path : `/zh${path}`;
       }),
     );
+    expect(getToolDirectoryLinks(locale).map((toolLink) => ({
+      id: toolLink.id,
+      name: toolLink.name,
+      href: toolLink.href,
+    }))).toEqual(toolItems.map((toolItem) => ({
+      id: toolItem.id,
+      name: toolItem.name,
+      href: toolItem.href,
+    })));
     expect(toolItems[0]?.href).toBe(localizedHomeHref);
     expect(toolItems[1]?.href).toBe(locale === 'en' ? '/dice-roller-dnd' : '/zh/dice-roller-dnd');
     expect(toolItems[2]?.href).toBe(locale === 'en' ? '/coat-of-arms-maker' : '/zh/coat-of-arms-maker');

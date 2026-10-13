@@ -2,6 +2,8 @@
 
 import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
+import { getToolDirectoryLinks } from '@/lib/tool-directory';
+
 import { HomeSeoContent } from './HomeSeoContent';
 import { InnerPageChrome } from './InnerPageChrome';
 import { SiteFooter } from './SiteFooter';
@@ -21,7 +23,7 @@ function getFooterNavigation() {
   return within(screen.getByRole('contentinfo')).getByRole('navigation', { name: 'Footer navigation' });
 }
 
-function getFooterSectionLinks(navigationLabel: string, sectionTitle: string) {
+function getFooterSectionList(navigationLabel: string, sectionTitle: string) {
   const footerNavigation = within(screen.getByRole('contentinfo')).getByRole('navigation', { name: navigationLabel });
   const footerSectionHeadings = within(footerNavigation).getAllByRole('heading');
   const footerSectionIndex = footerSectionHeadings.findIndex((footerSectionHeading) => {
@@ -38,7 +40,11 @@ function getFooterSectionLinks(navigationLabel: string, sectionTitle: string) {
     throw new Error(`Footer section link list was not found for "${sectionTitle}"`);
   }
 
-  return within(footerSectionLinkList).getAllByRole('link').map((footerLink) => ({
+  return footerSectionLinkList;
+}
+
+function getFooterSectionLinks(navigationLabel: string, sectionTitle: string) {
+  return within(getFooterSectionList(navigationLabel, sectionTitle)).getAllByRole('link').map((footerLink) => ({
     name: footerLink.textContent?.trim(),
     href: footerLink.getAttribute('href'),
   }));
@@ -55,12 +61,6 @@ function getFooterSectionHeaderClassList(sectionTitle: string) {
   return Array.from(sectionHeader.classList);
 }
 
-function getFooterNavigationTextOrder() {
-  return Array.from(getFooterNavigation().querySelectorAll('h2, a'))
-    .map((footerNavigationElement) => footerNavigationElement.textContent?.trim())
-    .filter((textContent): textContent is string => Boolean(textContent));
-}
-
 describe('SiteFooter', () => {
   afterEach(() => {
     cleanup();
@@ -73,14 +73,17 @@ describe('SiteFooter', () => {
     expect(screen.getByRole('heading', { name: 'Tools' })).toBeDefined();
     expect(screen.getByRole('link', { name: /token maker home/i }).getAttribute('href')).toBe('/');
     expect(screen.getByRole('link', { name: 'Token Maker' }).getAttribute('href')).toBe('/#editor-workspace');
-    expect(screen.getByRole('link', { name: 'Dice Roller' }).getAttribute('href')).toBe('/dice-roller-dnd');
+    expect(screen.getByRole('link', { name: 'D&D Dice Roller' }).getAttribute('href')).toBe('/dice-roller-dnd');
     expect(screen.getByRole('link', { name: 'Coat of Arms Maker' }).getAttribute('href')).toBe('/coat-of-arms-maker');
+    expect(screen.queryByRole('link', { name: 'Dice Roller' })).toBeNull();
     expect(screen.queryByRole('link', { name: 'Square Token Maker' })).toBeNull();
-    expect(getFooterSectionLinks('Footer navigation', 'Tools')).toEqual([
-      { name: 'Token Maker', href: '/#editor-workspace' },
-      { name: 'Dice Roller', href: '/dice-roller-dnd' },
-      { name: 'Coat of Arms Maker', href: '/coat-of-arms-maker' },
-    ]);
+    expect(getFooterSectionLinks('Footer navigation', 'Tools')).toEqual(
+      getToolDirectoryLinks('en').map((toolLink) => ({
+        name: toolLink.name,
+        href: toolLink.href,
+      })),
+    );
+    expect(getFooterSectionLinks('Footer navigation', 'Tools')).toHaveLength(21);
     expect(screen.getByRole('link', { name: 'Blog' }).getAttribute('href')).toBe('/blog');
     expect(screen.getByRole('link', { name: 'About' }).getAttribute('href')).toBe('/about');
     expect(screen.getByRole('link', { name: 'Changelog' }).getAttribute('href')).toBe('/changelog');
@@ -105,15 +108,19 @@ describe('SiteFooter', () => {
 
     expect(screen.getByRole('heading', { name: '工具' })).toBeDefined();
     expect(screen.getByRole('link', { name: /token maker 首页/i }).getAttribute('href')).toBe('/zh');
-    expect(screen.getByRole('link', { name: 'Token Maker 编辑器' }).getAttribute('href')).toBe('/zh#editor-workspace');
-    expect(screen.getByRole('link', { name: '骰子工具' }).getAttribute('href')).toBe('/zh/dice-roller-dnd');
+    expect(screen.getByRole('link', { name: 'Token Maker 头像制作器' }).getAttribute('href')).toBe('/zh#editor-workspace');
+    expect(screen.getByRole('link', { name: 'D&D 骰子掷骰器' }).getAttribute('href')).toBe('/zh/dice-roller-dnd');
     expect(screen.getByRole('link', { name: '纹章制作器' }).getAttribute('href')).toBe('/zh/coat-of-arms-maker');
+    expect(screen.queryByRole('link', { name: 'Token Maker 编辑器' })).toBeNull();
+    expect(screen.queryByRole('link', { name: '骰子工具' })).toBeNull();
     expect(screen.queryByRole('link', { name: '方形 Token 制作器' })).toBeNull();
-    expect(getFooterSectionLinks('页脚导航', '工具')).toEqual([
-      { name: 'Token Maker 编辑器', href: '/zh#editor-workspace' },
-      { name: '骰子工具', href: '/zh/dice-roller-dnd' },
-      { name: '纹章制作器', href: '/zh/coat-of-arms-maker' },
-    ]);
+    expect(getFooterSectionLinks('页脚导航', '工具')).toEqual(
+      getToolDirectoryLinks('zh').map((toolLink) => ({
+        name: toolLink.name,
+        href: toolLink.href,
+      })),
+    );
+    expect(getFooterSectionLinks('页脚导航', '工具')).toHaveLength(21);
     expect(screen.getByRole('link', { name: '博客' }).getAttribute('href')).toBe('/zh/blog');
     expect(screen.getByRole('link', { name: '关于' }).getAttribute('href')).toBe('/zh/about');
     expect(screen.getByRole('link', { name: '更新记录' }).getAttribute('href')).toBe('/zh/changelog');
@@ -163,20 +170,28 @@ describe('SiteFooter', () => {
     expect(footerContentShellClassList).not.toContain('max-w-6xl');
   });
 
-  it('keeps footer sections in a three-column icon grid on mobile', () => {
+  it('places all 21 tools on their own multi-column row', () => {
     render(<SiteFooter locale="en" currentPath="/" />);
 
     const footerNavigationClassList = Array.from(getFooterNavigation().classList);
-    const footerNavigationTextOrder = getFooterNavigationTextOrder();
-    const firstFooterLinkIndex = footerNavigationTextOrder.indexOf('Token Maker');
+    const toolsListClassList = Array.from(getFooterSectionList('Footer navigation', 'Tools').classList);
+    const toolsBlock = screen.getByRole('heading', { name: 'Tools' }).parentElement?.parentElement;
+    const learnColumn = screen.getByRole('heading', { name: 'Learn' }).parentElement?.parentElement;
+    const compactColumns = learnColumn?.parentElement;
+    const toolsHeaderClassList = getFooterSectionHeaderClassList('Tools');
 
-    expect(footerNavigationClassList).toContain('grid-cols-3');
-    expect(footerNavigationClassList).toContain('gap-x-3');
-    expect(footerNavigationClassList).toContain('gap-y-4');
-    expect(footerNavigationClassList).toContain('sm:gap-x-8');
-    expect(firstFooterLinkIndex).toBeGreaterThan(-1);
+    expect(footerNavigationClassList).toContain('lg:grid-cols-[minmax(0,0.9fr)_minmax(18rem,32rem)]');
+    expect(Array.from(compactColumns?.classList ?? [])).toContain('grid-cols-2');
+    expect(toolsBlock?.classList.contains('lg:col-span-2')).toBe(true);
+    expect(toolsListClassList).toContain('grid');
+    expect(toolsListClassList).toContain('grid-cols-2');
+    expect(toolsListClassList).toContain('sm:grid-cols-3');
+    expect(toolsListClassList).toContain('lg:grid-cols-4');
+    expect(toolsHeaderClassList).toContain('flex-row');
+    expect(toolsHeaderClassList).toContain('text-left');
+    expect(toolsHeaderClassList).not.toContain('flex-col');
 
-    for (const sectionTitle of ['Tools', 'Learn', 'Support']) {
+    for (const sectionTitle of ['Learn', 'Support']) {
       const sectionHeaderClassList = getFooterSectionHeaderClassList(sectionTitle);
 
       expect(sectionHeaderClassList).toContain('flex-col');
@@ -184,7 +199,6 @@ describe('SiteFooter', () => {
       expect(sectionHeaderClassList).toContain('text-center');
       expect(sectionHeaderClassList).toContain('sm:flex-row');
       expect(sectionHeaderClassList).toContain('sm:text-left');
-      expect(footerNavigationTextOrder.indexOf(sectionTitle)).toBeLessThan(firstFooterLinkIndex);
     }
   });
 

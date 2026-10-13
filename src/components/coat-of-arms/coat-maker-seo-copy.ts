@@ -10,16 +10,9 @@ interface CoatMakerSeoLink {
   label: string;
 }
 
-export interface CoatMakerSeoComparisonSource {
-  label: string;
-  href: string;
-  checkedOn: string;
-}
-
 export interface CoatMakerSeoComparisonRow {
   rowLabel: string;
   cellText: readonly string[];
-  cellSources: readonly (readonly CoatMakerSeoComparisonSource[])[];
 }
 
 export type CoatMakerFeatureIcon = 'shield' | 'symbols' | 'text' | 'layers' | 'drawing' | 'export';
@@ -56,10 +49,7 @@ export interface CoatMakerSeoCopy {
   }[];
   featureOverview: CoatMakerFeatureOverviewCopy;
   comparisonHeading: string;
-  comparisonLead: string;
-  comparisonEvidenceNote: string;
   comparisonDimensionHeading: string;
-  comparisonSourceCheckedLabel: string;
   comparisonTableLabel: string;
   comparisonColumns: readonly string[];
   comparisonRows: readonly CoatMakerSeoComparisonRow[];
@@ -139,12 +129,7 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
       ],
     },
     comparisonHeading: 'Why choose our coat of arms maker',
-    comparisonLead:
-      'Start creating in Coat of Arms Maker without an account or paid plan. Add your own images for free, finish an original coat of arms in the browser, and export PNG, JPEG, or PDF; print locally or queue multiple design snapshots to download their PNGs together as a ZIP.',
-    comparisonEvidenceNote:
-      'Open each linked official guide to check free versus PRO export, PRO-only features, image-export steps, and commercial-use terms. These are vendor-documented statements, not hands-on tests. Checked 2026-10-11.',
     comparisonDimensionHeading: 'Comparison',
-    comparisonSourceCheckedLabel: 'Checked',
     comparisonTableLabel: 'Coat of Arms Maker comparison',
     comparisonColumns: ['Our coat of arms maker', 'CoaMaker', 'Roll for Fantasy'],
     comparisonRows: [
@@ -155,11 +140,6 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
           'The official guide says the free version has a Download button; PRO adds a separate Export option.',
           'The official page describes choosing shields, crests, color schemes, and colors to build a design.',
         ],
-        cellSources: [
-          [],
-          [{ label: 'CoaMaker image export guide', href: 'https://coamaker.com/docs/export-as-image/', checkedOn: '2026-10-11' }],
-          [{ label: 'Roll for Fantasy coat of arms creator', href: 'https://rollforfantasy.com/tools/coat-of-arms-creator.php', checkedOn: '2026-10-11' }],
-        ],
       },
       {
         rowLabel: 'Edit',
@@ -167,14 +147,6 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
           'Local images are free to use — no PRO gate — plus shields, field patterns, charges, text, layers, and drawing tools.',
           'Official docs mark image uploads and adding text as PRO features.',
           'The page lists shield, crest, and color choices; its images may not be reused in another similar coat-of-arms creator.',
-        ],
-        cellSources: [
-          [],
-          [
-            { label: 'CoaMaker basic functions', href: 'https://coamaker.com/docs/basic-functions/', checkedOn: '2026-10-11' },
-            { label: 'CoaMaker image upload guide', href: 'https://coamaker.com/docs/uploading-images/', checkedOn: '2026-10-11' },
-          ],
-          [{ label: 'Roll for Fantasy coat of arms creator', href: 'https://rollforfantasy.com/tools/coat-of-arms-creator.php', checkedOn: '2026-10-11' }],
         ],
       },
       {
@@ -184,11 +156,6 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
           'The guide documents PNG downloads; PRO also offers HD images with or without a background.',
           'Instructions describe “Turn to image” and right-click saving; if conversion fails, the page suggests taking a screenshot.',
         ],
-        cellSources: [
-          [],
-          [{ label: 'CoaMaker image export guide', href: 'https://coamaker.com/docs/export-as-image/', checkedOn: '2026-10-11' }],
-          [{ label: 'Roll for Fantasy coat of arms creator', href: 'https://rollforfantasy.com/tools/coat-of-arms-creator.php', checkedOn: '2026-10-11' }],
-        ],
       },
       {
         rowLabel: 'Account',
@@ -196,11 +163,6 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
           'No login and no paywall, local-first, and a browser draft can be restored after a reload.',
           'The default license is non-commercial; its official terms name Advanced Pro and Lifetime Pro as commercial-use plans.',
           'The creator allows non-commercial projects; commercial use requires the owner’s permission.',
-        ],
-        cellSources: [
-          [],
-          [{ label: 'CoaMaker commercial and non-commercial license', href: 'https://coamaker.com/docs/license-and-non-commercial-use/', checkedOn: '2026-10-11' }],
-          [{ label: 'Roll for Fantasy coat of arms creator', href: 'https://rollforfantasy.com/tools/coat-of-arms-creator.php', checkedOn: '2026-10-11' }],
         ],
       },
     ],
@@ -311,11 +273,7 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
       ],
     },
     comparisonHeading: '为什么选择我们的纹章制作器',
-    comparisonLead: '无需账号或付费方案，即可使用纹章制作器开始制作。你可以免费加入自己的图片，在浏览器中完成原创纹章，并导出 PNG、JPEG 或 PDF；也能本地打印，或将多个设计快照加入队列，一次下载为 PNG ZIP。',
-    comparisonEvidenceNote:
-      '可打开各单元格官方链接核对免费版与 PRO 导出、PRO 功能、图片导出步骤及商用条款。以下为官方说明，不代表实际交互测试。核验日期：2026-10-11。',
     comparisonDimensionHeading: '对比维度',
-    comparisonSourceCheckedLabel: '核验日期',
     comparisonTableLabel: '纹章制作器对比',
     comparisonColumns: ['我们的纹章制作器', 'CoaMaker', 'Roll for Fantasy'],
     comparisonRows: [
@@ -326,11 +284,6 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
           '官方说明写明免费版有 Download 按钮；PRO 另提供 Export 选项。',
           '官方页面介绍了从盾形、冠饰、配色风格和颜色中选择来制作纹章。',
         ],
-        cellSources: [
-          [],
-          [{ label: 'CoaMaker 图片导出说明', href: 'https://coamaker.com/docs/export-as-image/', checkedOn: '2026-10-11' }],
-          [{ label: 'Roll for Fantasy 纹章制作器说明', href: 'https://rollforfantasy.com/tools/coat-of-arms-creator.php', checkedOn: '2026-10-11' }],
-        ],
       },
       {
         rowLabel: '编辑',
@@ -338,14 +291,6 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
           '本地图片免费用，无 PRO 门槛，另有盾形、底纹、图形、文字、图层与绘图工具。',
           '官方文档将上传图片和添加文字列为 PRO 功能。',
           '页面列出盾形、冠饰和颜色选项；其图片不得用于另一个类似的纹章制作器。',
-        ],
-        cellSources: [
-          [],
-          [
-            { label: 'CoaMaker 基本功能说明', href: 'https://coamaker.com/docs/basic-functions/', checkedOn: '2026-10-11' },
-            { label: 'CoaMaker 图片上传说明', href: 'https://coamaker.com/docs/uploading-images/', checkedOn: '2026-10-11' },
-          ],
-          [{ label: 'Roll for Fantasy 纹章制作器说明', href: 'https://rollforfantasy.com/tools/coat-of-arms-creator.php', checkedOn: '2026-10-11' }],
         ],
       },
       {
@@ -355,11 +300,6 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
           '官方说明记录了 PNG 下载；PRO 还提供有背景或透明背景的高清图片。',
           '官方步骤是点击“Turn to image”后右键保存；若转换失败，页面建议截图。',
         ],
-        cellSources: [
-          [],
-          [{ label: 'CoaMaker 图片导出说明', href: 'https://coamaker.com/docs/export-as-image/', checkedOn: '2026-10-11' }],
-          [{ label: 'Roll for Fantasy 纹章制作器说明', href: 'https://rollforfantasy.com/tools/coat-of-arms-creator.php', checkedOn: '2026-10-11' }],
-        ],
       },
       {
         rowLabel: '账号',
@@ -367,11 +307,6 @@ const coatMakerSeoCopyByLocale: Record<SiteLocale, CoatMakerSeoCopy> = {
           '免登录、免付费墙，本地优先，浏览器草稿刷新后可恢复。',
           '默认授权为非商用；官方条款列出的 Advanced Pro 与 Lifetime Pro 方案允许商用。',
           '官方说明允许非商用项目；商用前需要取得站方许可。',
-        ],
-        cellSources: [
-          [],
-          [{ label: 'CoaMaker 商用与非商用授权', href: 'https://coamaker.com/docs/license-and-non-commercial-use/', checkedOn: '2026-10-11' }],
-          [{ label: 'Roll for Fantasy 纹章制作器说明', href: 'https://rollforfantasy.com/tools/coat-of-arms-creator.php', checkedOn: '2026-10-11' }],
         ],
       },
     ],
@@ -505,10 +440,7 @@ function assertCoatMakerSeoCopyFields(copy: CoatMakerSeoCopy, locale: SiteLocale
   );
   assertCoatMakerFeatureOverview(copy.featureOverview, locale);
   assertCopyField('comparisonHeading', copy.comparisonHeading, locale);
-  assertCopyField('comparisonLead', copy.comparisonLead, locale);
-  assertDisplayCopyField('comparisonEvidenceNote', copy.comparisonEvidenceNote, locale);
   assertDisplayCopyField('comparisonDimensionHeading', copy.comparisonDimensionHeading, locale);
-  assertDisplayCopyField('comparisonSourceCheckedLabel', copy.comparisonSourceCheckedLabel, locale);
   assertDisplayCopyField('comparisonTableLabel', copy.comparisonTableLabel, locale);
   assertCopyField('editorCtaHeading', copy.editorCtaHeading, locale);
   assertCopyField('editorCtaEmphasis', copy.editorCtaEmphasis, locale);
@@ -548,48 +480,6 @@ function assertCoatMakerSeoCopyFields(copy: CoatMakerSeoCopy, locale: SiteLocale
 
     for (const [cellIndex, cellText] of comparisonRow.cellText.entries()) {
       assertCopyField(`comparisonRows[${rowIndex}].cellText[${cellIndex}]`, cellText, locale);
-    }
-
-    if (!Array.isArray(comparisonRow.cellSources) || comparisonRow.cellSources.length !== 3) {
-      throw new Error(
-        `Invalid Coat Maker SEO field comparisonRows[${rowIndex}].cellSources for locale ${locale}: ${JSON.stringify(comparisonRow.cellSources)}`,
-      );
-    }
-
-    for (const [cellIndex, cellSources] of comparisonRow.cellSources.entries()) {
-      if (!Array.isArray(cellSources)) {
-        throw new Error(
-          `Invalid Coat Maker SEO field comparisonRows[${rowIndex}].cellSources[${cellIndex}] for locale ${locale}: ${JSON.stringify(cellSources)}`,
-        );
-      }
-
-      for (const [sourceIndex, comparisonSource] of cellSources.entries()) {
-        if (comparisonSource === null || typeof comparisonSource !== 'object') {
-          throw new Error(
-            `Invalid Coat Maker SEO comparison source at comparisonRows[${rowIndex}].cellSources[${cellIndex}][${sourceIndex}] for locale ${locale}: ${JSON.stringify(comparisonSource)}`,
-          );
-        }
-        assertCopyField(
-          `comparisonRows[${rowIndex}].cellSources[${cellIndex}][${sourceIndex}].label`,
-          comparisonSource.label,
-          locale,
-        );
-        assertCopyField(
-          `comparisonRows[${rowIndex}].cellSources[${cellIndex}][${sourceIndex}].href`,
-          comparisonSource.href,
-          locale,
-        );
-        assertCopyField(
-          `comparisonRows[${rowIndex}].cellSources[${cellIndex}][${sourceIndex}].checkedOn`,
-          comparisonSource.checkedOn,
-          locale,
-        );
-        if (!comparisonSource.href.startsWith('https://')) {
-          throw new Error(
-            `Invalid Coat Maker SEO comparison source URL for locale ${locale}: ${JSON.stringify(comparisonSource.href)}`,
-          );
-        }
-      }
     }
   }
 

@@ -606,28 +606,63 @@ function getToolDirectoryPreview(
   };
 }
 
-export function getToolDirectoryItems(locale: SiteLocale): ToolDirectoryItem[] {
+export type ToolDirectoryLink = {
+  id: ToolDirectoryToolId;
+  name: string;
+  path: string;
+  href: string;
+};
+
+function assertToolDirectoryLocale(locale: SiteLocale) {
   if (typeof locale !== 'string' || !isSiteLocale(locale)) {
     throw new Error(`Unknown tool directory locale. Received ${JSON.stringify(locale)}.`);
   }
+}
+
+function readToolDirectoryCopy(locale: SiteLocale, toolId: ToolDirectoryToolId) {
+  const localizedCopy = toolDirectoryCopyByLocale[locale][toolId];
+
+  if (!localizedCopy) {
+    throw new Error(`Tool directory copy for "${toolId}" was not found for locale "${locale}".`);
+  }
+
+  return localizedCopy;
+}
+
+function getToolDirectoryHref(locale: SiteLocale, path: string) {
+  if (path === '/') {
+    return `${getLocalizedPath(locale, '/')}#editor-workspace`;
+  }
+
+  return getLocalizedPath(locale, path);
+}
+
+export function getToolDirectoryLinks(locale: SiteLocale): ToolDirectoryLink[] {
+  assertToolDirectoryLocale(locale);
 
   return toolDirectoryDefinitions.map((definition) => {
-    const localizedCopy = toolDirectoryCopyByLocale[locale][definition.id];
-    const localizedHref = definition.path === '/'
-      ? `${getLocalizedPath(locale, '/')}#editor-workspace`
-      : getLocalizedPath(locale, definition.path);
+    const localizedCopy = readToolDirectoryCopy(locale, definition.id);
 
-    if (!localizedCopy) {
-      throw new Error(
-        `Tool directory copy for "${definition.id}" was not found for locale "${locale}".`,
-      );
-    }
+    return {
+      id: definition.id,
+      name: localizedCopy.name,
+      path: definition.path,
+      href: getToolDirectoryHref(locale, definition.path),
+    };
+  });
+}
+
+export function getToolDirectoryItems(locale: SiteLocale): ToolDirectoryItem[] {
+  assertToolDirectoryLocale(locale);
+
+  return toolDirectoryDefinitions.map((definition) => {
+    const localizedCopy = readToolDirectoryCopy(locale, definition.id);
 
     return {
       id: definition.id,
       name: localizedCopy.name,
       description: localizedCopy.description,
-      href: localizedHref,
+      href: getToolDirectoryHref(locale, definition.path),
       preview: getToolDirectoryPreview(definition, locale),
     };
   });
