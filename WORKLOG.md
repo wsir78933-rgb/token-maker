@@ -1,5 +1,61 @@
 # WORKLOG
 
+## 交接单 · 2026-10-13 07:42 Asia/Shanghai +0800 · Codex
+
+### 本次目标
+
+- 核查 Token Maker 推送后长时间构建、GitHub 质量检查失败；经用户确认，仅修改依赖清单/锁文件处理生产依赖漏洞，再仅修复 CSP 匹配规则及对应测试。用户要求使用内置子代理，最多 5 个，不使用 Orca 编排；已用 5 个代理并复用实现与独立审核角色。
+- 本次 offhand 只核对现状和已有证据，写本交接；不继续产品修复、部署提速、账号操作、commit、push 或 deploy。
+
+### 已完成
+
+- 写交接前主仓为 `/Users/wusir/Desktop/开发项目集合/token-maker-app`，分支 `main`，HEAD `4eeabd6201dcaf184a861f50dd826dc8954a199b`。工作区、暂存区、未跟踪清单均为空；本地 main 与现有 origin/main 指针相同，本次没有执行 git fetch。依赖修改已出现在 `10165819`（仅 package.json/pnpm-lock.yaml），CSP 修改已出现在 `4eeabd62`（仅 next.config.ts/src/lib/security-headers.test.ts）。这些提交在会话期间出现；本会话未执行 commit、push、deploy 命令，不推断提交或推送操作者。本交接新增块保持未存档，不暂存或提交 WORKLOG。
+- 初次长构建的真实 Cloudflare 日志 `/tmp/token-maker-cloudflare-71fe1d28.log` 对应旧提交 bbfa9b9a：439 个测试文件，3967 passed/3 skipped，测试 990.36 秒；Lint 约 104 秒、typecheck 约 53 秒、Vinext 编译约 69 秒、实际发布约 22 秒，包含准备环节总计约 23 分钟。`package.json` 的 build:vinext 会串行运行 lint/typecheck/test/Workers types/Vinext build/dry-run。另一次失败日志 `/tmp/token-maker-cloudflare-f5312895.log` 是 Cloudflare Workers service API 返回 504；不能把这两次构建与独立 GitHub audit 失败混为一谈。
+- 依赖修复：Next 16.3.3→16.3.8，Sharp 0.35.4→0.35.5；既有 pnpm overrides 更新 DOMPurify 3.4.16、fast-uri 3.1.8，并新增 source-map-js 1.2.2 override。未升级 React/Vinext 或改变 UI；保留 Next 和 browserslist 各自原有 caniuse-lite 版本。冻结锁文件安装最终 exit 0。2026-10-12 的生产 audit 从 15 条降至 1 条高危 braces，exit 1；日志仍保留，未忽略、降级或吞掉漏洞。
+- 依赖阶段验证：默认 `pnpm run build:vinext` exit 1，10 files failed/429 passed，15 条 5000ms 超时，3954 passed/1 skipped；没有称它为通过。`pnpm exec vitest run --coverage --maxWorkers=2` exit 0，439 files、3969 passed/1 skipped，Statements 79.07%、Branches 70.04%、Functions 86.76%、Lines 80.37%，阈值通过。`VITEST_MAX_WORKERS=2 pnpm run build:vinext` exit 0，全量测试、lint/typecheck、Workers types、Vinext build、Worker dry-run 均通过；lint 0 errors/10 warnings。并行限制只用于该次命令，没有修改仓库测试并发或超时配置。
+- 完整本地 Worker E2E：45 项中 37 passed/8 failed，exit 1。8 项失败均为 `e2e/seo-signals.spec.ts:260` 断言 Article 不应有 author，而真实输出已有 Person Leo。初始提交 bbfa9b9a 的源码和测试已存在同样冲突；本次未改该测试或作者信息，不能称完整 E2E PASS。输出目录已改到 /tmp；曾被默认 Playwright outputDir 清理的 tracked test-results 文件按 HEAD 恢复并核对哈希，QA 自有输出移到 /tmp，当前 test-results 无 Git 改动。
+- CSP 根因经公共 matcher 复现：原 next.config.ts 通用 source 经 Vinext 转换后被其正则安全检查拒绝，EN/ZH 纹章页缺 CSP。仅改通用匹配规则：展开分支、保留必要外层分组、使用兼容的全路径匹配和大小写静态扩展名字符类；未修改策略值、proxy 或 Vinext 依赖。API/_next/静态资源/OG/share 排除与 share nonce 边界保留，Google Fonts 例外仍只覆盖 EN/ZH scroll-creator 与 notice-board-creator。
+- `src/lib/security-headers.test.ts` 通过 Next/Vinext 公开 API 同时验证正则安全、双语公共路由、精确 CSP 值与排除路径；排除项将无值归一化为 null 后逐项比较 Next/Vinext。最终独立复核读取 final-review 日志：4 files/25 tests passed，目标 ESLint、typecheck、diff-check 均 exit 0。独立矩阵复核另覆盖 109 路径，safe=true、mismatches=[]。框架测试 helper 对部分大写 API/share/OG 路径的错误在基线亦存在，本次未扩展修框架。
+- CSP 阶段新 Vinext 构建、Workers types 和 Worker dry-run 均 exit 0；新构建的 site-shell E2E 3/3 passed。没有在最后 CSP 修订后再跑 439-file 全套或完整 45 项 E2E；全套通过属于此前依赖阶段证据，最终 25 项测试对应 CSP 测试增强后的文件。
+- 本地 ego-browser TaskSpace 54 对新 Worker 的 EN/ZH 纹章页面打开导出菜单，真实下载 PNG/PDF；PNG 均为 1024×614，PDF 均为 1 页，图片和两语言 PDF 浏览器截图已回读。每种语言在自身受监测文档内未捕获 CSP violation/error；这仅覆盖本次操作，不代表全站无错误。实际本地 GET 的双语纹章及四个字体页面都为 200 且策略精确相等，已存在的静态 SVG 无文档 CSP。未验证真实远端上传或分享写入。
+- 2026-10-13 07:36–07:37 Asia/Shanghai 最新线上回读：Cloudflare 原生页面 Active deployment `1e5eb436`，Ready，100% 流量，对应提交 `4eeabd6201dcaf184a861f50dd826dc8954a199b`，列表耗时 24m 37s。该版本已上线，包含依赖与 CSP 修改；不能沿用先前“CSP 尚未提交/部署”的旧状态。最新版本只读了部署页，未下载其完整构建日志，不能把旧 bbfa9b9a 日志中的分段耗时归给它。
+- 同次真实公开 GET：`https://www.tokenmaker.one/coat-of-arms-maker` 与 `/zh/coat-of-arms-maker` 均 HTTP 200、各恰好 1 个 CSP，值与当前公开 headers() 配置完全一致；两边 cf-cache-status 为 BYPASS、cache-control 为 no-store, must-revalidate。CSP 线上生效已确认，缓存命中和 CPU/首屏性能改善未在本次验收。
+- 自有本地 40032 预览已 Ctrl-C 结束，QA 自有 40031 预览已结束；offhand 只读检查两端口无监听。没有停止或重开用户服务。TaskSpace 54 与最新状态核验 TaskSpace 111 均已 finish、keep=[]；下一班不得复用旧标签假设浏览器仍受控。
+
+### 做到一半
+
+- 无正在进行的源码实现；依赖升级、CSP 修复及 CSP 上线验收已结束。本次 WORKLOG 新块未存档。
+- 生产安全扫描仍有 braces 3.0.3 的 GHSA-vfj7-8cjw-p6xm，高危；2026-10-12 复核的 advisory 无 patched version。依赖路径为 vinext→vite-plugin-commonjs→vite-plugin-dynamic-import→fast-glob→micromatch→braces。源码核查发现调用位于构建期，没有发现访客输入或 Worker 请求期调用；新 dist 限定标记计数为 0 仅是辅助证据，不能据此宣称漏洞已修复、绝对不可达或直接忽略 audit。offhand 没有刷新上游 advisory 或重跑 audit。
+- 完整 E2E 的 8 个旧 Article author 断言冲突未修复；默认并发全量测试曾超时，2-worker 全量通过不足以独立证明首次失败的根因。
+- 部署速度优化未实施；GitHub 全部检查并未因 Cloudflare Ready 自动变绿，本次最新状态核验未刷新最新 GitHub Actions。不能将“已部署”写成“所有 CI 已通过”。
+
+### 下一步
+
+- 下一班输入 `$pickup`，先刷新 HEAD、git status、证据文件和实际线上/CI 状态；/tmp 文件可能被清理，不将历史记录当实时结果。不自动续做未授权清单，不自动 commit/push/deploy、新增依赖或抑制审计。
+- 如用户要安全检查全部通过，先查 braces 上游 advisory/完整路径并复跑生产 audit，形成有真实证据的修复方案后对齐新的文件范围；目前没有已验证补丁，不以改审计等级或忽略条目代替修复。
+- 如用户要完整 E2E 通过，先确认修正 `e2e/seo-signals.spec.ts` 的旧作者断言，使其符合已确认的 Person Leo 和双语输出；本轮没有此修复授权。不得为迁就旧测试删除真实作者。
+- 如用户要缩短部署时间，先分析当前 quality.yml 与 Cloudflare build/deploy 命令，保证同一提交的质量 gate 通过后再发布，避免重复全套测试；先对齐范围，不直接删质量 gate。最新部署耗时 24m 37s 已确认，任何目标缩短幅度仍需修改后实测。
+- 缓存命中、CPU 超限、首屏速度属于独立待验证范围。本次未改缓存或性能实现，也未改桌面 SEO 报告、广告实验或其他产品页面。
+
+### 踩过的坑
+
+- 本地 HEAD 在会话中变化，原本未提交的依赖/CSP 改动后来已进入提交且线上已更新；交接应以最新 Git 与部署回读为准，不猜谁提交/推送。
+- 冻结锁文件处理时曾意外合并两份 caniuse-lite 版本，后已纠正；不要把后续浏览器数据变化混进纯安全升级。开发工具路径仍有 Sharp 0.35.4，本轮验收范围是生产依赖 audit，不声称 dev 依赖漏洞全部修复。
+- 必须保留默认全量构建失败、限制并发全量通过、CSP 定向通过、完整 E2E 失败与 Cloudflare 部署成功的不同状态；不要概括成“全通过”。
+- Playwright 默认 outputDir 会清理同目录旧文件，临时配置必须使用独立 /tmp outputDir；先确认端口/cwd，不用 pnpm dev 的端口释放脚本停止用户服务。
+- Ego 页面/导航/新 CLI 会影响 CDP 文档注入，ZH 曾没有 observer；随后同脚本注册并真正 reload，再成功验证。重复点击已打开导出菜单会关闭菜单；以当前可见 DOM 为准，不能用 selector timeout 推断产品坏了。
+- 旧复检材料曾提及代理泄漏构建内部授权标记；本任务未读取或写入该值。不要全量打印 bundle、运行绑定、env、cookie 或 nonce；检查响应头只输出必要白名单。
+
+### 怎么验证
+
+- 本次 offhand 不重跑产品测试/构建/浏览器，仅只读 Git、现有日志/JSON/命令文件/端口，并验证 WORKLOG 旧条目逐字节保留及单文件范围。
+- 依赖原始证据：`/tmp/token-maker-dependency-patch-20261012/`（最终安装/版本/路径）、`/tmp/token-maker-security-review-audit-final-20261012.json`（剩余 1 high）、`/tmp/token-maker-security-validation-20261012/`（*.command.txt/*.stdout.log/*.stderr.log/*.exitcode）。复现：`pnpm audit:prod`；`pnpm run build:vinext`；`VITEST_MAX_WORKERS=2 pnpm run build:vinext`；`pnpm exec vitest run --coverage --maxWorkers=2`。dry-run 通过不等于实际发布。
+- CSP 最终测试原始证据：`/tmp/token-maker-csp-fix-20261012/final-review-*`；新构建/Worker dry-run/3 项页面测试：`/tmp/token-maker-csp-validation-20261012/`。定向复现入口为 `src/lib/security-headers.test.ts`、`src/proxy.test.ts`、`src/lib/security/require-csp-nonce.test.ts`、`src/app/layout-route-boundaries.test.ts`，使用 `pnpm exec vitest run src/lib/security-headers.test.ts src/proxy.test.ts src/lib/security/require-csp-nonce.test.ts src/app/layout-route-boundaries.test.ts --maxWorkers=2`；目标 ESLint、`pnpm typecheck`、`pnpm check:workers-types`、`pnpm exec vinext build`、`pnpm check:workers-build` 分别核对。
+- 完整 E2E 历史命令：`pnpm exec playwright test --config /tmp/token-maker-security-validation-20261012/playwright-isolated.config.ts`，结果 37 passed/8 failed；CSP 新构建页面冒烟在该命令后追加 `e2e/site-shell.spec.ts`，3 passed。临时配置继承公开 Playwright config，隔离 40031 与 /tmp outputDir；使用前核对文件仍在、端口空闲，不自动安装 Chromium 或覆盖 tracked test-results。
+- 本地浏览器/HTTP 记录：`/tmp/token-maker-csp-native-20261012/acceptance.json`、`headers.json`、coat-en/zh.png、coat-en/zh.pdf、en/zh-pdf-rendered.png；依赖阶段图像页记录为 `/tmp/token-maker-native-20261012/image-pages.json`。acceptance.json 中 no deployment 指的是当时本地验证阶段，不能覆盖后续线上回读。
+- 最新线上证据：`/tmp/token-maker-live-deployment-20261013/cloudflare-status.json`、`cloudflare.png`、`headers.json`。Cloudflare 控制台 token-maker-app→Production→Deployments，核对活跃版本/100%/Ready 和同一提交；再 GET 双语纹章页检查 200 与 CSP。页面→导出/Export→PNG、PDF 应能下载；本次真实 PNG/PDF 交互发生在本地新 Worker，最新线上核验只覆盖 GET/CSP，不冒称重新线上导出。
+- WORKLOG 写前备份与 SHA-256 守卫在 `/tmp/token-maker-offhand-20261013/`；本次只新增该交接块，不改旧记录，不暂存或提交。
+
 ## 交接单 · 2026-10-12 21:10 Asia/Shanghai +0800 · Codex
 
 ### 本次目标
