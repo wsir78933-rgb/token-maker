@@ -6,6 +6,7 @@ import { WeaponCreatorFeatureGrid } from '@/components/weapon-creator/WeaponCrea
 import { WeaponCreatorPageHeading } from '@/components/weapon-creator/WeaponCreatorPageHeading';
 import { WeaponCreatorWorkbench } from '@/components/weapon-creator/WeaponCreatorWorkbench';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { Button } from '@/components/ui/button';
 import { WEAPON_CREATOR_EDITOR_ID } from '@/lib/weapon-creator/constants';
 import {
@@ -203,6 +204,7 @@ function WeaponCreatorContent({ locale }: { locale: SiteLocale }) {
         description={copy.faqDescription}
         items={copy.faqItems}
       />
+      <ToolRecommendationSection locale={locale} currentPath={WEAPON_CREATOR_PATH} />
     </>
   );
 }

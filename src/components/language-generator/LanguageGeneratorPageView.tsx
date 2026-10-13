@@ -8,6 +8,7 @@ import { LanguageGeneratorToolComparison } from '@/components/language-generator
 import { LanguageGeneratorWhatIs } from '@/components/language-generator/LanguageGeneratorWhatIs';
 import { LanguageGeneratorCaseStudies } from '@/components/language-generator/LanguageGeneratorCaseStudies';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { StructuredData } from '@/components/site/StructuredData';
 import { getLanguageGeneratorCopy } from '@/lib/language-generator/copy';
 import { getLanguageGeneratorPageCopy } from '@/lib/language-generator/page-copy';
@@ -72,6 +73,7 @@ export function LanguageGeneratorPageView({ locale }: { locale: SiteLocale }) {
         <LanguageGeneratorToolComparison copy={pageCopy.toolComparison} />
         <LanguageGeneratorCallToAction copy={pageCopy.callToAction} />
         <LanguageGeneratorFaq copy={pageCopy.faq} />
+        <ToolRecommendationSection locale={locale} currentPath={LANGUAGE_GENERATOR_PATH} />
       </InnerPageChrome>
     </>
   );

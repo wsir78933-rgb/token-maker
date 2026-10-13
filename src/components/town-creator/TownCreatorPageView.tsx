@@ -1,4 +1,5 @@
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { TownCreatorEditorSection } from '@/components/town-creator/TownCreatorEditorSection';
 import { TownCreatorFaq } from '@/components/town-creator/TownCreatorFaq';
 import { TownCreatorPageHeading } from '@/components/town-creator/TownCreatorPageHeading';
@@ -31,6 +32,7 @@ export function TownCreatorPageView({ locale }: { locale: SiteLocale }) {
       </TownCreatorEditorSection>
       <TownCreatorSeoContent copy={copy} />
       <TownCreatorFaq faq={copy.faq} />
+      <ToolRecommendationSection locale={locale} currentPath="/town-creator" />
     </InnerPageChrome>
   );
 }

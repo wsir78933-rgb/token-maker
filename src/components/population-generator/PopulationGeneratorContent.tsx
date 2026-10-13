@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useId, useState } from 'react';
 
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { Button } from '@/components/ui/button';
 import {
   POPULATION_GENERATOR_WORKSPACE_ID,
@@ -370,6 +371,7 @@ export function PopulationGeneratorContent({
       <PopulationGeneratorHowToUse copy={copy.howToUse} />
       <PopulationGeneratorHelp locale={locale} />
       <PopulationGeneratorFaq copy={copy.faq} />
+      <ToolRecommendationSection locale={locale} currentPath="/population-generator" />
       <PopulationGeneratorCallToAction copy={copy.cta} />
     </>
   );

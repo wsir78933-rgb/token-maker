@@ -6,6 +6,7 @@ import { DiceRollerFaq } from '@/components/dice/DiceRollerFaq';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { PageBreadcrumbs } from '@/components/site/PageBreadcrumbs';
 import { StructuredData } from '@/components/site/StructuredData';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { Button } from '@/components/ui/button';
 import {
   absoluteUrl,
@@ -114,6 +115,7 @@ export function DiceRollerPageView({ locale }: { locale: SiteLocale }) {
           description={copy.faqDescription}
           items={copy.faqItems}
         />
+        <ToolRecommendationSection locale={locale} currentPath={path} />
       </InnerPageChrome>
     </>
   );

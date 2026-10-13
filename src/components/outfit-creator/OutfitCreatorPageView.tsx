@@ -6,6 +6,7 @@ import { OutfitCreatorPageHeading } from '@/components/outfit-creator/OutfitCrea
 import { OutfitCreatorFeatureGrid } from '@/components/outfit-creator/OutfitCreatorFeatureGrid';
 import { OutfitCreatorWorkbench } from '@/components/outfit-creator/OutfitCreatorWorkbench';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { Button } from '@/components/ui/button';
 import { OUTFIT_CREATOR_EDITOR_ID } from '@/lib/outfit-creator/constants';
 import {
@@ -199,6 +200,7 @@ function OutfitCreatorContent({ locale }: { locale: SiteLocale }) {
         description={copy.faqDescription}
         items={copy.faqItems}
       />
+      <ToolRecommendationSection locale={locale} currentPath={OUTFIT_CREATOR_PATH} />
     </>
   );
 }

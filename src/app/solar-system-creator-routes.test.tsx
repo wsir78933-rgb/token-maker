@@ -148,8 +148,7 @@ describe('solar system creator routes', () => {
     const pageContentCopy = copy.pageContent;
     const caseStudiesCopy = getSolarSystemCaseStudiesCopy(locale);
     const pageSections = Array.from(pageContent.querySelectorAll(':scope > section'));
-    expect(pageSections).toHaveLength(7);
-    expect(pageSections.map((section) => section.getAttribute('aria-labelledby'))).toEqual([
+    expect(pageSections.map((section) => section.getAttribute('aria-labelledby')).slice(0, 7)).toEqual([
       'solar-system-creator-what-is-heading',
       'solar-system-creator-case-studies-title',
       'solar-system-creator-feature-grid-heading',
@@ -158,6 +157,14 @@ describe('solar system creator routes', () => {
       'solar-system-creator-call-to-action-title',
       'solar-system-creator-faq-heading',
     ]);
+    const recommendationHeading = within(pageContent).getByRole('heading', {
+      name: locale === 'zh' ? '你可能还会用到这些工具' : 'More tools you may like',
+    });
+    const faqSection = pageSections[6];
+    if (!(faqSection instanceof HTMLElement)) {
+      throw new Error(`Missing solar system creator FAQ section for locale ${JSON.stringify(locale)}.`);
+    }
+    expect(faqSection.compareDocumentPosition(recommendationHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(within(pageContent).getByRole('heading', { level: 2, name: pageContentCopy.whatIsTitle })).toBeTruthy();
     expect(within(pageContent).getByRole('heading', { level: 2, name: caseStudiesCopy.title })).toBeTruthy();
     expect(within(pageContent).getByRole('heading', { level: 2, name: pageContentCopy.featureOverviewTitle })).toBeTruthy();

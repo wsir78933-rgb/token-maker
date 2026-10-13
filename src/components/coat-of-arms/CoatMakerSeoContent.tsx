@@ -6,6 +6,7 @@ import {
   getCoatMakerSeoCopy,
   type CoatMakerFeatureIcon,
 } from '@/components/coat-of-arms/coat-maker-seo-copy';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import type { SiteLocale } from '@/lib/site-locale';
 
 type CoatMakerSeoCopy = ReturnType<typeof getCoatMakerSeoCopy>;
@@ -297,6 +298,7 @@ export function CoatMakerSeoContent({ locale }: { locale: SiteLocale }) {
       </div>
 
       {renderFaqSection(copy, locale)}
+      <ToolRecommendationSection locale={locale} currentPath="/coat-of-arms-maker" />
     </section>
   );
 }

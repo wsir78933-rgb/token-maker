@@ -16,6 +16,7 @@ import {
   type ArmyFormationCaseTestimonialCarousels,
 } from '@/components/army-formation/army-formation-case-testimonials';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import {
   getArmyFormationCreatorCaseCarouselCopy,
   getArmyFormationCreatorPageCopy,
@@ -236,6 +237,7 @@ function ArmyFormationCreatorPageContent({ locale }: { locale: SiteLocale }) {
         description={copy.faqDescription}
         items={copy.faq}
       />
+      <ToolRecommendationSection locale={locale} currentPath={ARMY_FORMATION_CREATOR_PATH} />
     </div>
   );
 }

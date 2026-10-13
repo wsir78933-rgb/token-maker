@@ -2,6 +2,7 @@ import { ArrowRight, Check, X } from 'lucide-react';
 
 import { NoticeBoardCreatorCaseStudies } from '@/components/notice-board-creator/NoticeBoardCreatorCaseStudies';
 import { NoticeBoardCreatorFaq } from '@/components/notice-board-creator/NoticeBoardCreatorFaq';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { NoticeBoardCreatorFeatureGrid } from '@/components/notice-board-creator/NoticeBoardCreatorFeatureGrid';
 import { NoticeBoardCreatorPageHeading } from '@/components/notice-board-creator/NoticeBoardCreatorPageHeading';
 import { NoticeBoardCreatorWhatIs } from '@/components/notice-board-creator/NoticeBoardCreatorWhatIs';
@@ -276,6 +277,7 @@ function NoticeBoardCreatorPageContent({ locale }: { locale: SiteLocale }) {
       <NoticeBoardCreatorComparison pageCopy={pageCopy} />
       <NoticeBoardCreatorCallToAction pageCopy={pageCopy} />
       <NoticeBoardCreatorFaq pageCopy={pageCopy} />
+      <ToolRecommendationSection locale={locale} currentPath="/notice-board-creator" />
     </>
   );
 }

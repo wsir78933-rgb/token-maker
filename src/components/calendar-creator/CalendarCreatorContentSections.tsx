@@ -8,6 +8,7 @@ import {
   TriangleAlert,
 } from 'lucide-react';
 
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import type { CalendarCreatorPageCopy } from '@/lib/calendar-creator/page-copy';
 import type { SiteLocale } from '@/lib/site-locale';
 
@@ -254,6 +255,7 @@ export function CalendarCreatorContentSections({
       {renderHowItWorksSection(copy.howItWorks)}
       {renderCtaSection(copy.cta)}
       <CalendarCreatorFaq copy={copy.faq} />
+      <ToolRecommendationSection locale={locale} currentPath="/calendar-creator" />
     </>
   );
 }

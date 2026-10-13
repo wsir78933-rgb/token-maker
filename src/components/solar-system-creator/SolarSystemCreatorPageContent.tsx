@@ -12,7 +12,9 @@ import {
 import { SolarSystemCreatorFaq } from '@/components/solar-system-creator/SolarSystemCreatorFaq';
 import { SolarSystemCreatorCaseStudies } from '@/components/solar-system-creator/SolarSystemCreatorCaseStudies';
 import { SolarSystemCreatorToolComparison } from '@/components/solar-system-creator/SolarSystemCreatorToolComparison';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { Button } from '@/components/ui/button';
+import type { SiteLocale } from '@/lib/site-locale';
 import type { SolarSystemCaseStudiesCopy } from '@/lib/solar-system-creator/case-studies';
 import type {
   SolarSystemFeatureIcon,
@@ -32,6 +34,7 @@ const SOLAR_FEATURE_COUNT = 6;
 const SOLAR_HOW_IT_WORKS_STEP_COUNT = 3;
 
 export interface SolarSystemCreatorPageContentProps {
+  locale: SiteLocale;
   pageContent: SolarSystemPageContentCopy;
   caseStudies: SolarSystemCaseStudiesCopy;
   editorId: string;
@@ -207,6 +210,7 @@ function SolarSystemCreatorCallToAction({
 }
 
 export function SolarSystemCreatorPageContent({
+  locale,
   pageContent,
   caseStudies,
   editorId,
@@ -227,6 +231,7 @@ export function SolarSystemCreatorPageContent({
         description={pageContent.faqDescription}
         items={pageContent.faqItems}
       />
+      <ToolRecommendationSection locale={locale} currentPath="/solar-system-creator" />
     </div>
   );
 }

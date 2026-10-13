@@ -1,5 +1,6 @@
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
 import { StructuredData } from '@/components/site/StructuredData';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { CastleCreatorCallToAction } from '@/components/castle-creator/CastleCreatorCallToAction';
 import { CastleCreatorExamples } from '@/components/castle-creator/CastleCreatorExamples';
 import { CastleCreatorFaq } from '@/components/castle-creator/CastleCreatorFaq';
@@ -75,6 +76,7 @@ export function CastleCreatorPageView({ locale }: { locale: SiteLocale }) {
         <CastleCreatorToolComparison copy={copy.comparison} />
         <CastleCreatorCallToAction copy={copy.callToAction} />
         <CastleCreatorFaq copy={copy.faq} />
+        <ToolRecommendationSection locale={locale} currentPath="/castle-creator" />
       </InnerPageChrome>
     </>
   );

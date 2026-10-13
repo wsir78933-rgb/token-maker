@@ -63,6 +63,7 @@ export function SolarSystemCreatorPageView({ locale }: { locale: SiteLocale }) {
           </div>
         </div>
         <SolarSystemCreatorPageContent
+          locale={locale}
           pageContent={copy.pageContent}
           caseStudies={getSolarSystemCaseStudiesCopy(locale)}
           editorId={SOLAR_SYSTEM_CREATOR_EDITOR_ID}

@@ -1,6 +1,7 @@
 import { ArrowRight, Images, Maximize2, Printer, Save, ScrollText, Type, type LucideIcon } from 'lucide-react';
 
 import { ScrollCreatorFaq } from '@/components/scroll-creator/ScrollCreatorFaq';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { Button } from '@/components/ui/button';
 import { SCROLL_CREATOR_EDITOR_ID } from '@/lib/scroll-creator/constants';
 import {
@@ -255,6 +256,7 @@ export function ScrollCreatorContentSections({ locale }: { locale: ScrollLocale 
       <ScrollCreatorHowItWorksSection copy={pageContent.howItWorks} />
       <ScrollCreatorCallToActionSection copy={pageContent.cta} />
       <ScrollCreatorFaq {...pageContent.faq} />
+      <ToolRecommendationSection locale={locale} currentPath="/scroll-creator" />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { Faq1 } from '@/components/armor-creator/Faq1';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
@@ -12,6 +13,7 @@ import {
 } from 'lucide-react';
 import { MAP_MAKER_WORKSPACE_ID } from '@/lib/map-maker/constants';
 import type { MapMakerFeatureIcon, MapMakerPageCopy } from '@/lib/map-maker/page-copy';
+import type { SiteLocale } from '@/lib/site-locale';
 
 import { MapMakerShowcase } from './MapMakerShowcase';
 import styles from './MapMakerContent.module.css';
@@ -235,7 +237,13 @@ function MapMakerFaq({ copy }: { copy: MapMakerPageCopy['faq'] }) {
   );
 }
 
-export function MapMakerPageContent({ copy }: { copy: MapMakerPageCopy }) {
+export function MapMakerPageContent({
+  copy,
+  locale,
+}: {
+  copy: MapMakerPageCopy;
+  locale: SiteLocale;
+}) {
   return (
     <div className={styles.pageContent} data-testid="map-maker-page-content">
       <MapMakerIntroduction copy={copy.whatIs} />
@@ -245,6 +253,7 @@ export function MapMakerPageContent({ copy }: { copy: MapMakerPageCopy }) {
       <MapMakerHowItWorks copy={copy.howItWorks} />
       <MapMakerCallToAction copy={copy.callToAction} />
       <MapMakerFaq copy={copy.faq} />
+      <ToolRecommendationSection locale={locale} currentPath="/map-maker" />
     </div>
   );
 }

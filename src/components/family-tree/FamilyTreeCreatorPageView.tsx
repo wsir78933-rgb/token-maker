@@ -3,6 +3,7 @@ import { FamilyTreeCreatorPageHeading } from '@/components/family-tree/FamilyTre
 import { FamilyTreeCreatorInfoSections } from '@/components/family-tree/FamilyTreeCreatorInfoSections';
 import { FamilyTreeCreatorFaq } from '@/components/family-tree/FamilyTreeCreatorFaq';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { getFamilyTreeCopy } from '@/lib/family-tree/copy';
 import { getFamilyTreePageContent } from '@/lib/family-tree/page-content';
 import type { SiteLocale } from '@/lib/site-locale';
@@ -35,6 +36,7 @@ export function FamilyTreeCreatorPageView({ locale }: { locale: SiteLocale }) {
       </div>
       <FamilyTreeCreatorInfoSections locale={locale} content={pageContent} workspaceId={FAMILY_TREE_EDITOR_ID} />
       <FamilyTreeCreatorFaq faq={pageContent.faq} />
+      <ToolRecommendationSection locale={locale} currentPath={FAMILY_TREE_CREATOR_PATH} />
     </InnerPageChrome>
   );
 }

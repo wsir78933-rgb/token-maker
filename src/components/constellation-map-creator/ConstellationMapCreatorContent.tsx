@@ -10,11 +10,13 @@ import {
 } from 'lucide-react';
 
 import { Faq1 } from '@/components/armor-creator/Faq1';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import type {
   ConstellationFeatureIcon,
   ConstellationPageContentCopy,
 } from '@/lib/constellation-map-creator/copy';
 import type { ConstellationShowcaseCopy } from '@/lib/constellation-map-creator/showcase-copy';
+import type { SiteLocale } from '@/lib/site-locale';
 
 import { ConstellationMapCreatorShowcase } from './ConstellationMapCreatorShowcase';
 
@@ -253,10 +255,12 @@ function ConstellationCallToAction({
 }
 
 export function ConstellationMapCreatorContent({
+  locale,
   pageContent,
   showcaseCopy,
   workspaceId,
 }: {
+  locale: SiteLocale;
   pageContent: ConstellationPageContentCopy;
   showcaseCopy: ConstellationShowcaseCopy;
   workspaceId: string;
@@ -277,6 +281,7 @@ export function ConstellationMapCreatorContent({
         description={pageContent.faq.description}
         items={pageContent.faq.items}
       />
+      <ToolRecommendationSection locale={locale} currentPath="/constellation-map-creator" />
     </div>
   );
 }

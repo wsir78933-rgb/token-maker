@@ -26,6 +26,7 @@ describe('TarotContentSections', () => {
       copy.comparison.title,
       copy.callToAction.title,
       copy.faq.title,
+      locale === 'zh' ? '你可能还会用到这些工具' : 'More tools you may like',
     ]);
 
     const callToAction = screen.getByRole('button', { name: copy.callToAction.action });

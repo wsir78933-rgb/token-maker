@@ -67,6 +67,7 @@ export function ConstellationMapCreatorPageView({ locale }: { locale: SiteLocale
           <ConstellationMapCreatorWorkbench locale={locale} />
         </section>
         <ConstellationMapCreatorContent
+          locale={locale}
           pageContent={copy.pageContent}
           showcaseCopy={getConstellationShowcaseCopy(locale)}
           workspaceId={CONSTELLATION_MAP_CREATOR_WORKSPACE_ID}

@@ -12,6 +12,7 @@ import {
 import { TarotCallToAction } from '@/components/tarot-cards/TarotCallToAction';
 import { TarotCaseStudies } from '@/components/tarot-cards/TarotCaseStudies';
 import { TarotFaq } from '@/components/tarot-cards/TarotFaq';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { getTarotCaseStudies } from '@/lib/tarot-cards/case-studies';
 import {
   getTarotPageContent,
@@ -237,6 +238,7 @@ export function TarotContentSections({ locale }: { locale: SiteLocale }) {
       <TarotToolComparison copy={copy.comparison} />
       <TarotCallToAction copy={copy.callToAction} />
       <TarotFaq copy={copy.faq} />
+      <ToolRecommendationSection locale={locale} currentPath="/tarot-cards" />
     </>
   );
 }

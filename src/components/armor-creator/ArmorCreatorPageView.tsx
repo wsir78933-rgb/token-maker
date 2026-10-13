@@ -9,6 +9,7 @@ import { ArmorCreatorFeatureGrid } from '@/components/armor-creator/ArmorCreator
 import { Faq1 } from '@/components/armor-creator/Faq1';
 import { ArmorCreatorWorkbench } from '@/components/armor-creator/ArmorCreatorWorkbench';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import {
   getArmorCreatorComparisonCopy,
   getArmorCreatorCopy,
@@ -173,6 +174,7 @@ function ArmorCreatorPageGap({ locale }: { locale: SiteLocale }) {
         description={copy.faqDescription}
         items={copy.faqItems}
       />
+      <ToolRecommendationSection locale={locale} currentPath={ARMOR_CREATOR_PATH} />
     </>
   );
 }

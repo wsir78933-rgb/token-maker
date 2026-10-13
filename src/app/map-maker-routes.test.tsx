@@ -165,7 +165,7 @@ describe('map maker localized routes', () => {
     const pageContentSections = Array.from(pageContent.children).filter(
       (child) => child.tagName === 'SECTION',
     );
-    expect(pageContentSections).toHaveLength(7);
+    expect(pageContentSections.length).toBeGreaterThanOrEqual(7);
     const introductionHeading = requireMapMakerSectionHeading(
       pageContent,
       'map-maker-introduction',
@@ -219,6 +219,10 @@ describe('map maker localized routes', () => {
     expect(contentHeadings.every((heading) => heading.id.length > 0)).toBe(true);
     expect(new Set(contentHeadings.map((heading) => heading.id)).size).toBe(contentHeadings.length);
     expectMapMakerHeadingsInOrder(contentHeadings);
+    const recommendationHeading = within(pageContent).getByRole('heading', {
+      name: locale === 'zh' ? '你可能还会用到这些工具' : 'More tools you may like',
+    });
+    expect(faqHeading.compareDocumentPosition(recommendationHeading) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
 
     const comparisonSection = screen.getByTestId('map-maker-comparison');
     const comparisonRegion = within(comparisonSection).getByRole('region', {

@@ -68,7 +68,7 @@ export function MapMakerPageView({ locale }: { locale: SiteLocale }) {
           </h2>
           <MapMakerWorkbench copy={copy.workspace} />
         </section>
-        <MapMakerPageContent copy={pageCopy} />
+        <MapMakerPageContent copy={pageCopy} locale={locale} />
       </InnerPageChrome>
     </>
   );

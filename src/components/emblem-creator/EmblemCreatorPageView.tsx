@@ -11,6 +11,7 @@ import {
   EmblemCreatorPageHeading,
 } from '@/components/emblem-creator/EmblemCreatorPageHeading';
 import { InnerPageChrome } from '@/components/site/InnerPageChrome';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import { getEmblemCreatorCopy } from '@/lib/emblem-creator/copy';
 import type { EmblemLocale } from '@/lib/emblem-creator/types';
 
@@ -38,6 +39,7 @@ export function EmblemCreatorPageView({ locale }: { locale: EmblemLocale }) {
         <EmblemCreatorToolComparison copy={copy.toolComparison} />
         <EmblemCreatorCallToAction copy={copy.callToAction} />
         <EmblemCreatorFaq {...copy.faq} />
+        <ToolRecommendationSection locale={locale} currentPath="/emblem-creator" />
       </div>
     </InnerPageChrome>
   );

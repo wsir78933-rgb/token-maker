@@ -1,8 +1,9 @@
 import { ArrowRight } from 'lucide-react';
 
-import { PeriodicTableCreatorFaq } from '@/components/periodic-table-creator/PeriodicTableCreatorFaq';
 import { PeriodicTableCreatorCaseStudies } from '@/components/periodic-table-creator/PeriodicTableCreatorCaseStudies';
+import { PeriodicTableCreatorFaq } from '@/components/periodic-table-creator/PeriodicTableCreatorFaq';
 import { PeriodicTableCreatorFeatureGrid } from '@/components/periodic-table-creator/PeriodicTableCreatorFeatureGrid';
+import { ToolRecommendationSection } from '@/components/site/ToolRecommendationSection';
 import {
   getPeriodicTablePageContentCopy,
   type PeriodicTablePageContentCopy,
@@ -218,6 +219,7 @@ export function PeriodicTableCreatorContent({
       <PeriodicTableCreatorComparison copy={copy.comparison} />
       <PeriodicTableCreatorCallToAction copy={copy.cta} workspaceId={validatedWorkspaceId} />
       <PeriodicTableCreatorFaq copy={copy.faq} />
+      <ToolRecommendationSection locale={locale} currentPath="/periodic-table-creator" />
     </>
   );
 }
