@@ -22,6 +22,8 @@ import { getSiteUiCopy } from '@/lib/site-content';
 import { buildBreadcrumbStructuredData } from '@/lib/site-page-models';
 import { getLocalizedPath, type SiteLocale } from '@/lib/site-locale';
 import { getBlogCoverImageSources } from '@/lib/blog/cover-sources';
+import { getToolDirectoryItems } from '@/lib/tool-directory';
+import { getBlogToolRecommendations } from '@/lib/blog/tool-recommendations';
 
 const copyByLocale = {
   en: {
@@ -47,9 +49,8 @@ const copyByLocale = {
     editor: 'Open Editor',
     diceRoller: 'Dice Roller',
     coatMaker: 'Coat of Arms Maker',
-    bottomCtaEyebrow: 'Ready to play?',
-    bottomCtaHeading: 'Start building your adventure',
-    bottomCtaBody: 'After reading the guide, create your character token or roll some dice for your next session.',
+    toolRecommendationsHeading: 'Tools you might find useful',
+    moreTools: 'More tools',
     relatedEyebrow: 'Keep Reading',
     relatedHeading: 'Related articles',
     readArticle: 'Read article',
@@ -77,14 +78,127 @@ const copyByLocale = {
     editor: '打开编辑器',
     diceRoller: '骰子工具',
     coatMaker: '纹章制作器',
-    bottomCtaEyebrow: '准备好开始冒险了吗？',
-    bottomCtaHeading: '开启你的下一次冒险',
-    bottomCtaBody: '看完这篇指南后，现在去制作你的角色 Token，或者扔几颗骰子开始下一场战役吧。',
+    toolRecommendationsHeading: '你可能会用到的工具',
+    moreTools: '更多工具',
     relatedEyebrow: '继续读',
     relatedHeading: '相关文章',
     readArticle: '阅读全文',
   },
 } as const;
+
+function getBlogToolPreview(tool: ReturnType<typeof getToolDirectoryItems>[number], locale: SiteLocale) {
+  if (tool.preview.type === 'image') {
+    if (tool.id === 'token-maker') {
+      return {
+        src: '/showcase/frost-ranger-ice.webp',
+        alt: locale === 'zh'
+          ? '冰晶边框的精灵游侠 Token 成品示例'
+          : 'Finished ranger token with an icy crystal border',
+      };
+    }
+
+    if (tool.id === 'coat-of-arms-maker') {
+      return {
+        src: '/coat-assets/showcase/azure-wings.webp',
+        alt: locale === 'zh' ? '蔚蓝之翼纹章案例' : 'House of Azure Wings coat of arms example',
+      };
+    }
+
+    return { src: tool.preview.src, alt: tool.preview.alt };
+  }
+
+  if (tool.id === 'language-generator') {
+    return {
+      src: `/blog/tool-previews/language-generator-${locale}.png`,
+      alt: locale === 'zh'
+        ? '奇幻语言生成器案例截图，展示英文原句与虚构语言拼写结果'
+        : 'Fantasy language generator example showing an English source phrase and fictional spelling',
+    };
+  }
+
+  if (tool.id === 'population-generator') {
+    return {
+      src: `/blog/tool-previews/population-generator-${locale}.png`,
+      alt: locale === 'zh'
+        ? '人口生成器案例截图，展示聚落人口和住户结果'
+        : 'Population generator example showing settlement residents and households',
+    };
+  }
+
+  throw new Error(
+    `Blog tool preview is unsupported for toolId=${JSON.stringify(tool.id)} and previewType=${JSON.stringify(tool.preview.type)}.`,
+  );
+}
+
+function BlogToolRecommendations({ locale, slug }: { locale: SiteLocale; slug: string }) {
+  const copy = copyByLocale[locale];
+  const recommendation = getBlogToolRecommendations(locale, slug);
+  const toolItems = getToolDirectoryItems(locale);
+
+  return (
+    <section
+      id="blog-tools"
+      aria-labelledby="blog-tools-heading"
+      className="site-surface-card site-surface-card--warm scroll-mt-28 rounded-[34px] px-5 py-6 sm:px-6 sm:py-7"
+    >
+      <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0 max-w-3xl">
+          <h2
+            id="blog-tools-heading"
+            className="font-display text-[1.75rem] leading-tight text-stone-50 sm:text-[2rem]"
+          >
+            {copy.toolRecommendationsHeading}
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-stone-300">{recommendation.description}</p>
+        </div>
+        <a
+          href={getLocalizedPath(locale, '/tools')}
+          className="site-cta-primary min-h-11 shrink-0 self-start focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f1d492] sm:self-center"
+        >
+          {copy.moreTools}
+          <ArrowRight aria-hidden="true" className="h-4 w-4" />
+        </a>
+      </div>
+
+      <ul className="relative mt-6 grid list-none grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {recommendation.toolIds.map((toolId) => {
+          const tool = toolItems.find((item) => item.id === toolId);
+
+          if (!tool) {
+            throw new Error(`Blog tool directory item was not found for toolId=${JSON.stringify(toolId)}.`);
+          }
+
+          const imagePreview = getBlogToolPreview(tool, locale);
+          const titleId = `blog-tool-${toolId}-title`;
+
+          return (
+            <li key={toolId} className="min-w-0 rounded-[22px] border border-white/10 bg-black/20 p-3 sm:p-4">
+              <Link
+                href={tool.href}
+                prefetch={false}
+                aria-labelledby={titleId}
+                className="block h-[180px] overflow-hidden rounded-[14px] bg-white/[0.04] transition-colors hover:bg-white/[0.08] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f1d492]"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- Original showcase assets use a fixed-height preview without the image passthrough endpoint. */}
+                <img
+                  src={imagePreview.src}
+                  alt={imagePreview.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-contain"
+                />
+              </Link>
+              <h3 id={titleId} className="mt-4 text-base font-semibold leading-6 text-stone-50 sm:min-h-12">
+                {tool.name}
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-stone-300">{tool.description}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
 
 function RelatedPostCard({ locale, post }: { locale: SiteLocale; post: BlogPost }) {
   const copy = copyByLocale[locale];
@@ -325,44 +439,7 @@ export function BlogDetailPageView({
               )}
             </article>
 
-            {!isPlaceholder ? (
-              <section className="site-surface-card site-surface-card--warm rounded-[34px] px-5 py-6 sm:px-6 sm:py-7">
-                <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-                  <div className="min-w-0 max-w-xl space-y-2.5">
-                    <p className="text-xs uppercase tracking-[0.28em] text-[#d7b46a]">{copy.bottomCtaEyebrow}</p>
-                    <h2 className="font-display text-[1.75rem] leading-[1.08] text-stone-50 sm:text-[2rem]">
-                      {copy.bottomCtaHeading}
-                    </h2>
-                    <p className="text-sm leading-7 text-stone-300">{copy.bottomCtaBody}</p>
-                  </div>
-                  <div className="grid shrink-0 grid-cols-1 gap-2.5 md:min-w-[410px] md:grid-cols-2">
-                    <EditorLaunchButton
-                      href={`${getLocalizedPath(locale, '/')}#editor-workspace`}
-                      className="site-cta-primary w-full justify-center md:col-start-2 md:row-start-1"
-                    >
-                      {copy.editor}
-                      <ArrowRight className="h-4 w-4" />
-                    </EditorLaunchButton>
-                    <Link
-                      href={getLocalizedPath(locale, '/dice-roller-dnd')}
-                      prefetch={false}
-                      className="site-cta-secondary w-full justify-center md:col-start-2 md:row-start-2"
-                    >
-                      <Dice5 className="h-4 w-4" />
-                      {copy.diceRoller}
-                    </Link>
-                    <Link
-                      href={getLocalizedPath(locale, '/coat-of-arms-maker')}
-                      prefetch={false}
-                      className="site-cta-secondary w-full justify-center md:col-start-1 md:row-start-1"
-                    >
-                      <Shield className="h-4 w-4" />
-                      {copy.coatMaker}
-                    </Link>
-                  </div>
-                </div>
-              </section>
-            ) : null}
+            <BlogToolRecommendations locale={locale} slug={slug} />
 
           </div>
 
